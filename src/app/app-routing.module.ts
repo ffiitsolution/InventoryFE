@@ -85,6 +85,11 @@ const routes: Routes = [
           import('./views/order/order.module').then((m) => m.OrderModule),
       },
       {
+        path: 'transaction',
+        loadChildren: () =>
+          import('./views/transaction/transaction.module').then((m) => m.TransactionModule),
+      },
+      {
         path: 'account-setting',
         component: AccountSettingComponent,
       },
