@@ -1,0 +1,82 @@
+[
+  {
+    "name": "Dashboard",
+    "url": "/dashboard",
+    "iconComponent": {
+      "name": "cil-speedometer"
+    }
+  },
+  {
+    "name": "Master and Table",
+    "iconComponent": {
+      "name": "cil-speedometer"
+    },
+    "children": [
+      {
+        "name": "Master User",
+        "url": "/master/master-user"
+      },
+      {
+        "name": "Master Branch",
+        "url": "/master/master-branch"
+      },
+      {
+        "name": "Master Departement",
+        "url": "/master/master-department"
+      },
+      {
+        "name": "Master Location",
+        "url": "/master/master-location"
+      },
+      {
+        "name": "Master Supplier",
+        "url": "/master/master-supplier"
+      },
+      {
+        "name": "Master Product",
+        "url": "/master/master-product"
+      },
+      {
+        "name": "Table RSC",
+        "url": "/master/table-rsc"
+      },
+      {
+        "name": "Table Regional",
+        "url": "/master/table-regional"
+      },
+      {
+        "name": "Table Area",
+        "url": "/master/table-area"
+      },
+      {
+        "name": "Table UOM",
+        "url": "/master/table-uom"
+      },
+      {
+        "name": "Table City Area",
+        "url": "/master/table-city-area"
+      },
+      {
+        "name": "Tabel Counter",
+        "url": "/master/table-set-number"
+      }
+    ]
+  },
+  {
+    "name": "Order",
+    "url": "/order",
+    "iconComponent": {
+      "name": "cil-speedometer"
+    },
+    "badge": {
+      "color": "info",
+      "text": "NEW"
+    },
+    "children": [
+      {
+        "name": "Receive Order",
+        "url": "/order/receiving-order"
+      }
+    ]
+  }
+]

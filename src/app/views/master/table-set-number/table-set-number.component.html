@@ -1,0 +1,35 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>{{ "Tabel" | translate }} {{ "Loket" | translate }}</h5>
+        </div>
+        <div class="col text-end">
+          <button
+            type="button"
+            class="btn btn-success text-white me-2 btn-120"
+            (click)="actionBtnClick(CONST_ACTION_ADD)"
+          >
+            <i class="fa fa-plus pe-1 icon-12" aria-hidden="true"></i>
+            {{ "Tambah" | translate }}
+          </button>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="table-responsive">
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          (page.dt)="dtPageChange($event)"
+          class="row-border hover"
+        ></table>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>

@@ -1,0 +1,1 @@
+export { default as AccountSettingComponent } from './account-setting.component'

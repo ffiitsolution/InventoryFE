@@ -1,0 +1,60 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>{{ "Master" | translate }} {{ "Cabang" | translate }}</h5>
+        </div>
+        <div class="col text-end btn-160">
+          <button
+            type="button"
+            class="btn btn-success text-white me-2"
+            (click)="actionBtnClick(CONST_ACTION_ADD)"
+          >
+            <i class="fa fa-plus pe-1 icon-12" aria-hidden="true"></i>
+            {{ "Tambah" | translate }} {{ "Cabang" | translate }}
+          </button>
+        </div>
+      </div>
+      <div [visible]="isFilterShown" cCollapse>
+        <c-card class="mt-3 shadow">
+          <c-card-body>
+            <div class="row">
+              <div class="col">
+                <label cLabel for="selectStatusFilter"
+                  >{{ "Status aktif" | translate }}:
+                </label>
+                <select
+                  aria-label="Status"
+                  cSelect
+                  id="selectStatusFilter"
+                  [(ngModel)]="selectedStatusFilter"
+                  (ngModelChange)="onStatusFilterChange()"
+                >
+                  <option value="">{{ "Semua" | translate }}</option>
+                  <option value="A">{{ "Aktif" | translate }}</option>
+                  <option value="T">{{ "Tidak aktif" | translate }}</option>
+                </select>
+              </div>
+            </div>
+          </c-card-body>
+        </c-card>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="table-responsive">
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          [dtTrigger]="dtTrigger"
+          (page.dt)="dtPageChange($event)"
+          class="row-border hover"
+        ></table>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>

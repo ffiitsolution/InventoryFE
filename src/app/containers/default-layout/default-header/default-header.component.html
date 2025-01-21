@@ -1,0 +1,83 @@
+<ng-container>
+  <c-container [fluid]="true">
+    <button toggle="visible" cHeaderToggler [cSidebarToggle]="sidebarId" class="ps-1">
+      <svg cIcon name="cilMenu" size="lg"></svg>
+    </button>
+    <c-header-nav class="d-none d-lg-flex me-auto">
+      <c-nav-item>
+        <a cNavLink><strong>{{'labelAppName' | translate}}</strong></a>
+      </c-nav-item>
+    </c-header-nav>
+    <c-header-nav class="d-none d-lg-flex items-center">
+      <c-nav-item (click)="sendWs()">
+        <a cNavLink>
+          {{'Selamat Datang' | translate}}&nbsp; <strong>{{currentUser.namaUser}}</strong> - {{currentUser.jabatan}}
+        </a>
+      </c-nav-item>
+      <c-nav-item>
+        <a cNavLink>
+          <p style="margin: 0;">|</p>
+        </a>
+      </c-nav-item>
+      <c-nav-item *ngIf="isDefaultWarehouseExist">
+        <a cNavLink>
+          {{currentUser.defaultLocation.kodeLocation}} - {{currentUser.defaultLocation.keteranganLokasi}}
+        </a>
+      </c-nav-item>
+    </c-header-nav>
+    <c-header-nav class="ms-3">
+      <ng-container *ngTemplateOutlet="userDropdown"></ng-container>
+    </c-header-nav>
+  </c-container>
+</ng-container>
+
+<ng-template #userDropdown>
+  <c-dropdown alignment="end" variant="nav-item">
+    <button cButton color="" [caret]="false" cDropdownToggle class="py-0" style="background-color: #EEEEEE;
+    border-radius: 10px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;">
+      <i class="fa fa-user" aria-hidden="true" style="font-size: 25px;"></i>
+      <c-badge [color]="g.serverStatus === 'UP' ? 'success' : 'danger'" position="top-end" shape="rounded-pill">
+        &nbsp;
+      </c-badge>
+    </button>
+    <ul cDropdownMenu class="pr-5 w-auto" style=" padding: 15px !important;">
+      <li class="wrapper-user">
+        <b class="wrapper-user__title">{{'Profil Pengguna' | translate}}</b>
+        <div class="wrapper-user__profile">
+          <i class="fa fa-user" aria-hidden="true" style="font-size: 20px;margin-right: 1rem;margin-top: 4px;"></i>
+          <div>
+            <p class="wrapper-user__info">{{currentUser.namaUser}}</p>
+            <p class="wrapper-user__info">{{currentUser.jabatan}}</p>
+            <p *ngIf="isDefaultWarehouseExist" class="wrapper-user__info">{{currentUser.defaultLocation.keteranganLokasi}}</p>
+          </div>
+        </div>
+      </li>
+      <hr />
+      <li class="wrapper-user" (click)="onAccountSettingPressed()">
+        <div class="wrapper-user__profile pointer">
+          <i class="fa fa-building" aria-hidden="true" style="font-size: 20px;margin-right: 1rem;"></i>
+          <p class="wrapper-user__info">{{'Ubah lokasi' | translate}}</p>
+        </div>
+      </li>
+      <li class="wrapper-user" (click)="switchLanguage()">
+        <div class="wrapper-user__profile pointer">
+          <i class="fa fa-flag" aria-hidden="true" style="font-size: 20px;margin-right: 1rem;"></i>
+          <p class="wrapper-user__info">{{'Ubah Bahasa' | translate}}</p>
+        </div>
+      </li>
+      <hr />
+      <li class="wrapper-user logout" (click)="onLogoutPressed()">
+        <div class="wrapper-user__profile">
+          <i class="fa fa-sign-out" aria-hidden="true" style="font-size: 20px;margin-right: 1rem;"></i>
+          <p class="wrapper-user__info">{{'Keluar' | translate}}</p>
+        </div>
+      </li>
+    </ul>
+  </c-dropdown>
+</ng-template>

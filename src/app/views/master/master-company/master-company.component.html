@@ -1,0 +1,25 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>
+            {{ 'Master' | translate }} {{ 'Perusahaan' | translate }}
+          </h5>
+        </div>
+        <div class="col text-end">
+          <button type="button" class="btn btn-warning text-white me-2" [disabled]="!selectedRowData" (click)="actionBtnClick('edit')">
+            {{ 'Ubah' | translate }}
+          </button>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+
+    </c-card-body>
+  </c-card>
+</div>

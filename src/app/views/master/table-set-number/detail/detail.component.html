@@ -1,0 +1,67 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <h5>{{ "Lihat" | translate }} {{ "Loket" | translate }}</h5>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <form [formGroup]="myForm">
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Nomor Loket" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="key"
+              readonly
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Kode" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="code"
+              readonly
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Keterangan" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="desc"
+              readonly
+            />
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="d-grid gap-3 d-md-flex justify-content-end">
+          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+            {{ "Kembali" | translate }}
+          </button>
+          <button
+            class="btn btn-info text-white btn-150"
+            (click)="onEditPressed()"
+          >
+            {{ "Ubah" | translate }} {{ "Loket" | translate }}
+          </button>
+        </div>
+      </form>
+    </c-card-body>
+  </c-card>
+</div>

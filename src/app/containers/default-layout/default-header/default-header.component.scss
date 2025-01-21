@@ -1,0 +1,55 @@
+.wrapper-user {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  &__title {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 150%;
+    color: #133f5d;
+    display: flex !important;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  &__profile {
+    margin-top: 10px;
+    display: flex !important;
+    justify-content: flex-start;
+    align-items: flex-start !important;
+  }
+
+  &__info {
+    margin-bottom: 4px !important;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+}
+
+.icon-user {
+  margin-right: 1.2rem;
+  margin-top: 4px;
+  font-size: 20px;
+  display: inline-block;
+}
+
+.logout {
+  cursor: pointer;
+
+  &:hover {
+    cursor: pointer;
+    background: #a9a9a933;
+    border-radius: 4px;
+  }
+}
+
+::ng-deep .modal-content {
+  z-index: 1 !important;
+}
+
+::ng-deep .modal-backdrop {
+  z-index: -1 !important;
+}

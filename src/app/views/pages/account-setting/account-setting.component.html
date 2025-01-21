@@ -1,0 +1,86 @@
+<div>
+  <c-card
+    *ngIf="isDefaultWarehouseExist"
+    color="danger"
+    textColor="white"
+    class="m-2"
+  >
+    <c-card-body class="py-2">{{
+      "errorMessageWarehouseRequired" | translate
+    }}</c-card-body>
+  </c-card>
+  <div class="row">
+    <div class="col-3" *ngFor="let item of locations">
+      <ng-container *ngIf="defaultLocationCode != item?.kodeLocation">
+        <c-widget-stat-b
+          [title]="item.kodeLocation + ' - ' + item.keteranganLokasi"
+          class="my-2 pointer"
+          text=""
+          value="{{ item.lokasiGudang }}"
+          (click)="onSelectWarehousePressed(item)"
+          style="min-height: 125px"
+        >
+        </c-widget-stat-b>
+      </ng-container>
+      <ng-container *ngIf="defaultLocationCode == item?.kodeLocation">
+        <c-widget-stat-b
+          [title]="item.kodeLocation + ' - ' + item.keteranganLokasi"
+          class="my-2 pointer"
+          text=""
+          value="{{ item.lokasiGudang }}"
+          (click)="onSelectWarehousePressed(item)"
+          style="min-height: 125px; border: 2px solid blue"
+        >
+          <!-- <c-progress class="my-2" thin>
+            <c-progress-bar [value]="100" [color]="'info'"></c-progress-bar>
+          </c-progress> -->
+        </c-widget-stat-b>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<!-- <c-card class="mb-3">
+  <c-card *ngIf="isDefaultWarehouseExist" color="danger" textColor="white" class="m-2">
+    <c-card-body class="py-2">{{'errorMessageWarehouseRequired' | translate}}</c-card-body>
+  </c-card>
+  <c-card-body>
+    <p class="mt-6">{{'Lokasi Gudang' | translate}}: </p>
+    <ul class="card-list">
+      <li *ngFor="let item of locations" cListGroupItem class="card-list-item">
+        <c-card class="mb-2" [cBorder]="defaultLocationCode == item?.kodeLocation ? 'info' : 'secondary'"
+          [textColor]="defaultLocationCode == item?.kodeLocation ? 'primary' : 'black'">
+          <c-card-header>{{item.keteranganLokasi}}</c-card-header>
+          <c-card-body>
+            <p cCardText>{{item.kodeInisial}} - {{item.kodeLocation}}</p>
+            <p cCardText>{{item.lokasiGudang}}</p>
+            <button cButton *ngIf="defaultLocationCode != item?.kodeLocation" (click)="onSelectWarehousePressed(item)">
+              {{'Pilih' | translate}}
+            </button>
+            <p *ngIf="defaultLocationCode == item?.kodeLocation">{{'Gudang saat ini' | translate }}</p>
+          </c-card-body>
+        </c-card>
+      </li>
+    </ul>
+  </c-card-body>
+</c-card> -->
+
+<!-- <c-card class="mb-3">
+    <c-card-body>
+        <p>{{'Pilih Bahasa' | translate}}: </p>
+        <div class="form-check my-3" (click)="onSelectLanguagePressed('id')">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="id"
+                [checked]="selectedLanguage === 'id'">
+            <label class="form-check-label" for="id ">
+                {{'Bahasa Indonesia' | translate}}
+            </label>
+        </div>
+        <div class="form-check my-3" (click)="onSelectLanguagePressed('en')">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="en"
+                [checked]="selectedLanguage === 'en'">
+            <label class="form-check-label" for="en">
+                {{'English' | translate}}
+            </label>
+        </div>
+    </c-card-body>
+</c-card> -->

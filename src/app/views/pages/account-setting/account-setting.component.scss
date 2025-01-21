@@ -1,0 +1,13 @@
+.card-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .card-list-item {
+    flex-basis: calc(33% - 10px); /* Adjust width and margins as needed */
+    margin-bottom: 12px;
+    margin-right: 8px;
+  }

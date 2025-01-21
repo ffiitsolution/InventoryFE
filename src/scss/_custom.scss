@@ -1,0 +1,14 @@
+// Here you can add other styles
+
+.pointer{
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.pointer:hover {
+  transform: scale(1.1);
+}
+
+.swal-button-width {
+  width: 150px;
+}

@@ -1,0 +1,69 @@
+/* You can add global styles to this file, and also import other style files */
+// If you want to override variables do it here
+@import "variables";
+
+$enable-ltr: true;
+$enable-rtl: true;
+
+// Import styles with default layout.
+@import "@coreui/coreui/scss/coreui";
+
+// Import Chart.js custom tooltips styles
+@import "@coreui/chartjs/scss/coreui-chartjs";
+
+@import "layout";
+
+// Some temp fixes
+@import "fixes";
+
+// Prism.js
+@import "examples";
+
+// If you want to add something do it here
+@import "custom";
+
+.divider {
+  border-top: 1px solid #ccc;
+  margin-top: 24px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.btn-240 {
+  width: 240px;
+}
+
+.btn-120 {
+  width: 120px;
+}
+
+.btn-160 {
+  width: 160px;
+}
+
+.btn-80 {
+  width: 80px;
+}
+
+.btn-60 {
+  width: 60px;
+}
+
+.icon-12 {
+  font-size: 12px;
+}
+
+.icon-gap {
+  margin-right: 8px;
+}
+
+.conv-label {
+  font-size: x-small;
+  width: 8px;
+}
+
+/* Importing Bootstrap SCSS file. */
+@import "./node_modules/bootstrap/scss/bootstrap";
+
+/* Importing Datepicker SCSS file. */
+@import "node_modules/ngx-bootstrap/datepicker/bs-datepicker";
