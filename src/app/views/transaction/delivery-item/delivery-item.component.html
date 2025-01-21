@@ -1,1 +1,95 @@
-<p>delivery-item works!</p>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>{{ "Kirim pesanan ke Cabang atau Gudang" | translate }}</h5>
+        </div>
+        <div class="col text-end">
+          <button
+            type="button"
+            class="btn btn-outline-dark me-2 btn-120"
+            (click)="toggleFilter()"
+          >
+            <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
+            {{ "Filter" | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary text-white me-2 btn-240"
+            data-toggle="modal"
+            (click)="onAddPressed()"
+          >
+            <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
+            {{ "Tambah Pengiriman" | translate }}
+          </button>
+        </div>
+      </div>
+      <div *ngIf="showFilterSection" cCollapse>
+        <div class="divider"></div>
+        <div class="row" style="margin-top: -16px">
+          <c-card-body>
+            <c-row>
+              <c-col>
+                <label class="col-form-label">{{
+                  "Filter Status" | translate
+                }}</label>
+                <select
+                  class="form-control"
+                  [(ngModel)]="statusFilter"
+                  (ngModelChange)="onFilterStatusChange()"
+                >
+                  <option value="">{{ "Semua Status" | translate }}</option>
+                  <option value="Dikirim">{{ "Dikirim" | translate }}</option>
+                  <option value="Tertunda">{{ "Tertunda" | translate }}</option>
+                </select>
+              </c-col>
+              <c-col>
+                <label class="col-form-label">{{
+                  "Tanggal Pengiriman" | translate
+                }}</label>
+                <input
+                  type="text"
+                  id="dateFilter"
+                  class="form-control"
+                  bsDaterangepicker
+                  [bsConfig]="dpConfig()"
+                  aria-describedby="dateFilter"
+                  [(ngModel)]="dateRangeFilter"
+                  #dp="bsDaterangepicker"
+                  placeholder="{{ 'Tanggal Pengiriman' | translate }}"
+                />
+              </c-col>
+              <c-col
+                xs="3"
+                class="text-right d-flex align-items-end justify-content-end"
+              >
+                <button
+                  type="button"
+                  class="btn btn-outline-primary me-2 btn-160"
+                  (click)="onFilterPressed()"
+                >
+                  {{ "Terapkan Filter" | translate }}
+                </button>
+              </c-col>
+            </c-row>
+          </c-card-body>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="table-responsive">
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          (page.dt)="dtPageChange($event)"
+          class="row-border hover"
+        ></table>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
