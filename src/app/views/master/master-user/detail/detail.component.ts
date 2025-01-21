@@ -33,7 +33,7 @@ export class MasterUserDetailComponent implements OnInit {
       userCreate: [this.detail.userCreate],
       userUpdate: [this.detail.userUpdate],
       dateCreate: [this.detail.dateCreate],
-      dateupdate: [this.detail. ], 
+      dateupdate: [this.detail.dateUpdate], 
     });
   }
 
