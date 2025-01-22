@@ -23,6 +23,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TransactionRoutingModule } from './transaction-routing.module';
 import { DeliveryItemComponent } from './delivery-item/delivery-item.component';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { AddDataComponent } from './add-data/add-data.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -50,6 +51,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   declarations: [
     DeliveryItemComponent,
+    AddDataComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

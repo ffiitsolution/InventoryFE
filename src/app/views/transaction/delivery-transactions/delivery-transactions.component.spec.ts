@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReceivingOrderAddDetailFormComponent } from './add-detail-form.component';
+import { ReceivingOrderAddDetailFormComponent } from './delivery-transactions.component';
 
 describe('ReceivingOrderAddDetailFormComponent', () => {
   let component: ReceivingOrderAddDetailFormComponent;

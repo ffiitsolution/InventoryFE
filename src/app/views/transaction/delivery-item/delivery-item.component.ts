@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ADTSettings } from 'angular-datatables/src/models/settings';
 import { Subject } from 'rxjs';
@@ -22,6 +23,7 @@ export class DeliveryItemComponent implements OnInit {
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -44,7 +46,8 @@ export class DeliveryItemComponent implements OnInit {
 
   onAddPressed(): void {
     // Logic for adding a new order
-    console.log('Add pressed');
+    const route = this.router.createUrlTree(['/transaction/add-data']);
+    this.router.navigateByUrl(route);
   }
 
   onFilterStatusChange(): void {
