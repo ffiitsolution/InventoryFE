@@ -9,7 +9,7 @@ import {
   ACTION_ADD,
   ACTION_EDIT,
   ACTION_VIEW,
-  LS_INV_SELECTED_SET_NUMBER,
+  LS_INV_SELECTED_USER,
 } from '../../../../constants';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
@@ -140,6 +140,7 @@ export class MasterUserComponent
 
   ngOnInit(): void {
     this.g.changeTitle(this.translation.instant('Master') + ' ' + this.translation.instant('User') + ' - ' + this.g.tabTitle);
+    localStorage.removeItem(LS_INV_SELECTED_USER);
   }
 
   actionBtnClick(action: string) {
@@ -148,9 +149,10 @@ export class MasterUserComponent
     //   console.log(result);
     // });
     if (action === 'view') {
-      this.g.saveLocalstorage(LS_INV_SELECTED_SET_NUMBER, JSON.stringify(data));
+      this.g.saveLocalstorage(LS_INV_SELECTED_USER, JSON.stringify(data));
       this.router.navigate(['/master/master-user/detail']);
     } else if (action === 'add') {
+      this.router.navigate(['/master/master-user/add']);
     } else if (action === 'edit') {
     } else if (action === 'delete') {
     } else {

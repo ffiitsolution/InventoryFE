@@ -49,6 +49,7 @@
     "ngx-bootstrap": "^12.0.0",
     "ngx-daterangepicker-material": "^6.0.4",
     "ngx-scrollbar": "^13.0.3",
+    "ngx-select-dropdown": "^3.3.2",
     "ngx-toastr": "^19.0.0",
     "rxjs": "~7.8.1",
     "sockjs-client": "^1.6.1",

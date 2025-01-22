@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { GlobalService } from 'src/app/service/global.service';
-import { LS_INV_SELECTED_SET_NUMBER } from 'src/constants';
+import { LS_INV_SELECTED_USER } from 'src/constants';
 @Component({
   selector: 'app-detail',
   templateUrl: './detail.component.html',
@@ -21,7 +21,7 @@ export class MasterUserDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.detail = JSON.parse(
-      this.g.getLocalstorage(LS_INV_SELECTED_SET_NUMBER)
+      this.g.getLocalstorage(LS_INV_SELECTED_USER)
     );
     console.log("this.detail", this.detail);
     this.myForm = this.form.group({
@@ -30,6 +30,7 @@ export class MasterUserDetailComponent implements OnInit {
       kodePassword: [this.detail.kodePassword],
       statusAktif: [this.detail.statusAktif],
       keteranganLokasi: [this.detail.keteranganLokasi],
+      jabatan: [this.detail.jabatan],
       userCreate: [this.detail.userCreate],
       userUpdate: [this.detail.userUpdate],
       dateCreate: [this.detail.dateCreate],
@@ -38,12 +39,12 @@ export class MasterUserDetailComponent implements OnInit {
   }
 
   onPreviousPressed() {
-    localStorage.removeItem(LS_INV_SELECTED_SET_NUMBER);
-    this.router.navigate(['/master/table-set-number']);
+    localStorage.removeItem(LS_INV_SELECTED_USER);
+    this.router.navigate(['/master/master-user']);
   }
 
   onEditPressed() {
-    this.router.navigate(['/master/table-set-number/edit']);
+    this.router.navigate(['/master/master-user/edit']);
   }
 
   togglePasswordVisibility(): void {
