@@ -154,6 +154,8 @@ export class MasterUserComponent
     } else if (action === 'add') {
       this.router.navigate(['/master/master-user/add']);
     } else if (action === 'edit') {
+      this.g.saveLocalstorage(LS_INV_SELECTED_USER, JSON.stringify(data));
+      this.router.navigate(['/master/master-user/edit']);
     } else if (action === 'delete') {
     } else {
     }

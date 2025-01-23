@@ -58,7 +58,7 @@ import {
   TableRscDetailComponent,
 } from './table-rsc';
 import { MasterUserComponent } from './master-user/master-user.component';
-import { EditMasterUserComponent } from './master-user/edit/edit-master-user.component';
+import { MasterUserEditComponent } from './master-user/edit/edit.component';
 import { MasterUserDetailComponent } from './master-user/detail/detail.component';
 import { MasterUserAddComponent } from './master-user/add/add.component';
 
@@ -76,7 +76,7 @@ const routes: Routes = [
       },
       {
         path: 'master-user/edit',
-        component: EditMasterUserComponent,
+        component: MasterUserEditComponent,
       },
       {
         path: 'master-user/detail',

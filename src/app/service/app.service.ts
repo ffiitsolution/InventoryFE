@@ -36,7 +36,10 @@ export class AppService {
   insert(url: String, params: any): Observable<any> {
     return this.dataService.postData(this.config.BASE_URL + url, params);
   }
-
+  patch(url: string, params: any): Observable<any> {
+    return this.dataService.patchData(this.config.BASE_URL + url, params);
+  }
+  
   getReceivingOrderItem(nomorPesanan: String) {
     return this.dataService.postData(
       `${this.config.BASE_URL_HQ}/api/receiving-order/get-items-receiving-order`,

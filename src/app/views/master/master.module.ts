@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 
 import { MasterRoutingModule } from './master-routing.module';
 import { MasterUserComponent } from './master-user/master-user.component';
-import { EditMasterUserComponent } from './master-user/edit/edit-master-user.component';
+import { MasterUserEditComponent } from './master-user/edit/edit.component';
 import { MasterUserDetailComponent } from './master-user/detail/detail.component';
 import {  MasterUserAddComponent } from './master-user/add/add.component';
 import { MasterBranchComponent } from './master-branch/master-branch.component';
@@ -116,7 +116,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MasterUserComponent,
     MasterUserDetailComponent,
     MasterUserAddComponent,
-    EditMasterUserComponent,
+    MasterUserEditComponent,
     MasterCompanyComponent,
     MasterBranchComponent,
     MasterDepartmentComponent,

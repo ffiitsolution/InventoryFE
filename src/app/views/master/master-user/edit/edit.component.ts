@@ -1,21 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/service/app.service';
 import { GlobalService } from 'src/app/service/global.service';
-import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_SET_NUMBER } from 'src/constants';
+import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_USER } from 'src/constants';
 import { DataService } from 'src/app/service/data.service';
 
 @Component({
-  selector: 'app-add',
-  templateUrl: './add.component.html',
-  styleUrl: './add.component.scss',
+  selector: 'app-edit',
+  templateUrl: './edit.component.html',
+  styleUrl: './edit.component.scss',
 })
-export class MasterUserAddComponent implements OnInit {
+export class MasterUserEditComponent implements OnInit {
   myForm: FormGroup;
-  adding: boolean = false;
-  showPassword: boolean = false;
+  editing: boolean = false;
+  detail: any;
   listLokasi: any[] = [];
   configSelectLokasi: any = {
     displayKey: 'name', // Key to display in the dropdown
@@ -29,25 +30,42 @@ export class MasterUserAddComponent implements OnInit {
     searchPlaceholder: 'Cari Lokasi', // Placeholder for the search input
     searchOnKey: 'name' // Key to search
   };
-  
+
 
   constructor(
-    private toastr: ToastrService,
     private form: FormBuilder,
     private router: Router,
-    private g: GlobalService,
     private service: AppService,
-    private dataService: DataService,
+    private g: GlobalService,
+    private toastr: ToastrService,
+    private translation: TranslateService,
+    private dataService: DataService
   ) {}
 
   ngOnInit(): void {
+    this.detail = JSON.parse(
+      this.g.getLocalstorage(LS_INV_SELECTED_USER)
+    );
     this.myForm = this.form.group({
-      kodeUser:  ['', Validators.required],
-      namaUser:  ['', Validators.required],
-      kodePassword:  ['', Validators.required],
-      statusAktif:  ['A', Validators.required],
-      defaultLocation:  [null],
-      jabatan:  [''],
+      kodeUser: [
+        { value: this.detail.kodeUser, disabled: true },
+        Validators.required,
+      ],
+      namaUser: [
+        this.detail.namaUser ,
+        Validators.required,
+      ],
+      kodePassword: [
+        this.detail.kodePassword ,
+        Validators.required,
+      ],
+      statusAktif: [
+        this.detail.statusAktif 
+      ],
+      jabatan: [
+        this.detail.jabatan 
+      ],
+      defaultLocation: [{}]
     });
 
     this.dataService
@@ -57,16 +75,27 @@ export class MasterUserAddComponent implements OnInit {
         id: item.KODE_LOCATION,
         name: item.KETERANGAN_LOKASI,
       }));      
+
+      const fullDefaultLocation = this.listLokasi.find(
+        (item: any) => item.id === this.detail.defaultLocation
+      );
+
+      
+      this.myForm.addControl(
+        'defaultLocation', ''
+      );
+      this.myForm.get('defaultLocation')?.setValue(fullDefaultLocation);
+
     });
+
   }
 
   onSubmit(): void {
-    // this.myForm.kodeUser.value
     const { controls, invalid } = this.myForm;
     if (invalid) {
       this.g.markAllAsTouched(this.myForm);
     } else {
-      this.adding = true;
+      this.editing = true;
       const param = {
         kodeUser:  controls?.['kodeUser']?.value,
         kodePassword:  controls?.['kodePassword']?.value,
@@ -75,38 +104,34 @@ export class MasterUserAddComponent implements OnInit {
         jabatan: controls?.['jabatan']?.value,
         defaultLocation: controls?.['defaultLocation']?.value?.id
       };
-      this.service.insert('/api/users', param).subscribe({
-        next: (res) => {
+      this.service.patch('/api/users/current', param).subscribe({
+        next: (res: any) => {
           if (!res.success) {
             alert(res.message);
           } else {
-            this.toastr.success('Berhasil!');
+            this.toastr.success(this.translation.instant('Berhasil!'));
             setTimeout(() => {
               this.onPreviousPressed();
             }, DEFAULT_DELAY_TIME);
           }
-          this.adding = false;
+          this.editing = false;
         },
-      });
+        error: (err: any) => {
+          console.error('Error updating user:', err);
+          alert('An error occurred while updating the user.');
+          this.editing = false;
+        },
+      });         
     }
   }
 
   onPreviousPressed() {
-    localStorage.removeItem(LS_INV_SELECTED_SET_NUMBER);
+    localStorage.removeItem(LS_INV_SELECTED_USER);
     this.router.navigate(['/master/master-user']);
-  }
-
-  isFieldValid(fieldName: String) {
-    return this.g.isFieldValid(this.myForm, fieldName);
-  }
-
-  togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
   }
 
   onChangeSelect(data: any, field: string) {
     const dataStatus = data?.target?.value;
     this.myForm.get('statusAktif')?.setValue(dataStatus);
   }
-
 }

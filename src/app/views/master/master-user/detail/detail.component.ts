@@ -25,11 +25,11 @@ export class MasterUserDetailComponent implements OnInit {
     );
     console.log("this.detail", this.detail);
     this.myForm = this.form.group({
-      key: [this.detail.kodeUser],
+      kodeUser: [this.detail.kodeUser],
       namaUser: [this.detail.namaUser],
       kodePassword: [this.detail.kodePassword],
       statusAktif: [this.detail.statusAktif],
-      keteranganLokasi: [this.detail.keteranganLokasi],
+      defaultLocation: [this.detail.keteranganLokasi],
       jabatan: [this.detail.jabatan],
       userCreate: [this.detail.userCreate],
       userUpdate: [this.detail.userUpdate],

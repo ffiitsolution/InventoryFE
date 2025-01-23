@@ -24,6 +24,24 @@ export class DataService {
     return this.http.post(url, params, { headers });
   }
 
+  patchData(
+    url: string,
+    params: any,
+    isGeneratePdf: boolean = false
+  ): Observable<any> {
+    let token = localStorage.getItem('inv_token') ?? '';
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'X-API-TOKEN': token.replaceAll('"', ''),
+    });
+  
+    if (isGeneratePdf) {
+      return this.http.patch(url, params, { headers, responseType: 'blob' });
+    }
+    return this.http.patch(url, params, { headers });
+  }
+  
+
   getData(url: string): Observable<any> {
     let token = localStorage.getItem('inv_token') ?? '';
     const headers = new HttpHeaders({
