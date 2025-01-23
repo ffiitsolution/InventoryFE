@@ -16,7 +16,8 @@ const routes: Routes = [
         component: AddDataComponent,
       },
       // {
-      //   path: 'delivery-transactions'
+      //   path: 'delivery-transactions',
+      //   component: DeliveryTransactionsComponent,
       // }
     ],
   },

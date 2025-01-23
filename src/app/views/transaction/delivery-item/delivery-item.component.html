@@ -5,25 +5,41 @@
         <div class="col">
           <h5>{{ "Kirim pesanan ke Cabang atau Gudang" | translate }}</h5>
         </div>
-        <div class="col text-end">
+        <div class="d-flex justify-content-end position-absolute top-0 end-0 m-3">
+          <!-- Button Filter -->
           <button
             type="button"
-            class="btn btn-outline-dark me-2 btn-120"
+            class="btn btn-outline-dark me-2"
+            style="width: 120px;"
             (click)="toggleFilter()"
           >
             <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
             {{ "Filter" | translate }}
           </button>
+          
           <button
             type="button"
-            class="btn btn-primary text-white me-2 btn-240"
+            class="btn btn-primary text-white me-2"
+            style="width: 240px; min-width: 240px;"
             data-toggle="modal"
             (click)="onAddPressed()"
           >
             <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
             {{ "Add Delivery" | translate }}
           </button>
+          
+          <!-- <button
+            type="button"
+            class="btn btn-primary text-white"
+            style="width: 240px; min-width: 240px;"
+            data-toggle="modal"
+            (click)="onAddPressed()"
+          >
+            <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
+            {{ "Delivery Transactions" | translate }}
+          </button> -->
         </div>
+        
       </div>
       <div *ngIf="showFilterSection" cCollapse>
         <div class="divider"></div>
