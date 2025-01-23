@@ -78,5 +78,23 @@
         "url": "/order/receiving-order"
       }
     ]
+  },
+  {
+    "name": "Transaksi",
+    "url": "/transaksi",
+    "iconComponent": {
+      "name": "cil-speedometer"
+    },
+    "badge": {
+      "color": "info",
+      "text": "NEW"
+    },
+    "children": [
+      {
+        "name": "Pengiriman",
+        "url": "/transaction/delivery-item"
+      }
+    ]
+    
   }
 ]

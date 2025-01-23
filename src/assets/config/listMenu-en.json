@@ -78,5 +78,23 @@
         "url": "/order/receiving-order"
       }
     ]
+  },
+  {
+    "name": "Tansaction",
+    "url": "/transaction",
+    "iconComponent": {
+      "name": "cil-speedometer"
+    },
+    "badge": {
+      "color": "info",
+      "text": "NEW"
+    },
+    "children": [
+      {
+        "name": "Delivery Item",
+        "url": "/transaction/delivery-item"
+      }
+    ]
+    
   }
 ]
