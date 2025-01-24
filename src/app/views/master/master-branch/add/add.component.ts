@@ -16,20 +16,26 @@ export class MasterBranchAddComponent implements OnInit {
   myForm: FormGroup;
   adding: boolean = false;
   showPassword: boolean = false;
-  listLokasi: any[] = [];
-  configSelectLokasi: any = {
+  listKota: any[] = [];
+  listRSC: any[] = [];
+  listRegion: any[] = [];
+  listArea: any[] = [];
+
+  baseConfig: any = {
     displayKey: 'name', // Key to display in the dropdown
     search: true, // Enable search functionality
     height: '200px', // Dropdown height
-    placeholder: 'Pilih Lokasi', // Placeholder text
     customComparator: () => {}, // Custom sorting comparator
-    limitTo: this.listLokasi.length, // Limit the number of displayed options
     moreText: 'lebih banyak', // Text for "more" options
     noResultsFound: 'Tidak ada hasil', // Text when no results are found
-    searchPlaceholder: 'Cari Lokasi', // Placeholder for the search input
     searchOnKey: 'name' // Key to search
   };
-  
+
+  configSelectKota: any;
+  configSelectRSC: any;
+  configSelectRegion: any;
+  configSelectArea: any;
+
 
   constructor(
     private toastr: ToastrService,
@@ -42,40 +48,134 @@ export class MasterBranchAddComponent implements OnInit {
 
   ngOnInit(): void {
     this.myForm = this.form.group({
-      kodeUser:  ['', Validators.required],
-      namaUser:  ['', Validators.required],
-      kodePassword:  ['', Validators.required],
-      statusAktif:  ['A', Validators.required],
-      defaultLocation:  [null],
-      jabatan:  [''],
+      namaCabang: ['', Validators.required],
+      kodeCabang: ['', Validators.required],
+      kodeSingkat: ['', Validators.required],
+      kota: [''],
+      alamat1: [''],
+      alamat2: [''],
+      kodePos: [''],
+      telpon1: [''],
+      telpon2: [''],
+      fax1: [''],
+      fax2: [''],
+      alamatEmail: [''],
+      keteranganRsc: [''],
+      kodeRegion: [''],
+      keteranganRegion : [''],  
+      kodeArea: [''],
+      keteranganArea: [''],
+      contactPerson: [''],
+      contactPhone: [''],
+      keterangan: [''],
+      tipeCabang: [''],
+
+      userCreate: [''],
+      userUpdate: [''],
+      dateCreate: [''],
+      dateupdate: [''], 
+    });
+
+    this.configSelectKota = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Kota',
+      searchPlaceholder: 'Cari Kota',
+      limitTo: this.listKota.length
+    };
+
+    this.configSelectRSC = {
+      ...this.baseConfig,
+      placeholder: 'Pilih RSC',
+      searchPlaceholder: 'Cari RSC',
+      limitTo: this.listRSC.length
+    };
+
+    this.configSelectRegion = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Region',
+      searchPlaceholder: 'Cari Region',
+      limitTo: this.listRegion.length
+    };
+
+    this.configSelectArea = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Area',
+      searchPlaceholder: 'Cari Area',
+      limitTo: this.listArea.length
+    };
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/city/dropdown-city',{})
+    .subscribe((resp: any) => {
+      this.listKota = resp.map((item: any) => ({
+        id: item.KODE_KOTA,
+        name: item.KODE_KOTA+" - " + item.KETERANGAN_KOTA,
+      }));     
+      console.log("listKota", this.listKota); 
     });
 
     this.dataService
-    .postData(this.g.urlServer + '/api/location/dropdown-lokasi',{})
+    .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
     .subscribe((resp: any) => {
-      this.listLokasi = resp.map((item: any) => ({
-        id: item.KODE_LOCATION,
-        name: item.KETERANGAN_LOKASI,
-      }));      
+      this.listRSC = resp.map((item: any) => ({
+        id: item.KODE_RSC,
+        name: item.KODE_RSC+" - " + item.KETERANGAN_RSC,
+      }));     
+      console.log("listRSC", this.listRSC); 
+    });
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/region/dropdown-region',{})
+    .subscribe((resp: any) => {
+      this.listRegion = resp.map((item: any) => ({
+        id: item.KODE_REGION  ,
+        name: item.KODE_REGION+" - " + item.KETERANGAN_REGION,
+      }));     
+      console.log("listRegion", this.listRegion); 
+    });
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/area/dropdown-area',{})
+    .subscribe((resp: any) => {
+      this.listArea = resp.map((item: any) => ({
+        id: item.KODE_AREA  ,
+        name: item.KODE_AREA+" - " + item.KETERANGAN_AREA,
+      }));     
+      console.log("listArea", this.listArea); 
     });
   }
 
   onSubmit(): void {
-    // this.myForm.kodeUser.value
+    console.log("myForm", this.myForm.value);
     const { controls, invalid } = this.myForm;
+    console.log("invalid", invalid);
     if (invalid) {
       this.g.markAllAsTouched(this.myForm);
     } else {
       this.adding = true;
       const param = {
-        kodeUser:  controls?.['kodeUser']?.value,
-        kodePassword:  controls?.['kodePassword']?.value,
-        namaUser: controls?.['namaUser']?.value,
-        statusAktif: controls?.['statusAktif']?.value,
-        jabatan: controls?.['jabatan']?.value,
-        defaultLocation: controls?.['defaultLocation']?.value?.id
+        namaCabang:  controls?.['namaCabang']?.value,
+        kodeCabang:  controls?.['kodeCabang']?.value,
+        kodeSingkat:  controls?.['kodeSingkat']?.value,
+        kota:  controls?.['kota']?.value?.id,
+        alamat1:  controls?.['alamat1']?.value,
+        alamat2:  controls?.['alamat2']?.value,
+        kodePos:  controls?.['kodePos']?.value,
+        telpon1:  controls?.['telpon1']?.value,
+        telpon2:  controls?.['telpon2']?.value,
+        fax1:  controls?.['fax1']?.value,
+        fax2:  controls?.['fax2']?.value,
+        alamatEmail: controls?.['alamatEmail']?.value,
+        kodeRsc: controls?.['keteranganRsc']?.value?.id,
+        kodeRegion: controls?.['keteranganRegion']?.value?.id,
+        kodeArea: controls?.['keteranganArea']?.value?.id,
+        contactPerson: controls?.['contactPerson']?.value,
+        contactPhone:controls?.['contactPhone']?.value,
+        tipeCabang: controls?.['contactPhone']?.value,
+        keterangan: controls?.['keterangan']?.value,
+
       };
-      this.service.insert('/api/users', param).subscribe({
+      this.service.insert('/api/branch/insert', param).subscribe({
         next: (res) => {
           if (!res.success) {
             alert(res.message);
@@ -93,7 +193,7 @@ export class MasterBranchAddComponent implements OnInit {
 
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_SET_NUMBER);
-    this.router.navigate(['/master/master-user']);
+    this.router.navigate(['/master/master-branch']);
   }
 
   isFieldValid(fieldName: String) {

@@ -1,14 +1,14 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <h5>{{ "Lihat" | translate }} {{ "Cabang" | translate }}</h5>
+      <h5>{{ "Tambah" | translate }} {{ "Cabang" | translate }}</h5>
     </c-card-body>
   </c-card>
 </div>
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <form [formGroup]="myForm">
+      <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
             "Kode Cabang" | translate
@@ -18,7 +18,7 @@
               type="text"
               class="form-control"
               formControlName="kodeCabang"
-              readonly
+              [readOnly]="adding"
             />
           </div>
         </div>
@@ -31,7 +31,7 @@
               type="text"
               class="form-control"
               formControlName="kodeSingkat"
-              readonly
+              [readOnly]="adding"
             />
           </div>
         </div>
@@ -45,7 +45,7 @@
               type="text"
               class="form-control"
               formControlName="namaCabang"
-              readonly
+              [readOnly]="adding"
             />
           </div>
         </div>
@@ -66,7 +66,7 @@
                     type="text"
                     class="form-control"
                     formControlName="alamat1"
-                    readonly
+                    [readOnly]="adding"
                   />
                 </div>
               </div>
@@ -79,21 +79,23 @@
                     type="text"
                     class="form-control"
                     formControlName="alamat2"
-                    readonly
+                    [readOnly]="adding"
                   />
                 </div>
               </div>
+          
               <div class="mb-3 row">
                 <label class="col-sm-2 col-form-label">{{
                   "Kota" | translate
                 }}</label>
                 <div class="col-sm-10">
-                  <input
-                    type="text"
-                    class="form-control"
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [config]="configSelectKota"
+                    [options]="listKota"
                     formControlName="kota"
-                    readonly
-                  />
+                    id="kota">
+                  </ngx-select-dropdown>
                 </div>
               </div>
               <div class="mb-3 row">
@@ -105,7 +107,7 @@
                     type="text"
                     class="form-control"
                     formControlName="kodePos"
-                    readonly
+                    [readOnly]="adding"
                   />
                 </div>
               </div>
@@ -121,7 +123,7 @@
                     type="text"
                     class="form-control"
                     formControlName="telpon1"
-                    readonly
+                    [readOnly]="adding"
                   />
                 </div>
               </div>
@@ -134,7 +136,7 @@
                     type="text"
                     class="form-control"
                     formControlName="telpon2"
-                    readonly
+                    [readOnly]="adding"
                   />
                 </div>
               </div>
@@ -148,7 +150,7 @@
                     type="text"
                     class="form-control"
                     formControlName="fax1"
-                    readonly
+                    [readOnly]="adding"
                   />
                 </div>
               </div>
@@ -161,7 +163,7 @@
                     type="text"
                     class="form-control"
                     formControlName="fax2"
-                    readonly
+                    [readOnly]="adding"
                   />
                 </div>
               </div>
@@ -181,7 +183,7 @@
               type="text"
               class="form-control"
               formControlName="alamatEmail"
-              readonly
+              [readOnly]="adding"
             />
           </div>
         </div>
@@ -191,40 +193,44 @@
             "RSC" | translate
           }}</label>
           <div class="col-sm-10">
-            <input
-              type="text"
-              class="form-control"
+            <ngx-select-dropdown
+              [multiple]="false"
+              [config]="configSelectRSC"
+              [options]="listRSC"
               formControlName="keteranganRsc"
-              readonly
-            />
+              id="keteranganRsc">
+            </ngx-select-dropdown>
           </div>
-        </div>
+        </div> 
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
             "Region" | translate
           }}</label>
           <div class="col-sm-10">
-            <input
-              type="text"
-              class="form-control"
-              [value]="  (myForm.get('kodeRegion')?.value || '')+ ' - '+ (myForm.get('keteranganRegion')?.value || '')"
-              readonly
-            />
+            <ngx-select-dropdown
+              [multiple]="false"
+              [config]="configSelectRegion"
+              [options]="listRegion"
+              formControlName="keteranganRegion"
+              id="keteranganRsc">
+            </ngx-select-dropdown>
           </div>
-        </div>
+        </div> 
+
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
             "Area" | translate
           }}</label>
           <div class="col-sm-10">
-            <input
-              type="text"
-              class="form-control"
-              [value]="  (myForm.get('kodeArea')?.value || '')+ ' - '+ (myForm.get('keteranganArea')?.value || '')"
-              readonly
-            />
+            <ngx-select-dropdown
+              [multiple]="false"
+              [config]="configSelectArea"
+              [options]="listArea"
+              formControlName="keteranganArea"
+              id="keteranganArea">
+            </ngx-select-dropdown>
           </div>
-        </div>
+        </div> 
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
             "Contact Person" | translate
@@ -234,7 +240,7 @@
               type="text"
               class="form-control"
               formControlName="contactPerson"
-              readonly
+              [readOnly]="adding"
             />
           </div>
         </div>
@@ -247,7 +253,7 @@
               type="text"
               class="form-control"
               formControlName="contactPhone"
-              readonly
+              [readOnly]="adding"
             />
           </div>
         </div>
@@ -260,7 +266,7 @@
               type="text"
               class="form-control"
               formControlName="tipeCabang"
-              readonly
+              [readOnly]="adding"
             />
           </div>
         </div>
@@ -268,14 +274,22 @@
           <label class="col-sm-2 col-form-label">{{
             "Status Aktif" | translate
           }}</label>
-          <div class="col-sm-10">
-            <input
-              type="text"
-              class="form-control"
-              [value]="myForm.get('statusAktif')?.value === 'A' ? 'Aktif' : 'Tidak Aktif'"
-              readonly
-            />          
-          </div>
+          <c-col xs="8">
+            <c-row class="mt-2">
+              <c-col xs="6">
+                <c-form-check class="flex align-items-center">
+                  <input cFormCheckInput checked id="active" type="radio" value="A" name="status" formControlName="status" (change)="onChangeSelect($event, 'status')"/>
+                  <label cFormCheckLabel for="active" style="margin-left: 4px;">Aktif</label>
+                </c-form-check>
+              </c-col>
+              <c-col xs="6">
+                <c-form-check class="flex align-items-center">
+                  <input cFormCheckInput id="inactive" type="radio" value="T" name="status" formControlName="status" (change)="onChangeSelect($event, 'status')"/>
+                  <label cFormCheckLabel for="inactive" style="margin-left: 4px;">Tidak Aktif</label>
+                </c-form-check>
+              </c-col>
+            </c-row>
+          </c-col>
         </div>
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
@@ -286,7 +300,7 @@
               type="text"
               class="form-control"
               formControlName="keterangan"
-              readonly
+              [readOnly]="adding"
             />
           </div>
         </div>  
@@ -298,6 +312,16 @@
           <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
             {{ "Kembali" | translate }}
           </button>
+          <button
+          class="btn btn-info text-white btn-150"
+          type="submit"
+          [disabled]="adding"
+        >
+          <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
+          <span *ngIf="!adding"
+            >{{ "Buat" | translate }} {{ "Cabang" | translate }}</span
+          >
+        </button>
         </div>
       </form>
     </c-card-body>
