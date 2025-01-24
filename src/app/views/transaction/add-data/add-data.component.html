@@ -16,64 +16,82 @@
       </c-row>
     </c-card-body>
   </c-card>
+
   <c-card class="mb-4">
     <c-card-body>
       <c-row>
-        <div class="row">
-          <form class="col-12">
+        <div class="d-flex">
+          <div class="w-50 p-2">
             <div class="mb-3">
               <label for="orderNumber" class="form-label">{{ "Order Number" | translate }}</label>
-              <input type="text" class="form-control" id="orderNumber" [(ngModel)]="orderNumber" name="orderNumber" />
-            </div>
-            <div class="mb-3">
-              <label for="deliveryDestination" class="form-label">{{ "Delivery Destination" | translate }}</label>
-              <input type="text" class="form-control" id="deliveryDestination" [(ngModel)]="deliveryDestination"
-                name="deliveryDestination" />
-            </div>
-            <div class="mb-3">
-              <label for="destinationAddress" class="form-label">{{ "Destination Address" | translate }}</label>
-              <input type="text" class="form-control" id="destinationAddress" [(ngModel)]="destinationAddress"
-                name="destinationAddress" />
+              <div class="d-flex">
+                <input type="text" class="form-control" id="orderNumber" [(ngModel)]="orderNumber" name="orderNumber" />
+                <button type="button" class="btn btn-primary ms-2" (click)="searchOrderNumber()">Search</button>
+              </div>
             </div>
             <div class="mb-3">
               <label for="deliveryStatus" class="form-label">{{ "Delivery Status" | translate }}</label>
-              <select class="form-control" id="deliveryStatus" [(ngModel)]="deliveryStatus" name="deliveryStatus">
+              <select class="form-control" id="deliveryStatus" [(ngModel)]="formData.deliveryStatus" name="deliveryStatus">
                 <option value="">{{ "Select Status" | translate }}</option>
-                <option value="Dikirim">{{ "Dikirim" | translate }}</option>
-                <option value="Tertunda">{{ "Tertunda" | translate }}</option>
+                <option value="Dikirim">{{ "Belum" | translate }}</option>
+                <option value="Tertunda">{{ "Tunda" | translate }}</option>
+                <option value="Terkirim">{{ "kirim" | translate }}</option>
               </select>
             </div>
             <div class="mb-3">
+              <label for="deliveryDestination" class="form-label">{{ "Delivery Destination" | translate }}</label>
+              <input type="text" class="form-control" id="deliveryDestination" [(ngModel)]="formData.deliveryDestination" name="deliveryDestination" />
+            </div>
+          </div>
+          <div class="w-50 p-2">
+            <div class="mb-3">
               <label for="orderDate" class="form-label">{{ "Order Date" | translate }}</label>
-              <input type="date" class="form-control" id="orderDate" [(ngModel)]="orderDate" name="orderDate" />
+              <input type="date" class="form-control" id="orderDate" [(ngModel)]="formData.orderDate" name="orderDate" />
             </div>
             <div class="mb-3">
               <label for="deliveryDate" class="form-label">{{ "Delivery Date" | translate }}</label>
-              <input type="date" class="form-control" id="deliveryDate" [(ngModel)]="deliveryDate"
-                name="deliveryDate" />
+              <input type="date" class="form-control" id="deliveryDate" [(ngModel)]="formData.deliveryDate" name="deliveryDate" />
             </div>
             <div class="mb-3">
               <label for="expirationDate" class="form-label">{{ "Expiration Date" | translate }}</label>
-              <input type="date" class="form-control" id="expirationDate" [(ngModel)]="expirationDate"
-                name="expirationDate" />
+              <input type="date" class="form-control" id="expirationDate" [(ngModel)]="formData.expirationDate" name="expirationDate" />
             </div>
-            <div class="mb-3">
-              <label for="validatedDeliveryDate" class="form-label">{{ "Validated Delivery Date" | translate }}</label>
-              <input type="text" class="form-control" id="validatedDeliveryDate" [value]="validatedDeliveryDate"
-                readonly />
-            </div>
-            <div class="mb-3">
-              <label for="notes" class="form-label">{{ "Notes" | translate }}</label>
-              <input type="text" class="form-control" id="notes" [(ngModel)]="notes" name="notes" />
-            </div>
-            <div class="d-flex justify-content-end mb-3">
-              <button class="btn btn-primary" (click)="onSaveData()">
-                {{ "Save" | translate }}
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
+        <div class="row-fixed">
+          <form class="col-12">
+          <div class="mb-3">
+            <label for="destinationAddress" class="form-label">{{ "Destination Address" | translate }}</label>
+            <input type="text" class="form-control w-100" id="destinationAddress" [(ngModel)]="formData.destinationAddress" name="destinationAddress" />
+          </div>
+        </form>
+        </div>
+
       </c-row>
+    </c-card-body>
+  </c-card>
+
+  <c-card class="mb-4">
+    <c-card-body class="slide-in">
+      <div class="d-flex">
+        <div class="w-50 p-2">
+          <div class="mb-3">
+            <label for="validatedDeliveryDate" class="form-label">{{ "Validated Delivery Date" | translate }}</label>
+            <input type="date" class="form-control" id="validatedDeliveryDate" [(ngModel)]="formData.validatedDeliveryDate" name="validatedDeliveryDate" />
+          </div>
+        </div>
+        <div class="w-50 p-2">
+          <div class="mb-3">
+            <label for="notes" class="form-label">{{ "Notes" | translate }}</label>
+            <input type="text" class="form-control" id="notes" [(ngModel)]="formData.notes" name="notes" />
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-primary" (click)="onSaveData()">
+          {{ "Save" | translate }}
+        </button>
+      </div>
     </c-card-body>
   </c-card>
 </div>
