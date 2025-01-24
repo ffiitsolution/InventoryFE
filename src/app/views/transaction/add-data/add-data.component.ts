@@ -79,7 +79,7 @@ orderNumber: any;
   onPreviousPressed(): void {
     this.router.navigate(['/transaction/delivery-item']);
   }
-
+  
   onSaveData(): void {
     const today = new Date().toISOString().split('T')[0];
     this.formData.validatedDeliveryDate = today;

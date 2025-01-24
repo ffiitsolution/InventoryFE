@@ -46,7 +46,12 @@ export class DeliveryItemComponent implements OnInit {
 
   onAddPressed(): void {
     // Logic for adding a new order
-    const route = this.router.createUrlTree(['/transaction/add-data']);
+    const route = this.router.createUrlTree(['/transaction/delivery-item/add-data']);
+    this.router.navigateByUrl(route);
+  }
+
+  refreshData(): void {
+    const route = this.router.createUrlTree(['/transaction/delivery-item/detail-transaction']);
     this.router.navigateByUrl(route);
   }
 
@@ -113,4 +118,5 @@ export class DeliveryItemComponent implements OnInit {
       }
     });
   }
+  
 }
