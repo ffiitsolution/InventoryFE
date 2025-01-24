@@ -101,7 +101,7 @@ export class MasterUserComponent
         { data: 'namaUser', title: 'Nama', searchable: false },
         { data: 'jabatan', title: 'Jabatan', searchable: false },
         { data: 'statusAktif', title: 'Status', searchable: false },
-        { data: 'defaultLocation', title: 'Default Lokasi', searchable: false },
+        { data: 'keteranganLokasi', title: 'Default Lokasi', searchable: false },
       ],
       searchDelay: 1500,
       order: [[1, 'asc']],

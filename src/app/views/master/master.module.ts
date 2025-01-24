@@ -10,7 +10,11 @@ import { MasterUserComponent } from './master-user/master-user.component';
 import { MasterUserEditComponent } from './master-user/edit/edit.component';
 import { MasterUserDetailComponent } from './master-user/detail/detail.component';
 import {  MasterUserAddComponent } from './master-user/add/add.component';
-import { MasterBranchComponent } from './master-branch/master-branch.component';
+import { 
+  MasterBranchComponent, 
+  MasterBranchDetailComponent ,
+  MasterBranchAddComponent
+} from './master-branch';
 import { MasterDepartmentComponent } from './master-department/master-department.component';
 import {
   MasterProductAddComponent,
@@ -119,6 +123,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MasterUserEditComponent,
     MasterCompanyComponent,
     MasterBranchComponent,
+    MasterBranchDetailComponent,
+    MasterBranchAddComponent,
     MasterDepartmentComponent,
 
     MasterProductComponent,

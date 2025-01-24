@@ -1,0 +1,305 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <h5>{{ "Lihat" | translate }} {{ "Cabang" | translate }}</h5>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <form [formGroup]="myForm">
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Kode Cabang" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="kodeCabang"
+              readonly
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Kode Singkat" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="kodeSingkat"
+              readonly
+            />
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Nama Cabang" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="namaCabang"
+              readonly
+            />
+          </div>
+        </div>
+        
+        <div class="divider"></div>
+        <!-- alamat kota kode pos telp fax -->
+        <div >
+          <div class="row">
+            <div class="col-md-6">
+              <!-- left column -->
+
+              <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">{{
+                  "Alamat 1" | translate
+                }}</label>
+                <div class="col-sm-10">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="alamat1"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">{{
+                  "Alamat 2" | translate
+                }}</label>
+                <div class="col-sm-10">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="alamat2"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">{{
+                  "Kota" | translate
+                }}</label>
+                <div class="col-sm-10">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="kota"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">{{
+                  "Kode Pos" | translate
+                }}</label>
+                <div class="col-sm-10">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="kodePos"
+                    readonly
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <!-- right column -->
+              <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">{{
+                  "Telpon 1" | translate
+                }}</label>
+                <div class="col-sm-10">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="telpon1"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">{{
+                  "Telpon 2" | translate
+                }}</label>
+                <div class="col-sm-10">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="telpon2"
+                    readonly
+                  />
+                </div>
+              </div>
+
+              <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">{{
+                  "Fax 1" | translate
+                }}</label>
+                <div class="col-sm-10">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="fax1"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">{{
+                  "Fax 2" | translate
+                }}</label>
+                <div class="col-sm-10">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="fax2"
+                    readonly
+                  />
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+        <div class="divider"></div>
+
+
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Alamat Email" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="alamatEmail"
+              readonly
+            />
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "RSC" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="keteranganRsc"
+              readonly
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Region" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              [value]="  (myForm.get('kodeRegion')?.value || '')+ ' - '+ (myForm.get('keteranganRegion')?.value || '')"
+              readonly
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Area" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              [value]="  (myForm.get('kodeArea')?.value || '')+ ' - '+ (myForm.get('keteranganArea')?.value || '')"
+              readonly
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Contact Person" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="contactPerson"
+              readonly
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Contact Telp" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="contactPhone"
+              readonly
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Tipe Cabang" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="tipeCabang"
+              readonly
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Status Aktif" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              [value]="myForm.get('statusAktif')?.value === 'A' ? 'Aktif' : 'Tidak Aktif'"
+              readonly
+            />          
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Keterangan" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="keterangan"
+              readonly
+            />
+          </div>
+        </div>  
+
+      
+        <div class="divider"></div>
+
+        <div class="d-grid gap-3 d-md-flex justify-content-end">
+          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+            {{ "Kembali" | translate }}
+          </button>
+        </div>
+      </form>
+    </c-card-body>
+  </c-card>
+</div>
