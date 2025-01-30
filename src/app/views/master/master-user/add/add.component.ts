@@ -29,6 +29,8 @@ export class MasterUserAddComponent implements OnInit {
     searchPlaceholder: 'Cari Lokasi', // Placeholder for the search input
     searchOnKey: 'name' // Key to search
   };
+  isNotMatchPass: boolean = false;
+  isNotMatchPassPos: boolean = false;
   
 
   constructor(
@@ -45,6 +47,7 @@ export class MasterUserAddComponent implements OnInit {
       kodeUser:  ['', Validators.required],
       namaUser:  ['', Validators.required],
       kodePassword:  ['', Validators.required],
+      konfirmasiKodePassword:  ['', Validators.required],
       statusAktif:  ['A', Validators.required],
       defaultLocation:  [null],
       jabatan:  [''],
@@ -108,5 +111,47 @@ export class MasterUserAddComponent implements OnInit {
     const dataStatus = data?.target?.value;
     this.myForm.get('statusAktif')?.setValue(dataStatus);
   }
+
+  conditionInput(event: any, type: string): boolean {
+    var inp = String.fromCharCode(event.keyCode);
+    let temp_regex =
+      type == 'alphanumeric'
+        ? /[a-zA-Z0-9]/
+        : type == 'numeric'
+        ? /[0-9]/
+        : /[a-zA-Z.() ,\-]/;
+    if (temp_regex.test(inp)) return true;
+    else {
+      event.preventDefault();
+      return false;
+    }
+  }
+
+  onChangePassword(data: any, type: string) {
+    // let passField = type === 'user' ? 'passwordCode' : 'passPosCode';
+    // let field = type === 'user' ? 'isNotMatchPass' : 'isNotMatchPassPos';
+    // let pass = this.myForm.controls[passField].value;
+    // let rePass = data?.target?.value;
+    
+    // (this as any)[field] = pass !== rePass;
+
+    console.log('data', data);
+    console.log('type', type);
+    console.log('this.myForm', this.myForm);
+    console.log('this.myFormvalue', this.myForm.value);
+
+    console.log('this.myForm.value.kodePassword', this.myForm.value.kodePassword, '----',this.myForm.value.konfirmasiKodePassword);
+    console.log((this.myForm.value.kodePassword!='' && this.myForm.value.konfirmasiKodePassword!='') ,' ---', (this.myForm.value.kodePassword != this.myForm.value.konfirmasiKodePassword));
+    if(type === 'user') {
+      if((this.myForm.value.kodePassword!='' && this.myForm.value.konfirmasiKodePassword!='') && (this.myForm.value.kodePassword != this.myForm.value.konfirmasiKodePassword)) {  
+        this.isNotMatchPass = true
+      }
+      else {
+        this.isNotMatchPass = false
+      }
+    }
+
+  }
+  
 
 }
