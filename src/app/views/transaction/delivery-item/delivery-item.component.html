@@ -52,8 +52,8 @@
                 }}</label>
                 <select
                   class="form-control"
-                  [(ngModel)]="statusFilter"
-                  (ngModelChange)="onFilterStatusChange()"
+                  [(ngModel)]="orderNoFilter"
+                  (ngModelChange)="onFilterStatusChange($event)"
                 >
                   <option value="">{{ "Semua Status" | translate }}</option>
                   <option value="Dikirim">{{ "Dikirim" | translate }}</option>
@@ -69,7 +69,6 @@
                 id="orderNoFilter"
                 class="form-control"
                 [(ngModel)]="orderNoFilter"
-                (keyup)="onFilterOrderNoChange($event)"
                 placeholder="{{ 'Nomor Pesanan' | translate }}"
                 />
               </c-col>
@@ -83,7 +82,7 @@
                   id="orderDateFilter"
                   class="form-control"
                   [(ngModel)]="orderDateFilter"
-                  (keyup)="onFilterOrderDateChange()"
+                  (keyup)="onFilterOrderDateChange($event)"
                   placeholder="{{ 'Tanggal Pesan' | translate }}"
                 />
               </c-col>
@@ -96,7 +95,7 @@
                   id="dateFilter"
                   class="form-control"
                   bsDaterangepicker
-                  [bsConfig]="dpConfig()"
+                  [bsConfig]="config()"
                   aria-describedby="dateFilter"
                   [(ngModel)]="dateRangeFilter"
                   placeholder="{{ 'Tanggal Pengiriman' | translate }}"
