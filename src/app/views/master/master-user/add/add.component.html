@@ -19,7 +19,7 @@
               class="form-control"
               formControlName="kodeUser"
               [readOnly]="adding"
-              (keypress)="conditionInput($event, 'alphabet')"
+              (keypress)="conditionInput($event, 'alphanumeric')"
             />
             <span *ngIf="isFieldValid('kodeUser')" class="text-danger">{{
               "Wajib diisi" | translate

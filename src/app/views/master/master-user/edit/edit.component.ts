@@ -31,6 +31,10 @@ export class MasterUserEditComponent implements OnInit {
     searchOnKey: 'name' // Key to search
   };
 
+  isNotMatchPass: boolean = false;
+  isNotMatchPassPos: boolean = false;
+  
+
 
   constructor(
     private form: FormBuilder,
@@ -59,6 +63,8 @@ export class MasterUserEditComponent implements OnInit {
         this.detail.kodePassword ,
         Validators.required,
       ],
+      
+      konfirmasiKodePassword:  [this.detail.kodePassword , Validators.required],
       statusAktif: [
         this.detail.statusAktif 
       ],
@@ -81,9 +87,6 @@ export class MasterUserEditComponent implements OnInit {
       );
 
       
-      this.myForm.addControl(
-        'defaultLocation', ''
-      );
       this.myForm.get('defaultLocation')?.setValue(fullDefaultLocation);
 
     });
@@ -133,5 +136,37 @@ export class MasterUserEditComponent implements OnInit {
   onChangeSelect(data: any, field: string) {
     const dataStatus = data?.target?.value;
     this.myForm.get('statusAktif')?.setValue(dataStatus);
+  }
+
+  
+  conditionInput(event: any, type: string): boolean {
+    var inp = String.fromCharCode(event.keyCode);
+    let temp_regex =
+      type == 'alphanumeric'
+        ? /[a-zA-Z0-9]/
+        : type == 'numeric'
+        ? /[0-9]/
+        : /[a-zA-Z.() ,\-]/;
+    if (temp_regex.test(inp)) return true;
+    else {
+      event.preventDefault();
+      return false;
+    }
+  }
+
+  onChangePassword(data: any, type: string) {
+    if(type === 'user') {
+      if((this.myForm.value.kodePassword!='' && this.myForm.value.konfirmasiKodePassword!='') && (this.myForm.value.kodePassword != this.myForm.value.konfirmasiKodePassword)) {  
+        this.isNotMatchPass = true
+      }
+      else {
+        this.isNotMatchPass = false
+      }
+    }
+
+  }
+
+  isFieldValid(fieldName: String) {
+    return this.g.isFieldValid(this.myForm, fieldName);
   }
 }

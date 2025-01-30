@@ -128,20 +128,6 @@ export class MasterUserAddComponent implements OnInit {
   }
 
   onChangePassword(data: any, type: string) {
-    // let passField = type === 'user' ? 'passwordCode' : 'passPosCode';
-    // let field = type === 'user' ? 'isNotMatchPass' : 'isNotMatchPassPos';
-    // let pass = this.myForm.controls[passField].value;
-    // let rePass = data?.target?.value;
-    
-    // (this as any)[field] = pass !== rePass;
-
-    console.log('data', data);
-    console.log('type', type);
-    console.log('this.myForm', this.myForm);
-    console.log('this.myFormvalue', this.myForm.value);
-
-    console.log('this.myForm.value.kodePassword', this.myForm.value.kodePassword, '----',this.myForm.value.konfirmasiKodePassword);
-    console.log((this.myForm.value.kodePassword!='' && this.myForm.value.konfirmasiKodePassword!='') ,' ---', (this.myForm.value.kodePassword != this.myForm.value.konfirmasiKodePassword));
     if(type === 'user') {
       if((this.myForm.value.kodePassword!='' && this.myForm.value.konfirmasiKodePassword!='') && (this.myForm.value.kodePassword != this.myForm.value.konfirmasiKodePassword)) {  
         this.isNotMatchPass = true
