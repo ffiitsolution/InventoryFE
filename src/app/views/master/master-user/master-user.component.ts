@@ -40,12 +40,30 @@ export class MasterUserComponent
   isFilterShown: boolean = false;
   selectedStatusFilter: any = '';
   dtColumns: any = [];
+  lokasiOptions: any;
+  selectedLokasiFilter: any = '';
+  jabatanOptions: any;
+  selectedJabatanFilter: any = '';
 
+  statusOptions = [
+  { value: 'S', label: 'baik' },
+  { value: 'C', label: 'Jelek' },
+];
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
   }
 
   onStatusFilterChange() {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
+  }
+  onLokasiFilterChange() {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
+  }
+  onJabatanFilterChange() {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
@@ -73,6 +91,8 @@ export class MasterUserComponent
         const requestData = {
           ...dataTablesParameters,
           status: this.selectedStatusFilter,
+          defaultLocation: this.selectedLokasiFilter,
+          jabatan: this.selectedJabatanFilter,
         };
         this.dataService
           .postData(this.g.urlServer + '/api/users/dt', requestData)
@@ -141,6 +161,26 @@ export class MasterUserComponent
   ngOnInit(): void {
     this.g.changeTitle(this.translation.instant('Master') + ' ' + this.translation.instant('User') + ' - ' + this.g.tabTitle);
     localStorage.removeItem(LS_INV_SELECTED_USER);
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/location/dropdown-lokasi',{})
+    .subscribe((resp: any) => {
+      this.lokasiOptions = resp.map((item: any) => ({
+        value: item.KODE_LOCATION,
+        label: item.KETERANGAN_LOKASI,
+      }));    
+    });
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/users/dropdown-jabatan',{})
+    .subscribe((resp: any) => {
+      this.jabatanOptions = resp.map((item: any) => ({
+        value: item.JABATAN,
+        label: item.JABATAN,
+      }));    
+
+      console.log('jabatanOptions',this.jabatanOptions);  
+    });
   }
 
   actionBtnClick(action: string) {

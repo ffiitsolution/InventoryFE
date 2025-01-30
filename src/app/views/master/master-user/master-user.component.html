@@ -17,9 +17,6 @@
           <button type="button" class="btn btn-warning text-white me-2" [disabled]="!selectedRowData" (click)="actionBtnClick('edit')">
             {{ 'Ubah' | translate }}
           </button>
-          <button type="button" class="btn btn-danger text-white me-2" [disabled]="!selectedRowData" (click)="actionBtnClick('delete')">
-            {{ 'Hapus' | translate }}
-          </button>
           <button type="button" class="btn btn-secondary text-white me-2" (click)="toggleFilter()">
             {{ 'Filter' | translate }}
           </button>
@@ -29,14 +26,45 @@
         <c-card class="mt-3 shadow">
           <c-card-body>
             <div class="row">
-              <div class="col">
+              <div class="col-md-4">
                 <label cLabel for="selectStatusFilter">{{ 'Status aktif' | translate }}: </label>
                 <select aria-label="Status" cSelect id="selectStatusFilter" [(ngModel)]="selectedStatusFilter" (ngModelChange)="onStatusFilterChange()">
                   <option value="">{{ 'Semua' | translate }}</option>
                   <option value="A">{{ 'Aktif' | translate }}</option>
-                  <option value="T">{{ 'Tidak aktif' | translate }}</option>
+                  <option value="I">{{ 'Tidak aktif' | translate }}</option>
                 </select>
               </div>
+              <div class="col-md-4">
+                <label cLabel for="selectLokasiFilter">{{ 'Default Lokasi' | translate }}:</label>
+                <select
+                  aria-label="Lokasi"
+                  cSelect
+                  id="selectLokasiFilter"
+                  [(ngModel)]="selectedLokasiFilter"
+                  (ngModelChange)="onLokasiFilterChange()"
+                >
+                  <option value="">{{ 'Semua' | translate }}</option>
+                  <option *ngFor="let lokasi of lokasiOptions" [value]="lokasi.value">
+                    {{ lokasi.label | translate }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label cLabel for="selectJabatanFilter">{{ 'Jabatan' | translate }}:</label>
+                <select
+                  aria-label="Jabatan"
+                  cSelect
+                  id="selectJabatanFilter"
+                  [(ngModel)]="selectedJabatanFilter"
+                  (ngModelChange)="onJabatanFilterChange()"
+                >
+                  <option value="">{{ 'Semua' | translate }}</option>
+                  <option *ngFor="let jabatan of jabatanOptions" [value]="jabatan.value">
+                    {{ jabatan.label | translate }}
+                  </option>
+                </select>
+              </div>
+              
             </div>
           </c-card-body>
         </c-card>

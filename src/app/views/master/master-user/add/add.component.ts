@@ -17,21 +17,21 @@ export class MasterUserAddComponent implements OnInit {
   adding: boolean = false;
   showPassword: boolean = false;
   listLokasi: any[] = [];
-  configSelectLokasi: any = {
+  baseConfig: any = {
     displayKey: 'name', // Key to display in the dropdown
     search: true, // Enable search functionality
     height: '200px', // Dropdown height
-    placeholder: 'Pilih Lokasi', // Placeholder text
     customComparator: () => {}, // Custom sorting comparator
-    limitTo: this.listLokasi.length, // Limit the number of displayed options
     moreText: 'lebih banyak', // Text for "more" options
     noResultsFound: 'Tidak ada hasil', // Text when no results are found
-    searchPlaceholder: 'Cari Lokasi', // Placeholder for the search input
     searchOnKey: 'name' // Key to search
   };
+  configSelectLokasi: any ;
+  configSelectRole: any ;
   isNotMatchPass: boolean = false;
   isNotMatchPassPos: boolean = false;
-  
+  listRole: any[] = [];
+
 
   constructor(
     private toastr: ToastrService,
@@ -51,14 +51,36 @@ export class MasterUserAddComponent implements OnInit {
       statusAktif:  ['A', Validators.required],
       defaultLocation:  [null],
       jabatan:  [''],
+      roleID:[''],
     });
 
+    this.configSelectLokasi = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Lokasi',
+      searchPlaceholder: 'Cari Lokasi',
+      limitTo: this.listLokasi.length
+    };
+    this.configSelectRole = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Role',
+      searchPlaceholder: 'Cari Role',
+      limitTo: this.listRole.length
+    };
     this.dataService
     .postData(this.g.urlServer + '/api/location/dropdown-lokasi',{})
     .subscribe((resp: any) => {
       this.listLokasi = resp.map((item: any) => ({
         id: item.KODE_LOCATION,
         name: item.KETERANGAN_LOKASI,
+      }));      
+    });
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/role/dropdown-role',{})
+    .subscribe((resp: any) => {
+      this.listRole = resp.map((item: any) => ({
+        id: item.ID,
+        name: item.NAME,
       }));      
     });
   }
@@ -76,7 +98,9 @@ export class MasterUserAddComponent implements OnInit {
         namaUser: controls?.['namaUser']?.value,
         statusAktif: controls?.['statusAktif']?.value,
         jabatan: controls?.['jabatan']?.value,
-        defaultLocation: controls?.['defaultLocation']?.value?.id
+        defaultLocation: controls?.['defaultLocation']?.value?.id,
+        roleID: controls?.['roleID']?.value?.id
+
       };
       this.service.insert('/api/users', param).subscribe({
         next: (res) => {
