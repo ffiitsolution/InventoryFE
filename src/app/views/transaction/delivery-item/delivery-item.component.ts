@@ -50,8 +50,8 @@ export class DeliveryItemComponent implements OnInit {
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.g.getUserLocationCode(),
-          startDate: this.g.transformDate(this.dateRangeFilter[0]),
-          endDate: this.g.transformDate(this.dateRangeFilter[1]),
+          // startDate: this.g.transformDate(this.dateRangeFilter[0]),
+          // endDate: this.g.transformDate(this.dateRangeFilter[1]),
         };
         setTimeout(() => {
           this.dataService
@@ -88,11 +88,7 @@ export class DeliveryItemComponent implements OnInit {
         { data: 'nomorPesanan', title: 'Nomor Pesanan' },
         { data: 'tglPesan', title: 'Tanggal Pesan' },
         {data: 'tglBrgDikirim',title: 'Tanggal Dikirim',},
-        {
-          data: 'keterangan1',
-          title: 'Keterangan',
-          render: (data) => this.g.getsatusDeliveryOrderLabel(data),
-        },
+        { data: 'keterangan1',title: 'Keterangan',},
         {
           data: 'statusRecieve',
           title: 'Status Penerimaan',

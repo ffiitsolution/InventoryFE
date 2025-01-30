@@ -178,7 +178,7 @@ export class DeliveryOrderComponent
         LS_INV_SELECTED_DELIVERY_ORDER,
         JSON.stringify(data)
       );
-      this.router.navigate(['/order/delivery-order/detail']);
+      this.router.navigate(['/api/delivery-order/details']);
     }
   }
   dtPageChange(event: any) {}
