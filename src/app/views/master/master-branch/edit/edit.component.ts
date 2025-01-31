@@ -4,15 +4,15 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/service/app.service';
 import { GlobalService } from 'src/app/service/global.service';
-import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_SET_NUMBER } from 'src/constants';
+import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_SET_NUMBER,  LS_INV_SELECTED_BRANCH} from 'src/constants';
 import { DataService } from 'src/app/service/data.service';
 
 @Component({
-  selector: 'app-add',
-  templateUrl: './add.component.html',
-  styleUrl: './add.component.scss',
+  selector: 'app-edit',
+  templateUrl: './edit.component.html',
+  styleUrl: './edit.component.scss',
 })
-export class MasterBranchAddComponent implements OnInit {
+export class MasterBranchEditComponent implements OnInit {
   myForm: FormGroup;
   adding: boolean = false;
   showPassword: boolean = false;
@@ -37,6 +37,7 @@ export class MasterBranchAddComponent implements OnInit {
   configSelectRSC: any;
   configSelectRegion: any;
   configSelectArea: any;
+  detail: any;
 
 
   constructor(
@@ -49,34 +50,41 @@ export class MasterBranchAddComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.myForm = this.form.group({
-      namaCabang: ['', Validators.required],
-      kodeCabang: ['', Validators.required],
-      kodeSingkat: ['', Validators.required],
-      kodeGroup: ['', Validators.required],
-      kota: [''],
-      alamat1: [''],
-      alamat2: [''],
-      kodePos: [''],
-      telpon1: [''],
-      telpon2: [''],
-      fax1: [''],
-      fax2: [''],
-      alamatEmail: [''],
-      keteranganRsc: [''],
-      kodeRegion: [''],
-      keteranganRegion : [''],  
-      kodeArea: [''],
-      keteranganArea: [''],
-      contactPerson: [''],
-      contactPhone: [''],
-      keterangan: [''],
-      tipeCabang: [''],
+    this.detail = JSON.parse(
+      this.g.getLocalstorage(LS_INV_SELECTED_BRANCH)
+    );
+    console.log("this.detail", this.detail);
 
-      userCreate: [''],
-      userUpdate: [''],
-      dateCreate: [''],
-      dateupdate: [''], 
+    this.myForm = this.form.group({
+      namaCabang: [this.detail.namaCabang],
+      kodeCabang: [this.detail.kodeCabang],
+      kodeSingkat: [this.detail.kodeSingkat],
+      kodeGroup: [this.detail.kodeGroup],
+      deskripsiGroup: [this.detail.deskripsiGroup],
+      kota: [this.detail.kota],
+      alamat1: [this.detail.alamat1],
+      alamat2: [this.detail.alamat2],
+      kodePos: [this.detail.kodePos],
+      telpon1: [this.detail.telpon1],
+      telpon2: [this.detail.telpon2],
+      fax1: [this.detail.fax1],
+      fax2: [this.detail.fax2],
+      alamatEmail: [this.detail.alamatEmail],
+      keteranganRsc: [this.detail.keteranganRsc],
+      kodeRegion: [this.detail.kodeRegion],
+      keteranganRegion : [this.detail.keteranganRegion],  
+      kodeArea: [this.detail.kodeArea],
+      keteranganArea: [this.detail.keteranganArea],
+      contactPerson: [this.detail.contactPerson],
+      contactPhone: [this.detail.contactPhone],
+      keterangan: [this.detail.keterangan],
+      alamatIp: [this.detail.alamatIp],
+      tipeCabang: [this.detail.tipeCabang],
+
+      userCreate: [this.detail.userCreate],
+      userUpdate: [this.detail.userUpdate],
+      dateCreate: [this.detail.dateCreate],
+      dateupdate: [this.detail.dateUpdate], 
     });
 
     this.configSelectKota = {
@@ -114,8 +122,15 @@ export class MasterBranchAddComponent implements OnInit {
         id: item.KODE_KOTA,
         name: item.KODE_KOTA+" - " + item.KETERANGAN_KOTA,
       }));     
-      console.log("listKota", this.listKota); 
-    });
+      const getKota = this.listKota.find(
+        (item: any) => item.id === this.detail.kota
+      );      
+      this.myForm.get('kota')?.setValue(getKota);
+      // console.log('getKota', getKota);    
+      // console.log('this.myForm.get(kota)', this.myForm.get('kota'));   
+     });
+
+    
 
     this.dataService
     .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
@@ -124,7 +139,11 @@ export class MasterBranchAddComponent implements OnInit {
         id: item.KODE_RSC,
         name: item.KODE_RSC+" - " + item.KETERANGAN_RSC,
       }));     
-      console.log("listRSC", this.listRSC); 
+      const getRSC = this.listRSC.find(
+        (item: any) => item.id === this.detail.kodeRsc
+      );      
+      this.myForm.get('keteranganRsc')?.setValue(getRSC);
+      // console.log('this.myForm.get(keteranganRsc)', this.myForm.get('keteranganRsc'));   
     });
 
     this.dataService
@@ -134,7 +153,10 @@ export class MasterBranchAddComponent implements OnInit {
         id: item.KODE_REGION  ,
         name: item.KODE_REGION+" - " + item.KETERANGAN_REGION,
       }));     
-      console.log("listRegion", this.listRegion); 
+      const getRegion = this.listRSC.find(
+        (item: any) => item.id === this.detail.kodeRegion
+      );      
+      this.myForm.get('keteranganRegion')?.setValue(getRegion); 
     });
 
     this.dataService
@@ -144,7 +166,10 @@ export class MasterBranchAddComponent implements OnInit {
         id: item.KODE_AREA  ,
         name: item.KODE_AREA+" - " + item.KETERANGAN_AREA,
       }));     
-      console.log("listArea", this.listArea); 
+      const getArea = this.listArea.find(
+        (item: any) => item.id === this.detail.kodeArea
+      );      
+      this.myForm.get('keteranganArea')?.setValue(getArea); 
     });
 
     this.dataService
@@ -154,7 +179,11 @@ export class MasterBranchAddComponent implements OnInit {
         value: item.KODE_GROUP,
         label: item.DESKRIPSI_GROUP,
       }));    
-      console.log('kodeGroupOptions',this.kodeGroupOptions);  
+      // const getGroup = this.kodeGroupOptions.find(
+      //   (item: any) => item.id === this.detail.kodeGroup
+      // );      
+      // this.myForm.get('kodeGroup')?.setValue(getGroup); 
+      // console.log('kodeGroupOptions',this.kodeGroupOptions);  
     });
   }
 
@@ -187,8 +216,9 @@ export class MasterBranchAddComponent implements OnInit {
         tipeCabang: controls?.['tipeCabang']?.value,
         keterangan: controls?.['keterangan']?.value,
         kodeGroup: controls?.['kodeGroup']?.value,
+
       };
-      this.service.insert('/api/branch/insert', param).subscribe({
+      this.service.insert('/api/branch/update', param).subscribe({
         next: (res) => {
           if (!res.success) {
             alert(res.message);

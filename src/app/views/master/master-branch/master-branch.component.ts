@@ -250,6 +250,8 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
         this.router.navigate(['/master/master-branch/detail']);
         return console.log('view');
       case ACTION_EDIT:
+        this.g.saveLocalstorage(LS_INV_SELECTED_BRANCH, JSON.stringify(data));
+        this.router.navigate(['/master/master-branch/edit']);
         return console.log('edit');
       case ACTION_ADD:
         this.router.navigate(['/master/master-branch/add']);

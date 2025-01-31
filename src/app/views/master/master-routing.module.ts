@@ -14,7 +14,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MasterBranchComponent,
   MasterBranchDetailComponent,
-  MasterBranchAddComponent } from './master-branch';
+  MasterBranchAddComponent,
+  MasterBranchEditComponent
+} from './master-branch';
 import { MasterCompanyComponent } from './master-company/master-company.component';
 import { MasterDepartmentComponent } from './master-department/master-department.component';
 import {
@@ -99,7 +101,11 @@ const routes: Routes = [
       {
         path: 'master-branch/add',
         component: MasterBranchAddComponent,
-      },           
+      },     
+      {
+        path: 'master-branch/edit',
+        component: MasterBranchEditComponent,
+      },   
       {
         path: 'master-department',
         component: MasterDepartmentComponent,
