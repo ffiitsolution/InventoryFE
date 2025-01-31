@@ -20,6 +20,7 @@ export class MasterBranchAddComponent implements OnInit {
   listRSC: any[] = [];
   listRegion: any[] = [];
   listArea: any[] = [];
+  isEmailValid: boolean = true
 
   baseConfig: any = {
     displayKey: 'name', // Key to display in the dropdown
@@ -171,7 +172,7 @@ export class MasterBranchAddComponent implements OnInit {
         kodeArea: controls?.['keteranganArea']?.value?.id,
         contactPerson: controls?.['contactPerson']?.value,
         contactPhone:controls?.['contactPhone']?.value,
-        tipeCabang: controls?.['contactPhone']?.value,
+        tipeCabang: controls?.['tipeCabang']?.value,
         keterangan: controls?.['keterangan']?.value,
 
       };
@@ -208,5 +209,39 @@ export class MasterBranchAddComponent implements OnInit {
     const dataStatus = data?.target?.value;
     this.myForm.get('statusAktif')?.setValue(dataStatus);
   }
+  conditionInput(event: any, type: string): boolean {
+    var inp = String.fromCharCode(event.keyCode);
+    let temp_regex =
+         type == 'alphanumeric'
+        ? /^[a-zA-Z0-9]$/
+        : type == 'numeric'
+        ? /^[0-9]$/
+        : type == 'phone'
+        ? /^[0-9-]$/
+        : type =='email'
+        ? /^[a-zA-Z0-9@._-]$/
+        : /^[a-zA-Z.() ,\-]$/;
+    if (temp_regex.test(inp)) return true;
+    else {
+      event.preventDefault();
+      return false;
+    }
+  }
 
+  onChangeEmail(event: any) {
+    const email = this.myForm.value.alamatEmail;
+  
+    // Email validation regex
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  
+    if (!emailPattern.test(email)) {
+      this.isEmailValid = false
+    } else {
+      this.isEmailValid = true
+    }
+    if(email ==''){
+      this.isEmailValid = true
+    }
+  }
+  
 }

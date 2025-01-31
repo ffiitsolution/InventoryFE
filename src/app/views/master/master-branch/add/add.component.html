@@ -23,7 +23,12 @@
                     class="form-control"
                     formControlName="kodeCabang"
                     [readOnly]="adding"
+                    (keypress)="conditionInput($event, 'numeric')"
+                    maxlength="10"
                   />
+                  <span *ngIf="isFieldValid('kodeCabang')" class="text-danger">{{
+                    "Wajib diisi" | translate
+                  }}</span>
                 </div>
               </div>
               <div class="mb-3 row">
@@ -36,7 +41,12 @@
                     class="form-control"
                     formControlName="kodeSingkat"
                     [readOnly]="adding"
+                    (keypress)="conditionInput($event, 'alphabet')"
+                    maxlength="10"
                   />
+                  <span *ngIf="isFieldValid('kodeSingkat')" class="text-danger">{{
+                    "Wajib diisi" | translate
+                  }}</span>
                 </div>
               </div>
 
@@ -53,7 +63,12 @@
                     class="form-control"
                     formControlName="namaCabang"
                     [readOnly]="adding"
+                    (keypress)="conditionInput($event, 'alphabet')"
+                    maxlength="50"
                   />
+                  <span *ngIf="isFieldValid('namaCabang')" class="text-danger">{{
+                    "Wajib diisi" | translate
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -77,6 +92,7 @@
                     class="form-control"
                     formControlName="alamat1"
                     [readOnly]="adding"
+                    maxlength="40"
                   />
                 </div>
               </div>
@@ -90,6 +106,7 @@
                     class="form-control"
                     formControlName="alamat2"
                     [readOnly]="adding"
+                    maxlength="40"
                   />
                 </div>
               </div>
@@ -118,6 +135,8 @@
                     class="form-control"
                     formControlName="kodePos"
                     [readOnly]="adding"
+                    (keypress)="conditionInput($event, 'numeric')"
+                    maxlength="10"
                   />
                 </div>
               </div>
@@ -134,6 +153,8 @@
                     class="form-control"
                     formControlName="telpon1"
                     [readOnly]="adding"
+                    (keypress)="conditionInput($event, 'phone')"
+                    maxlength="30"
                   />
                 </div>
               </div>
@@ -147,6 +168,8 @@
                     class="form-control"
                     formControlName="telpon2"
                     [readOnly]="adding"
+                    (keypress)="conditionInput($event, 'phone')"
+                    maxlength="30"
                   />
                 </div>
               </div>
@@ -161,6 +184,8 @@
                     class="form-control"
                     formControlName="fax1"
                     [readOnly]="adding"
+                    (keypress)="conditionInput($event, 'phone')"
+                    maxlength="30"
                   />
                 </div>
               </div>
@@ -174,6 +199,8 @@
                     class="form-control"
                     formControlName="fax2"
                     [readOnly]="adding"
+                    (keypress)="conditionInput($event, 'phone')"
+                    maxlength="30"
                   />
                 </div>
               </div>
@@ -198,7 +225,13 @@
                     class="form-control"
                     formControlName="alamatEmail"
                     [readOnly]="adding"
+                    (keypress)="conditionInput($event, 'email')"
+                    (keyup)="onChangeEmail($event)"
+                    maxlength="50"
                   />
+                  <span *ngIf="!isEmailValid" class="text-danger">{{
+                    "Alamat email tidak valid" | translate
+                  }}</span>
                 </div>
               </div>
 
@@ -257,6 +290,8 @@
                     class="form-control"
                     formControlName="contactPerson"
                     [readOnly]="adding"
+                    (keypress)="conditionInput($event, 'alphabet')"
+                    maxlength="50"
                   />
                 </div>
               </div>
@@ -270,6 +305,8 @@
                     class="form-control"
                     formControlName="contactPhone"
                     [readOnly]="adding"
+                    (keypress)="conditionInput($event, 'numeric')"
+                    maxlength="30"
                   />
                 </div>
               </div>
@@ -283,6 +320,8 @@
                     class="form-control"
                     formControlName="tipeCabang"
                     [readOnly]="adding"
+                    (keypress)="conditionInput($event, 'alphabet')"
+                    maxlength="10"
                   />
                 </div>
               </div>
@@ -317,6 +356,7 @@
                     class="form-control"
                     formControlName="keterangan"
                     [readOnly]="adding"
+                    maxlength="50"
                   />
                 </div>
               </div>  
