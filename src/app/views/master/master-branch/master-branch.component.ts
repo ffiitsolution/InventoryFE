@@ -44,7 +44,12 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
   buttonCaptionView: string = BUTTON_CAPTION_VIEW;
   buttonCaptionEdit: string = BUTTON_CAPTION_EDIT;
   CONST_ACTION_ADD: string = ACTION_ADD;
-
+  tipeCabangOptions: any;
+  selectedtipeCabangFilter: any = '';
+  rscOptions: any;
+  selectedRscFilter: any = '';
+  cityOptions: any;
+  selectedCityFilter: any = '';
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
   }
@@ -76,7 +81,11 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
         this.page.length = dataTablesParameters.length;
         const requestData = {
           ...dataTablesParameters,
-          status: this.selectedStatusFilter,
+          statusAktif: this.selectedStatusFilter,
+          tipeCabang: this.selectedtipeCabangFilter,
+          kodeRSC: this.selectedRscFilter,
+          kota: this.selectedCityFilter,
+
         };
         this.dataService
           .postData(this.g.urlServer + '/api/branch/dt', requestData)
@@ -188,7 +197,38 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
     );
     this.buttonCaptionView = this.translation.instant(BUTTON_CAPTION_VIEW);
     this.buttonCaptionEdit = this.translation.instant(BUTTON_CAPTION_EDIT);
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/branch/dropdown-tipe-cabang',{})
+    .subscribe((resp: any) => {
+      this.tipeCabangOptions = resp.map((item: any) => ({
+        value: item.TIPE_CABANG,
+        label: item.TIPE_CABANG,
+      }));    
+
+    });
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
+    .subscribe((resp: any) => {
+      this.rscOptions = resp.map((item: any) => ({
+        value: item.KODE_RSC,
+        label: item.KETERANGAN_RSC,
+      }));    
+    });
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/city/dropdown-city',{})
+    .subscribe((resp: any) => {
+      this.cityOptions = resp.map((item: any) => ({
+        value: item.KODE_KOTA,
+        label: item.KETERANGAN_KOTA,
+      }));    
+      console.log('cityOptions',this.cityOptions);  
+    });
   }
+
+  
 
   actionBtnClick(action: string, data: any = null) {
     switch (action) {
@@ -218,4 +258,22 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit(): void {
     this.rerenderDatatable();
   }
+
+  onTipeCabangFilterChange() {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });    
+  }
+
+  onRscFilterChange() {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });    
+  }
+  onCityFilterChange() {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
+  }
+  
 }

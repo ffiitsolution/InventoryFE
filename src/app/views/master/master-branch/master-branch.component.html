@@ -8,6 +8,13 @@
         <div class="col text-end btn-160">
           <button
             type="button"
+            class="btn btn-secondary text-white me-2"
+            (click)="toggleFilter()"
+          >
+            {{ "Filter" | translate }}
+          </button>
+          <button
+            type="button"
             class="btn btn-success text-white me-2"
             (click)="actionBtnClick(CONST_ACTION_ADD)"
           >
@@ -20,22 +27,60 @@
         <c-card class="mt-3 shadow">
           <c-card-body>
             <div class="row">
-              <div class="col">
-                <label cLabel for="selectStatusFilter"
-                  >{{ "Status aktif" | translate }}:
-                </label>
-                <select
-                  aria-label="Status"
-                  cSelect
-                  id="selectStatusFilter"
-                  [(ngModel)]="selectedStatusFilter"
-                  (ngModelChange)="onStatusFilterChange()"
-                >
-                  <option value="">{{ "Semua" | translate }}</option>
-                  <option value="A">{{ "Aktif" | translate }}</option>
-                  <option value="T">{{ "Tidak aktif" | translate }}</option>
+              <div class="col-md-4">
+                <label cLabel for="selectStatusFilter">{{ 'Status aktif' | translate }}: </label>
+                <select aria-label="Status" cSelect id="selectStatusFilter" [(ngModel)]="selectedStatusFilter" (ngModelChange)="onStatusFilterChange()">
+                  <option value="">{{ 'Semua' | translate }}</option>
+                  <option value="A">{{ 'Aktif' | translate }}</option>
+                  <option value="T">{{ 'Tidak aktif' | translate }}</option>
                 </select>
               </div>
+              <div class="col-md-4">
+                <label cLabel for="selectedtipeCabangFilter">{{ 'Tipe Cabang' | translate }}:</label>
+                <select
+                  aria-label="Tipe Cabang"
+                  cSelect
+                  id="selectedtipeCabangFilter"
+                  [(ngModel)]="selectedtipeCabangFilter"
+                  (ngModelChange)="onTipeCabangFilterChange()"
+                >
+                  <option value="">{{ 'Semua' | translate }}</option>
+                  <option *ngFor="let tipeCabang of tipeCabangOptions" [value]="tipeCabang.value">
+                    {{ tipeCabang.label | translate }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label cLabel for="selectedtipeCabangFilter">{{ 'RSC' | translate }}:</label>
+                <select
+                  aria-label="RSC"
+                  cSelect
+                  id="selectedRscFilter"
+                  [(ngModel)]="selectedRscFilter"
+                  (ngModelChange)="onRscFilterChange()"
+                >
+                  <option value="">{{ 'Semua' | translate }}</option>
+                  <option *ngFor="let rsc of rscOptions" [value]="rsc.value">
+                    {{ rsc.value }} - {{ rsc.label | translate }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label cLabel for="selectedtipeCabangFilter">{{ 'Kota' | translate }}:</label>
+                <select
+                  aria-label="Kota"
+                  cSelect
+                  id="selectedCityFilter"
+                  [(ngModel)]="selectedCityFilter"
+                  (ngModelChange)="onCityFilterChange()"
+                >
+                  <option value="">{{ 'Semua' | translate }}</option>
+                  <option *ngFor="let city of cityOptions" [value]="city.value">
+                    {{ city.value }} - {{ city.label | translate }}
+                  </option>
+                </select>
+              </div>     
             </div>
           </c-card-body>
         </c-card>
