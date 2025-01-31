@@ -1,88 +1,100 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <c-row>
-        <h5>{{ "Tambah Pengiriman dari HQ" | translate }} (Detail)</h5>
-      </c-row>
-      <c-row>
-        <div class="d-grid gap-3 d-md-flex justify-content-between">
-          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
-            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+      <div class="row">
+        <div class="col">
+          <h5>{{ "Detail Pesanan" | translate }}</h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button
+            type="button"
+            class="btn btn-outline-dark btn-120"
+            (click)="onBackPressed()"
+          >
+            <i class="fa fa-chevron-left icon-gap" aria-hidden="true"></i>
             {{ "Kembali" | translate }}
           </button>
+        </div>
+        <div class="col text-end">
           <button
-            class="btn btn-success text-white btn-160"
-            [disabled]="savingReceive"
-            (click)="onSavePressed()"
+            type="button"
+            class="btn btn-success text-white me-2 btn-120"
+            (click)="onButtonActionPressed('S')"
+            [disabled]="RejectingOrder || updatingStatus || disabledPrintButton"
           >
-            <i class="fa fa-save icon-12 icon-gap" *ngIf="!savingReceive"></i>
-            <i
-              class="fa fa-spinner icon-12 icon-gap fa-spin"
-              *ngIf="savingReceive"
-            ></i>
-            {{ "Simpan" | translate }}
+            <i class="fa fa-print icon-gap" *ngIf="!updatingStatus"></i>
+            <i class="fa fa-spinner fa-spin" *ngIf="updatingStatus"></i>
+            {{
+              alreadyPrint ? ("Cetak Ulang" | translate) : ("Cetak" | translate)
+            }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-danger me-2 btn-120"
+            (click)="onButtonActionPressed('4')"
+            [disabled]="updatingStatus || disabledCancelButton"
+          >
+            <i class="fa fa-times icon-gap" *ngIf="!RejectingOrder"></i>
+            <i class="fa fa-spinner fa-spin" *ngIf="RejectingOrder"></i>
+            {{ "Batal" | translate }}
           </button>
         </div>
-      </c-row>
-      <div>
-        <div class="divider"></div>
-        <div class="row">
-          <div class="col">
-            <div class="row order-details">
-              <div class="detail-item">
-                <span class="label">{{ "Nomor Pesanan" | translate }}</span>
-                <span class="value">{{ selectedOrder.nomorPesanan }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="label">{{ "Tanggal Pesan" | translate }}</span>
-                <span class="value">{{ selectedOrder.tglPesan }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="label">{{ "Tanggal Kirim" | translate }}</span>
-                <span class="value">{{ selectedOrder.tglBrgDikirim }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="label">{{
-                  "Tanggal Kedaluwarsa" | translate
-                }}</span>
-                <span class="value">{{ selectedOrder.tglBatasExp }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="label">{{ "Status Pesanan" | translate }}</span>
-                <span class="value">{{
-                  this.g.getStatusOrderLabel(selectedOrder.statusPesanan)
-                }}</span>
-              </div>
+      </div>
+      <div class="row">
+        <div class="divider mt-4"></div>
+        <div class="col">
+          <div class="row order-details">
+            <div class="detail-item">
+              <span class="label">{{ "Nomor Pesanan" | translate }}</span>
+              <span class="value">{{ selectedOrder.nomorPesanan }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Kode Barang" | translate }}</span>
+              <span class="value">{{ selectedOrder.kodeBarang }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Kode Gudang" | translate }}</span>
+              <span class="value">{{ selectedOrder.kodeGudang }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Kode Pemesan" | translate }}</span>
+              <span class="value">{{ selectedOrder.kodePemesan }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Status Pesanan" | translate }}</span>
+              <span class="value">{{
+                this.g.getStatusOrderLabel(selectedOrder.statusPesanan)
+              }}</span>
             </div>
           </div>
-          <div class="col">
-            <div class="row order-details">
-              <div class="detail-item">
-                <span class="label">{{ "Tujuan" | translate }}</span>
-                <span class="value"> {{ selectedOrder.kodePemesan }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="label">{{ "Tipe Pesanan" | translate }}</span>
-                <span class="value">-</span>
-              </div>
-              <div class="detail-item">
-                <span class="label">{{ "Catatan" | translate }}</span>
-                <span class="value"
-                  >{{ selectedOrder.keterangan1 || "-" }}
-                </span>
-              </div>
-              <div class="detail-item">
-                <span class="label">{{ "Nomor SJ" | translate }}</span>
-                <span class="value">{{
-                  selectedOrder.noSjPengirim || "-"
-                }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="label">{{ "Status Cetak" | translate }}</span>
-                <span class="value">{{
-                  selectedOrder.statusPesanan == "B" ? "Belum" : "Sudah"
-                }}</span>
-              </div>
+        </div>
+        <div class="col">
+          <div class="row order-details">
+            <div class="detail-item">
+              <span class="label">{{ "Kode Pemesan" | translate }}</span>
+              <span class="value"> {{ selectedOrder.kodePemesan }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Waktu Dibuat" | translate }}</span>
+              <span class="value"> {{ selectedOrder.dateCreate }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Total Pesanan" | translate }}</span>
+              <span class="value">{{ selectedOrder.totalQtyPesan }} </span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Total Terima" | translate }}</span>
+              <span class="value">{{ selectedOrder.totalQtyTerima || "-" }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Nomor SJ" | translate }}</span>
+              <span class="value">{{ selectedOrder.noSjPengirim || "-" }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Status Cetak" | translate }}</span>
+              <span class="value">{{ getPrintStatus() }}</span>
             </div>
           </div>
         </div>
@@ -90,16 +102,17 @@
     </c-card-body>
   </c-card>
 </div>
-
 <div class="fade-in">
-  <c-card>
+  <c-card class="mb-4">
     <c-card-body>
-      <table
-        datatable
-        [dtOptions]="dtOptions"
-        (page.dt)="dtPageChange($event)"
-        class="row-border hover"
-      ></table>
+      <div class="table-responsive">
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          (page.dt)="dtPageChange($event)"
+          class="row-border hover"
+        ></table>
+      </div>
     </c-card-body>
   </c-card>
 </div>
