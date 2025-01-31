@@ -21,6 +21,7 @@ export class MasterBranchAddComponent implements OnInit {
   listRegion: any[] = [];
   listArea: any[] = [];
   isEmailValid: boolean = true
+  kodeGroupOptions: any;
 
   baseConfig: any = {
     displayKey: 'name', // Key to display in the dropdown
@@ -52,6 +53,7 @@ export class MasterBranchAddComponent implements OnInit {
       namaCabang: ['', Validators.required],
       kodeCabang: ['', Validators.required],
       kodeSingkat: ['', Validators.required],
+      kodeGroup: ['', Validators.required],
       kota: [''],
       alamat1: [''],
       alamat2: [''],
@@ -143,6 +145,16 @@ export class MasterBranchAddComponent implements OnInit {
         name: item.KODE_AREA+" - " + item.KETERANGAN_AREA,
       }));     
       console.log("listArea", this.listArea); 
+    });
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/branch/dropdown-group',{})
+    .subscribe((resp: any) => {
+      this.kodeGroupOptions = resp.map((item: any) => ({
+        value: item.KODE_GROUP,
+        label: item.DESKRIPSI_GROUP,
+      }));    
+      console.log('kodeGroupOptions',this.kodeGroupOptions);  
     });
   }
 

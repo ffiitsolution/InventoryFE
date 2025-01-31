@@ -50,6 +50,8 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedRscFilter: any = '';
   cityOptions: any;
   selectedCityFilter: any = '';
+  kodeGroupOptions: any;
+  selectedKodeGroupFilter: any = '';
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
   }
@@ -85,6 +87,7 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
           tipeCabang: this.selectedtipeCabangFilter,
           kodeRSC: this.selectedRscFilter,
           kota: this.selectedCityFilter,
+          kodeGroup: this.selectedKodeGroupFilter
 
         };
         this.dataService
@@ -136,6 +139,7 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
             `;
           },
         },
+        { data: 'deskripsiGroup', title: 'Group', searchable: true },
         {
           title: 'Opsi',
           render: () => {
@@ -209,7 +213,7 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.dataService
-    .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
+    .postData(this.g.urlServer + '/api/branch/dropdown-group',{})
     .subscribe((resp: any) => {
       this.rscOptions = resp.map((item: any) => ({
         value: item.KODE_RSC,
@@ -224,7 +228,16 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
         value: item.KODE_KOTA,
         label: item.KETERANGAN_KOTA,
       }));    
-      console.log('cityOptions',this.cityOptions);  
+    });
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/branch/dropdown-group',{})
+    .subscribe((resp: any) => {
+      this.kodeGroupOptions = resp.map((item: any) => ({
+        value: item.KODE_GROUP,
+        label: item.DESKRIPSI_GROUP,
+      }));    
+      console.log('kodeGroupOptions',this.kodeGroupOptions);  
     });
   }
 
@@ -276,4 +289,9 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
   
+  onKodeGroupFilterChange() {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
+  }
 }

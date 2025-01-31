@@ -80,6 +80,21 @@
                     {{ city.value }} - {{ city.label | translate }}
                   </option>
                 </select>
+              </div>    
+              <div class="col-md-4">
+                <label cLabel for="selectedtipeCabangFilter">{{ 'Group' | translate }}:</label>
+                <select
+                  aria-label="Group"
+                  cSelect
+                  id="selectedKodeGroupFilter"
+                  [(ngModel)]="selectedKodeGroupFilter"
+                  (ngModelChange)="onCityFilterChange()"
+                >
+                  <option value="">{{ 'Semua' | translate }}</option>
+                  <option *ngFor="let kodeGroup of kodeGroupOptions" [value]="kodeGroup.value">
+                    {{ kodeGroup.value }} - {{ kodeGroup.label | translate }}
+                  </option>
+                </select>
               </div>     
             </div>
           </c-card-body>

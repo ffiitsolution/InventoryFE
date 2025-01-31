@@ -28,6 +28,8 @@ export class MasterBranchDetailComponent implements OnInit {
       namaCabang: [this.detail.namaCabang],
       kodeCabang: [this.detail.kodeCabang],
       kodeSingkat: [this.detail.kodeSingkat],
+      kodeGroup: [this.detail.kodeGroup],
+      deskripsiGroup: [this.detail.deskripsiGroup],
       kota: [this.detail.kota],
       alamat1: [this.detail.alamat1],
       alamat2: [this.detail.alamat2],
