@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/service/app.service';
 import { GlobalService } from 'src/app/service/global.service';
 import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_RSC } from 'src/constants';
+import { DataService } from 'src/app/service/data.service';
 
 @Component({
   selector: 'app-add',
@@ -15,18 +16,73 @@ export class MasterLocationAddComponent implements OnInit {
   myForm: FormGroup;
   adding: boolean = false;
 
+  configSelectCity: any = {};
+  listCity: any[] = [];
+  listRsc: any[] = [];
+
+
   constructor(
     private toastr: ToastrService,
     private form: FormBuilder,
     private router: Router,
     private g: GlobalService,
-    private service: AppService
-  ) {}
+    private service: AppService,
+    private dataService: DataService
+  ) { }
 
   ngOnInit(): void {
     this.myForm = this.form.group({
-      code: ['', Validators.required],
-      desc: ['', Validators.required],
+      kodeLocation: ['', Validators.required],
+      kodeInisial: ['', Validators.required],
+      keteranganLokasi: ['', Validators.required],
+      lokasiGudang: ['', Validators.required],
+      defaultRsc: ['', Validators.required],
+      supportTo: ['D'],
+      user: [''],
+      statusSync: ['T'],
+      mainMenu: ['T']
+    });
+
+    this.getSelectCityConfig();
+    this.getCityDropdown();
+    this.getRscDropdown();
+  }
+
+  getSelectCityConfig() {
+    this.configSelectCity = {
+      displayKey: 'name', // Key to display in the dropdown
+      search: true, // Enable search functionality
+      height: '200px', // Dropdown height
+      placeholder: 'Pilih', // Placeholder text
+      customComparator: () => { }, // Custom sorting comparator
+      limitTo: 8, // Limit the number of displayed options
+      moreText: 'lebih banyak', // Text for "more" options
+      noResultsFound: 'Tidak ada hasil', // Text when no results are found
+      searchPlaceholder: 'Cari Lokasi', // Placeholder for the search input
+      searchOnKey: 'name' // Key to search
+    }
+  }
+
+  getCityDropdown(){
+    this.dataService
+    .postData(this.g.urlServer + '/api/city/dropdown-city',{})
+    .subscribe((resp: any) => {
+      this.listCity = resp.map((item: any) => ({
+        name: item.KETERANGAN_KOTA,
+        id: item.KETERANGAN_KOTA
+      }));      
+    });
+  }
+
+  getRscDropdown(){
+    this.dataService
+    .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
+    .subscribe((resp: any) => {
+      this.listRsc = resp.map((item: any) => ({
+        name: item.KETERANGAN_RSC,
+        code: item.KODE_RSC,
+        id: item.KODE_RSC
+      }));      
     });
   }
 
@@ -37,12 +93,17 @@ export class MasterLocationAddComponent implements OnInit {
     } else {
       this.adding = true;
       const param = {
-        kodeRsc: controls?.['code']?.value,
-        keteranganRsc: controls?.['desc']?.value,
         user: this.g.getLocalstorage('inv_currentUser')?.kodeUser,
+        kodeLocation: controls?.['kodeLocation']?.value,
+        kodeInisial: controls?.['kodeInisial']?.value,
+        keteranganLokasi: controls?.['keteranganLokasi']?.value,
+        lokasiGudang: controls?.['lokasiGudang']?.value.id,
+        defaultRsc: controls?.['defaultRsc']?.value.code,
+        supportTo: 'D',
         statusSync: 'T',
+        mainMenu: 'T'
       };
-      this.service.insert('/api/rsc/insert', param).subscribe({
+      this.service.insert('/api/location/insert', param).subscribe({
         next: (res) => {
           if (!res.success) {
             alert(res.message);
