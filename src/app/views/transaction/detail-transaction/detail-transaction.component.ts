@@ -16,11 +16,12 @@ import {
 } from 'src/constants';
 
 @Component({
-  selector: 'app-add-detail-form',
-  templateUrl: './add-detail-form.component.html',
-  styleUrl: './add-detail-form.component.scss',
+  selector: 'app-add-detail-transaction',
+  templateUrl: './detail-transaction.component.html',
+  styleUrl: './detail-transaction.component.scss',
 })
-export class ReceivingOrderAddDetailFormComponent
+
+export class DetailTransactionComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
   showFilterSection: boolean = false;
@@ -63,7 +64,7 @@ export class ReceivingOrderAddDetailFormComponent
           this.dataService
             .postData(
               this.config.BASE_URL_HQ +
-                '/api/receiving-order/get-from-hq/detail/dt',
+                '/api/delivery-order/receiving/dt',
               params
             )
             .subscribe((resp: any) => {
@@ -156,11 +157,11 @@ export class ReceivingOrderAddDetailFormComponent
   async onSavePressed() {
     this.savingReceive = true;
     const detailResponse = await lastValueFrom(
-      this.service.getReceivingOrderItem(this.selectedOrder.nomorPesanan)
+      this.service.getDeliveryOrderItem(this.selectedOrder.nomorPesanan)
     );
 
     if (!detailResponse.success) {
-      this.insertReceivingOrder(detailResponse.data);
+      this.insertDeliveryOrder(detailResponse.data);
     } else {
       this.toastr.error(
         `Error while get detail from HQ. ${detailResponse.message}`
@@ -169,7 +170,7 @@ export class ReceivingOrderAddDetailFormComponent
     }
   }
 
-  async insertReceivingOrder(data: any) {
+  async insertDeliveryOrder(data: any) {
     const paramInsertOrder = {
       kodeGudang: this.selectedOrder.kodeTujuan,
       kodePemesan: this.g.trimOutletCode(this.selectedOrder.kodePemesan),
@@ -191,24 +192,24 @@ export class ReceivingOrderAddDetailFormComponent
       kodeTujuan: this.g.getUserLocationCode(),
     };
 
-    const insertResponse = await lastValueFrom(
-      this.service.insertReceivingOrder(paramInsertOrder)
+    const insertDeliveryOrder = await lastValueFrom(
+      this.service.insertDeliveryOrder(paramInsertOrder)
     );
 
-    if (insertResponse.success) {
+    if (insertDeliveryOrder.success) {
       const updateStatusResponse = await lastValueFrom(
-        this.service.updateReceivingOrderStatus(paramUpdateStatusOrder)
+        this.service.updateDeliveryOrderStatus(paramUpdateStatusOrder)
       );
       if (updateStatusResponse.success) {
         this.toastr.success('Berhasil!');
         setTimeout(() => {
-          this.router.navigate(['/order/receiving-order']);
+          this.router.navigate(['/transaction/delivery-item/detail-transaction']);
         }, DEFAULT_DELAY_TIME);
       } else {
         this.toastr.error(updateStatusResponse.message);
       }
     } else {
-      this.toastr.error(insertResponse.message);
+      this.toastr.error(insertDeliveryOrder.message);
     }
     this.savingReceive = false;
   }

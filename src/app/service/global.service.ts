@@ -8,7 +8,7 @@ import { AppConfig } from '../config/app.config';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
 import { DatePipe } from '@angular/common';
 import { isNull } from 'lodash-es';
-import { PRINT_STATUS, STATUS_RESULT } from 'src/constants';
+import { PRINT_STATUS, STATUS_RESULT } from '../../constants';
 
 @Injectable({
   providedIn: 'root',
@@ -252,6 +252,14 @@ export class GlobalService {
     );
   }
   getStatusOrderLabel(status: string, isPrintStatus: boolean = false) {
+    const data = isPrintStatus ? PRINT_STATUS : STATUS_RESULT;
+    const found = data.find((item) => item.value == status);
+    if (!found) {
+      return '-';
+    }
+    return `(${status}) ${found?.label}` || status;
+  }
+  getsatusDeliveryOrderLabel(status: string, isPrintStatus: boolean = false) {
     const data = isPrintStatus ? PRINT_STATUS : STATUS_RESULT;
     const found = data.find((item) => item.value == status);
     if (!found) {

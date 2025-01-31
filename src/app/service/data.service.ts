@@ -65,4 +65,9 @@ export class DataService {
       }
     );
   }
+
+  searchOrder(orderNumber: string): Observable<any> {
+    const url = `your-api-endpoint/orders/${orderNumber}`;
+    return this.http.get<any>(url);
+  }
 }

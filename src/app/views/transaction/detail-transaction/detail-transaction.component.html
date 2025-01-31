@@ -2,7 +2,7 @@
   <c-card class="mb-4">
     <c-card-body>
       <c-row>
-        <h5>{{ "Tambah Penerimaan dari HQ" | translate }} (Detail)</h5>
+        <h5>{{ "Tambah Pengiriman dari HQ" | translate }} (Detail)</h5>
       </c-row>
       <c-row>
         <div class="d-grid gap-3 d-md-flex justify-content-between">
@@ -90,18 +90,16 @@
     </c-card-body>
   </c-card>
 </div>
-  
+
 <div class="fade-in">
-  <c-card class="mb-4">
+  <c-card>
     <c-card-body>
-      <div class="table-responsive">
-        <table
-          datatable
-          [dtOptions]="dtOptions"
-          (page.dt)="dtPageChange($event)"
-          class="row-border hover"
-        ></table>
-      </div>
+      <table
+        datatable
+        [dtOptions]="dtOptions"
+        (page.dt)="dtPageChange($event)"
+        class="row-border hover"
+      ></table>
     </c-card-body>
   </c-card>
 </div>

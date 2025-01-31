@@ -47,6 +47,13 @@ export class AppService {
     );
   }
 
+  getDeliveryOrderItem(nomorPesanan: String) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL_HQ}/api/delivery-order/get-items-delivery-order`,
+      { nomorPesanan }
+    );
+  }
+
   insertReceivingOrder(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/receiving-order/insert-receiving-from-warehouse`,
@@ -54,9 +61,23 @@ export class AppService {
     );
   }
 
+  insertDeliveryOrder(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/insert-delivery-from-warehouse`,
+      payload
+    );
+  }
+
   updateReceivingOrderStatus(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL_HQ}/api/receiving-order/update`,
+      payload
+    );
+  }
+
+  updateDeliveryOrderStatus(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL_HQ}/api/delivery-order/update`,
       payload
     );
   }
