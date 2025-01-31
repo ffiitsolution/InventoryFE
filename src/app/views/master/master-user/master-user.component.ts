@@ -44,11 +44,9 @@ export class MasterUserComponent
   selectedLokasiFilter: any = '';
   jabatanOptions: any;
   selectedJabatanFilter: any = '';
+  selectedRoleFilter: any = '';
+  roleOptions: any;
 
-  statusOptions = [
-  { value: 'S', label: 'baik' },
-  { value: 'C', label: 'Jelek' },
-];
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
   }
@@ -64,6 +62,11 @@ export class MasterUserComponent
     });
   }
   onJabatanFilterChange() {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
+  }
+  onRoleFilterChange() {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
@@ -93,6 +96,7 @@ export class MasterUserComponent
           status: this.selectedStatusFilter,
           defaultLocation: this.selectedLokasiFilter,
           jabatan: this.selectedJabatanFilter,
+          roleID: this.selectedRoleFilter,
         };
         this.dataService
           .postData(this.g.urlServer + '/api/users/dt', requestData)
@@ -122,6 +126,7 @@ export class MasterUserComponent
         { data: 'jabatan', title: 'Jabatan', searchable: false },
         { data: 'statusAktif', title: 'Status', searchable: false },
         { data: 'keteranganLokasi', title: 'Default Lokasi', searchable: false },
+        { data: 'roleName', title: 'Role', searchable: false },
       ],
       searchDelay: 1500,
       order: [[1, 'asc']],
@@ -180,6 +185,17 @@ export class MasterUserComponent
       }));    
 
       console.log('jabatanOptions',this.jabatanOptions);  
+    });
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/role/dropdown-role',{})
+    .subscribe((resp: any) => {
+      this.roleOptions = resp.map((item: any) => ({
+        value: item.ID,
+        label: item.NAME,
+      }));    
+
+      console.log('jabatanOptions',this.roleOptions);  
     });
   }
 

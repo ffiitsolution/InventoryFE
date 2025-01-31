@@ -64,6 +64,22 @@
                   </option>
                 </select>
               </div>
+
+              <div class="col-md-4">
+                <label cLabel for="selectedRoleFilter">{{ 'Jabatan' | translate }}:</label>
+                <select
+                  aria-label="Role"
+                  cSelect
+                  id="selectedRoleFilter"
+                  [(ngModel)]="selectedRoleFilter"
+                  (ngModelChange)="onRoleFilterChange()"
+                >
+                  <option value="">{{ 'Semua' | translate }}</option>
+                  <option *ngFor="let role of roleOptions" [value]="role.value">
+                    {{ role.label | translate }}
+                  </option>
+                </select>
+              </div>
               
             </div>
           </c-card-body>
