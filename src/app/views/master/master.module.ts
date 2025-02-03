@@ -7,8 +7,14 @@ import { CommonModule } from '@angular/common';
 
 import { MasterRoutingModule } from './master-routing.module';
 import { MasterUserComponent } from './master-user/master-user.component';
-import { EditMasterUserComponent } from './master-user/edit/edit-master-user.component';
-import { MasterBranchComponent } from './master-branch/master-branch.component';
+import { MasterUserEditComponent } from './master-user/edit/edit.component';
+import { MasterUserDetailComponent } from './master-user/detail/detail.component';
+import {  MasterUserAddComponent } from './master-user/add/add.component';
+import { 
+  MasterBranchComponent, 
+  MasterBranchDetailComponent ,
+  MasterBranchAddComponent
+} from './master-branch';
 import { MasterDepartmentComponent } from './master-department/master-department.component';
 import {
   MasterProductAddComponent,
@@ -83,6 +89,7 @@ import {
   TableSetNumberEditComponent,
   TableSetNumberDetailComponent,
 } from './table-set-number';
+import { SelectDropDownModule } from 'ngx-select-dropdown';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -107,12 +114,17 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReactiveFormsModule,
     BsDatepickerModule.forRoot(),
     ModalModule,
+    SelectDropDownModule,
   ],
   declarations: [
     MasterUserComponent,
-    EditMasterUserComponent,
+    MasterUserDetailComponent,
+    MasterUserAddComponent,
+    MasterUserEditComponent,
     MasterCompanyComponent,
     MasterBranchComponent,
+    MasterBranchDetailComponent,
+    MasterBranchAddComponent,
     MasterDepartmentComponent,
 
     MasterProductComponent,

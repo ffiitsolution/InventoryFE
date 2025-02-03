@@ -12,7 +12,9 @@ import {
 } from './table-uom';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MasterBranchComponent } from './master-branch/master-branch.component';
+import { MasterBranchComponent,
+  MasterBranchDetailComponent,
+  MasterBranchAddComponent } from './master-branch';
 import { MasterCompanyComponent } from './master-company/master-company.component';
 import { MasterDepartmentComponent } from './master-department/master-department.component';
 import {
@@ -58,7 +60,9 @@ import {
   TableRscDetailComponent,
 } from './table-rsc';
 import { MasterUserComponent } from './master-user/master-user.component';
-import { EditMasterUserComponent } from './master-user/edit/edit-master-user.component';
+import { MasterUserEditComponent } from './master-user/edit/edit.component';
+import { MasterUserDetailComponent } from './master-user/detail/detail.component';
+import { MasterUserAddComponent } from './master-user/add/add.component';
 
 const routes: Routes = [
   {
@@ -74,12 +78,28 @@ const routes: Routes = [
       },
       {
         path: 'master-user/edit',
-        component: EditMasterUserComponent,
+        component: MasterUserEditComponent,
+      },
+      {
+        path: 'master-user/detail',
+        component: MasterUserDetailComponent,
+      },
+      {
+        path: 'master-user/add',
+        component: MasterUserAddComponent,
       },
       {
         path: 'master-branch',
         component: MasterBranchComponent,
       },
+      {
+        path: 'master-branch/detail',
+        component: MasterBranchDetailComponent,
+      },   
+      {
+        path: 'master-branch/add',
+        component: MasterBranchAddComponent,
+      },           
       {
         path: 'master-department',
         component: MasterDepartmentComponent,

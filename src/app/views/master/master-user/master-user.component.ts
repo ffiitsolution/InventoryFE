@@ -5,12 +5,19 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import {
+  ACTION_ADD,
+  ACTION_EDIT,
+  ACTION_VIEW,
+  LS_INV_SELECTED_USER,
+} from '../../../../constants';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { Page } from 'src/app/model/page';
 import { DataService } from 'src/app/service/data.service';
 import { GlobalService } from 'src/app/service/global.service';
 import { TranslationService } from 'src/app/service/translation.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-master-user',
@@ -47,7 +54,8 @@ export class MasterUserComponent
   constructor(
     private dataService: DataService,
     private g: GlobalService,
-    private translation: TranslationService
+    private translation: TranslationService,
+    private router: Router
   ) {
     this.dtOptions = {
       language:
@@ -93,7 +101,7 @@ export class MasterUserComponent
         { data: 'namaUser', title: 'Nama', searchable: false },
         { data: 'jabatan', title: 'Jabatan', searchable: false },
         { data: 'statusAktif', title: 'Status', searchable: false },
-        { data: 'defaultLocation', title: 'Default Lokasi', searchable: false },
+        { data: 'keteranganLokasi', title: 'Default Lokasi', searchable: false },
       ],
       searchDelay: 1500,
       order: [[1, 'asc']],
@@ -132,16 +140,22 @@ export class MasterUserComponent
 
   ngOnInit(): void {
     this.g.changeTitle(this.translation.instant('Master') + ' ' + this.translation.instant('User') + ' - ' + this.g.tabTitle);
+    localStorage.removeItem(LS_INV_SELECTED_USER);
   }
 
   actionBtnClick(action: string) {
     let data = this.selectedRowData;
-    this.g.alertConfirm(action, JSON.stringify(data)).then((result) => {
-      console.log(result);
-    });
+    // this.g.alertConfirm(action, JSON.stringify(data)).then((result) => {
+    //   console.log(result);
+    // });
     if (action === 'view') {
+      this.g.saveLocalstorage(LS_INV_SELECTED_USER, JSON.stringify(data));
+      this.router.navigate(['/master/master-user/detail']);
     } else if (action === 'add') {
+      this.router.navigate(['/master/master-user/add']);
     } else if (action === 'edit') {
+      this.g.saveLocalstorage(LS_INV_SELECTED_USER, JSON.stringify(data));
+      this.router.navigate(['/master/master-user/edit']);
     } else if (action === 'delete') {
     } else {
     }

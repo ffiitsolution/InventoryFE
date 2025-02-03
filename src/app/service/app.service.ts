@@ -13,7 +13,7 @@ export class AppService {
     private dataService: DataService,
     private translation: TranslationService,
     private toastr: ToastrService
-  ) {}
+  ) { }
   protected config = AppConfig.settings.apiServer;
 
   login(param: any): Observable<any> {
@@ -35,6 +35,9 @@ export class AppService {
 
   insert(url: String, params: any): Observable<any> {
     return this.dataService.postData(this.config.BASE_URL + url, params);
+  }
+  patch(url: string, params: any): Observable<any> {
+    return this.dataService.patchData(this.config.BASE_URL + url, params);
   }
 
   getReceivingOrderItem(nomorPesanan: String) {
@@ -76,6 +79,17 @@ export class AppService {
     return this.dataService.postData(
       `${this.config.BASE_URL_HQ}/api/delivery-order/update`,
       payload
+    );
+  }
+
+  reporReceivingOrderJasper(params: any, url: string): Observable<any> {
+    const httpOptions = {
+      responseType: 'blob' as 'json',
+    };
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/receiving-order/report`,
+      params,
+      true
     );
   }
 }

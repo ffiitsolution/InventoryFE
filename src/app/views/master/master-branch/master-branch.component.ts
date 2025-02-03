@@ -18,7 +18,9 @@ import {
   ACTION_VIEW,
   BUTTON_CAPTION_EDIT,
   BUTTON_CAPTION_VIEW,
+  LS_INV_SELECTED_BRANCH
 } from 'src/constants';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-master-branch',
@@ -56,7 +58,8 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private dataService: DataService,
     private g: GlobalService,
-    private translation: TranslationService
+    private translation: TranslationService,
+    private router: Router
   ) {
     this.dtOptions = {
       language:
@@ -174,6 +177,8 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
+    localStorage.removeItem(LS_INV_SELECTED_BRANCH);
+
     this.g.changeTitle(
       this.translation.instant('Master') +
         ' ' +
@@ -188,10 +193,13 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
   actionBtnClick(action: string, data: any = null) {
     switch (action) {
       case ACTION_VIEW:
+        this.g.saveLocalstorage(LS_INV_SELECTED_BRANCH, JSON.stringify(data));
+        this.router.navigate(['/master/master-branch/detail']);
         return console.log('view');
       case ACTION_EDIT:
         return console.log('edit');
       case ACTION_ADD:
+        this.router.navigate(['/master/master-branch/add']);
         return console.log('add');
       default:
         return console.log('status');
