@@ -19,6 +19,17 @@
         </div>
         <div class="col text-end">
           <button
+          type="button"
+          class="btn btn-outline-success me-2 btn-120"
+          (click)="onPrint()"
+          [disabled]="updatingStatus || disabledCancelButton"
+        >
+          <i class="fa fa-print icon-gap" *ngIf="!RejectingOrder"></i>
+          <i class="fa fa-spinner fa-spin" *ngIf="RejectingOrder"></i>
+          {{ "Cetak" | translate }}
+        </button>
+        
+          <!-- <button
             type="button"
             class="btn btn-success text-white me-2 btn-120"
             (click)="onButtonActionPressed('S')"
@@ -29,7 +40,7 @@
             {{
               alreadyPrint ? ("Cetak Ulang" | translate) : ("Cetak" | translate)
             }}
-          </button>
+          </button> -->
           <button
             type="button"
             class="btn btn-outline-danger me-2 btn-120"

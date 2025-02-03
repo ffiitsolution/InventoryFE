@@ -24,6 +24,7 @@ import { Router } from '@angular/router';
 import { AppConfig } from 'src/app/config/app.config';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { AppService } from '../../../../service/app.service';
 
 @Component({
   selector: 'app-detail-receiving-order',
@@ -31,8 +32,7 @@ import Swal from 'sweetalert2';
   styleUrl: './detail.component.scss',
 })
 export class ReceivingOrderDetailComponent
-  implements OnInit, OnDestroy, AfterViewInit
-{
+  implements OnInit, OnDestroy, AfterViewInit {
   columns: any;
   page = new Page();
 
@@ -63,7 +63,8 @@ export class ReceivingOrderDetailComponent
     public g: GlobalService,
     private translation: TranslationService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private appService: AppService
   ) {
     this.g.navbarVisibility = false;
     this.selectedOrder = JSON.parse(this.selectedOrder);
@@ -74,7 +75,7 @@ export class ReceivingOrderDetailComponent
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: () => {},
+      drawCallback: () => { },
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
@@ -104,9 +105,8 @@ export class ReceivingOrderDetailComponent
                   ...rest,
                   dtIndex: this.page.start + index + 1,
                   konversi: `${rest.konversi} ${rest.satuanBesar}/${rest.satuanKecil}`,
-                  konversiProduct: `${rest.konversiProduct || 0} ${
-                    rest.satuanBesarProduct || '-'
-                  }/${rest.satuanKecilProduct || '-'}`,
+                  konversiProduct: `${rest.konversiProduct || 0} ${rest.satuanBesarProduct || '-'
+                    }/${rest.satuanKecilProduct || '-'}`,
                 };
                 return finalData;
               });
@@ -176,9 +176,9 @@ export class ReceivingOrderDetailComponent
       this.selectedOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
   }
-  actionBtnClick(action: string, data: any = null) {}
+  actionBtnClick(action: string, data: any = null) { }
 
-  dtPageChange(event: any) {}
+  dtPageChange(event: any) { }
 
   ngAfterViewInit(): void {
     this.rerenderDatatable();
@@ -309,5 +309,34 @@ export class ReceivingOrderDetailComponent
       return 'Belum';
     }
     return 'Sudah';
+  }
+
+  downloadURL: any = [];
+
+  onPrint() {
+    const urlReport = 'report-propose-order-jesper';
+    const params = {
+      outletBrand: 'Kfc',
+      isDownloadCsv: false,
+      staffName: JSON.parse(localStorage.getItem('inv_currentUser') || '{}').namaUser || 'Guest',
+      nomorPesanan: this.selectedOrder.nomorPesanan,
+      tglBrgDikirim: this.selectedOrder.tglBrgDikirim,
+      tglPesan: this.selectedOrder.tglPesan
+    }
+
+    this.appService.reporReceivingOrderJasper(params, urlReport).subscribe((res) => {
+      var blob = new Blob([res], { type: 'application/pdf' });
+      this.downloadURL = window.URL.createObjectURL(blob);
+      this.downloadPDF();
+    })
+
+  }
+
+  downloadPDF() {
+    var link = document.createElement('a');
+    link.href = this.downloadURL;
+    link.download = `Report Receiving Order tanggal ${this.selectedOrder.tglPesan}.pdf`;
+    link.click();
+    this.toastr.success('File sudah terunduh.', 'Selamat');
   }
 }
