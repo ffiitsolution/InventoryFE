@@ -29,7 +29,6 @@ export class MasterUserAddComponent implements OnInit {
   configSelectLokasi: any ;
   configSelectRole: any ;
   isNotMatchPass: boolean = false;
-  isNotMatchPassPos: boolean = false;
   listRole: any[] = [];
 
 
@@ -88,7 +87,8 @@ export class MasterUserAddComponent implements OnInit {
   onSubmit(): void {
     // this.myForm.kodeUser.value
     const { controls, invalid } = this.myForm;
-    if (invalid) {
+    if (invalid || this.isNotMatchPass) {
+      console.log("inside invalid")
       this.g.markAllAsTouched(this.myForm);
     } else {
       this.adding = true;

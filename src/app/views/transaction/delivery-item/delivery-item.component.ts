@@ -115,7 +115,7 @@ export class DeliveryItemComponent implements OnInit {
 
       ],
       searchDelay: 1000,
-      delivery: [],
+      // delivery: [],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)

@@ -120,7 +120,7 @@ export class MasterUserEditComponent implements OnInit {
 
   onSubmit(): void {
     const { controls, invalid } = this.myForm;
-    if (invalid) {
+    if (invalid || this.isNotMatchPass) {
       this.g.markAllAsTouched(this.myForm);
     } else {
       this.editing = true;

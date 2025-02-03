@@ -162,7 +162,7 @@ export class MasterBranchAddComponent implements OnInit {
     console.log("myForm", this.myForm.value);
     const { controls, invalid } = this.myForm;
     console.log("invalid", invalid);
-    if (invalid) {
+    if (invalid || !this.isEmailValid) {
       this.g.markAllAsTouched(this.myForm);
     } else {
       this.adding = true;
