@@ -213,7 +213,7 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.dataService
-    .postData(this.g.urlServer + '/api/branch/dropdown-group',{})
+    .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
     .subscribe((resp: any) => {
       this.rscOptions = resp.map((item: any) => ({
         value: item.KODE_RSC,
