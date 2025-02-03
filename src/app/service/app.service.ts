@@ -13,7 +13,7 @@ export class AppService {
     private dataService: DataService,
     private translation: TranslationService,
     private toastr: ToastrService
-  ) {}
+  ) { }
   protected config = AppConfig.settings.apiServer;
 
   login(param: any): Observable<any> {
@@ -39,10 +39,17 @@ export class AppService {
   patch(url: string, params: any): Observable<any> {
     return this.dataService.patchData(this.config.BASE_URL + url, params);
   }
-  
+
   getReceivingOrderItem(nomorPesanan: String) {
     return this.dataService.postData(
       `${this.config.BASE_URL_HQ}/api/receiving-order/get-items-receiving-order`,
+      { nomorPesanan }
+    );
+  }
+
+  getDeliveryOrderItem(nomorPesanan: String) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL_HQ}/api/delivery-order/get-items-delivery-order`,
       { nomorPesanan }
     );
   }
@@ -54,10 +61,35 @@ export class AppService {
     );
   }
 
+  insertDeliveryOrder(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/insert-delivery-from-warehouse`,
+      payload
+    );
+  }
+
   updateReceivingOrderStatus(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL_HQ}/api/receiving-order/update`,
       payload
+    );
+  }
+
+  updateDeliveryOrderStatus(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL_HQ}/api/delivery-order/update`,
+      payload
+    );
+  }
+
+  reporReceivingOrderJasper(params: any, url: string): Observable<any> {
+    const httpOptions = {
+      responseType: 'blob' as 'json',
+    };
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/receiving-order/report`,
+      params,
+      true
     );
   }
 }

@@ -51,16 +51,16 @@
               <span class="value">{{ selectedOrder.nomorPesanan }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tanggal Pesan" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglPesan }}</span>
+              <span class="label">{{ "Kode Barang" | translate }}</span>
+              <span class="value">{{ selectedOrder.kodeBarang }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tanggal Kirim" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglBrgDikirim }}</span>
+              <span class="label">{{ "Kode Gudang" | translate }}</span>
+              <span class="value">{{ selectedOrder.kodeGudang }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tanggal Kedaluwarsa" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglKadaluarsa }}</span>
+              <span class="label">{{ "Kode Pemesan" | translate }}</span>
+              <span class="value">{{ selectedOrder.kodePemesan }}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Status Pesanan" | translate }}</span>
@@ -73,16 +73,20 @@
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">
-              <span class="label">{{ "Tujuan" | translate }}</span>
+              <span class="label">{{ "Kode Pemesan" | translate }}</span>
               <span class="value"> {{ selectedOrder.kodePemesan }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tipe Pesanan" | translate }}</span>
-              <span class="value"> {{ selectedOrder.keterangan1 }}</span>
+              <span class="label">{{ "Waktu Dibuat" | translate }}</span>
+              <span class="value"> {{ selectedOrder.dateCreate }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Catatan" | translate }}</span>
-              <span class="value">{{ selectedOrder.keterangan2 }} </span>
+              <span class="label">{{ "Total Pesanan" | translate }}</span>
+              <span class="value">{{ selectedOrder.totalQtyPesan }} </span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Total Terima" | translate }}</span>
+              <span class="value">{{ selectedOrder.totalQtyTerima || "-" }}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Nomor SJ" | translate }}</span>

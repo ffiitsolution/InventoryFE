@@ -10,27 +10,28 @@ import {
   ACTION_VIEW,
   CANCEL_STATUS,
   DEFAULT_DELAY_TABLE,
-  LS_INV_SELECTED_RECEIVING_ORDER,
+  LS_INV_SELECTED_DELIVERY_ORDER,
   OUTLET_BRAND_KFC,
   SEND_PRINT_STATUS_SUDAH,
   STATUS_SAME_CONVERSION,
-} from '../../../../../constants';
+} from '../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
 import { lastValueFrom, Subject } from 'rxjs';
 import { Page } from 'src/app/model/page';
 import { DataService } from 'src/app/service/data.service';
 import { GlobalService } from 'src/app/service/global.service';
 import { Router } from '@angular/router';
-import { AppConfig } from 'src/app/config/app.config';
+// import { AppConfig } from 'src/app/config/app.config.ts';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { AppConfig } from '../../../config/app.config';
 
 @Component({
-  selector: 'app-detail-receiving-order',
-  templateUrl: './detail.component.html',
-  styleUrl: './detail.component.scss',
+  selector: 'app-detail-delivery-order',
+  templateUrl: './detail-transaction.component.html',
+  styleUrl: './detail-transaction.component.scss',
 })
-export class ReceivingOrderDetailComponent
+export class DetailTransactionComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
   columns: any;
@@ -43,7 +44,7 @@ export class ReceivingOrderDetailComponent
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
   selectedOrder: any = JSON.parse(
-    localStorage[LS_INV_SELECTED_RECEIVING_ORDER]
+    localStorage[LS_INV_SELECTED_DELIVERY_ORDER]
   );
   adding: boolean = false;
   loadingIndicator: boolean = false;
@@ -81,11 +82,12 @@ export class ReceivingOrderDetailComponent
         const params = {
           ...dataTablesParameters,
           nomorPesanan: this.selectedOrder?.nomorPesanan,
+          kodeGudang: this.g.getUserLocationCode(),
         };
         setTimeout(() => {
           this.dataService
             .postData(
-              this.config.BASE_URL + '/api/receiving-order/detail/dt',
+              this.config.BASE_URL + '/api/delivery-order/details',
               params
             )
             .subscribe((resp: any) => {
@@ -95,7 +97,7 @@ export class ReceivingOrderDetailComponent
               };
               this.selectedOrder = updatedSelectedOrder;
               this.g.saveLocalstorage(
-                LS_INV_SELECTED_RECEIVING_ORDER,
+                LS_INV_SELECTED_DELIVERY_ORDER,
                 JSON.stringify(updatedSelectedOrder)
               );
               const mappedData = resp.data.map((item: any, index: number) => {
@@ -123,28 +125,31 @@ export class ReceivingOrderDetailComponent
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'kodeBarang', title: 'Kode Barang', searchable: true },
-        { data: 'namaBarang', title: 'Nama Barang', searchable: true },
-        { data: 'konversi', title: 'Konversi Pesan' },
-        { data: 'qtyPesanBesar', title: 'Qty Pesan Besar' },
-        { data: 'qtyPesanKecil', title: 'Qty Pesan Kecil' },
-        { data: 'totalQtyPesan', title: 'Total Pesanan' },
-        { data: 'konversiProduct', title: 'Konversi Gudang' },
-        {
-          data: 'keterangan',
-          title: 'Keterangan',
-          render: (data) => {
-            if (data.toUpperCase() == STATUS_SAME_CONVERSION) {
-              return `
-                <span class="text-center text-success">${data}</span>
-              `;
-            } else {
-              return `
-                <span class="text-center text-danger">${data}</span>
-              `;
-            }
-          },
-        },
+        { data: 'nomorPesanan', title: 'Nomor Pesanan'},
+        { data: 'kodeBarang', title: 'Kode Barang'},
+        { data: 'namaBarang', title: 'Nama Barang'},
+        { data: 'kodeGudang', title: 'Kode Gudang'},
+        { data: 'namaGudang', title: 'Nama Gudang'},
+        { data: 'kodeCabang', title: 'Kode Cabang'},
+        { data: 'satuanKecilProduct', title: 'Satuan Kecil Product'},
+        { data: 'satuanBesarProduct', title: 'Satuan Besar Product'},
+        { data: 'konversiProduct', title: 'Konversi Product'},
+        
+        // {
+        //   data: 'keterangan',
+        //   title: 'Keterangan',
+        //   render: (data) => {
+        //     if (data.toUpperCase() == STATUS_SAME_CONVERSION) {
+        //       return `
+        //         <span class="text-center text-success">${data}</span>
+        //       `;
+        //     } else {
+        //       return `
+        //         <span class="text-center text-danger">${data}</span>
+        //       `;
+        //     }
+        //   },
+        // },
       ],
       searchDelay: 1000,
       order: [[1, 'asc']],
@@ -199,13 +204,13 @@ export class ReceivingOrderDetailComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/order/receiving-order']);
+    this.router.navigate(['/transaction/delivery-item']);
   }
 
   onDelete() {
     this.RejectingOrder = true;
     Swal.fire({
-      title: this.translation.instant('confirmDeleteReceivingLabel'),
+      title: this.translation.instant('confirmDeleteDeliveryLabel'),
       input: 'text',
       inputAttributes: {
         autocapitalize: 'off',
@@ -221,17 +226,17 @@ export class ReceivingOrderDetailComponent
             keterangan2,
             nomorPesanan: this.selectedOrder.nomorPesanan,
           };
-          const url = `${this.config.BASE_URL}/api/receiving-order/update`;
+          const url = `${this.config.BASE_URL}/inventory/api/delivery-order/update-status`;
           const response = await lastValueFrom(
             this.dataService.postData(url, params)
           );
-          if (response.success) {
-            this.toastr.success('Berhasil membatalkan penerimaan');
+          if ((response as any).success) {
+            this.toastr.success('Berhasil membatalkan pengiriman');
             setTimeout(() => {
-              this.router.navigate(['/order/receiving-order']);
+              this.router.navigate(['/transaction/delivery-item']);
             }, DEFAULT_DELAY_TABLE);
           } else {
-            this.toastr.error(response.message);
+            this.toastr.error((response as any).message);
           }
         } catch (error: any) {
           this.toastr.error('Error: ', error);
@@ -255,12 +260,12 @@ export class ReceivingOrderDetailComponent
 
       const updatePrintStatusResponse = await lastValueFrom(
         this.dataService.postData(
-          this.config.BASE_URL + '/api/receiving-order/update',
+          this.config.BASE_URL + '/inventory/api/delivery-order/status-descriptions',
           updatePrintStatusParams
         )
       );
 
-      if (updatePrintStatusResponse.success) {
+      if ((updatePrintStatusResponse as any).success) {
         const transformedSelectedOrder = {
           ...this.selectedOrder,
           statusCetak: status,
@@ -269,7 +274,7 @@ export class ReceivingOrderDetailComponent
 
         this.selectedOrder = transformedSelectedOrder;
         this.g.saveLocalstorage(
-          LS_INV_SELECTED_RECEIVING_ORDER,
+          LS_INV_SELECTED_DELIVERY_ORDER,
           JSON.stringify(transformedSelectedOrder)
         );
 
@@ -281,12 +286,12 @@ export class ReceivingOrderDetailComponent
           };
           const base64Response = await lastValueFrom(
             this.dataService.postData(
-              `${this.config.BASE_URL}/api/receiving-order/report`,
+              `${this.config.BASE_URL}/inventory/api/delivery-order/history`,
               generatePdfParams,
               true
             )
           );
-          const blob = new Blob([base64Response], { type: 'application/pdf' });
+          const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
           const url = window.URL.createObjectURL(blob);
           window.open(url);
         } catch (error: any) {
@@ -298,7 +303,7 @@ export class ReceivingOrderDetailComponent
           this.reloadTable();
         }
       } else {
-        this.toastr.error(updatePrintStatusResponse.message);
+        this.toastr.error((updatePrintStatusResponse as any).message);
       }
       this.updatingStatus = false;
     }
