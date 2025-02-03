@@ -6,9 +6,9 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataService } from 'src/app/service/data.service';
-import { GlobalService } from 'src/app/service/global.service';
-import { TranslationService } from 'src/app/service/translation.service';
+import { DataService } from '../../../service/data.service';
+import { GlobalService } from '../../../service/global.service';
+import { TranslationService } from '../../../service/translation.service';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
@@ -20,9 +20,10 @@ import { Injectable } from '@angular/core';
   selector: 'app-add-data',
   templateUrl: './add-data.component.html',
   styleUrls: ['./add-data.component.scss'],
+  
 })
 export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
-orderNumber: any;
+nomorPesanan: any;
   // validatedDeliveryDate method removed to fix duplicate implementation error
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
@@ -32,7 +33,7 @@ orderNumber: any;
 
   // Form data object
   formData = {
-    orderNumber: '',
+    nomorPesanan: '',
     deliveryStatus: '',
     deliveryDestination: '',
     destinationAddress: '',
@@ -80,7 +81,7 @@ orderNumber: any;
     this.router.navigate(['/transaction/delivery-item']);
   }
   
-  onSaveData(): void {
+    onSaveData(): void {
     const today = new Date().toISOString().split('T')[0];
     this.formData.validatedDeliveryDate = today;
 
@@ -96,21 +97,41 @@ orderNumber: any;
   }
 
   searchOrderNumber(): void {
-    if (this.formData.orderNumber) {
-      console.log('Searching for order number:', this.formData?.orderNumber);
+    if (!this.nomorPesanan) {
+      alert("Nomor Pesanan tidak boleh kosong!");
+      return;
+    }
 
-      this.dataService.searchOrder(this.formData.orderNumber).subscribe(
-        (response: any) => {
-          console.log('Order found:', response);
-          this.mapOrderData(response);
+    const params = {
+      nomorPesanan: this.nomorPesanan,
+      kodeGudang: this.globalService.getUserLocationCode(),
+    };
+
+    this.dataService
+      .postData("http://localhost:8093/inventory/api/delivery-order/items", params)
+      .subscribe(
+        (resp: any) => {
+          if (resp.data.length > 0) {
+            this.formData = {
+              nomorPesanan: this.nomorPesanan,
+              deliveryStatus: '',
+              deliveryDestination: resp.data[0].NAMA_GUDANG,
+              orderDate: this.globalService.transformDate(resp.data[0].TGL_PESAN) ?? '',
+              deliveryDate: this.globalService.transformDate(resp.data[0].TGL_BRG_DIKIRIM) ?? '',
+              expirationDate: this.globalService.transformDate(resp.data[0].TGL_KADALUARSA) ?? '',
+              destinationAddress: resp.data[0].ALAMAT1,
+              validatedDeliveryDate: '',
+              notes: resp.data[0].KETERANGAN1,
+            };
+          } else {
+            alert("Nomor Pesanan tidak ditemukan!");
+          }
         },
-        (error: any) => {
-          console.error('Error searching for order number', error);
+        (error) => {
+          console.error("Error fetching data:", error);
+          alert("Terjadi kesalahan saat mengambil data pesanan.");
         }
       );
-    } else {
-      console.error('Order number is required.');
-    }
   }
 
   private mapOrderData(orderData: any): void {
@@ -135,6 +156,7 @@ orderNumber: any;
     console.log('Validated delivery date changed:', target.value);
     this.formData.validatedDeliveryDate = target.value; // Update nilai
   }
+  
 }
 @Injectable({
   providedIn: 'root',
@@ -143,7 +165,7 @@ export class DeliveryDataService {
   constructor(private http: HttpClient) {}
 
   saveDeliveryData(data: any): Observable<any> {
-    const apiUrl = 'your-api-endpoint'; // Replace with your actual API endpoint
+    const apiUrl = 'http://localhost:8093/inventory/api/delivery-order/status-descriptions';
     return this.http.post<any>(apiUrl, data);
   }
 }

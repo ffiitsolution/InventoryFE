@@ -23,9 +23,9 @@
         <div class="d-flex">
           <div class="w-50 p-2">
             <div class="mb-3">
-              <label for="orderNumber" class="form-label">{{ "Order Number" | translate }}</label>
+              <label for="nomorPesanan" class="form-label">{{ "Nomor Pesanan" | translate }}</label>
               <div class="d-flex">
-                <input type="text" class="form-control" id="orderNumber" [(ngModel)]="orderNumber" name="orderNumber" />
+                <input type="text" class="form-control" id="nomorPesanan" [(ngModel)]="nomorPesanan" name="nomorPesanan" />
                 <button type="button" class="btn btn-primary ms-2" (click)="searchOrderNumber()">Search</button>
               </div>
             </div>
@@ -89,7 +89,7 @@
       </div>
       <div class="d-flex justify-content-end mb-3">
         <button class="btn btn-primary" (click)="onSaveData()">
-          {{ "Save" | translate }}
+          {{ "Detail Transaksi" | translate }}
         </button>
       </div>
     </c-card-body>
