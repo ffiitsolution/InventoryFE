@@ -1,53 +1,76 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { lastValueFrom, Subject } from 'rxjs';
-import { AppConfig } from 'src/app/config/app.config';
-import { Page } from 'src/app/model/page';
-import { AppService } from 'src/app/service/app.service';
-import { DataService } from 'src/app/service/data.service';
-import { GlobalService } from 'src/app/service/global.service';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { TranslationService } from 'src/app/service/translation.service';
 import {
+  ACTION_VIEW,
+  CANCEL_STATUS,
   DEFAULT_DELAY_TABLE,
-  DEFAULT_DELAY_TIME,
-  LS_INV_SELECTED_RECEIVING_ORDER,
+  LS_INV_SELECTED_DELIVERY_ORDER,
+  OUTLET_BRAND_KFC,
+  SEND_PRINT_STATUS_SUDAH,
   STATUS_SAME_CONVERSION,
-} from 'src/constants';
+} from '../../../../constants';
+import { DataTableDirective } from 'angular-datatables';
+import { lastValueFrom, Subject } from 'rxjs';
+import { Page } from 'src/app/model/page';
+import { DataService } from 'src/app/service/data.service';
+import { GlobalService } from 'src/app/service/global.service';
+import { Router } from '@angular/router';
+// import { AppConfig } from 'src/app/config/app.config.ts';
+import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
+import { AppConfig } from '../../../config/app.config';
 
 @Component({
-  selector: 'app-add-detail-transaction',
+  selector: 'app-detail-delivery-order',
   templateUrl: './detail-transaction.component.html',
   styleUrl: './detail-transaction.component.scss',
 })
-
 export class DetailTransactionComponent
-  implements OnInit, AfterViewInit, OnDestroy
+  implements OnInit, OnDestroy, AfterViewInit
 {
-  showFilterSection: boolean = false;
-  savingReceive: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  columns: any;
   page = new Page();
+
+  orders: any[] = [];
   dtColumns: any = [];
-  selectedOrder: any = JSON.parse(
-    localStorage[LS_INV_SELECTED_RECEIVING_ORDER]
-  );
-  protected config = AppConfig.settings.apiServer;
+  dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
+  @ViewChild(DataTableDirective, { static: false })
+  datatableElement: DataTableDirective | undefined;
+  selectedOrder: any = JSON.parse(
+    localStorage[LS_INV_SELECTED_DELIVERY_ORDER]
+  );
+  adding: boolean = false;
+  loadingIndicator: boolean = false;
+  showFilterSection: boolean = false;
+  disabledCancelButton: boolean = false;
+  disabledPrintButton: boolean = false;
+  updatingStatus: boolean = false;
+  RejectingOrder: boolean = false;
+  alreadyPrint: Boolean = false;
+  totalLength: number = 0;
+  buttonCaptionView: String = 'Lihat';
+
+  protected config = AppConfig.settings.apiServer;
 
   constructor(
     private dataService: DataService,
     public g: GlobalService,
+    private translation: TranslationService,
     private router: Router,
-    public translation: TranslationService,
-    private service: AppService,
     private toastr: ToastrService
   ) {
+    this.g.navbarVisibility = false;
+    this.selectedOrder = JSON.parse(this.selectedOrder);
     this.dtOptions = {
       language:
-        this.translation.getCurrentLanguage() == 'id'
-          ? this.translation.idDatatable
-          : {},
+        translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
       processing: true,
       serverSide: true,
       autoWidth: true,
@@ -58,18 +81,26 @@ export class DetailTransactionComponent
         this.page.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
-          nomorPesanan: this.selectedOrder.nomorPesanan || '',
+          nomorPesanan: this.selectedOrder?.nomorPesanan,
+          kodeGudang: this.g.getUserLocationCode(),
         };
         setTimeout(() => {
           this.dataService
             .postData(
-              this.config.BASE_URL_HQ +
-                '/api/delivery-order/receiving/dt',
+              this.config.BASE_URL + '/api/delivery-order/details',
               params
             )
             .subscribe((resp: any) => {
+              const updatedSelectedOrder = {
+                ...this.selectedOrder,
+                noSjPengirim: resp.data[0]?.noSjPengirim || ' ',
+              };
+              this.selectedOrder = updatedSelectedOrder;
+              this.g.saveLocalstorage(
+                LS_INV_SELECTED_DELIVERY_ORDER,
+                JSON.stringify(updatedSelectedOrder)
+              );
               const mappedData = resp.data.map((item: any, index: number) => {
-                // hapus rn
                 const { rn, ...rest } = item;
                 const finalData = {
                   ...rest,
@@ -83,7 +114,7 @@ export class DetailTransactionComponent
               });
               this.page.recordsTotal = resp.recordsTotal;
               this.page.recordsFiltered = resp.recordsFiltered;
-              this.showFilterSection = false;
+              this.totalLength = mappedData.length;
               callback({
                 recordsTotal: resp.recordsTotal,
                 recordsFiltered: resp.recordsFiltered,
@@ -94,50 +125,70 @@ export class DetailTransactionComponent
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'kodeBarang', title: 'Kode Barang', searchable: true },
-        { data: 'namaBarang', title: 'Nama Barang', searchable: true },
-        { data: 'konversi', title: 'Konversi Pesan' },
-        { data: 'qtyPesanBesar', title: 'Qty Pesan Besar' },
-        { data: 'qtyPesanKecil', title: 'Qty Pesan Kecil' },
-        { data: 'totalQtyPesan', title: 'Total Pesanan' },
-        { data: 'konversiProduct', title: 'Konversi Gudang' },
-        {
-          data: 'keterangan',
-          title: 'Keterangan',
-          render: (data) => {
-            if (data.toUpperCase() == STATUS_SAME_CONVERSION) {
-              return `
-                <span class="text-center text-success">${data}</span>
-              `;
-            } else {
-              return `
-                <span class="text-center text-danger">${data}</span>
-              `;
-            }
-          },
-        },
+        { data: 'nomorPesanan', title: 'Nomor Pesanan'},
+        { data: 'kodeBarang', title: 'Kode Barang'},
+        { data: 'namaBarang', title: 'Nama Barang'},
+        { data: 'kodeGudang', title: 'Kode Gudang'},
+        { data: 'namaGudang', title: 'Nama Gudang'},
+        { data: 'kodeCabang', title: 'Kode Cabang'},
+        { data: 'satuanKecilProduct', title: 'Satuan Kecil Product'},
+        { data: 'satuanBesarProduct', title: 'Satuan Besar Product'},
+        { data: 'konversiProduct', title: 'Konversi Product'},
+        
+        // {
+        //   data: 'keterangan',
+        //   title: 'Keterangan',
+        //   render: (data) => {
+        //     if (data.toUpperCase() == STATUS_SAME_CONVERSION) {
+        //       return `
+        //         <span class="text-center text-success">${data}</span>
+        //       `;
+        //     } else {
+        //       return `
+        //         <span class="text-center text-danger">${data}</span>
+        //       `;
+        //     }
+        //   },
+        // },
       ],
       searchDelay: 1000,
-      order: [
-        [2, 'asc'],
-        [4, 'asc'],
-      ],
+      order: [[1, 'asc']],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        $('.action-view', row).on('click', () => {});
+        $('.action-view', row).on('click', () =>
+          this.actionBtnClick(ACTION_VIEW, data)
+        );
         return row;
       },
     };
     this.dtColumns = this.dtOptions.columns;
   }
-  onPreviousPressed() {
-    this.router.navigate(['/order/receiving-order/add']);
+  reloadTable() {
+    setTimeout(() => {
+      this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.ajax.reload();
+      });
+    }, DEFAULT_DELAY_TABLE);
   }
-  ngOnInit(): void {}
-  onFilterTogglePressed() {}
-  onFilterApplied() {}
-  AfterViewInit() {
+
+  ngOnInit(): void {
+    this.g.changeTitle(
+      this.translation.instant('Detail Pesanan') + ' - ' + this.g.tabTitle
+    );
+    const isCanceled = this.selectedOrder.statusPesanan == CANCEL_STATUS;
+    this.disabledPrintButton = isCanceled;
+    this.disabledCancelButton = isCanceled;
+    this.alreadyPrint =
+      this.selectedOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
+    this.buttonCaptionView = this.translation.instant('Lihat');
+  }
+  actionBtnClick(action: string, data: any = null) {}
+
+  dtPageChange(event: any) {}
+
+  ngAfterViewInit(): void {
     this.rerenderDatatable();
   }
+
   rerenderDatatable(): void {
     this.dtOptions?.columns?.forEach((column: any, index) => {
       if (this.dtColumns[index]?.title) {
@@ -145,72 +196,123 @@ export class DetailTransactionComponent
       }
     });
   }
+
   ngOnDestroy(): void {
+    this.g.navbarVisibility = true;
     this.dtTrigger.unsubscribe();
     $.fn['dataTable'].ext.search.pop();
   }
-  dtPageChange(event: any) {}
-  ngAfterViewInit() {
-    this.rerenderDatatable();
+
+  onBackPressed() {
+    this.router.navigate(['/transaction/delivery-item']);
   }
 
-  async onSavePressed() {
-    this.savingReceive = true;
-    const detailResponse = await lastValueFrom(
-      this.service.getDeliveryOrderItem(this.selectedOrder.nomorPesanan)
-    );
+  onDelete() {
+    this.RejectingOrder = true;
+    Swal.fire({
+      title: this.translation.instant('confirmDeleteDeliveryLabel'),
+      input: 'text',
+      inputAttributes: {
+        autocapitalize: 'off',
+      },
+      showCancelButton: true,
+      confirmButtonText: 'OK',
+      showLoaderOnConfirm: true,
+      preConfirm: async (keterangan2) => {
+        try {
+          const params = {
+            status: '4',
+            user: this.g.getUserCode(),
+            keterangan2,
+            nomorPesanan: this.selectedOrder.nomorPesanan,
+          };
+          const url = `${this.config.BASE_URL}/inventory/api/delivery-order/update-status`;
+          const response = await lastValueFrom(
+            this.dataService.postData(url, params)
+          );
+          if ((response as any).success) {
+            this.toastr.success('Berhasil membatalkan pengiriman');
+            setTimeout(() => {
+              this.router.navigate(['/transaction/delivery-item']);
+            }, DEFAULT_DELAY_TABLE);
+          } else {
+            this.toastr.error((response as any).message);
+          }
+        } catch (error: any) {
+          this.toastr.error('Error: ', error);
+        } finally {
+          this.RejectingOrder = false;
+        }
+      },
+    });
+  }
 
-    if (!detailResponse.success) {
-      this.insertDeliveryOrder(detailResponse.data);
+  async onButtonActionPressed(status: string) {
+    if (status == CANCEL_STATUS) {
+      this.onDelete();
     } else {
-      this.toastr.error(
-        `Error while get detail from HQ. ${detailResponse.message}`
+      this.updatingStatus = true;
+      const updatePrintStatusParams = {
+        status,
+        user: this.g.getUserCode(),
+        nomorPesanan: this.selectedOrder.nomorPesanan,
+      };
+
+      const updatePrintStatusResponse = await lastValueFrom(
+        this.dataService.postData(
+          this.config.BASE_URL + '/inventory/api/delivery-order/status-descriptions',
+          updatePrintStatusParams
+        )
       );
-      this.savingReceive = false;
-    }
-  }
 
-  async insertDeliveryOrder(data: any) {
-    const paramInsertOrder = {
-      kodeGudang: this.selectedOrder.kodeTujuan,
-      kodePemesan: this.g.trimOutletCode(this.selectedOrder.kodePemesan),
-      nomorPesanan: this.selectedOrder.nomorPesanan,
-      tglPesan: this.selectedOrder.tglPesan.split(' - ')[0],
-      tglBrgDikirim: this.selectedOrder.tglBrgDikirim.split(' - ')[0],
-      tglKadaluarsa: this.selectedOrder.tglBatasExp,
-      keterangan: this.selectedOrder.keterangan1,
-      user: this.g.getUserCode(),
-      items: data.map((item: any) => ({
-        ...item,
-        totalQtyTerima: 0,
-      })),
-    };
-    const paramUpdateStatusOrder = {
-      status: 'T',
-      user: this.g.getUserCode(),
-      nomorPesanan: this.selectedOrder.nomorPesanan,
-      kodeTujuan: this.g.getUserLocationCode(),
-    };
+      if ((updatePrintStatusResponse as any).success) {
+        const transformedSelectedOrder = {
+          ...this.selectedOrder,
+          statusCetak: status,
+          statusPesanan: 'T',
+        };
 
-    const insertDeliveryOrder = await lastValueFrom(
-      this.service.insertDeliveryOrder(paramInsertOrder)
-    );
+        this.selectedOrder = transformedSelectedOrder;
+        this.g.saveLocalstorage(
+          LS_INV_SELECTED_DELIVERY_ORDER,
+          JSON.stringify(transformedSelectedOrder)
+        );
 
-    if (insertDeliveryOrder.success) {
-      const updateStatusResponse = await lastValueFrom(
-        this.service.updateDeliveryOrderStatus(paramUpdateStatusOrder)
-      );
-      if (updateStatusResponse.success) {
-        this.toastr.success('Berhasil!');
-        setTimeout(() => {
-          this.router.navigate(['/transaction/delivery-item/detail-transaction']);
-        }, DEFAULT_DELAY_TIME);
+        try {
+          const generatePdfParams = {
+            outletBrand: OUTLET_BRAND_KFC,
+            user: this.g.getUserCode(),
+            nomorPesanan: this.selectedOrder.nomorPesanan,
+          };
+          const base64Response = await lastValueFrom(
+            this.dataService.postData(
+              `${this.config.BASE_URL}/inventory/api/delivery-order/history`,
+              generatePdfParams,
+              true
+            )
+          );
+          const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
+          const url = window.URL.createObjectURL(blob);
+          window.open(url);
+        } catch (error: any) {
+          this.toastr.error(
+            error.message ?? 'Unknown error while generate pdf'
+          );
+        } finally {
+          this.updatingStatus = false;
+          this.reloadTable();
+        }
       } else {
-        this.toastr.error(updateStatusResponse.message);
+        this.toastr.error((updatePrintStatusResponse as any).message);
       }
-    } else {
-      this.toastr.error(insertDeliveryOrder.message);
+      this.updatingStatus = false;
     }
-    this.savingReceive = false;
+  }
+
+  getPrintStatus() {
+    if (this.selectedOrder.statusCetak != SEND_PRINT_STATUS_SUDAH) {
+      return 'Belum';
+    }
+    return 'Sudah';
   }
 }
