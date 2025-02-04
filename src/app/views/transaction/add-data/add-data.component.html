@@ -2,16 +2,12 @@
   <c-card class="mb-4">
     <c-card-body>
       <c-row>
-        <h5>{{ "Tambah Pengiriman" | translate }}</h5>
-      </c-row>
-      <c-row>
-        <div class="row">
-          <div class="d-grid gap-3 d-md-flex justify-content-between">
-            <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
-              <i class="fa fa-chevron-left icon-12 icon-gap"></i>
-              {{ "Kembali" | translate }}
-            </button>
-          </div>
+        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
+          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button>
+          <h5>{{ "Tambah Pengiriman" | translate }}</h5>
         </div>
       </c-row>
     </c-card-body>
@@ -22,51 +18,75 @@
       <c-row>
         <div class="d-flex">
           <div class="w-50 p-2">
-            <div class="mb-3">
+            <div class="">
               <label for="orderNumber" class="form-label">{{ "Order Number" | translate }}</label>
               <div class="d-flex">
-                <input type="text" class="form-control" id="orderNumber" [(ngModel)]="orderNumber" name="orderNumber" />
-                <button type="button" class="btn btn-primary ms-2" (click)="searchOrderNumber()">Search</button>
+                <input type="text" class="form-control" id="orderNumber" [(ngModel)]="formData.orderNumber"
+                  name="orderNumber" />
+                <button type="button" class="btn btn-primary ms-2" [cModalToggle]="formModal.id"
+                  (click)="onShowModal()"><i class="fa fa-search"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider mt-4"></div>
+        <div class="d-flex">
+          <div class="w-50 p-2 pb-0">
+            <div class="mb-3">
+              <label for="deliveryDestination" class="form-label">{{ "Delivery Destination" | translate }}</label>
+              <div class="row">
+                <div class="col-3">
+                  <input type="text" class="form-control" id="deliveryDestination"
+                    [(ngModel)]="formData.codeDestination" name="deliveryDestination" readonly />
+                </div>
+                <div class="col-9 px-0 pe-2">
+                  <input type="text" class="form-control" id="deliveryDestination"
+                    [(ngModel)]="formData.deliveryDestination" name="deliveryDestination" readonly />
+                </div>
+              </div>
+            </div>
+            <div class="d-flex mb-3">
+              <div class="w-100">
+                <label for="destinationAddress" class="form-label">{{ "Destination Address" | translate }}</label>
+                <textarea class="form-control w-100" [(ngModel)]="formData.destinationAddress"
+                  id="exampleFormControlTextarea1" rows="1" name="destinationAddress" readonly></textarea>
               </div>
             </div>
             <div class="mb-3">
-              <label for="deliveryStatus" class="form-label">{{ "Delivery Status" | translate }}</label>
-              <select class="form-control" id="deliveryStatus" [(ngModel)]="formData.deliveryStatus" name="deliveryStatus">
-                <option value="">{{ "Select Status" | translate }}</option>
-                <option value="Dikirim">{{ "Belum" | translate }}</option>
-                <option value="Tertunda">{{ "Tunda" | translate }}</option>
-                <option value="Terkirim">{{ "kirim" | translate }}</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="deliveryDestination" class="form-label">{{ "Delivery Destination" | translate }}</label>
-              <input type="text" class="form-control" id="deliveryDestination" [(ngModel)]="formData.deliveryDestination" name="deliveryDestination" />
+              <div class="w-100">
+                <label for="deliveryStatus" class="form-label">{{ "Delivery Status" | translate }}</label>
+                <input type="text" class="form-control" id="deliveryDestination"
+                  [(ngModel)]="formData.deliveryDestination" name="deliveryDestination" readonly />
+              </div>
             </div>
           </div>
           <div class="w-50 p-2">
             <div class="mb-3">
               <label for="orderDate" class="form-label">{{ "Order Date" | translate }}</label>
-              <input type="date" class="form-control" id="orderDate" [(ngModel)]="formData.orderDate" name="orderDate" />
+              <input type="date" class="form-control" id="orderDate" [(ngModel)]="formData.orderDate"
+                name="orderDate" />
             </div>
             <div class="mb-3">
               <label for="deliveryDate" class="form-label">{{ "Delivery Date" | translate }}</label>
-              <input type="date" class="form-control" id="deliveryDate" [(ngModel)]="formData.deliveryDate" name="deliveryDate" />
+              <input type="date" class="form-control" id="deliveryDate" [(ngModel)]="formData.deliveryDate"
+                name="deliveryDate" />
             </div>
             <div class="mb-3">
               <label for="expirationDate" class="form-label">{{ "Expiration Date" | translate }}</label>
-              <input type="date" class="form-control" id="expirationDate" [(ngModel)]="formData.expirationDate" name="expirationDate" />
+              <input type="date" class="form-control" id="expirationDate" [(ngModel)]="formData.expirationDate"
+                name="expirationDate" />
             </div>
           </div>
-        </div>
-        <div class="row-fixed">
-          <form class="col-12">
-          <div class="mb-3">
-            <label for="destinationAddress" class="form-label">{{ "Destination Address" | translate }}</label>
-            <input type="text" class="form-control w-100" id="destinationAddress" [(ngModel)]="formData.destinationAddress" name="destinationAddress" />
-          </div>
-        </form>
+
+
         </div>
 
+        <div class="d-flex">
+          <div class="w-50 p-2">
+
+          </div>
+        </div>
       </c-row>
     </c-card-body>
   </c-card>
@@ -76,8 +96,13 @@
       <div class="d-flex">
         <div class="w-50 p-2">
           <div class="mb-3">
-            <label for="validatedDeliveryDate" class="form-label">{{ "Validated Delivery Date" | translate }}</label>
-            <input type="date" class="form-control" id="validatedDeliveryDate" [(ngModel)]="formData.validatedDeliveryDate" name="validatedDeliveryDate" />
+            <label for="validatedDeliveryDate" class="form-label">{{ "Validated Delivery Date" | translate }} <span
+                class="text-danger">*</span></label>
+
+            <input type="text" id="validatedDeliveryDate" class="form-control" aria-describedby="validatedDeliveryDate"
+              #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker autocomplete="off"
+              [(ngModel)]="formData.validatedDeliveryDate" placeholder="Tanggal" [minDate]="minDate" [maxDate]="maxDate" [readOnly]="formData.orderDate === ''"/>
+
           </div>
         </div>
         <div class="w-50 p-2">
@@ -92,6 +117,21 @@
           {{ "Save" | translate }}
         </button>
       </div>
+
     </c-card-body>
+
+    <c-modal #formModal [fullscreen]="false" [visible]="isShowModal" [backdrop]="true" #modalLg size="xl"
+      id="formModal">
+      <c-modal-header>
+        <h5 cModalTitle>Add Receiving Order</h5>
+        <button (click)="isShowModal = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModal.id"
+          cButtonClose><i class="fa fa-times"></i></button>
+      </c-modal-header>
+      <c-modal-body>
+        <div class="table-responsive">
+          <table datatable [dtOptions]=" dtOptions" class="row-border hover w-100"></table>
+        </div>
+      </c-modal-body>
+    </c-modal>
   </c-card>
 </div>

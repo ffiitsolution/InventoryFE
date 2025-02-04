@@ -115,12 +115,9 @@ export class DeliveryItemComponent implements OnInit {
 
       ],
       searchDelay: 1000,
-      delivery: [],
+      // delivery: [],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        $('.action-view', row).on('click', () =>
-          this.actionBtnClick(ACTION_VIEW, data)
-        );
-        return row;
+
       },
     };
     this.dtColumns = this.dtOptions.columns;
@@ -150,7 +147,7 @@ export class DeliveryItemComponent implements OnInit {
         LS_INV_SELECTED_DELIVERY_ORDER,
         JSON.stringify(data)
       );
-      this.router.navigate(['/transaction/delivery-item/detail-transaction']);
+      this.router.navigate(['/order/delivery-order/detail']);
     }
   }
 
