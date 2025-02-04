@@ -39,19 +39,51 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
   datatableElement: DataTableDirective | undefined;
   selectedRowData: any;
   isFilterShown: boolean = false;
-  selectedStatusFilter: any = '';
   dtColumns: any = [];
   buttonCaptionView: string = BUTTON_CAPTION_VIEW;
   buttonCaptionEdit: string = BUTTON_CAPTION_EDIT;
   CONST_ACTION_ADD: string = ACTION_ADD;
-  tipeCabangOptions: any;
-  selectedtipeCabangFilter: any = '';
-  rscOptions: any;
-  selectedRscFilter: any = '';
-  cityOptions: any;
-  selectedCityFilter: any = '';
-  kodeGroupOptions: any;
-  selectedKodeGroupFilter: any = '';
+
+  baseConfig: any = {
+    displayKey: 'name', // Key to display in the dropdown
+    search: true, // Enable search functionality
+    height: '200px', // Dropdown height
+    customComparator: () => {}, // Custom sorting comparator
+    moreText: 'lebih banyak', // Text for "more" options
+    noResultsFound: 'Tidak ada hasil', // Text when no results are found
+    searchOnKey: 'name' // Key to search
+  };
+
+  configSelectStatus: any ;
+  formStatusFilter: any ;
+  listStatus: any[] = [
+    {
+      id: 'A',
+      name: 'Aktif'
+    },
+    {
+      id: 'T',
+      name: 'Tidak Aktif'
+    }
+  ];
+
+  configSelectCabang: any ;
+  formCabangFilter: any ;
+  listCabang: any[] = [];
+  
+  configSelectRsc: any ;
+  formRscFilter: any ;
+  listRsc: any[] = [];
+
+  configSelectKota: any ;
+  formKotaFilter: any ;
+  listKota: any[] = [];
+
+  configSelectGroup: any ;
+  formGroupFilter: any ;
+  listGroup: any[] = [];
+  
+  
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
   }
@@ -83,11 +115,12 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
         this.page.length = dataTablesParameters.length;
         const requestData = {
           ...dataTablesParameters,
-          statusAktif: this.selectedStatusFilter,
-          tipeCabang: this.selectedtipeCabangFilter,
-          kodeRSC: this.selectedRscFilter,
-          kota: this.selectedCityFilter,
-          kodeGroup: this.selectedKodeGroupFilter
+          statusAktif: this.formStatusFilter?.id ? this.formStatusFilter.id : "",
+          tipeCabang: this.formCabangFilter?.id ? this.formCabangFilter.id : "",
+          kodeRSC: this.formRscFilter?.id ? this.formRscFilter.id : "",
+
+          kota: this.formKotaFilter?.id ? this.formKotaFilter.id : "",
+          kodeGroup: this.formGroupFilter?.id ? this.formGroupFilter.id : "",
 
         };
         this.dataService
@@ -205,9 +238,9 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dataService
     .postData(this.g.urlServer + '/api/branch/dropdown-tipe-cabang',{})
     .subscribe((resp: any) => {
-      this.tipeCabangOptions = resp.map((item: any) => ({
-        value: item.TIPE_CABANG,
-        label: item.TIPE_CABANG,
+      this.listCabang = resp.map((item: any) => ({
+        id: item.TIPE_CABANG,
+        name: item.TIPE_CABANG,
       }));    
 
     });
@@ -215,30 +248,60 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dataService
     .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
     .subscribe((resp: any) => {
-      this.rscOptions = resp.map((item: any) => ({
-        value: item.KODE_RSC,
-        label: item.KETERANGAN_RSC,
+      this.listRsc = resp.map((item: any) => ({
+        id: item.KODE_RSC,
+        name: item.KODE_RSC + " - " + item.KETERANGAN_RSC
       }));    
     });
 
     this.dataService
     .postData(this.g.urlServer + '/api/city/dropdown-city',{})
     .subscribe((resp: any) => {
-      this.cityOptions = resp.map((item: any) => ({
-        value: item.KODE_KOTA,
-        label: item.KETERANGAN_KOTA,
+      this.listKota = resp.map((item: any) => ({
+        id: item.KODE_KOTA,
+        name: item.KODE_KOTA + " - " + item.KETERANGAN_KOTA
       }));    
     });
 
     this.dataService
     .postData(this.g.urlServer + '/api/branch/dropdown-group',{})
     .subscribe((resp: any) => {
-      this.kodeGroupOptions = resp.map((item: any) => ({
-        value: item.KODE_GROUP,
-        label: item.DESKRIPSI_GROUP,
+      this.listGroup = resp.map((item: any) => ({
+        id: item.KODE_GROUP,
+        name: item.KODE_GROUP + " - " + item.DESKRIPSI_GROUP,
       }));    
-      console.log('kodeGroupOptions',this.kodeGroupOptions);  
     });
+
+    this.configSelectStatus = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Status',
+      searchPlaceholder: 'Cari Status',
+      limitTo: this.listStatus.length
+    };
+    this.configSelectCabang = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Cabang',
+      searchPlaceholder: 'Cari Cabang',
+      limitTo: this.listCabang.length
+    };
+    this.configSelectRsc = {
+      ...this.baseConfig,
+      placeholder: 'Pilih RSC',
+      searchPlaceholder: 'Cari RSC',
+      limitTo: this.listRsc.length
+    };
+    this.configSelectKota = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Kota',
+      searchPlaceholder: 'Cari Kota',
+      limitTo: this.listKota.length
+    };
+    this.configSelectGroup = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Group',
+      searchPlaceholder: 'Cari Group',
+      limitTo: this.listGroup.length
+    };
   }
 
   
@@ -285,13 +348,13 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
       dtInstance.ajax.reload();
     });    
   }
-  onCityFilterChange() {
+  onKotaFilterChange() {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
   
-  onKodeGroupFilterChange() {
+  onGroupFilterChange() {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
