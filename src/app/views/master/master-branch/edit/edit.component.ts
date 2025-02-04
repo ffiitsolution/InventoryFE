@@ -57,7 +57,7 @@ export class MasterBranchEditComponent implements OnInit {
 
     this.myForm = this.form.group({
       namaCabang: [this.detail.namaCabang],
-      kodeCabang: [this.detail.kodeCabang],
+      kodeCabang:         { value: this.detail.kodeCabang, disabled: true },
       kodeSingkat: [this.detail.kodeSingkat],
       kodeGroup: [this.detail.kodeGroup],
       deskripsiGroup: [this.detail.deskripsiGroup],
