@@ -38,14 +38,9 @@ export class MasterUserComponent
   datatableElement: DataTableDirective | undefined;
   selectedRowData: any;
   isFilterShown: boolean = false;
-  selectedStatusFilter: any = '';
   dtColumns: any = [];
-  lokasiOptions: any;
-  selectedLokasiFilter: any = '';
-  jabatanOptions: any;
   selectedJabatanFilter: any = '';
   selectedRoleFilter: any = '';
-  roleOptions: any;
   baseConfig: any = {
     displayKey: 'name', // Key to display in the dropdown
     search: true, // Enable search functionality
@@ -66,42 +61,43 @@ export class MasterUserComponent
       name: 'Tidak Aktif'
     }
   ];
-
   formStatusFilter: any ;
 
+  configSelectLokasi: any ;
+  listLokasi: any[] = [];
+  formLokasiFilter: any ;
+
+  configSelectJabatan: any ;
+  listJabatan: any[] = [];
+  formJabatanFilter: any ;
+
+  
+  configSelectRole: any ;
+  listRole: any[] = [];
+  formRoleFilter: any ;
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
   }
 
   onStatusFilterChange() {
-    console.log('selectedStatusFilter0',this.selectedStatusFilter)
-    console.log('formStatusFilter',this.formStatusFilter, ' formStatusFilter.id ', this.formStatusFilter.id)
-    console.log('formStatusFilter length',this.formStatusFilter.length)
-
-    this.selectedStatusFilter = '' 
-    if (this.formStatusFilter?.id) {
-      console.log("inside >0")
-      this.selectedStatusFilter = this.formStatusFilter.id
-    }
-    console.log('selectedStatusFilter1',this.selectedStatusFilter)
-
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
   onLokasiFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
   onJabatanFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
   onRoleFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
@@ -127,10 +123,10 @@ export class MasterUserComponent
         this.page.length = dataTablesParameters.length;
         const requestData = {
           ...dataTablesParameters,
-          status: this.selectedStatusFilter,
-          defaultLocation: this.selectedLokasiFilter,
-          jabatan: this.selectedJabatanFilter,
-          roleID: this.selectedRoleFilter,
+          status: this.formStatusFilter?.id ? this.formStatusFilter.id : "",
+          defaultLocation: this.formLokasiFilter?.id ? this.formLokasiFilter.id : "",
+          jabatan: this.formJabatanFilter?.id ? this.formJabatanFilter?.id:"",
+          roleID:  this.formRoleFilter?.id ? this.formRoleFilter?.id:"",
         };
         this.dataService
           .postData(this.g.urlServer + '/api/users/dt', requestData)
@@ -204,32 +200,29 @@ export class MasterUserComponent
     this.dataService
     .postData(this.g.urlServer + '/api/location/dropdown-lokasi',{})
     .subscribe((resp: any) => {
-      this.lokasiOptions = resp.map((item: any) => ({
-        value: item.KODE_LOCATION,
-        label: item.KETERANGAN_LOKASI,
+      this.listLokasi = resp.map((item: any) => ({
+        id: item.KODE_LOCATION,
+        name: item.KETERANGAN_LOKASI,
       }));    
+      console.log('this.listLokasi',this.listLokasi)
     });
 
     this.dataService
     .postData(this.g.urlServer + '/api/users/dropdown-jabatan',{})
     .subscribe((resp: any) => {
-      this.jabatanOptions = resp.map((item: any) => ({
-        value: item.JABATAN,
-        label: item.JABATAN,
+      this.listJabatan = resp.map((item: any) => ({
+        id: item.JABATAN,
+        name: item.JABATAN,
       }));    
-
-      console.log('jabatanOptions',this.jabatanOptions);  
     });
 
     this.dataService
     .postData(this.g.urlServer + '/api/role/dropdown-role',{})
     .subscribe((resp: any) => {
-      this.roleOptions = resp.map((item: any) => ({
-        value: item.ID,
-        label: item.NAME,
+      this.listRole = resp.map((item: any) => ({
+        id: item.ID,
+        name: item.NAME,
       }));    
-
-      console.log('jabatanOptions',this.roleOptions);  
     });
 
     this.configSelectStatus = {
@@ -237,6 +230,24 @@ export class MasterUserComponent
       placeholder: 'Pilih Status',
       searchPlaceholder: 'Cari Status',
       limitTo: this.listStatus.length
+    };
+    this.configSelectLokasi = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Lokasi',
+      searchPlaceholder: 'Cari Lokasi',
+      limitTo: this.listLokasi.length
+    };
+    this.configSelectJabatan = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Jabatan',
+      searchPlaceholder: 'Cari Jabatan',
+      limitTo: this.listJabatan.length
+    };
+    this.configSelectRole = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Role',
+      searchPlaceholder: 'Cari Role',
+      limitTo: this.listRole.length
     };
   }
 

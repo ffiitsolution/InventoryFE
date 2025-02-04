@@ -42,38 +42,55 @@
                   </div>
               </div>
               <div class="col-md-4">
-                <label cLabel for="selectLokasiFilter">{{ 'Default Lokasi' | translate }}:</label>
-                <select
-                  aria-label="Lokasi"
-                  cSelect
-                  id="selectLokasiFilter"
-                  [(ngModel)]="selectedLokasiFilter"
-                  (ngModelChange)="onLokasiFilterChange()"
-                >
-                  <option value="">{{ 'Semua' | translate }}</option>
-                  <option *ngFor="let lokasi of lokasiOptions" [value]="lokasi.value">
-                    {{ lokasi.label | translate }}
-                  </option>
-                </select>
-              </div>
-              <div class="col-md-4">
-                <label cLabel for="selectJabatanFilter">{{ 'Jabatan' | translate }}:</label>
-                <select
-                  aria-label="Jabatan"
-                  cSelect
-                  id="selectJabatanFilter"
-                  [(ngModel)]="selectedJabatanFilter"
-                  (ngModelChange)="onJabatanFilterChange()"
-                >
-                  <option value="">{{ 'Semua' | translate }}</option>
-                  <option *ngFor="let jabatan of jabatanOptions" [value]="jabatan.value">
-                    {{ jabatan.label | translate }}
-                  </option>
-                </select>
-              </div>
+                <label>{{
+                  "Default Lokasi" | translate
+                }}</label>
+                <div>
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [config]="configSelectLokasi"
+                    [options]="listLokasi"
+                    [(ngModel)]="formLokasiFilter" 
+                    (ngModelChange)="onLokasiFilterChange()"
+                    id="lokasi">
+                  </ngx-select-dropdown>
+                </div>
+            </div>
 
-              <div class="col-md-4">
-                <label cLabel for="selectedRoleFilter">{{ 'Jabatan' | translate }}:</label>
+            <div class="col-md-4">
+              <label>{{
+                "Jabatan" | translate
+              }}</label>
+              <div>
+                <ngx-select-dropdown
+                  [multiple]="false"
+                  [config]="configSelectJabatan"
+                  [options]="listJabatan"
+                  [(ngModel)]="formJabatanFilter" 
+                  (ngModelChange)="onJabatanFilterChange()"
+                  id="jabatan">
+                </ngx-select-dropdown>
+              </div>
+          </div>
+          <div class="col-md-4">
+            <label>{{
+              "Role" | translate
+            }}</label>
+            <div>
+              <ngx-select-dropdown
+                [multiple]="false"
+                [config]="configSelectRole"
+                [options]="listRole"
+                [(ngModel)]="formRoleFilter" 
+                (ngModelChange)="onRoleFilterChange()"
+                id="role">
+              </ngx-select-dropdown>
+            </div>
+        </div>
+  
+
+              <!-- <div class="col-md-4">
+                <label cLabel for="selectedRoleFilter">{{ 'Role' | translate }}:</label>
                 <select
                   aria-label="Role"
                   cSelect
@@ -86,7 +103,7 @@
                     {{ role.label | translate }}
                   </option>
                 </select>
-              </div>
+              </div> -->
               
             </div>
           </c-card-body>
