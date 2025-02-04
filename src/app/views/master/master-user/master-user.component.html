@@ -26,13 +26,20 @@
         <c-card class="mt-3 shadow">
           <c-card-body>
             <div class="row">
-              <div class="col-md-4">
-                <label cLabel for="selectStatusFilter">{{ 'Status aktif' | translate }}: </label>
-                <select aria-label="Status" cSelect id="selectStatusFilter" [(ngModel)]="selectedStatusFilter" (ngModelChange)="onStatusFilterChange()">
-                  <option value="">{{ 'Semua' | translate }}</option>
-                  <option value="A">{{ 'Aktif' | translate }}</option>
-                  <option value="I">{{ 'Tidak aktif' | translate }}</option>
-                </select>
+                <div class="col-md-4">
+                  <label>{{
+                    "Status Aktif" | translate
+                  }}</label>
+                  <div>
+                    <ngx-select-dropdown
+                      [multiple]="false"
+                      [config]="configSelectStatus"
+                      [options]="listStatus"
+                      [(ngModel)]="formStatusFilter" 
+                      (ngModelChange)="onStatusFilterChange()"
+                      id="status">
+                    </ngx-select-dropdown>
+                  </div>
               </div>
               <div class="col-md-4">
                 <label cLabel for="selectLokasiFilter">{{ 'Default Lokasi' | translate }}:</label>

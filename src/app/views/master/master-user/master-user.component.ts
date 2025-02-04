@@ -46,12 +46,46 @@ export class MasterUserComponent
   selectedJabatanFilter: any = '';
   selectedRoleFilter: any = '';
   roleOptions: any;
+  baseConfig: any = {
+    displayKey: 'name', // Key to display in the dropdown
+    search: true, // Enable search functionality
+    height: '200px', // Dropdown height
+    customComparator: () => {}, // Custom sorting comparator
+    moreText: 'lebih banyak', // Text for "more" options
+    noResultsFound: 'Tidak ada hasil', // Text when no results are found
+    searchOnKey: 'name' // Key to search
+  };
+  configSelectStatus: any ;
+  listStatus: any[] = [
+    {
+      id: 'A',
+      name: 'Aktif'
+    },
+    {
+      id: 'I',
+      name: 'Tidak Aktif'
+    }
+  ];
+
+  formStatusFilter: any ;
+
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
   }
 
   onStatusFilterChange() {
+    console.log('selectedStatusFilter0',this.selectedStatusFilter)
+    console.log('formStatusFilter',this.formStatusFilter, ' formStatusFilter.id ', this.formStatusFilter.id)
+    console.log('formStatusFilter length',this.formStatusFilter.length)
+
+    this.selectedStatusFilter = '' 
+    if (this.formStatusFilter?.id) {
+      console.log("inside >0")
+      this.selectedStatusFilter = this.formStatusFilter.id
+    }
+    console.log('selectedStatusFilter1',this.selectedStatusFilter)
+
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
@@ -197,6 +231,13 @@ export class MasterUserComponent
 
       console.log('jabatanOptions',this.roleOptions);  
     });
+
+    this.configSelectStatus = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Status',
+      searchPlaceholder: 'Cari Status',
+      limitTo: this.listStatus.length
+    };
   }
 
   actionBtnClick(action: string) {
