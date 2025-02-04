@@ -25,6 +25,7 @@
                     [readOnly]="adding"
                     (keypress)="conditionInput($event, 'numeric')"
                     maxlength="10"
+                    readonly
                   />
                   <span *ngIf="isFieldValid('kodeCabang')" class="text-danger">{{
                     "Wajib diisi" | translate

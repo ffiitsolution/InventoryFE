@@ -62,6 +62,20 @@ $enable-rtl: true;
   width: 8px;
 }
 
+
+.stamp-required {
+  color:red;
+  font-size:12pt;
+  font-weight:bold;
+
+  &.hide {
+    display: none;
+  }
+
+  &.show{
+    display: contents;
+  }
+}
 /* Importing Bootstrap SCSS file. */
 @import "./node_modules/bootstrap/scss/bootstrap";
 
