@@ -159,12 +159,12 @@ export class TableCityAreaComponent
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage(LS_INV_SELECTED_CITY, JSON.stringify(data));
-      this.router.navigate(['/master/table-city-area/detail']);
+      this.router.navigate(['/master/master-city-area/detail']);
     } else if (action === ACTION_EDIT) {
       this.g.saveLocalstorage(LS_INV_SELECTED_CITY, JSON.stringify(data));
-      this.router.navigate(['/master/table-city-area/edit']);
+      this.router.navigate(['/master/master-city-area/edit']);
     } else if (action === ACTION_ADD) {
-      this.router.navigate(['/master/table-city-area/add']);
+      this.router.navigate(['/master/master-city-area/add']);
     }
   }
 

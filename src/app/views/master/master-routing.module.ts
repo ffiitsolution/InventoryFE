@@ -159,99 +159,99 @@ const routes: Routes = [
         component: MasterLocationEditComponent,
       },
       {
-        path: 'table-area',
+        path: 'master-area',
         component: TableAreaComponent,
       },
       {
-        path: 'table-area/add',
+        path: 'master-area/add',
         component: TableAreaAddComponent,
       },
       {
-        path: 'table-area/detail',
+        path: 'master-area/detail',
         component: TableAreaDetailComponent,
       },
       {
-        path: 'table-area/edit',
+        path: 'master-area/edit',
         component: TableAreaEditComponent,
       },
       {
-        path: 'table-city-area',
+        path: 'master-city-area',
         component: TableCityAreaComponent,
       },
       {
-        path: 'table-city-area/add',
+        path: 'master-city-area/add',
         component: TableCityAreaAddComponent,
       },
       {
-        path: 'table-city-area/detail',
+        path: 'master-city-area/detail',
         component: TableCityAreaDetailComponent,
       },
       {
-        path: 'table-city-area/edit',
+        path: 'master-city-area/edit',
         component: TableCityAreaEditComponent,
       },
       {
-        path: 'table-regional',
+        path: 'master-regional',
         component: TableRegionalComponent,
       },
       {
-        path: 'table-regional/detail',
+        path: 'master-regional/detail',
         component: TableRegionalDetailComponent,
       },
       {
-        path: 'table-regional/add',
+        path: 'master-regional/add',
         component: TableRegionalAddComponent,
       },
       {
-        path: 'table-regional/edit',
+        path: 'master-regional/edit',
         component: TableRegionalEditComponent,
       },
       {
-        path: 'table-rsc',
+        path: 'master-rsc',
         component: TableRscComponent,
       },
       {
-        path: 'table-rsc/add',
+        path: 'master-rsc/add',
         component: TableRscAddComponent,
       },
       {
-        path: 'table-rsc/edit',
+        path: 'master-rsc/edit',
         component: TableRscEditComponent,
       },
       {
-        path: 'table-rsc/detail',
+        path: 'master-rsc/detail',
         component: TableRscDetailComponent,
       },
       {
-        path: 'table-uom',
+        path: 'master-uom',
         component: TableUomComponent,
       },
       {
-        path: 'table-uom/add',
+        path: 'master-uom/add',
         component: TableUomAddComponent,
       },
       {
-        path: 'table-uom/detail',
+        path: 'master-uom/detail',
         component: TableUomDetailComponent,
       },
       {
-        path: 'table-uom/edit',
+        path: 'master-uom/edit',
         component: TableUomEditComponent,
       },
       {
-        path: 'table-set-number',
+        path: 'master-set-number',
         component: TableSetNumberComponent,
       },
       {
-        path: 'table-set-number/add',
+        path: 'master-set-number/add',
         component: TableSetNumberAddComponent,
       },
       {
-        path: 'table-set-number/detail',
+        path: 'master-set-number/detail',
         component: TableSetNumberDetailComponent,
       },
       {
-        path: 'table-set-number/edit',
+        path: 'master-set-number/edit',
         component: TableSetNumberEditComponent,
       },
     ],

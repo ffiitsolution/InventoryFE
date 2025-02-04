@@ -33,10 +33,10 @@ export class TableAreaDetailComponent implements OnInit {
 
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_AREA);
-    this.router.navigate(['/master/table-area']);
+    this.router.navigate(['/master/master-area']);
   }
 
   onEditPressed() {
-    this.router.navigate(['/master/table-area/edit']);
+    this.router.navigate(['/master/master-area/edit']);
   }
 }

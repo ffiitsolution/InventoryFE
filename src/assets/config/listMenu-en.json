@@ -7,7 +7,7 @@
     }
   },
   {
-    "name": "Master and Table",
+    "name": "Master",
     "iconComponent": {
       "name": "cil-speedometer"
     },
@@ -37,28 +37,28 @@
         "url": "/master/master-product"
       },
       {
-        "name": "Table RSC",
-        "url": "/master/table-rsc"
+        "name": "Master RSC",
+        "url": "/master/master-rsc"
       },
       {
-        "name": "Table Regional",
-        "url": "/master/table-regional"
+        "name": "Master Regional",
+        "url": "/master/master-regional"
       },
       {
-        "name": "Table Area",
-        "url": "/master/table-area"
+        "name": "Master Area",
+        "url": "/master/master-area"
       },
       {
-        "name": "Table UOM",
-        "url": "/master/table-uom"
+        "name": "Master UOM",
+        "url": "/master/master-uom"
       },
       {
-        "name": "Table City Area",
-        "url": "/master/table-city-area"
+        "name": "Master City Area",
+        "url": "/master/master-city-area"
       },
       {
-        "name": "Tabel Counter",
-        "url": "/master/table-set-number"
+        "name": "Master Counter",
+        "url": "/master/master-set-number"
       }
     ]
   },
