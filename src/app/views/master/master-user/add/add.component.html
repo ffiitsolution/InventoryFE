@@ -22,6 +22,7 @@
               formControlName="kodeUser"
               [readOnly]="adding"
               (keypress)="conditionInput($event, 'alphanumeric')"
+              maxlength="10"
             />
             <span *ngIf="isFieldValid('kodeUser')" class="text-danger">{{
               "Wajib diisi" | translate
@@ -41,6 +42,7 @@
               formControlName="namaUser"
               [readOnly]="adding"
               (keypress)="conditionInput($event, 'alphabet')"
+              maxlength="50"
             />
             <span *ngIf="isFieldValid('namaUser')" class="text-danger">{{
               "Wajib diisi" | translate
@@ -99,35 +101,6 @@
             </span>
           </div>
         </div>
-      
-        <!-- Konfirmasi Password -->
-<!-- <c-row [xs]="2">
-  <c-col xs="4" class="align-self-center">
-    <label for="rePasswordCode">
-      {{"Konfirmasi Password" | translate}}
-      <span class="stamp-required show">&nbsp;*</span>
-    </label>
-  </c-col>
-  
-  <c-col xs="8">
-    <input
-      type="password"
-      id="rePasswordCode"
-      class="form-control"
-      formControlName="rePasswordCode"
-      placeholder="Confirm password to Login"
-      maxlength="10"
-      (keypress)="conditionInput($event, 'alphanumeric')"
-      (keyup)="onChangePassword($event, 'user')"
-    />
-    
-    <span class="help-block" *ngIf="(!myForm.get('rePasswordCode')?.valid && myForm.get('rePasswordCode')?.touched) || isNotMatchPass">
-      <span *ngIf="!isNotMatchPass">Field is required</span>
-      <span *ngIf="isNotMatchPass">Password Not Match</span>
-    </span>
-  </c-col>
-</c-row> -->
-
 
 
         <div class="mb-3 row">
@@ -163,6 +136,7 @@
               formControlName="jabatan"
               [readOnly]="adding"
               (keypress)="conditionInput($event, 'alphabet')"
+              maxlength="50"
             />
           </div>
         </div>

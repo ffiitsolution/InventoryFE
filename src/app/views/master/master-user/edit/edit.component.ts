@@ -172,7 +172,7 @@ export class MasterUserEditComponent implements OnInit {
         ? /[a-zA-Z0-9]/
         : type == 'numeric'
         ? /[0-9]/
-        : /[a-zA-Z.() ,\-]/;
+        : /^[a-zA-Z.() ,\-]*$/;
     if (temp_regex.test(inp)) return true;
     else {
       event.preventDefault();

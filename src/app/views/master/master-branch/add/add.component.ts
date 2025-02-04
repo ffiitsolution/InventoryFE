@@ -232,7 +232,8 @@ export class MasterBranchAddComponent implements OnInit {
         ? /^[0-9-]$/
         : type =='email'
         ? /^[a-zA-Z0-9@._-]$/
-        : /^[a-zA-Z.() ,\-]$/;
+        :/^[a-zA-Z.() ,\-]*$/;
+        
     if (temp_regex.test(inp)) return true;
     else {
       event.preventDefault();

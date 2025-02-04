@@ -56,10 +56,10 @@ export class MasterBranchEditComponent implements OnInit {
     console.log("this.detail", this.detail);
 
     this.myForm = this.form.group({
-      namaCabang: [this.detail.namaCabang],
-      kodeCabang:         { value: this.detail.kodeCabang, disabled: true },
-      kodeSingkat: [this.detail.kodeSingkat],
-      kodeGroup: [this.detail.kodeGroup],
+      namaCabang: [this.detail.namaCabang, Validators.required],
+      kodeCabang: [{ value: this.detail.kodeCabang, disabled: true }, Validators.required],
+      kodeSingkat: [this.detail.kodeSingkat, Validators.required],
+      kodeGroup: [this.detail.kodeGroup, Validators.required],
       deskripsiGroup: [this.detail.deskripsiGroup],
       kota: [this.detail.kota],
       alamat1: [this.detail.alamat1],
@@ -262,7 +262,7 @@ export class MasterBranchEditComponent implements OnInit {
         ? /^[0-9-]$/
         : type =='email'
         ? /^[a-zA-Z0-9@._-]$/
-        : /^[a-zA-Z.() ,\-]$/;
+        : /^[a-zA-Z.() ,\-]*$/;
     if (temp_regex.test(inp)) return true;
     else {
       event.preventDefault();
