@@ -6,9 +6,9 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataService } from 'src/app/service/data.service';
-import { GlobalService } from 'src/app/service/global.service';
-import { TranslationService } from 'src/app/service/translation.service';
+import { DataService } from '../../../service/data.service';
+import { GlobalService } from '../../../service/global.service';
+import { TranslationService } from '../../../service/translation.service';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
@@ -23,6 +23,7 @@ import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE } from '../../../../c
   selector: 'app-add-data',
   templateUrl: './add-data.component.html',
   styleUrls: ['./add-data.component.scss'],
+  
 })
 export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
   orderNumber: any;
@@ -218,7 +219,7 @@ export class DeliveryDataService {
   constructor(private http: HttpClient) { }
 
   saveDeliveryData(data: any): Observable<any> {
-    const apiUrl = 'your-api-endpoint'; // Replace with your actual API endpoint
+    const apiUrl = 'http://localhost:8093/inventory/api/delivery-order/status-descriptions';
     return this.http.post<any>(apiUrl, data);
   }
 }
