@@ -49,6 +49,7 @@ export class MasterBranchDetailComponent implements OnInit {
       keterangan: [this.detail.keterangan],
       alamatIp: [this.detail.alamatIp],
       tipeCabang: [this.detail.tipeCabang],
+      statusAktif: [this.detail.statusAktif],
 
       userCreate: [this.detail.userCreate],
       userUpdate: [this.detail.userUpdate],

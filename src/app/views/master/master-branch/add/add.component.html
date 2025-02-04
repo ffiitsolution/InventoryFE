@@ -45,7 +45,7 @@
                     class="form-control"
                     formControlName="kodeSingkat"
                     [readOnly]="adding"
-                    (keypress)="conditionInput($event, 'alphabet')"
+                    (keypress)="conditionInput($event, 'kodeSingkat')"
                     maxlength="10"
                   />
                   <span *ngIf="isFieldValid('kodeSingkat')" class="text-danger">{{
@@ -105,21 +105,6 @@
                 </div>
              
               </div>
-              <!-- <div class="col-md-4">
-                <label cLabel for="selectedtipeCabangFilter">{{ 'Group' | translate }}:</label>
-                <select
-                  aria-label="Group"
-                  cSelect
-                  id="selectedKodeGroupFilter"
-                  [(ngModel)]="selectedKodeGroupFilter"
-                  (ngModelChange)="onCityFilterChange()"
-                >
-                  <option value="">{{ 'Semua' | translate }}</option>
-                  <option *ngFor="let kodeGroup of kodeGroupOptions" [value]="kodeGroup.value">
-                    {{ kodeGroup.value }} - {{ kodeGroup.label | translate }}
-                  </option>
-                </select>
-              </div>   -->
             </div>
           </div>
         </div>
@@ -133,8 +118,10 @@
               <!-- left column -->
               <div class="mb-3 row">
                 <label class="col-sm-4 col-form-label">{{
-                  "Alamat 1" | translate
-                }}</label>
+                    "Alamat 1" | translate
+                  }}
+                  <span class="stamp-required show">&nbsp;*</span>
+                </label>
                 <div class="col-sm-8">
                   <input
                     type="text"
@@ -142,7 +129,12 @@
                     formControlName="alamat1"
                     [readOnly]="adding"
                     maxlength="40"
+                    (keypress)="conditionInput($event, 'excludedSensitive')"                    
                   />
+                  <span *ngIf="isFieldValid('alamat1')" class="text-danger">{{
+                    "Wajib diisi" | translate
+                  }}
+                </span>
                 </div>
               </div>
               <div class="mb-3 row">
@@ -156,6 +148,7 @@
                     formControlName="alamat2"
                     [readOnly]="adding"
                     maxlength="40"
+                    (keypress)="conditionInput($event, 'excludedSensitive')"                    
                   />
                 </div>
               </div>
@@ -406,6 +399,7 @@
                     formControlName="keterangan"
                     [readOnly]="adding"
                     maxlength="50"
+                    (keypress)="conditionInput($event, 'excludedSensitive')"                    
                   />
                 </div>
               </div>  

@@ -21,7 +21,8 @@
             class="form-control"
             formControlName="kodeUser"
             (keypress)="conditionInput($event, 'alphanumeric')"
-          />
+            maxlength="10"
+            />
           <span *ngIf="isFieldValid('kodeUser')" class="text-danger">{{
             "Wajib diisi" | translate
           }}</span>
@@ -39,7 +40,8 @@
               class="form-control"
               formControlName="namaUser"
               (keypress)="conditionInput($event, 'alphabet')"
-            />          
+              maxlength="50"
+              />          
             <span *ngIf="isFieldValid('namaUser')" class="text-danger">{{
               "Wajib diisi" | translate
             }}</span>
@@ -48,7 +50,9 @@
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
             "Password" | translate
-          }}</label>
+          }}
+          <span class="stamp-required show">&nbsp;*</span>
+          </label>                 
           <div class="col-sm-10">
             <input
               maxlength="10"
@@ -71,7 +75,9 @@
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
             "Konfirmasi Password" | translate
-          }}</label>
+          }}
+          <span class="stamp-required show">&nbsp;*</span>
+          </label>                 
           <div class="col-sm-10">
             <input
               maxlength="10"
@@ -123,7 +129,8 @@
               class="form-control"
               formControlName="jabatan"
               (keypress)="conditionInput($event, 'alphabet')"
-            />    
+              maxlength="50"
+              />    
             <span *ngIf="isFieldValid('jabatan')" class="text-danger">{{
               "Wajib diisi" | translate
             }}</span>      
