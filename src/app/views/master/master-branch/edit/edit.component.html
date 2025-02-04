@@ -46,7 +46,7 @@
                     class="form-control"
                     formControlName="kodeSingkat"
                     [readOnly]="adding"
-                    (keypress)="conditionInput($event, 'alphabet')"
+                    (keypress)="conditionInput($event, 'kodeSingkat')"
                     maxlength="10"
                   />
                   <span *ngIf="isFieldValid('kodeSingkat')" class="text-danger">{{
@@ -142,6 +142,7 @@
                     formControlName="alamat1"
                     [readOnly]="adding"
                     maxlength="40"
+                    (keypress)="conditionInput($event, 'excludedSensitive')"                    
                   />
                 </div>
               </div>
@@ -156,6 +157,7 @@
                     formControlName="alamat2"
                     [readOnly]="adding"
                     maxlength="40"
+                    (keypress)="conditionInput($event, 'excludedSensitive')"                    
                   />
                 </div>
               </div>
@@ -406,6 +408,7 @@
                     formControlName="keterangan"
                     [readOnly]="adding"
                     maxlength="50"
+                    (keypress)="conditionInput($event, 'excludedSensitive')"                    
                   />
                 </div>
               </div>  

@@ -80,7 +80,8 @@ export class MasterBranchEditComponent implements OnInit {
       keterangan: [this.detail.keterangan],
       alamatIp: [this.detail.alamatIp],
       tipeCabang: [this.detail.tipeCabang],
-
+      status: [this.detail.statusAktif],
+      statusAktif: [this.detail.statusAktif],
       userCreate: [this.detail.userCreate],
       userUpdate: [this.detail.userUpdate],
       dateCreate: [this.detail.dateCreate],
@@ -216,6 +217,7 @@ export class MasterBranchEditComponent implements OnInit {
         tipeCabang: controls?.['tipeCabang']?.value,
         keterangan: controls?.['keterangan']?.value,
         kodeGroup: controls?.['kodeGroup']?.value,
+        statusAktif: controls?.['statusAktif']?.value,
 
       };
       this.service.insert('/api/branch/update', param).subscribe({
@@ -262,7 +264,12 @@ export class MasterBranchEditComponent implements OnInit {
         ? /^[0-9-]$/
         : type =='email'
         ? /^[a-zA-Z0-9@._-]$/
-        : /^[a-zA-Z.() ,\-]*$/;
+        : type == 'excludedSensitive'
+        ?/^[a-zA-Z0-9 .,_@-]*$/
+        : type =='kodeSingkat'
+        ? /^[a-zA-Z]+$/
+        :/^[a-zA-Z.() ,\-]*$/;
+        
     if (temp_regex.test(inp)) return true;
     else {
       event.preventDefault();

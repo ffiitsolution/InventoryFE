@@ -72,6 +72,7 @@ export class MasterBranchAddComponent implements OnInit {
       contactPhone: [''],
       keterangan: [''],
       tipeCabang: [''],
+      statusAktif:['A'],
 
       userCreate: [''],
       userUpdate: [''],
@@ -114,7 +115,6 @@ export class MasterBranchAddComponent implements OnInit {
         id: item.KODE_KOTA,
         name: item.KODE_KOTA+" - " + item.KETERANGAN_KOTA,
       }));     
-      console.log("listKota", this.listKota); 
     });
 
     this.dataService
@@ -124,7 +124,6 @@ export class MasterBranchAddComponent implements OnInit {
         id: item.KODE_RSC,
         name: item.KODE_RSC+" - " + item.KETERANGAN_RSC,
       }));     
-      console.log("listRSC", this.listRSC); 
     });
 
     this.dataService
@@ -134,7 +133,6 @@ export class MasterBranchAddComponent implements OnInit {
         id: item.KODE_REGION  ,
         name: item.KODE_REGION+" - " + item.KETERANGAN_REGION,
       }));     
-      console.log("listRegion", this.listRegion); 
     });
 
     this.dataService
@@ -144,7 +142,6 @@ export class MasterBranchAddComponent implements OnInit {
         id: item.KODE_AREA  ,
         name: item.KODE_AREA+" - " + item.KETERANGAN_AREA,
       }));     
-      console.log("listArea", this.listArea); 
     });
 
     this.dataService
@@ -154,14 +151,11 @@ export class MasterBranchAddComponent implements OnInit {
         value: item.KODE_GROUP,
         label: item.DESKRIPSI_GROUP,
       }));    
-      console.log('kodeGroupOptions',this.kodeGroupOptions);  
     });
   }
 
   onSubmit(): void {
-    console.log("myForm", this.myForm.value);
     const { controls, invalid } = this.myForm;
-    console.log("invalid", invalid);
     if (invalid || !this.isEmailValid) {
       this.g.markAllAsTouched(this.myForm);
     } else {
@@ -187,6 +181,7 @@ export class MasterBranchAddComponent implements OnInit {
         tipeCabang: controls?.['tipeCabang']?.value,
         keterangan: controls?.['keterangan']?.value,
         kodeGroup: controls?.['kodeGroup']?.value,
+        statusAktif:  controls?.['statusAktif']?.value,
       };
       this.service.insert('/api/branch/insert', param).subscribe({
         next: (res) => {
@@ -232,6 +227,10 @@ export class MasterBranchAddComponent implements OnInit {
         ? /^[0-9-]$/
         : type =='email'
         ? /^[a-zA-Z0-9@._-]$/
+        : type == 'excludedSensitive'
+        ?/^[a-zA-Z0-9 .,_@-]*$/
+        : type =='kodeSingkat'
+        ? /^[a-zA-Z]+$/
         :/^[a-zA-Z.() ,\-]*$/;
         
     if (temp_regex.test(inp)) return true;
