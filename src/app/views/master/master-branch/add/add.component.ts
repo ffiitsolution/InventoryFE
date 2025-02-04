@@ -55,7 +55,7 @@ export class MasterBranchAddComponent implements OnInit {
       kodeSingkat: ['', Validators.required],
       kodeGroup: ['', Validators.required],
       kota: [''],
-      alamat1: [''],
+      alamat1: ['', Validators.required],
       alamat2: [''],
       kodePos: [''],
       telpon1: [''],

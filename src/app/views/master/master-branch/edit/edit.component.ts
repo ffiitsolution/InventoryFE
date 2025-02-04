@@ -62,7 +62,7 @@ export class MasterBranchEditComponent implements OnInit {
       kodeGroup: [this.detail.kodeGroup, Validators.required],
       deskripsiGroup: [this.detail.deskripsiGroup],
       kota: [this.detail.kota],
-      alamat1: [this.detail.alamat1],
+      alamat1: [this.detail.alamat1, Validators.required],
       alamat2: [this.detail.alamat2],
       kodePos: [this.detail.kodePos],
       telpon1: [this.detail.telpon1],
@@ -154,7 +154,7 @@ export class MasterBranchEditComponent implements OnInit {
         id: item.KODE_REGION  ,
         name: item.KODE_REGION+" - " + item.KETERANGAN_REGION,
       }));     
-      const getRegion = this.listRSC.find(
+      const getRegion = this.listRegion.find(
         (item: any) => item.id === this.detail.kodeRegion
       );      
       this.myForm.get('keteranganRegion')?.setValue(getRegion); 
