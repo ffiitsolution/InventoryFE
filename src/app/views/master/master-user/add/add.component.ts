@@ -26,7 +26,7 @@ export class MasterUserAddComponent implements OnInit {
     noResultsFound: 'Tidak ada hasil', // Text when no results are found
     searchOnKey: 'name' // Key to search
   };
-  configSelectLokasi: any ;
+  configSelectDefaultLokasi: any ;
   configSelectRole: any ;
   isNotMatchPass: boolean = false;
   listRole: any[] = [];
@@ -53,10 +53,10 @@ export class MasterUserAddComponent implements OnInit {
       roleID:[''],
     });
 
-    this.configSelectLokasi = {
+    this.configSelectDefaultLokasi = {
       ...this.baseConfig,
-      placeholder: 'Pilih Lokasi',
-      searchPlaceholder: 'Cari Lokasi',
+      placeholder: 'Pilih Default Lokasi',
+      searchPlaceholder: 'Cari Default Lokasi',
       limitTo: this.listLokasi.length
     };
     this.configSelectRole = {
@@ -85,7 +85,6 @@ export class MasterUserAddComponent implements OnInit {
   }
 
   onSubmit(): void {
-    // this.myForm.kodeUser.value
     const { controls, invalid } = this.myForm;
     if (invalid || this.isNotMatchPass) {
       console.log("inside invalid")
@@ -99,8 +98,7 @@ export class MasterUserAddComponent implements OnInit {
         statusAktif: controls?.['statusAktif']?.value,
         jabatan: controls?.['jabatan']?.value,
         defaultLocation: controls?.['defaultLocation']?.value?.id,
-        roleID: controls?.['roleID']?.value?.id
-
+        roleID: controls?.['roleID']?.value?.id,
       };
       this.service.insert('/api/users', param).subscribe({
         next: (res) => {
