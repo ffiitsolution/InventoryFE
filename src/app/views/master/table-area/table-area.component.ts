@@ -157,12 +157,12 @@ export class TableAreaComponent implements OnInit, OnDestroy, AfterViewInit {
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage(LS_INV_SELECTED_AREA, JSON.stringify(data));
-      this.router.navigate(['/master/table-area/detail']);
+      this.router.navigate(['/master/master-area/detail']);
     } else if (action === ACTION_EDIT) {
       this.g.saveLocalstorage(LS_INV_SELECTED_AREA, JSON.stringify(data));
-      this.router.navigate(['/master/table-area/edit']);
+      this.router.navigate(['/master/master-area/edit']);
     } else if (action === ACTION_ADD) {
-      this.router.navigate(['/master/table-area/add']);
+      this.router.navigate(['/master/master-area/add']);
     }
   }
 

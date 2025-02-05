@@ -27,7 +27,7 @@
         <c-card class="mt-3 shadow">
           <c-card-body>
             <div class="row">
-              <div class="col">
+              <div class="col-md-4">
                 <label cLabel for="selectStatusFilter"
                   >{{ "Status aktif" | translate }}:
                 </label>
@@ -43,6 +43,61 @@
                   <option value="T">{{ "Tidak aktif" | translate }}</option>
                 </select>
               </div>
+              <div class="col-md-4">
+                <label cLabel for="selectedKotaFilter">{{ 'Kota' | translate }}:</label>
+                <select
+                  aria-label="Kota"
+                  cSelect
+                  id="selectedCityFilter"
+                  [(ngModel)]="selectedCityFilter"
+                  (ngModelChange)="onCityFilterChange()"
+                >
+                  <option value="">{{ 'Semua' | translate }}</option>
+                  <option *ngFor="let city of cityOptions" [value]="city.value">
+                    {{ city.value }} - {{ city.label | translate }}
+                  </option>
+                </select>
+              </div>  
+              <div class="col-md-4">
+                <label cLabel for="selectedtipeCabangFilter">{{ 'RSC' | translate }}:</label>
+                <select
+                  aria-label="RSC"
+                  cSelect
+                  id="selectedRscFilter"
+                  [(ngModel)]="selectedRscFilter"
+                  (ngModelChange)="onRscFilterChange()"
+                >
+                  <option value="">{{ 'Semua' | translate }}</option>
+                  <option *ngFor="let rsc of rscOptions" [value]="rsc.value">
+                    {{ rsc.value }} - {{ rsc.label | translate }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label cLabel for="selectedTerimaCnFilterFilter">{{ 'Terima CN' | translate }}: </label>
+                <select aria-label="TerimaCn" cSelect id="selectedTerimaCnFilter" [(ngModel)]="selectedTerimaCnFilter" (ngModelChange)="onStatusFilterChange()">
+                  <option value="">{{ 'Semua' | translate }}</option>
+                  <option value="A">{{ 'Aktif' | translate }}</option>
+                  <option value="T">{{ 'Tidak aktif' | translate }}</option>
+                </select>
+              </div>    
+              <div class="col-md-4">
+                <label cLabel for="selectedStatusSyncFilter">{{ 'Status Sync' | translate }}: </label>
+                <select aria-label="Status Sync" cSelect id="selectedStatusSyncFilter" [(ngModel)]="selectedStatusSyncFilter" (ngModelChange)="onStatusFilterChange()">
+                  <option value="">{{ 'Semua' | translate }}</option>
+                  <option value="A">{{ 'Aktif' | translate }}</option>
+                  <option value="T">{{ 'Tidak aktif' | translate }}</option>
+                </select>
+              </div>    
+              <div class="col-md-4">
+                <label cLabel for="selectedGudangFilter">{{ 'Default Gudang' | translate }}: </label>
+                <select aria-label="Status Sync" cSelect id="selectedGudangFilter" [(ngModel)]="selectedGudangFilter" (ngModelChange)="onGudangFilterChange()">
+                  <option value="">{{ 'Semua' | translate }}</option>
+                  <option *ngFor="let gudang of gudangOptions" [value]="gudang.value">
+                    {{ gudang.value }} - {{ gudang.label | translate }}
+                  </option>
+                </select>
+              </div>     
             </div>
           </c-card-body>
         </c-card>

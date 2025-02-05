@@ -163,12 +163,12 @@ export class TableRscComponent implements OnInit, OnDestroy, AfterViewInit {
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage(LS_INV_SELECTED_RSC, JSON.stringify(data));
-      this.router.navigate(['/master/table-rsc/detail']);
+      this.router.navigate(['/master/master-rsc/detail']);
     } else if (action === ACTION_EDIT) {
       this.g.saveLocalstorage(LS_INV_SELECTED_RSC, JSON.stringify(data));
-      this.router.navigate(['/master/table-rsc/edit']);
+      this.router.navigate(['/master/master-rsc/edit']);
     } else if (action === ACTION_ADD) {
-      this.router.navigate(['/master/table-rsc/add']);
+      this.router.navigate(['/master/master-rsc/add']);
     }
   }
   dtPageChange(event: any) {

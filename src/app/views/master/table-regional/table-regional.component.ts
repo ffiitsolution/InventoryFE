@@ -154,12 +154,12 @@ export class TableRegionalComponent
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage(LS_INV_SELECTED_REGIONAL, JSON.stringify(data));
-      this.router.navigate(['/master/table-regional/detail']);
+      this.router.navigate(['/master/master-regional/detail']);
     } else if (action === ACTION_EDIT) {
       this.g.saveLocalstorage(LS_INV_SELECTED_REGIONAL, JSON.stringify(data));
-      this.router.navigate(['/master/table-regional/edit']);
+      this.router.navigate(['/master/master-regional/edit']);
     } else if (action === ACTION_ADD) {
-      this.router.navigate(['/master/table-regional/add']);
+      this.router.navigate(['/master/master-regional/add']);
     }
   }
   dtPageChange(event: any) {

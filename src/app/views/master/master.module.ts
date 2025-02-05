@@ -13,7 +13,8 @@ import {  MasterUserAddComponent } from './master-user/add/add.component';
 import { 
   MasterBranchComponent, 
   MasterBranchDetailComponent ,
-  MasterBranchAddComponent
+  MasterBranchAddComponent,
+  MasterBranchEditComponent
 } from './master-branch';
 import { MasterDepartmentComponent } from './master-department/master-department.component';
 import {
@@ -125,6 +126,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MasterBranchComponent,
     MasterBranchDetailComponent,
     MasterBranchAddComponent,
+    MasterBranchEditComponent,
     MasterDepartmentComponent,
 
     MasterProductComponent,

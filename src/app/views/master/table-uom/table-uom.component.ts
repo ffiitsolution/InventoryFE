@@ -163,12 +163,12 @@ export class TableUomComponent implements OnInit, OnDestroy, AfterViewInit {
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage(LS_INV_SELECTED_UOM, JSON.stringify(data));
-      this.router.navigate(['/master/table-uom/detail']);
+      this.router.navigate(['/master/master-uom/detail']);
     } else if (action === ACTION_EDIT) {
       this.g.saveLocalstorage(LS_INV_SELECTED_UOM, JSON.stringify(data));
-      this.router.navigate(['/master/table-uom/edit']);
+      this.router.navigate(['/master/master-uom/edit']);
     } else if (action === ACTION_ADD) {
-      this.router.navigate(['/master/table-uom/add']);
+      this.router.navigate(['/master/master-uom/add']);
     }
   }
   dtPageChange(event: any) {
