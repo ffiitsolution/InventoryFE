@@ -97,7 +97,7 @@ export class MasterUserAddComponent implements OnInit {
         namaUser: controls?.['namaUser']?.value,
         statusAktif: controls?.['statusAktif']?.value,
         jabatan: controls?.['jabatan']?.value,
-        defaultLocation: controls?.['defaultLocation']?.value?.id,
+        defaultLocation: controls?.['defaultLocation']?.value?.id ?? " ",
         roleID: controls?.['roleID']?.value?.id,
       };
       this.service.insert('/api/users', param).subscribe({

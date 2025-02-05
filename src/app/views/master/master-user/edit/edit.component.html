@@ -147,7 +147,10 @@
               [config]="configSelectLokasi"
               [options]="listLokasi"
               formControlName="location"
-              id="location">
+              id="location"
+              [(ngModel)]="selectedLocations"
+              (ngModelChange)="onChangeLocation($event)"
+            >
             </ngx-select-dropdown>
           </div>
         </div>
@@ -159,7 +162,7 @@
             <ngx-select-dropdown
               [multiple]="false"
               [config]="configSelectDefaultLokasi"
-              [options]="listLokasi"
+              [options]="listDefaultLokasi"
               formControlName="defaultLocation"
               id="default-location">
             </ngx-select-dropdown>
