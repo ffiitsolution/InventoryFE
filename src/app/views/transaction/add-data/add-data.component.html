@@ -19,10 +19,10 @@
         <div class="d-flex">
           <div class="w-50 p-2">
             <div class="">
-              <label for="orderNumber" class="form-label">{{ "Order Number" | translate }}</label>
+              <label for="nomorPesanan" class="form-label">{{ "Order Number" | translate }}</label>
               <div class="d-flex">
-                <input type="text" class="form-control" id="orderNumber" [(ngModel)]="formData.orderNumber"
-                  name="orderNumber" />
+                <input type="text" placeholder="Order Number" class="form-control" id="nomorPesanan" [(ngModel)]="formData.nomorPesanan"
+                  name="nomorPesanan" />
                 <button type="button" class="btn btn-primary ms-2" [cModalToggle]="formModal.id"
                   (click)="onShowModal()"><i class="fa fa-search"></i></button>
               </div>
@@ -34,48 +34,48 @@
         <div class="d-flex">
           <div class="w-50 p-2 pb-0">
             <div class="mb-3">
-              <label for="deliveryDestination" class="form-label">{{ "Delivery Destination" | translate }}</label>
+              <label for="codeDestination" class="form-label">{{ "Delivery Destination" | translate }}</label>
               <div class="row">
                 <div class="col-3">
-                  <input type="text" class="form-control" id="deliveryDestination"
-                    [(ngModel)]="formData.codeDestination" name="deliveryDestination" readonly />
+                  <input placeholder="Code" type="text" class="form-control" id="codeDestination" 
+                    [(ngModel)]="formData.codeDestination" name="codeDestination" readonly />
                 </div>
                 <div class="col-9 px-0 pe-2">
-                  <input type="text" class="form-control" id="deliveryDestination"
-                    [(ngModel)]="formData.deliveryDestination" name="deliveryDestination" readonly />
+                  <input placeholder="Destination Name" type="text" class="form-control" id="namaCabang"
+                    [(ngModel)]="formData.namaCabang" name="namaCabang" readonly />
                 </div>
               </div>
             </div>
             <div class="d-flex mb-3">
               <div class="w-100">
-                <label for="destinationAddress" class="form-label">{{ "Destination Address" | translate }}</label>
-                <textarea class="form-control w-100" [(ngModel)]="formData.destinationAddress"
-                  id="exampleFormControlTextarea1" rows="1" name="destinationAddress" readonly></textarea>
+                <label for="alamat1" class="form-label">{{ "Destination Address" | translate }}</label>
+                <textarea placeholder="Destination Address" class="form-control w-100" [(ngModel)]="formData.alamat1"
+                  id="exampleFormControlTextarea1" rows="1" name="alamat1" readonly></textarea>
               </div>
             </div>
             <div class="mb-3">
               <div class="w-100">
                 <label for="deliveryStatus" class="form-label">{{ "Delivery Status" | translate }}</label>
-                <input type="text" class="form-control" id="deliveryDestination"
-                  [(ngModel)]="formData.deliveryDestination" name="deliveryDestination" readonly />
+                <input placeholder="Delivery Status" type="text" class="form-control" id="deliveryStatus"
+                  [(ngModel)]="formData.deliveryStatus" name="deliveryStatus" readonly />
               </div>
             </div>
           </div>
           <div class="w-50 p-2">
             <div class="mb-3">
-              <label for="orderDate" class="form-label">{{ "Order Date" | translate }}</label>
-              <input type="date" class="form-control" id="orderDate" [(ngModel)]="formData.orderDate"
-                name="orderDate" />
+              <label for="tglPesan" class="form-label">{{ "Order Date" | translate }}</label>
+              <input placeholder="Order Date" type="date" class="form-control" id="orderDate" [(ngModel)]="formData.tglPesan"
+                name="tglPesan" />
             </div>
             <div class="mb-3">
-              <label for="deliveryDate" class="form-label">{{ "Delivery Date" | translate }}</label>
-              <input type="date" class="form-control" id="deliveryDate" [(ngModel)]="formData.deliveryDate"
-                name="deliveryDate" />
+              <label for="tglBrgDikirim" class="form-label">{{ "Delivery Date" | translate }}</label>
+              <input placeholder="Delivery Date" type="date" class="form-control" id="tglBrgDikirim" [(ngModel)]="formData.tglBrgDikirim"
+                name="tglBrgDikirim" />
             </div>
             <div class="mb-3">
-              <label for="expirationDate" class="form-label">{{ "Expiration Date" | translate }}</label>
-              <input type="date" class="form-control" id="expirationDate" [(ngModel)]="formData.expirationDate"
-                name="expirationDate" />
+              <label for="tglKadaluarsa" class="form-label">{{ "Expiration Date" | translate }}</label>
+              <input placeholder="Expiration Date" type="date" class="form-control" id="tglKadaluarsa" [(ngModel)]="formData.tglKadaluarsa"
+                name="tglKadaluarsa" />
             </div>
           </div>
 
@@ -101,19 +101,19 @@
 
             <input type="text" id="validatedDeliveryDate" class="form-control" aria-describedby="validatedDeliveryDate"
               #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker autocomplete="off"
-              [(ngModel)]="formData.validatedDeliveryDate" placeholder="Tanggal" [minDate]="minDate" [maxDate]="maxDate" [readOnly]="formData.orderDate === ''"/>
+              [(ngModel)]="formData.validatedDeliveryDate" placeholder="{{ 'Validated Delivery Date' | translate }}" [minDate]="minDate" [maxDate]="maxDate" [readOnly]="formData.nomorPesanan === ''"/>
 
           </div>
         </div>
         <div class="w-50 p-2">
           <div class="mb-3">
             <label for="notes" class="form-label">{{ "Notes" | translate }}</label>
-            <input type="text" class="form-control" id="notes" [(ngModel)]="formData.notes" name="notes" />
+            <input placeholder="Notes" type="text" class="form-control" id="notes" [(ngModel)]="formData.notes" name="notes" />
           </div>
         </div>
       </div>
       <div class="d-flex justify-content-end mb-3">
-        <button class="btn btn-primary" (click)="onSaveData()">
+        <button class="btn btn-primary" (click)="onAddDetail()">
           {{ "Detail Transaksi" | translate }}
         </button>
       </div>

@@ -17,7 +17,8 @@ import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Page } from '../../../model/page';
 import { AppService } from '../../../service/app.service';
-import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE } from '../../../../constants';
+import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../constants';
+import moment from 'moment';
 
 @Component({
   selector: 'app-add-data',
@@ -26,7 +27,7 @@ import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE } from '../../../../c
   
 })
 export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
-  orderNumber: any;
+  nomorPesanan: any;
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
@@ -42,14 +43,14 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('formModal') formModal: any;
   // Form data object
   formData = {
-    orderNumber: '',
+    nomorPesanan: '',
     deliveryStatus: '',
-    deliveryDestination: '',
-    destinationAddress: '',
-    orderDate: '',
-    deliveryDate: '',
-    expirationDate: '',
-    validatedDeliveryDate: new Date(),
+    namaCabang: '',
+    alamat1: '',
+    tglPesan: '',
+    tglBrgDikirim: '',
+    tglKadaluarsa: '',
+    validatedDeliveryDate: '',
     notes: '',
     codeDestination: ''
   };
@@ -90,6 +91,18 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
     this.onSaveData();
   }
 
+  onAddDetail(){
+    this.router.navigate(['/transaction/delivery-item/add-data-detail']);
+    this.formData.validatedDeliveryDate = moment(
+      this.formData.validatedDeliveryDate, 
+      'YYYY-MM-DD'
+    ).format('DD-MM-YYYY')
+    this.globalService.saveLocalstorage(
+            LS_INV_SELECTED_DELIVERY_ORDER,
+            JSON.stringify(this.formData)
+          ); 
+  }
+
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
   }
@@ -97,6 +110,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
+
 
   onPreviousPressed(): void {
     this.router.navigate(['/transaction/delivery-item']);
@@ -198,17 +212,18 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private mapOrderData(orderData: any): void {
-    this.formData.deliveryStatus = orderData.deliveryStatus || '';
+    this.formData.deliveryStatus =  'Aktif';
     this.formData.codeDestination = orderData.kodeGudang
-    this.formData.deliveryDestination = orderData.namaCabang || '';
-    this.formData.destinationAddress = orderData.alamat1 || '';
-    this.formData.orderDate = orderData.tglPesan || '';
-    this.formData.deliveryDate = orderData.tglBrgDikirim || '';
-    this.formData.expirationDate = orderData.tglKadaluarsa || '';
-    this.formData.notes = orderData.notes || '';
-    this.formData.orderNumber = orderData.nomorPesanan || '';
+    this.formData.namaCabang = orderData.namaCabang || '';
+    this.formData.alamat1 = orderData.alamat1 || '';
+    this.formData.tglPesan = orderData.tglPesan || '';
+    this.formData.tglBrgDikirim = orderData.tglBrgDikirim || '';
+    this.formData.tglKadaluarsa = orderData.tglKadaluarsa || '';
+    this.formData.notes = orderData.keterangan1 || '';
+    this.formData.nomorPesanan = orderData.nomorPesanan || '';
+    this.formData.validatedDeliveryDate = orderData.tglPesan || '';
 
-    this.maxDate = new Date(this.formData.expirationDate);
+    this.maxDate = new Date(this.formData.tglKadaluarsa);
   }
 
 }
