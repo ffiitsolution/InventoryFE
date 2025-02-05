@@ -33,10 +33,10 @@ export class TableRegionalDetailComponent implements OnInit {
 
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_REGIONAL);
-    this.router.navigate(['/master/table-regional']);
+    this.router.navigate(['/master/master-regional']);
   }
 
   onEditPressed() {
-    this.router.navigate(['/master/table-regional/edit']);
+    this.router.navigate(['/master/master-regional/edit']);
   }
 }

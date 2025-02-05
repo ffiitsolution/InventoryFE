@@ -71,7 +71,7 @@ export class TableRegionalEditComponent implements OnInit {
 
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_REGIONAL);
-    this.router.navigate(['/master/table-regional']);
+    this.router.navigate(['/master/master-regional']);
   }
 
   isFieldValid(fieldName: String) {

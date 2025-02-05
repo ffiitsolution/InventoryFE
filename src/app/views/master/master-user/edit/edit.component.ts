@@ -18,18 +18,23 @@ export class MasterUserEditComponent implements OnInit {
   editing: boolean = false;
   detail: any;
   listLokasi: any[] = [];
-  configSelectLokasi: any = {
+  baseConfig: any = {
     displayKey: 'name', // Key to display in the dropdown
     search: true, // Enable search functionality
     height: '200px', // Dropdown height
-    placeholder: 'Pilih Lokasi', // Placeholder text
     customComparator: () => {}, // Custom sorting comparator
-    limitTo: this.listLokasi.length, // Limit the number of displayed options
     moreText: 'lebih banyak', // Text for "more" options
     noResultsFound: 'Tidak ada hasil', // Text when no results are found
-    searchPlaceholder: 'Cari Lokasi', // Placeholder for the search input
     searchOnKey: 'name' // Key to search
   };
+
+  configSelectLokasi: any ;
+  configSelectRole: any ;
+
+  isNotMatchPass: boolean = false;
+  isNotMatchPassPos: boolean = false;
+  listRole: any[] = [];
+
 
 
   constructor(
@@ -59,14 +64,30 @@ export class MasterUserEditComponent implements OnInit {
         this.detail.kodePassword ,
         Validators.required,
       ],
+      
+      konfirmasiKodePassword:  [this.detail.kodePassword , Validators.required],
       statusAktif: [
         this.detail.statusAktif 
       ],
       jabatan: [
         this.detail.jabatan 
       ],
-      defaultLocation: [{}]
+      defaultLocation: [{}],
+      roleID:[],
     });
+
+    this.configSelectLokasi = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Lokasi',
+      searchPlaceholder: 'Cari Lokasi',
+      limitTo: this.listLokasi.length
+    };
+    this.configSelectRole = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Role',
+      searchPlaceholder: 'Cari Role',
+      limitTo: this.listRole.length
+    };
 
     this.dataService
     .postData(this.g.urlServer + '/api/location/dropdown-lokasi',{})
@@ -74,25 +95,32 @@ export class MasterUserEditComponent implements OnInit {
       this.listLokasi = resp.map((item: any) => ({
         id: item.KODE_LOCATION,
         name: item.KETERANGAN_LOKASI,
-      }));      
-
-      const fullDefaultLocation = this.listLokasi.find(
+      }));    
+      const getDefaultLocation = this.listLokasi.find(
         (item: any) => item.id === this.detail.defaultLocation
-      );
+      );      
+      this.myForm.get('defaultLocation')?.setValue(getDefaultLocation);
+      console.log('getDefaultLocation', getDefaultLocation);
+    });
 
-      
-      this.myForm.addControl(
-        'defaultLocation', ''
+    this.dataService
+    .postData(this.g.urlServer + '/api/role/dropdown-role',{})
+    .subscribe((resp: any) => {
+      this.listRole = resp.map((item: any) => ({
+        id: item.ID,
+        name: item.NAME,
+      }));      
+      const getRoleID = this.listRole.find(
+        (item: any) => Number(item.id) === Number(this.detail.roleId)
       );
-      this.myForm.get('defaultLocation')?.setValue(fullDefaultLocation);
-
+      this.myForm.get('roleID')?.setValue(getRoleID);
     });
 
   }
 
   onSubmit(): void {
     const { controls, invalid } = this.myForm;
-    if (invalid) {
+    if (invalid || this.isNotMatchPass) {
       this.g.markAllAsTouched(this.myForm);
     } else {
       this.editing = true;
@@ -102,7 +130,8 @@ export class MasterUserEditComponent implements OnInit {
         namaUser: controls?.['namaUser']?.value,
         statusAktif: controls?.['statusAktif']?.value,
         jabatan: controls?.['jabatan']?.value,
-        defaultLocation: controls?.['defaultLocation']?.value?.id
+        defaultLocation: controls?.['defaultLocation']?.value?.id,
+        roleID: controls?.['roleID']?.value?.id
       };
       this.service.patch('/api/users/current', param).subscribe({
         next: (res: any) => {
@@ -133,5 +162,37 @@ export class MasterUserEditComponent implements OnInit {
   onChangeSelect(data: any, field: string) {
     const dataStatus = data?.target?.value;
     this.myForm.get('statusAktif')?.setValue(dataStatus);
+  }
+
+  
+  conditionInput(event: any, type: string): boolean {
+    var inp = String.fromCharCode(event.keyCode);
+    let temp_regex =
+      type == 'alphanumeric'
+        ? /[a-zA-Z0-9]/
+        : type == 'numeric'
+        ? /[0-9]/
+        : /^[a-zA-Z.() ,\-]*$/;
+    if (temp_regex.test(inp)) return true;
+    else {
+      event.preventDefault();
+      return false;
+    }
+  }
+
+  onChangePassword(data: any, type: string) {
+    if(type === 'user') {
+      if((this.myForm.value.kodePassword!='' && this.myForm.value.konfirmasiKodePassword!='') && (this.myForm.value.kodePassword != this.myForm.value.konfirmasiKodePassword)) {  
+        this.isNotMatchPass = true
+      }
+      else {
+        this.isNotMatchPass = false
+      }
+    }
+
+  }
+
+  isFieldValid(fieldName: String) {
+    return this.g.isFieldValid(this.myForm, fieldName);
   }
 }

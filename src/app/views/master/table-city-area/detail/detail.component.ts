@@ -33,10 +33,10 @@ export class TableCityAreaDetailComponent implements OnInit {
 
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_CITY);
-    this.router.navigate(['/master/table-city-area']);
+    this.router.navigate(['/master/master-city-area']);
   }
 
   onEditPressed() {
-    this.router.navigate(['/master/table-city-area/edit']);
+    this.router.navigate(['/master/master-city-area/edit']);
   }
 }

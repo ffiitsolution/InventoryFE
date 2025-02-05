@@ -44,6 +44,14 @@ export class MasterSupplierComponent
   buttonCaptionEdit: String = 'Ubah';
   CONST_ACTION_ADD: string = ACTION_ADD;
   adding: boolean = false;
+  cityOptions: any;
+  selectedCityFilter: any = '';
+  rscOptions: any = '';
+  selectedRscFilter: any = '';
+  selectedTerimaCnFilter: any = '';
+  selectedStatusSyncFilter: any = '';
+  selectedGudangFilter: any = '';
+  gudangOptions: any;
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
@@ -54,7 +62,21 @@ export class MasterSupplierComponent
       dtInstance.ajax.reload();
     });
   }
-
+  onCityFilterChange() {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
+  }
+  onRscFilterChange() {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
+  }
+  onGudangFilterChange() {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
+  }
   constructor(
     private dataService: DataService,
     private g: GlobalService,
@@ -77,6 +99,11 @@ export class MasterSupplierComponent
         const requestData = {
           ...dataTablesParameters,
           status: this.selectedStatusFilter,
+          KODE_KOTA: this.selectedCityFilter,
+          KODE_RSC: this.selectedRscFilter,
+          TERIMA_CN: this.selectedTerimaCnFilter,
+          STATUS_SYNC: this.selectedStatusSyncFilter,
+          DEFAULT_GUDANG: this.selectedGudangFilter,
         };
         this.dataService
           .postData(this.g.urlServer + '/api/supplier/dt', requestData)
@@ -184,6 +211,42 @@ export class MasterSupplierComponent
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.buttonCaptionEdit = this.translation.instant('Ubah');
     localStorage.removeItem(LS_INV_SELECTED_SUPPLIER);
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/city/dropdown-city',{})
+    .subscribe((resp: any) => {
+      this.cityOptions = resp.map((item: any) => ({
+        value: item.KODE_KOTA,
+        label: item.KETERANGAN_KOTA,
+      }));    
+    });
+
+    
+    this.dataService
+    .postData(this.g.urlServer + '/api/city/dropdown-city',{})
+    .subscribe((resp: any) => {
+      this.cityOptions = resp.map((item: any) => ({
+        value: item.KODE_KOTA,
+        label: item.KETERANGAN_KOTA,
+      }));    
+    });
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
+    .subscribe((resp: any) => {
+      this.rscOptions = resp.map((item: any) => ({
+        value: item.KODE_RSC,
+        label: item.KETERANGAN_RSC,
+      }));    
+    });
+    this.dataService
+    .postData(this.g.urlServer + '/api/supplier/dropdown-gudang',{})
+    .subscribe((resp: any) => {
+      this.gudangOptions = resp.map((item: any) => ({
+        value: item.DEFAULT_GUDANG,
+        label: item.KETERANGAN_GUDANG,
+      }));    
+    });
   }
 
   actionBtnClick(action: string, data: any = null) {

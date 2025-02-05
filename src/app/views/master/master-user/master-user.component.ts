@@ -38,15 +38,66 @@ export class MasterUserComponent
   datatableElement: DataTableDirective | undefined;
   selectedRowData: any;
   isFilterShown: boolean = false;
-  selectedStatusFilter: any = '';
   dtColumns: any = [];
+  selectedJabatanFilter: any = '';
+  selectedRoleFilter: any = '';
+  baseConfig: any = {
+    displayKey: 'name', // Key to display in the dropdown
+    search: true, // Enable search functionality
+    height: '200px', // Dropdown height
+    customComparator: () => {}, // Custom sorting comparator
+    moreText: 'lebih banyak', // Text for "more" options
+    noResultsFound: 'Tidak ada hasil', // Text when no results are found
+    searchOnKey: 'name' // Key to search
+  };
+  configSelectStatus: any ;
+  listStatus: any[] = [
+    {
+      id: 'A',
+      name: 'Aktif'
+    },
+    {
+      id: 'I',
+      name: 'Tidak Aktif'
+    }
+  ];
+  formStatusFilter: any ;
+
+  configSelectLokasi: any ;
+  listLokasi: any[] = [];
+  formLokasiFilter: any ;
+
+  configSelectJabatan: any ;
+  listJabatan: any[] = [];
+  formJabatanFilter: any ;
+
+  
+  configSelectRole: any ;
+  listRole: any[] = [];
+  formRoleFilter: any ;
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
   }
 
   onStatusFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
+  }
+  onLokasiFilterChange() {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
+  }
+  onJabatanFilterChange() {
+
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
+  }
+  onRoleFilterChange() {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
@@ -72,7 +123,10 @@ export class MasterUserComponent
         this.page.length = dataTablesParameters.length;
         const requestData = {
           ...dataTablesParameters,
-          status: this.selectedStatusFilter,
+          status: this.formStatusFilter?.id ? this.formStatusFilter.id : "",
+          defaultLocation: this.formLokasiFilter?.id ? this.formLokasiFilter.id : "",
+          jabatan: this.formJabatanFilter?.id ? this.formJabatanFilter?.id:"",
+          roleID:  this.formRoleFilter?.id ? this.formRoleFilter?.id:"",
         };
         this.dataService
           .postData(this.g.urlServer + '/api/users/dt', requestData)
@@ -102,6 +156,7 @@ export class MasterUserComponent
         { data: 'jabatan', title: 'Jabatan', searchable: false },
         { data: 'statusAktif', title: 'Status', searchable: false },
         { data: 'keteranganLokasi', title: 'Default Lokasi', searchable: false },
+        { data: 'roleName', title: 'Role', searchable: false },
       ],
       searchDelay: 1500,
       order: [[1, 'asc']],
@@ -141,6 +196,59 @@ export class MasterUserComponent
   ngOnInit(): void {
     this.g.changeTitle(this.translation.instant('Master') + ' ' + this.translation.instant('User') + ' - ' + this.g.tabTitle);
     localStorage.removeItem(LS_INV_SELECTED_USER);
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/location/dropdown-lokasi',{})
+    .subscribe((resp: any) => {
+      this.listLokasi = resp.map((item: any) => ({
+        id: item.KODE_LOCATION,
+        name: item.KETERANGAN_LOKASI,
+      }));    
+      console.log('this.listLokasi',this.listLokasi)
+    });
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/users/dropdown-jabatan',{})
+    .subscribe((resp: any) => {
+      this.listJabatan = resp.map((item: any) => ({
+        id: item.JABATAN,
+        name: item.JABATAN,
+      }));    
+    });
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/role/dropdown-role',{})
+    .subscribe((resp: any) => {
+      this.listRole = resp.map((item: any) => ({
+        id: item.ID,
+        name: item.NAME,
+      }));    
+    });
+
+    this.configSelectStatus = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Status',
+      searchPlaceholder: 'Cari Status',
+      limitTo: this.listStatus.length
+    };
+    this.configSelectLokasi = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Lokasi',
+      searchPlaceholder: 'Cari Lokasi',
+      limitTo: this.listLokasi.length
+    };
+    this.configSelectJabatan = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Jabatan',
+      searchPlaceholder: 'Cari Jabatan',
+      limitTo: this.listJabatan.length
+    };
+    this.configSelectRole = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Role',
+      searchPlaceholder: 'Cari Role',
+      limitTo: this.listRole.length
+    };
   }
 
   actionBtnClick(action: string) {

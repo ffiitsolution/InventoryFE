@@ -17,19 +17,20 @@ export class MasterUserAddComponent implements OnInit {
   adding: boolean = false;
   showPassword: boolean = false;
   listLokasi: any[] = [];
-  configSelectLokasi: any = {
+  baseConfig: any = {
     displayKey: 'name', // Key to display in the dropdown
     search: true, // Enable search functionality
     height: '200px', // Dropdown height
-    placeholder: 'Pilih Lokasi', // Placeholder text
     customComparator: () => {}, // Custom sorting comparator
-    limitTo: this.listLokasi.length, // Limit the number of displayed options
     moreText: 'lebih banyak', // Text for "more" options
     noResultsFound: 'Tidak ada hasil', // Text when no results are found
-    searchPlaceholder: 'Cari Lokasi', // Placeholder for the search input
     searchOnKey: 'name' // Key to search
   };
-  
+  configSelectLokasi: any ;
+  configSelectRole: any ;
+  isNotMatchPass: boolean = false;
+  listRole: any[] = [];
+
 
   constructor(
     private toastr: ToastrService,
@@ -45,11 +46,25 @@ export class MasterUserAddComponent implements OnInit {
       kodeUser:  ['', Validators.required],
       namaUser:  ['', Validators.required],
       kodePassword:  ['', Validators.required],
+      konfirmasiKodePassword:  ['', Validators.required],
       statusAktif:  ['A', Validators.required],
       defaultLocation:  [null],
       jabatan:  [''],
+      roleID:[''],
     });
 
+    this.configSelectLokasi = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Lokasi',
+      searchPlaceholder: 'Cari Lokasi',
+      limitTo: this.listLokasi.length
+    };
+    this.configSelectRole = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Role',
+      searchPlaceholder: 'Cari Role',
+      limitTo: this.listRole.length
+    };
     this.dataService
     .postData(this.g.urlServer + '/api/location/dropdown-lokasi',{})
     .subscribe((resp: any) => {
@@ -58,12 +73,22 @@ export class MasterUserAddComponent implements OnInit {
         name: item.KETERANGAN_LOKASI,
       }));      
     });
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/role/dropdown-role',{})
+    .subscribe((resp: any) => {
+      this.listRole = resp.map((item: any) => ({
+        id: item.ID,
+        name: item.NAME,
+      }));      
+    });
   }
 
   onSubmit(): void {
     // this.myForm.kodeUser.value
     const { controls, invalid } = this.myForm;
-    if (invalid) {
+    if (invalid || this.isNotMatchPass) {
+      console.log("inside invalid")
       this.g.markAllAsTouched(this.myForm);
     } else {
       this.adding = true;
@@ -73,7 +98,9 @@ export class MasterUserAddComponent implements OnInit {
         namaUser: controls?.['namaUser']?.value,
         statusAktif: controls?.['statusAktif']?.value,
         jabatan: controls?.['jabatan']?.value,
-        defaultLocation: controls?.['defaultLocation']?.value?.id
+        defaultLocation: controls?.['defaultLocation']?.value?.id,
+        roleID: controls?.['roleID']?.value?.id
+
       };
       this.service.insert('/api/users', param).subscribe({
         next: (res) => {
@@ -108,5 +135,33 @@ export class MasterUserAddComponent implements OnInit {
     const dataStatus = data?.target?.value;
     this.myForm.get('statusAktif')?.setValue(dataStatus);
   }
+
+  conditionInput(event: any, type: string): boolean {
+    var inp = String.fromCharCode(event.keyCode);
+    let temp_regex =
+      type == 'alphanumeric'
+        ? /[a-zA-Z0-9]/
+        : type == 'numeric'
+        ? /[0-9]/
+        : /^[a-zA-Z.() ,\-]*$/;
+    if (temp_regex.test(inp)) return true;
+    else {
+      event.preventDefault();
+      return false;
+    }
+  }
+
+  onChangePassword(data: any, type: string) {
+    if(type === 'user') {
+      if((this.myForm.value.kodePassword!='' && this.myForm.value.konfirmasiKodePassword!='') && (this.myForm.value.kodePassword != this.myForm.value.konfirmasiKodePassword)) {  
+        this.isNotMatchPass = true
+      }
+      else {
+        this.isNotMatchPass = false
+      }
+    }
+
+  }
+  
 
 }

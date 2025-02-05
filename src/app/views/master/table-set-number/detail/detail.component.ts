@@ -32,10 +32,10 @@ export class TableSetNumberDetailComponent implements OnInit {
 
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_SET_NUMBER);
-    this.router.navigate(['/master/table-set-number']);
+    this.router.navigate(['/master/master-set-number']);
   }
 
   onEditPressed() {
-    this.router.navigate(['/master/table-set-number/edit']);
+    this.router.navigate(['/master/master-set-number/edit']);
   }
 }
