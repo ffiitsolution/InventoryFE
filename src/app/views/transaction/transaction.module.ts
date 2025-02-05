@@ -12,6 +12,7 @@ import {
   FormModule,
   GridModule,
   ModalModule,
+  TableModule,
   TextColorDirective,
   UtilitiesModule,
 } from '@coreui/angular';
@@ -25,6 +26,7 @@ import { DeliveryItemComponent } from './delivery-item/delivery-item.component';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { AddDataComponent } from './add-data/add-data.component';
 import { DetailTransactionComponent } from './detail-transaction/detail-transaction.component';
+import { AddDataDetailDeliveryComponent } from './add-data-detail/add-data-detail.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -49,11 +51,13 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReactiveFormsModule,
     BsDatepickerModule.forRoot(),
     ModalModule,
+    TableModule
   ],
   declarations: [
     DeliveryItemComponent,
     AddDataComponent,
     DetailTransactionComponent,
+    AddDataDetailDeliveryComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })
