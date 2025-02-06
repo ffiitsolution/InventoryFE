@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { GlobalService } from '../../../../service/global.service';
 import { LS_INV_SELECTED_PRODUCT } from 'src/constants';
 import { AppService } from 'src/app/service/app.service';
+import { flagSet } from '@coreui/icons';
 
 @Component({
   selector: 'app-detail',
@@ -12,14 +13,15 @@ import { AppService } from 'src/app/service/app.service';
 })
 export class MasterProductDetailComponent implements OnInit {
   uomList: any;
-  defaultOrderGudangList: any;
   supplierList: any;
+  defaultOrderGudangList: any;
 
   configUomSelect: any;
+  configSupplierSelect: any;
+  configDefaultGudangSelect: any;
 
-  myForm: FormGroup;
   detail: any;
-  showPassword: boolean = false;
+  myForm: FormGroup;
 
   baseConfig: any = {
     displayKey: 'keteranganUom', // Key to display in the dropdown
@@ -44,43 +46,62 @@ export class MasterProductDetailComponent implements OnInit {
     this.getDefaultOrderGudangList();
 
     this.configUomSelect = {
-      displayKey: 'keteranganUom', // Label untuk ditampilkan
-      search: true, // Aktifkan pencarian
-      height: '300px', // Tinggi dropdown
-      placeholder: 'Pilih UOM',
+      disabled: true,
+      displayKey: 'keteranganUom',
+      search: true,
+      height: '300px',
+      placeholder: 'Pilih Satuan',
+    };
+
+    this.configDefaultGudangSelect = {
+      disabled: true,
+      displayKey: 'kodeSingkatan',
+      search: true,
+      height: '300px',
+      placeholder: 'Pilih Default Gudang',
+    };
+
+    this.configSupplierSelect = {
+      disabled: true,
+      displayKey: 'namaSupplier',
+      search: true,
+      height: '300px',
+      placeholder: 'Pilih Supplier',
     };
 
     this.myForm = this.form.group({
-      namaCabang: [this.detail.namaCabang],
-      kodeCabang: [this.detail.kodeCabang],
-      kodeSingkat: [this.detail.kodeSingkat],
-      kodeGroup: [this.detail.kodeGroup],
-      deskripsiGroup: [this.detail.deskripsiGroup],
-      kota: [this.detail.kota],
-      alamat1: [this.detail.alamat1],
-      alamat2: [this.detail.alamat2],
-      kodePos: [this.detail.kodePos],
-      telpon1: [this.detail.telpon1],
-      telpon2: [this.detail.telpon2],
-      fax1: [this.detail.fax1],
-      fax2: [this.detail.fax2],
-      alamatEmail: [this.detail.alamatEmail],
-      keteranganRsc: [this.detail.keteranganRsc],
-      kodeRegion: [this.detail.kodeRegion],
-      keteranganRegion: [this.detail.keteranganRegion],
-      kodeArea: [this.detail.kodeArea],
-      keteranganArea: [this.detail.keteranganArea],
-      contactPerson: [this.detail.contactPerson],
-      contactPhone: [this.detail.contactPhone],
-      keterangan: [this.detail.keterangan],
-      alamatIp: [this.detail.alamatIp],
-      tipeCabang: [this.detail.tipeCabang],
-
-      userCreate: [this.detail.userCreate],
-      userUpdate: [this.detail.userUpdate],
-      dateCreate: [this.detail.dateCreate],
-      dateupdate: [this.detail.dateUpdate],
+      kodeBarang: [this.detail.kodeBarang],
+      namaBarang: [this.detail.namaBarang],
+      konversi: [this.detail.konversi.toFixed(2)],
+      satuanKecil: [this.detail.satuanKecil],
+      satuanBesar: [this.detail.satuanBesar],
+      defaultGudang: [this.detail.defaultGudang],
+      defaultSupplier: [this.detail.defaultSupplier],
+      flagCom: [this.detail.flagCom === 'Y'],
+      flagDry: [this.detail.flagDry === 'Y'],
+      flagPrd: [this.detail.flagPrd === 'Y'],
+      flagMkt: [this.detail.flagMkt === 'Y'],
+      flagCtr: [this.detail.flagCtr === 'Y'],
+      flagHra: [this.detail.flagHra === 'Y'],
+      flagExpired: [this.detail.flagExpired],
+      flagBrgBekas: [this.detail.flagBrgBekas],
+      flagResepProduksi: [this.detail.flagResepProduksi],
+      flagConversion: [this.detail.flagConversion],
+      others2: [this.detail.others2],
+      minStock: [this.detail.minStock.toFixed(2)],
+      maxStock: [this.detail.maxStock.toFixed(2)],
+      minOrder: [this.detail.minOrder.toFixed(2)],
+      satuanMinOrder: [this.detail.satuanMinOrder],
+      panjang: [this.detail.panjang.toFixed(2)],
+      lebar: [this.detail.lebar.toFixed(2)],
+      tinggi: [this.detail.tinggi.toFixed(2)],
+      volume: [this.detail.volume.toFixed(2)],
+      berat: [this.detail.berat.toFixed(2)],
+      lokasiBarang: [this.detail.lokasiBarang],
+      statusAktif: [this.detail.statusAktif],
+      keteranganBrg: [this.detail.keteranganBrg],
     });
+    this.myForm.disable();
   }
 
   getUomList() {
@@ -104,13 +125,5 @@ export class MasterProductDetailComponent implements OnInit {
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_PRODUCT);
     this.router.navigate(['/master/master-product']);
-  }
-
-  onEditPressed() {
-    this.router.navigate(['/master/master-branch/edit']);
-  }
-
-  togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
   }
 }

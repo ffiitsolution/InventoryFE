@@ -76,6 +76,10 @@
       {
         "name": "Receive Order",
         "url": "/order/receiving-order"
+      },
+      {
+        "name": "Send Order To Warehouse",
+        "url": "/order/send-order-to-warehouse"
       }
     ]
   },
