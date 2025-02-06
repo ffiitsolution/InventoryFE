@@ -27,6 +27,9 @@ import {
   ReceivingOrderAddFormComponent,
   ReceivingOrderAddDetailFormComponent,
 } from './receiving-order';
+import {
+  SendOrderToWarehouseComponent,
+} from './send-order-to-warehouse';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -58,6 +61,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReceivingOrderDetailComponent,
     ReceivingOrderAddFormComponent,
     ReceivingOrderAddDetailFormComponent,
+    SendOrderToWarehouseComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })
