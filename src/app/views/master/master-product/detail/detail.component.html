@@ -8,7 +8,7 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <form>
+      <form [formGroup]="myForm">
         <div class="container">
           <div class="row">
             <!-- left column -->
@@ -24,12 +24,8 @@
                     class="form-control"
                     formControlName="kodeBarang"
                     maxlength="10"
+                    readonly
                   />
-                  <!-- <span
-                      *ngIf="isFieldValid('kodeCabang')"
-                      class="text-danger"
-                      >{{ "Wajib diisi" | translate }}</span
-                    > -->
                 </div>
               </div>
             </div>
@@ -46,10 +42,8 @@
                     class="form-control"
                     formControlName="namaBarang"
                     maxlength="50"
+                    read
                   />
-                  <!-- <span *ngIf="isFieldValid('namaCabang')" class="text-danger"
-                      >{{ "Wajib diisi" | translate }}
-                    </span> -->
                 </div>
               </div>
             </div>
@@ -60,9 +54,7 @@
         <!-- detail Konversi dan default gudang -->
         <div class="container">
           <div class="row">
-            <div
-              class="col-md-4 vertical-divider d-flex justify-content-center align-items-end mb-3"
-            >
+            <div class="col-md-4 vertical-divider mb-3">
               <div class="row">
                 <label class="col-sm-5 col-form-label">
                   {{ "Konversi " | translate }}
@@ -70,10 +62,13 @@
                 </label>
                 <div class="col-sm-7">
                   <input
+                    style="text-align: right"
                     type="text"
                     class="form-control"
-                    formControlName="alamat1"
+                    step="0.01"
+                    formControlName="konversi"
                     maxlength="40"
+                    readonly
                   />
                 </div>
               </div>
@@ -91,12 +86,16 @@
                     [config]="configUomSelect"
                     [bindLabel]="'keteranganUom'"
                     [bindValue]="'kodeUom'"
+                    formControlName="satuanKecil"
                   >
-                    <ng-template #itemTemplate let-item>
-                      <!-- Custom rendering -->
-                      {{ item.keteranganUom }} ({{ item.kodeUom }})
-                    </ng-template>
                   </ngx-select-dropdown>
+                  <!-- <input
+                    type="text"
+                    class="form-control"
+                    formControlName="satuanKecil"
+                    maxlength="40"
+                    readonly
+                  /> -->
                 </div>
               </div>
 
@@ -126,8 +125,11 @@
                 <div class="col-sm-7">
                   <ngx-select-dropdown
                     [multiple]="false"
-                    formControlName="keteranganRsc"
-                    id="keteranganRsc"
+                    [options]="uomList"
+                    [config]="configUomSelect"
+                    [bindLabel]="'keteranganUom'"
+                    [bindValue]="'kodeUom'"
+                    formControlName="satuanBesar"
                   >
                   </ngx-select-dropdown>
                 </div>
@@ -162,8 +164,11 @@
                 <div class="col-sm-8">
                   <ngx-select-dropdown
                     [multiple]="false"
-                    formControlName="keteranganRsc"
-                    id="keteranganRsc"
+                    [options]="defaultOrderGudangList"
+                    [config]="configUomSelect"
+                    [bindLabel]="'kodeSingkatan'"
+                    [bindValue]="'kodeSingkatan'"
+                    formControlName="defaultGudang"
                   >
                   </ngx-select-dropdown>
                 </div>
@@ -173,13 +178,16 @@
               <!-- right column -->
               <div class="row">
                 <label class="col-sm-4 col-form-label">
-                  {{ "Default Suplier " | translate }}
+                  {{ "Default Supplier " | translate }}
                 </label>
                 <div class="col-sm-8">
                   <ngx-select-dropdown
                     [multiple]="false"
-                    formControlName="keteranganRsc"
-                    id="keteranganRsc"
+                    [options]="supplierList"
+                    [config]="configSupplierSelect"
+                    [bindLabel]="'namaSupplier'"
+                    [bindValue]="'kodeSingkatan'"
+                    formControlName="defaultSupplier"
                   >
                   </ngx-select-dropdown>
                 </div>
@@ -194,23 +202,48 @@
                 </label>
                 <div class="col-sm-9 d-flex flex-wrap gap-3">
                   <c-form-check>
-                    <input cFormCheckInput id="checkOne" type="checkbox" />
+                    <input
+                      cFormCheckInput
+                      id="checkOne"
+                      type="checkbox"
+                      formControlName="flagCom"
+                    />
                     <label cFormCheckLabel for="checkOne">COMMISARY</label>
                   </c-form-check>
                   <c-form-check>
-                    <input cFormCheckInput id="checkOne" type="checkbox" />
+                    <input
+                      cFormCheckInput
+                      id="checkOne"
+                      type="checkbox"
+                      formControlName="flagDry"
+                    />
                     <label cFormCheckLabel for="checkOne">DRYGOOD</label>
                   </c-form-check>
                   <c-form-check>
-                    <input cFormCheckInput id="checkOne" type="checkbox" />
+                    <input
+                      cFormCheckInput
+                      id="checkOne"
+                      type="checkbox"
+                      formControlName="flagPrd"
+                    />
                     <label cFormCheckLabel for="checkOne">PRODUCTION</label>
                   </c-form-check>
                   <c-form-check>
-                    <input cFormCheckInput id="checkOne" type="checkbox" />
+                    <input
+                      cFormCheckInput
+                      id="checkOne"
+                      type="checkbox"
+                      formControlName="flagMkt"
+                    />
                     <label cFormCheckLabel for="checkOne">MARKETING</label>
                   </c-form-check>
                   <c-form-check>
-                    <input cFormCheckInput id="checkOne" type="checkbox" />
+                    <input
+                      cFormCheckInput
+                      id="checkOne"
+                      type="checkbox"
+                      formControlName="flagCtr"
+                    />
                     <label cFormCheckLabel for="checkOne">CATERING</label>
                   </c-form-check>
                   <c-form-check>
@@ -218,16 +251,10 @@
                       cFormCheckInput
                       id="checkOne"
                       type="checkbox"
-                      value=""
+                      formControlName="flagHra"
                     />
                     <label cFormCheckLabel for="checkOne">H R A</label>
                   </c-form-check>
-                  <!-- <ng-container *ngFor="let item of checkboxList">
-                      <c-form-check class="w-33">
-                        <input cFormCheckInput [id]="item.id" type="checkbox" />
-                        <label cFormCheckLabel [for]="item.id">{{ item.label }}</label>
-                      </c-form-check>
-                    </ng-container> -->
                 </div>
               </div>
             </div>
@@ -242,7 +269,7 @@
                   {{ "Flag Expired ? " | translate }}
                 </label>
                 <div class="col-sm-5">
-                  <select cSelect>
+                  <select cSelect formControlName="flagExpired">
                     <option value="Y">{{ "Ya" | translate }}</option>
                     <option value="T">{{ "Tidak" | translate }}</option>
                   </select>
@@ -253,7 +280,7 @@
                   {{ "Flag Barang Bekas ? " | translate }}
                 </label>
                 <div class="col-sm-5">
-                  <select cSelect>
+                  <select cSelect formControlName="flagBrgBekas">
                     <option value="Y">{{ "Ya" | translate }}</option>
                     <option value="T">{{ "Tidak" | translate }}</option>
                   </select>
@@ -264,7 +291,7 @@
                   {{ "Brg. Hasil Produksi ? " | translate }}
                 </label>
                 <div class="col-sm-5">
-                  <select cSelect>
+                  <select cSelect formControlName="flagResepProduksi">
                     <option value="Y">{{ "Ya" | translate }}</option>
                     <option value="T">{{ "Tidak" | translate }}</option>
                   </select>
@@ -275,7 +302,7 @@
                   {{ "Flag Conversion ? " | translate }}
                 </label>
                 <div class="col-sm-5">
-                  <select cSelect>
+                  <select cSelect formControlName="flagConversion">
                     <option value="Y">{{ "Ya" | translate }}</option>
                     <option value="T">{{ "Tidak" | translate }}</option>
                   </select>
@@ -286,7 +313,7 @@
                   {{ "Pembelian Kilogram ? " | translate }}
                 </label>
                 <div class="col-sm-5">
-                  <select cSelect>
+                  <select cSelect formControlName="others2">
                     <option value="Y">{{ "Ya" | translate }}</option>
                     <option value="T">{{ "Tidak" | translate }}</option>
                   </select>
@@ -300,14 +327,15 @@
                 </label>
                 <div class="col-sm-4">
                   <input
+                    style="text-align: right"
                     type="text"
                     class="form-control"
-                    formControlName="alamat1"
+                    formControlName="minStock"
                     maxlength="40"
                   />
                 </div>
                 <label class="col-sm-2 col-form-label text-left px-0">
-                  {{ "CTN " | translate }}
+                  {{ myForm.get("satuanBesar")?.value | translate }}
                 </label>
               </div>
               <div class="row mb-3">
@@ -316,14 +344,15 @@
                 </label>
                 <div class="col-sm-4">
                   <input
+                    style="text-align: right"
                     type="text"
                     class="form-control"
-                    formControlName="alamat1"
+                    formControlName="maxStock"
                     maxlength="40"
                   />
                 </div>
                 <label class="col-sm-2 col-form-label text-left px-0">
-                  {{ "CTN " | translate }}
+                  {{ myForm.get("satuanBesar")?.value | translate }}
                 </label>
               </div>
               <div class="row mb-3">
@@ -332,14 +361,15 @@
                 </label>
                 <div class="col-sm-4">
                   <input
+                    style="text-align: right"
                     type="text"
                     class="form-control"
-                    formControlName="alamat1"
+                    formControlName="minOrder"
                     maxlength="40"
                   />
                 </div>
                 <label class="col-sm-2 col-form-label text-left px-0">
-                  {{ "CTN " | translate }}
+                  {{ myForm.get("satuanBesar")?.value | translate }}
                 </label>
               </div>
               <div class="row mb-3">
@@ -349,8 +379,11 @@
                 <div class="col-sm-6">
                   <ngx-select-dropdown
                     [multiple]="false"
-                    formControlName="keteranganRsc"
-                    id="keteranganRsc"
+                    [options]="uomList"
+                    [config]="configUomSelect"
+                    [bindLabel]="'keteranganUom'"
+                    [bindValue]="'kodeUom'"
+                    formControlName="satuanMinOrder"
                   >
                   </ngx-select-dropdown>
                 </div>
@@ -358,82 +391,87 @@
             </div>
             <div class="col-md-4 mb-3">
               <div class="row mb-3">
-                <label class="col-sm-5 col-form-label">
+                <label class="col-sm-4 col-form-label">
                   {{ "Panjang" | translate }}
                 </label>
                 <div class="col-sm-4">
                   <input
+                    style="text-align: right"
                     type="text"
                     class="form-control"
-                    formControlName="alamat1"
+                    formControlName="panjang"
                     maxlength="40"
                   />
                 </div>
-                <label class="col-sm-3 col-form-label text-left px-0">
+                <label class="col-sm-4 col-form-label text-left px-0">
                   {{ "CM" | translate }}
                 </label>
               </div>
               <div class="row mb-3">
-                <label class="col-sm-5 col-form-label">
+                <label class="col-sm-4 col-form-label">
                   {{ "Lebar" | translate }}
                 </label>
                 <div class="col-sm-4">
                   <input
+                    style="text-align: right"
                     type="text"
                     class="form-control"
-                    formControlName="alamat1"
+                    formControlName="lebar"
                     maxlength="40"
                   />
                 </div>
-                <label class="col-sm-3 col-form-label text-left px-0">
+                <label class="col-sm-4 col-form-label text-left px-0">
                   {{ "CM" | translate }}
                 </label>
               </div>
               <div class="row mb-3">
-                <label class="col-sm-5 col-form-label">
+                <label class="col-sm-4 col-form-label">
                   {{ "Tinggi" | translate }}
                 </label>
                 <div class="col-sm-4">
                   <input
+                    style="text-align: right"
                     type="text"
                     class="form-control"
-                    formControlName="alamat1"
+                    formControlName="tinggi"
                     maxlength="40"
                   />
                 </div>
-                <label class="col-sm-3 col-form-label text-left px-0">
+                <label class="col-sm-4 col-form-label text-left px-0">
                   {{ "CM" | translate }}
                 </label>
               </div>
               <div class="row mb-3">
-                <label class="col-sm-5 col-form-label">
+                <label class="col-sm-4 col-form-label right-column">
                   {{ "Volume / Isi" | translate }}
                 </label>
                 <div class="col-sm-4">
                   <input
+                    style="text-align: right"
                     type="text"
                     class="form-control"
-                    formControlName="alamat1"
+                    formControlName="volume"
                     maxlength="40"
                   />
                 </div>
-                <label class="col-sm-3 col-form-label text-left px-0">
-                  {{ "M3 / CTN" | translate }}
+                <label class="col-sm-4 col-form-label text-left px-0">
+                  {{ "M3 / " + myForm.get("satuanBesar")?.value | translate }}
                 </label>
               </div>
               <div class="row mb-3">
-                <label class="col-sm-5 col-form-label">
+                <label class="col-sm-4 col-form-label">
                   {{ "Berat" | translate }}
                 </label>
                 <div class="col-sm-4">
                   <input
+                    style="text-align: right"
                     type="text"
                     class="form-control"
-                    formControlName="alamat1"
+                    formControlName="berat"
                     maxlength="40"
                   />
                 </div>
-                <label class="col-sm-3 col-form-label text-left px-0">
+                <label class="col-sm-4 col-form-label text-left px-0">
                   {{ "KGS" | translate }}
                 </label>
               </div>
@@ -454,7 +492,7 @@
                   <input
                     type="text"
                     class="form-control"
-                    formControlName="contactPerson"
+                    formControlName="lokasiBarang"
                     maxlength="50"
                   />
                 </div>
@@ -474,7 +512,7 @@
                           type="radio"
                           value="A"
                           name="status"
-                          formControlName="status"
+                          formControlName="statusAktif"
                         />
                         <label
                           cFormCheckLabel
@@ -492,7 +530,7 @@
                           type="radio"
                           value="T"
                           name="status"
-                          formControlName="status"
+                          formControlName="statusAktif"
                         />
                         <label
                           cFormCheckLabel
@@ -516,6 +554,7 @@
                     cFormControl
                     id="exampleFormControlTextarea1"
                     rows="4"
+                    formControlName="keteranganBrg"
                   ></textarea>
                 </div>
               </div>
@@ -528,10 +567,6 @@
         <div class="d-grid gap-3 d-md-flex justify-content-end">
           <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
             {{ "Kembali" | translate }}
-          </button>
-          <button class="btn btn-info text-white btn-150" type="submit">
-            <i class="fa fa-spinner fa-spin"></i>
-            <span>{{ "Buat" | translate }} {{ "Cabang" | translate }}</span>
           </button>
         </div>
       </form>
