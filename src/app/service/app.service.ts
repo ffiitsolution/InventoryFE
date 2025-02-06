@@ -92,4 +92,22 @@ export class AppService {
       true
     );
   }
+
+  getUomList() {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/uom/list`
+    );
+  }
+
+  getSupplierList() {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/supplier/list`
+    );
+  }
+
+  getDefaultOrderGudangList() {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/product/default-order-gudang`
+    );
+  }
 }
