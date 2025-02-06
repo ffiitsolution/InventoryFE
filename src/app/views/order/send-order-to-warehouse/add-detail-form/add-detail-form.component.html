@@ -1,0 +1,105 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <h5>{{ "Tambah Penerimaan dari HQ" | translate }} (Detail)</h5>
+      </c-row>
+      <c-row>
+        <div class="d-grid gap-3 d-md-flex justify-content-between">
+          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button>
+          <button
+            class="btn btn-success text-white btn-160"
+            [disabled]="savingReceive"
+            (click)="onSavePressed()"
+          >
+            <i class="fa fa-save icon-12 icon-gap" *ngIf="!savingReceive"></i>
+            <i
+              class="fa fa-spinner icon-12 icon-gap fa-spin"
+              *ngIf="savingReceive"
+            ></i>
+            {{ "Simpan" | translate }}
+          </button>
+        </div>
+      </c-row>
+      <div>
+        <div class="divider"></div>
+        <div class="row">
+          <div class="col">
+            <div class="row order-details">
+              <div class="detail-item">
+                <span class="label">{{ "Nomor Pesanan" | translate }}</span>
+                <span class="value">{{ selectedOrder.nomorPesanan }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">{{ "Tanggal Pesan" | translate }}</span>
+                <span class="value">{{ selectedOrder.tglPesan }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">{{ "Tanggal Kirim" | translate }}</span>
+                <span class="value">{{ selectedOrder.tglBrgDikirim }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">{{
+                  "Tanggal Kedaluwarsa" | translate
+                }}</span>
+                <span class="value">{{ selectedOrder.tglBatasExp }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">{{ "Status Pesanan" | translate }}</span>
+                <span class="value">{{
+                  this.g.getStatusOrderLabel(selectedOrder.statusPesanan)
+                }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="row order-details">
+              <div class="detail-item">
+                <span class="label">{{ "Tujuan" | translate }}</span>
+                <span class="value"> {{ selectedOrder.kodePemesan }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">{{ "Tipe Pesanan" | translate }}</span>
+                <span class="value">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">{{ "Catatan" | translate }}</span>
+                <span class="value"
+                  >{{ selectedOrder.keterangan1 || "-" }}
+                </span>
+              </div>
+              <div class="detail-item">
+                <span class="label">{{ "Nomor SJ" | translate }}</span>
+                <span class="value">{{
+                  selectedOrder.noSjPengirim || "-"
+                }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">{{ "Status Cetak" | translate }}</span>
+                <span class="value">{{
+                  selectedOrder.statusPesanan == "B" ? "Belum" : "Sudah"
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<div class="fade-in">
+  <c-card>
+    <c-card-body>
+      <table
+        datatable
+        [dtOptions]="dtOptions"
+        (page.dt)="dtPageChange($event)"
+        class="row-border hover"
+      ></table>
+    </c-card-body>
+  </c-card>
+</div>

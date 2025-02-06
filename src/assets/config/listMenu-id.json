@@ -76,6 +76,10 @@
       {
         "name": "Terima Pesanan",
         "url": "/order/receiving-order"
+      },
+      {
+        "name": "Kirim Pesanan Ke Gudang",
+        "url": "/order/send-order-to-warehouse"
       }
     ]
   },
