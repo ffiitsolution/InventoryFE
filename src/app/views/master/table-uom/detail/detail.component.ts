@@ -33,10 +33,10 @@ export class TableUomDetailComponent implements OnInit {
 
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_UOM);
-    this.router.navigate(['/master/table-uom']);
+    this.router.navigate(['/master/master-uom']);
   }
 
   onEditPressed() {
-    this.router.navigate(['/master/table-uom/edit']);
+    this.router.navigate(['/master/master-uom/edit']);
   }
 }

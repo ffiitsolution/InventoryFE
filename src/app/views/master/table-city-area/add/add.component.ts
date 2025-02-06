@@ -60,7 +60,7 @@ export class TableCityAreaAddComponent implements OnInit {
 
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_CITY);
-    this.router.navigate(['/master/table-city-area']);
+    this.router.navigate(['/master/master-city-area']);
   }
 
   isFieldValid(fieldName: String) {

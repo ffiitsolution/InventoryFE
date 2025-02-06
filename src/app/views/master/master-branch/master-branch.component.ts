@@ -39,12 +39,51 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
   datatableElement: DataTableDirective | undefined;
   selectedRowData: any;
   isFilterShown: boolean = false;
-  selectedStatusFilter: any = '';
   dtColumns: any = [];
   buttonCaptionView: string = BUTTON_CAPTION_VIEW;
   buttonCaptionEdit: string = BUTTON_CAPTION_EDIT;
   CONST_ACTION_ADD: string = ACTION_ADD;
 
+  baseConfig: any = {
+    displayKey: 'name', // Key to display in the dropdown
+    search: true, // Enable search functionality
+    height: '200px', // Dropdown height
+    customComparator: () => {}, // Custom sorting comparator
+    moreText: 'lebih banyak', // Text for "more" options
+    noResultsFound: 'Tidak ada hasil', // Text when no results are found
+    searchOnKey: 'name' // Key to search
+  };
+
+  configSelectStatus: any ;
+  formStatusFilter: any ;
+  listStatus: any[] = [
+    {
+      id: 'A',
+      name: 'Aktif'
+    },
+    {
+      id: 'T',
+      name: 'Tidak Aktif'
+    }
+  ];
+
+  configSelectCabang: any ;
+  formCabangFilter: any ;
+  listCabang: any[] = [];
+  
+  configSelectRsc: any ;
+  formRscFilter: any ;
+  listRsc: any[] = [];
+
+  configSelectKota: any ;
+  formKotaFilter: any ;
+  listKota: any[] = [];
+
+  configSelectGroup: any ;
+  formGroupFilter: any ;
+  listGroup: any[] = [];
+  
+  
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
   }
@@ -76,7 +115,13 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
         this.page.length = dataTablesParameters.length;
         const requestData = {
           ...dataTablesParameters,
-          status: this.selectedStatusFilter,
+          statusAktif: this.formStatusFilter?.id ? this.formStatusFilter.id : "",
+          tipeCabang: this.formCabangFilter?.id ? this.formCabangFilter.id : "",
+          kodeRSC: this.formRscFilter?.id ? this.formRscFilter.id : "",
+
+          kota: this.formKotaFilter?.id ? this.formKotaFilter.id : "",
+          kodeGroup: this.formGroupFilter?.id ? this.formGroupFilter.id : "",
+
         };
         this.dataService
           .postData(this.g.urlServer + '/api/branch/dt', requestData)
@@ -127,6 +172,7 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
             `;
           },
         },
+        { data: 'deskripsiGroup', title: 'Group', searchable: true },
         {
           title: 'Opsi',
           render: () => {
@@ -188,7 +234,77 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
     );
     this.buttonCaptionView = this.translation.instant(BUTTON_CAPTION_VIEW);
     this.buttonCaptionEdit = this.translation.instant(BUTTON_CAPTION_EDIT);
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/branch/dropdown-tipe-cabang',{})
+    .subscribe((resp: any) => {
+      this.listCabang = resp.map((item: any) => ({
+        id: item.TIPE_CABANG,
+        name: item.TIPE_CABANG,
+      }));    
+
+    });
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
+    .subscribe((resp: any) => {
+      this.listRsc = resp.map((item: any) => ({
+        id: item.KODE_RSC,
+        name: item.KODE_RSC + " - " + item.KETERANGAN_RSC
+      }));    
+    });
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/city/dropdown-city',{})
+    .subscribe((resp: any) => {
+      this.listKota = resp.map((item: any) => ({
+        id: item.KODE_KOTA,
+        name: item.KODE_KOTA + " - " + item.KETERANGAN_KOTA
+      }));    
+    });
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/branch/dropdown-group',{})
+    .subscribe((resp: any) => {
+      this.listGroup = resp.map((item: any) => ({
+        id: item.KODE_GROUP,
+        name: item.KODE_GROUP + " - " + item.DESKRIPSI_GROUP,
+      }));    
+    });
+
+    this.configSelectStatus = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Status',
+      searchPlaceholder: 'Cari Status',
+      limitTo: this.listStatus.length
+    };
+    this.configSelectCabang = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Cabang',
+      searchPlaceholder: 'Cari Cabang',
+      limitTo: this.listCabang.length
+    };
+    this.configSelectRsc = {
+      ...this.baseConfig,
+      placeholder: 'Pilih RSC',
+      searchPlaceholder: 'Cari RSC',
+      limitTo: this.listRsc.length
+    };
+    this.configSelectKota = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Kota',
+      searchPlaceholder: 'Cari Kota',
+      limitTo: this.listKota.length
+    };
+    this.configSelectGroup = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Group',
+      searchPlaceholder: 'Cari Group',
+      limitTo: this.listGroup.length
+    };
   }
+
+  
 
   actionBtnClick(action: string, data: any = null) {
     switch (action) {
@@ -197,6 +313,8 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
         this.router.navigate(['/master/master-branch/detail']);
         return console.log('view');
       case ACTION_EDIT:
+        this.g.saveLocalstorage(LS_INV_SELECTED_BRANCH, JSON.stringify(data));
+        this.router.navigate(['/master/master-branch/edit']);
         return console.log('edit');
       case ACTION_ADD:
         this.router.navigate(['/master/master-branch/add']);
@@ -217,5 +335,28 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.rerenderDatatable();
+  }
+
+  onTipeCabangFilterChange() {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });    
+  }
+
+  onRscFilterChange() {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });    
+  }
+  onKotaFilterChange() {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
+  }
+  
+  onGroupFilterChange() {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
   }
 }

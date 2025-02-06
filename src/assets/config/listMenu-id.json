@@ -7,7 +7,7 @@
     }
   },
   {
-    "name": "Master dan Tabel",
+    "name": "Master",
     "iconComponent": {
       "name": "cil-speedometer"
     },
@@ -37,28 +37,28 @@
         "url": "/master/master-product"
       },
       {
-        "name": "Tabel RSC",
-        "url": "/master/table-rsc"
+        "name": "Master RSC",
+        "url": "/master/master-rsc"
       },
       {
-        "name": "Tabel Regional",
-        "url": "/master/table-regional"
+        "name": "Master Regional",
+        "url": "/master/master-regional"
       },
       {
-        "name": "Tabel Area",
-        "url": "/master/table-area"
+        "name": "Master Area",
+        "url": "/master/master-area"
       },
       {
-        "name": "Tabel Satuan",
-        "url": "/master/table-uom"
+        "name": "Master Satuan",
+        "url": "/master/master-uom"
       },
       {
-        "name": "Tabel Wilayah Kota",
-        "url": "/master/table-city-area"
+        "name": "Master Wilayah Kota",
+        "url": "/master/master-city-area"
       },
       {
-        "name": "Tabel Loket",
-        "url": "/master/table-set-number"
+        "name": "Master Loket",
+        "url": "/master/master-set-number"
       }
     ]
   },

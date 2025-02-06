@@ -8,6 +8,13 @@
         <div class="col text-end btn-160">
           <button
             type="button"
+            class="btn btn-secondary text-white me-2"
+            (click)="toggleFilter()"
+          >
+            {{ "Filter" | translate }}
+          </button>
+          <button
+            type="button"
             class="btn btn-success text-white me-2"
             (click)="actionBtnClick(CONST_ACTION_ADD)"
           >
@@ -20,22 +27,84 @@
         <c-card class="mt-3 shadow">
           <c-card-body>
             <div class="row">
-              <div class="col">
-                <label cLabel for="selectStatusFilter"
-                  >{{ "Status aktif" | translate }}:
-                </label>
+              <div class="col-md-4">
+                  <label>{{
+                    "Status Aktif" | translate
+                  }}</label>
+                  <div>
+                    <ngx-select-dropdown
+                      [multiple]="false"
+                      [config]="configSelectStatus"
+                      [options]="listStatus"
+                      [(ngModel)]="formStatusFilter" 
+                      (ngModelChange)="onStatusFilterChange()"
+                      id="status">
+                    </ngx-select-dropdown>
+                  </div>
+              </div>
+             
+              <div class="col-md-4">
+                  <label>{{
+                    "RSC" | translate
+                  }}</label>
+                  <div>
+                    <ngx-select-dropdown
+                      [multiple]="false"
+                      [config]="configSelectRsc"
+                      [options]="listRsc"
+                      [(ngModel)]="formRscFilter" 
+                      (ngModelChange)="onRscFilterChange()"
+                      id="RSC">
+                    </ngx-select-dropdown>
+                  </div>
+              </div>
+          
+              <div class="col-md-4">
+                <label>{{
+                  "Kota" | translate
+                }}</label>
+                <div>
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [config]="configSelectKota"
+                    [options]="listKota"
+                    [(ngModel)]="formKotaFilter" 
+                    (ngModelChange)="onKotaFilterChange()"
+                    id="Kota">
+                  </ngx-select-dropdown>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label>{{
+                  "Group" | translate
+                }}</label>
+                <div>
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [config]="configSelectGroup"
+                    [options]="listGroup"
+                    [(ngModel)]="formGroupFilter" 
+                    (ngModelChange)="onGroupFilterChange()"
+                    id="Kota">
+                  </ngx-select-dropdown>
+                </div>
+              </div>
+          
+              <!-- <div class="col-md-4">
+                <label cLabel for="selectedtipeCabangFilter">{{ 'Group' | translate }}:</label>
                 <select
-                  aria-label="Status"
+                  aria-label="Group"
                   cSelect
-                  id="selectStatusFilter"
-                  [(ngModel)]="selectedStatusFilter"
+                  id="selectedKodeGroupFilter"
+                  [(ngModel)]="selectedKodeGroupFilter"
                   (ngModelChange)="onStatusFilterChange()"
                 >
-                  <option value="">{{ "Semua" | translate }}</option>
-                  <option value="A">{{ "Aktif" | translate }}</option>
-                  <option value="T">{{ "Tidak aktif" | translate }}</option>
+                  <option value="">{{ 'Semua' | translate }}</option>
+                  <option *ngFor="let kodeGroup of kodeGroupOptions" [value]="kodeGroup.value">
+                    {{ kodeGroup.value }} - {{ kodeGroup.label | translate }}
+                  </option>
                 </select>
-              </div>
+              </div>      -->
             </div>
           </c-card-body>
         </c-card>

@@ -60,7 +60,7 @@ export class TableUomAddComponent implements OnInit {
 
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_RSC);
-    this.router.navigate(['/master/table-uom']);
+    this.router.navigate(['/master/master-uom']);
   }
 
   isFieldValid(fieldName: String) {

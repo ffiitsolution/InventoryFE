@@ -33,7 +33,7 @@ export class TableRscDetailComponent implements OnInit {
 
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_RSC);
-    this.router.navigate(['/master/table-rsc']);
+    this.router.navigate(['/master/master-rsc']);
   }
 
   onEditPressed() {

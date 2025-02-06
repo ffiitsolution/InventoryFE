@@ -34,8 +34,10 @@ export class MasterUserDetailComponent implements OnInit {
       userCreate: [this.detail.userCreate],
       userUpdate: [this.detail.userUpdate],
       dateCreate: [this.detail.dateCreate],
-      dateupdate: [this.detail.dateUpdate], 
+      dateUpdate: [this.detail.dateUpdate], 
     });
+
+
   }
 
   onPreviousPressed() {
