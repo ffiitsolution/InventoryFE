@@ -18,6 +18,7 @@ export class MasterUserEditComponent implements OnInit {
   editing: boolean = false;
   detail: any;
   listLokasi: any[] = [];
+  listDefaultLokasi: any[] = [];
   baseConfig: any = {
     displayKey: 'name', // Key to display in the dropdown
     search: true, // Enable search functionality
@@ -28,12 +29,18 @@ export class MasterUserEditComponent implements OnInit {
     searchOnKey: 'name' // Key to search
   };
 
+  configSelectDefaultLokasi: any ;
   configSelectLokasi: any ;
   configSelectRole: any ;
+
+  selectedLocations: any;
 
   isNotMatchPass: boolean = false;
   isNotMatchPassPos: boolean = false;
   listRole: any[] = [];
+
+  listuserLoc: any[] = [];
+
 
 
 
@@ -74,12 +81,20 @@ export class MasterUserEditComponent implements OnInit {
       ],
       defaultLocation: [{}],
       roleID:[],
+      location:[]
     });
 
     this.configSelectLokasi = {
       ...this.baseConfig,
       placeholder: 'Pilih Lokasi',
       searchPlaceholder: 'Cari Lokasi',
+      limitTo: this.listLokasi.length
+    };
+
+    this.configSelectDefaultLokasi = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Default Lokasi',
+      searchPlaceholder: 'Cari Default Lokasi',
       limitTo: this.listLokasi.length
     };
     this.configSelectRole = {
@@ -94,13 +109,26 @@ export class MasterUserEditComponent implements OnInit {
     .subscribe((resp: any) => {
       this.listLokasi = resp.map((item: any) => ({
         id: item.KODE_LOCATION,
-        name: item.KETERANGAN_LOKASI,
+        name: item.KODE_LOCATION+" - "+item.KETERANGAN_LOKASI,
       }));    
       const getDefaultLocation = this.listLokasi.find(
         (item: any) => item.id === this.detail.defaultLocation
       );      
       this.myForm.get('defaultLocation')?.setValue(getDefaultLocation);
-      console.log('getDefaultLocation', getDefaultLocation);
+
+      this.dataService
+      .postData(this.g.urlServer + '/api/user-location/by-user',{"kodeUser":this.detail.kodeUser})
+      .subscribe((resp: any) => {
+        this.listuserLoc = resp    
+        
+        const listuserLocArray = this.listuserLoc.map(item => item.KODE_LOCATION);
+
+        const filteredLokasiByUserLoc = this.listLokasi.filter(item => listuserLocArray.includes(item.id));
+        this.listDefaultLokasi = filteredLokasiByUserLoc
+        this.myForm.get('location')?.setValue(filteredLokasiByUserLoc);
+
+
+      });
     });
 
     this.dataService
@@ -116,6 +144,8 @@ export class MasterUserEditComponent implements OnInit {
       this.myForm.get('roleID')?.setValue(getRoleID);
     });
 
+ 
+
   }
 
   onSubmit(): void {
@@ -130,8 +160,8 @@ export class MasterUserEditComponent implements OnInit {
         namaUser: controls?.['namaUser']?.value,
         statusAktif: controls?.['statusAktif']?.value,
         jabatan: controls?.['jabatan']?.value,
-        defaultLocation: controls?.['defaultLocation']?.value?.id,
-        roleID: controls?.['roleID']?.value?.id
+        defaultLocation:controls?.['defaultLocation']?.value?.id ?? " ",
+        roleID: controls?.['roleID']?.value?.id?? " ",
       };
       this.service.patch('/api/users/current', param).subscribe({
         next: (res: any) => {
@@ -150,7 +180,29 @@ export class MasterUserEditComponent implements OnInit {
           alert('An error occurred while updating the user.');
           this.editing = false;
         },
-      });         
+      });      
+
+      if(controls?.['location']?.value){
+        const paramsUserLoc = {
+          kodeUser:  controls?.['kodeUser']?.value,
+          statusSync : "T",
+          ListKodeLocation: controls?.['location']?.value?.map((item: any) => item.id) || [""]
+        };
+  
+        this.service.insert('/api/user-location/updateBatch', paramsUserLoc).subscribe({
+          next: (res: any) => {
+            if (!res.success) {
+              alert(res.message);
+            } 
+          },
+          error: (err: any) => {
+            console.error('Error updating user location:', err);
+            alert('An error occurred while updating the use locationr.');
+            this.editing = false;
+          },
+        });  
+      }
+      
     }
   }
 
@@ -194,5 +246,14 @@ export class MasterUserEditComponent implements OnInit {
 
   isFieldValid(fieldName: String) {
     return this.g.isFieldValid(this.myForm, fieldName);
+  }
+
+  onChangeLocation(selected: any) {
+    const defaultLocationId = this.myForm.get('defaultLocation')?.value?.id
+    this.listDefaultLokasi = selected;
+    if ((selected.some((item: { id: string; name: string }) => item.id === defaultLocationId)) == false) {
+      this.myForm.get('defaultLocation')?.setValue("");
+    }
+    // You can perform further actions here
   }
 }

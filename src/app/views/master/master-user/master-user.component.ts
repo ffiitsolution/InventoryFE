@@ -33,6 +33,8 @@ export class MasterUserComponent
   loadingIndicator = true;
   orders: any[] = [];
   dtOptions: DataTables.Settings = {};
+  buttonCaptionView: String = 'Lihat';
+  buttonCaptionEdit: String = 'Ubah';
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -157,24 +159,34 @@ export class MasterUserComponent
         { data: 'statusAktif', title: 'Status', searchable: false },
         { data: 'keteranganLokasi', title: 'Default Lokasi', searchable: false },
         { data: 'roleName', title: 'Role', searchable: false },
+        {
+          title: 'Opsi',
+          render: () => {
+            return `
+            <div class="btn-group" role="group" aria-label="Action">
+              <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
+              <button class="btn btn-sm action-edit btn-outline-info btn-60">${this.buttonCaptionEdit}</button>
+            </div>
+            `;
+          },
+        },
       ],
       searchDelay: 1500,
       order: [[1, 'asc']],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        const self = this;
-        // Unbind first in order to avoid any duplicate handler
-        $('td', row).off('click');
-        $('td', row).on('click', () => {
-          $('td').removeClass('bg-info text-white fw-bold');
-          if (self.selectedRowData !== data) {
-            self.selectedRowData = data;
-            $('td', row).addClass('bg-info text-white fw-bold');
-          } else {
-            self.selectedRowData = undefined;
-          }
-        });
-        return row;
-      },
+            $('.action-view', row).on('click', () =>
+              this.actionBtnClick(ACTION_VIEW, data)
+            );
+            $('.action-edit', row).on('click', () =>
+              this.actionBtnClick(ACTION_EDIT, data)
+            );
+            if (this.selectedRowData !== data) {
+              this.selectedRowData = data;
+            } else {
+              this.selectedRowData = undefined;
+            }
+            return row;
+          },
     };
     this.dtColumns = this.dtOptions.columns;
   }
@@ -202,7 +214,7 @@ export class MasterUserComponent
     .subscribe((resp: any) => {
       this.listLokasi = resp.map((item: any) => ({
         id: item.KODE_LOCATION,
-        name: item.KETERANGAN_LOKASI,
+        name: item.KODE_LOCATION+" - " +item.KETERANGAN_LOKASI,
       }));    
       console.log('this.listLokasi',this.listLokasi)
     });
@@ -251,23 +263,20 @@ export class MasterUserComponent
     };
   }
 
-  actionBtnClick(action: string) {
-    let data = this.selectedRowData;
-    // this.g.alertConfirm(action, JSON.stringify(data)).then((result) => {
-    //   console.log(result);
-    // });
-    if (action === 'view') {
-      this.g.saveLocalstorage(LS_INV_SELECTED_USER, JSON.stringify(data));
-      this.router.navigate(['/master/master-user/detail']);
-    } else if (action === 'add') {
-      this.router.navigate(['/master/master-user/add']);
-    } else if (action === 'edit') {
-      this.g.saveLocalstorage(LS_INV_SELECTED_USER, JSON.stringify(data));
-      this.router.navigate(['/master/master-user/edit']);
-    } else if (action === 'delete') {
-    } else {
+    actionBtnClick(action: string, data: any = null) {
+      if (action === ACTION_VIEW) {
+        this.g.saveLocalstorage(LS_INV_SELECTED_USER, JSON.stringify(data));
+        this.router.navigate(['/master/master-user/detail']);
+      } else if (action === ACTION_EDIT) {
+        this.g.saveLocalstorage(LS_INV_SELECTED_USER, JSON.stringify(data));
+        this.router.navigate(['/master/master-user/edit']);
+      } else if (action === ACTION_ADD) {
+        this.router.navigate(['/master/master-user/add']);
+      }
+      else if (action === 'add') {
+        this.router.navigate(['/master/master-user/add']);
+      }
     }
-  }
 
   dtPageChange(event: any) {
     this.selectedRowData = undefined;

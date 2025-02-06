@@ -11,12 +11,6 @@
           <button type="button" class="btn btn-success text-white me-2" (click)="actionBtnClick('add')">
             {{ 'Tambah' | translate }}
           </button>
-          <button type="button" class="btn btn-primary text-white me-2" [disabled]="!selectedRowData" (click)="actionBtnClick('view')">
-            {{ 'Lihat' | translate }}
-          </button>
-          <button type="button" class="btn btn-warning text-white me-2" [disabled]="!selectedRowData" (click)="actionBtnClick('edit')">
-            {{ 'Ubah' | translate }}
-          </button>
           <button type="button" class="btn btn-secondary text-white me-2" (click)="toggleFilter()">
             {{ 'Filter' | translate }}
           </button>
