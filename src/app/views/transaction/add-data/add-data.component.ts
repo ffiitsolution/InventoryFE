@@ -15,6 +15,10 @@ import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { Page } from '../../../model/page';
+import { AppService } from '../../../service/app.service';
+import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../constants';
+import moment from 'moment';
 
 @Component({
   selector: 'app-add-data',
@@ -23,26 +27,32 @@ import { Injectable } from '@angular/core';
   
 })
 export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
-nomorPesanan: any;
-  // validatedDeliveryDate method removed to fix duplicate implementation error
+  nomorPesanan: any;
+  public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
+  isShowModal: boolean = false;
   dtTrigger: Subject<any> = new Subject();
   bsConfig: Partial<BsDatepickerConfig>;
+  page = new Page();
+  selectedRo: any = {};
+  minDate: Date;
+  maxDate: Date;
 
+  @ViewChild('formModal') formModal: any;
   // Form data object
   formData = {
     nomorPesanan: '',
     deliveryStatus: '',
-    deliveryDestination: '',
-    destinationAddress: '',
-    orderDate: '',
-    deliveryDate: '',
-    expirationDate: '',
+    namaCabang: '',
+    alamat1: '',
+    tglPesan: '',
+    tglBrgDikirim: '',
+    tglKadaluarsa: '',
     validatedDeliveryDate: '',
     notes: '',
-
+    codeDestination: ''
   };
 
   constructor(
@@ -50,8 +60,14 @@ nomorPesanan: any;
     private dataService: DataService,
     private globalService: GlobalService,
     private translationService: TranslationService,
-    private deliveryDataService: DeliveryDataService
-  ) {}
+    private deliveryDataService: DeliveryDataService,
+    private appService: AppService
+  ) { 
+    this.dpConfig.containerClass = 'theme-dark-blue';
+    this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
+    this.dpConfig.adaptivePosition = true;
+  }
+  
 
   ngOnInit(): void {
     this.bsConfig = Object.assign(
@@ -62,11 +78,29 @@ nomorPesanan: any;
       }
     );
 
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      processing: true,
-    };
+    this.renderDataTables();
+    const today = new Date().toISOString().split('T')[0];
+    this.minDate = new Date(today);
+  }
+
+  actionBtnClick(action: string, data: any = null) {
+    this.selectedRo = JSON.stringify(data);
+    this.renderDataTables();
+    this.isShowModal = false;
+    this.mapOrderData(data);
+    this.onSaveData();
+  }
+
+  onAddDetail(){
+    this.router.navigate(['/transaction/delivery-item/add-data-detail']);
+    this.formData.validatedDeliveryDate = moment(
+      this.formData.validatedDeliveryDate, 
+      'YYYY-MM-DD'
+    ).format('DD-MM-YYYY')
+    this.globalService.saveLocalstorage(
+            LS_INV_SELECTED_DELIVERY_ORDER,
+            JSON.stringify(this.formData)
+          ); 
   }
 
   ngAfterViewInit(): void {
@@ -77,92 +111,127 @@ nomorPesanan: any;
     this.dtTrigger.unsubscribe();
   }
 
+
   onPreviousPressed(): void {
     this.router.navigate(['/transaction/delivery-item']);
   }
-  
-    onSaveData(): void {
-    const today = new Date().toISOString().split('T')[0];
-    this.formData.validatedDeliveryDate = today;
 
-    console.log('Data yang akan disimpan:', this.formData);
-    this.deliveryDataService.saveDeliveryData(this.formData).subscribe(
-      (response: any) => {
-        console.log('Data saved successfully:', response);
-      },
-      (error: any) => {
-        console.error('Error saving data:', error);
-      }
-    );
+  onSaveData(): void {
+    const today = new Date().getDate();
+    this.minDate = new Date(today);
+  }
+  onShowModal() {
+    this.isShowModal = true;
   }
 
-  searchOrderNumber(): void {
-    if (!this.nomorPesanan) {
-      alert("Nomor Pesanan tidak boleh kosong!");
-      return;
-    }
-
-    const params = {
-      nomorPesanan: this.nomorPesanan,
-      kodeGudang: this.globalService.getUserLocationCode(),
-    };
-
-    this.dataService
-      .postData("http://localhost:8093/inventory/api/delivery-order/items", params)
-      .subscribe(
-        (resp: any) => {
-          if (resp.data.length > 0) {
-            this.formData = {
-              nomorPesanan: this.nomorPesanan,
-              deliveryStatus: '',
-              deliveryDestination: resp.data[0].NAMA_GUDANG,
-              orderDate: this.globalService.transformDate(resp.data[0].TGL_PESAN) ?? '',
-              deliveryDate: this.globalService.transformDate(resp.data[0].TGL_BRG_DIKIRIM) ?? '',
-              expirationDate: this.globalService.transformDate(resp.data[0].TGL_KADALUARSA) ?? '',
-              destinationAddress: resp.data[0].ALAMAT1,
-              validatedDeliveryDate: '',
-              notes: resp.data[0].KETERANGAN1,
-            };
-          } else {
-            alert("Nomor Pesanan tidak ditemukan!");
-          }
+  renderDataTables(): void {
+    this.dtOptions = {
+      language:
+        this.translationService.getCurrentLanguage() == 'id' ? this.translationService.idDatatable : {},
+      processing: true,
+      serverSide: true,
+      autoWidth: true,
+      info: true,
+      drawCallback: () => { },
+      ajax: (dataTablesParameters: any, callback) => {
+        this.page.start = dataTablesParameters.start;
+        this.page.length = dataTablesParameters.length;
+        const params = {
+          ...dataTablesParameters,
+          kodeGudang: this.globalService.getUserLocationCode(),
+          // startDate: this.g.transformDate(this.dateRangeFilter[0]),
+          // endDate: this.g.transformDate(this.dateRangeFilter[1]),
+        };
+        this.appService.getNewReceivingOrder(params)
+          .subscribe((resp: any) => {
+            const mappedData = resp.data.map((item: any, index: number) => {
+              // hapus rn dari data
+              const { rn, ...rest } = item;
+              const finalData = {
+                ...rest,
+                dtIndex: this.page.start + index + 1,
+                // kodePemesan: `(${rest.kodeGudang}) ${rest.namaGudang}`,
+                // tglPesan: this.g.transformDate(rest.tglPesan),
+                // tglKirim: this.g.transformDate(rest.tglKirim),
+                // tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
+              };
+              return finalData;
+            });
+            this.page.recordsTotal = resp.recordsTotal;
+            this.page.recordsFiltered = resp.recordsFiltered;
+            // this.showFilterSection = false;
+            callback({
+              recordsTotal: resp.recordsTotal,
+              recordsFiltered: resp.recordsFiltered,
+              data: mappedData,
+            });
+          });
+      },
+      columns: [
+        // { data: 'dtIndex', title: '#' },
+        { data: 'kodeGudang', title: 'Kode Gudang' },
+        { data: 'kodePemesan', title: 'Kode Pemesan' },
+        { data: 'nomorPesanan', title: 'Nomor Pesanan' },
+        { data: 'tglPesan', title: 'Tanggal Pesan' },
+        { data: 'tglBrgDikirim', title: 'Tanggal Dikirim', },
+        { data: 'keterangan1', title: 'Keterangan', },
+        {
+          data: 'statusRecieve',
+          title: 'Status Penerimaan',
+          render: (data) => {
+            const isCancel = data == CANCEL_STATUS;
+            const label = this.globalService.getsatusDeliveryOrderLabel(data);
+            if (isCancel) {
+              return `<span class="text-center text-danger">${label}</span>`;
+            }
+            return label;
+          },
         },
-        (error) => {
-          console.error("Error fetching data:", error);
-          alert("Terjadi kesalahan saat mengambil data pesanan.");
-        }
-      );
+        {
+          data: 'statusCetak',
+          title: 'Status Cetak',
+          render: (data) => this.globalService.getsatusDeliveryOrderLabel(data, true),
+        },
+        {
+          title: 'Action',
+          render: () => {
+            return `<button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>`;
+          },
+        },
+
+      ],
+      searchDelay: 1000,
+      // delivery: [],
+      rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        $('.action-select', row).on('click', () =>
+          this.actionBtnClick(ACTION_SELECT, data)
+        );
+        return row;
+      },
+    };
   }
 
   private mapOrderData(orderData: any): void {
-    this.formData.deliveryStatus = orderData.deliveryStatus || '';
-    this.formData.deliveryDestination = orderData.deliveryDestination || '';
-    this.formData.destinationAddress = orderData.destinationAddress || '';
-    this.formData.orderDate = orderData.orderDate || '';
-    this.formData.deliveryDate = orderData.deliveryDate || '';
-    this.formData.expirationDate = orderData.expirationDate || '';
-    this.formData.notes = orderData.notes || '';
-    console.log('Form data updated:', this.formData);
+    this.formData.deliveryStatus =  'Aktif';
+    this.formData.codeDestination = orderData.kodeGudang
+    this.formData.namaCabang = orderData.namaCabang || '';
+    this.formData.alamat1 = orderData.alamat1 || '';
+    this.formData.tglPesan = orderData.tglPesan || '';
+    this.formData.tglBrgDikirim = orderData.tglBrgDikirim || '';
+    this.formData.tglKadaluarsa = orderData.tglKadaluarsa || '';
+    this.formData.notes = orderData.keterangan1 || '';
+    this.formData.nomorPesanan = orderData.nomorPesanan || '';
+    this.formData.validatedDeliveryDate = orderData.tglPesan || '';
+
+    this.maxDate = new Date(this.formData.tglKadaluarsa);
   }
 
-  // notes(event: Event): void {
-  //   const target = event.target as HTMLInputElement; // Type assertion
-  //   console.log('Notes changed:', target.value);
-  //   this.formData.notes = target.value; // Update nilai
-  // }
-
-  validatedDeliveryDate(event: Event): void {
-    const target = event.target as HTMLInputElement; // Type assertion
-    console.log('Validated delivery date changed:', target.value);
-    this.formData.validatedDeliveryDate = target.value; // Update nilai
-  }
-  
 }
 @Injectable({
   providedIn: 'root',
 })
 export class DeliveryDataService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   saveDeliveryData(data: any): Observable<any> {
     const apiUrl = 'http://localhost:8093/inventory/api/delivery-order/status-descriptions';

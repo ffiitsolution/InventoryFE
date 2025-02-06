@@ -92,4 +92,20 @@ export class AppService {
       true
     );
   }
+
+  getNewReceivingOrder(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/get-new-ro/dt`,
+      payload
+    );
+  }
+
+  getDeliveryItemDetails(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/delivery-items-detail`,
+      payload
+    );
+  }
+
+
 }

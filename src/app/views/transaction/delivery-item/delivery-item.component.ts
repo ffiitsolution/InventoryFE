@@ -150,7 +150,7 @@ export class DeliveryItemComponent implements OnInit {
         LS_INV_SELECTED_DELIVERY_ORDER,
         JSON.stringify(data)
       );
-      this.router.navigate(['/transaction/delivery-item/detail-transaction']);
+      this.router.navigate(['/transaction/delivery-item/detail-transaction']); this
     }
   }
 
