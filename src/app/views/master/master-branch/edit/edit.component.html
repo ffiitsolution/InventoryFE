@@ -16,7 +16,9 @@
               <div class="mb-3 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Kode Cabang" | translate
-                }}</label>
+                }}
+                  <span class="stamp-required show">&nbsp;*</span>
+                </label>                
                 <div class="col-sm-8">
                   <input
                     type="text"
@@ -35,14 +37,16 @@
               <div class="mb-3 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Kode Singkat" | translate
-                }}</label>
-                <div class="col-sm-8">
+                }}
+                <span class="stamp-required show">&nbsp;*</span>
+              </label>                  
+              <div class="col-sm-8">
                   <input
                     type="text"
                     class="form-control"
                     formControlName="kodeSingkat"
                     [readOnly]="adding"
-                    (keypress)="conditionInput($event, 'alphabet')"
+                    (keypress)="conditionInput($event, 'kodeSingkat')"
                     maxlength="10"
                   />
                   <span *ngIf="isFieldValid('kodeSingkat')" class="text-danger">{{
@@ -56,9 +60,11 @@
             <div class="col-md-6"> 
               <div class="mb-3 row">
                 <label class="col-sm-4 col-form-label">{{
-                  "Nama Cabang" | translate
-                }}</label>
-                <div class="col-sm-8">
+                    "Nama Cabang" | translate
+                  }}
+                  <span class="stamp-required show">&nbsp;*</span>
+                </label>                  
+              <div class="col-sm-8">
                   <input
                     type="text"
                     class="form-control"
@@ -76,7 +82,9 @@
               <div class="mb-3 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Group" | translate
-                }}</label>
+                  }}
+                  <span class="stamp-required show">&nbsp;*</span>
+                </label>                  
                 <div class="col-sm-8">
                   <select
                     aria-label="Group"
@@ -125,8 +133,10 @@
               <!-- left column -->
               <div class="mb-3 row">
                 <label class="col-sm-4 col-form-label">{{
-                  "Alamat 1" | translate
-                }}</label>
+                    "Alamat 1" | translate
+                  }}
+                  <span class="stamp-required show">&nbsp;*</span>
+                </label>
                 <div class="col-sm-8">
                   <input
                     type="text"
@@ -134,7 +144,12 @@
                     formControlName="alamat1"
                     [readOnly]="adding"
                     maxlength="40"
+                    (keypress)="conditionInput($event, 'excludedSensitive')"                    
                   />
+                  <span *ngIf="isFieldValid('alamat1')" class="text-danger">{{
+                    "Wajib diisi" | translate
+                  }}
+                </span>
                 </div>
               </div>
               <div class="mb-3 row">
@@ -148,6 +163,7 @@
                     formControlName="alamat2"
                     [readOnly]="adding"
                     maxlength="40"
+                    (keypress)="conditionInput($event, 'excludedSensitive')"                    
                   />
                 </div>
               </div>
@@ -398,6 +414,7 @@
                     formControlName="keterangan"
                     [readOnly]="adding"
                     maxlength="50"
+                    (keypress)="conditionInput($event, 'excludedSensitive')"                    
                   />
                 </div>
               </div>  

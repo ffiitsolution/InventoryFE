@@ -56,13 +56,13 @@ export class MasterBranchEditComponent implements OnInit {
     console.log("this.detail", this.detail);
 
     this.myForm = this.form.group({
-      namaCabang: [this.detail.namaCabang],
-      kodeCabang:         { value: this.detail.kodeCabang, disabled: true },
-      kodeSingkat: [this.detail.kodeSingkat],
-      kodeGroup: [this.detail.kodeGroup],
+      namaCabang: [this.detail.namaCabang, Validators.required],
+      kodeCabang: [{ value: this.detail.kodeCabang, disabled: true }, Validators.required],
+      kodeSingkat: [this.detail.kodeSingkat, Validators.required],
+      kodeGroup: [this.detail.kodeGroup, Validators.required],
       deskripsiGroup: [this.detail.deskripsiGroup],
       kota: [this.detail.kota],
-      alamat1: [this.detail.alamat1],
+      alamat1: [this.detail.alamat1, Validators.required],
       alamat2: [this.detail.alamat2],
       kodePos: [this.detail.kodePos],
       telpon1: [this.detail.telpon1],
@@ -80,7 +80,8 @@ export class MasterBranchEditComponent implements OnInit {
       keterangan: [this.detail.keterangan],
       alamatIp: [this.detail.alamatIp],
       tipeCabang: [this.detail.tipeCabang],
-
+      status: [this.detail.statusAktif],
+      statusAktif: [this.detail.statusAktif],
       userCreate: [this.detail.userCreate],
       userUpdate: [this.detail.userUpdate],
       dateCreate: [this.detail.dateCreate],
@@ -153,7 +154,7 @@ export class MasterBranchEditComponent implements OnInit {
         id: item.KODE_REGION  ,
         name: item.KODE_REGION+" - " + item.KETERANGAN_REGION,
       }));     
-      const getRegion = this.listRSC.find(
+      const getRegion = this.listRegion.find(
         (item: any) => item.id === this.detail.kodeRegion
       );      
       this.myForm.get('keteranganRegion')?.setValue(getRegion); 
@@ -216,6 +217,7 @@ export class MasterBranchEditComponent implements OnInit {
         tipeCabang: controls?.['tipeCabang']?.value,
         keterangan: controls?.['keterangan']?.value,
         kodeGroup: controls?.['kodeGroup']?.value,
+        statusAktif: controls?.['statusAktif']?.value,
 
       };
       this.service.insert('/api/branch/update', param).subscribe({
@@ -262,7 +264,12 @@ export class MasterBranchEditComponent implements OnInit {
         ? /^[0-9-]$/
         : type =='email'
         ? /^[a-zA-Z0-9@._-]$/
-        : /^[a-zA-Z.() ,\-]$/;
+        : type == 'excludedSensitive'
+        ?/^[a-zA-Z0-9 .,_@-]*$/
+        : type =='kodeSingkat'
+        ? /^[a-zA-Z]+$/
+        :/^[a-zA-Z.() ,\-]*$/;
+        
     if (temp_regex.test(inp)) return true;
     else {
       event.preventDefault();
