@@ -64,18 +64,21 @@
           <div class="w-50 p-2">
             <div class="mb-3">
               <label for="tglPesan" class="form-label">{{ "Order Date" | translate }}</label>
-              <input placeholder="Order Date" type="date" class="form-control" id="orderDate" [(ngModel)]="formData.tglPesan"
-                name="tglPesan" />
+              <input type="text" id="tglPesan" class="form-control" aria-describedby="tglPesan"
+              #dp="bsDatepicker" [bsConfig]="dpConfig" [isDisabled]="true" bsDatepicker autocomplete="off"
+              [(ngModel)]="formData.tglPesan" placeholder="{{ 'Order date' | translate }}" [minDate]="minDate" [maxDate]="maxDate" style="pointer-events: none; "/>
             </div>
             <div class="mb-3">
               <label for="tglBrgDikirim" class="form-label">{{ "Delivery Date" | translate }}</label>
-              <input placeholder="Delivery Date" type="date" class="form-control" id="tglBrgDikirim" [(ngModel)]="formData.tglBrgDikirim"
-                name="tglBrgDikirim" />
+              <input type="text" id="tglBrgDikirim" class="form-control" aria-describedby="tglBrgDikirim"
+              #dp="bsDatepicker" [bsConfig]="dpConfig" [isDisabled]="true" bsDatepicker autocomplete="off"
+              [(ngModel)]="formData.tglBrgDikirim" placeholder="{{ 'Delivery date' | translate }}" [minDate]="minDate" [maxDate]="maxDate" style="pointer-events: none; "/>
             </div>
             <div class="mb-3">
               <label for="tglKadaluarsa" class="form-label">{{ "Expiration Date" | translate }}</label>
-              <input placeholder="Expiration Date" type="date" class="form-control" id="tglKadaluarsa" [(ngModel)]="formData.tglKadaluarsa"
-                name="tglKadaluarsa" />
+              <input type="text" id="tglKadaluarsa" class="form-control" aria-describedby="tglK adaluarsa"
+              #dp="bsDatepicker" [bsConfig]="dpConfig" [isDisabled]="true" bsDatepicker autocomplete="off"
+              [(ngModel)]="formData.tglKadaluarsa" placeholder="{{ 'Expiration date' | translate }}" [minDate]="minDate" [maxDate]="maxDate" style="pointer-events: none; "/>
             </div>
           </div>
 
@@ -113,7 +116,7 @@
         </div>
       </div>
       <div class="d-flex justify-content-end mb-3">
-        <button class="btn btn-primary" (click)="onAddDetail()">
+        <button class="btn btn-primary" [disabled]="formData.nomorPesanan === ''" (click)="onAddDetail()">
           {{ "Detail Transaksi" | translate }}
         </button>
       </div>

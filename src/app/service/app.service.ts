@@ -125,4 +125,13 @@ export class AppService {
     );
   }
 
+
+  saveDeliveryOrder(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/save-detail`,
+      payload
+    );
+  }
+
+
 }
