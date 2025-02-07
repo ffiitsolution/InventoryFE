@@ -22,6 +22,8 @@ import { Router } from '@angular/router';
 import { AppConfig } from 'src/app/config/app.config';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import moment from 'moment';
+import { ToastrService } from 'ngx-toastr';
+import { DEFAULT_DELAY_TIME } from 'src/constants';
 
 @Component({
   selector: 'app-send-order-to-warehouse',
@@ -54,6 +56,7 @@ export class SendOrderToWarehouseComponent
     )
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
+  dataUser: any;
 
   protected config = AppConfig.settings.apiServer;
 
@@ -61,7 +64,8 @@ export class SendOrderToWarehouseComponent
     private dataService: DataService,
     private g: GlobalService,
     private translation: TranslationService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {
     this.dtOptions = {
       language:
@@ -112,43 +116,123 @@ export class SendOrderToWarehouseComponent
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'tglPesanan', title: 'Tanggal Pesanan' },
-        { data: 'kodeGudang', title: 'Kode Gudang' },
-        { data: 'tglKirimBrg', title: 'Tanggal Kirim' },
-        // { data: 'tglKadaluarsa', title: 'Tanggal Kedaluwarsa' },
-        // { data: 'nomorPesanan', title: 'Nomor Pesanan', searchable: true },
-        // {
-        //   data: 'kodePemesan',
-        //   title: 'Nama Pemesan',
-        //   orderable: true,
-        //   searchable: true,
-        // },
-        // {
-        //   data: 'tipeData',
-        //   title: 'Tipe Pesanan',
-        //   render: (data) => this.g.getStatusOrderLabel(data),
-        // },
-        // {
-        //   data: 'statusPesanan',
-        //   title: 'Status Pesanan',
-        //   render: (data) => {
-        //     const isCancel = data == CANCEL_STATUS;
-        //     const label = this.g.getStatusOrderLabel(data);
-        //     if (isCancel) {
-        //       return `<span class="text-center text-danger">${label}</span>`;
-        //     }
-        //     return label;
-        //   },
-        // },
-        // {
-        //   data: 'statusCetak',
-        //   title: 'Status Cetak',
-        //   render: (data) => this.g.getStatusOrderLabel(data, true),
-        // },
+        { 
+          data: 'tglPesanan', 
+          title: 'Tanggal Pesanan',
+          render: function (data, type, row) {
+            if (!data) return ""; // Handle null/undefined values
+            return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
+          }
+        },
+        { 
+          data: 'tglKirimBrg', 
+          title: 'Tanggal Kirim' ,
+          render: function (data, type, row) {
+            if (!data) return ""; // Handle null/undefined values
+            return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
+          }
+        },
+        { 
+          data: 'tglBatalExp', 
+          title: 'Tanggal Batal',
+          render: function (data, type, row) {
+            if (!data) return ""; // Handle null/undefined values
+            return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
+          } 
+        },
+        { data: 'nomorPesanan', title: 'Nomor Pesanan' },
+        {
+          data: 'supplier',
+          title: 'Gudang Tujuan',
+          render: function (data, type, row) {
+            return row.supplier && row.namaSupplier ? `${row.supplier} - ${row.namaSupplier}` : row.supplier || row.namaSupplier || "";
+          }
+        },
+        {
+          data: 'statusPesanan',
+          title: 'Status Pesanan',
+          render: function (data) {
+            let statusLabel = "";
+            
+            // Map statusPesanan values to labels
+            switch (data) {
+              case "1":
+                statusLabel = "Baru";
+                break;
+              case "2":
+                statusLabel = "Sisa";
+                break;
+              case "3":
+                statusLabel = "Dikirim";
+                break;
+              case "4":
+                statusLabel = "Batal";
+                break;
+              default:
+                statusLabel = "Tidak Diketahui"; // Default label for undefined values
+            }
+            return statusLabel;
+          }
+        },
+        
+        { 
+          data: 'statusCetak', 
+          title: 'Status Cetak' ,
+          render: function (data) {
+            let statusLabel = "";
+            
+            // Map statusPesanan values to labels
+            switch (data) {
+              case "S":
+                statusLabel = "Sudah";
+                break;
+              case "B":
+                statusLabel = "Belum";
+                break;
+              default:
+                statusLabel = "Tidak Diketahui"; // Default label for undefined values
+                break;
+            }
+            return statusLabel;
+          }
+        },
+        { 
+          data: 'statusKirim', 
+          title: 'Status Kirim Data' ,
+          render: function (data) {
+            let statusLabel = "";
+            
+            // Map statusPesanan values to labels
+            switch (data) {
+              case "S":
+                statusLabel = "Sudah";
+                break;
+                case "B":
+                  statusLabel = "Belum";
+                  break;
+              default:
+                statusLabel = "Tidak Diketahui"; // Default label for undefined values
+                break;
+            }
+            return statusLabel;
+          }
+        },
+
+        
+        
         {
           title: 'Opsi',
-          render: () => {
-            return `<button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>`;
+          render: (data, type, row) => {
+            const isDisabled = row?.statusKirim=="S"; // Set to true to disable the button
+            const htmlString = `
+              <div class="btn-group" role="group" aria-label="Action">
+                <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
+                <button class="btn btn-sm action-send btn-outline-info btn-60" ${isDisabled ? 'disabled' : ''}>
+                  Kirim
+                </button>              
+              </div>
+            `;
+            return htmlString;
           },
         },
       ],
@@ -161,6 +245,9 @@ export class SendOrderToWarehouseComponent
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
+        );
+        $('.action-send', row).on('click', () =>
+          this.updateStatus(data)
         );
         return row;
       },
@@ -184,6 +271,35 @@ export class SendOrderToWarehouseComponent
       );
       this.router.navigate(['/order/receiving-order/detail']);
     }
+  }
+
+  updateStatus(data: any = null) {
+    this.dataUser = this.g.getLocalstorage('inv_currentUser');
+    const params = {
+      statusKirim : "S",
+      userKirim : this.dataUser.kodeUser,
+      dateKirim :  moment().format("DD-MM-YYYY"),
+      timeKirim :  moment().format("HHmmss"),
+      nomorPesanan : data.nomorPesanan
+  }
+    this.dataService
+    .postData(this.g.urlServer + '/api/send-order-to-warehouse/update-status-kirim',params)
+    .subscribe({
+      next: (res: any) => {
+        if (!res.success) {
+          alert(res.message);
+        } else {
+          this.toastr.success(this.translation.instant('Berhasil!'));
+          setTimeout(() => {
+            window.location.reload();
+          }, DEFAULT_DELAY_TIME);
+        }
+      },
+      error: (err: any) => {
+        console.error('Error updating user:', err);
+        alert('An error occurred while updating the user.');
+      },    
+    });
   }
   dtPageChange(event: any) {}
 
