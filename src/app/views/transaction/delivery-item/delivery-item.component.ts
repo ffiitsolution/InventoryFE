@@ -82,19 +82,39 @@ export class DeliveryItemComponent implements OnInit {
         }, DEFAULT_DELAY_TABLE);
       },
       columns: [
-        // { data: 'dtIndex', title: '#' },
-        { data: 'kodeGudang', title: 'Kode Gudang'},
-        { data: 'kodePemesan', title: 'Kode Pemesan' },
-        { data: 'nomorPesanan', title: 'Nomor Pesanan' },
-        { data: 'tglPesan', title: 'Tanggal Pesan' },
-        {data: 'tglBrgDikirim',title: 'Tanggal Dikirim',},
-        { data: 'keterangan1',title: 'Keterangan',},
+        { data: 'dtIndex', title: '#' },
+        { data: 'tglTransaksi', title: 'Tanggal Kirim' },
+        { data: 'tglPesanan', title: 'Tanggal Pesan' },
+        { data: 'nomorPesanan', title: 'Nomor Pesanan', searchable: true },
+        { data: 'noSuratJalan', title: 'Nomor Pengiriman', searchable: true },
         {
-          data: 'statusRecieve',
-          title: 'Status Penerimaan',
+          data: 'kodeTujuan',
+          title: 'Kode Tujuan',
+          orderable: true,
+          searchable: true,
+        },
+        {
+          data: 'namaTujuan',
+          title: 'Tujuan',
+          orderable: true,
+          searchable: true,
+        },
+        {
+          data: 'cetakSuratJalan',
+          title: 'Status Cetak Surat Jalan',
+          render: (data) => this.g.getsatusDeliveryOrderLabel(data, true),
+        },
+        {
+          data: 'statusDoBalik',
+          title: 'Status DO Balik',
+          render: (data) => this.g.getsatusDeliveryOrderLabel(data, true),
+        },
+        {
+          data: 'statusPosting',
+          title: 'Status Pengiriman',
           render: (data) => {
             const isCancel = data == CANCEL_STATUS;
-            const label = this.g.getsatusDeliveryOrderLabel(data);
+            const label = this.g.getStatusOrderLabel(data);
             if (isCancel) {
               return `<span class="text-center text-danger">${label}</span>`;
             }
@@ -102,17 +122,11 @@ export class DeliveryItemComponent implements OnInit {
           },
         },
         {
-          data: 'statusCetak',
-          title: 'Status Cetak',
-          render: (data) => this.g.getsatusDeliveryOrderLabel(data, true),
-        },
-        {
           title: 'Opsi',
           render: () => {
             return `<button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>`;
           },
         },
-
       ],
       searchDelay: 1000,
       // delivery: [],

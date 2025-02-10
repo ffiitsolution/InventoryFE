@@ -147,14 +147,16 @@ export class AddDataDetailDeliveryComponent
     const param = this.listOrderData.map((data: any) => ({
       kodeGudang: this.selectedOrder.kodeGudang,
       kodeTujuan: this.selectedOrder.codeDestination,
-      tipeTransaksi: '3',
+      tipeTransaksi: 3,
       nomorPesanan: this.selectedOrder.nomorPesanan,
       kodeBarang: data.kodeBarang, 
       qtyBPesan: data.qtyPesanBesar,   
       qtyKPesan: data.qtyPesanKecil,   
       hargaSatuan: 0, 
       userCreate: JSON.parse(localStorage.getItem('inv_currentUser') || '{}').namaUser,
-      konversi: data.konversi
+      konversi: data.konversi,
+      satuanKecil: data.satuanKecil,
+      satuanBesar: data.satuanBesar
     }));
   
     this.appService.saveDeliveryOrder(param).subscribe({
@@ -164,7 +166,7 @@ export class AddDataDetailDeliveryComponent
         } else {
           this.toastr.success('Berhasil!');
           setTimeout(() => {
-            this.onBackPressed();
+            this.router.navigate(['/transaction/delivery-item']);
           }, DEFAULT_DELAY_TIME);
         }
         this.adding = false;
