@@ -10,6 +10,7 @@ import {
   ACTION_VIEW,
   CANCEL_STATUS,
   DEFAULT_DELAY_TABLE,
+  DEFAULT_DELAY_TIME,
   LS_INV_SELECTED_DELIVERY_ORDER,
   OUTLET_BRAND_KFC,
   SEND_PRINT_STATUS_SUDAH,
@@ -62,7 +63,8 @@ export class AddDataDetailDeliveryComponent
     private translation: TranslationService,
     private router: Router,
     public helper: HelperService,
-    private appService: AppService
+    private appService: AppService,
+    private toastr: ToastrService,
   ) {
     this.g.navbarVisibility = true;
     this.selectedOrder = JSON.parse(this.selectedOrder);
@@ -105,10 +107,16 @@ export class AddDataDetailDeliveryComponent
     );
   }
 
-  onInputValueItemDetail(event: any) {
-    this.helper.formatInputNumber(event);
-  }
+  onInputValueItemDetail(event: any, index: number) {
+    const target = event.target;
+    const value = target.value;
 
+    if (target.type === 'number') {
+      this.listOrderData[index][target.name] = Number(value); 
+    } else {
+      this.listOrderData[index][target.name] = value;
+    }
+  }
   onFilterSearch(
     listData: any[],
     filterText: string,
@@ -128,34 +136,44 @@ export class AddDataDetailDeliveryComponent
   }
 
   onPageChange(event: number) {
-    this.page = event; 
+    this.page = event;
   }
 
   formatStrDate(date: any) {
     return moment(date, "YYYY-MM-DD").format("DD-MM-YYYY");
   }
 
-  onSubmit(){
-      // const param = {
-      //   kodeUser:  controls?.['kodeUser']?.value,
-      //   kodePassword:  controls?.['kodePassword']?.value,
-      //   namaUser: controls?.['namaUser']?.value,
-      //   statusAktif: controls?.['statusAktif']?.value,
-      //   jabatan: controls?.['jabatan']?.value,
-      //   defaultLocation: controls?.['defaultLocation']?.value?.id
-      // };
-      // this.service.insert('/api/users', param).subscribe({
-      //   next: (res) => {
-      //     if (!res.success) {
-      //       alert(res.message);
-      //     } else {
-      //       this.toastr.success('Berhasil!');
-      //       setTimeout(() => {
-      //         this.onPreviousPressed();
-      //       }, DEFAULT_DELAY_TIME);
-      //     }
-      //     this.adding = false;
-      //   },
-      // });
+  onSubmit() {
+    const param = this.listOrderData.map((data: any) => ({
+      kodeGudang: this.selectedOrder.kodeGudang,
+      kodeTujuan: this.selectedOrder.codeDestination,
+      tipeTransaksi: '3',
+      nomorPesanan: this.selectedOrder.nomorPesanan,
+      kodeBarang: data.kodeBarang, 
+      qtyBPesan: data.qtyPesanBesar,   
+      qtyKPesan: data.qtyPesanKecil,   
+      hargaSatuan: 0, 
+      userCreate: JSON.parse(localStorage.getItem('inv_currentUser') || '{}').namaUser,
+      konversi: data.konversi
+    }));
+  
+    this.appService.saveDeliveryOrder(param).subscribe({
+      next: (res) => {
+        if (!res.success) {
+          alert(res.message);
+        } else {
+          this.toastr.success('Berhasil!');
+          setTimeout(() => {
+            this.onBackPressed();
+          }, DEFAULT_DELAY_TIME);
+        }
+        this.adding = false;
+      },
+      error: (err) => {
+        console.error("Error saat insert:", err);
+      }
+    });
   }
+  
+
 }

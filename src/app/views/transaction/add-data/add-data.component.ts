@@ -24,7 +24,7 @@ import moment from 'moment';
   selector: 'app-add-data',
   templateUrl: './add-data.component.html',
   styleUrls: ['./add-data.component.scss'],
-  
+
 })
 export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
   nomorPesanan: any;
@@ -52,7 +52,8 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
     tglKadaluarsa: '',
     validatedDeliveryDate: '',
     notes: '',
-    codeDestination: ''
+    codeDestination: '',
+    kodeGudang: ''
   };
 
   constructor(
@@ -62,12 +63,12 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
     private translationService: TranslationService,
     private deliveryDataService: DeliveryDataService,
     private appService: AppService
-  ) { 
+  ) {
     this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
   }
-  
+
 
   ngOnInit(): void {
     this.bsConfig = Object.assign(
@@ -91,16 +92,12 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
     this.onSaveData();
   }
 
-  onAddDetail(){
+  onAddDetail() {
     this.router.navigate(['/transaction/delivery-item/add-data-detail']);
-    this.formData.validatedDeliveryDate = moment(
-      this.formData.validatedDeliveryDate, 
-      'YYYY-MM-DD'
-    ).format('DD-MM-YYYY')
     this.globalService.saveLocalstorage(
-            LS_INV_SELECTED_DELIVERY_ORDER,
-            JSON.stringify(this.formData)
-          ); 
+      LS_INV_SELECTED_DELIVERY_ORDER,
+      JSON.stringify(this.formData)
+    );
   }
 
   ngAfterViewInit(): void {
@@ -217,18 +214,19 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private mapOrderData(orderData: any): void {
-    this.formData.deliveryStatus =  'Aktif';
-    this.formData.codeDestination = orderData.kodeGudang
+    this.formData.deliveryStatus = 'Aktif';
+    this.formData.codeDestination = orderData.kodePemesan
     this.formData.namaCabang = orderData.namaCabang || '';
     this.formData.alamat1 = orderData.alamat1 || '';
-    this.formData.tglPesan = orderData.tglPesan || '';
-    this.formData.tglBrgDikirim = orderData.tglBrgDikirim || '';
-    this.formData.tglKadaluarsa = orderData.tglKadaluarsa || '';
+    this.formData.tglPesan = moment(orderData.tglPesan, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
+    this.formData.tglBrgDikirim = moment(orderData.tglBrgDikirim, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
+    this.formData.tglKadaluarsa = moment(orderData.tglKadaluarsa, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
     this.formData.notes = orderData.keterangan1 || '';
     this.formData.nomorPesanan = orderData.nomorPesanan || '';
-    this.formData.validatedDeliveryDate = orderData.tglPesan || '';
-
+    this.formData.validatedDeliveryDate = this.formData.tglBrgDikirim || '';
+    this.formData.kodeGudang = orderData.kodeGudang || '';
     this.maxDate = new Date(this.formData.tglKadaluarsa);
+    this.minDate = new Date(this.formData.tglBrgDikirim);
   }
 
 }

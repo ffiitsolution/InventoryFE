@@ -93,6 +93,24 @@ export class AppService {
     );
   }
 
+  getUomList() {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/uom/list`
+    );
+  }
+
+  getSupplierList() {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/supplier/list`
+    );
+  }
+
+  getDefaultOrderGudangList() {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/product/default-order-gudang`
+    );
+  }
+
   getNewReceivingOrder(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/delivery-order/get-new-ro/dt`,
@@ -117,6 +135,14 @@ export class AppService {
   getDetailDoBlik(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/delivery-order/detail-do-balik`,
+      payload
+    );
+  }
+
+
+  saveDeliveryOrder(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/save-detail`,
       payload
     );
   }

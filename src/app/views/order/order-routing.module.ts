@@ -6,7 +6,10 @@ import {
   ReceivingOrderAddFormComponent,
   ReceivingOrderAddDetailFormComponent,
 } from './receiving-order';
+import {
+  SendOrderToWarehouseComponent,
 
+} from './send-order-to-warehouse';
 const routes: Routes = [
   {
     path: '',
@@ -26,6 +29,10 @@ const routes: Routes = [
       {
         path: 'receiving-order/detail',
         component: ReceivingOrderDetailComponent,
+      },
+      {
+        path: 'send-order-to-warehouse',
+        component: SendOrderToWarehouseComponent,
       },
     ],
   },
