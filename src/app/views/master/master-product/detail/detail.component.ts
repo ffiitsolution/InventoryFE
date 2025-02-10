@@ -172,7 +172,7 @@ export class MasterProductDetailComponent implements OnInit {
           panjang: this.detail.panjang.toFixed(2),
           lebar: this.detail.lebar.toFixed(2),
           tinggi: this.detail.tinggi.toFixed(2),
-          volume: this.detail.volume.toFixed(2),
+          volume: this.detail.volume.toFixed(6),
           berat: this.detail.berat.toFixed(2),
           lokasiBarang: this.detail.lokasiBarang,
           statusAktif: this.detail.statusAktif,

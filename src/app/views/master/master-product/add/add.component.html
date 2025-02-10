@@ -74,12 +74,26 @@
                     formControlName="konversi"
                     (input)="preventEmpty($event)"
                     (keypress)="conditionInput($event, 'numeric')"
-                    maxlength="10"
+                    pattern="^\d{1,10}(\.\d{1,2})?$"
+                    maxlength="12"
                   />
-                  <span *ngIf="isInvalid('konversi')" class="text-danger"
-                    >{{ "Tidak Boleh diisi oleh 0" | translate }}
-                  </span>
                 </div>
+                <span
+                  *ngIf="isInvalid('konversi', 'nonZero')"
+                  class="col-sm-12 text-danger"
+                >
+                  {{ "Tidak Boleh diisi oleh 0" | translate }}
+                </span>
+
+                <span
+                  *ngIf="isInvalid('konversi', 'invalidDecimal')"
+                  class="col-sm-12 text-danger"
+                >
+                  {{
+                    "Input harus berupa angka dengan maksimal 8 digit sebelum koma dan maksimal 2 digit setelah koma."
+                      | translate
+                  }}
+                </span>
               </div>
             </div>
             <div class="col-md-4 vertical-divider mb-3">
@@ -347,12 +361,22 @@
                     formControlName="minStock"
                     (input)="preventEmpty($event)"
                     (keypress)="conditionInput($event, 'numeric')"
-                    maxlength="10"
+                    maxlength="13"
                   />
                 </div>
                 <label class="col-sm-2 col-form-label text-left px-0">
                   {{ myForm.get("satuanBesar")?.value?.kodeUom | translate }}
                 </label>
+
+                <span
+                  *ngIf="isInvalid('minStock', 'invalidDecimal')"
+                  class="col-sm-12 text-danger"
+                >
+                  {{
+                    "Input harus berupa angka dengan maksimal 10 digit sebelum koma dan maksimal 2 digit setelah koma."
+                      | translate
+                  }}
+                </span>
               </div>
               <div class="row mb-3">
                 <label class="col-sm-6 col-form-label">
@@ -366,16 +390,25 @@
                     formControlName="maxStock"
                     (input)="preventEmpty($event)"
                     (keypress)="conditionInput($event, 'numeric')"
-                    maxlength="10"
+                    maxlength="13"
                   />
                 </div>
                 <label class="col-sm-2 col-form-label text-left px-0">
                   {{ myForm.get("satuanBesar")?.value?.kodeUom | translate }}
                 </label>
+                <span
+                  *ngIf="isInvalid('maxStock', 'invalidDecimal')"
+                  class="col-sm-12 text-danger"
+                >
+                  {{
+                    "Input harus berupa angka dengan maksimal 10 digit sebelum koma dan maksimal 2 digit setelah koma."
+                      | translate
+                  }}
+                </span>
               </div>
               <div class="row mb-3">
                 <label class="col-sm-6 col-form-label">
-                  {{ "Minimun Order" | translate }}
+                  {{ "Minimum Order" | translate }}
                 </label>
                 <div class="col-sm-4">
                   <input
@@ -385,12 +418,21 @@
                     formControlName="minOrder"
                     (input)="preventEmpty($event)"
                     (keypress)="conditionInput($event, 'numeric')"
-                    maxlength="10"
+                    maxlength="13"
                   />
                 </div>
                 <label class="col-sm-2 col-form-label text-left px-0">
                   {{ myForm.get("satuanBesar")?.value?.kodeUom | translate }}
                 </label>
+                <span
+                  *ngIf="isInvalid('minOrder', 'invalidDecimal')"
+                  class="col-sm-12 text-danger"
+                >
+                  {{
+                    "Input harus berupa angka dengan maksimal 10 digit sebelum koma dan maksimal 2 digit setelah koma."
+                      | translate
+                  }}
+                </span>
               </div>
               <div class="row mb-3">
                 <label class="col-sm-6 col-form-label">
@@ -421,12 +463,21 @@
                     class="form-control"
                     formControlName="panjang"
                     (keypress)="conditionInput($event, 'numeric')"
-                    maxlength="40"
+                    maxlength="13"
                   />
                 </div>
                 <label class="col-sm-4 col-form-label text-left px-0">
                   {{ "CM" | translate }}
                 </label>
+                <span
+                  *ngIf="isInvalid('panjang', 'invalidDecimal')"
+                  class="col-sm-12 text-danger"
+                >
+                  {{
+                    "Input harus berupa angka dengan maksimal 10 digit sebelum koma dan maksimal 2 digit setelah koma."
+                      | translate
+                  }}
+                </span>
               </div>
               <div class="row mb-3">
                 <label class="col-sm-4 col-form-label">
@@ -440,12 +491,21 @@
                     formControlName="lebar"
                     (input)="preventEmpty($event)"
                     (keypress)="conditionInput($event, 'numeric')"
-                    maxlength="40"
+                    maxlength="13"
                   />
                 </div>
                 <label class="col-sm-4 col-form-label text-left px-0">
                   {{ "CM" | translate }}
                 </label>
+                <span
+                  *ngIf="isInvalid('lebar', 'invalidDecimal')"
+                  class="col-sm-12 text-danger"
+                >
+                  {{
+                    "Input harus berupa angka dengan maksimal 10 digit sebelum koma dan maksimal 2 digit setelah koma."
+                      | translate
+                  }}
+                </span>
               </div>
               <div class="row mb-3">
                 <label class="col-sm-4 col-form-label">
@@ -459,12 +519,21 @@
                     formControlName="tinggi"
                     (input)="preventEmpty($event)"
                     (keypress)="conditionInput($event, 'numeric')"
-                    maxlength="10"
+                    maxlength="13"
                   />
                 </div>
                 <label class="col-sm-4 col-form-label text-left px-0">
                   {{ "CM" | translate }}
                 </label>
+                <span
+                  *ngIf="isInvalid('tinggi', 'invalidDecimal')"
+                  class="col-sm-12 text-danger"
+                >
+                  {{
+                    "Input harus berupa angka dengan maksimal 10 digit sebelum koma dan maksimal 2 digit setelah koma."
+                      | translate
+                  }}
+                </span>
               </div>
               <div class="row mb-3">
                 <label class="col-sm-4 col-form-label right-column">
@@ -478,7 +547,7 @@
                     formControlName="volume"
                     (input)="preventEmpty($event)"
                     (keypress)="conditionInput($event, 'numeric')"
-                    maxlength="10"
+                    maxlength="13"
                   />
                 </div>
                 <label class="col-sm-4 col-form-label text-left px-0">
@@ -488,6 +557,15 @@
                       : ("M3 / " | translate)
                   }}
                 </label>
+                <span
+                  *ngIf="isInvalid('volume', 'invalidDecimal')"
+                  class="col-sm-12 text-danger"
+                >
+                  {{
+                    "Input harus berupa angka dengan maksimal 6 digit sebelum koma dan maksimal 6 digit setelah koma."
+                      | translate
+                  }}
+                </span>
               </div>
               <div class="row mb-3">
                 <label class="col-sm-4 col-form-label">
@@ -501,12 +579,21 @@
                     formControlName="berat"
                     (input)="preventEmpty($event)"
                     (keypress)="conditionInput($event, 'numeric')"
-                    maxlength="10"
+                    maxlength="11"
                   />
                 </div>
                 <label class="col-sm-4 col-form-label text-left px-0">
                   {{ "KGS" | translate }}
                 </label>
+                <span
+                  *ngIf="isInvalid('berat', 'invalidDecimal')"
+                  class="col-sm-12 text-danger"
+                >
+                  {{
+                    "Input harus berupa angka dengan maksimal 8 digit sebelum koma dan maksimal 2 digit setelah koma."
+                      | translate
+                  }}
+                </span>
               </div>
             </div>
           </div>

@@ -4,6 +4,7 @@ import {
   FormBuilder,
   FormGroup,
   ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -22,6 +23,39 @@ function nonZeroValidator(control: AbstractControl): ValidationErrors | null {
     return { nonZero: true };
   }
   return null;
+}
+
+function decimal10_2Validator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    const regex = /^\d{1,8}(\.\d{1,2})?$/;
+    if (value && !regex.test(value)) {
+      return { invalidDecimal: true }; // Validasi gagal
+    }
+    return null; // Validasi berhasil
+  };
+}
+
+function decimal12_2Validator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    const regex = /^\d{1,10}(\.\d{1,2})?$/;
+    if (value && !regex.test(value)) {
+      return { invalidDecimal: true }; // Validasi gagal
+    }
+    return null; // Validasi berhasil
+  };
+}
+
+function decimal12_6Validator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    const regex = /^\d{1,6}(\.\d{1,6})?$/;
+    if (value && !regex.test(value)) {
+      return { invalidDecimal: true }; // Validasi gagal
+    }
+    return null; // Validasi berhasil
+  };
 }
 
 @Component({
@@ -66,7 +100,10 @@ export class MasterProductEditComponent implements OnInit {
     this.myForm = this.form.group({
       kodeBarang: ['', Validators.required],
       namaBarang: ['', Validators.required],
-      konversi: [this.defaultValue.toFixed(2), nonZeroValidator],
+      konversi: [
+        this.defaultValue.toFixed(2),
+        [nonZeroValidator, decimal10_2Validator()],
+      ],
       satuanKecil: ['', Validators.required],
       satuanBesar: ['', Validators.required],
       defaultGudang: [''],
@@ -82,15 +119,15 @@ export class MasterProductEditComponent implements OnInit {
       flagResepProduksi: ['T'],
       flagConversion: ['T'],
       others2: ['T'],
-      minStock: [this.defaultValue.toFixed(2)],
-      maxStock: [this.defaultValue.toFixed(2)],
-      minOrder: [this.defaultValue.toFixed(2)],
+      minStock: [this.defaultValue.toFixed(2), decimal12_2Validator()],
+      maxStock: [this.defaultValue.toFixed(2), decimal12_2Validator()],
+      minOrder: [this.defaultValue.toFixed(2), decimal12_2Validator()],
       satuanMinOrder: [''],
-      panjang: [this.defaultValue.toFixed(2)],
-      lebar: [this.defaultValue.toFixed(2)],
-      tinggi: [this.defaultValue.toFixed(2)],
-      volume: [this.defaultValue.toFixed(2)],
-      berat: [this.defaultValue.toFixed(2)],
+      panjang: [this.defaultValue.toFixed(2), decimal12_2Validator()],
+      lebar: [this.defaultValue.toFixed(2), decimal12_2Validator()],
+      tinggi: [this.defaultValue.toFixed(2), decimal12_2Validator()],
+      volume: [this.defaultValue.toFixed(2), decimal12_6Validator()],
+      berat: [this.defaultValue.toFixed(2), decimal10_2Validator()],
       lokasiBarang: [''],
       statusAktif: ['A'],
       keteranganBrg: [''],
@@ -172,7 +209,7 @@ export class MasterProductEditComponent implements OnInit {
           panjang: this.detail.panjang.toFixed(2),
           lebar: this.detail.lebar.toFixed(2),
           tinggi: this.detail.tinggi.toFixed(2),
-          volume: this.detail.volume.toFixed(2),
+          volume: this.detail.volume.toFixed(6),
           berat: this.detail.berat.toFixed(2),
           lokasiBarang: this.detail.lokasiBarang,
           statusAktif: this.detail.statusAktif,
@@ -273,9 +310,13 @@ export class MasterProductEditComponent implements OnInit {
     });
   }
 
-  isInvalid(field: string): boolean {
+  isInvalid(field: string, errorKey?: string): boolean {
     const control = this.myForm.get(field);
-    return control ? control.invalid && control.touched : false;
+    return control
+      ? control.invalid &&
+          control.touched &&
+          (!errorKey || control.hasError(errorKey))
+      : false;
   }
 
   preventEmpty(event: any) {
