@@ -267,6 +267,15 @@ export class GlobalService {
     }
     return `(${status}) ${found?.label}` || status;
   }
+
+  getStatusPostingLabel(status: string, isPrintStatus: boolean = false) {
+    const data = isPrintStatus ? PRINT_STATUS : STATUS_RESULT;
+    const found = data.find((item) => item.value == status);
+    if (!found) {
+      return '-';
+    }
+    return `(${status}) ${found?.label}` || status;
+  }
   trimOutletCode(label: string) {
     const numberPattern = /\d+/g;
     const result = label.match(numberPattern);
