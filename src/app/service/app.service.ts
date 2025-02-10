@@ -107,5 +107,19 @@ export class AppService {
     );
   }
 
+  updateDeliveryOrderPostingStatus(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/posting-do`,
+      payload
+    );
+  }
+
+  getDetailDoBlik(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/detail-do-balik`,
+      payload
+    );
+  }
+
 
 }

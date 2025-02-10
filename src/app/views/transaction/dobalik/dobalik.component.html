@@ -1,0 +1,55 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>{{ "Kirim pesanan ke Cabang atau Gudang" | translate }}</h5>
+        </div>
+      </div>
+      <div>
+        <div class="divider"></div>
+        <div class="row" style="margin-top: -16px">
+          <c-card-body>
+            <c-row>
+              <c-col>
+                <label for="startDate" class="col-form-label">Start Date</label>
+                <input 
+                  type="text" 
+                  id="startDate" 
+                  class="form-control"
+                  [(ngModel)]="startDate" 
+                  bsDatepicker 
+                  [bsConfig]="dpConfig" />
+              </c-col>
+              <c-col>
+                <label for="endDate" class="col-form-label">End Date</label>
+                <input 
+                  type="text" 
+                  id="endDate" 
+                  class="form-control"
+                  [(ngModel)]="endDate" 
+                  bsDatepicker 
+                  [bsConfig]="dpConfig" />
+              </c-col>
+              <c-col xs="3" style="text-align: right">
+                <button class="btn btn-outline-danger me-2" (click)="search()">
+                  <i class="fa fa-search"></i> Search
+                </button>
+              </c-col>
+            </c-row>
+          </c-card-body>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" (page.dt)="dtPageChange($event)" class="row-border hover"></table>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>

@@ -82,9 +82,8 @@
   {
     "name": "Transaksi",
     "url": "/transaksi",
-    "iconComponent": {
-      "name": "cil-speedometer"
-    },
+    "icon": "fa fa-exchange"
+    ,
     "badge": {
       "color": "info",
       "text": "NEW"
@@ -93,8 +92,11 @@
       {
         "name": "Pengiriman",
         "url": "/transaction/delivery-item"
+      },
+      {
+        "name": "Proses Do Balik",
+        "url": "/transaction/delivery-item/dobalik"
       }
     ]
-    
   }
 ]

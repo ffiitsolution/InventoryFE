@@ -272,4 +272,7 @@ export class GlobalService {
     const result = label.match(numberPattern);
     return result ? result[0] : null;
   }
+  getUserCabangCode() {
+    return 'defaultCabangCode';
+  }
 }

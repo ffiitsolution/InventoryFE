@@ -124,6 +124,11 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isShowModal = true;
   }
 
+  prosesDobalik() {
+    const route = this.router.createUrlTree(['/transaction/delivery-item/dobalik']);
+    this.router.navigateByUrl(route);
+  }
+
   renderDataTables(): void {
     this.dtOptions = {
       language:
