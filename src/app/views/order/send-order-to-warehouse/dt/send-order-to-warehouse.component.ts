@@ -330,6 +330,6 @@ export class SendOrderToWarehouseComponent
     this.showFilterSection = !this.showFilterSection;
   }
   onAddPressed() {
-    this.router.navigate(['/order/receiving-order/add']);
+    this.router.navigate(['/order/send-order-to-warehouse/add']);
   }
 }

@@ -29,8 +29,10 @@ import {
 } from './receiving-order';
 import {
   SendOrderToWarehouseComponent,
+  SendOrderToWarehouseAddComponent
 } from './send-order-to-warehouse';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { SelectDropDownModule } from 'ngx-select-dropdown';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -55,13 +57,15 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReactiveFormsModule,
     BsDatepickerModule.forRoot(),
     ModalModule,
+    SelectDropDownModule
   ],
   declarations: [
     ReceivingOrderComponent,
     ReceivingOrderDetailComponent,
     ReceivingOrderAddFormComponent,
     ReceivingOrderAddDetailFormComponent,
-    SendOrderToWarehouseComponent
+    SendOrderToWarehouseComponent,
+    SendOrderToWarehouseAddComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })
