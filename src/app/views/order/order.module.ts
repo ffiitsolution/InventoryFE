@@ -14,6 +14,8 @@ import {
   ModalModule,
   TextColorDirective,
   UtilitiesModule,
+  TableModule,
+
 } from '@coreui/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -29,7 +31,8 @@ import {
 } from './receiving-order';
 import {
   SendOrderToWarehouseComponent,
-  SendOrderToWarehouseAddComponent
+  SendOrderToWarehouseAddComponent,
+  AddDataDetailSendOrderToWarehouseComponent,
 } from './send-order-to-warehouse';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
@@ -57,7 +60,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReactiveFormsModule,
     BsDatepickerModule.forRoot(),
     ModalModule,
-    SelectDropDownModule
+    SelectDropDownModule,
+    TableModule
   ],
   declarations: [
     ReceivingOrderComponent,
@@ -65,7 +69,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReceivingOrderAddFormComponent,
     ReceivingOrderAddDetailFormComponent,
     SendOrderToWarehouseComponent,
-    SendOrderToWarehouseAddComponent
+    SendOrderToWarehouseAddComponent,
+    AddDataDetailSendOrderToWarehouseComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })
