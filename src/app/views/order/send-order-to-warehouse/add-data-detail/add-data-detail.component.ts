@@ -92,20 +92,50 @@ export class AddDataDetailSendOrderToWarehouseComponent
       nomorPesanan: this.selectedOrder.nomorPesanan
     };
 
-    this.appService.getDeliveryItemDetails(params).subscribe(
-      (res) => {
-        this.listOrderData = res.data;
-        this.totalLength = res?.data?.length;
-        this.page = 1;
-        setTimeout(() => {
-          this.loading = false;
-        }, 1000);
-      },
-      () => {
-        this.loading = false;
-        // this.toastr.error(this.errorShowMessage, 'Maaf, Terjadi Kesalahan!');
+    // this.appService.getDeliveryItemDetails(params).subscribe(
+    //   (res) => {
+    //     this.listOrderData = res.data;
+    //     this.totalLength = res?.data?.length;
+    //     this.page = 1;
+    //     setTimeout(() => {
+    //       this.loading = false;
+    //     }, 1000);
+
+    //     console.log('listOrderData', this.listOrderData);
+    //   },
+    //   () => {
+    //     this.loading = false;
+    //     // this.toastr.error(this.errorShowMessage, 'Maaf, Terjadi Kesalahan!');
+    //   }
+    // );
+    this.listOrderData = [
+      {
+          totalQtyTerima: 60,
+          satuanKecilProduct: "PCS",
+          keterangan: "Konversi Sama",
+          totalQtyPesan: 70,
+          timeCounter: "153911",
+          namaPemesan: "MT HARYONO JAKARTA",
+          qtyPesanBesar: 10,
+          namaGudang: "GUDANG COMMISARY SENTUL BOGOR",
+          namaBarang: "AYAM BROILER 7 PCS NON ABOB",
+          dateCreate: "2025-01-17",
+          nomorPesanan: "RO020825010080",
+          satuanKecil: "PCS",
+          hargaUnit: 0,
+          userCreate: "ZTO",
+          timeCreate: "ZTO",
+          satuanBesarProduct: "HEAD",
+          kodePemesan: "0208",
+          kodeGudang: "00072",
+          kodeBarang: "01-1002",
+          satuanBesar: "HEAD",
+          konversi: 7,
+          konversiProduct: 7,
+          qtyPesanKecil: 0
       }
-    );
+  ];
+    console.log('listOrderData', this.listOrderData);
   }
 
   onInputValueItemDetail(event: any, index: number) {
