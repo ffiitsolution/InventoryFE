@@ -29,6 +29,7 @@ import { AppConfig } from '../../../config/app.config';
 import { HelperService } from '../../../service/helper.service';
 import { AppService } from '../../../service/app.service';
 import moment from 'moment';
+import { data } from 'jquery';
 
 @Component({
   selector: 'app-add-data-detail-delivery-order',
@@ -71,6 +72,8 @@ export class AddDataDetailDeliveryComponent
     this.getDeliveryItemDetails()
   }
 
+
+
   ngOnInit(): void {
     this.g.changeTitle(
       this.translation.instant('Detail Pesanan') + ' - ' + this.g.tabTitle
@@ -93,7 +96,11 @@ export class AddDataDetailDeliveryComponent
 
     this.appService.getDeliveryItemDetails(params).subscribe(
       (res) => {
-        this.listOrderData = res.data;
+        this.listOrderData = res.data.map((data:any) => ({
+          ...data, 
+          qtyBPesanOld: data.qtyPesanBesar,
+          totalQtyPesanOld: data.totalQtyPesan
+        }));
         this.totalLength = res?.data?.length;
         this.page = 1;
         setTimeout(() => {
@@ -150,13 +157,16 @@ export class AddDataDetailDeliveryComponent
       tipeTransaksi: 3,
       nomorPesanan: this.selectedOrder.nomorPesanan,
       kodeBarang: data.kodeBarang, 
-      qtyBPesan: data.qtyPesanBesar,   
+      qtyBPesan: data.qtyBPesanOld,   
       qtyKPesan: data.qtyPesanKecil,   
+      qtyBKirim: data.qtyPesanBesar,   
+      qtyKKirim: data.qtyPesanKecil,   
       hargaSatuan: 0, 
       userCreate: JSON.parse(localStorage.getItem('inv_currentUser') || '{}').namaUser,
       konversi: data.konversi,
       satuanKecil: data.satuanKecil,
-      satuanBesar: data.satuanBesar
+      satuanBesar: data.satuanBesar,
+      totalQtyPesanOld: data.totalQtyPesanOld
     }));
   
     this.appService.saveDeliveryOrder(param).subscribe({

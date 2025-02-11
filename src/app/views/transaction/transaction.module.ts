@@ -27,6 +27,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { AddDataComponent } from './add-data/add-data.component';
 import { DetailTransactionComponent } from './detail-transaction/detail-transaction.component';
 import { AddDataDetailDeliveryComponent } from './add-data-detail/add-data-detail.component';
+import { SharedComponentModule } from '../../component/shared.component.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -51,7 +52,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReactiveFormsModule,
     BsDatepickerModule.forRoot(),
     ModalModule,
-    TableModule
+    TableModule,
+    SharedComponentModule
   ],
   declarations: [
     DeliveryItemComponent,
