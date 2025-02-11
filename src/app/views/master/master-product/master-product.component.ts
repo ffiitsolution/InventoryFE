@@ -39,11 +39,16 @@ export class MasterProductComponent
   selectedRowData: any;
   isFilterShown: boolean = false;
   selectedStatusFilter: any = '';
+  selectedGudangFilter: any = '';
+  selectedSatuanMinOrderFilter: any = '';
+  selectedLokasiBarangDiGudangFilter: any = '';
   dtColumns: any = [];
   buttonCaptionView: String = 'Lihat';
   buttonCaptionEdit: String = 'Ubah';
   CONST_ACTION_ADD: string = ACTION_ADD;
   adding: boolean = false;
+  defaultOrderOptions: any = [];
+  satuanMinOrderOptions: any = [];
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
@@ -77,6 +82,9 @@ export class MasterProductComponent
         const requestData = {
           ...dataTablesParameters,
           status: this.selectedStatusFilter,
+          DEFAULT_GUDANG: this.selectedGudangFilter,
+          SATUAN_MIN_ORDER: this.selectedSatuanMinOrderFilter,
+          LOKASI_BARANG_DI_GUDANG: this.selectedLokasiBarangDiGudangFilter,
         };
         this.dataService
           .postData(this.g.urlServer + '/api/product/dt', requestData)
@@ -175,6 +183,24 @@ export class MasterProductComponent
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.buttonCaptionEdit = this.translation.instant('Ubah');
     localStorage.removeItem(LS_INV_SELECTED_PRODUCT);
+
+    this.dataService
+    .getData(this.g.urlServer + '/api/product/default-order-gudang')
+    .subscribe((resp: any) => {
+      this.defaultOrderOptions = resp.map((item: any) => ({
+        value: item.kodeSingkat.substring(0, 3),
+        label: item.cad1,
+      }));    
+    });
+
+    this.dataService
+    .getData(this.g.urlServer + '/api/uom/list')
+    .subscribe((resp: any) => {
+      this.satuanMinOrderOptions = resp.map((item: any) => ({
+        value: item.kodeUom,
+        label: item.keteranganUom,
+      }));    
+    });
   }
 
   actionBtnClick(action: string, data: any = null) {
