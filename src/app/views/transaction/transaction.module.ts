@@ -30,6 +30,7 @@ import { AddDataDetailDeliveryComponent } from './add-data-detail/add-data-detai
 import { DobalikComponent } from './dobalik/dobalik.component';
 import { DetailReportDoBalikComponent } from './detail-report-do-balik/detail-report-do-balik.component';
 import { PackagingListComponent } from './packing-list/packing-list.component';
+import { SharedComponentModule } from '../../component/shared.component.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -54,7 +55,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReactiveFormsModule,
     BsDatepickerModule.forRoot(),
     ModalModule,
-    TableModule
+    TableModule,
+    SharedComponentModule
   ],
   declarations: [
     DeliveryItemComponent,
