@@ -105,7 +105,7 @@ export class ReceivingOrderComponent
                 data: mappedData,
               });
             });
-        }, DEFAULT_DELAY_TABLE);
+        }, );
       },
       columns: [
         { data: 'dtIndex', title: '#' },

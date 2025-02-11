@@ -16,7 +16,9 @@
     <c-card-body>
       <div class="d-grid gap-3 d-md-flex justify-content-end">
         <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
-          <i class="fa fa-check pe-2"></i> {{ "Proses Pengiriman" | translate }}
+          <i class="fa fa-check pe-2" *ngIf="!adding"></i>
+          <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
+          {{ "Proses Pengiriman" | translate }}
         </button>
 
         <button class="btn btn-danger text-white btn-150" (click)="onBackPressed()">

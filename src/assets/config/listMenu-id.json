@@ -86,9 +86,7 @@
   {
     "name": "Transaksi",
     "url": "/transaksi",
-    "iconComponent": {
-      "name": "cil-speedometer"
-    },
+    "icon": "fa fa-exchange",
     "badge": {
       "color": "info",
       "text": "NEW"
@@ -96,9 +94,55 @@
     "children": [
       {
         "name": "Pengiriman",
-        "url": "/transaction/delivery-item"
+        "url": "/transaction/delivery-item",
+        "iconComponent":{
+          "name": "cil-truck"
+        },
+        "children": [
+          {
+            "name": "Display dan Tambah Data",
+            "url": "/transaction/delivery-item",
+            "iconComponent": {
+              "name": "cil-plus"
+            }
+          },
+          {
+            "name": "Proses Do Balik",
+            "url": "/transaction/delivery-item/dobalik",
+            "iconComponent": {
+              "name": "cil-note-add"
+            }
+          },
+          {
+            "name": "Revisi DO",
+            "url": "/transaction/delivery-item/dobalik",
+            "iconComponent": {
+              "name": "cil-sync"
+            }
+          },
+          {
+            "name": "Packing List",
+            "url": "/transaction/delivery-item/packing-list",
+            "iconComponent": {
+              "name": "cil-check"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Penerimaan Dari Gudang",
+        "url": "/transaction/receipt-from-warehouse/penerimaan-dari-gudang",
+        "children": [
+          {
+            "name": "Tambah Data",
+            "url": "/transaction/receipt-from-warehouse/tambah-data"
+          },
+          {
+            "name": "Display Dan Cetak",
+            "url": "/transaction/receipt-from-warehouse/display-dan-cetak"
+          }
+        ]
       }
     ]
-    
   }
 ]
