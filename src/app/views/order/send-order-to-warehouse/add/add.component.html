@@ -1,0 +1,213 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <h5>{{ "Tambah" | translate }} {{ "Pesanan" | translate }}</h5>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+              "Tanggal Pesanan" | translate
+            }}
+            <span class="stamp-required show">&nbsp;*</span>
+          </label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              id="tanggalPesanan"
+              class="form-control"
+              bsDatepicker
+              [bsConfig]="dpConfig"
+              aria-describedby="tanggalPesanan"
+              formControlName="tanggalPesanan"
+              #dp="bsDatepicker"
+              placeholder="{{ 'Tanggal Pesanan' | translate }}"
+            />
+            <span *ngIf="isFieldValid('tanggalPesanan')" class="text-danger">{{
+              "Wajib diisi" | translate
+            }}</span>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+              "Tanggal Kirim Barang" | translate
+            }}
+            <span class="stamp-required show">&nbsp;*</span>
+          </label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              id="tanggalKirimBarang"
+              class="form-control"
+              bsDatepicker
+              [bsConfig]="dpConfig"
+              aria-describedby="tanggalKirimBarang"
+              formControlName="tanggalKirimBarang"
+              #dp="bsDatepicker"
+              placeholder="{{ 'Tanggal Kirim Barang' | translate }}"
+            />
+            <span *ngIf="isFieldValid('tanggalKirimBarang')" class="text-danger">{{
+              "Wajib diisi" | translate
+            }}</span>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Tanggal Batal Pesanan" | translate
+          }}
+          <span class="stamp-required show">&nbsp;*</span>
+          </label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              id="tanggalBatalPesanan"
+              class="form-control"
+              bsDatepicker
+              [bsConfig]="dpConfig"
+              aria-describedby="tanggalBatalPesanan"
+              formControlName="tanggalBatalPesanan"
+              #dp="bsDatepicker"
+              placeholder="{{ 'Tanggal Batal Pesanan' | translate }}"
+            />
+            <span *ngIf="isFieldValid('tanggalBatalPesanan')" class="text-danger">{{
+              "Wajib diisi" | translate
+            }}</span>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Gudang Tujuan" | translate
+          }}
+            <span class="stamp-required show">&nbsp;*</span>
+          </label>
+          <div class="col-sm-10">
+            <ngx-select-dropdown
+              [multiple]="false"
+              [config]="configSelectGudang"
+              [options]="listGudang"
+              formControlName="gudangTujuan"
+              id="gudangTujuan"
+              (change)="onGudangTujuanChange($event)">
+              >
+            </ngx-select-dropdown>
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Nama Gudang" | translate
+          }}
+        </label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="namaGudang"
+              [readOnly]="adding"
+              (keypress)="conditionInput($event, 'alphanumeric')"
+              maxlength="50"
+            />
+            <span *ngIf="isFieldValid('namaGudang')" class="text-danger">{{
+              "Wajib diisi" | translate
+            }}</span>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Alamat Gudang" | translate 
+            }} 
+          </label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="alamatGudang"
+              [readOnly]="adding"
+              (keypress)="conditionInput($event, 'alphabet')"
+              maxlength="100"
+            />
+            <span *ngIf="isFieldValid('alamatGudang')" class="text-danger">{{
+              "Wajib diisi" | translate
+            }}</span>
+          </div>
+        </div>
+      
+        
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Status Gudang" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="statusGudang"
+              [readOnly]="adding"
+              maxlength="20"
+            />
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Catatan 1" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="catatan1"
+              [readOnly]="adding"
+              (keypress)="conditionInput($event, 'excludedSensitive')"
+              maxlength="100"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Catatan 2" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="catatan2"
+              [readOnly]="adding"
+              (keypress)="conditionInput($event, 'excludedSensitive')"
+              maxlength="50"
+            />
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="d-grid gap-3 d-md-flex justify-content-end">
+          <button
+            class="btn btn-light btn-120"
+            (click)="onPreviousPressed()"
+            [disabled]="adding"
+          >
+            {{ "Kembali" | translate }}
+          </button>
+          <button
+            class="btn btn-info text-white btn-150"
+            type="submit"
+            [disabled]="adding"
+          >
+            <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
+            <span *ngIf="!adding"
+              >{{ "Buat" | translate }} {{ "Pesanan" | translate }}</span
+            >
+          </button>
+        </div>
+      </form>
+    </c-card-body>
+  </c-card>
+</div>
