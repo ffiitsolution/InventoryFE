@@ -86,8 +86,7 @@
   {
     "name": "Transaksi",
     "url": "/transaksi",
-    "icon": "fa fa-exchange"
-    ,
+    "icon": "fa fa-exchange",
     "badge": {
       "color": "info",
       "text": "NEW"
@@ -95,16 +94,33 @@
     "children": [
       {
         "name": "Pengiriman",
-        "url": "/transaction/delivery-item"
+        "url": "/transaction/delivery-item",
+        "children": [
+          {
+            "name": "Proses Do Balik",
+            "url": "/transaction/delivery-item/dobalik"
+          },
+          {
+            "name": "Packing List",
+            "url": "/transaction/delivery-item/packing-list"
+          }
+        ]
       },
       {
-        "name": "Proses Do Balik",
-        "url": "/transaction/delivery-item/dobalik"
-      },
-      {
-        "name": "Packing List",
-        "url": "/transaction/delivery-item/packing-list"
+        "name": "Penerimaan Dari Gudang",
+        "url": "/transaction/receipt-from-warehouse/penerimaan-dari-gudang",
+        "children": [
+          {
+            "name": "Tambah Data",
+            "url": "/transaction/receipt-from-warehouse/tambah-data"
+          },
+          {
+            "name": "Display Dan Cetak",
+            "url": "/transaction/receipt-from-warehouse/display-dan-cetak"
+          }
+        ]
       }
+
     ]
   }
 ]
