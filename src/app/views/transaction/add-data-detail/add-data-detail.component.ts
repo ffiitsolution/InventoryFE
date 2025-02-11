@@ -151,23 +151,38 @@ export class AddDataDetailDeliveryComponent
   }
 
   onSubmit() {
-    const param = this.listOrderData.map((data: any) => ({
-      kodeGudang: this.selectedOrder.kodeGudang,
-      kodeTujuan: this.selectedOrder.codeDestination,
-      tipeTransaksi: 3,
-      nomorPesanan: this.selectedOrder.nomorPesanan,
-      kodeBarang: data.kodeBarang, 
-      qtyBPesan: data.qtyBPesanOld,   
-      qtyKPesan: data.qtyPesanKecil,   
-      qtyBKirim: data.qtyPesanBesar,   
-      qtyKKirim: data.qtyPesanKecil,   
-      hargaSatuan: 0, 
-      userCreate: JSON.parse(localStorage.getItem('inv_currentUser') || '{}').namaUser,
-      konversi: data.konversi,
-      satuanKecil: data.satuanKecil,
-      satuanBesar: data.satuanBesar,
-      totalQtyPesanOld: data.totalQtyPesanOld
-    }));
+    this.adding = true;
+    const param = this.listOrderData.map((data: any) => {
+      if (data.qtyPesanBesar > data.qtyBPesanOld) {
+        this.toastr.error(`Qty Kirim (${data.qtyPesanBesar}) tidak boleh lebih besar dari Qty Pesan (${data.qtyBPesanOld})`);
+        this.adding = false;
+        
+        return null; // Hentikan pemrosesan item ini
+      }
+  
+      return {
+        kodeGudang: this.selectedOrder.kodeGudang,
+        kodeTujuan: this.selectedOrder.codeDestination,
+        tipeTransaksi: 3,
+        nomorPesanan: this.selectedOrder.nomorPesanan,
+        kodeBarang: data.kodeBarang, 
+        qtyBPesan: data.qtyBPesanOld,   
+        qtyKPesan: data.qtyPesanKecil,   
+        qtyBKirim: data.qtyPesanBesar,   
+        qtyKKirim: data.qtyPesanKecil,   
+        hargaSatuan: 0, 
+        userCreate: JSON.parse(localStorage.getItem('inv_currentUser') || '{}').namaUser,
+        konversi: data.konversi,
+        satuanKecil: data.satuanKecil,
+        satuanBesar: data.satuanBesar,
+        totalQtyPesanOld: data.totalQtyPesanOld
+      };
+    }).filter(item => item !== null); // Hapus item yang tidak valid
+  
+    // Jika ada data yang valid, baru panggil API
+    if (param.length === 0) {
+      return;
+    }
   
     this.appService.saveDeliveryOrder(param).subscribe({
       next: (res) => {
@@ -187,5 +202,6 @@ export class AddDataDetailDeliveryComponent
     });
   }
   
+    
 
 }

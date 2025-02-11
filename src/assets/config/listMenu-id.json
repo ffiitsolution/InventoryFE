@@ -96,9 +96,17 @@
     "children": [
       {
         "name": "Pengiriman",
-        "url": "/transaction/delivery-item"
+        "url": "/transaction/delivery-item",
+        "children": [
+          {
+            "name": "Display dan Tambah Data",
+            "url": "/transaction/delivery-item",
+            "iconComponent": {
+              "name": "cil-plus"
+            }
+          }
+        ]
       }
     ]
-    
   }
 ]

@@ -69,6 +69,8 @@ export class DetailTransactionComponent
   ) {
     this.g.navbarVisibility = true;
     this.selectedOrder = JSON.parse(this.selectedOrder);
+    this.selectedOrder.tglPesanan =  this.g.transformDate(this.selectedOrder.tglPesanan),
+    this.selectedOrder.tglTransaksi =  this.g.transformDate(this.selectedOrder.tglTransaksi),
     this.dtOptions = {
       language:
         translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
@@ -257,68 +259,6 @@ export class DetailTransactionComponent
       },
     });
   }
-
-  // async onButtonActionPressed(status: string) {
-  //   if (status == CANCEL_STATUS) {
-  //     this.onDelete();
-  //   } else {
-  //     this.updatingStatus = true;
-  //     const updatePrintStatusParams = {
-  //       status,
-  //       user: this.g.getUserCode(),
-  //       nomorPesanan: this.selectedOrder.nomorPesanan,
-  //     };
-
-  //     const updatePrintStatusResponse = await lastValueFrom(
-  //       this.dataService.postData(
-  //         this.config.BASE_URL + '/inventory/api/delivery-order/status-descriptions',
-  //         updatePrintStatusParams
-  //       )
-  //     );
-
-  //     if ((updatePrintStatusResponse as any).success) {
-  //       const transformedSelectedOrder = {
-  //         ...this.selectedOrder,
-  //         statusCetak: status,
-  //         statusPesanan: 'T',
-  //       };
-
-  //       this.selectedOrder = transformedSelectedOrder;
-  //       this.g.saveLocalstorage(
-  //         LS_INV_SELECTED_DELIVERY_ORDER,
-  //         JSON.stringify(transformedSelectedOrder)
-  //       );
-
-  //       try {
-  //         const generatePdfParams = {
-  //           outletBrand: OUTLET_BRAND_KFC,
-  //           user: this.g.getUserCode(),
-  //           nomorPesanan: this.selectedOrder.nomorPesanan,
-  //         };
-  //         const base64Response = await lastValueFrom(
-  //           this.dataService.postData(
-  //             `${this.config.BASE_URL}/inventory/api/delivery-order/history`,
-  //             generatePdfParams,
-  //             true
-  //           )
-  //         );
-  //         const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
-  //         const url = window.URL.createObjectURL(blob);
-  //         window.open(url);
-  //       } catch (error: any) {
-  //         this.toastr.error(
-  //           error.message ?? 'Unknown error while generate pdf'
-  //         );
-  //       } finally {
-  //         this.updatingStatus = false;
-  //         this.reloadTable();
-  //       }
-  //     } else {
-  //       this.toastr.error((updatePrintStatusResponse as any).message);
-  //     }
-  //     this.updatingStatus = false;
-  //   }
-  // }
 
   getPrintStatus() {
     if (this.selectedOrder.statusCetak != SEND_PRINT_STATUS_SUDAH) {

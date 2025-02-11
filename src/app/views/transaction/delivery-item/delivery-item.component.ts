@@ -74,10 +74,8 @@ export class DeliveryItemComponent implements OnInit {
                 const finalData = {
                   ...rest,
                   dtIndex: this.page.start + index + 1,
-                  // kodePemesan: `(${rest.kodeGudang}) ${rest.namaGudang}`,
-                  // tglPesan: this.g.transformDate(rest.tglPesan),
-                  // tglKirim: this.g.transformDate(rest.tglKirim),
-                  // tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
+                  tglPesanan: this.g.transformDate(rest.tglPesanan),
+                  tglTransaksi: this.g.transformDate(rest.tglTransaksi)                          
                 };
                 return finalData;
               });
