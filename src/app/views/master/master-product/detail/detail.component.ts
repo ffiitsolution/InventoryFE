@@ -1,10 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
-import { GlobalService } from '../../../../service/global.service';
-import { LS_INV_SELECTED_PRODUCT } from 'src/constants';
+import { ToastrService } from 'ngx-toastr';
+import { forkJoin, Observable } from 'rxjs';
 import { AppService } from 'src/app/service/app.service';
-import { flagSet } from '@coreui/icons';
+import { GlobalService } from 'src/app/service/global.service';
+import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_PRODUCT } from 'src/constants';
+
+function nonZeroValidator(control: AbstractControl): ValidationErrors | null {
+  if (
+    control.value === null ||
+    control.value === '' ||
+    parseFloat(control.value) === 0
+  ) {
+    return { nonZero: true };
+  }
+  return null;
+}
 
 @Component({
   selector: 'app-detail',
@@ -12,16 +30,22 @@ import { flagSet } from '@coreui/icons';
   styleUrl: './detail.component.scss',
 })
 export class MasterProductDetailComponent implements OnInit {
+  defaultValue = 0;
+  isSubmitting: boolean = false;
+
   uomList: any;
   supplierList: any;
   defaultOrderGudangList: any;
+
+  uomSatuanKecilList: any;
+  uomSatuanBesarList: any;
 
   configUomSelect: any;
   configSupplierSelect: any;
   configDefaultGudangSelect: any;
 
-  detail: any;
   myForm: FormGroup;
+  detail: any;
 
   baseConfig: any = {
     displayKey: 'keteranganUom', // Key to display in the dropdown
@@ -33,17 +57,133 @@ export class MasterProductDetailComponent implements OnInit {
   };
 
   constructor(
+    private toastr: ToastrService,
     private form: FormBuilder,
     private router: Router,
-    private g: GlobalService,
-    private service: AppService
-  ) {}
+    private service: AppService,
+    private g: GlobalService
+  ) {
+    this.myForm = this.form.group({
+      kodeBarang: ['', Validators.required],
+      namaBarang: ['', Validators.required],
+      konversi: [this.defaultValue.toFixed(2), nonZeroValidator],
+      satuanKecil: ['', Validators.required],
+      satuanBesar: ['', Validators.required],
+      defaultGudang: [''],
+      defaultSupplier: [''],
+      flagCom: [false],
+      flagDry: [false],
+      flagPrd: [false],
+      flagMkt: [false],
+      flagCtr: [false],
+      flagHra: [false],
+      flagExpired: ['T'],
+      flagBrgBekas: ['T'],
+      flagResepProduksi: ['T'],
+      flagConversion: ['T'],
+      others2: ['T'],
+      minStock: [this.defaultValue.toFixed(2)],
+      maxStock: [this.defaultValue.toFixed(2)],
+      minOrder: [this.defaultValue.toFixed(2)],
+      satuanMinOrder: [''],
+      panjang: [this.defaultValue.toFixed(2)],
+      lebar: [this.defaultValue.toFixed(2)],
+      tinggi: [this.defaultValue.toFixed(2)],
+      volume: [this.defaultValue.toFixed(2)],
+      berat: [this.defaultValue.toFixed(2)],
+      lokasiBarang: [''],
+      statusAktif: ['A'],
+      keteranganBrg: [''],
+    });
+
+    this.myForm.get('konversi')?.valueChanges.subscribe((value) => {
+      this.handleKonversiChange(value);
+    });
+
+    this.myForm.get('satuanKecil')?.valueChanges.subscribe((value) => {
+      this.handleSatuanKecilChange(value);
+    });
+
+    this.myForm.get('satuanBesar')?.valueChanges.subscribe((value) => {
+      this.handleSatuanBesarChange(value);
+    });
+  }
 
   ngOnInit(): void {
     this.detail = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_PRODUCT));
-    this.getUomList();
-    this.getSupplierList();
-    this.getDefaultOrderGudangList();
+    // this.getUomList();
+    // this.getSupplierList();
+    // this.getDefaultOrderGudangList();
+
+    forkJoin({
+      uomList: this.getUomList(),
+      supplierList: this.getSupplierList(),
+      defaultOrderGudangList: this.getDefaultOrderGudangList(),
+    }).subscribe({
+      next: (res) => {
+        this.uomList = Array.isArray(res.uomList) ? res.uomList : [];
+        this.uomSatuanKecilList = Array.isArray(res.uomList) ? res.uomList : [];
+        this.uomSatuanBesarList = Array.isArray(res.uomList) ? res.uomList : [];
+        this.supplierList = Array.isArray(res.supplierList)
+          ? res.supplierList
+          : [];
+        this.defaultOrderGudangList = Array.isArray(res.defaultOrderGudangList)
+          ? res.defaultOrderGudangList?.map((item) => ({
+              cad1: item.cad1,
+              kodeSingkat: item.kodeSingkat.substring(0, 3),
+            }))
+          : [];
+
+        this.myForm.patchValue({
+          kodeBarang: this.detail.kodeBarang,
+          namaBarang: this.detail.namaBarang,
+          konversi: this.detail.konversi.toFixed(2),
+          satuanKecil: this.uomList.find(
+            (uom: any) => uom.kodeUom === this.detail.satuanKecil
+          ),
+          satuanBesar: this.uomList.find(
+            (uom: any) => uom.kodeUom === this.detail.satuanBesar
+          ),
+          defaultGudang: this.defaultOrderGudangList.find(
+            (defaultGudang: any) =>
+              defaultGudang.kodeSingkat === this.detail.defaultGudang
+          ),
+          defaultSupplier: this.supplierList.find(
+            (supplier: any) =>
+              supplier.kodeSupplier === this.detail.defaultSupplier
+          ),
+          flagCom: this.detail.flagCom === 'Y',
+          flagDry: this.detail.flagDry === 'Y',
+          flagPrd: this.detail.flagPrd === 'Y',
+          flagMkt: this.detail.flagMkt === 'Y',
+          flagCtr: this.detail.flagCtr === 'Y',
+          flagHra: this.detail.flagHra === 'Y',
+          flagExpired: this.detail.flagExpired,
+          flagBrgBekas: this.detail.flagBrgBekas,
+          flagResepProduksi: this.detail.flagResepProduksi,
+          flagConversion: this.detail.flagConversion,
+          others2: this.detail.others2,
+          minStock: this.detail.minStock.toFixed(2),
+          maxStock: this.detail.maxStock.toFixed(2),
+          minOrder: this.detail.minOrder.toFixed(2),
+          satuanMinOrder: this.uomList.find(
+            (uom: any) => uom.kodeUom === this.detail.satuanMinOrder
+          ),
+          panjang: this.detail.panjang.toFixed(2),
+          lebar: this.detail.lebar.toFixed(2),
+          tinggi: this.detail.tinggi.toFixed(2),
+          volume: this.detail.volume.toFixed(6),
+          berat: this.detail.berat.toFixed(2),
+          lokasiBarang: this.detail.lokasiBarang,
+          statusAktif: this.detail.statusAktif,
+          keteranganBrg: this.detail.keteranganBrg,
+        });
+        this.myForm.disable();
+      },
+      error: (err) => {
+        console.error('Error fetching data:', err);
+      },
+    });
 
     this.configUomSelect = {
       disabled: true,
@@ -55,7 +195,7 @@ export class MasterProductDetailComponent implements OnInit {
 
     this.configDefaultGudangSelect = {
       disabled: true,
-      displayKey: 'kodeSingkatan',
+      displayKey: 'kodeSingkat',
       search: true,
       height: '300px',
       placeholder: 'Pilih Default Gudang',
@@ -68,62 +208,200 @@ export class MasterProductDetailComponent implements OnInit {
       height: '300px',
       placeholder: 'Pilih Supplier',
     };
-
-    this.myForm = this.form.group({
-      kodeBarang: [this.detail.kodeBarang],
-      namaBarang: [this.detail.namaBarang],
-      konversi: [this.detail.konversi.toFixed(2)],
-      satuanKecil: [this.detail.satuanKecil],
-      satuanBesar: [this.detail.satuanBesar],
-      defaultGudang: [this.detail.defaultGudang],
-      defaultSupplier: [this.detail.defaultSupplier],
-      flagCom: [this.detail.flagCom === 'Y'],
-      flagDry: [this.detail.flagDry === 'Y'],
-      flagPrd: [this.detail.flagPrd === 'Y'],
-      flagMkt: [this.detail.flagMkt === 'Y'],
-      flagCtr: [this.detail.flagCtr === 'Y'],
-      flagHra: [this.detail.flagHra === 'Y'],
-      flagExpired: [this.detail.flagExpired],
-      flagBrgBekas: [this.detail.flagBrgBekas],
-      flagResepProduksi: [this.detail.flagResepProduksi],
-      flagConversion: [this.detail.flagConversion],
-      others2: [this.detail.others2],
-      minStock: [this.detail.minStock.toFixed(2)],
-      maxStock: [this.detail.maxStock.toFixed(2)],
-      minOrder: [this.detail.minOrder.toFixed(2)],
-      satuanMinOrder: [this.detail.satuanMinOrder],
-      panjang: [this.detail.panjang.toFixed(2)],
-      lebar: [this.detail.lebar.toFixed(2)],
-      tinggi: [this.detail.tinggi.toFixed(2)],
-      volume: [this.detail.volume.toFixed(2)],
-      berat: [this.detail.berat.toFixed(2)],
-      lokasiBarang: [this.detail.lokasiBarang],
-      statusAktif: [this.detail.statusAktif],
-      keteranganBrg: [this.detail.keteranganBrg],
-    });
-    this.myForm.disable();
   }
 
-  getUomList() {
-    this.service.getUomList().subscribe((res: any) => {
-      this.uomList = res;
+  handleKonversiChange(value: any) {
+    const satuanKecil = this.myForm.get('satuanKecil');
+    const satuanBesar = this.myForm.get('satuanBesar');
+
+    if (parseFloat(value) === 1) {
+      satuanBesar?.disable();
+      this.myForm.patchValue({
+        satuanBesar: satuanKecil?.value,
+      });
+      satuanKecil?.enable();
+    } else if (parseFloat(value) > 0) {
+      if (
+        satuanKecil?.value === satuanBesar?.value &&
+        satuanKecil?.value != ''
+      ) {
+        this.myForm.patchValue({
+          satuanBesar: '',
+          satuanMinOrder: '',
+        });
+        this.uomSatuanBesarList = this.uomList.filter(
+          (item: any) => item.kodeUom !== satuanKecil?.value?.kodeUom
+        );
+      } else if (satuanKecil?.value == '') {
+        this.myForm.patchValue({
+          satuanKecil: '',
+        });
+      }
+      satuanKecil?.enable();
+    } else if (parseFloat(value) === 0) {
+      satuanKecil?.disable();
+      satuanBesar?.disable();
+    }
+  }
+
+  handleSatuanKecilChange(value: any) {
+    const konversi = this.myForm.get('konversi')?.value;
+    const satuanBesar = this.myForm.get('satuanBesar');
+
+    if (parseFloat(konversi) === 1) {
+      satuanBesar?.disable();
+      this.myForm.patchValue({
+        satuanBesar: value,
+      });
+    } else {
+      if (value === satuanBesar?.value || value == '') {
+        this.myForm.patchValue({
+          satuanBesar: '',
+          satuanMinOrder: '',
+        });
+      }
+      this.uomSatuanBesarList = this.uomList.filter(
+        (item: any) => item.kodeUom !== value.kodeUom
+      );
+      satuanBesar?.enable();
+    }
+  }
+
+  handleSatuanBesarChange(value: any) {
+    this.myForm.patchValue({
+      satuanMinOrder: value,
     });
   }
 
-  getSupplierList() {
-    this.service.getSupplierList().subscribe((res: any) => {
-      this.supplierList = res;
-    });
+  isInvalid(field: string): boolean {
+    const control = this.myForm.get(field);
+    return control ? control.invalid && control.touched : false;
   }
 
-  getDefaultOrderGudangList() {
-    this.service.getDefaultOrderGudangList().subscribe((res: any) => {
-      this.defaultOrderGudangList = res;
-    });
+  preventEmpty(event: any) {
+    const input = event.target;
+
+    if (input.value === '') {
+      input.value = this.defaultValue.toFixed(2);
+      this.myForm.patchValue({ konversi: this.defaultValue.toFixed(2) });
+    }
+  }
+
+  getUomList(): Observable<any> {
+    return this.service.getUomList();
+  }
+
+  getSupplierList(): Observable<any> {
+    return this.service.getSupplierList();
+  }
+
+  getDefaultOrderGudangList(): Observable<any> {
+    return this.service.getDefaultOrderGudangList();
   }
 
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_PRODUCT);
     this.router.navigate(['/master/master-product']);
+  }
+
+  onEditPressed() {
+    this.router.navigate(['/master/master-product/edit']);
+  }
+
+  conditionInput(event: any, type: string): boolean {
+    var inp = String.fromCharCode(event.keyCode);
+    let temp_regex =
+      type == 'alphanumeric'
+        ? /^[a-zA-Z0-9]$/
+        : type == 'numeric'
+        ? /^[0-9.]$/
+        : type == 'phone'
+        ? /^[0-9-]$/
+        : type == 'email'
+        ? /^[a-zA-Z0-9@._-]$/
+        : type == 'excludedSensitive'
+        ? /^[a-zA-Z0-9 .,_@-]*$/
+        : type == 'kodeSingkat'
+        ? /^[a-zA-Z]+$/
+        : /^[a-zA-Z.() ,\-]*$/;
+
+    if (temp_regex.test(inp)) return true;
+    else {
+      event.preventDefault();
+      return false;
+    }
+  }
+
+  convertToUppercase(id: any) {
+    const control = this.myForm.get(id);
+    if (control) {
+      control.setValue(control.value.toUpperCase(), { emitEvent: false });
+    }
+  }
+
+  onSubmit(): void {
+    const { controls, invalid } = this.myForm;
+    if (invalid) {
+      this.g.markAllAsTouched(this.myForm);
+    } else {
+      this.isSubmitting = true;
+      const payload = {
+        kodeBarang: controls?.['kodeBarang']?.value,
+        namaBarang: controls?.['namaBarang']?.value,
+        konversi: controls?.['konversi']?.value,
+        satuanKecil: controls?.['satuanKecil']?.value?.kodeUom,
+        satuanBesar: controls?.['satuanBesar']?.value?.kodeUom,
+        defaultGudang: Array.isArray(controls?.['defaultGudang']?.value)
+          ? ''
+          : controls?.['defaultGudang']?.value?.kodeSingkat,
+        defaultSupplier: Array.isArray(controls?.['defaultSupplier']?.value)
+          ? ''
+          : controls?.['defaultSupplier']?.value?.kodeSupplier,
+        flagCom: controls?.['flagCom']?.value ? 'Y' : 'T',
+        flagDry: controls?.['flagDry']?.value ? 'Y' : 'T',
+        flagPrd: controls?.['flagPrd']?.value ? 'Y' : 'T',
+        flagMkt: controls?.['flagMkt']?.value ? 'Y' : 'T',
+        flagCtr: controls?.['flagCtr']?.value ? 'Y' : 'T',
+        flagHra: controls?.['flagHra']?.value ? 'Y' : 'T',
+        flagFsd: 'T',
+        flagIt: 'T',
+        others1: 'T',
+        flagExpired: controls?.['flagExpired']?.value,
+        flagResepProduksi: controls?.['flagResepProduksi']?.value,
+        flagAlternate: 'T',
+        flagCogs: 'Y',
+        flagBrgBekas: controls?.['flagBrgBekas']?.value,
+        others2: controls?.['others2']?.value,
+        flagConversion: controls?.['flagConversion']?.value,
+        minStock: controls?.['minStock']?.value,
+        maxStock: controls?.['maxStock']?.value,
+        minOrder: controls?.['minOrder']?.value,
+        satuanMinOrder: controls?.['satuanMinOrder']?.value?.kodeUom,
+        statusAktif: controls?.['statusAktif']?.value,
+        panjang: controls?.['panjang']?.value,
+        lebar: controls?.['lebar']?.value,
+        tinggi: controls?.['tinggi']?.value,
+        volume: controls?.['volume']?.value,
+        berat: controls?.['berat']?.value,
+        lokasiBarang: controls?.['lokasiBarang']?.value,
+        keteranganBrg: controls?.['keteranganBrg']?.value,
+        stockOpname: 'T',
+        warningExpired: 0,
+        unitPrice: 0,
+      };
+      this.service.insert('/api/product/update', payload).subscribe({
+        next: (res) => {
+          if (!res.success) {
+            alert(res.message);
+          } else {
+            this.toastr.success('Update Barang Berhasil!');
+            setTimeout(() => {
+              this.onPreviousPressed();
+            }, DEFAULT_DELAY_TIME);
+          }
+          this.isSubmitting = false;
+        },
+      });
+    }
   }
 }

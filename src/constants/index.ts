@@ -96,4 +96,12 @@ export const STATUS_RESULT = [
     label: 'Online',
     value: 'O',
   },
+  {
+    label: 'Posted',
+    value: 'P',
+  },
+  {
+    label: 'Intransit',
+    value: 'I',
+  },
 ];
