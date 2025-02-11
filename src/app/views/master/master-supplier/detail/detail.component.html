@@ -1,14 +1,14 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <h5>{{ "Lihat" | translate }} {{ "Supplier" | translate }}</h5>
+      <h5>{{ "Detail" | translate }} {{ "Supplier" | translate }}</h5>
     </c-card-body>
   </c-card>
 </div>
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <form [formGroup]="myForm">
+      <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
             "Kode" | translate
@@ -18,9 +18,13 @@
               type="text"
               class="form-control"
               formControlName="code"
-              readonly
+              maxlength="15"
             />
           </div>
+          <div class="col-sm-2"></div>
+          <span *ngIf="isInvalid('code')" class="col-sm-10 text-danger"
+            >{{ "Wajib diisi" | translate }}
+          </span>
         </div>
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
@@ -31,7 +35,35 @@
               type="text"
               class="form-control"
               formControlName="name"
-              readonly
+              (input)="convertToUppercase('name')"
+              maxlength="50"
+            />
+          </div>
+          <div class="col-sm-2"></div>
+          <span *ngIf="isInvalid('name')" class="col-sm-10 text-danger"
+            >{{ "Wajib diisi" | translate }}
+          </span>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Gudang" | translate
+          }}</label>
+          <div class="col-sm-5">
+            <ngx-select-dropdown
+              [multiple]="false"
+              [options]="defaultOrderGudangList"
+              [config]="configDefaultGudangSelect"
+              [bindLabel]="'kodeSingkat'"
+              [bindValue]="'kodeSingkat'"
+              formControlName="warehouse"
+            >
+            </ngx-select-dropdown>
+          </div>
+          <div class="col-sm-5">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="warehouseDesc"
             />
           </div>
         </div>
@@ -44,7 +76,7 @@
               type="text"
               class="form-control"
               formControlName="address1"
-              readonly
+              maxlength="40"
             />
           </div>
           <div class="col-sm-5">
@@ -52,39 +84,47 @@
               type="text"
               class="form-control"
               formControlName="address2"
-              readonly
+              maxlength="40"
             />
           </div>
+          <div class="col-sm-2"></div>
+          <span *ngIf="isInvalid('address1')" class="col-sm-10 text-danger"
+            >{{ "Wajib diisi" | translate }}
+          </span>
         </div>
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
             "Kota" | translate
           }}</label>
           <div class="col-sm-5">
-            <input
-              type="text"
-              class="form-control"
+            <ngx-select-dropdown
+              [multiple]="false"
+              [options]="cityList"
+              [config]="configCitySelect"
+              [bindLabel]="'KETERANGAN_KOTA'"
+              [bindValue]="'KODE_KOTA'"
               formControlName="city"
-              readonly
-            />
+            >
+            </ngx-select-dropdown>
           </div>
           <div class="col-sm-5">
             <input
               type="text"
               class="form-control"
               formControlName="cityDesc"
-              readonly
             />
           </div>
         </div>
         <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{ "POS" | translate }}</label>
+          <label class="col-sm-2 col-form-label">{{
+            "Kode POS" | translate
+          }}</label>
           <div class="col-sm-10">
             <input
               type="text"
               class="form-control"
               formControlName="pos"
-              readonly
+              maxlength="10"
             />
           </div>
         </div>
@@ -97,7 +137,7 @@
               type="text"
               class="form-control"
               formControlName="telephone1"
-              readonly
+              maxlength="40"
             />
           </div>
           <div class="col-sm-5">
@@ -105,7 +145,7 @@
               type="text"
               class="form-control"
               formControlName="telephone2"
-              readonly
+              maxlength="40"
             />
           </div>
         </div>
@@ -118,20 +158,20 @@
               type="text"
               class="form-control"
               formControlName="contactPerson"
-              readonly
+              maxlength="30"
             />
           </div>
         </div>
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
-            "Telepon" | translate
+            "Telepon Kontak" | translate
           }}</label>
           <div class="col-sm-10">
             <input
               type="text"
               class="form-control"
               formControlName="phone"
-              readonly
+              maxlength="30"
             />
           </div>
         </div>
@@ -142,7 +182,7 @@
               type="text"
               class="form-control"
               formControlName="fax1"
-              readonly
+              maxlength="30"
             />
           </div>
           <div class="col-sm-5">
@@ -150,7 +190,7 @@
               type="text"
               class="form-control"
               formControlName="fax2"
-              readonly
+              maxlength="30"
             />
           </div>
         </div>
@@ -163,48 +203,32 @@
               type="text"
               class="form-control"
               formControlName="email"
-              readonly
+              (keypress)="conditionInput($event, 'email')"
+              (keyup)="onChangeEmail($event)"
+              maxlength="50"
             />
           </div>
+          <div class="col-sm-2"></div>
+          <span *ngIf="!isEmailValid" class="col-sm-10 text-danger">{{
+            "Alamat email tidak valid" | translate
+          }}</span>
         </div>
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Gudang" | translate
-          }}</label>
-          <div class="col-sm-5">
-            <input
-              type="text"
-              class="form-control"
-              formControlName="warehouse"
-              readonly
-            />
-          </div>
-          <div class="col-sm-5">
-            <input
-              type="text"
-              class="form-control"
-              formControlName="warehouseDesc"
-              readonly
-            />
-          </div>
-        </div>
+
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{ "RSC" | translate }}</label>
           <div class="col-sm-5">
-            <input
-              type="text"
-              class="form-control"
+            <ngx-select-dropdown
+              [multiple]="false"
+              [options]="rscList"
+              [config]="configRSCSelect"
+              [bindLabel]="'KODE_RSC'"
+              [bindValue]="'KODE_RSC'"
               formControlName="rsc"
-              readonly
-            />
+            >
+            </ngx-select-dropdown>
           </div>
           <div class="col-sm-5">
-            <input
-              type="text"
-              class="form-control"
-              formControlName="rscDesc"
-              readonly
-            />
+            <input type="text" class="form-control" formControlName="rscDesc" />
           </div>
         </div>
         <div class="mb-3 row">
@@ -216,31 +240,59 @@
               type="text"
               class="form-control"
               formControlName="desc"
-              readonly
+              maxlength="50"
             />
           </div>
         </div>
+        <!-- <div class="mb-3 row">
+            <label class="col-sm-2 col-form-label">{{ "CAD" | translate }}</label>
+            <div class="col-sm-5">
+              <input type="text" class="form-control" formControlName="cad1" />
+            </div>
+            <div class="col-sm-5">
+              <input type="text" class="form-control" formControlName="cad2" />
+            </div>
+          </div> -->
         <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{ "CAD" | translate }}</label>
-          <div class="col-sm-5">
-            <input
-              type="text"
-              class="form-control"
-              formControlName="cad1"
-              readonly
-            />
-          </div>
-          <div class="col-sm-5">
-            <input
-              type="text"
-              class="form-control"
-              formControlName="cad2"
-              readonly
-            />
-          </div>
+          <label class="col-sm-2 col-form-label">{{
+            "Status Aktif" | translate
+          }}</label>
+          <c-col xs="4">
+            <c-row class="mt-2">
+              <c-col xs="6">
+                <c-form-check class="flex align-items-center">
+                  <input
+                    cFormCheckInput
+                    checked
+                    id="active"
+                    type="radio"
+                    value="A"
+                    formControlName="status"
+                  />
+                  <label cFormCheckLabel for="active" style="margin-left: 4px"
+                    >Aktif</label
+                  >
+                </c-form-check>
+              </c-col>
+              <c-col xs="6">
+                <c-form-check class="flex align-items-center">
+                  <input
+                    cFormCheckInput
+                    id="inactive"
+                    type="radio"
+                    value="T"
+                    formControlName="status"
+                  />
+                  <label cFormCheckLabel for="inactive" style="margin-left: 4px"
+                    >Tidak Aktif</label
+                  >
+                </c-form-check>
+              </c-col>
+            </c-row>
+          </c-col>
+          <div class="col-sm-6"></div>
         </div>
         <div class="divider"></div>
-
         <div class="container">
           <div class="row">
             <div class="col-md-6">
@@ -309,7 +361,8 @@
             class="btn btn-info text-white btn-150"
             (click)="onEditPressed()"
           >
-            {{ "Ubah" | translate }} Supplier
+            <i class="fa fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+            <span>{{ "Ubah" | translate }} {{ "Supplier" | translate }}</span>
           </button>
         </div>
       </form>
