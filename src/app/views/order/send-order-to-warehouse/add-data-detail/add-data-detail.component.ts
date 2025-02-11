@@ -1,0 +1,210 @@
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { TranslationService } from 'src/app/service/translation.service';
+import {
+  ACTION_VIEW,
+  CANCEL_STATUS,
+  DEFAULT_DELAY_TABLE,
+  DEFAULT_DELAY_TIME,
+  LS_INV_SELECTED_DELIVERY_ORDER,
+  OUTLET_BRAND_KFC,
+  SEND_PRINT_STATUS_SUDAH,
+  STATUS_SAME_CONVERSION,
+} from '../../../../../constants';
+import { DataTableDirective } from 'angular-datatables';
+import { lastValueFrom, Subject } from 'rxjs';
+import { Page } from 'src/app/model/page';
+import { DataService } from 'src/app/service/data.service';
+import { GlobalService } from 'src/app/service/global.service';
+import { Router } from '@angular/router';
+// import { AppConfig } from 'src/app/config/app.config.ts';
+import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
+import { AppConfig } from '../../../../config/app.config';
+
+import { HelperService } from '../../../../service/helper.service';
+import { AppService } from '../../../../service/app.service';
+import moment from 'moment';
+
+@Component({
+  selector: 'app-add-data-detail-delivery-order',
+  templateUrl: './add-data-detail.component.html',
+  styleUrl: './add-data-detail.component.scss',
+})
+export class AddDataDetailSendOrderToWarehouseComponent
+  implements OnInit, OnDestroy, AfterViewInit {
+  columns: any;
+  orders: any[] = [];
+  selectedOrder: any = JSON.parse(
+    localStorage[LS_INV_SELECTED_DELIVERY_ORDER]
+  );
+  adding: boolean = false;
+  loadingIndicator: boolean = false;
+  showFilterSection: boolean = false;
+  disabledCancelButton: boolean = false;
+  disabledPrintButton: boolean = false;
+  updatingStatus: boolean = false;
+  RejectingOrder: boolean = false;
+  alreadyPrint: Boolean = false;
+  totalLength: number = 0;
+  listOrderData: any[] = [];
+  buttonCaptionView: String = 'Lihat';
+  public loading: boolean = false;
+  page: number = 1;
+
+  protected config = AppConfig.settings.apiServer;
+
+  constructor(
+    public g: GlobalService,
+    private translation: TranslationService,
+    private router: Router,
+    public helper: HelperService,
+    private appService: AppService,
+    private toastr: ToastrService,
+  ) {
+    this.g.navbarVisibility = true;
+    this.selectedOrder = JSON.parse(this.selectedOrder);
+    this.getDeliveryItemDetails()
+  }
+
+  ngOnInit(): void {
+    this.g.changeTitle(
+      this.translation.instant('Detail Pesanan') + ' - ' + this.g.tabTitle
+    );
+    const isCanceled = this.selectedOrder.statusPesanan == CANCEL_STATUS;
+    this.disabledPrintButton = isCanceled;
+    this.disabledCancelButton = isCanceled;
+    this.alreadyPrint =
+      this.selectedOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
+    this.buttonCaptionView = this.translation.instant('Lihat');
+  }
+
+  getDeliveryItemDetails() {
+    this.loading = true;
+    this.listOrderData = [];
+
+    const params = {
+      nomorPesanan: this.selectedOrder.nomorPesanan
+    };
+
+    // this.appService.getDeliveryItemDetails(params).subscribe(
+    //   (res) => {
+    //     this.listOrderData = res.data;
+    //     this.totalLength = res?.data?.length;
+    //     this.page = 1;
+    //     setTimeout(() => {
+    //       this.loading = false;
+    //     }, 1000);
+
+    //     console.log('listOrderData', this.listOrderData);
+    //   },
+    //   () => {
+    //     this.loading = false;
+    //     // this.toastr.error(this.errorShowMessage, 'Maaf, Terjadi Kesalahan!');
+    //   }
+    // );
+    this.listOrderData = [
+      {
+          totalQtyTerima: 60,
+          satuanKecilProduct: "PCS",
+          keterangan: "Konversi Sama",
+          totalQtyPesan: 70,
+          timeCounter: "153911",
+          namaPemesan: "MT HARYONO JAKARTA",
+          qtyPesanBesar: 10,
+          namaGudang: "GUDANG COMMISARY SENTUL BOGOR",
+          namaBarang: "AYAM BROILER 7 PCS NON ABOB",
+          dateCreate: "2025-01-17",
+          nomorPesanan: "RO020825010080",
+          satuanKecil: "PCS",
+          hargaUnit: 0,
+          userCreate: "ZTO",
+          timeCreate: "ZTO",
+          satuanBesarProduct: "HEAD",
+          kodePemesan: "0208",
+          kodeGudang: "00072",
+          kodeBarang: "01-1002",
+          satuanBesar: "HEAD",
+          konversi: 7,
+          konversiProduct: 7,
+          qtyPesanKecil: 0
+      }
+  ];
+    console.log('listOrderData', this.listOrderData);
+  }
+
+  onInputValueItemDetail(event: any, index: number) {
+    const target = event.target;
+    const value = target.value;
+
+    if (target.type === 'number') {
+      this.listOrderData[index][target.name] = Number(value); 
+    } else {
+      this.listOrderData[index][target.name] = value;
+    }
+  }
+  onFilterSearch(
+    listData: any[],
+    filterText: string,
+    startAfter: number = 1
+  ): any[] {
+    return this.helper.applyFilterList(listData, filterText, startAfter);
+  }
+
+  ngAfterViewInit(): void {
+  }
+  ngOnDestroy(): void {
+    this.g.navbarVisibility = true;
+  }
+
+  onBackPressed() {
+    this.router.navigate(['/transaction/delivery-item/add-data']);
+  }
+
+  onPageChange(event: number) {
+    this.page = event;
+  }
+
+  formatStrDate(date: any) {
+    return moment(date, "YYYY-MM-DD").format("DD-MM-YYYY");
+  }
+
+  onSubmit() {
+    const param = this.listOrderData.map((data: any) => ({
+      kodeGudang: this.selectedOrder.kodeGudang,
+      kodeTujuan: this.selectedOrder.codeDestination,
+      tipeTransaksi: '3',
+      nomorPesanan: this.selectedOrder.nomorPesanan,
+      kodeBarang: data.kodeBarang, 
+      qtyBPesan: data.qtyPesanBesar,   
+      qtyKPesan: data.qtyPesanKecil,   
+      hargaSatuan: 0, 
+      userCreate: JSON.parse(localStorage.getItem('inv_currentUser') || '{}').namaUser,
+      konversi: data.konversi
+    }));
+  
+    this.appService.saveDeliveryOrder(param).subscribe({
+      next: (res) => {
+        if (!res.success) {
+          alert(res.message);
+        } else {
+          this.toastr.success('Berhasil!');
+          setTimeout(() => {
+            this.onBackPressed();
+          }, DEFAULT_DELAY_TIME);
+        }
+        this.adding = false;
+      },
+      error: (err) => {
+        console.error("Error saat insert:", err);
+      }
+    });
+  }
+  
+
+}
