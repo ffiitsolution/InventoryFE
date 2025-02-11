@@ -1,0 +1,78 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
+          <button class="btn btn-light btn-120" (click)="onbackPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button>
+          <h5>{{ "Detail Do Balik" | translate }}</h5>
+        </div>
+      </c-row>
+    </c-card-body>
+  </c-card>
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="row">
+        <div class="divider mt-4"></div>
+        <div class="col">
+          <div class="row order-details">
+            <div class="detail-item">
+              <span class="label">{{ "Nomor Pesanan" | translate }}</span>
+              <span class="value">{{ selectedOrder.NOMOR_PESANAN }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label ">{{ "Nomor Surat Jalan" | translate }}</span>
+              <span class="value">{{ selectedOrder.NO_SURAT_JALAN}}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Tgl. Pesanan" | translate }}</span>
+              <span class="value">{{ selectedOrder.TGL_PESANAN }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Tgl. Kirim Barang" | translate }}</span>
+              <span class="value">{{ selectedOrder.TGL_TRANSAKSI}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row order-details">
+            <div class="detail-item">
+              <span class="label">{{ "Kode Tujuan" | translate }}</span>
+              <span class="value"> {{ selectedOrder.KODE_TUJUAN }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Nama Tujuan" | translate }}</span>
+              <span class="value"> {{ selectedOrder.NAMA_CABANG }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Catatan" | translate }}</span>
+              <span class="value">{{ selectedOrder.notes }} </span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Status Transaksi" | translate }}</span>
+              <span class="value">{{ selectedOrder.STATUS_TRANSAKSI === 'I' ? 'Intransit' : 'Posting' }} </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>>
+
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="table-responsive">
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          (page.dt)="dtpageChange($event)"
+          class="row-border hover"
+        ></table>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>

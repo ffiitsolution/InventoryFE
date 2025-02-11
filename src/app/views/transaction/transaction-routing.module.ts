@@ -4,6 +4,9 @@ import {DeliveryItemComponent} from './delivery-item/delivery-item.component';
 import { AddDataComponent } from './add-data/add-data.component';
 import { DetailTransactionComponent } from './detail-transaction/detail-transaction.component';
 import { AddDataDetailDeliveryComponent } from './add-data-detail/add-data-detail.component';
+import { DobalikComponent } from './dobalik/dobalik.component';
+import { DetailReportDoBalikComponent } from './detail-report-do-balik/detail-report-do-balik.component';
+import { PackagingListComponent } from './packing-list/packing-list.component';
 
 const routes: Routes = [
   {
@@ -24,6 +27,18 @@ const routes: Routes = [
       {
         path: 'delivery-item/add-data-detail',
         component: AddDataDetailDeliveryComponent,
+      },
+      {
+        path: 'delivery-item/dobalik',
+        component: DobalikComponent,
+      },
+      {
+        path: 'delivery-item/dobalik/detail-report-do-balik',
+        component: DetailReportDoBalikComponent,
+      },
+      {
+        path: 'delivery-item/packing-list',
+        component: PackagingListComponent,
       }
     ],
   },
