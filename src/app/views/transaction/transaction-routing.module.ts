@@ -6,6 +6,7 @@ import { DetailTransactionComponent } from './detail-transaction/detail-transact
 import { AddDataDetailDeliveryComponent } from './add-data-detail/add-data-detail.component';
 import { DobalikComponent } from './dobalik/dobalik.component';
 import { DetailReportDoBalikComponent } from './detail-report-do-balik/detail-report-do-balik.component';
+import { PackagingListComponent } from './packing-list/packing-list.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,10 @@ const routes: Routes = [
       {
         path: 'delivery-item/dobalik/detail-report-do-balik',
         component: DetailReportDoBalikComponent,
+      },
+      {
+        path: 'delivery-item/packing-list',
+        component: PackagingListComponent,
       }
     ],
   },

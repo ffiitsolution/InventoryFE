@@ -29,6 +29,7 @@ import { DetailTransactionComponent } from './detail-transaction/detail-transact
 import { AddDataDetailDeliveryComponent } from './add-data-detail/add-data-detail.component';
 import { DobalikComponent } from './dobalik/dobalik.component';
 import { DetailReportDoBalikComponent } from './detail-report-do-balik/detail-report-do-balik.component';
+import { PackagingListComponent } from './packing-list/packing-list.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -62,6 +63,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AddDataDetailDeliveryComponent,
     DobalikComponent,
     DetailReportDoBalikComponent,
+    PackagingListComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })
