@@ -91,7 +91,6 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
         id: item.KODE_CABANG,
         name: item.KODE_CABANG+' - '+item.NAMA_CABANG,
       }));      
-      console.log("this.listGudang", this.listGudang)
     });
 
 
@@ -103,16 +102,11 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
 
   onSubmit(): void {
     const currentUser = this.g.getLocalstorage('inv_currentUser');
-    console.log("currentUser", currentUser?.defaultLocation?.kodeLocation);
 
     const { controls, invalid } = this.myForm;
-    console.log(" this.myForm1", this.myForm)
-    console.log(" this.myForm2", this.myForm?.value)
-    console.log(" this.myForm tanggal pesan3", moment( this.myForm?.value?.tanggalPesan).format("DD-MM-YYYY"))
 
 
      if (invalid || this.isNotMatchPass) {
-      console.log("inside invalid")
       this.g.markAllAsTouched(this.myForm);
     } else {
       this.adding = true;
@@ -131,8 +125,6 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
 
       this.g.saveLocalstorage('TEMP_ORDHDK', param);
 
-
-      console.log("param", param)
       setTimeout(() => {
           this.onNextPressed();
         }, DEFAULT_DELAY_TIME);
@@ -255,9 +247,6 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   }
 
   onGudangTujuanChange(selectedValue: any) {
-    console.log("selectedValue", selectedValue);
-    console.log("selectedValue2", selectedValue?.value?.id);
-
     this.getGudangDetail(selectedValue?.value?.id);
   }
 
@@ -270,8 +259,6 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
     .postData(this.g.urlServer + '/api/branch/branch-detail', { "kodeCabang": kodeGudang })
     .subscribe((resp: any) => {
       this.gudangDetail = resp;
-      console.log("this.gudangDetail", this.gudangDetail);
-      console.log("this.gudangDetail2", this.gudangDetail?.[0]?.NAMA_CABANG);
 
       this.myForm.get('namaGudang')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].NAMA_CABANG : null);
       this.myForm.get('alamatGudang')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].ALAMAT1 : null);

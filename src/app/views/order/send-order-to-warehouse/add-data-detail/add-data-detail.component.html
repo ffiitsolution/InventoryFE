@@ -16,7 +16,7 @@
     <c-card-body>
       <div class="d-grid gap-3 d-md-flex justify-content-end">
         <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
-          <i class="fa fa-check pe-2"></i> {{ "Proses Pengiriman" | translate }}
+          <i class="fa fa-check pe-2"></i> {{ "Proses" | translate }}  {{ "Simpan" | translate }} {{ "Data" | translate }}
         </button>
 
         <button class="btn btn-danger text-white btn-150" (click)="onBackPressed()">
@@ -102,8 +102,6 @@
                   Total Kirim Gudang
                 </th>
                 <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Selisih Pesanan</th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Action
                 </th>
               </tr>
@@ -135,16 +133,19 @@
                     </span>
                   </div>
                 </td>
-
-                <td class="text-center">{{ data.qtyPesanKecil }} {{ data.satuanKecil }}</td>
+                <td class="text-center input-column">
+                  <div class="d-flex" style="gap: 5px;">
+                    <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
+                      [(ngModel)]="data.qtyPesanKecil" (input)="onInputValueItemDetail($event, i)" />
+                    <span class="d-flex align-items-center justify-content-center">
+                      / {{data.satuanKecil}}
+                    </span>
+                  </div>
+                </td>
 
                 <td class="text-center">{{ data.konversi }}</td>
                 <td class="text-center">{{(helper.sanitizedNumber(data.qtyPesanBesar) *
                   data.konversi) }} {{data.satuanKecil}}
-                </td>
-                <td class="text-center">{{(helper.sanitizedNumber(data.totalQtyPesan) -
-                  (helper.sanitizedNumber(data.qtyPesanBesar) *
-                  data.konversi))}} {{data.satuanKecil}}
                 </td>
                 <td>
                   <button class="btn btn-danger text-white btn-150" (click)="deleteBarang(i)">

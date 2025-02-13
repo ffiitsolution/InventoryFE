@@ -87,7 +87,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
       this.translation.instant('Detail Pesanan') + ' - ' + this.g.tabTitle
     );
     this.dataUser = this.g.getLocalstorage('inv_currentUser');
-    console.log('dataUser', this.dataUser?.defaultLocation?.kodeSingkat);
 
     const isCanceled = this.newOrhdk.statusPesanan == CANCEL_STATUS;
     this.disabledPrintButton = isCanceled;
@@ -96,7 +95,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
       this.newOrhdk.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.renderDataTables();
-    console.log('newOrhdk',this.newOrhdk?.kodeSingkat)
 
   }
 
@@ -120,7 +118,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
   //       qtyPesanKecil: 10
   //     }
   // ];
-    console.log('listOrderData', this.listOrderData);
   }
 
   onInputValueItemDetail(event: any, index: number) {
@@ -197,7 +194,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
 
   
   renderDataTables(): void {
-    console.log("renderDataTables",this.renderDataTables);
     this.dtOptions = {
       language:
         this.translationService.getCurrentLanguage() == 'id' ? this.translationService.idDatatable : {},
@@ -274,8 +270,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
     this.selectedRow = (data);
     this.renderDataTables();
     this.isShowModal = false;
-    console.log('selectedRow', this.selectedRow);
-    console.log(' typeof( this.selectedRow) ', typeof( this.selectedRow));
     this.listOrderData.push({
       totalQtyPesan: 0,
       qtyPesanBesar: 0,
@@ -288,7 +282,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
       ...this.selectedRow
   });
 
-  console.log('listOrderData', this.listOrderData);
   
 
     // this.mapOrderData(data);
