@@ -15,6 +15,7 @@ import {
   OUTLET_BRAND_KFC,
   SEND_PRINT_STATUS_SUDAH,
   STATUS_SAME_CONVERSION,
+  ACTION_SELECT
 } from '../../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
 import { lastValueFrom, Subject } from 'rxjs';
@@ -40,9 +41,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
   implements OnInit, OnDestroy, AfterViewInit {
   columns: any;
   orders: any[] = [];
-  selectedOrder: any = JSON.parse(
-    localStorage[LS_INV_SELECTED_DELIVERY_ORDER]
-  );
+  newOrhdk: any = (localStorage.getItem('TEMP_ORDHDK') || '{}'  );
   adding: boolean = false;
   loadingIndicator: boolean = false;
   showFilterSection: boolean = false;
@@ -56,6 +55,14 @@ export class AddDataDetailSendOrderToWarehouseComponent
   buttonCaptionView: String = 'Lihat';
   public loading: boolean = false;
   page: number = 1;
+  isShowModal: boolean = false;
+  dtOptions: DataTables.Settings = {};
+  selectedRow:  any = {};
+  pageModal = new Page();
+  dataUser: any = {};
+  
+  @ViewChild('formModal') formModal: any;
+
 
   protected config = AppConfig.settings.apiServer;
 
@@ -66,9 +73,12 @@ export class AddDataDetailSendOrderToWarehouseComponent
     public helper: HelperService,
     private appService: AppService,
     private toastr: ToastrService,
+    private globalService: GlobalService,
+    private translationService: TranslationService,
+    private dataService: DataService,
   ) {
     this.g.navbarVisibility = true;
-    this.selectedOrder = JSON.parse(this.selectedOrder);
+    this.newOrhdk = JSON.parse(this.newOrhdk);
     this.getDeliveryItemDetails()
   }
 
@@ -76,12 +86,18 @@ export class AddDataDetailSendOrderToWarehouseComponent
     this.g.changeTitle(
       this.translation.instant('Detail Pesanan') + ' - ' + this.g.tabTitle
     );
-    const isCanceled = this.selectedOrder.statusPesanan == CANCEL_STATUS;
+    this.dataUser = this.g.getLocalstorage('inv_currentUser');
+    console.log('dataUser', this.dataUser?.defaultLocation?.kodeSingkat);
+
+    const isCanceled = this.newOrhdk.statusPesanan == CANCEL_STATUS;
     this.disabledPrintButton = isCanceled;
     this.disabledCancelButton = isCanceled;
     this.alreadyPrint =
-      this.selectedOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
+      this.newOrhdk.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
+    this.renderDataTables();
+    console.log('newOrhdk',this.newOrhdk?.kodeSingkat)
+
   }
 
   getDeliveryItemDetails() {
@@ -89,52 +105,21 @@ export class AddDataDetailSendOrderToWarehouseComponent
     this.listOrderData = [];
 
     const params = {
-      nomorPesanan: this.selectedOrder.nomorPesanan
+      nomorPesanan: this.newOrhdk.nomorPesanan
     };
 
-    // this.appService.getDeliveryItemDetails(params).subscribe(
-    //   (res) => {
-    //     this.listOrderData = res.data;
-    //     this.totalLength = res?.data?.length;
-    //     this.page = 1;
-    //     setTimeout(() => {
-    //       this.loading = false;
-    //     }, 1000);
-
-    //     console.log('listOrderData', this.listOrderData);
-    //   },
-    //   () => {
-    //     this.loading = false;
-    //     // this.toastr.error(this.errorShowMessage, 'Maaf, Terjadi Kesalahan!');
-    //   }
-    // );
-    this.listOrderData = [
-      {
-          totalQtyTerima: 60,
-          satuanKecilProduct: "PCS",
-          keterangan: "Konversi Sama",
-          totalQtyPesan: 70,
-          timeCounter: "153911",
-          namaPemesan: "MT HARYONO JAKARTA",
-          qtyPesanBesar: 10,
-          namaGudang: "GUDANG COMMISARY SENTUL BOGOR",
-          namaBarang: "AYAM BROILER 7 PCS NON ABOB",
-          dateCreate: "2025-01-17",
-          nomorPesanan: "RO020825010080",
-          satuanKecil: "PCS",
-          hargaUnit: 0,
-          userCreate: "ZTO",
-          timeCreate: "ZTO",
-          satuanBesarProduct: "HEAD",
-          kodePemesan: "0208",
-          kodeGudang: "00072",
-          kodeBarang: "01-1002",
-          satuanBesar: "HEAD",
-          konversi: 7,
-          konversiProduct: 7,
-          qtyPesanKecil: 0
-      }
-  ];
+  //   this.listOrderData = [
+  //     {
+  //       totalQtyPesan: 0,
+  //       qtyPesanBesar: 5,
+  //       namaBarang: "DAGING SAPI SLICE",
+  //       satuanKecil: "PCS",
+  //       kodeBarang: "02-2001",
+  //       satuanBesar: "KG",
+  //       konversi: 5,
+  //       qtyPesanKecil: 10
+  //     }
+  // ];
     console.log('listOrderData', this.listOrderData);
   }
 
@@ -176,10 +161,10 @@ export class AddDataDetailSendOrderToWarehouseComponent
 
   onSubmit() {
     const param = this.listOrderData.map((data: any) => ({
-      kodeGudang: this.selectedOrder.kodeGudang,
-      kodeTujuan: this.selectedOrder.codeDestination,
+      kodeGudang: this.newOrhdk.kodeGudang,
+      kodeTujuan: this.newOrhdk.codeDestination,
       tipeTransaksi: '3',
-      nomorPesanan: this.selectedOrder.nomorPesanan,
+      nomorPesanan: this.newOrhdk.nomorPesanan,
       kodeBarang: data.kodeBarang, 
       qtyBPesan: data.qtyPesanBesar,   
       qtyKPesan: data.qtyPesanKecil,   
@@ -206,5 +191,112 @@ export class AddDataDetailSendOrderToWarehouseComponent
     });
   }
   
+  onShowModal() {
+    this.isShowModal = true;
+  }
+
+  
+  renderDataTables(): void {
+    console.log("renderDataTables",this.renderDataTables);
+    this.dtOptions = {
+      language:
+        this.translationService.getCurrentLanguage() == 'id' ? this.translationService.idDatatable : {},
+      processing: true,
+      serverSide: true,
+      autoWidth: true,
+      info: true,
+      drawCallback: () => { },
+      ajax: (dataTablesParameters: any, callback) => {
+        this.pageModal.start = dataTablesParameters.start;
+        this.pageModal.length = dataTablesParameters.length;
+        const params = {
+          ...dataTablesParameters,
+          defaultGudang: this.newOrhdk?.kodeSingkat,
+          // startDate: this.g.transformDate(this.dateRangeFilter[0]),
+          // endDate: this.g.transformDate(this.dateRangeFilter[1]),
+        };
+        // this.appService.getNewReceivingOrder(params)
+        this.dataService
+        .postData(this.g.urlServer + '/api/product/dt-pesanan', params)
+          .subscribe((resp: any) => {
+            const mappedData = resp.data.map((item: any, index: number) => {
+              // hapus rn dari data
+              const { rn, ...rest } = item;
+              const finalData = {
+                ...rest,
+                dtIndex: this.pageModal.start + index + 1,
+                // kodePemesan: `(${rest.kodeGudang}) ${rest.namaGudang}`,
+                // tglPesan: this.g.transformDate(rest.tglPesan),
+                // tglKirim: this.g.transformDate(rest.tglKirim),
+                // tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
+              };
+              return finalData;
+            });
+            this.pageModal.recordsTotal = resp.recordsTotal;
+            this.pageModal.recordsFiltered = resp.recordsFiltered;
+            // this.showFilterSection = false;
+            callback({
+              recordsTotal: resp.recordsTotal,
+              recordsFiltered: resp.recordsFiltered,
+              data: mappedData,
+            });
+          });
+      },
+      columns: [
+        { data: 'kodeBarang', title: 'Kode Barang' },
+        { data: 'namaBarang', title: 'Nama Barang' },
+        { data: 'konversi', title: 'Konversi' },
+        { data: 'satuanKecil', title: 'Satuan Kecil' },
+        { data: 'satuanBesar', title: 'Satuan Besar' },
+        { data: 'defaultGudang', title: 'Default Gudang' },
+        { data: 'flagConversion', title: 'Conversion Factor' },
+        { data: 'statusAktif', title: 'Status Aktif' },
+
+        {
+          title: 'Action',
+          render: () => {
+            return `<button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>`;
+          },
+        },
+
+      ],
+      searchDelay: 1000,
+      // delivery: [],
+      rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        $('.action-select', row).on('click', () =>
+          this.actionBtnClick(ACTION_SELECT, data)
+        );
+        return row;
+      },
+    };
+  }
+  actionBtnClick(action: string, data: any = null) {
+    this.selectedRow = (data);
+    this.renderDataTables();
+    this.isShowModal = false;
+    console.log('selectedRow', this.selectedRow);
+    console.log(' typeof( this.selectedRow) ', typeof( this.selectedRow));
+    this.listOrderData.push({
+      totalQtyPesan: 0,
+      qtyPesanBesar: 0,
+      namaBarang:  this.selectedRow?.namaBarang,
+      satuanKecil:this.selectedRow?.satuanKecil,
+      kodeBarang:this.selectedRow?.kodeBarang,
+      satuanBesar: this.selectedRow?.satuanBesar,
+      konversi: this.selectedRow?.konversi,
+      qtyPesanKecil: 0,
+      ...this.selectedRow
+  });
+
+  console.log('listOrderData', this.listOrderData);
+  
+
+    // this.mapOrderData(data);
+    // this.onSaveData();
+  }
+
+  deleteBarang(index:any) {
+    this.listOrderData.splice(index, 1);
+  }
 
 }
