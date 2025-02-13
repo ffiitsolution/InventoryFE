@@ -49,6 +49,8 @@ export class MasterProductComponent
   adding: boolean = false;
   defaultOrderOptions: any = [];
   satuanMinOrderOptions: any = [];
+  configSelectDefaultOrder: any = {};
+  configSelectSatuanMinOrder: any = {};
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
@@ -82,8 +84,12 @@ export class MasterProductComponent
         const requestData = {
           ...dataTablesParameters,
           status: this.selectedStatusFilter,
-          DEFAULT_GUDANG: this.selectedGudangFilter,
-          SATUAN_MIN_ORDER: this.selectedSatuanMinOrderFilter,
+          DEFAULT_GUDANG: this.selectedGudangFilter.id
+            ? this.selectedGudangFilter.id
+            : '',
+          SATUAN_MIN_ORDER: this.selectedSatuanMinOrderFilter.id
+            ? this.selectedSatuanMinOrderFilter.id
+            : '',
           LOKASI_BARANG_DI_GUDANG: this.selectedLokasiBarangDiGudangFilter,
         };
         this.dataService
@@ -185,22 +191,48 @@ export class MasterProductComponent
     localStorage.removeItem(LS_INV_SELECTED_PRODUCT);
 
     this.dataService
-    .getData(this.g.urlServer + '/api/product/default-order-gudang')
-    .subscribe((resp: any) => {
-      this.defaultOrderOptions = resp.map((item: any) => ({
-        value: item.kodeSingkat.substring(0, 3),
-        label: item.cad1,
-      }));    
-    });
+      .getData(this.g.urlServer + '/api/product/default-order-gudang')
+      .subscribe((resp: any) => {
+        this.defaultOrderOptions = resp.map((item: any) => ({
+          id: item.kodeSingkat.substring(0, 3),
+          name: item.kodeSingkat.substring(0, 3) + ' - ' + item.cad1,
+        }));
+      });
 
     this.dataService
-    .getData(this.g.urlServer + '/api/uom/list')
-    .subscribe((resp: any) => {
-      this.satuanMinOrderOptions = resp.map((item: any) => ({
-        value: item.kodeUom,
-        label: item.keteranganUom,
-      }));    
-    });
+      .getData(this.g.urlServer + '/api/uom/list')
+      .subscribe((resp: any) => {
+        this.satuanMinOrderOptions = resp.map((item: any) => ({
+          id: item.kodeUom,
+          name: item.kodeUom + ' - ' + item.keteranganUom,
+        }));
+      });
+
+    this.configSelectDefaultOrder = {
+      displayKey: 'name',
+      search: true,
+      height: '200px',
+      customComparator: () => {},
+      moreText: 'lebih banyak',
+      noResultsFound: 'Tidak ada hasil',
+      searchOnKey: 'name',
+      placeholder: 'Pilih Gudang',
+      searchPlaceholder: 'Cari Gudang',
+      limitTo: this.defaultOrderOptions.length,
+    };
+
+    this.configSelectSatuanMinOrder = {
+      displayKey: 'name',
+      search: true,
+      height: '200px',
+      customComparator: () => {},
+      moreText: 'lebih banyak',
+      noResultsFound: 'Tidak ada hasil',
+      searchOnKey: 'name',
+      placeholder: 'Pilih Satuan',
+      searchPlaceholder: 'Cari Satuan',
+      limitTo: this.satuanMinOrderOptions.length,
+    };
   }
 
   actionBtnClick(action: string, data: any = null) {

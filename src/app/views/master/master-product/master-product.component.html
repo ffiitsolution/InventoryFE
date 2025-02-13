@@ -46,17 +46,16 @@
                 <label cLabel for="selectStatusFilter"
                   >{{ "Default Order" | translate }}:
                 </label>
-                <select
-                  aria-label="Status"
-                  cSelect
-                  [(ngModel)]="selectedGudangFilter"
-                  (ngModelChange)="onStatusFilterChange()"
-                >
-                  <option value="">{{ "Semua" | translate }}</option>
-                  <option *ngFor="let defaultOrder of defaultOrderOptions" [value]="defaultOrder.value">
-                    {{ defaultOrder.value }} - {{ defaultOrder.label | translate }}
-                  </option>
-                </select>
+                <div>
+                  <ngx-select-dropdown
+                    [config]="configSelectDefaultOrder"
+                    [multiple]="false"
+                    [options]="defaultOrderOptions"
+                    [(ngModel)]="selectedGudangFilter"
+                    (ngModelChange)="onStatusFilterChange()"
+                  >
+                  </ngx-select-dropdown>
+                </div>
               </div>
             </div>
             <div class="row">
@@ -64,17 +63,16 @@
                 <label cLabel for="selectStatusFilter"
                   >{{ "Satuan Minimum Order" | translate }}:
                 </label>
-                <select
-                  aria-label="Status"
-                  cSelect
-                  [(ngModel)]="selectedSatuanMinOrderFilter"
-                  (ngModelChange)="onStatusFilterChange()"
-                >
-                  <option value="">{{ "Semua" | translate }}</option>
-                  <option *ngFor="let satuanMinOrder of satuanMinOrderOptions" [value]="satuanMinOrder.value">
-                    {{ satuanMinOrder.value }} - {{ satuanMinOrder.label | translate }}
-                  </option>
-                </select>
+                <div>
+                  <ngx-select-dropdown
+                    [config]="configSelectSatuanMinOrder"
+                    [multiple]="false"
+                    [options]="satuanMinOrderOptions"
+                    [(ngModel)]="selectedSatuanMinOrderFilter"
+                    (ngModelChange)="onStatusFilterChange()"
+                    id="Kota"
+                  ></ngx-select-dropdown>
+                </div>
               </div>
               <div class="col-md-6">
                 <label cLabel for="selectStatusFilter"
@@ -87,10 +85,16 @@
                   (ngModelChange)="onStatusFilterChange()"
                 >
                   <option value="">{{ "Semua" | translate }}</option>
-                  <option value="FLAG_COM">{{ "COMMISARY" | translate }}</option>
+                  <option value="FLAG_COM">
+                    {{ "COMMISARY" | translate }}
+                  </option>
                   <option value="FLAG_DRY">{{ "DRYGOOD" | translate }}</option>
-                  <option value="FLAG_PRD">{{ "PRODUCTION" | translate }}</option>
-                  <option value="FLAG_MKT">{{ "MARKETING" | translate }}</option>
+                  <option value="FLAG_PRD">
+                    {{ "PRODUCTION" | translate }}
+                  </option>
+                  <option value="FLAG_MKT">
+                    {{ "MARKETING" | translate }}
+                  </option>
                   <option value="FLAG_CTR">{{ "CATERING" | translate }}</option>
                   <option value="FLAG_HRA">{{ "HRA" | translate }}</option>
                 </select>
