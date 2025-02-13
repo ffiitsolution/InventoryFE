@@ -16,7 +16,7 @@
     <c-card-body>
       <div class="d-grid gap-3 d-md-flex justify-content-end">
         <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
-          <i class="fa fa-check pe-2"></i> {{ "Proses Pengiriman" | translate }}
+          <i class="fa fa-check pe-2"></i> {{ "Proses" | translate }}  {{ "Simpan" | translate }} {{ "Data" | translate }}
         </button>
 
         <button class="btn btn-danger text-white btn-150" (click)="onBackPressed()">
@@ -29,44 +29,50 @@
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">
-              <span class="label">{{ "Nomor Pesanan" | translate }}</span>
-              <span class="value">{{ selectedOrder.nomorPesanan }}</span>
-            </div>
-            <div class="detail-item">
               <span class="label">{{ "Tgl. Pesanan" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglPesan }}</span>
+              <span class="value">{{ newOrhdk.tanggalPesanan }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tgl. Permintaan Kirim" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglBrgDikirim }}</span>
+              <span class="label">{{ "Tgl. Kirim Barang" | translate }}</span>
+              <span class="value">{{ newOrhdk.tanggalKirimBarang }}</span>
             </div>
             <div class="detail-item">
-              <span class="label ">{{ "Tgl. Kirim Gudang" | translate }}</span>
-              <span class="value">{{ selectedOrder.validatedDeliveryDate }}</span>
+              <span class="label ">{{ "Tgl. Batal Pesanan" | translate }}</span>
+              <span class="value">{{ newOrhdk.tanggalBatalEXP }}</span>
             </div>
           </div>
         </div>
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">
-              <span class="label">{{ "Kode Tujuan" | translate }}</span>
-              <span class="value"> {{ selectedOrder.codeDestination }}</span>
+              <span class="label">{{ "Catatan 1" | translate }}</span>
+              <span class="value"> {{ newOrhdk.keteranganSatu }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Nama Tujuan" | translate }}</span>
-              <span class="value"> {{ selectedOrder.namaCabang }}</span>
+              <span class="label">{{ "Catatan 2" | translate }}</span>
+              <span class="value"> {{ newOrhdk.keteranganDua }}</span>
             </div>
+
             <div class="detail-item">
-              <span class="label">{{ "Catatan" | translate }}</span>
-              <span class="value">{{ selectedOrder.notes }} </span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Jumlah Item Dipesan" | translate }}</span>
+              <span class="label">{{ "Jumlah Item " | translate }}</span>
               <span class="value">{{ totalLength || "-" }}</span>
             </div>
 
           </div>
         </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="row">
+              <span class="label2 col-sm-2">{{ "Gudang Tujuan" | translate }}</span>
+              <span class="value2 col-sm-10"> {{ newOrhdk.namaSupplier }}</span>
+            </div>
+          
+
+          </div>
+        </div>
+
       </div>
     </c-card-body>
   </c-card>
@@ -96,7 +102,8 @@
                   Total Kirim Gudang
                 </th>
                 <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Selisih Pesanan</th>
+                  Action
+                </th>
               </tr>
               <tr>
                 <th scope="col" class="text-center" style="width:160px;">Besar</th>
@@ -105,7 +112,7 @@
             </thead>
             <tbody *ngIf="!listOrderData || listOrderData.length === 0">
               <tr>
-                <td colspan="8" scope="col" class="text-center">
+                <td colspan="9" scope="col" class="text-center">
                   No Data Found
                 </td>
               </tr>
@@ -126,16 +133,24 @@
                     </span>
                   </div>
                 </td>
-
-                <td class="text-center">{{ data.qtyPesanKecil }} {{ data.satuanKecil }}</td>
+                <td class="text-center input-column">
+                  <div class="d-flex" style="gap: 5px;">
+                    <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
+                      [(ngModel)]="data.qtyPesanKecil" (input)="onInputValueItemDetail($event, i)" />
+                    <span class="d-flex align-items-center justify-content-center">
+                      / {{data.satuanKecil}}
+                    </span>
+                  </div>
+                </td>
 
                 <td class="text-center">{{ data.konversi }}</td>
                 <td class="text-center">{{(helper.sanitizedNumber(data.qtyPesanBesar) *
                   data.konversi) }} {{data.satuanKecil}}
                 </td>
-                <td class="text-center">{{(helper.sanitizedNumber(data.totalQtyPesan) -
-                  (helper.sanitizedNumber(data.qtyPesanBesar) *
-                  data.konversi))}} {{data.satuanKecil}}
+                <td>
+                  <button class="btn btn-danger text-white btn-150" (click)="deleteBarang(i)">
+                    <i class="fa fa-trash pe-1"></i> {{ "Hapus" | translate }}
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -146,6 +161,27 @@
           </c-pagination>
         </ng-container>
       </div>
+      <div class="d-grid gap-3 d-md-flex justify-content-end mb-3 mt-3">
+
+        <button type="button" class="btn btn-success text-white me-2"  (click)="onShowModal()">
+          {{ 'Tambah' | translate }}           {{ 'Barang' | translate }}
+        </button>
+  
+      </div>
     </c-card-body>
+
+    <c-modal #formModal [fullscreen]="false" [visible]="isShowModal" backdrop="static" #modalLg size="xl"
+      id="formModal"    [attr.aria-hidden]="!isShowModal">
+        <c-modal-header>
+          <h5 cModalTitle>Add Receiving Order</h5>
+          <button (click)="isShowModal = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModal.id"
+            cButtonClose><i class="fa fa-times"></i></button>
+        </c-modal-header>
+        <c-modal-body>
+          <div class="table-responsive">
+            <table datatable [dtOptions]=" dtOptions" class="row-border hover w-100"></table>
+          </div>
+        </c-modal-body>
+    </c-modal>
   </c-card>
 </div>

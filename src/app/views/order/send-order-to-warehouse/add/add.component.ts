@@ -59,6 +59,7 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
       namaGudang:  [{value: '', disabled: true}],
       alamatGudang:  [{value: '', disabled: true}],
       statusGudang:  [{value: '', disabled: true}],
+      kodeSingkat:  [{value: '', disabled: true}],
       catatan1: [''],
       catatan2: [''],
     });
@@ -90,7 +91,6 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
         id: item.KODE_CABANG,
         name: item.KODE_CABANG+' - '+item.NAMA_CABANG,
       }));      
-      console.log("this.listGudang", this.listGudang)
     });
 
 
@@ -101,10 +101,61 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   
 
   onSubmit(): void {
-    const { controls, invalid } = this.myForm;
-    console.log(" this.myForm", this.myForm?.value)
-    console.log(" this.myForm tanggal pesan", moment( this.myForm?.value?.tanggalPesan).format("DD-MM-YYYY"))
+    const currentUser = this.g.getLocalstorage('inv_currentUser');
 
+    const { controls, invalid } = this.myForm;
+
+
+     if (invalid || this.isNotMatchPass) {
+      this.g.markAllAsTouched(this.myForm);
+    } else {
+      this.adding = true;
+      const param = {
+        kodeGudang:   currentUser?.defaultLocation?.kodeLocation,
+        kodeSingkat:   controls?.['kodeSingkat']?.value,
+        supplier:  controls?.['gudangTujuan']?.value?.id,
+        namaSupplier:  controls?.['gudangTujuan']?.value?.name,
+        tanggalPesanan:  moment(  controls?.['tanggalPesanan']?.value).format("DD-MM-YYYY"),
+        tanggalKirimBarang:  moment(  controls?.['tanggalKirimBarang']?.value).format("DD-MM-YYYY"),
+        tanggalBatalEXP: moment(  controls?.['tanggalPesanan']?.value).format("DD-MM-YYYY"),
+        keteranganSatu: controls?.['catatan1']?.value,
+        keteranganDua: controls?.['catatan2']?.value,
+
+      };
+
+      this.g.saveLocalstorage('TEMP_ORDHDK', param);
+
+      setTimeout(() => {
+          this.onNextPressed();
+        }, DEFAULT_DELAY_TIME);
+      }
+      this.adding = false;
+
+      // const param = {
+      //     "kodeGudang": "00072",
+      //     "supplier": "00052",
+      //     "tipePesanan": "I",
+      //     "nomorPesanan": "RO-000720009999",
+      //     "tanggalPesanan": "07-02-2025",
+      //     "tanggalKirimBarang": "10-02-2025",
+      //     "tanggalBatalEXP": "14-02-2025",
+      //     "keteranganSatu": "72 ke 52"           
+      // }
+
+      // this.service.insert('/api/users', param).subscribe({
+      //   next: (res) => {
+      //     if (!res.success) {
+      //       alert(res.message);
+      //     } else {
+      //       this.toastr.success('Berhasil!');
+      //       setTimeout(() => {
+      //         this.onPreviousPressed();
+      //       }, DEFAULT_DELAY_TIME);
+      //     }
+      //     this.adding = false;
+      //   },
+      // });
+    }
    
     // if (invalid || this.isNotMatchPass) {
     //   console.log("inside invalid")
@@ -134,12 +185,17 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
     //     },
     //   });
     // }
+  // }
+
+  onNextPressed() {
+    this.router.navigate(['/order/send-order-to-warehouse/add-data-detail']);
   }
 
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_SET_NUMBER);
-    this.router.navigate(['/master/master-user']);
+    this.router.navigate(['/order/send-order-to-warehouse/']);
   }
+
 
   isFieldValid(fieldName: String) {
     return this.g.isFieldValid(this.myForm, fieldName);
@@ -191,9 +247,6 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   }
 
   onGudangTujuanChange(selectedValue: any) {
-    console.log("selectedValue", selectedValue);
-    console.log("selectedValue2", selectedValue?.value?.id);
-
     this.getGudangDetail(selectedValue?.value?.id);
   }
 
@@ -206,8 +259,6 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
     .postData(this.g.urlServer + '/api/branch/branch-detail', { "kodeCabang": kodeGudang })
     .subscribe((resp: any) => {
       this.gudangDetail = resp;
-      console.log("this.gudangDetail", this.gudangDetail);
-      console.log("this.gudangDetail2", this.gudangDetail?.[0]?.NAMA_CABANG);
 
       this.myForm.get('namaGudang')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].NAMA_CABANG : null);
       this.myForm.get('alamatGudang')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].ALAMAT1 : null);
@@ -215,7 +266,8 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
         this.gudangDetail?.length
           ? (this.gudangDetail[0].STATUS_AKTIF === "A" ? "Aktif" : "Tidak Aktif")
           : null
-      );      
+      );    
+      this.myForm.get('kodeSingkat')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].KODE_SINGKAT : null);  
     }); 
 }
 
