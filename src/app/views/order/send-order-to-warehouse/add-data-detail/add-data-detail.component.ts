@@ -151,7 +151,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/transaction/delivery-item/add-data']);
+    this.router.navigate(['/order/send-order-to-warehouse/add']);
   }
 
   onPageChange(event: number) {
