@@ -11,11 +11,11 @@ import { DataTableDirective } from 'angular-datatables';
 import moment from 'moment';
 
 @Component({
-  selector: 'app-delivery-item',
-  templateUrl: './delivery-item.component.html',
-  styleUrls: ['./delivery-item.component.scss'],
+  selector: 'app-revisi-do',
+  templateUrl: './revisi-do.component.html',
+  styleUrls: ['./revisi-do.component.scss'],
 })
-export class DeliveryItemComponent implements OnInit {
+export class RevisiDoComponent implements OnInit {
   orderNoFilter: string = '';
   orderDateFilter: string = '';
   expiredFilter: string = '';
@@ -28,7 +28,7 @@ export class DeliveryItemComponent implements OnInit {
   page = new Page();
   dtColumns: any = [];
   showFilterSection: boolean = false;
-  buttonCaptionView: String = 'Lihat';
+  buttonCaptionView: String = 'Revisi';
   selectedStatusFilter: string = '';
   orders: any[] = [];
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
@@ -36,13 +36,18 @@ export class DeliveryItemComponent implements OnInit {
     | DataTableDirective
     | undefined;
   currentDate: Date = new Date();
-
   startDateFilter: Date = new Date(
     this.currentDate.setDate(
-      this.currentDate.getDate() - DEFAULT_DATE_RANGE_RECEIVING_ORDER
+      this.currentDate.getDate()
     )
   );
-  dateRangeFilter: any = [this.startDateFilter, new Date()];
+
+  endDateFilter: Date = new Date(
+    this.currentDate.setDate(
+      this.currentDate.getDate() + 1
+    )
+  );
+  dateRangeFilter: any = [this.startDateFilter, this.endDateFilter];
 
   constructor(
     private dataService: DataService,
@@ -69,13 +74,13 @@ export class DeliveryItemComponent implements OnInit {
             minutes: 0,
             seconds: 0,
             milliseconds: 0,
-          }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
+          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
           endDate: moment(this.dateRangeFilter[1]).set({
             hours: 23,
             minutes: 59,
             seconds: 59,
             milliseconds: 999,
-          }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
+          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
         };
         setTimeout(() => {
           this.dataService
@@ -88,7 +93,8 @@ export class DeliveryItemComponent implements OnInit {
                   ...rest,
                   dtIndex: this.page.start + index + 1,
                   tglPesanan: this.g.transformDate(rest.tglPesanan),
-                  tglTransaksi: this.g.transformDate(rest.tglTransaksi)
+                  tglTransaksi: this.g.transformDate(rest.tglTransaksi),
+                  tglPermintaanKirim: this.g.transformDate(rest.tglPermintaanKirim)
                 };
                 return finalData;
               });
@@ -144,9 +150,9 @@ export class DeliveryItemComponent implements OnInit {
           },
         },
         {
-          title: 'Opsi',
+          title: 'Aksi',
           render: () => {
-            return `<button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>`;
+            return `<button class="btn btn-sm btn-outline-danger btn-60 action-view hover:bg-danger hover:text-white">${this.buttonCaptionView}</button>`;
           },
         },
       ],
@@ -186,7 +192,7 @@ export class DeliveryItemComponent implements OnInit {
         LS_INV_SELECTED_DELIVERY_ORDER,
         JSON.stringify(data)
       );
-      this.router.navigate(['/transaction/delivery-item/detail-transaction']); this
+      this.router.navigate(['/transaction/delivery-item/revisi-do/edit']); this
     }
   }
 

@@ -106,4 +106,8 @@ export const STATUS_RESULT = [
     label: 'Intransit',
     value: 'I',
   },
+  {
+    label: 'Received',
+    value: 'R',
+  },
 ];

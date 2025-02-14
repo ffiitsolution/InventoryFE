@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {DeliveryItemComponent} from './delivery-item/delivery-item.component';
+import { DeliveryItemComponent } from './delivery-item/delivery-item.component';
 import { AddDataComponent } from './add-data/add-data.component';
 import { DetailTransactionComponent } from './detail-transaction/detail-transaction.component';
 import { AddDataDetailDeliveryComponent } from './add-data-detail/add-data-detail.component';
 import { DobalikComponent } from './dobalik/dobalik.component';
 import { DetailReportDoBalikComponent } from './detail-report-do-balik/detail-report-do-balik.component';
 import { PackagingListComponent } from './packing-list/packing-list.component';
+import { RevisiDoComponent } from './revisi-do/revisi-do.component';
+import { RevisiDoEditComponent } from './revisi-do/revisi-do-edit/revisi-do-edit.component';
 
 const routes: Routes = [
   {
@@ -39,7 +41,20 @@ const routes: Routes = [
       {
         path: 'delivery-item/packing-list',
         component: PackagingListComponent,
-      }
+      },
+      {
+        path: 'delivery-item/revisi-do',
+        component: RevisiDoComponent,
+        // children: [{
+        //   path: 'edit',
+        //   component: RevisiDoEditComponent,
+        // }
+        // ]
+      },
+      {
+        path: 'delivery-item/revisi-do/edit',
+        component: RevisiDoEditComponent,
+      },
     ],
   },
 ];
@@ -48,4 +63,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class TransactionRoutingModule {}
+export class TransactionRoutingModule { }

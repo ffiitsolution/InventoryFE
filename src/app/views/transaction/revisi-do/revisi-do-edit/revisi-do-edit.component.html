@@ -7,7 +7,7 @@
             <i class="fa fa-chevron-left icon-12 icon-gap"></i>
             {{ "Kembali" | translate }}
           </button>
-          <h5>{{ "Detail Tambah Pengiriman" | translate }}</h5>
+          <h5>{{ "Rubah Qty Kirim" | translate }}</h5>
         </div>
       </c-row>
     </c-card-body>
@@ -18,7 +18,7 @@
         <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
           <i class="fa fa-check pe-2" *ngIf="!adding"></i>
           <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
-          {{ "Proses Pengiriman" | translate }}
+          {{ "Proses revisi" | translate }}
         </button>
 
         <button class="btn btn-danger text-white btn-150" (click)="onBackPressed()">
@@ -35,16 +35,16 @@
               <span class="value">{{ selectedOrder.nomorPesanan }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tgl. Pesanan" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglPesan }}</span>
+              <span class="label">{{ "Nomor Surat Jalan" | translate }}</span>
+              <span class="value">{{ selectedOrder.noSuratJalan }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tgl. Permintaan Kirim" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglBrgDikirim }}</span>
+              <span class="label">{{ "Tgl. Pesanan" | translate }}</span>
+              <span class="value">{{ selectedOrder.tglPesanan }}</span>
             </div>
             <div class="detail-item">
               <span class="label ">{{ "Tgl. Kirim Gudang" | translate }}</span>
-              <span class="value">{{ selectedOrder.validatedDeliveryDate }}</span>
+              <span class="value">{{ selectedOrder.tglTransaksi }}</span>
             </div>
           </div>
         </div>
@@ -52,19 +52,20 @@
           <div class="row order-details">
             <div class="detail-item">
               <span class="label">{{ "Kode Tujuan" | translate }}</span>
-              <span class="value"> {{ selectedOrder.codeDestination }}</span>
+              <span class="value"> {{ selectedOrder.kodeTujuan }}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Nama Tujuan" | translate }}</span>
-              <span class="value"> {{ selectedOrder.namaCabang }}</span>
+              <span class="value"> {{ selectedOrder.namaTujuan }}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Catatan" | translate }}</span>
-              <span class="value">{{ selectedOrder.notes }} </span>
+              <span class="value">{{ selectedOrder.keterangan }} </span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Jumlah Item Dipesan" | translate }}</span>
-              <span class="value">{{ totalLength || "-" }}</span>
+              <span class="label">{{ "Status Pengiriman" | translate }}</span>
+              <span class="value">{{ selectedOrder.statusPosting === 'i' ? '(I) Intransit' : '(P) Posting' }}
+              </span>
             </div>
 
           </div>

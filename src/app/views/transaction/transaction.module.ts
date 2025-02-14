@@ -31,6 +31,8 @@ import { DobalikComponent } from './dobalik/dobalik.component';
 import { DetailReportDoBalikComponent } from './detail-report-do-balik/detail-report-do-balik.component';
 import { PackagingListComponent } from './packing-list/packing-list.component';
 import { SharedComponentModule } from '../../component/shared.component.module';
+import { RevisiDoComponent } from './revisi-do/revisi-do.component';
+import { RevisiDoEditComponent } from './revisi-do/revisi-do-edit/revisi-do-edit.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -65,7 +67,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     AddDataDetailDeliveryComponent,
     DobalikComponent,
     DetailReportDoBalikComponent,
-    PackagingListComponent
+    PackagingListComponent,
+    RevisiDoComponent,
+    RevisiDoEditComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })
