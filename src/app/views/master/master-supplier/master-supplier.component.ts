@@ -18,6 +18,7 @@ import { Page } from 'src/app/model/page';
 import { DataService } from 'src/app/service/data.service';
 import { GlobalService } from 'src/app/service/global.service';
 import { Router } from '@angular/router';
+import { AppService } from 'src/app/service/app.service';
 
 @Component({
   selector: 'app-master-supplier',
@@ -52,6 +53,9 @@ export class MasterSupplierComponent
   selectedStatusSyncFilter: any = '';
   selectedGudangFilter: any = '';
   gudangOptions: any;
+  uomList: any;
+  supplierList: any;
+  defaultOrderGudangList: any;
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
@@ -81,7 +85,8 @@ export class MasterSupplierComponent
     private dataService: DataService,
     private g: GlobalService,
     private translation: TranslationService,
-    private router: Router
+    private router: Router,
+    private service: AppService
   ) {
     this.dtOptions = {
       language:
@@ -279,5 +284,26 @@ export class MasterSupplierComponent
 
   ngAfterViewInit(): void {
     this.rerenderDatatable();
+  }
+
+  getUomList() {
+    this.service.getUomList().subscribe((res: any) => {
+      this.uomList = res;
+    });
+  }
+
+  getSupplierList() {
+    this.service.getSupplierList().subscribe((res: any) => {
+      this.supplierList = res;
+    });
+  }
+
+  getDefaultOrderGudangList() {
+    this.service.getDefaultOrderGudangList().subscribe((res: any) => {
+      this.defaultOrderGudangList = res.map((item: any) => ({
+        cad1: item.cad1,
+        kodeSingkat: item.kodeSingkat.substring(0, 3),
+      }));
+    });
   }
 }
