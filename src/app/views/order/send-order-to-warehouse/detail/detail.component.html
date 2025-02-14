@@ -7,50 +7,49 @@
             <i class="fa fa-chevron-left icon-12 icon-gap"></i>
             {{ "Kembali" | translate }}
           </button>
-          <h5>{{ "Detail Tambah Pesanan Ke Gudang" | translate }}</h5>
+          <h5>{{ "Detail Pesanan Ke Gudang" | translate }}</h5>
         </div>
       </c-row>
     </c-card-body>
   </c-card>
   <c-card class="mb-4">
     <c-card-body>
-      <div class="d-grid gap-3 d-md-flex justify-content-end">
-        <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
-          <i class="fa fa-check pe-2"></i> {{ "Proses" | translate }}  {{ "Simpan" | translate }} {{ "Data" | translate }}
-        </button>
-
-        <button class="btn btn-danger text-white btn-150" (click)="onBackPressed()">
-          <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
-        </button>
-      </div>
 
       <div class="row">
         <div class="divider mt-4"></div>
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">
+              <span class="label">{{ "Nomor Pesanan" | translate }}</span>
+              <span class="value">{{ detailDataSendToWarehouse.nomorPesanan }}</span>
+            </div>
+            <div class="detail-item">
               <span class="label">{{ "Tgl. Pesanan" | translate }}</span>
-              <span class="value">{{ newOrhdk.tanggalPesanan }}</span>
+              <span class="value">{{ detailDataSendToWarehouse.tglPesanan }}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Tgl. Kirim Barang" | translate }}</span>
-              <span class="value">{{ newOrhdk.tanggalKirimBarang }}</span>
+              <span class="value">{{ detailDataSendToWarehouse.dateKirim }}</span>
             </div>
             <div class="detail-item">
               <span class="label ">{{ "Tgl. Batal Pesanan" | translate }}</span>
-              <span class="value">{{ newOrhdk.tanggalBatalEXP }}</span>
+              <span class="value">{{ detailDataSendToWarehouse.tglBatalExp }}</span>
             </div>
           </div>
         </div>
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">
+              <span class="label">{{ "Gudang Tujuan" | translate }}</span>
+              <span class="value">{{detailDataSendToWarehouse.supplier}} - {{ detailDataSendToWarehouse.namaSupplier }}</span>
+            </div>
+            <div class="detail-item">
               <span class="label">{{ "Catatan 1" | translate }}</span>
-              <span class="value"> {{ newOrhdk.keteranganSatu }}</span>
+              <span class="value"> {{ detailDataSendToWarehouse.keterangan1 }}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Catatan 2" | translate }}</span>
-              <span class="value"> {{ newOrhdk.keteranganDua }}</span>
+              <span class="value"> {{ detailDataSendToWarehouse.keterangan2 }}</span>
             </div>
 
             <div class="detail-item">
@@ -61,19 +60,19 @@
           </div>
         </div>
       </div>
-      <div class="row">
+      <!-- <div class="row">
         <div class="col">
           <div class="row">
             <div class="row">
               <span class="label2 col-sm-2">{{ "Gudang Tujuan" | translate }}</span>
-              <span class="value2 col-sm-10"> {{ newOrhdk.namaSupplier }}</span>
+              <span class="value2 col-sm-10"> {{ detailDataSendToWarehouse.namaSupplier }}</span>
             </div>
           
 
           </div>
         </div>
 
-      </div>
+      </div> -->
     </c-card-body>
   </c-card>
 </div>
@@ -127,7 +126,7 @@
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
                     <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                      [(ngModel)]="data.qtyPesanBesar" (input)="onInputValueItemDetail($event, i)" />
+                      [(ngModel)]="data.qtyPesanBesar" (input)="onInputValueItemDetail($event, i)" disabled/>
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanBesar}}
                     </span>
@@ -136,7 +135,7 @@
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
                     <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                      [(ngModel)]="data.qtyPesanKecil" (input)="onInputValueItemDetail($event, i)" />
+                      [(ngModel)]="data.qtyPesanKecil" (input)="onInputValueItemDetail($event, i)" disabled/>
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanKecil}}
                     </span>
@@ -148,7 +147,7 @@
                   data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil) }} {{data.satuanKecil}}
                 </td>
                 <td>
-                  <button class="btn btn-danger text-white btn-150" (click)="deleteBarang(i)">
+                  <button class="btn btn-danger text-white btn-150" (click)="deleteBarang(i)" disabled>
                     <i class="fa fa-trash pe-1"></i> {{ "Hapus" | translate }}
                   </button>
                 </td>
@@ -160,13 +159,6 @@
             <pagination-controls (pageChange)="onPageChange(1)" id="dataTable"></pagination-controls>
           </c-pagination>
         </ng-container>
-      </div>
-      <div class="d-grid gap-3 d-md-flex justify-content-end mb-3 mt-3">
-
-        <button type="button" class="btn btn-success text-white me-2"  (click)="onShowModal()">
-          {{ 'Tambah' | translate }}           {{ 'Barang' | translate }}
-        </button>
-  
       </div>
     </c-card-body>
 

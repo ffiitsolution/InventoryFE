@@ -15,7 +15,8 @@ import {
   OUTLET_BRAND_KFC,
   SEND_PRINT_STATUS_SUDAH,
   STATUS_SAME_CONVERSION,
-  ACTION_SELECT
+  ACTION_SELECT,
+  LS_INV_SELECTED_SEND_TO_WAREHOUSE_ORDER
 } from '../../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
 import { lastValueFrom, Subject } from 'rxjs';
@@ -59,8 +60,9 @@ export class DetailSendOrderToWarehouseComponent
   dtOptions: DataTables.Settings = {};
   selectedRow:  any = {};
   pageModal = new Page();
-  dataUser: any = {};
-  
+  detailDataSendToWarehouse: any = {};
+  detailDataDetailSendToWarehouse: any[] = [];
+
   @ViewChild('formModal') formModal: any;
 
 
@@ -89,7 +91,6 @@ export class DetailSendOrderToWarehouseComponent
     this.g.changeTitle(
       this.translation.instant('Detail Pesanan') + ' - ' + this.g.tabTitle
     );
-    this.dataUser = this.g.getLocalstorage('inv_currentUser');
 
     const isCanceled = this.newOrhdk.statusPesanan == CANCEL_STATUS;
     this.disabledPrintButton = isCanceled;
@@ -99,20 +100,37 @@ export class DetailSendOrderToWarehouseComponent
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.renderDataTables();
 
+    this.detailDataSendToWarehouse = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_SEND_TO_WAREHOUSE_ORDER));
+    console.log("detailDataSendToWarehouse",this.detailDataSendToWarehouse);
+
+    const params = {
+      nomorPesanan: this.detailDataSendToWarehouse?.nomorPesanan
+    };
+    this.dataService
+    .postData(this.g.urlServer + '/api/send-order-to-warehouse/detail-DetailOrder',params)
+    .subscribe((resp: any) => {
+      this.detailDataDetailSendToWarehouse = resp;
+      this.listOrderData = this.detailDataDetailSendToWarehouse.map(item => ({
+        totalQtyPesan: item.TOTAL_QTY_PESAN,
+        qtyPesanBesar: item.QTY_PESAN_BESAR,
+        namaBarang: item.NAMA_BARANG,
+        satuanKecil: item.SATUAN_KECIL,
+        kodeBarang: item.KODE_BARANG,
+        satuanBesar: item.SATUAN_BESAR,
+        konversi: item.KONVERSI,
+        qtyPesanKecil: item.QTY_PESAN_KECIL
+    }));
+    });
 
 
-
-    // this.dataService
-    // .getData(this.g.urlServer + '/api/send-order-to-warehouse/detail-DetailOrder')
-    // .subscribe((resp: any) => {
-    //   console.log("resp1",resp);
-    // });
+  
 
     // this.dataService
     // .getData(this.g.urlServer + '/api/send-order-to-warehouse/detail-header')
     // .subscribe((resp: any) => {
     //   console.log("resp2",resp);
     // });
+
 
   }
   
