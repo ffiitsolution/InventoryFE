@@ -1,110 +1,78 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <div class="row">
-        <div class="col">
-          <h5>{{ "Detail Pesanan" | translate }}</h5>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <button
-            type="button"
-            class="btn btn-outline-dark btn-120"
-            (click)="onBackPressed()"
-          >
-            <i class="fa fa-chevron-left icon-gap" aria-hidden="true"></i>
+      <c-row>
+        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
+          <button class="btn btn-light btn-120" (click)="onBackPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
             {{ "Kembali" | translate }}
           </button>
+          <h5>{{ "Detail Tambah Pesanan Ke Gudang" | translate }}</h5>
         </div>
-        <div class="col text-end">
-          <button
-          type="button"
-          class="btn btn-outline-success me-2 btn-120"
-          (click)="onPrint()"
-          [disabled]="updatingStatus || disabledCancelButton"
-        >
-          <i class="fa fa-print icon-gap" *ngIf="!RejectingOrder"></i>
-          <i class="fa fa-spinner fa-spin" *ngIf="RejectingOrder"></i>
-          {{ "Cetak" | translate }}
+      </c-row>
+    </c-card-body>
+  </c-card>
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="d-grid gap-3 d-md-flex justify-content-end">
+        <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
+          <i class="fa fa-check pe-2"></i> {{ "Proses" | translate }}  {{ "Simpan" | translate }} {{ "Data" | translate }}
         </button>
-        
-          <!-- <button
-            type="button"
-            class="btn btn-success text-white me-2 btn-120"
-            (click)="onButtonActionPressed('S')"
-            [disabled]="RejectingOrder || updatingStatus || disabledPrintButton"
-          >
-            <i class="fa fa-print icon-gap" *ngIf="!updatingStatus"></i>
-            <i class="fa fa-spinner fa-spin" *ngIf="updatingStatus"></i>
-            {{
-              alreadyPrint ? ("Cetak Ulang" | translate) : ("Cetak" | translate)
-            }}
-          </button> -->
-          <button
-            type="button"
-            class="btn btn-outline-danger me-2 btn-120"
-            (click)="onButtonActionPressed('4')"
-            [disabled]="updatingStatus || disabledCancelButton"
-          >
-            <i class="fa fa-times icon-gap" *ngIf="!RejectingOrder"></i>
-            <i class="fa fa-spinner fa-spin" *ngIf="RejectingOrder"></i>
-            {{ "Batal" | translate }}
-          </button>
-        </div>
+
+        <button class="btn btn-danger text-white btn-150" (click)="onBackPressed()">
+          <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
+        </button>
       </div>
+
       <div class="row">
         <div class="divider mt-4"></div>
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">
-              <span class="label">{{ "Nomor Pesanan" | translate }}</span>
-              <span class="value">{{ selectedOrder.nomorPesanan }}</span>
+              <span class="label">{{ "Tgl. Pesanan" | translate }}</span>
+              <span class="value">{{ newOrhdk.tanggalPesanan }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tanggal Pesan" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglPesan }}</span>
+              <span class="label">{{ "Tgl. Kirim Barang" | translate }}</span>
+              <span class="value">{{ newOrhdk.tanggalKirimBarang }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tanggal Kirim" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglBrgDikirim }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Tanggal Kedaluwarsa" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglKadaluarsa }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Status Pesanan" | translate }}</span>
-              <span class="value">{{
-                this.g.getStatusOrderLabel(selectedOrder.statusPesanan)
-              }}</span>
+              <span class="label ">{{ "Tgl. Batal Pesanan" | translate }}</span>
+              <span class="value">{{ newOrhdk.tanggalBatalEXP }}</span>
             </div>
           </div>
         </div>
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">
-              <span class="label">{{ "Tujuan" | translate }}</span>
-              <span class="value"> {{ selectedOrder.kodePemesan }}</span>
+              <span class="label">{{ "Catatan 1" | translate }}</span>
+              <span class="value"> {{ newOrhdk.keteranganSatu }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tipe Pesanan" | translate }}</span>
-              <span class="value"> {{ selectedOrder.keterangan1 }}</span>
+              <span class="label">{{ "Catatan 2" | translate }}</span>
+              <span class="value"> {{ newOrhdk.keteranganDua }}</span>
             </div>
+
             <div class="detail-item">
-              <span class="label">{{ "Catatan" | translate }}</span>
-              <span class="value">{{ selectedOrder.keterangan2 }} </span>
+              <span class="label">{{ "Jumlah Item " | translate }}</span>
+              <span class="value">{{ totalLength || "-" }}</span>
             </div>
-            <div class="detail-item">
-              <span class="label">{{ "Nomor SJ" | translate }}</span>
-              <span class="value">{{ selectedOrder.noSjPengirim || "-" }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Status Cetak" | translate }}</span>
-              <span class="value">{{ getPrintStatus() }}</span>
-            </div>
+
           </div>
         </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="row">
+              <span class="label2 col-sm-2">{{ "Gudang Tujuan" | translate }}</span>
+              <span class="value2 col-sm-10"> {{ newOrhdk.namaSupplier }}</span>
+            </div>
+          
+
+          </div>
+        </div>
+
       </div>
     </c-card-body>
   </c-card>
@@ -113,13 +81,107 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="table-responsive">
-        <table
-          datatable
-          [dtOptions]="dtOptions"
-          (page.dt)="dtPageChange($event)"
-          class="row-border hover"
-        ></table>
+        <ng-container>
+          <div *ngIf="loading">
+            <app-loading></app-loading>
+          </div>
+          <table bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
+            <thead>
+              <tr>
+                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">No.
+                </th>
+                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">Kode
+                  Barang</th>
+                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">Nama
+                  Barang</th>
+                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" colspan="2">Qty
+                  Kirim</th> <!-- Masih sejajar -->
+                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                  Konversi Gudang</th>
+                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                  Total Quantity Pesan
+                </th>
+                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                  Action
+                </th>
+              </tr>
+              <tr>
+                <th scope="col" class="text-center" style="width:160px;">Besar</th>
+                <th scope="col" class="text-center" style="width:160px;">Kecil</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="!listOrderData || listOrderData.length === 0">
+              <tr>
+                <td colspan="9" scope="col" class="text-center">
+                  No Data Found
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr *ngFor="let data of listOrderData; let i = index">
+                <td class="text-center">{{ i + 1 }}</td>
+                <td class="text-center">{{ data.kodeBarang }}</td>
+                <td class="text-center">{{ data.namaBarang }}</td>
+                  <!-- <td class="text-center">{{ data.qtyPesanBesar }} {{ data.satuanBesar }}</td> -->
+
+                <td class="text-center input-column">
+                  <div class="d-flex" style="gap: 5px;">
+                    <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
+                      [(ngModel)]="data.qtyPesanBesar" (input)="onInputValueItemDetail($event, i)" />
+                    <span class="d-flex align-items-center justify-content-center">
+                      / {{data.satuanBesar}}
+                    </span>
+                  </div>
+                </td>
+                <td class="text-center input-column">
+                  <div class="d-flex" style="gap: 5px;">
+                    <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
+                      [(ngModel)]="data.qtyPesanKecil" (input)="onInputValueItemDetail($event, i)" />
+                    <span class="d-flex align-items-center justify-content-center">
+                      / {{data.satuanKecil}}
+                    </span>
+                  </div>
+                </td>
+
+                <td class="text-center">{{ data.konversi }}</td>
+                <td class="text-center">{{(helper.sanitizedNumber(data.qtyPesanBesar) *
+                  data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil) }} {{data.satuanKecil}}
+                </td>
+                <td>
+                  <button class="btn btn-danger text-white btn-150" (click)="deleteBarang(i)">
+                    <i class="fa fa-trash pe-1"></i> {{ "Hapus" | translate }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <c-pagination class="text-right">
+            <pagination-controls (pageChange)="onPageChange(1)" id="dataTable"></pagination-controls>
+          </c-pagination>
+        </ng-container>
+      </div>
+      <div class="d-grid gap-3 d-md-flex justify-content-end mb-3 mt-3">
+
+        <button type="button" class="btn btn-success text-white me-2"  (click)="onShowModal()">
+          {{ 'Tambah' | translate }}           {{ 'Barang' | translate }}
+        </button>
+  
       </div>
     </c-card-body>
+
+    <c-modal #formModal [fullscreen]="false" [visible]="isShowModal" backdrop="static" #modalLg size="xl"
+      id="formModal"    [attr.aria-hidden]="!isShowModal">
+        <c-modal-header>
+          <h5 cModalTitle>Add Receiving Order</h5>
+          <button (click)="isShowModal = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModal.id"
+            cButtonClose><i class="fa fa-times"></i></button>
+        </c-modal-header>
+        <c-modal-body>
+          <div class="table-responsive">
+            <table datatable [dtOptions]=" dtOptions" class="row-border hover w-100"></table>
+          </div>
+        </c-modal-body>
+    </c-modal>
   </c-card>
 </div>
