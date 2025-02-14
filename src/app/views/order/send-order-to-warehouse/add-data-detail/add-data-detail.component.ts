@@ -76,6 +76,8 @@ export class AddDataDetailSendOrderToWarehouseComponent
     private globalService: GlobalService,
     private translationService: TranslationService,
     private dataService: DataService,
+    private service: AppService,
+
   ) {
     this.g.navbarVisibility = true;
     this.newOrhdk = JSON.parse(this.newOrhdk);
@@ -83,6 +85,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
 
   ngOnInit(): void {
+    console.log("newOrhdk",this.newOrhdk)
     this.g.changeTitle(
       this.translation.instant('Detail Pesanan') + ' - ' + this.g.tabTitle
     );
@@ -96,7 +99,10 @@ export class AddDataDetailSendOrderToWarehouseComponent
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.renderDataTables();
 
+
+
   }
+  
 
   getDeliveryItemDetails() {
     this.loading = true;
@@ -157,35 +163,81 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
 
   onSubmit() {
-    const param = this.listOrderData.map((data: any) => ({
-      kodeGudang: this.newOrhdk.kodeGudang,
-      kodeTujuan: this.newOrhdk.codeDestination,
-      tipeTransaksi: '3',
-      nomorPesanan: this.newOrhdk.nomorPesanan,
-      kodeBarang: data.kodeBarang, 
-      qtyBPesan: data.qtyPesanBesar,   
-      qtyKPesan: data.qtyPesanKecil,   
-      hargaSatuan: 0, 
-      userCreate: JSON.parse(localStorage.getItem('inv_currentUser') || '{}').namaUser,
-      konversi: data.konversi
-    }));
-  
-    this.appService.saveDeliveryOrder(param).subscribe({
+    console.log(this.listOrderData);
+
+    // param for order Header
+    const paramHeader = this.newOrhdk;
+    
+    console.log("paramHeader:", paramHeader);
+
+
+    this.service.insert('/api/send-order-to-warehouse/insert-header', paramHeader).subscribe({
       next: (res) => {
         if (!res.success) {
           alert(res.message);
         } else {
-          this.toastr.success('Berhasil!');
+          console.log("res header:", res); 
+          console.log("res item:", res.item?.[0]?.nomorPesanan ?? "Not found");
+          this.newOrhdk.nomorPesanan =  res.item?.[0]?.nomorPesanan ;
+
+          this.insertDetail()
           setTimeout(() => {
-            this.onBackPressed();
+            this.onPreviousPressed();
           }, DEFAULT_DELAY_TIME);
+          
         }
         this.adding = false;
       },
-      error: (err) => {
-        console.error("Error saat insert:", err);
-      }
     });
+
+    // this.service.insert('/api/users', param).subscribe({
+    //   next: (res) => {
+    //     if (!res.success) {
+    //       alert(res.message);
+    //     } else {
+    //       this.toastr.success('Berhasil!');
+    //       setTimeout(() => {
+    //         this.onPreviousPressed();
+    //       }, DEFAULT_DELAY_TIME);
+    //     }
+    //     this.adding = false;
+    //   },
+    // });
+
+
+
+  
+
+  
+    // const param = this.listOrderData.map((data: any) => ({
+    //   kodeGudang: this.newOrhdk.kodeGudang,
+    //   kodeTujuan: this.newOrhdk.codeDestination,
+    //   tipeTransaksi: '3',
+    //   nomorPesanan: this.newOrhdk.nomorPesanan,
+    //   kodeBarang: data.kodeBarang, 
+    //   qtyBPesan: data.qtyPesanBesar,   
+    //   qtyKPesan: data.qtyPesanKecil,   
+    //   hargaSatuan: 0, 
+    //   userCreate: JSON.parse(localStorage.getItem('inv_currentUser') || '{}').namaUser,
+    //   konversi: data.konversi
+    // }));
+  
+    // this.appService.saveDeliveryOrder(param).subscribe({
+    //   next: (res) => {
+    //     if (!res.success) {
+    //       alert(res.message);
+    //     } else {
+    //       this.toastr.success('Berhasil!');
+    //       setTimeout(() => {
+    //         this.onBackPressed();
+    //       }, DEFAULT_DELAY_TIME);
+    //     }
+    //     this.adding = false;
+    //   },
+    //   error: (err) => {
+    //     console.error("Error saat insert:", err);
+    //   }
+    // });
   }
   
   onShowModal() {
@@ -268,6 +320,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
   actionBtnClick(action: string, data: any = null) {
     this.selectedRow = (data);
+    console.log("this.selectedRow:", this.selectedRow);
     this.renderDataTables();
     this.isShowModal = false;
     this.listOrderData.push({
@@ -290,6 +343,49 @@ export class AddDataDetailSendOrderToWarehouseComponent
 
   deleteBarang(index:any) {
     this.listOrderData.splice(index, 1);
+  }
+
+  insertDetail(){
+    // param for order header detail
+    const paramDetail = this.listOrderData.map(item => ({
+      kodeGudang: this.newOrhdk.kodeGudang,
+      kodeTujuan: this.newOrhdk.supplier,
+      nomorPesanan: this.newOrhdk.nomorPesanan,
+      kodeBarang: item.kodeBarang,
+      konversi: item.konversi,
+      satuanKecil: item.satuanKecil,
+      satuanBesar: item.satuanBesar,
+      qtyPesanBesar: item.qtyPesanBesar,
+      qtyPesanKecil: item.qtyPesanKecil,
+      totalQtyPesan: (this.helper.sanitizedNumber(item.qtyPesanBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyPesanKecil),
+      hargaUnit: item.unitPrice
+  }));
+
+
+  this.service.insert('/api/send-order-to-warehouse/insert-detail', paramDetail).subscribe({
+    next: (res) => {
+      if (!res.success) {
+        alert(res.message);
+      } else {
+        console.log("res detail:", res); 
+        
+        this.toastr.success('Berhasil!');
+        // setTimeout(() => {
+        //   this.onPreviousPressed();
+        // }, DEFAULT_DELAY_TIME);
+        
+      }
+      this.adding = false;
+    },
+  });
+  
+
+  console.log("Mapped paramDetail:", paramDetail);
+
+  }
+
+  onPreviousPressed(): void {
+    this.router.navigate(['order/send-order-to-warehouse']);
   }
 
 }

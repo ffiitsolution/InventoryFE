@@ -99,7 +99,7 @@
                 <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Konversi Gudang</th>
                 <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Total Kirim Gudang
+                  Total Quantity Pesan
                 </th>
                 <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Action
@@ -145,7 +145,7 @@
 
                 <td class="text-center">{{ data.konversi }}</td>
                 <td class="text-center">{{(helper.sanitizedNumber(data.qtyPesanBesar) *
-                  data.konversi) }} {{data.satuanKecil}}
+                  data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil) }} {{data.satuanKecil}}
                 </td>
                 <td>
                   <button class="btn btn-danger text-white btn-150" (click)="deleteBarang(i)">

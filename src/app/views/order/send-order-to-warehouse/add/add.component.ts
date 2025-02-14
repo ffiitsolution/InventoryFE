@@ -96,6 +96,7 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
 
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
+    this.g.removeLocalstorage('TEMP_ORDHDK');
   }
 
   
