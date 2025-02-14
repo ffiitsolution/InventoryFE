@@ -217,6 +217,14 @@ export class SendOrderToWarehouseComponent
             return statusLabel;
           }
         },
+        { 
+          data: 'keterangan1', 
+          title: 'Catatan1',
+          render: function (data, type, row) {
+            if (!data) return ""; // Handle null/undefined values
+            return data.substring(0, 20); // Cut the first 20 characters
+          }
+        },
 
         
         
