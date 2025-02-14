@@ -9,7 +9,8 @@ import {
 import {
   SendOrderToWarehouseComponent,
   SendOrderToWarehouseAddComponent,
-  AddDataDetailSendOrderToWarehouseComponent
+  AddDataDetailSendOrderToWarehouseComponent,
+  DetailSendOrderToWarehouseComponent
 
 } from './send-order-to-warehouse';
 const routes: Routes = [
@@ -44,6 +45,10 @@ const routes: Routes = [
         path: 'send-order-to-warehouse/add-data-detail',
         component: AddDataDetailSendOrderToWarehouseComponent,
       },
+      {
+        path: 'send-order-to-warehouse/detail',
+        component: DetailSendOrderToWarehouseComponent,
+      },      
       
     ],
   },
