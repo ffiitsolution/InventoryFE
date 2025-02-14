@@ -13,7 +13,7 @@ export class AppService {
     private dataService: DataService,
     private translation: TranslationService,
     private toastr: ToastrService
-  ) { }
+  ) {}
   protected config = AppConfig.settings.apiServer;
 
   login(param: any): Observable<any> {
@@ -94,9 +94,7 @@ export class AppService {
   }
 
   getUomList() {
-    return this.dataService.getData(
-      `${this.config.BASE_URL}/api/uom/list`
-    );
+    return this.dataService.getData(`${this.config.BASE_URL}/api/uom/list`);
   }
 
   getSupplierList() {
@@ -125,6 +123,20 @@ export class AppService {
     );
   }
 
+  updateDeliveryOrderPostingStatus(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/posting-do`,
+      payload
+    );
+  }
+
+  getDetailDoBlik(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/detail-do-balik`,
+      payload
+    );
+  }
+
 
   saveDeliveryOrder(payload: any) {
     return this.dataService.postData(
@@ -133,5 +145,17 @@ export class AppService {
     );
   }
 
+  getCityList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/city/dropdown-city`,
+      payload
+    );
+  }
 
+  getRSCList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/rsc/dropdown-rsc`,
+      payload
+    );
+  }
 }

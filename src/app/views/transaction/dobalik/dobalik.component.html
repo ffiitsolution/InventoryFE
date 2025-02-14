@@ -3,7 +3,7 @@
     <c-card-body>
       <div class="row">
         <div class="col">
-          <h5>{{ "Terima pesanan dari Cabang atau Gudang" | translate }}</h5>
+          <h5>{{ "Proses Do Balik" | translate }}</h5>
         </div>
         <div class="col text-end">
           <button
@@ -14,15 +14,6 @@
             <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
             {{ "Filter" | translate }}
           </button>
-          <button
-            type="button"
-            class="btn btn-success text-white me-2 btn-240"
-            data-toggle="modal"
-            (click)="onAddPressed()"
-          >
-            <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
-            {{ "Tambah Penerimaan" | translate }}
-          </button>
         </div>
       </div>
       <div [visible]="showFilterSection" cCollapse>
@@ -30,13 +21,7 @@
         <div class="row" style="margin-top: -16px">
           <c-card-body>
             <c-row>
-              <c-col>
-                <label class="col-form-label">{{
-                  "Dummy Filter" | translate
-                }}</label>
-                <input type="text" id="anotherFilter" class="form-control" />
-              </c-col>
-              <c-col>
+              <c-col xs="3">
                 <label class="col-form-label">{{
                   "Tanggal Pesan" | translate
                 }}</label>
@@ -52,6 +37,7 @@
                   placeholder="{{ 'Tanggal Pesan' | translate }}"
                 />
               </c-col>
+              <c-col xs="6"></c-col>
               <c-col
                 xs="3"
                 class="text-right d-flex align-items-end justify-content-end"
@@ -71,16 +57,12 @@
     </c-card-body>
   </c-card>
 </div>
+
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
       <div class="table-responsive">
-        <table
-          datatable
-          [dtOptions]="dtOptions"
-          (page.dt)="dtPageChange($event)"
-          class="row-border hover"
-        ></table>
+        <table datatable [dtOptions]="dtOptions" (page.dt)="dtPageChange($event)" class="row-border hover"></table>
       </div>
     </c-card-body>
   </c-card>

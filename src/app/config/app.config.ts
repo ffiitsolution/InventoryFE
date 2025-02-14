@@ -25,4 +25,5 @@ export class AppConfig {
         })
     });
   }
+  BASE_URL: string = 'http://localhost:8093/inventory/api';
 }

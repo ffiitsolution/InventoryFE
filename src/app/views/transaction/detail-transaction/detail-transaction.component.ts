@@ -32,8 +32,7 @@ import { AppConfig } from '../../../config/app.config';
   styleUrl: './detail-transaction.component.scss',
 })
 export class DetailTransactionComponent
-  implements OnInit, OnDestroy, AfterViewInit
-{
+  implements OnInit, OnDestroy, AfterViewInit {
   columns: any;
   page = new Page();
 
@@ -53,9 +52,11 @@ export class DetailTransactionComponent
   disabledPrintButton: boolean = false;
   updatingStatus: boolean = false;
   RejectingOrder: boolean = false;
-  alreadyPrint: Boolean = false;
+  alreadyPrint: boolean = false;
   totalLength: number = 0;
   buttonCaptionView: String = 'Lihat';
+  paramGenerateReport = {};
+  paramUpdatePrintStatus = {};
 
   protected config = AppConfig.settings.apiServer;
 
@@ -66,8 +67,10 @@ export class DetailTransactionComponent
     private router: Router,
     private toastr: ToastrService
   ) {
-    this.g.navbarVisibility = false;
+    this.g.navbarVisibility = true;
     this.selectedOrder = JSON.parse(this.selectedOrder);
+    this.selectedOrder.tglPesanan =  this.g.transformDate(this.selectedOrder.tglPesanan),
+    this.selectedOrder.tglTransaksi =  this.g.transformDate(this.selectedOrder.tglTransaksi),
     this.dtOptions = {
       language:
         translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
@@ -75,13 +78,13 @@ export class DetailTransactionComponent
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: () => {},
+      drawCallback: () => { },
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
-          nomorPesanan: this.selectedOrder?.nomorPesanan,
+          noSuratJalan: this.selectedOrder?.noSuratJalan,
           kodeGudang: this.g.getUserLocationCode(),
         };
         setTimeout(() => {
@@ -105,11 +108,9 @@ export class DetailTransactionComponent
                 const finalData = {
                   ...rest,
                   dtIndex: this.page.start + index + 1,
-                  konversi: `${rest.konversi} ${rest.satuanBesar}/${rest.satuanKecil}`,
-                  konversiProduct: `${rest.konversiProduct || 0} ${
-                    rest.satuanBesarProduct || '-'
-                  }/${rest.satuanKecilProduct || '-'}`,
-                };
+                  tglPesanan: this.g.transformDate(rest.tglPesanan),
+                  tglTransaksi: this.g.transformDate(rest.tglTransaksi)
+                }
                 return finalData;
               });
               this.page.recordsTotal = resp.recordsTotal;
@@ -120,36 +121,48 @@ export class DetailTransactionComponent
                 recordsFiltered: resp.recordsFiltered,
                 data: mappedData,
               });
+
             });
+          this.paramGenerateReport = {
+            outletBrand: 'KFC',
+            userEntry: this.selectedOrder.userCreate,
+            nomorPesanan: this.selectedOrder?.nomorPesanan,
+            isDownloadCsv: true,
+            noSuratJalan: this.selectedOrder.noSuratJalan,
+            tglBrgDikirim: this.selectedOrder.tglTransaksi,
+            tglPesan: this.selectedOrder.tglPesanan,
+            tglEntry: this.selectedOrder.dateCreate,
+            jamEntry: this.selectedOrder.timePosted.replace(/(\d{2})(?=\d)/g, '$1:'),
+            kodeTujuan: this.selectedOrder.kodeTujuan,
+            namaTujuan: this.selectedOrder.namaTujuan,
+            keterangan: this.selectedOrder.keterangan
+          };
+          this.paramUpdatePrintStatus = {
+            noSuratJalan: this.selectedOrder.noSuratJalan
+          }
         }, DEFAULT_DELAY_TABLE);
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'nomorPesanan', title: 'Nomor Pesanan'},
-        { data: 'kodeBarang', title: 'Kode Barang'},
-        { data: 'namaBarang', title: 'Nama Barang'},
-        { data: 'kodeGudang', title: 'Kode Gudang'},
-        { data: 'namaGudang', title: 'Nama Gudang'},
-        { data: 'kodeCabang', title: 'Kode Cabang'},
-        { data: 'satuanKecilProduct', title: 'Satuan Kecil Product'},
-        { data: 'satuanBesarProduct', title: 'Satuan Besar Product'},
-        { data: 'konversiProduct', title: 'Konversi Product'},
-        
-        // {
-        //   data: 'keterangan',
-        //   title: 'Keterangan',
-        //   render: (data) => {
-        //     if (data.toUpperCase() == STATUS_SAME_CONVERSION) {
-        //       return `
-        //         <span class="text-center text-success">${data}</span>
-        //       `;
-        //     } else {
-        //       return `
-        //         <span class="text-center text-danger">${data}</span>
-        //       `;
-        //     }
-        //   },
-        // },
+        { data: 'kodeBarang', title: 'Kode Barang' },
+        { data: 'namaBarang', title: 'Nama Barang' },
+        {
+          data: 'totalQtyPesan', title: 'Total Pesanan',
+          render: (data, type, row) => `${data} ${row.satuanKecil}`
+        },
+        {
+          data: 'qtyBKirim', title: 'Qty Kirim Besar',
+          render: (data, type, row) => `${data} ${row.satuanBesar}`
+        },
+        {
+          data: 'qtyKKirim', title: 'Qty Kirim Kecil',
+          render: (data, type, row) => `${data} ${row.satuanKecil}`
+        },
+        { data: 'konversi', title: 'Konversi' },
+        {
+          data: 'totalQtyKirim', title: 'Total Kirim',
+          render: (data, type, row) => `${data} ${row.satuanKecil}`
+        },
       ],
       searchDelay: 1000,
       order: [[1, 'asc']],
@@ -178,12 +191,12 @@ export class DetailTransactionComponent
     this.disabledPrintButton = isCanceled;
     this.disabledCancelButton = isCanceled;
     this.alreadyPrint =
-      this.selectedOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
+      this.selectedOrder.cetakSuratJalan == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
   }
-  actionBtnClick(action: string, data: any = null) {}
+  actionBtnClick(action: string, data: any = null) { }
 
-  dtPageChange(event: any) {}
+  dtPageChange(event: any) { }
 
   ngAfterViewInit(): void {
     this.rerenderDatatable();
@@ -245,68 +258,6 @@ export class DetailTransactionComponent
         }
       },
     });
-  }
-
-  async onButtonActionPressed(status: string) {
-    if (status == CANCEL_STATUS) {
-      this.onDelete();
-    } else {
-      this.updatingStatus = true;
-      const updatePrintStatusParams = {
-        status,
-        user: this.g.getUserCode(),
-        nomorPesanan: this.selectedOrder.nomorPesanan,
-      };
-
-      const updatePrintStatusResponse = await lastValueFrom(
-        this.dataService.postData(
-          this.config.BASE_URL + '/inventory/api/delivery-order/status-descriptions',
-          updatePrintStatusParams
-        )
-      );
-
-      if ((updatePrintStatusResponse as any).success) {
-        const transformedSelectedOrder = {
-          ...this.selectedOrder,
-          statusCetak: status,
-          statusPesanan: 'T',
-        };
-
-        this.selectedOrder = transformedSelectedOrder;
-        this.g.saveLocalstorage(
-          LS_INV_SELECTED_DELIVERY_ORDER,
-          JSON.stringify(transformedSelectedOrder)
-        );
-
-        try {
-          const generatePdfParams = {
-            outletBrand: OUTLET_BRAND_KFC,
-            user: this.g.getUserCode(),
-            nomorPesanan: this.selectedOrder.nomorPesanan,
-          };
-          const base64Response = await lastValueFrom(
-            this.dataService.postData(
-              `${this.config.BASE_URL}/inventory/api/delivery-order/history`,
-              generatePdfParams,
-              true
-            )
-          );
-          const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
-          const url = window.URL.createObjectURL(blob);
-          window.open(url);
-        } catch (error: any) {
-          this.toastr.error(
-            error.message ?? 'Unknown error while generate pdf'
-          );
-        } finally {
-          this.updatingStatus = false;
-          this.reloadTable();
-        }
-      } else {
-        this.toastr.error((updatePrintStatusResponse as any).message);
-      }
-      this.updatingStatus = false;
-    }
   }
 
   getPrintStatus() {

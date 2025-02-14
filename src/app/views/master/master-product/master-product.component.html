@@ -25,22 +25,78 @@
       </div>
       <div [visible]="isFilterShown" cCollapse>
         <c-card class="mt-3 shadow">
-          <c-card-body>
-            <div class="row">
-              <div class="col">
+          <c-card-body class="gap-2">
+            <div class="row mb-1">
+              <div class="col-md-6">
                 <label cLabel for="selectStatusFilter"
                   >{{ "Status aktif" | translate }}:
                 </label>
                 <select
                   aria-label="Status"
                   cSelect
-                  id="selectStatusFilter"
                   [(ngModel)]="selectedStatusFilter"
                   (ngModelChange)="onStatusFilterChange()"
                 >
                   <option value="">{{ "Semua" | translate }}</option>
                   <option value="A">{{ "Aktif" | translate }}</option>
                   <option value="T">{{ "Tidak aktif" | translate }}</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label cLabel for="selectStatusFilter"
+                  >{{ "Default Order" | translate }}:
+                </label>
+                <div>
+                  <ngx-select-dropdown
+                    [config]="configSelectDefaultOrder"
+                    [multiple]="false"
+                    [options]="defaultOrderOptions"
+                    [(ngModel)]="selectedGudangFilter"
+                    (ngModelChange)="onStatusFilterChange()"
+                  >
+                  </ngx-select-dropdown>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <label cLabel for="selectStatusFilter"
+                  >{{ "Satuan Minimum Order" | translate }}:
+                </label>
+                <div>
+                  <ngx-select-dropdown
+                    [config]="configSelectSatuanMinOrder"
+                    [multiple]="false"
+                    [options]="satuanMinOrderOptions"
+                    [(ngModel)]="selectedSatuanMinOrderFilter"
+                    (ngModelChange)="onStatusFilterChange()"
+                    id="Kota"
+                  ></ngx-select-dropdown>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label cLabel for="selectStatusFilter"
+                  >{{ "Lokasi Barang Digudang" | translate }}:
+                </label>
+                <select
+                  aria-label="Status"
+                  cSelect
+                  [(ngModel)]="selectedLokasiBarangDiGudangFilter"
+                  (ngModelChange)="onStatusFilterChange()"
+                >
+                  <option value="">{{ "Semua" | translate }}</option>
+                  <option value="FLAG_COM">
+                    {{ "COMMISARY" | translate }}
+                  </option>
+                  <option value="FLAG_DRY">{{ "DRYGOOD" | translate }}</option>
+                  <option value="FLAG_PRD">
+                    {{ "PRODUCTION" | translate }}
+                  </option>
+                  <option value="FLAG_MKT">
+                    {{ "MARKETING" | translate }}
+                  </option>
+                  <option value="FLAG_CTR">{{ "CATERING" | translate }}</option>
+                  <option value="FLAG_HRA">{{ "HRA" | translate }}</option>
                 </select>
               </div>
             </div>

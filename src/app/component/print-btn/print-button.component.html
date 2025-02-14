@@ -1,0 +1,11 @@
+<button
+  type="button"
+  class="btn btn-success w-25 text-white me-2 btn-120"
+  (click)="onClick()"
+  [disabled]="rejectingOrder || updatingStatus || disabledPrintButton"
+>
+  <i class="fa fa-print icon-gap" *ngIf="!updatingStatus"></i>
+  <i class="fa fa-spinner fa-spin" *ngIf="updatingStatus"></i>
+  {{
+    alreadyPrint ? ("Cetak Ulang") : ("Cetak")
+  }}

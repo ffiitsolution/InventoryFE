@@ -5,7 +5,9 @@ import { GlobalService } from '../../../service/global.service';
 import { TranslationService } from '../../../service/translation.service';
 import { Subject } from 'rxjs';
 import { Page } from '../../../model/page';
-import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../constants';
+import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../constants';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-delivery-item',
@@ -25,10 +27,19 @@ export class DeliveryItemComponent implements OnInit {
   page = new Page();
   dtColumns: any = [];
   showFilterSection: boolean = false;
-  dateRangeFilter: any = [new Date(), new Date()];
   buttonCaptionView: String = 'Lihat';
   selectedStatusFilter: string = '';
   orders: any[] = [];
+  public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+  datatableElement: DataTableDirective | undefined;
+  currentDate: Date = new Date();
+
+  startDateFilter: Date = new Date(
+    this.currentDate.setDate(
+      this.currentDate.getDate() - DEFAULT_DATE_RANGE_RECEIVING_ORDER
+    )
+  );
+  dateRangeFilter: any = [this.startDateFilter, new Date()];
 
   constructor(
     private dataService: DataService,
@@ -43,15 +54,15 @@ export class DeliveryItemComponent implements OnInit {
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: () => {},
+      drawCallback: () => { },
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.g.getUserLocationCode(),
-          // startDate: this.g.transformDate(this.dateRangeFilter[0]),
-          // endDate: this.g.transformDate(this.dateRangeFilter[1]),
+          startDate: this.g.transformDate(this.dateRangeFilter[0]),
+          endDate: this.g.transformDate(this.dateRangeFilter[1]),
         };
         setTimeout(() => {
           this.dataService
@@ -63,10 +74,8 @@ export class DeliveryItemComponent implements OnInit {
                 const finalData = {
                   ...rest,
                   dtIndex: this.page.start + index + 1,
-                  // kodePemesan: `(${rest.kodeGudang}) ${rest.namaGudang}`,
-                  // tglPesan: this.g.transformDate(rest.tglPesan),
-                  // tglKirim: this.g.transformDate(rest.tglKirim),
-                  // tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
+                  tglPesanan: this.g.transformDate(rest.tglPesanan),
+                  tglTransaksi: this.g.transformDate(rest.tglTransaksi)                          
                 };
                 return finalData;
               });
@@ -211,8 +220,10 @@ export class DeliveryItemComponent implements OnInit {
   }
 
   onFilterPressed(): void {
-    // Logic for applying filters
-    console.log('Filter pressed');
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
+    console.log('filter pressed');
   }
   dtPageChange(event: any): void {
     console.log('Page changed', event);
