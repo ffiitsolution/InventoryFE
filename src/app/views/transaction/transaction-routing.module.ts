@@ -7,6 +7,7 @@ import { AddDataDetailDeliveryComponent } from './add-data-detail/add-data-detai
 import { DobalikComponent } from './dobalik/dobalik.component';
 import { DetailReportDoBalikComponent } from './detail-report-do-balik/detail-report-do-balik.component';
 import { PackagingListComponent } from './packing-list/packing-list.component';
+import { AddDataGudangComponent } from './add-data-gudang/add-data-gudang.component'
 
 const routes: Routes = [
   {
@@ -39,6 +40,10 @@ const routes: Routes = [
       {
         path: 'delivery-item/packing-list',
         component: PackagingListComponent,
+      },
+      {
+        path: 'receipt-from-warehouse/tambah-data',
+        component: AddDataGudangComponent,
       }
     ],
   },

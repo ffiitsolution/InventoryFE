@@ -158,4 +158,11 @@ export class AppService {
       payload
     );
   }
+
+  getNewReceivingOrderGudang(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/search-penerimaan-gudang`,
+      payload
+    );
+  }
 }
