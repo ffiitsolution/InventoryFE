@@ -115,7 +115,7 @@
           },
           {
             "name": "Revisi DO",
-            "url": "/transaction/delivery-item/dobalik",
+            "url": "/transaction/delivery-item/revisi-do",
             "iconComponent": {
               "name": "cil-sync"
             }
@@ -142,7 +142,14 @@
             "url": "/transaction/receipt-from-warehouse/display-dan-cetak"
           }
         ]
+      },{
+        "name": "Pemusnahan Barang",
+        "url": "/transaction/receipt-from-branch/penerimaan-dari-cabang",
+        "iconComponent" : {
+          "name" : "cil-trash"
+        }
       }
+    
     ]
   }
 ]

@@ -5,3 +5,16 @@
     --scrollbar-hover-size: calc(var(--scrollbar-size) * 1.5);
   }
 }
+
+.nav-group .nav-group-items .nav-group-items {
+  padding-left: 30px;
+}
+
+.nav-group .nav-group-items {
+  padding-left: 20px;
+}
+
+.nav-group > .nav-group-items > .nav-group-items {
+  padding-left: 30px !important;
+}
+

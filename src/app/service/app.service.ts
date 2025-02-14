@@ -145,6 +145,13 @@ export class AppService {
     );
   }
 
+  revisiQtyDo(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/revisi-qty-do`,
+      payload
+    );
+  }
+
   getCityList(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/city/dropdown-city`,
