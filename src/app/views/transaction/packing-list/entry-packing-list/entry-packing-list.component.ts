@@ -101,15 +101,7 @@ export class EntryPackingListComponent implements OnInit, AfterViewInit, OnDestr
         { data: 'NOMOR_COLLI', title: 'Nomor Colli', className: 'text-center', defaultContent: "", render: this.numericInputRenderer },
         { data: 'JUMLAH_COLLI', title: 'Jumlah Colli', className: 'text-center', defaultContent: "", render: this.numericInputRenderer }
       ],
-      headerCallback: (thead, data, start, end, display) => {
-        const $thead = $(thead);
-        $thead.find('th').eq(6).attr('colspan', 2).text('COLLI').css({
-          'text-align': 'center',
-          'background-color': '#f8f9fa', 
-          'font-weight': 'bold'
-        });
-        $thead.find('th').eq(7).remove(); 
-      },
+      
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
