@@ -159,6 +159,7 @@ export class MasterSupplierComponent
         },
         { data: 'kota', title: 'Kota', orderable: true, searchable: true },
         { data: 'telpon1', title: 'Telpon', orderable: true, searchable: true },
+        { data: 'statusAktifLabel', title: 'Status', orderable: true },
         {
           title: 'Opsi',
           render: () => {
@@ -218,40 +219,39 @@ export class MasterSupplierComponent
     localStorage.removeItem(LS_INV_SELECTED_SUPPLIER);
 
     this.dataService
-    .postData(this.g.urlServer + '/api/city/dropdown-city',{})
-    .subscribe((resp: any) => {
-      this.cityOptions = resp.map((item: any) => ({
-        value: item.KODE_KOTA,
-        label: item.KETERANGAN_KOTA,
-      }));    
-    });
-
-    
-    this.dataService
-    .postData(this.g.urlServer + '/api/city/dropdown-city',{})
-    .subscribe((resp: any) => {
-      this.cityOptions = resp.map((item: any) => ({
-        value: item.KODE_KOTA,
-        label: item.KETERANGAN_KOTA,
-      }));    
-    });
+      .postData(this.g.urlServer + '/api/city/dropdown-city', {})
+      .subscribe((resp: any) => {
+        this.cityOptions = resp.map((item: any) => ({
+          value: item.KODE_KOTA,
+          label: item.KETERANGAN_KOTA,
+        }));
+      });
 
     this.dataService
-    .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
-    .subscribe((resp: any) => {
-      this.rscOptions = resp.map((item: any) => ({
-        value: item.KODE_RSC,
-        label: item.KETERANGAN_RSC,
-      }));    
-    });
+      .postData(this.g.urlServer + '/api/city/dropdown-city', {})
+      .subscribe((resp: any) => {
+        this.cityOptions = resp.map((item: any) => ({
+          value: item.KODE_KOTA,
+          label: item.KETERANGAN_KOTA,
+        }));
+      });
+
     this.dataService
-    .postData(this.g.urlServer + '/api/supplier/dropdown-gudang',{})
-    .subscribe((resp: any) => {
-      this.gudangOptions = resp.map((item: any) => ({
-        value: item.DEFAULT_GUDANG,
-        label: item.KETERANGAN_GUDANG,
-      }));    
-    });
+      .postData(this.g.urlServer + '/api/rsc/dropdown-rsc', {})
+      .subscribe((resp: any) => {
+        this.rscOptions = resp.map((item: any) => ({
+          value: item.KODE_RSC,
+          label: item.KETERANGAN_RSC,
+        }));
+      });
+    this.dataService
+      .postData(this.g.urlServer + '/api/supplier/dropdown-gudang', {})
+      .subscribe((resp: any) => {
+        this.gudangOptions = resp.map((item: any) => ({
+          value: item.DEFAULT_GUDANG,
+          label: item.KETERANGAN_GUDANG,
+        }));
+      });
   }
 
   actionBtnClick(action: string, data: any = null) {
