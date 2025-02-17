@@ -27,20 +27,38 @@
         <c-card class="mt-3 shadow">
           <c-card-body>
             <div class="row">
-              <div class="col">
-                <label cLabel for="selectStatusFilter"
-                  >{{ "Status aktif" | translate }}:
-                </label>
+              <div class="col-md-6">
+                <label cLabel for="selectedKotaFilter"
+                  >{{ "Kota" | translate }}:</label
+                >
                 <select
-                  aria-label="Status"
+                  aria-label="Kota"
                   cSelect
-                  id="selectStatusFilter"
-                  [(ngModel)]="selectedStatusFilter"
-                  (ngModelChange)="onStatusFilterChange()"
+                  id="selectedCityFilter"
+                  [(ngModel)]="selectedCityFilter"
+                  (ngModelChange)="onCityFilterChange()"
                 >
                   <option value="">{{ "Semua" | translate }}</option>
-                  <option value="A">{{ "Aktif" | translate }}</option>
-                  <option value="T">{{ "Tidak aktif" | translate }}</option>
+                  <option *ngFor="let city of cityOptions" [value]="city.value">
+                    {{ city.value }} - {{ city.label | translate }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label cLabel for="selectedtipeCabangFilter"
+                  >{{ "RSC" | translate }}:</label
+                >
+                <select
+                  aria-label="RSC"
+                  cSelect
+                  id="selectedRscFilter"
+                  [(ngModel)]="selectedRscFilter"
+                  (ngModelChange)="onRscFilterChange()"
+                >
+                  <option value="">{{ "Semua" | translate }}</option>
+                  <option *ngFor="let rsc of rscOptions" [value]="rsc.value">
+                    {{ rsc.value }} - {{ rsc.label | translate }}
+                  </option>
                 </select>
               </div>
             </div>

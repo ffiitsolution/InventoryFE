@@ -156,7 +156,7 @@ export class MasterUserComponent
         { data: 'kodeUser', title: 'Kode', searchable: false },
         { data: 'namaUser', title: 'Nama', searchable: false },
         { data: 'jabatan', title: 'Jabatan', searchable: false },
-        { data: 'statusAktif', title: 'Status', searchable: false },
+        { data: 'statusAktifLabel', title: 'Status', searchable: false },
         { data: 'keteranganLokasi', title: 'Default Lokasi', searchable: false },
         { data: 'roleName', title: 'Role', searchable: false },
         {

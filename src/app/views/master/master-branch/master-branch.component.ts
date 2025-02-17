@@ -155,22 +155,22 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
         { data: 'kota', title: 'Kota', searchable: true },
         { data: 'telpon1', title: 'Telp', searchable: true },
         {
-          data: 'statusAktif',
+          data: 'statusAktifLabel',
           title: 'Status',
-          render: (data) => {
-            if (data != 'A') {
-              return `
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" role="switch" id="status disabled">
-                </div>
-              `;
-            }
-            return `
-              <div class="form-check form-switch">
-                <input class="form-check-input action-status" type="checkbox" role="switch" id="status" checked disabled>
-              </div>
-            `;
-          },
+          // render: (data) => {
+          //   if (data != 'A') {
+          //     return `
+          //       <div class="form-check form-switch">
+          //         <input class="form-check-input" type="checkbox" role="switch" id="status disabled">
+          //       </div>
+          //     `;
+          //   }
+          //   return `
+          //     <div class="form-check form-switch">
+          //       <input class="form-check-input action-status" type="checkbox" role="switch" id="status" checked disabled>
+          //     </div>
+          //   `;
+          // },
         },
         { data: 'deskripsiGroup', title: 'Group', searchable: true },
         {

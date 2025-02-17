@@ -44,6 +44,10 @@ export class MasterLocationComponent
   buttonCaptionEdit: String = 'Ubah';
   CONST_ACTION_ADD: string = ACTION_ADD;
   adding: boolean = false;
+  cityOptions: any;
+  rscOptions: any = '';
+  selectedCityFilter: any = '';
+  selectedRscFilter: any = '';
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
@@ -77,6 +81,8 @@ export class MasterLocationComponent
         const requestData = {
           ...dataTablesParameters,
           status: this.selectedStatusFilter,
+          KODE_RSC: this.selectedRscFilter,
+          KODE_KOTA: this.selectedCityFilter,
         };
         this.dataService
           .postData(this.g.urlServer + '/api/location/dt', requestData)
@@ -188,6 +194,24 @@ export class MasterLocationComponent
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.buttonCaptionEdit = this.translation.instant('Ubah');
     localStorage.removeItem(LS_INV_SELECTED_LOCATION);
+
+    this.dataService
+      .postData(this.g.urlServer + '/api/city/dropdown-city', {})
+      .subscribe((resp: any) => {
+        this.cityOptions = resp.map((item: any) => ({
+          value: item.KETERANGAN_KOTA,
+          label: item.KETERANGAN_KOTA,
+        }));
+      });
+
+    this.dataService
+      .postData(this.g.urlServer + '/api/rsc/dropdown-rsc', {})
+      .subscribe((resp: any) => {
+        this.rscOptions = resp.map((item: any) => ({
+          value: item.KODE_RSC,
+          label: item.KETERANGAN_RSC,
+        }));
+      });
   }
 
   actionBtnClick(action: string, data: any = null) {
@@ -220,5 +244,17 @@ export class MasterLocationComponent
 
   ngAfterViewInit(): void {
     this.rerenderDatatable();
+  }
+
+  onCityFilterChange() {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
+  }
+
+  onRscFilterChange() {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
   }
 }
