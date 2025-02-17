@@ -165,4 +165,11 @@ export class AppService {
       payload
     );
   }
+
+  getItemRevisiDO(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/list-item-revisi-do`,
+      payload
+    );
+  }
 }

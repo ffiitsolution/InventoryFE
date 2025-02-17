@@ -1,28 +1,28 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataService } from '../../../service/data.service';
-import { GlobalService } from '../../../service/global.service';
-import { TranslationService } from '../../../service/translation.service';
+import { DataService } from '../../../../service/data.service';
+import { GlobalService } from '../../../../service/global.service';
+import { TranslationService } from '../../../../service/translation.service';
 import { Subject } from 'rxjs';
-import { Page } from '../../../model/page';
-import { ACTION_CETAK, ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../constants';
+import { Page } from '../../../../model/page';
+import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { DataTableDirective } from 'angular-datatables';
 import moment from 'moment';
 
 @Component({
-  selector: 'app-delivery-item',
-  templateUrl: './delivery-item.component.html',
-  styleUrls: ['./delivery-item.component.scss'],
+  selector: 'app-wastage-list',
+  templateUrl: './wastage-list.component.html',
+  styleUrls: ['./wastage-list.component.scss'],
 })
-export class DeliveryItemComponent implements OnInit {
+export class WastageListComponent implements OnInit {
   orderNoFilter: string = '';
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
   dtOptions: DataTables.Settings = {};
   config: any = {
-    BASE_URL: 'http://localhost:8093/inventory/api/delivery-order',
+    BASE_URL: 'http://localhost:8093/inventory/api'
   };
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
@@ -69,17 +69,17 @@ export class DeliveryItemComponent implements OnInit {
             minutes: 0,
             seconds: 0,
             milliseconds: 0,
-          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
+          }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
           endDate: moment(this.dateRangeFilter[1]).set({
             hours: 23,
             minutes: 59,
             seconds: 59,
             milliseconds: 999,
-          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
+          }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
         };
         setTimeout(() => {
           this.dataService
-            .postData(this.config.BASE_URL + '/dt', params)
+            .postData(this.config.BASE_URL + '/wastage/dt', params)
             .subscribe((resp: any) => {
               const mappedData = resp.data.map((item: any, index: number) => {
                 // hapus rn dari data
@@ -105,54 +105,31 @@ export class DeliveryItemComponent implements OnInit {
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'tglTransaksi', title: 'Tanggal Kirim' },
-        { data: 'tglPesanan', title: 'Tanggal Pesan' },
-        { data: 'nomorPesanan', title: 'Nomor Pesanan', searchable: true },
-        { data: 'noSuratJalan', title: 'Nomor Pengiriman', searchable: true },
+        { data: 'tglTransaksi', title: 'Tanggal Transaksi' },
+        { data: 'nomorTransaksi', title: 'No. Transaksi' },
+        { data: 'keterangan', title: 'Keterangan Pemusnahan', searchable: true },
+        { data: 'userCreate', title: 'User Proses', searchable: true },
         {
-          data: 'kodeTujuan',
-          title: 'Kode Tujuan',
+          data: 'dateCreate',
+          title: 'Tgl. Proses',
           orderable: true,
           searchable: true,
         },
         {
-          data: 'namaTujuan',
-          title: 'Tujuan',
+          data: 'timeCreate',
+          title: 'Jam Proses',
           orderable: true,
           searchable: true,
-        },
-        {
-          data: 'cetakSuratJalan',
-          title: 'Status Cetak Surat Jalan',
-          render: (data) => this.g.getsatusDeliveryOrderLabel(data, true),
-        },
-        {
-          data: 'statusDoBalik',
-          title: 'Status DO Balik',
-          render: (data) => this.g.getsatusDeliveryOrderLabel(data, true),
         },
         {
           data: 'statusPosting',
-          title: 'Status Pengiriman',
-          render: (data) => {
-            const isCancel = data == CANCEL_STATUS;
-            const label = this.g.getStatusOrderLabel(data);
-            if (isCancel) {
-              return `<span class="text-center text-danger">${label}</span>`;
-            }
-            return label;
-          },
+          title: 'Status Transaksi',
+          render: (data) => this.g.getStatusOrderLabel(data),
         },
         {
-          title: 'Opsi',
-          className: 'text-center',
+          title: 'Aksi',
           render: () => {
-            return `<div class="d-flex px-2 gap-1"> 
-              <button style="width: 74px" class="btn btn-sm action-view btn-outline-info btn-60 pe-2">
-              <i class="fa fa-eye pe-2"></i>${this.buttonCaptionView}</button>
-              <button style="width: 74px" class="btn btn-sm action-cetak btn-outline-success btn-60">
-              <i class="fa fa-print pe-2"></i>Cetak</button>
-            </div>`;
+            return `<button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>`;
           },
         },
       ],
@@ -161,9 +138,6 @@ export class DeliveryItemComponent implements OnInit {
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
-        );
-        $('.action-cetak', row).on('click', () =>
-          this.actionBtnClick(ACTION_CETAK, data)
         );
         return row;
       },
@@ -185,7 +159,7 @@ export class DeliveryItemComponent implements OnInit {
 
   onAddPressed(): void {
     // Logic for adding a new order
-    const route = this.router.createUrlTree(['/transaction/delivery-item/add-data']);
+    const route = this.router.createUrlTree(['/transaction/wastage/add-data']);
     this.router.navigateByUrl(route);
   }
 
@@ -196,8 +170,6 @@ export class DeliveryItemComponent implements OnInit {
         JSON.stringify(data)
       );
       this.router.navigate(['/transaction/delivery-item/detail-transaction']); this
-    }
-    if (action === ACTION_CETAK) {
     }
   }
 

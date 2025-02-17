@@ -9,6 +9,9 @@ import { DetailReportDoBalikComponent } from './detail-report-do-balik/detail-re
 import { PackagingListComponent } from './packing-list/packing-list.component';
 import { RevisiDoComponent } from './revisi-do/revisi-do.component';
 import { RevisiDoEditComponent } from './revisi-do/revisi-do-edit/revisi-do-edit.component';
+import { WastageListComponent } from './pemusnahan-wastage/dt-list/wastage-list.component';
+import { AddWastageComponent } from './pemusnahan-wastage/add-data/add-data.component';
+import { AddDataDetailWastageComponent } from './pemusnahan-wastage/add-data-detail/add-data-detail.component';
 
 const routes: Routes = [
   {
@@ -57,6 +60,23 @@ const routes: Routes = [
       },
     ],
   },
+  {
+    path: 'wastage',
+    children: [
+      {
+        path: 'list-dt',
+        component: WastageListComponent
+      },
+      {
+        path: 'add-data',
+        component: AddWastageComponent
+      },
+      {
+        path: 'add-data-detail',
+        component: AddDataDetailWastageComponent
+      }
+    ]
+  }
 ];
 
 @NgModule({

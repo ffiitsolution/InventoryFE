@@ -6,15 +6,6 @@
   }
 }
 
-.nav-group .nav-group-items .nav-group-items {
-  padding-left: 30px;
+:host ::ng-deep .sidebar-nav .nav-group-items .nav-group-items .nav-link {
+  padding-left: 110px !important;
 }
-
-.nav-group .nav-group-items {
-  padding-left: 20px;
-}
-
-.nav-group > .nav-group-items > .nav-group-items {
-  padding-left: 30px !important;
-}
-

@@ -80,14 +80,15 @@ export class RevisiDoEditComponent
     this.listOrderData = [];
 
     const params = {
-      nomorPesanan: this.selectedOrder.nomorPesanan
+      noSuratJalan: this.selectedOrder.noSuratJalan,
+      kodeGudang: this.g.getUserLocationCode()
     };
 
-    this.appService.getDeliveryItemDetails(params).subscribe(
+    this.appService.getItemRevisiDO(params).subscribe(
       (res) => {
         this.listOrderData = res.data.map((data: any) => ({
           ...data,
-          qtyBPesanOld: data.qtyPesanBesar,
+          qtyBPesanOld: data.qtyBKirim,
           totalQtyPesanOld: data.totalQtyPesan
         }));
         this.totalLength = res?.data?.length;
@@ -146,7 +147,7 @@ export class RevisiDoEditComponent
 
     const param = this.listOrderData
       .map((data: any) => {
-        totalKirim = (data.qtyPesanBesar * data.konversi) + data.qtyPesanKecil;
+        totalKirim = (data.qtyBKirim * data.konversi) + data.qtyKKirim;
 
         if (totalKirim > data.totalQtyPesanOld) {
           this.toastr.error(
@@ -158,8 +159,8 @@ export class RevisiDoEditComponent
 
         return {
           kodeBarang: data.kodeBarang,
-          qtyBKirim: data.qtyPesanBesar,
-          qtyKKirim: data.qtyPesanKecil,
+          qtyBKirim: data.qtyBKirim,
+          qtyKKirim: data.qtyKKirim,
           konversi: data.konversi,
           noSuratJalan: this.selectedOrder.noSuratJalan
         };
