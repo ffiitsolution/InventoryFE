@@ -8,7 +8,7 @@ import { DobalikComponent } from './dobalik/dobalik.component';
 import { DetailReportDoBalikComponent } from './detail-report-do-balik/detail-report-do-balik.component';
 import { PackagingListComponent } from './packing-list/packing-list.component';
 import { AddDataGudangComponent } from './add-data-gudang/add-data-gudang.component'
-
+import { EntryPackingListComponent } from './packing-list/entry-packing-list/entry-packing-list.component'
 const routes: Routes = [
   {
     path: '',
@@ -42,9 +42,13 @@ const routes: Routes = [
         component: PackagingListComponent,
       },
       {
+        path: 'delivery-item/packing-list/entry-packing-list',
+        component: EntryPackingListComponent,
+      },
+      {
         path: 'receipt-from-warehouse/tambah-data',
         component: AddDataGudangComponent,
-      }
+      },
     ],
   },
 ];

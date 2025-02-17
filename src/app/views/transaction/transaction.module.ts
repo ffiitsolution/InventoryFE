@@ -32,6 +32,7 @@ import { DetailReportDoBalikComponent } from './detail-report-do-balik/detail-re
 import { PackagingListComponent } from './packing-list/packing-list.component';
 import { SharedComponentModule } from '../../component/shared.component.module';
 import { AddDataGudangComponent } from './add-data-gudang/add-data-gudang.component';
+import { EntryPackingListComponent } from './packing-list/entry-packing-list/entry-packing-list.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -67,6 +68,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     DobalikComponent,
     DetailReportDoBalikComponent,
     PackagingListComponent,
+    EntryPackingListComponent,
     AddDataGudangComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
