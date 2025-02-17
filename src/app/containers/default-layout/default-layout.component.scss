@@ -5,3 +5,7 @@
     --scrollbar-hover-size: calc(var(--scrollbar-size) * 1.5);
   }
 }
+
+:host ::ng-deep .sidebar-nav .nav-group-items .nav-group-items .nav-link {
+  padding-left: 110px !important;
+}

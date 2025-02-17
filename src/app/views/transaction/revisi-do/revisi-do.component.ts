@@ -5,17 +5,17 @@ import { GlobalService } from '../../../service/global.service';
 import { TranslationService } from '../../../service/translation.service';
 import { Subject } from 'rxjs';
 import { Page } from '../../../model/page';
-import { ACTION_CETAK, ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../constants';
+import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../constants';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { DataTableDirective } from 'angular-datatables';
 import moment from 'moment';
 
 @Component({
-  selector: 'app-delivery-item',
-  templateUrl: './delivery-item.component.html',
-  styleUrls: ['./delivery-item.component.scss'],
+  selector: 'app-revisi-do',
+  templateUrl: './revisi-do.component.html',
+  styleUrls: ['./revisi-do.component.scss'],
 })
-export class DeliveryItemComponent implements OnInit {
+export class RevisiDoComponent implements OnInit {
   orderNoFilter: string = '';
   orderDateFilter: string = '';
   expiredFilter: string = '';
@@ -28,7 +28,7 @@ export class DeliveryItemComponent implements OnInit {
   page = new Page();
   dtColumns: any = [];
   showFilterSection: boolean = false;
-  buttonCaptionView: String = 'Lihat';
+  buttonCaptionView: String = 'Revisi';
   selectedStatusFilter: string = '';
   orders: any[] = [];
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
@@ -36,13 +36,18 @@ export class DeliveryItemComponent implements OnInit {
     | DataTableDirective
     | undefined;
   currentDate: Date = new Date();
-
   startDateFilter: Date = new Date(
     this.currentDate.setDate(
-      this.currentDate.getDate() - DEFAULT_DATE_RANGE_RECEIVING_ORDER
+      this.currentDate.getDate()
     )
   );
-  dateRangeFilter: any = [this.startDateFilter, new Date()];
+
+  endDateFilter: Date = new Date(
+    this.currentDate.setDate(
+      this.currentDate.getDate() + 1
+    )
+  );
+  dateRangeFilter: any = [this.startDateFilter, this.endDateFilter];
 
   constructor(
     private dataService: DataService,
@@ -88,7 +93,8 @@ export class DeliveryItemComponent implements OnInit {
                   ...rest,
                   dtIndex: this.page.start + index + 1,
                   tglPesanan: this.g.transformDate(rest.tglPesanan),
-                  tglTransaksi: this.g.transformDate(rest.tglTransaksi)
+                  tglTransaksi: this.g.transformDate(rest.tglTransaksi),
+                  tglPermintaanKirim: this.g.transformDate(rest.tglPermintaanKirim)
                 };
                 return finalData;
               });
@@ -144,15 +150,9 @@ export class DeliveryItemComponent implements OnInit {
           },
         },
         {
-          title: 'Opsi',
-          className: 'text-center',
+          title: 'Aksi',
           render: () => {
-            return `<div class="d-flex px-2 gap-1"> 
-              <button style="width: 74px" class="btn btn-sm action-view btn-outline-info btn-60 pe-2">
-              <i class="fa fa-eye pe-2"></i>${this.buttonCaptionView}</button>
-              <button style="width: 74px" class="btn btn-sm action-cetak btn-outline-success btn-60">
-              <i class="fa fa-print pe-2"></i>Cetak</button>
-            </div>`;
+            return `<button class="btn btn-sm btn-outline-danger btn-60 action-view hover:bg-danger hover:text-white">${this.buttonCaptionView}</button>`;
           },
         },
       ],
@@ -161,9 +161,6 @@ export class DeliveryItemComponent implements OnInit {
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
-        );
-        $('.action-cetak', row).on('click', () =>
-          this.actionBtnClick(ACTION_CETAK, data)
         );
         return row;
       },
@@ -195,9 +192,7 @@ export class DeliveryItemComponent implements OnInit {
         LS_INV_SELECTED_DELIVERY_ORDER,
         JSON.stringify(data)
       );
-      this.router.navigate(['/transaction/delivery-item/detail-transaction']); this
-    }
-    if (action === ACTION_CETAK) {
+      this.router.navigate(['/transaction/delivery-item/revisi-do/edit']); this
     }
   }
 

@@ -5,38 +5,27 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { TranslationService } from 'src/app/service/translation.service';
-import {
-  ACTION_VIEW,
-  CANCEL_STATUS,
-  DEFAULT_DELAY_TABLE,
-  DEFAULT_DELAY_TIME,
-  LS_INV_SELECTED_DELIVERY_ORDER,
-  OUTLET_BRAND_KFC,
-  SEND_PRINT_STATUS_SUDAH,
-  STATUS_SAME_CONVERSION,
-} from '../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
 import { lastValueFrom, Subject } from 'rxjs';
-import { Page } from 'src/app/model/page';
-import { DataService } from 'src/app/service/data.service';
-import { GlobalService } from 'src/app/service/global.service';
 import { Router } from '@angular/router';
 // import { AppConfig } from 'src/app/config/app.config.ts';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
-import { AppConfig } from '../../../config/app.config';
-import { HelperService } from '../../../service/helper.service';
-import { AppService } from '../../../service/app.service';
 import moment from 'moment';
 import { data } from 'jquery';
+import { AppConfig } from '../../../../config/app.config';
+import { HelperService } from '../../../../service/helper.service';
+import { AppService } from '../../../../service/app.service';
+import { CANCEL_STATUS, DEFAULT_DELAY_TIME, LS_INV_SELECTED_DELIVERY_ORDER, SEND_PRINT_STATUS_SUDAH } from '../../../../../constants';
+import { GlobalService } from '../../../../service/global.service';
+import { TranslationService } from '../../../../service/translation.service';
 
 @Component({
-  selector: 'app-add-data-detail-delivery-order',
-  templateUrl: './add-data-detail.component.html',
-  styleUrl: './add-data-detail.component.scss',
+  selector: 'app-revisi-do-edit',
+  templateUrl: './revisi-do-edit.component.html',
+  styleUrl: './revisi-do-edit.component.scss',
 })
-export class AddDataDetailDeliveryComponent
+export class RevisiDoEditComponent
   implements OnInit, OnDestroy, AfterViewInit {
   columns: any;
   orders: any[] = [];
@@ -91,14 +80,15 @@ export class AddDataDetailDeliveryComponent
     this.listOrderData = [];
 
     const params = {
-      nomorPesanan: this.selectedOrder.nomorPesanan
+      noSuratJalan: this.selectedOrder.noSuratJalan,
+      kodeGudang: this.g.getUserLocationCode()
     };
 
-    this.appService.getDeliveryItemDetails(params).subscribe(
+    this.appService.getItemRevisiDO(params).subscribe(
       (res) => {
         this.listOrderData = res.data.map((data: any) => ({
           ...data,
-          qtyBPesanOld: data.qtyPesanBesar,
+          qtyBPesanOld: data.qtyBKirim,
           totalQtyPesanOld: data.totalQtyPesan
         }));
         this.totalLength = res?.data?.length;
@@ -157,51 +147,39 @@ export class AddDataDetailDeliveryComponent
 
     const param = this.listOrderData
       .map((data: any) => {
-        totalKirim = (data.qtyPesanBesar * data.konversi) + data.qtyPesanKecil;
+        totalKirim = (data.qtyBKirim * data.konversi) + data.qtyKKirim;
 
         if (totalKirim > data.totalQtyPesanOld) {
           this.toastr.error(
             `Kode Barang: ${data.kodeBarang}, Qty Kirim (${totalKirim}) tidak boleh lebih besar dari Qty Pesan (${data.totalQtyPesanOld})`
           );
-          hasInvalidData = true; // Tandai bahwa ada data tidak valid
+          hasInvalidData = true; 
           return null; // Hentikan pemrosesan item ini
         }
 
         return {
-          kodeGudang: this.selectedOrder.kodeGudang,
-          kodeTujuan: this.selectedOrder.codeDestination,
-          tipeTransaksi: 3,
-          nomorPesanan: this.selectedOrder.nomorPesanan,
           kodeBarang: data.kodeBarang,
-          qtyBPesan: data.qtyBPesanOld,
-          qtyKPesan: data.qtyPesanKecil,
-          qtyBKirim: data.qtyPesanBesar,
-          qtyKKirim: data.qtyPesanKecil,
-          hargaSatuan: 0,
-          userCreate: JSON.parse(localStorage.getItem("inv_currentUser") || "{}").namaUser,
+          qtyBKirim: data.qtyBKirim,
+          qtyKKirim: data.qtyKKirim,
           konversi: data.konversi,
-          satuanKecil: data.satuanKecil,
-          satuanBesar: data.satuanBesar,
-          totalQtyPesanOld: data.totalQtyPesanOld,
+          noSuratJalan: this.selectedOrder.noSuratJalan
         };
       })
-      .filter((item) => item !== null); // Hapus item yang tidak valid
+      .filter((item) => item !== null); 
 
-    // 🚨 Jika ada data yang tidak valid, hentikan proses sebelum kirim ke API
     if (hasInvalidData || param.length === 0) {
       this.adding = false;
       return;
     }
 
-    // ✅ Jika semua valid, lanjutkan dengan pemanggilan API
-    this.appService.saveDeliveryOrder(param).subscribe({
+    this.appService.revisiQtyDo(param).subscribe({
       next: (res) => {
         if (!res.success) {
           alert(res.message);
         } else {
           this.toastr.success("Berhasil!");
           setTimeout(() => {
-            this.router.navigate(["/transaction/delivery-item"]);
+            this.router.navigate(["/transaction/delivery-item/revisi-do"]);
           }, DEFAULT_DELAY_TIME);
         }
         this.adding = false;

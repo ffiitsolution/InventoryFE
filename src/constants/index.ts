@@ -3,6 +3,7 @@ export const ACTION_EDIT = 'ACTION_EDIT';
 export const ACTION_VIEW = 'ACTION_VIEW';
 export const ACTION_SELECT = 'ACTION_SELECT';
 export const ACTION_EDIT_STATUS = 'ACTION_EDIT_STATUS';
+export const ACTION_CETAK = 'ACTION_CETAK';
 
 export const LS_INV_SELECTED_PRODUCT = 'LS_INV_SELECTED_PRODUCT';
 export const LS_INV_SELECTED_SUPPLIER = 'LS_INV_SELECTED_SUPPLIER';
@@ -15,6 +16,8 @@ export const LS_INV_SELECTED_UOM = 'LS_INV_SELECTED_UOM';
 export const LS_INV_SELECTED_SET_NUMBER = 'LS_INV_SELECTED_SET_NUMBER';
 export const LS_INV_SELECTED_RECEIVING_ORDER =
   'LS_INV_SELECTED_RECEIVING_ORDER';
+export const LS_INV_SELECTED_SEND_TO_WAREHOUSE_ORDER =
+  'LS_INV_SELECTED_SEND_TO_WAREHOUSE_ORDER';
 export const LS_INV_SELECTED_USER = 'LS_INV_SELECTED_USER';
 export const LS_INV_SELECTED_BRANCH = 'LS_INV_SELECTED_BRANCH';
 export const LS_INV_SELECTED_DELIVERY_ORDER =
@@ -103,5 +106,9 @@ export const STATUS_RESULT = [
   {
     label: 'Intransit',
     value: 'I',
+  },
+  {
+    label: 'Received',
+    value: 'R',
   },
 ];

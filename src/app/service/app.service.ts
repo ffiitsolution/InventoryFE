@@ -137,10 +137,16 @@ export class AppService {
     );
   }
 
-
   saveDeliveryOrder(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/delivery-order/insert-delivery`,
+      payload
+    );
+  }
+
+  revisiQtyDo(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/revisi-qty-do`,
       payload
     );
   }
@@ -162,6 +168,13 @@ export class AppService {
   getNewReceivingOrderGudang(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/delivery-order/search-penerimaan-gudang`,
+      payload
+    );
+  }
+  
+  getItemRevisiDO(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/list-item-revisi-do`,
       payload
     );
   }

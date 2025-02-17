@@ -33,6 +33,11 @@ import { PackagingListComponent } from './packing-list/packing-list.component';
 import { SharedComponentModule } from '../../component/shared.component.module';
 import { AddDataGudangComponent } from './add-data-gudang/add-data-gudang.component';
 import { EntryPackingListComponent } from './packing-list/entry-packing-list/entry-packing-list.component';
+import { RevisiDoComponent } from './revisi-do/revisi-do.component';
+import { RevisiDoEditComponent } from './revisi-do/revisi-do-edit/revisi-do-edit.component';
+import { WastageListComponent } from './pemusnahan-wastage/dt-list/wastage-list.component';
+import { AddWastageComponent } from './pemusnahan-wastage/add-data/add-data.component';
+import { AddDataDetailWastageComponent } from './pemusnahan-wastage/add-data-detail/add-data-detail.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -70,6 +75,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     PackagingListComponent,
     EntryPackingListComponent,
     AddDataGudangComponent,
+    RevisiDoComponent,
+    RevisiDoEditComponent,
+    WastageListComponent,
+    AddWastageComponent,
+    AddDataDetailWastageComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

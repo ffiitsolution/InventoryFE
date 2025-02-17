@@ -100,7 +100,7 @@
         },
         "children": [
           {
-            "name": "Display dan Tambah Data",
+            "name": "Display & Tambah",
             "url": "/transaction/delivery-item",
             "iconComponent": {
               "name": "cil-plus"
@@ -115,7 +115,7 @@
           },
           {
             "name": "Revisi DO",
-            "url": "/transaction/delivery-item/dobalik",
+            "url": "/transaction/delivery-item/revisi-do",
             "iconComponent": {
               "name": "cil-sync"
             }
@@ -132,6 +132,9 @@
       {
         "name": "Penerimaan Dari Gudang",
         "url": "/transaction/receipt-from-warehouse/penerimaan-dari-gudang",
+        "iconComponent": {
+          "name": "cil-house"
+        },
         "children": [
           {
             "name": "Tambah Data",
@@ -142,7 +145,14 @@
             "url": "/transaction/receipt-from-warehouse/display-dan-cetak"
           }
         ]
+      },{
+        "name": "Pemusnahan Barang",
+        "url": "/transaction/wastage/list-dt",
+        "iconComponent" : {
+          "name" : "cil-trash"
+        }
       }
+    
     ]
   }
 ]

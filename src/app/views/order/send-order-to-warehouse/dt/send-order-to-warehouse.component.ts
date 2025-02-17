@@ -11,7 +11,7 @@ import {
   CANCEL_STATUS,
   DEFAULT_DATE_RANGE_RECEIVING_ORDER,
   DEFAULT_DELAY_TABLE,
-  LS_INV_SELECTED_RECEIVING_ORDER,
+  LS_INV_SELECTED_SEND_TO_WAREHOUSE_ORDER,
 } from '../../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
@@ -260,16 +260,16 @@ export class SendOrderToWarehouseComponent
       this.translation.instant('Terima Pesanan') + ' - ' + this.g.tabTitle
     );
     this.buttonCaptionView = this.translation.instant('Lihat');
-    localStorage.removeItem(LS_INV_SELECTED_RECEIVING_ORDER);
+    localStorage.removeItem(LS_INV_SELECTED_SEND_TO_WAREHOUSE_ORDER);
   }
 
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage(
-        LS_INV_SELECTED_RECEIVING_ORDER,
+        LS_INV_SELECTED_SEND_TO_WAREHOUSE_ORDER,
         JSON.stringify(data)
       );
-      this.router.navigate(['/order/receiving-order/detail']);
+      this.router.navigate(['/order/send-order-to-warehouse/detail']);
     }
   }
 

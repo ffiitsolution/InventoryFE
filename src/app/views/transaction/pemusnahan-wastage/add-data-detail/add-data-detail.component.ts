@@ -15,8 +15,7 @@ import {
   OUTLET_BRAND_KFC,
   SEND_PRINT_STATUS_SUDAH,
   STATUS_SAME_CONVERSION,
-  ACTION_SELECT,
-  LS_INV_SELECTED_SEND_TO_WAREHOUSE_ORDER
+  ACTION_SELECT
 } from '../../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
 import { lastValueFrom, Subject } from 'rxjs';
@@ -34,15 +33,15 @@ import { AppService } from '../../../../service/app.service';
 import moment from 'moment';
 
 @Component({
-  selector: 'detail-send-order-to-warehouse',
-  templateUrl: './detail.component.html',
-  styleUrl: './detail.component.scss',
+  selector: 'app-add-data-detail-wastage',
+  templateUrl: './add-data-detail.component.html',
+  styleUrl: './add-data-detail.component.scss',
 })
-export class DetailSendOrderToWarehouseComponent
+export class AddDataDetailWastageComponent
   implements OnInit, OnDestroy, AfterViewInit {
   columns: any;
   orders: any[] = [];
-  newOrhdk: any = (localStorage.getItem('TEMP_ORDHDK') || '{}'  );
+  headerWastage: any = (localStorage.getItem('headerWastage') || '{}'  );
   adding: boolean = false;
   loadingIndicator: boolean = false;
   showFilterSection: boolean = false;
@@ -60,9 +59,8 @@ export class DetailSendOrderToWarehouseComponent
   dtOptions: DataTables.Settings = {};
   selectedRow:  any = {};
   pageModal = new Page();
-  detailDataSendToWarehouse: any = {};
-  detailDataDetailSendToWarehouse: any[] = [];
-
+  dataUser: any = {};
+  
   @ViewChild('formModal') formModal: any;
 
 
@@ -82,54 +80,25 @@ export class DetailSendOrderToWarehouseComponent
 
   ) {
     this.g.navbarVisibility = true;
-    this.newOrhdk = JSON.parse(this.newOrhdk);
+    this.headerWastage = JSON.parse(this.headerWastage);
     this.getDeliveryItemDetails()
   }
 
   ngOnInit(): void {
-    console.log("newOrhdk",this.newOrhdk)
+    console.log("headerWastage",this.headerWastage)
     this.g.changeTitle(
       this.translation.instant('Detail Pesanan') + ' - ' + this.g.tabTitle
     );
+    this.dataUser = this.g.getLocalstorage('inv_currentUser');
 
-    const isCanceled = this.newOrhdk.statusPesanan == CANCEL_STATUS;
+    const isCanceled = this.headerWastage.statusPesanan == CANCEL_STATUS;
     this.disabledPrintButton = isCanceled;
     this.disabledCancelButton = isCanceled;
     this.alreadyPrint =
-      this.newOrhdk.statusCetak == SEND_PRINT_STATUS_SUDAH;
+      this.headerWastage.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.renderDataTables();
 
-    this.detailDataSendToWarehouse = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_SEND_TO_WAREHOUSE_ORDER));
-    console.log("detailDataSendToWarehouse",this.detailDataSendToWarehouse);
-
-    const params = {
-      nomorPesanan: this.detailDataSendToWarehouse?.nomorPesanan
-    };
-    this.dataService
-    .postData(this.g.urlServer + '/api/send-order-to-warehouse/detail-DetailOrder',params)
-    .subscribe((resp: any) => {
-      this.detailDataDetailSendToWarehouse = resp;
-      this.listOrderData = this.detailDataDetailSendToWarehouse.map(item => ({
-        totalQtyPesan: item.TOTAL_QTY_PESAN,
-        qtyPesanBesar: item.QTY_PESAN_BESAR,
-        namaBarang: item.NAMA_BARANG,
-        satuanKecil: item.SATUAN_KECIL,
-        kodeBarang: item.KODE_BARANG,
-        satuanBesar: item.SATUAN_BESAR,
-        konversi: item.KONVERSI,
-        qtyPesanKecil: item.QTY_PESAN_KECIL
-    }));
-    });
-
-
-  
-
-    // this.dataService
-    // .getData(this.g.urlServer + '/api/send-order-to-warehouse/detail-header')
-    // .subscribe((resp: any) => {
-    //   console.log("resp2",resp);
-    // });
 
 
   }
@@ -140,7 +109,7 @@ export class DetailSendOrderToWarehouseComponent
     this.listOrderData = [];
 
     const params = {
-      nomorPesanan: this.newOrhdk.nomorPesanan
+      nomorPesanan: this.headerWastage.nomorPesanan
     };
 
   //   this.listOrderData = [
@@ -197,7 +166,7 @@ export class DetailSendOrderToWarehouseComponent
     console.log(this.listOrderData);
 
     // param for order Header
-    const paramHeader = this.newOrhdk;
+    const paramHeader = this.headerWastage;
     
     console.log("paramHeader:", paramHeader);
 
@@ -209,7 +178,7 @@ export class DetailSendOrderToWarehouseComponent
         } else {
           console.log("res header:", res); 
           console.log("res item:", res.item?.[0]?.nomorPesanan ?? "Not found");
-          this.newOrhdk.nomorPesanan =  res.item?.[0]?.nomorPesanan ;
+          this.headerWastage.nomorPesanan =  res.item?.[0]?.nomorPesanan ;
 
           this.insertDetail()
           setTimeout(() => {
@@ -241,10 +210,10 @@ export class DetailSendOrderToWarehouseComponent
 
   
     // const param = this.listOrderData.map((data: any) => ({
-    //   kodeGudang: this.newOrhdk.kodeGudang,
-    //   kodeTujuan: this.newOrhdk.codeDestination,
+    //   kodeGudang: this.headerWastage.kodeGudang,
+    //   kodeTujuan: this.headerWastage.codeDestination,
     //   tipeTransaksi: '3',
-    //   nomorPesanan: this.newOrhdk.nomorPesanan,
+    //   nomorPesanan: this.headerWastage.nomorPesanan,
     //   kodeBarang: data.kodeBarang, 
     //   qtyBPesan: data.qtyPesanBesar,   
     //   qtyKPesan: data.qtyPesanKecil,   
@@ -287,10 +256,11 @@ export class DetailSendOrderToWarehouseComponent
       drawCallback: () => { },
       ajax: (dataTablesParameters: any, callback) => {
         this.pageModal.start = dataTablesParameters.start;
+        dataTablesParameters.length = 10;
         this.pageModal.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
-          defaultGudang: this.newOrhdk?.kodeSingkat,
+          defaultGudang: this.headerWastage?.kodeSingkat,
           // startDate: this.g.transformDate(this.dateRangeFilter[0]),
           // endDate: this.g.transformDate(this.dateRangeFilter[1]),
         };
@@ -379,9 +349,9 @@ export class DetailSendOrderToWarehouseComponent
   insertDetail(){
     // param for order header detail
     const paramDetail = this.listOrderData.map(item => ({
-      kodeGudang: this.newOrhdk.kodeGudang,
-      kodeTujuan: this.newOrhdk.supplier,
-      nomorPesanan: this.newOrhdk.nomorPesanan,
+      kodeGudang: this.headerWastage.kodeGudang,
+      kodeTujuan: this.headerWastage.supplier,
+      nomorPesanan: this.headerWastage.nomorPesanan,
       kodeBarang: item.kodeBarang,
       konversi: item.konversi,
       satuanKecil: item.satuanKecil,
