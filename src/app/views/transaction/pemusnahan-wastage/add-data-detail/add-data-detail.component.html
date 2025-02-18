@@ -7,7 +7,7 @@
             <i class="fa fa-chevron-left icon-12 icon-gap"></i>
             {{ "Kembali" | translate }}
           </button>
-          <h5>{{ "Rubah Qty Kirim" | translate }}</h5>
+          <h5>{{ "Detail Tambah Pesanan Ke Gudang" | translate }}</h5>
         </div>
       </c-row>
     </c-card-body>
@@ -16,9 +16,7 @@
     <c-card-body>
       <div class="d-grid gap-3 d-md-flex justify-content-end">
         <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
-          <i class="fa fa-check pe-2" *ngIf="!adding"></i>
-          <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
-          {{ "Proses revisi" | translate }}
+          <i class="fa fa-check pe-2"></i> {{ "Proses" | translate }}  {{ "Simpan" | translate }} {{ "Data" | translate }}
         </button>
 
         <button class="btn btn-danger text-white btn-150" (click)="onBackPressed()">
@@ -28,47 +26,27 @@
 
       <div class="row">
         <div class="divider mt-4"></div>
-        <div class="col">
+        <div class="col-6">
           <div class="row order-details">
             <div class="detail-item">
-              <span class="label">{{ "Nomor Pesanan" | translate }}</span>
-              <span class="value">{{ selectedOrder.nomorPesanan }}</span>
+              <span class="label">{{ "Tgl. Transaksi" | translate }}</span>
+              <span class="value">{{ headerWastage.tglTransaksi }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Nomor Surat Jalan" | translate }}</span>
-              <span class="value">{{ selectedOrder.noSuratJalan }}</span>
+              <span class="label">{{ "Keterangan" | translate }}</span>
+              <span class="value">{{ headerWastage.keterangan }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tgl. Pesanan" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglPesanan }}</span>
+              <span class="label ">{{ "Saksi" | translate }}</span>
+              <span class="value">{{ headerWastage.namaSaksi }}</span>
             </div>
             <div class="detail-item">
-              <span class="label ">{{ "Tgl. Kirim Gudang" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglTransaksi }}</span>
+              <span class="label ">{{ "Jumlah Item" | translate }}</span>
+              <span class="value">{{ headerWastage.tanggalBatalEXP }}</span>
             </div>
           </div>
         </div>
         <div class="col">
-          <div class="row order-details">
-            <div class="detail-item">
-              <span class="label">{{ "Kode Tujuan" | translate }}</span>
-              <span class="value"> {{ selectedOrder.kodeTujuan }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Nama Tujuan" | translate }}</span>
-              <span class="value"> {{ selectedOrder.namaTujuan }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Catatan" | translate }}</span>
-              <span class="value">{{ selectedOrder.keterangan }} </span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Status Pengiriman" | translate }}</span>
-              <span class="value">{{ selectedOrder.statusPosting === 'i' ? '(I) Intransit' : '(P) Posting' }}
-              </span>
-            </div>
-
-          </div>
         </div>
       </div>
     </c-card-body>
@@ -77,6 +55,14 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
+      <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
+
+        <button type="button" class="btn btn-success text-white me-2"  (click)="onShowModal()">
+          <i class="fa fa-plus icon-gap"></i>
+          {{ 'Tambah' | translate }}           {{ 'Barang' | translate }}
+        </button>
+  
+      </div>
       <div class="table-responsive">
         <ng-container>
           <div *ngIf="loading">
@@ -91,17 +77,16 @@
                   Barang</th>
                 <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">Nama
                   Barang</th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Total Pesanan</th>
                 <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" colspan="2">Qty
                   Kirim</th> <!-- Masih sejajar -->
                 <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Konversi Gudang</th>
                 <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Total Kirim Gudang
+                  Total Quantity Pesan
                 </th>
                 <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Selisih Pesanan</th>
+                  Action
+                </th>
               </tr>
               <tr>
                 <th scope="col" class="text-center" style="width:160px;">Besar</th>
@@ -110,7 +95,7 @@
             </thead>
             <tbody *ngIf="!listOrderData || listOrderData.length === 0">
               <tr>
-                <td colspan="8" scope="col" class="text-center">
+                <td colspan="9" scope="col" class="text-center">
                   No Data Found
                 </td>
               </tr>
@@ -120,23 +105,21 @@
                 <td class="text-center">{{ i + 1 }}</td>
                 <td class="text-center">{{ data.kodeBarang }}</td>
                 <td class="text-center">{{ data.namaBarang }}</td>
-                <td class="text-center">{{ data.totalQtyPesan }}</td>
-                <!-- <td class="text-center">{{ data.qtyBKirim }} {{ data.satuanBesar }}</td> -->
+                  <!-- <td class="text-center">{{ data.qtyPesanBesar }} {{ data.satuanBesar }}</td> -->
 
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
-                    <input type="number" max="{{data.qtyBKirim}}" min="0" class="form-control text-center inputQty inputNumberSpace"
-                      [(ngModel)]="data.qtyBKirim" (input)="onInputValueItemDetail($event, i)" />
+                    <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
+                      [(ngModel)]="data.qtyPesanBesar" (input)="onInputValueItemDetail($event, i)" />
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanBesar}}
                     </span>
                   </div>
                 </td>
-
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
-                    <input type="number" min="0"  class="form-control text-center inputQty inputNumberSpace"
-                      [(ngModel)]="data.qtyKKirim" (input)="onInputValueItemDetail($event, i)" />
+                    <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
+                      [(ngModel)]="data.qtyPesanKecil" (input)="onInputValueItemDetail($event, i)" />
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanKecil}}
                     </span>
@@ -144,12 +127,13 @@
                 </td>
 
                 <td class="text-center">{{ data.konversi }}</td>
-                <td class="text-center">{{(helper.sanitizedNumber(data.qtyBKirim) *
-                  data.konversi) + data.qtyKKirim}} {{data.satuanKecil}}
+                <td class="text-center">{{(helper.sanitizedNumber(data.qtyPesanBesar) *
+                  data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil) }} {{data.satuanKecil}}
                 </td>
-                <td class="text-center">{{(helper.sanitizedNumber(data.totalQtyPesan) -
-                  (helper.sanitizedNumber(data.qtyBKirim) *
-                  data.konversi))}} {{data.satuanKecil}}
+                <td>
+                  <button class="btn btn-danger text-white btn-150" (click)="deleteBarang(i)">
+                    <i class="fa fa-trash pe-1"></i> {{ "Hapus" | translate }}
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -161,5 +145,19 @@
         </ng-container>
       </div>
     </c-card-body>
+
+    <c-modal #formModal [fullscreen]="false" [visible]="isShowModal" backdrop="static" #modalLg size="xl"
+      id="formModal" style="max-width: 100%;"   [attr.aria-hidden]="!isShowModal">
+        <c-modal-header>
+          <h5 cModalTitle>Add Receiving Order</h5>
+          <button (click)="isShowModal = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModal.id"
+            cButtonClose><i class="fa fa-times"></i></button>
+        </c-modal-header>
+        <c-modal-body>
+          <div class="table-responsive">
+            <table datatable [dtOptions]=" dtOptions" class="row-border hover w-100"></table>
+          </div>
+        </c-modal-body>
+    </c-modal>
   </c-card>
 </div>

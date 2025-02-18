@@ -1,0 +1,68 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
+          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button>
+          <h5>{{ "Tambah Pemusnahan Barang" | translate }}</h5>
+        </div>
+      </c-row>
+    </c-card-body>
+  </c-card>
+
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <div class="d-flex">
+          <div class="mb-3 w-50 p-2">
+            <label for="tglTransaksi" class="form-label">{{ "Tanggal Transaksi" | translate }} <span
+                class="text-danger">*</span></label>
+
+            <input type="text" id="tglTransaksi" class="form-control" aria-describedby="tglTransaksi" #dp="bsDatepicker"
+              [bsConfig]="dpConfig" bsDatepicker autocomplete="off" [(ngModel)]="formData.tglTransaksi"
+              placeholder="{{ 'Tanggal transaksi' | translate }}" />
+          </div>
+        </div>
+
+        <div class="divider mt-4"></div>
+        <div class="d-flex">
+          <div class="w-50 p-2 pb-0">
+            <div class="mb-3">
+              <label for="namaSaksi" class="form-label">{{ "Nama Saksi" | translate }}</label>
+              <input placeholder="Nama saksi" type="text" class="form-control" id="namaSaksi"
+                [(ngModel)]="formData.namaSaksi" name="namaSaksi" />
+            </div>
+          </div>
+          <div class="w-50 p-2">
+            <div class="mb-3">
+              <label for="jabatanSaksi" class="form-label">{{ "Jabatan Saksi" | translate }}</label>
+              <input placeholder="Jabatan saksi" type="text" class="form-control" id="jabatanSaksi"
+                [(ngModel)]="formData.jabatanSaksi" name="jabatanSaksi" />
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex">
+          <div class="w-50 p-2">
+            <div class="mb-3">
+              <label for="keterangan" class="form-label">{{ "Catatan (Keterangan lain)" | translate }}</label>
+              <textarea placeholder="Catatan (Keterangan lain)" type="text" class="form-control" id="keterangan"
+                [(ngModel)]="formData.keterangan" name="keterangan"></textarea>
+            </div>
+          </div>
+
+          <div class="w-50 p-2 d-flex justify-content-end mb-3 align-items-end">
+            <button class="btn btn-primary" [disabled]="isFormInvalid" (click)="onAddDetail()"> 
+          <i class="fa fa-check pe-2"></i>
+              {{ "Detail Transaksi" | translate }}
+            </button>
+          </div>
+        </div>
+
+      </c-row>
+    </c-card-body>
+  </c-card>
+</div>

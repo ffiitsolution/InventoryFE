@@ -93,7 +93,8 @@ import {
   cilNoteAdd,
   cilPlus,
   cilTruck,
-  cilColorBorder
+  cilColorBorder,
+  cilHouse,
 } from '@coreui/icons';
 
 export const iconSubset = {
@@ -192,6 +193,7 @@ export const iconSubset = {
   cilPlus,
   cilTruck,
   cilColorBorder,
+  cilHouse,
 };
 
 export enum IconSubset {
@@ -285,5 +287,5 @@ export enum IconSubset {
   cilUserFemale = 'cilUserFemale',
   cilUserFollow = 'cilUserFollow',
   cilUserUnfollow = 'cilUserUnfollow',
-  cilColorBorder='cilColorBorder'
+  cilColorBorder = 'cilColorBorder',
 }

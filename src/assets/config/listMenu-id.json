@@ -103,7 +103,7 @@
         },
         "children": [
           {
-            "name": "Display dan Tambah Data",
+            "name": "Display & Tambah",
             "url": "/transaction/delivery-item",
             "iconComponent": {
               "name": "cil-plus"
@@ -135,6 +135,9 @@
       {
         "name": "Penerimaan Dari Gudang",
         "url": "/transaction/receipt-from-warehouse/penerimaan-dari-gudang",
+        "iconComponent": {
+          "name": "cil-house"
+        },
         "children": [
           {
             "name": "Tambah Data",
@@ -147,7 +150,7 @@
         ]
       },{
         "name": "Pemusnahan Barang",
-        "url": "/transaction/receipt-from-branch/penerimaan-dari-cabang",
+        "url": "/transaction/wastage/list-dt",
         "iconComponent" : {
           "name" : "cil-trash"
         }
