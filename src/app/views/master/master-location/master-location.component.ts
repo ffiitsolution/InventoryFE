@@ -48,6 +48,8 @@ export class MasterLocationComponent
   rscOptions: any = '';
   selectedCityFilter: any = '';
   selectedRscFilter: any = '';
+  configSelectCity: any = {};
+  configSelectRSC: any = {};
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
@@ -81,8 +83,12 @@ export class MasterLocationComponent
         const requestData = {
           ...dataTablesParameters,
           status: this.selectedStatusFilter,
-          KODE_RSC: this.selectedRscFilter,
-          KODE_KOTA: this.selectedCityFilter,
+          KODE_RSC: Array.isArray(this.selectedRscFilter)
+            ? ''
+            : this.selectedRscFilter.id,
+          KODE_KOTA: Array.isArray(this.selectedCityFilter)
+            ? ''
+            : this.selectedCityFilter.id,
         };
         this.dataService
           .postData(this.g.urlServer + '/api/location/dt', requestData)
@@ -199,18 +205,42 @@ export class MasterLocationComponent
       .postData(this.g.urlServer + '/api/city/dropdown-city', {})
       .subscribe((resp: any) => {
         this.cityOptions = resp.map((item: any) => ({
-          value: item.KETERANGAN_KOTA,
-          label: item.KETERANGAN_KOTA,
+          id: item.KETERANGAN_KOTA,
+          name: item.KODE_KOTA + ' - ' + item.KETERANGAN_KOTA,
         }));
+        this.configSelectCity = {
+          displayKey: 'name',
+          search: true,
+          height: '200px',
+          customComparator: () => {},
+          moreText: 'lebih banyak',
+          noResultsFound: 'Tidak ada hasil',
+          searchOnKey: 'name',
+          placeholder: 'Pilih City',
+          searchPlaceholder: 'Cari City',
+          limitTo: this.cityOptions?.length,
+        };
       });
 
     this.dataService
       .postData(this.g.urlServer + '/api/rsc/dropdown-rsc', {})
       .subscribe((resp: any) => {
         this.rscOptions = resp.map((item: any) => ({
-          value: item.KODE_RSC,
-          label: item.KETERANGAN_RSC,
+          id: item.KODE_RSC,
+          name: item.KODE_RSC + ' - ' + item.KETERANGAN_RSC,
         }));
+        this.configSelectRSC = {
+          displayKey: 'name',
+          search: true,
+          height: '200px',
+          customComparator: () => {},
+          moreText: 'lebih banyak',
+          noResultsFound: 'Tidak ada hasil',
+          searchOnKey: 'name',
+          placeholder: 'Pilih RSC',
+          searchPlaceholder: 'Cari RSC',
+          limitTo: this.rscOptions.length,
+        };
       });
   }
 

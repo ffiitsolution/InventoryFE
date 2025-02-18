@@ -31,7 +31,15 @@
                 <label cLabel for="selectedKotaFilter"
                   >{{ "Kota" | translate }}:</label
                 >
-                <select
+                <ngx-select-dropdown
+                  [config]="configSelectCity"
+                  [multiple]="false"
+                  [options]="cityOptions"
+                  [(ngModel)]="selectedCityFilter"
+                  (ngModelChange)="onCityFilterChange()"
+                >
+                </ngx-select-dropdown>
+                <!-- <select
                   aria-label="Kota"
                   cSelect
                   id="selectedCityFilter"
@@ -42,13 +50,21 @@
                   <option *ngFor="let city of cityOptions" [value]="city.value">
                     {{ city.value }} - {{ city.label | translate }}
                   </option>
-                </select>
+                </select> -->
               </div>
               <div class="col-md-6">
                 <label cLabel for="selectedtipeCabangFilter"
                   >{{ "RSC" | translate }}:</label
                 >
-                <select
+                <ngx-select-dropdown
+                  [config]="configSelectRSC"
+                  [multiple]="false"
+                  [options]="rscOptions"
+                  [(ngModel)]="selectedRscFilter"
+                  (ngModelChange)="onRscFilterChange()"
+                >
+                </ngx-select-dropdown>
+                <!-- <select
                   aria-label="RSC"
                   cSelect
                   id="selectedRscFilter"
@@ -59,7 +75,7 @@
                   <option *ngFor="let rsc of rscOptions" [value]="rsc.value">
                     {{ rsc.value }} - {{ rsc.label | translate }}
                   </option>
-                </select>
+                </select> -->
               </div>
             </div>
           </c-card-body>
