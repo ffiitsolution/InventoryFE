@@ -16,7 +16,6 @@ import {
   SendOrderToSupplierViaRSCComponent,
   AddDataSendOrderToSupplierComponent,
 } from './send-order-to-supplier';
-// import { SendOrderToSupplierViaRSCComponent } from './send-order-to-supplier/send-order-to-supplier';
 const routes: Routes = [
   {
     path: '',
