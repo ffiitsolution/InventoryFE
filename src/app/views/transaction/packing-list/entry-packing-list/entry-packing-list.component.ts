@@ -27,21 +27,36 @@ import { data } from 'jquery';
   templateUrl: './entry-packing-list.component.html',
   styleUrls: ['./entry-packing-list.component.scss'],
 })
-export class EntryPackingListComponent implements OnInit, AfterViewInit, OnDestroy {
-  numericInputRenderer(data: any, type: any, row: any) {
+export class EntryPackingListComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
+  numericInputRenderer(data: any, type: any, row: any, meta: any) {
     if (type === 'display') {
       return `
         <input type="number" class="form-control text-center"
-               value="${data || ''}" 
-               min="0" max="99999"
-               oninput="this.value = this.value.replace(/[^0-9]/g, ''); 
-                        if(this.value.length > 5) this.value = this.value.slice(0, 5);
-                        if(this.value > 99999) this.value = 99999;">
+             value="${data || ''}" 
+             min="0" max="99999"
+             oninput="this.value = this.value.replace(/[^0-9]/g, ''); 
+                      if(this.value.length > 5) this.value = this.value.slice(0, 5);
+                      if(this.value > 99999) this.value = 99999;"
+             onchange="updateTableData(${meta.row}, '${
+        meta.settings.aoColumns[meta.col].data
+      }', this.value)">
       `;
     }
     return data;
   }
 
+  updateTableData(rowIndex: number, columnName: string, newValue: any) {
+    if (!this.reportProposeData[rowIndex]) return;
+
+    this.reportProposeData[rowIndex][columnName] = newValue;
+
+    console.log(
+      `Data pada baris ${rowIndex} kolom ${columnName} diperbarui:`,
+      newValue
+    );
+  }
   @ViewChild(DataTableDirective, { static: false }) datatableElement:
     | DataTableDirective
     | undefined;
@@ -83,8 +98,7 @@ export class EntryPackingListComponent implements OnInit, AfterViewInit, OnDestr
       pageLength: 5,
       lengthMenu: [5],
       processing: true,
-      ajax: 
-      (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback) => {
         this.getProsesDoBalik(callback);
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
@@ -92,16 +106,37 @@ export class EntryPackingListComponent implements OnInit, AfterViewInit, OnDestr
       scrollX: true,
       autoWidth: true,
       columns: [
+        { data: 'KODE_BARANG', title: 'Kode Barang', className: 'text-center' },
         { data: 'NAMA_BARANG', title: 'Nama Barang', className: 'text-center' },
         { data: 'KONVERSI', title: 'Konversi', className: 'text-center' },
-        { data: 'TOTAL_QTY_KIRIM', title: 'Qty Kirim', className: 'text-center' },
-        { data: 'NO_SURAT_JALAN', title: 'No Surat Jalan', className: 'text-center' },
+        {
+          data: 'TOTAL_QTY_KIRIM',
+          title: 'Qty Kirim',
+          className: 'text-center',
+        },
+        {
+          data: 'NO_SURAT_JALAN',
+          title: 'No Surat Jalan',
+          className: 'text-center',
+        },
         { data: 'KODE_TUJUAN', title: 'Kode Tujuan', className: 'text-center' },
         { data: 'NAMA_CABANG', title: 'Nama Cabang', className: 'text-center' },
-        { data: 'NOMOR_COLLI', title: 'Nomor Colli', className: 'text-center', defaultContent: "", render: this.numericInputRenderer },
-        { data: 'JUMLAH_COLLI', title: 'Jumlah Colli', className: 'text-center', defaultContent: "", render: this.numericInputRenderer }
+        {
+          data: 'NOMOR_COLLI',
+          title: 'Nomor Colli',
+          className: 'text-center',
+          defaultContent: '',
+          render: this.numericInputRenderer,
+        },
+        {
+          data: 'JUMLAH_COLLI',
+          title: 'Jumlah Colli',
+          className: 'text-center',
+          defaultContent: '',
+          render: this.numericInputRenderer,
+        },
       ],
-      
+
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
@@ -173,7 +208,7 @@ export class EntryPackingListComponent implements OnInit, AfterViewInit, OnDestr
     const formattedEndDate = moment(this.endDate).format('DD MMM yyyy');
 
     const parsedDoList = JSON.parse(this.nomorDoList);
-    const params = parsedDoList.map((item:any) => {
+    const params = parsedDoList.map((item: any) => {
       return {
         kodeGudang: this.g.getUserLocationCode(),
         noSuratJalan: item.noSuratJalan,
