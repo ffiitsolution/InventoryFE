@@ -39,9 +39,7 @@ export class EntryPackingListComponent
              oninput="this.value = this.value.replace(/[^0-9]/g, ''); 
                       if(this.value.length > 5) this.value = this.value.slice(0, 5);
                       if(this.value > 99999) this.value = 99999;"
-             onchange="updateTableData(${meta.row}, '${
-        meta.settings.aoColumns[meta.col].data
-      }', this.value)">
+             (change)="updateTableData(${meta.row}, '${meta.settings.aoColumns[meta.col].data}', this.value)">
       `;
     }
     return data;
@@ -63,6 +61,7 @@ export class EntryPackingListComponent
 
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   dtOptions: DataTables.Settings = {};
+  dtOptions_2: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
 
@@ -79,6 +78,8 @@ export class EntryPackingListComponent
   dateRangeFilter: any = [new Date(), new Date()];
   dataUser: any;
   nomorDoList: any;
+  isShowModal: boolean = false;
+  selectedRo: any = {};
 
   constructor(
     private dataService: DataService,
@@ -104,7 +105,7 @@ export class EntryPackingListComponent
         this.page.length = dataTablesParameters.length;
       },
       scrollX: true,
-      autoWidth: true,
+      autoWidth: false,
       columns: [
         { data: 'KODE_BARANG', title: 'Kode Barang', className: 'text-center' },
         { data: 'NAMA_BARANG', title: 'Nama Barang', className: 'text-center' },
@@ -126,14 +127,14 @@ export class EntryPackingListComponent
           title: 'Nomor Colli',
           className: 'text-center',
           defaultContent: '',
-          render: this.numericInputRenderer,
+          render: (data, type, row, meta) => this.numericInputRenderer(data, type, row, meta),
         },
         {
           data: 'JUMLAH_COLLI',
           title: 'Jumlah Colli',
           className: 'text-center',
           defaultContent: '',
-          render: this.numericInputRenderer,
+          render: (data, type, row, meta) => this.numericInputRenderer(data, type, row, meta),
         },
       ],
 
@@ -148,6 +149,80 @@ export class EntryPackingListComponent
       },
       order: [[2, 'desc']],
     };
+
+    this.dtOptions_2 = {
+      paging: true,
+      pageLength: 10,
+      lengthMenu: [5],
+      processing: true,
+      serverSide: true,
+      ajax: (dataTablesParameters: any, callback) => {
+        this.page.start = dataTablesParameters.start;
+        this.page.length = dataTablesParameters.length;
+        const params = {
+          ...dataTablesParameters,
+          kodeArea: this.g.getUserAreaCode(),
+        };
+        this.getListGudang(params, callback);
+        this.page.start = dataTablesParameters.start;
+        this.page.length = dataTablesParameters.length;
+      },
+      autoWidth: true,
+      columns: [
+        {
+          data: 'kodeCabang',
+          title: 'Kode Cabang',
+          className: 'text-center',
+        },
+        {
+          data: 'namaCabang',
+          title: 'Nama Cabang',
+          className: 'text-center',
+        },
+        {
+          data: 'kodeGroup',
+          title: 'Group',
+          className: 'text-center',
+        },
+        {
+          data: null, // Tidak mengambil langsung dari satu field
+          title: 'Alamat', // Nama kolom yang sama untuk keduanya
+          className: 'text-center',
+          render: function (data, type, row) {
+            let alamat1 = row.alamat1 ? row.alamat1 : '-'; // Cek jika null
+            let alamat2 = row.alamat2 ? row.alamat2 : '-';
+            return `${alamat1} <br> ${alamat2}`;
+          },
+        },
+        { data: 'kota', title: 'Kota', className: 'text-center' },
+        // {
+        //   data: 'NOMOR_COLLI',
+        //   title: 'Nomor Colli',
+        //   className: 'text-center',
+        //   defaultContent: '',
+        //   render: this.numericInputRenderer,
+        // },
+        // {
+        //   data: 'JUMLAH_COLLI',
+        //   title: 'Jumlah Colli',
+        //   className: 'text-center',
+        //   defaultContent: '',
+        //   render: this.numericInputRenderer,
+        // },
+      ],
+
+      rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        $('.action-view', row).on('click', () =>
+          this.actionBtnClick(ACTION_VIEW, data)
+        );
+        $('.action-posting', row).on('click', () =>
+          this.actionBtnClick('POSTING', data)
+        );
+        return row;
+      },
+      order: [[2, 'desc']],
+    };
+
   }
 
   actionBtnClick(action: string, data: any): void {
@@ -192,6 +267,17 @@ export class EntryPackingListComponent
     this.dtTrigger.unsubscribe();
   }
 
+  onShowModal() {
+    this.isShowModal = true;
+  }
+  actionBtnClickInModal(action: string, data: any = null) {
+    this.selectedRo = JSON.stringify(data);
+    // this.renderDataTables();
+    this.isShowModal = false;
+    // this.mapOrderData(data);
+    // this.onSaveData();
+  }
+
   dtPageChange(event: any): void {}
 
   search(): void {
@@ -211,7 +297,7 @@ export class EntryPackingListComponent
     const params = parsedDoList.map((item: any) => {
       return {
         kodeGudang: this.g.getUserLocationCode(),
-        noSuratJalan: item.noSuratJalan,
+        noSuratJalan: item.NO_SURAT_JALAN,
       };
     });
 
@@ -231,6 +317,48 @@ export class EntryPackingListComponent
           callback({
             recordsTotal: response.recordsTotal,
             recordsFiltered: response.recordsFiltered,
+            data: this.reportProposeData,
+          });
+          this.loading = false;
+        },
+        (error) => {
+          console.error('Error fetching data:', error);
+          this.loading = false;
+        }
+      );
+  }
+
+  getListGudang(param: any, callback: any): void {
+    this.loading = true;
+
+    // Format tanggal menjadi 'dd MM yyyy' sebelum dikirim ke backend
+    const formattedStartDate = moment(this.startDate).format('DD MMM yyyy');
+    const formattedEndDate = moment(this.endDate).format('DD MMM yyyy');
+
+    const parsedDoList = JSON.parse(this.nomorDoList);
+    const kodeGudangArray = [
+      ...new Set(parsedDoList?.map((item: any) => item.KODE_GUDANG)),
+    ];
+
+    const params = { kodeArea: this.g.getUserAreaCode() };
+
+    console.log('Mengirim data ke backend:', param);
+
+    this.dataService
+      .postData(this.config.BASE_URL + '/delivery-order/get-site-info', param)
+      .subscribe(
+        (response: any) => {
+          console.log('Site info data:', response.data.length);
+          let index = 0;
+          dtIndex: this.page.start + index + 1;
+          this.reportProposeData = response.data;
+          this.totalLength = response?.length;
+          this.page.recordsTotal = response.data.recordsTotal;
+          this.page.recordsFiltered = response.data.recordsFiltered;
+
+          callback({
+            recordsTotal: response?.length,
+            recordsFiltered: response.data.recordsFiltered,
             data: this.reportProposeData,
           });
           this.loading = false;

@@ -51,6 +51,7 @@ export class PackagingListComponent
   dateRangeFilter: any = [new Date(), new Date()];
   dataUser: any;
   listNoDO: { noSuratJalan: any }[] = [];
+  selectedRows: any[] = [];
 
   constructor(
     private dataService: DataService,
@@ -77,6 +78,15 @@ export class PackagingListComponent
       scrollX: true,
       autoWidth: true,
       columns: [
+        {
+          data: null,
+          title: 'Pilih Data',
+          className: 'text-center',
+          orderable: false,
+          render: (data: any, type: any, row: any) => {
+            return `<input type="checkbox" class="select-row action-select-data" data-id="${row.NO_SURAT_JALAN}">`;
+          },
+        },
         { data: 'NO_SURAT_JALAN', title: 'NO. Surat Jalan (D.O)' },
         {
           data: 'TGL_TRANSAKSI',
@@ -99,6 +109,9 @@ export class PackagingListComponent
         );
         $('.action-posting', row).on('click', () =>
           this.actionBtnClick('POSTING', data)
+        );
+        $('.action-select-data', row).on('click', () =>
+          this.actionBtnClick('SELECT_DATA', data)
         );
         return row;
       },
@@ -138,10 +151,27 @@ export class PackagingListComponent
         },
       });
     }
+    if (action === 'SELECT_DATA') {
+      this.selectedRows.push(data);
+    }
   }
 
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
+
+    $('#select-all').on('click', function () {
+      const rows = $('#datatable').DataTable().rows({ search: 'applied' }).nodes();
+      $('input[type="checkbox"]', rows).prop('checked', (this as HTMLInputElement).checked);
+    });
+
+    $('#datatable tbody').on('change', 'input[type="checkbox"]', function () {
+      if (!this.checked) {
+        const el = $('#select-all').get(0);
+        if (el && (el as HTMLInputElement).checked && ('indeterminate' in el)) {
+          el.indeterminate = true;
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -218,9 +248,8 @@ export class PackagingListComponent
     this.router.navigate(['/transaction/delivery-item/add-data']);
   }
   navigateToEntryPackingList(): void {
-    this.router.navigate([
-      '/transaction/delivery-item/packing-list/entry-packing-list',
-    ]);
-    this.g.saveLocalstorage('listNoDO', JSON.stringify(this.listNoDO));
+
+    this.g.saveLocalstorage('listNoDO', JSON.stringify(this.selectedRows));
+    this.router.navigate(['/transaction/delivery-item/packing-list/entry-packing-list']);
   }
 }
