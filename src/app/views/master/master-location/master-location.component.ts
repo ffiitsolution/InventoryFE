@@ -276,13 +276,13 @@ export class MasterLocationComponent
     this.rerenderDatatable();
   }
 
-  onCityFilterChange() {
+  onCityFilterChange(): void {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
 
-  onRscFilterChange() {
+  onRscFilterChange(): void {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });

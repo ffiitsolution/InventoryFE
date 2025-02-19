@@ -3,16 +3,22 @@
     <c-card-body>
       <div class="row">
         <div class="col">
-          <h5>
-            {{ 'Master' | translate }} {{ 'User' | translate }}
-          </h5>
+          <h5>{{ "Master" | translate }} {{ "User" | translate }}</h5>
         </div>
         <div class="col text-end">
-          <button type="button" class="btn btn-success text-white me-2" (click)="actionBtnClick('add')">
-            {{ 'Tambah' | translate }}
+          <button
+            type="button"
+            class="btn btn-secondary text-white me-2"
+            (click)="toggleFilter()"
+          >
+            {{ "Filter" | translate }}
           </button>
-          <button type="button" class="btn btn-secondary text-white me-2" (click)="toggleFilter()">
-            {{ 'Filter' | translate }}
+          <button
+            type="button"
+            class="btn btn-success text-white me-2"
+            (click)="actionBtnClick('add')"
+          >
+            {{ "Tambah" | translate }}
           </button>
         </div>
       </div>
@@ -20,68 +26,63 @@
         <c-card class="mt-3 shadow">
           <c-card-body>
             <div class="row">
-                <div class="col-md-4">
-                  <label>{{
-                    "Status Aktif" | translate
-                  }}</label>
-                  <div>
-                    <ngx-select-dropdown
-                      [multiple]="false"
-                      [config]="configSelectStatus"
-                      [options]="listStatus"
-                      [(ngModel)]="formStatusFilter" 
-                      (ngModelChange)="onStatusFilterChange()"
-                      id="status">
-                    </ngx-select-dropdown>
-                  </div>
+              <div class="col-md-4">
+                <label>{{ "Status Aktif" | translate }}</label>
+                <div>
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [config]="configSelectStatus"
+                    [options]="listStatus"
+                    [(ngModel)]="formStatusFilter"
+                    (ngModelChange)="onStatusFilterChange()"
+                    id="status"
+                  >
+                  </ngx-select-dropdown>
+                </div>
               </div>
               <div class="col-md-4">
-                <label>{{
-                  "Default Lokasi" | translate
-                }}</label>
+                <label>{{ "Default Lokasi" | translate }}</label>
                 <div>
                   <ngx-select-dropdown
                     [multiple]="false"
                     [config]="configSelectLokasi"
                     [options]="listLokasi"
-                    [(ngModel)]="formLokasiFilter" 
+                    [(ngModel)]="formLokasiFilter"
                     (ngModelChange)="onLokasiFilterChange()"
-                    id="lokasi">
+                    id="lokasi"
+                  >
                   </ngx-select-dropdown>
                 </div>
-            </div>
-
-            <div class="col-md-4">
-              <label>{{
-                "Jabatan" | translate
-              }}</label>
-              <div>
-                <ngx-select-dropdown
-                  [multiple]="false"
-                  [config]="configSelectJabatan"
-                  [options]="listJabatan"
-                  [(ngModel)]="formJabatanFilter" 
-                  (ngModelChange)="onJabatanFilterChange()"
-                  id="jabatan">
-                </ngx-select-dropdown>
               </div>
-          </div>
-          <div class="col-md-4">
-            <label>{{
-              "Role" | translate
-            }}</label>
-            <div>
-              <ngx-select-dropdown
-                [multiple]="false"
-                [config]="configSelectRole"
-                [options]="listRole"
-                [(ngModel)]="formRoleFilter" 
-                (ngModelChange)="onRoleFilterChange()"
-                id="role">
-              </ngx-select-dropdown>
-            </div>
-        </div>
-  
+
+              <div class="col-md-4">
+                <label>{{ "Jabatan" | translate }}</label>
+                <div>
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [config]="configSelectJabatan"
+                    [options]="listJabatan"
+                    [(ngModel)]="formJabatanFilter"
+                    (ngModelChange)="onJabatanFilterChange()"
+                    id="jabatan"
+                  >
+                  </ngx-select-dropdown>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label>{{ "Role" | translate }}</label>
+                <div>
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [config]="configSelectRole"
+                    [options]="listRole"
+                    [(ngModel)]="formRoleFilter"
+                    (ngModelChange)="onRoleFilterChange()"
+                    id="role"
+                  >
+                  </ngx-select-dropdown>
+                </div>
+              </div>
 
               <!-- <div class="col-md-4">
                 <label cLabel for="selectedRoleFilter">{{ 'Role' | translate }}:</label>
@@ -98,7 +99,6 @@
                   </option>
                 </select>
               </div> -->
-              
             </div>
           </c-card-body>
         </c-card>

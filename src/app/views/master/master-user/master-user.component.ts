@@ -215,8 +215,7 @@ export class MasterUserComponent
       this.listLokasi = resp.map((item: any) => ({
         id: item.KODE_LOCATION,
         name: item.KODE_LOCATION+" - " +item.KETERANGAN_LOKASI,
-      }));    
-      console.log('this.listLokasi',this.listLokasi)
+      }));
     });
 
     this.dataService
