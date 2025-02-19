@@ -35,7 +35,13 @@
               class="form-control"
               formControlName="desc"
               [readOnly]="editing"
+              (input)="convertToUppercase('desc')"
+              (keypress)="conditionInput($event, 'setNum')"
+              maxlength="50"
             />
+            <span *ngIf="isFieldValid('desc')" class="text-danger">{{
+              "Wajib diisi" | translate
+            }}</span>
           </div>
         </div>
 

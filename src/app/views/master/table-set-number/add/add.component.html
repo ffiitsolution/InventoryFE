@@ -19,6 +19,9 @@
               class="form-control"
               formControlName="key"
               [readOnly]="adding"
+              maxlength="2"
+              (keypress)="conditionInput($event, 'numeric')"
+              (input)="convertToUppercase('code')"
             />
             <span *ngIf="isFieldValid('key')" class="text-danger">{{
               "Wajib diisi" | translate
@@ -35,6 +38,9 @@
               class="form-control"
               formControlName="code"
               [readOnly]="adding"
+              maxlength="3"
+              (keypress)="conditionInput($event, 'alphabet')"
+              (input)="convertToUppercase('code')"
             />
             <span *ngIf="isFieldValid('code')" class="text-danger">{{
               "Wajib diisi" | translate
@@ -51,6 +57,9 @@
               class="form-control"
               formControlName="desc"
               [readOnly]="adding"
+              (input)="convertToUppercase('desc')"
+              (keypress)="conditionInput($event, 'setNum')"
+              maxlength="50"
             />
             <span *ngIf="isFieldValid('desc')" class="text-danger">{{
               "Wajib diisi" | translate
