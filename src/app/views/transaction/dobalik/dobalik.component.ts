@@ -16,6 +16,7 @@ import { ToastrService } from 'ngx-toastr';
 import * as moment from 'moment';
 import {
   ACTION_VIEW,
+  DEFAULT_DATE_RANGE_RECEIVING_ORDER,
   LS_INV_SELECTED_DELIVERY_ORDER,
 } from '../../../../constants';
 import { AppService } from '../../../service/app.service';
@@ -45,8 +46,14 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
   showFilterSection: boolean = false;
   reportProposeData: any[] = [];
   totalLength: number = 0;
+  currentDate: Date = new Date();
 
-  dateRangeFilter: any = [new Date(), new Date()];
+  startDateFilter: Date = new Date(
+    this.currentDate.setDate(
+      this.currentDate.getDate() - DEFAULT_DATE_RANGE_RECEIVING_ORDER
+    )
+  );
+  dateRangeFilter: any = [this.startDateFilter, new Date()];
   dataUser: any;
 
   constructor(
@@ -66,20 +73,20 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
       pageLength: 5,
       lengthMenu: [5],
       processing: true,
-      ajax: 
-      (dataTablesParameters: any, callback) => {
-        this.getProsesDoBalik(callback);
-        this.page.start = dataTablesParameters.start;
-        this.page.length = dataTablesParameters.length;
-      },
+      ajax:
+        (dataTablesParameters: any, callback) => {
+          this.getProsesDoBalik(callback);
+          this.page.start = dataTablesParameters.start;
+          this.page.length = dataTablesParameters.length;
+        },
       scrollX: true,
       autoWidth: true,
       columns: [
         { data: 'KODE_GUDANG', title: 'Kode Gudang' },
         { data: 'STATUS_POSTING', title: 'Status Posting' },
-        { data: 'TGL_TRANSAKSI', title: 'Tanggal Transaksi', render:(data) => this.g.transformDate(data)},
+        { data: 'TGL_TRANSAKSI', title: 'Tanggal Transaksi', render: (data) => this.g.transformDate(data) },
         { data: 'TIPE_TRANSAKSI', title: 'Tipe Transaksi' },
-        { data: 'TGL_PESANAN', title: 'Tanggal Pesanan' , render:(data) => this.g.transformDate(data)},
+        { data: 'TGL_PESANAN', title: 'Tanggal Pesanan', render: (data) => this.g.transformDate(data) },
         { data: 'NOMOR_PESANAN', title: 'Nomor Pesanan' },
         { data: 'NO_SURAT_JALAN', title: 'No Surat Jalan' },
         { data: 'KODE_TUJUAN', title: 'Kode Tujuan' },
@@ -130,7 +137,8 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
         kodeGudang: data.KODE_GUDANG,
         noSuratJalan: data.NO_SURAT_JALAN,
         userPosted: JSON.parse(localStorage.getItem('inv_currentUser') || '')
-          .namaUser,
+        .namaUser,
+        datePosted: this.g.getLocalDateTime(new Date),
       };
       this.appService.updateDeliveryOrderPostingStatus(param).subscribe({
         next: (response) => {
@@ -152,7 +160,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dtTrigger.unsubscribe();
   }
 
-  dtPageChange(event: any): void {}
+  dtPageChange(event: any): void { }
 
   search(): void {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -215,7 +223,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate(['/transaction/delivery-item/proses-do-balik']);
   }
 
-  
+
   onFilterPressed() {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();

@@ -43,6 +43,7 @@ export class DeliveryItemComponent implements OnInit {
     )
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
+  selectedRowData: any;
 
   constructor(
     private dataService: DataService,
@@ -88,7 +89,11 @@ export class DeliveryItemComponent implements OnInit {
                   ...rest,
                   dtIndex: this.page.start + index + 1,
                   tglPesanan: this.g.transformDate(rest.tglPesanan),
-                  tglTransaksi: this.g.transformDate(rest.tglTransaksi)
+                  tglTransaksi: this.g.transformDate(rest.tglTransaksi),
+                  dateCreate: this.g.transformDate(rest.dateCreate),
+                  timeCreate: this.g.transformTime(rest.timeCreate),
+                  datePosted: this.g.transformDate(rest.datePosted),
+                  timePosted: this.g.transformTime(rest.timePosted)
                 };
                 return finalData;
               });
@@ -165,6 +170,15 @@ export class DeliveryItemComponent implements OnInit {
         $('.action-cetak', row).on('click', () =>
           this.actionBtnClick(ACTION_CETAK, data)
         );
+        $('td', row).on('click', () => {
+          $('td').css({'background-color': ''}).removeClass('text-white fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).css({'background-color': '#BABBD8'}).addClass('text-white fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
         return row;
       },
     };

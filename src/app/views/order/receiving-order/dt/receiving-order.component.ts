@@ -28,8 +28,7 @@ import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
   styleUrl: './receiving-order.component.scss',
 })
 export class ReceivingOrderComponent
-  implements OnInit, OnDestroy, AfterViewInit
-{
+  implements OnInit, OnDestroy, AfterViewInit {
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
 
   page = new Page();
@@ -53,7 +52,7 @@ export class ReceivingOrderComponent
     )
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
-
+  selectedRowData: any;
   protected config = AppConfig.settings.apiServer;
 
   constructor(
@@ -69,7 +68,7 @@ export class ReceivingOrderComponent
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: () => {},
+      drawCallback: () => { },
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
@@ -93,6 +92,8 @@ export class ReceivingOrderComponent
                   tglPesan: this.g.transformDate(rest.tglPesan),
                   tglBrgDikirim: this.g.transformDate(rest.tglBrgDikirim),
                   tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
+                  dateCreate: this.g.transformDate(rest.dateCreate),
+                  timeCreate: this.g.transformTime(rest.timeCreate),
                 };
                 return finalData;
               });
@@ -105,7 +106,7 @@ export class ReceivingOrderComponent
                 data: mappedData,
               });
             });
-        }, );
+        },);
       },
       columns: [
         { data: 'dtIndex', title: '#' },
@@ -157,6 +158,15 @@ export class ReceivingOrderComponent
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
         );
+        $('td', row).on('click', () => {
+          $('td').css({ 'background-color': '' }).removeClass('text-white fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).css({ 'background-color': '#3C3E63' }).addClass('text-white fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
         return row;
       },
     };
@@ -180,7 +190,7 @@ export class ReceivingOrderComponent
       this.router.navigate(['/order/receiving-order/detail']);
     }
   }
-  dtPageChange(event: any) {}
+  dtPageChange(event: any) { }
 
   ngAfterViewInit(): void {
     this.rerenderDatatable();

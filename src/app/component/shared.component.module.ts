@@ -3,6 +3,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { CardModule, GridModule, ButtonDirective } from "@coreui/angular";
 import { PrintButtonSharedComponent } from "./print-btn/print-button.component";
+import { NgxPaginationModule } from "ngx-pagination";
 
 @NgModule({
   imports: [
@@ -10,14 +11,17 @@ import { PrintButtonSharedComponent } from "./print-btn/print-button.component";
     CardModule,
     GridModule,
     HttpClientModule,
-    ButtonDirective
+    ButtonDirective,
+    NgxPaginationModule,
   ],
   declarations: [
     PrintButtonSharedComponent
   ],
   schemas: [],
   exports: [
-    PrintButtonSharedComponent
+    PrintButtonSharedComponent,
+    NgxPaginationModule
+
   ]
 })
 export class SharedComponentModule {}

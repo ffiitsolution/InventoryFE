@@ -15,125 +15,155 @@
 
   <c-card class="mb-4">
     <c-card-body>
-      <c-row>
-        <div class="d-flex">
-          <div class="w-50 p-2">
-            <div class="">
-              <label for="nomorPesanan" class="form-label">{{ "Order Number" | translate }}</label>
-              <div class="d-flex">
-                <input type="text" placeholder="Order Number" class="form-control" id="nomorPesanan" [(ngModel)]="formData.nomorPesanan"
-                  name="nomorPesanan" />
-                <button type="button" class="btn btn-primary ms-2" [cModalToggle]="formModal.id"
-                  (click)="onShowModal()"><i class="fa fa-search"></i></button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="divider mt-4"></div>
-        <div class="d-flex">
-          <div class="w-50 p-2 pb-0">
-            <div class="mb-3">
-              <label for="codeDestination" class="form-label">{{ "Delivery Destination" | translate }}</label>
-              <div class="row">
-                <div class="col-3">
-                  <input placeholder="Code" type="text" class="form-control" id="codeDestination" 
-                    [(ngModel)]="formData.codeDestination" name="codeDestination" readonly />
+      <div class="row">
+        <div class="col-3 pe-0">
+          <div class="d-flex">
+            <div class="p-2">
+              <h5 class="mb-2 p-2" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5>
+              <div class="scroll-hover">
+                <div class="w-100 p-2">
+                  <label for="nomorPesanan" class="form-label">{{ "Nomor pesanan" | translate }}</label>
+                  <div class="d-flex">
+                    <input type="text" placeholder="Nomor pesanan" class="form-control" id="nomorPesanan"
+                      [(ngModel)]="formData.nomorPesanan" name="nomorPesanan" />
+                    <button *ngIf="isShowDetail === false" type="button" class="btn btn-info ms-2"
+                      [cModalToggle]="staticBackdropModal.id" (click)="onShowModal()" readOnly><i
+                        class="fa fa-search text-white"></i></button>
+                  </div>
                 </div>
-                <div class="col-9 px-0 pe-2">
-                  <input placeholder="Destination Name" type="text" class="form-control" id="namaCabang"
-                    [(ngModel)]="formData.namaCabang" name="namaCabang" readonly />
+                <div class="w-100 p-2">
+                  <label for="codeDestination" class="form-label">{{ "Tujuan pengiriman" | translate }}</label>
+                  <input placeholder="Kode - nama tujuan" type="text" class="form-control" id="codeDestination"
+                    [ngModel]="formData.nomorPesanan ? formData.codeDestination + ' - ' + formData.namaCabang : '' "
+                    name="codeDestination" readonly />
+
+                </div>
+
+                <div class="w-100 p-2">
+                  <label for="notes" class="form-label">{{ "Catatan" | translate }}</label>
+                  <input placeholder="Catatan" type="text" class="form-control" id="notes" [(ngModel)]="formData.notes"
+                    name="notes" />
+                </div>
+
+                <div class="w-100 p-2">
+                  <label for="validatedDeliveryDate" class="form-label">{{ "Tanggal kirim barang" | translate }}
+                    <span class="text-danger">*</span></label>
+
+                  <input type="text" id="validatedDeliveryDate" class="form-control"
+                    aria-describedby="validatedDeliveryDate" #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker
+                    autocomplete="off" [(ngModel)]="formData.validatedDeliveryDate"
+                    placeholder="{{ 'Tanggal kirim barang' | translate }}" [minDate]="minDate" [maxDate]="maxDate"
+                    [readOnly]="formData.nomorPesanan === ''" />
+                </div>
+
+                <div class="w-100 p-2">
+                  <label for="tglPesan" class="form-label">{{ "Tanggal Pesanan" | translate }}</label>
+                  <input type="text" id="tglPesan" class="form-control" aria-describedby="tglPesan" #dp="bsDatepicker"
+                    [bsConfig]="dpConfig" [isDisabled]="true" bsDatepicker autocomplete="off"
+                    [(ngModel)]="formData.tglPesan" placeholder="{{ 'Tanggal Pesanan' | translate }}"
+                    [minDate]="minDate" [maxDate]="maxDate" style="pointer-events: none; " />
+                </div>
+
+                <div class="w-100 p-2">
+                  <label for="tglBrgDikirim" class="form-label">{{ "Tanggal Permintaan Kirim" | translate }}</label>
+                  <input type="text" id="tglBrgDikirim" class="form-control" aria-describedby="tglBrgDikirim"
+                    #dp="bsDatepicker" [bsConfig]="dpConfig" [isDisabled]="true" bsDatepicker autocomplete="off"
+                    [(ngModel)]="formData.tglBrgDikirim" placeholder="{{ 'Tanggal permintaan kirim' | translate }}"
+                    [minDate]="minDate" [maxDate]="maxDate" style="pointer-events: none; " />
+                </div>
+
+                <div class="w-100 p-2">
+                  <label for="tglKadaluarsa" class="form-label">{{ "Tanggal Kadaluarsa" | translate }}</label>
+                  <input type="text" id="tglKadaluarsa" class="form-control" aria-describedby="tglK adaluarsa"
+                    #dp="bsDatepicker" [bsConfig]="dpConfig" [isDisabled]="true" bsDatepicker autocomplete="off"
+                    [(ngModel)]="formData.tglKadaluarsa" placeholder="{{ 'Tanggal kadaluarsa' | translate }}"
+                    [minDate]="minDate" [maxDate]="maxDate" style="pointer-events: none; " />
+                </div>
+
+                <div class="w-100 p-2">
+                  <label for="alamat1" class="form-label">{{ "Alamat Tujuan" | translate }}</label>
+                  <textarea placeholder="Alamat tujuan" class="form-control w-100" [(ngModel)]="formData.alamat1"
+                    id="exampleFormControlTextarea1" rows="2" name="alamat1" readonly></textarea>
+                </div>
+
+                <div class="w-100 p-2">
+                  <label for="deliveryStatus" class="form-label">{{ "Status Pengiriman" | translate }}</label>
+                  <input placeholder="Status pengiriman" type="text" class="form-control" id="deliveryStatus"
+                    [(ngModel)]="formData.deliveryStatus" name="deliveryStatus" readonly />
                 </div>
               </div>
-            </div>
-            <div class="d-flex mb-3">
-              <div class="w-100">
-                <label for="alamat1" class="form-label">{{ "Destination Address" | translate }}</label>
-                <textarea placeholder="Destination Address" class="form-control w-100" [(ngModel)]="formData.alamat1"
-                  id="exampleFormControlTextarea1" rows="1" name="alamat1" readonly></textarea>
+
+              <div style="width: 96%;" class="p-2">
+                <button class="btn w-100 btn-info text-white" *ngIf="!isShowDetail"
+                  [disabled]="formData.nomorPesanan === ''" (click)="onAddDetail()">
+                  {{ "Detail Transaksi" | translate }}
+                </button>
               </div>
             </div>
-            <div class="mb-3">
-              <div class="w-100">
-                <label for="deliveryStatus" class="form-label">{{ "Delivery Status" | translate }}</label>
-                <input placeholder="Delivery Status" type="text" class="form-control" id="deliveryStatus"
-                  [(ngModel)]="formData.deliveryStatus" name="deliveryStatus" readonly />
-              </div>
-            </div>
-          </div>
-          <div class="w-50 p-2">
-            <div class="mb-3">
-              <label for="tglPesan" class="form-label">{{ "Order Date" | translate }}</label>
-              <input type="text" id="tglPesan" class="form-control" aria-describedby="tglPesan"
-              #dp="bsDatepicker" [bsConfig]="dpConfig" [isDisabled]="true" bsDatepicker autocomplete="off"
-              [(ngModel)]="formData.tglPesan" placeholder="{{ 'Order date' | translate }}" [minDate]="minDate" [maxDate]="maxDate" style="pointer-events: none; "/>
-            </div>
-            <div class="mb-3">
-              <label for="tglBrgDikirim" class="form-label">{{ "Delivery Date" | translate }}</label>
-              <input type="text" id="tglBrgDikirim" class="form-control" aria-describedby="tglBrgDikirim"
-              #dp="bsDatepicker" [bsConfig]="dpConfig" [isDisabled]="true" bsDatepicker autocomplete="off"
-              [(ngModel)]="formData.tglBrgDikirim" placeholder="{{ 'Delivery date' | translate }}" [minDate]="minDate" [maxDate]="maxDate" style="pointer-events: none; "/>
-            </div>
-            <div class="mb-3">
-              <label for="tglKadaluarsa" class="form-label">{{ "Expiration Date" | translate }}</label>
-              <input type="text" id="tglKadaluarsa" class="form-control" aria-describedby="tglK adaluarsa"
-              #dp="bsDatepicker" [bsConfig]="dpConfig" [isDisabled]="true" bsDatepicker autocomplete="off"
-              [(ngModel)]="formData.tglKadaluarsa" placeholder="{{ 'Expiration date' | translate }}" [minDate]="minDate" [maxDate]="maxDate" style="pointer-events: none; "/>
-            </div>
+
+            <hr class="red-line " />
           </div>
 
         </div>
 
-        <div class="d-flex">
-          <div class="w-50 p-2">
-
+        <div class="col-9 ps-0">
+          <div class="p-2" *ngIf="isShowDetail">
+            <app-add-data-detail-delivery-order>
+            </app-add-data-detail-delivery-order>
           </div>
         </div>
-      </c-row>
+      </div>
     </c-card-body>
   </c-card>
 
-  <c-card class="mb-4">
-    <c-card-body class="slide-in">
-      <div class="d-flex">
-        <div class="w-50 p-2">
-          <div class="mb-3">
-            <label for="validatedDeliveryDate" class="form-label">{{ "Validated Delivery Date" | translate }} <span
-                class="text-danger">*</span></label>
-
-            <input type="text" id="validatedDeliveryDate" class="form-control" aria-describedby="validatedDeliveryDate"
-              #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker autocomplete="off"
-              [(ngModel)]="formData.validatedDeliveryDate" placeholder="{{ 'Validated Delivery Date' | translate }}" [minDate]="minDate" [maxDate]="maxDate" [readOnly]="formData.nomorPesanan === ''"/>
-
-          </div>
-        </div>
-        <div class="w-50 p-2">
-          <div class="mb-3">
-            <label for="notes" class="form-label">{{ "Notes" | translate }}</label>
-            <input placeholder="Notes" type="text" class="form-control" id="notes" [(ngModel)]="formData.notes" name="notes" />
-          </div>
-        </div>
-      </div>
-      <div class="d-flex justify-content-end mb-3">
-        <button class="btn btn-primary" [disabled]="formData.nomorPesanan === ''" (click)="onAddDetail()">
-          {{ "Detail Transaksi" | translate }}
-        </button>
-      </div>
-
-    </c-card-body>
-
-    <c-modal #formModal [fullscreen]="false" [visible]="isShowModal" [backdrop]="true" #modalLg size="xl"
-      id="formModal">
-      <c-modal-header>
-        <h5 cModalTitle>Add Receiving Order</h5>
-        <button (click)="isShowModal = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModal.id"
-          cButtonClose><i class="fa fa-times"></i></button>
-      </c-modal-header>
+  <c-modal #staticBackdropModal [visible]="isShowModal" backdrop="static" id="staticBackdropModal" #modalLg size="xl">
+    <c-modal-header>
+      <h5 cModalTitle>Add Receiving Order</h5>
+      <button (click)="isShowModal = false" type="button" class="btn btn-info ms-2"
+        [cModalToggle]="staticBackdropModal.id" cButtonClose><i class="fa fa-times text-white"></i></button>
+    </c-modal-header>
+    <c-card>
       <c-modal-body>
-        <div class="table-responsive">
-          <table datatable [dtOptions]=" dtOptions" class="row-border hover w-100"></table>
+        <div class="fade-in">
+          <c-card class="mb-4 ">
+            <c-card-body>
+              <div class="table-responsive">
+                <table datatable [dtOptions]="dtOptions" class="row-border hover w-100"></table>
+              </div>
+            </c-card-body>
+          </c-card>
+        </div>
+        <div class="fade-in">
+
+          <c-card *ngIf="selectedRowData">
+            <c-card-body class="bg-info bg-opacity-10">
+              <div class="row p-2">
+                <div class="col">
+                  <label for="alamat1" class="form-label">{{ "Alamat" | translate }}</label>
+                  <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                    [(ngModel)]="selectedRowData.alamat1" name="alamat1" />
+                </div>
+              </div>
+              <div class="row p-2">
+                <div class="col-6">
+                  <label for="alamat1" class="form-label">{{ "Keterangan 1" | translate }}</label>
+                  <input type="text" readonly placeholder="Keterangan 1" class="form-control" id="nomorPesanan"
+                    [(ngModel)]="selectedRowData.keterangan1" name="keterangan1" />
+                </div>
+                <div class="col-6">
+                  <label for="alamat1" class="form-label">{{ "Keterangan 1" | translate }}</label>
+                  <input type="text" readonly placeholder="Keterangan 2" class="form-control" id="nomorPesanan"
+                    [(ngModel)]="selectedRowData.keterangan2" name="keterangan2" />
+                </div>
+              </div>
+            </c-card-body>
+          </c-card>
         </div>
       </c-modal-body>
-    </c-modal>
-  </c-card>
+    </c-card>
+
+
+  </c-modal>
+  <div class="modal-bg-backdrop" *ngIf="isShowModal"></div>
+
 </div>

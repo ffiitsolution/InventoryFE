@@ -61,7 +61,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     BsDatepickerModule.forRoot(),
     ModalModule,
     TableModule,
-    SharedComponentModule
+    SharedComponentModule,
+    
   ],
   declarations: [
     DeliveryItemComponent,
