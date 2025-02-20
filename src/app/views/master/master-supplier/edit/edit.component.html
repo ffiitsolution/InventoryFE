@@ -9,69 +9,93 @@
   <c-card class="mb-4">
     <c-card-body>
       <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Kode" | translate
-          }}</label>
-          <div class="col-sm-10">
-            <input
-              type="text"
-              class="form-control"
-              formControlName="code"
-              maxlength="15"
-            />
+        <div class="row justify-content-start">
+          <div class="col-6 mb-3">
+            <div class="row">
+              <label class="col-sm-4 col-form-label">{{
+                "Kode" | translate
+              }}</label>
+              <div class="col-sm-8">
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="code"
+                  maxlength="15"
+                />
+              </div>
+              <span *ngIf="isInvalid('code')" class="col-sm-10 text-danger"
+                >{{ "Wajib diisi" | translate }}
+              </span>
+            </div>
           </div>
-          <div class="col-sm-2"></div>
-          <span *ngIf="isInvalid('code')" class="col-sm-10 text-danger"
-            >{{ "Wajib diisi" | translate }}
-          </span>
+          <div class="col-6 mb-3">
+            <div class="row">
+              <label class="col-sm-4 col-form-label">{{
+                "Nama Supplier" | translate
+              }}</label>
+              <div class="col-sm-8">
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="name"
+                  (input)="convertToUppercase('name')"
+                  maxlength="50"
+                />
+              </div>
+              <span *ngIf="isInvalid('name')" class="col-sm-10 text-danger"
+                >{{ "Wajib diisi" | translate }}
+              </span>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="row">
+              <label class="col-sm-4 col-form-label">{{
+                "Gudang" | translate
+              }}</label>
+              <div class="col-sm-8">
+                <ngx-select-dropdown
+                  [multiple]="false"
+                  [options]="defaultOrderGudangList"
+                  [config]="configDefaultGudangSelect"
+                  [bindLabel]="'kodeSingkat'"
+                  [bindValue]="'kodeSingkat'"
+                  formControlName="warehouse"
+                >
+                </ngx-select-dropdown>
+              </div>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="warehouseDesc"
+                hidden
+              />
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="row">
+              <label class="col-sm-4 col-form-label">{{
+                "RSC" | translate
+              }}</label>
+              <div class="col-sm-8">
+                <ngx-select-dropdown
+                  [multiple]="false"
+                  [options]="rscList"
+                  [config]="configRSCSelect"
+                  [bindLabel]="'KODE_RSC'"
+                  [bindValue]="'KODE_RSC'"
+                  formControlName="rsc"
+                >
+                </ngx-select-dropdown>
+              </div>
+            </div>
+          </div>
         </div>
+        <div class="divider"></div>
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
-            "Nama Supplier" | translate
+            "Alamat 1" | translate
           }}</label>
-          <div class="col-sm-10">
-            <input
-              type="text"
-              class="form-control"
-              formControlName="name"
-              (input)="convertToUppercase('name')"
-              maxlength="50"
-            />
-          </div>
-          <div class="col-sm-2"></div>
-          <span *ngIf="isInvalid('name')" class="col-sm-10 text-danger"
-            >{{ "Wajib diisi" | translate }}
-          </span>
-        </div>
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Gudang" | translate
-          }}</label>
-          <div class="col-sm-5">
-            <ngx-select-dropdown
-              [multiple]="false"
-              [options]="defaultOrderGudangList"
-              [config]="configDefaultGudangSelect"
-              [bindLabel]="'kodeSingkat'"
-              [bindValue]="'kodeSingkat'"
-              formControlName="warehouse"
-            >
-            </ngx-select-dropdown>
-          </div>
-          <div class="col-sm-5">
-            <input
-              type="text"
-              class="form-control"
-              formControlName="warehouseDesc"
-            />
-          </div>
-        </div>
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Alamat" | translate
-          }}</label>
-          <div class="col-sm-5">
+          <div class="col-sm-4">
             <input
               type="text"
               class="form-control"
@@ -79,24 +103,10 @@
               maxlength="40"
             />
           </div>
-          <div class="col-sm-5">
-            <input
-              type="text"
-              class="form-control"
-              formControlName="address2"
-              maxlength="40"
-            />
-          </div>
-          <div class="col-sm-2"></div>
-          <span *ngIf="isInvalid('address1')" class="col-sm-10 text-danger"
-            >{{ "Wajib diisi" | translate }}
-          </span>
-        </div>
-        <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
             "Kota" | translate
           }}</label>
-          <div class="col-sm-5">
+          <div class="col-sm-4">
             <ngx-select-dropdown
               [multiple]="false"
               [options]="cityList"
@@ -107,19 +117,28 @@
             >
             </ngx-select-dropdown>
           </div>
-          <div class="col-sm-5">
-            <input
-              type="text"
-              class="form-control"
-              formControlName="cityDesc"
-            />
-          </div>
+
+          <div class="col-sm-2"></div>
+          <span *ngIf="isInvalid('address1')" class="col-sm-10 text-danger"
+            >{{ "Wajib diisi" | translate }}
+          </span>
         </div>
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
+            "Alamat 2" | translate
+          }}</label>
+          <div class="col-sm-4">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="address2"
+              maxlength="40"
+            />
+          </div>
+          <label class="col-sm-2 col-form-label">{{
             "Kode POS" | translate
           }}</label>
-          <div class="col-sm-10">
+          <div class="col-sm-4">
             <input
               type="text"
               class="form-control"
@@ -128,11 +147,14 @@
             />
           </div>
         </div>
+
+        <div class="divider"></div>
+
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
-            "Telepon" | translate
+            "Telepon 1" | translate
           }}</label>
-          <div class="col-sm-5">
+          <div class="col-sm-4">
             <input
               type="text"
               class="form-control"
@@ -140,20 +162,10 @@
               maxlength="40"
             />
           </div>
-          <div class="col-sm-5">
-            <input
-              type="text"
-              class="form-control"
-              formControlName="telephone2"
-              maxlength="40"
-            />
-          </div>
-        </div>
-        <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
             "Kontak Pribadi" | translate
           }}</label>
-          <div class="col-sm-10">
+          <div class="col-sm-4">
             <input
               type="text"
               class="form-control"
@@ -164,9 +176,20 @@
         </div>
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
+            "Telepon 2" | translate
+          }}</label>
+          <div class="col-sm-4">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="telephone2"
+              maxlength="40"
+            />
+          </div>
+          <label class="col-sm-2 col-form-label">{{
             "Telepon Kontak" | translate
           }}</label>
-          <div class="col-sm-10">
+          <div class="col-sm-4">
             <input
               type="text"
               class="form-control"
@@ -176,8 +199,10 @@
           </div>
         </div>
         <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{ "FAX" | translate }}</label>
-          <div class="col-sm-5">
+          <label class="col-sm-2 col-form-label">{{
+            "FAX 1" | translate
+          }}</label>
+          <div class="col-sm-4">
             <input
               type="text"
               class="form-control"
@@ -185,20 +210,10 @@
               maxlength="30"
             />
           </div>
-          <div class="col-sm-5">
-            <input
-              type="text"
-              class="form-control"
-              formControlName="fax2"
-              maxlength="30"
-            />
-          </div>
-        </div>
-        <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
             "Email" | translate
           }}</label>
-          <div class="col-sm-10">
+          <div class="col-sm-4">
             <input
               type="text"
               class="form-control"
@@ -208,29 +223,25 @@
               maxlength="50"
             />
           </div>
-          <div class="col-sm-2"></div>
-          <span *ngIf="!isEmailValid" class="col-sm-10 text-danger">{{
+          <div class="col-sm-6"></div>
+          <span *ngIf="!isEmailValid" class="col-sm-6 text-danger">{{
             "Alamat email tidak valid" | translate
           }}</span>
         </div>
-
         <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{ "RSC" | translate }}</label>
-          <div class="col-sm-5">
-            <ngx-select-dropdown
-              [multiple]="false"
-              [options]="rscList"
-              [config]="configRSCSelect"
-              [bindLabel]="'KODE_RSC'"
-              [bindValue]="'KODE_RSC'"
-              formControlName="rsc"
-            >
-            </ngx-select-dropdown>
-          </div>
-          <div class="col-sm-5">
-            <input type="text" class="form-control" formControlName="rscDesc" />
+          <label class="col-sm-2 col-form-label">{{
+            "FAX 2" | translate
+          }}</label>
+          <div class="col-sm-4">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="fax2"
+              maxlength="30"
+            />
           </div>
         </div>
+        <div class="divider"></div>
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
             "Keterangan" | translate
@@ -245,14 +256,14 @@
           </div>
         </div>
         <!-- <div class="mb-3 row">
-            <label class="col-sm-2 col-form-label">{{ "CAD" | translate }}</label>
-            <div class="col-sm-5">
-              <input type="text" class="form-control" formControlName="cad1" />
-            </div>
-            <div class="col-sm-5">
-              <input type="text" class="form-control" formControlName="cad2" />
-            </div>
-          </div> -->
+          <label class="col-sm-2 col-form-label">{{ "CAD" | translate }}</label>
+          <div class="col-sm-5">
+            <input type="text" class="form-control" formControlName="cad1" />
+          </div>
+          <div class="col-sm-5">
+            <input type="text" class="form-control" formControlName="cad2" />
+          </div>
+        </div> -->
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
             "Status Aktif" | translate

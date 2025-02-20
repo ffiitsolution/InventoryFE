@@ -27,6 +27,8 @@
               class="form-control"
               formControlName="desc"
               [readOnly]="editing"
+              (keypress)="conditionInput($event, 'alphanumeric')"
+              maxlength="30"
             />
             <span *ngIf="isFieldValid('desc')" class="text-danger">{{
               "Wajib diisi" | translate

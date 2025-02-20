@@ -84,6 +84,7 @@ export class ReceivingOrderComponent
             .subscribe((resp: any) => {
               const mappedData = resp.data.map((item: any, index: number) => {
                 // hapus rn
+                console.log(item);
                 const { rn, ...rest } = item;
                 const finalData = {
                   ...rest,
@@ -128,6 +129,7 @@ export class ReceivingOrderComponent
         {
           data: 'statusPesanan',
           title: 'Status Pesanan',
+          searchable: true,
           render: (data) => {
             const isCancel = data == CANCEL_STATUS;
             const label = this.g.getStatusOrderLabel(data);

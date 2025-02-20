@@ -10,9 +10,12 @@ import {
   SendOrderToWarehouseComponent,
   SendOrderToWarehouseAddComponent,
   AddDataDetailSendOrderToWarehouseComponent,
-  DetailSendOrderToWarehouseComponent
-
+  DetailSendOrderToWarehouseComponent,
 } from './send-order-to-warehouse';
+import {
+  SendOrderToSupplierViaRSCComponent,
+  AddDataSendOrderToSupplierComponent,
+} from './send-order-to-supplier';
 const routes: Routes = [
   {
     path: '',
@@ -48,8 +51,15 @@ const routes: Routes = [
       {
         path: 'send-order-to-warehouse/detail',
         component: DetailSendOrderToWarehouseComponent,
-      },      
-      
+      },
+      {
+        path: 'send-order-to-supplier-via-rsc',
+        component: SendOrderToSupplierViaRSCComponent,
+      },
+      {
+        path: 'send-order-to-supplier-via-rsc/add-data',
+        component: AddDataSendOrderToSupplierComponent,
+      },
     ],
   },
 ];

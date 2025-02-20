@@ -14,7 +14,14 @@
             "Kode" | translate
           }}</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" formControlName="code" />
+            <input
+            type="text"
+            class="form-control"
+            formControlName="code"
+            maxlength="10"
+            (keypress)="conditionInput($event, 'capitalalphanumeric')"
+            (input)="convertToUppercase('code')"
+          />
           </div>
         </div>
         <div class="mb-3 row">
@@ -23,11 +30,13 @@
           }}</label>
           <div class="col-sm-10">
             <input
-              type="text"
-              class="form-control"
-              formControlName="desc"
-              [readOnly]="editing"
-            />
+            type="text"
+            class="form-control"
+            formControlName="desc"
+            [readOnly]="editing"
+            (keypress)="conditionInput($event, 'alphanumeric')"
+            maxlength="30"
+          />
           </div>
         </div>
         <div class="divider"></div>

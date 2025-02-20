@@ -1,1 +1,147 @@
-<p>edit works!</p>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <h5>{{ "Edit" | translate }} {{ "Lokasi" | translate }}</h5>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body class="p-4">
+      <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+        <div class="row justify-content-start">
+          <div class="col-6">
+            <div class="mb-3 row">
+              <label class="col-sm-4 col-form-label">{{
+                "Kode Lokasi" | translate
+              }}</label>
+              <div class="col-sm-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="kodeLocation"
+                  [readOnly]="adding"
+                  maxlength="10"
+                />
+                <span
+                  *ngIf="isFieldValid('kodeLocation')"
+                  class="text-danger"
+                  >{{ "Wajib diisi" | translate }}</span
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="mb-3 row">
+              <label class="col-sm-4 col-form-label">{{
+                "Keterangan Lokasi" | translate
+              }}</label>
+              <div class="col-sm-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="keteranganLokasi"
+                  [readOnly]="adding"
+                  maxlength="50"
+                />
+                <span
+                  *ngIf="isFieldValid('keteranganLokasi')"
+                  class="text-danger"
+                  >{{ "Wajib diisi" | translate }}</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row justify-content-start">
+          <div class="col-6">
+            <div class="mb-3 row">
+              <label class="col-sm-4 col-form-label">{{
+                "Inisial Lokasi" | translate
+              }}</label>
+              <div class="col-sm-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="kodeInisial"
+                  [readOnly]="adding"
+                  (input)="convertToUppercase('kodeInisial')"
+                  maxlength="3"
+                />
+                <span *ngIf="isFieldValid('kodeInisial')" class="text-danger">{{
+                  "Wajib diisi" | translate
+                }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="mb-3 row">
+              <label class="col-sm-4 col-form-label">{{
+                "Default RSC" | translate
+              }}</label>
+              <div class="col-sm-6">
+                <ngx-select-dropdown
+                  [multiple]="false"
+                  [config]="configSelectCity"
+                  [options]="listRsc"
+                  formControlName="defaultRsc"
+                  id="default-location"
+                >
+                </ngx-select-dropdown>
+                <span *ngIf="isFieldValid('defaultRsc')" class="text-danger">{{
+                  "Wajib diisi" | translate
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row justify-content-start">
+          <div class="col-6">
+            <div class="mb-3 row">
+              <label class="col-sm-4 col-form-label">{{
+                "Lokasi Gudang" | translate
+              }}</label>
+              <div class="col-sm-6">
+                <ngx-select-dropdown
+                  [multiple]="false"
+                  [config]="configSelectCity"
+                  [options]="listCity"
+                  formControlName="lokasiGudang"
+                  id="default-location"
+                >
+                </ngx-select-dropdown>
+                <span
+                  *ngIf="isFieldValid('lokasiGudang')"
+                  class="text-danger"
+                  >{{ "Wajib diisi" | translate }}</span
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-6"></div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="d-grid gap-3 d-md-flex justify-content-end">
+          <button
+            class="btn btn-light btn-120"
+            (click)="onPreviousPressed()"
+            [disabled]="adding"
+          >
+            {{ "Kembali" | translate }}
+          </button>
+          <button
+            class="btn btn-info text-white btn-120"
+            type="submit"
+            [disabled]="adding"
+          >
+            <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
+            <span *ngIf="!adding">{{ "Edit" | translate }}</span>
+          </button>
+        </div>
+      </form>
+    </c-card-body>
+  </c-card>
+</div>

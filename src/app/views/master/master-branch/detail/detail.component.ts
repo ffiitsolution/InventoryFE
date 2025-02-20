@@ -20,10 +20,7 @@ export class MasterBranchDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.detail = JSON.parse(
-      this.g.getLocalstorage(LS_INV_SELECTED_BRANCH)
-    );
-    console.log("this.detail", this.detail);
+    this.detail = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_BRANCH));
     this.myForm = this.form.group({
       namaCabang: [this.detail.namaCabang],
       kodeCabang: [this.detail.kodeCabang],
@@ -41,7 +38,7 @@ export class MasterBranchDetailComponent implements OnInit {
       alamatEmail: [this.detail.alamatEmail],
       keteranganRsc: [this.detail.keteranganRsc],
       kodeRegion: [this.detail.kodeRegion],
-      keteranganRegion : [this.detail.keteranganRegion],  
+      keteranganRegion: [this.detail.keteranganRegion],
       kodeArea: [this.detail.kodeArea],
       keteranganArea: [this.detail.keteranganArea],
       contactPerson: [this.detail.contactPerson],
@@ -54,7 +51,7 @@ export class MasterBranchDetailComponent implements OnInit {
       userCreate: [this.detail.userCreate],
       userUpdate: [this.detail.userUpdate],
       dateCreate: [this.detail.dateCreate],
-      dateupdate: [this.detail.dateUpdate], 
+      dateupdate: [this.detail.dateUpdate],
     });
   }
 

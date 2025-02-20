@@ -24,13 +24,12 @@ export class MasterUserAddComponent implements OnInit {
     customComparator: () => {}, // Custom sorting comparator
     moreText: 'lebih banyak', // Text for "more" options
     noResultsFound: 'Tidak ada hasil', // Text when no results are found
-    searchOnKey: 'name' // Key to search
+    searchOnKey: 'name', // Key to search
   };
-  configSelectDefaultLokasi: any ;
-  configSelectRole: any ;
+  configSelectDefaultLokasi: any;
+  configSelectRole: any;
   isNotMatchPass: boolean = false;
   listRole: any[] = [];
-
 
   constructor(
     private toastr: ToastrService,
@@ -38,66 +37,65 @@ export class MasterUserAddComponent implements OnInit {
     private router: Router,
     private g: GlobalService,
     private service: AppService,
-    private dataService: DataService,
+    private dataService: DataService
   ) {}
 
   ngOnInit(): void {
     this.myForm = this.form.group({
-      kodeUser:  ['', Validators.required],
-      namaUser:  ['', Validators.required],
-      kodePassword:  ['', Validators.required],
-      konfirmasiKodePassword:  ['', Validators.required],
-      statusAktif:  ['A', Validators.required],
-      defaultLocation:  [null],
-      jabatan:  [''],
-      roleID:[''],
+      kodeUser: ['', Validators.required],
+      namaUser: ['', Validators.required],
+      kodePassword: ['', Validators.required],
+      konfirmasiKodePassword: ['', Validators.required],
+      statusAktif: ['A', Validators.required],
+      defaultLocation: [null],
+      jabatan: [''],
+      roleID: [''],
     });
 
     this.configSelectDefaultLokasi = {
       ...this.baseConfig,
       placeholder: 'Pilih Default Lokasi',
       searchPlaceholder: 'Cari Default Lokasi',
-      limitTo: this.listLokasi.length
+      limitTo: this.listLokasi.length,
     };
     this.configSelectRole = {
       ...this.baseConfig,
       placeholder: 'Pilih Role',
       searchPlaceholder: 'Cari Role',
-      limitTo: this.listRole.length
+      limitTo: this.listRole.length,
     };
     this.dataService
-    .postData(this.g.urlServer + '/api/location/dropdown-lokasi',{})
-    .subscribe((resp: any) => {
-      this.listLokasi = resp.map((item: any) => ({
-        id: item.KODE_LOCATION,
-        name: item.KETERANGAN_LOKASI,
-      }));      
-    });
+      .postData(this.g.urlServer + '/api/location/dropdown-lokasi', {})
+      .subscribe((resp: any) => {
+        this.listLokasi = resp.map((item: any) => ({
+          id: item.KODE_LOCATION,
+          name: item.KETERANGAN_LOKASI,
+        }));
+      });
 
     this.dataService
-    .postData(this.g.urlServer + '/api/role/dropdown-role',{})
-    .subscribe((resp: any) => {
-      this.listRole = resp.map((item: any) => ({
-        id: item.ID,
-        name: item.NAME,
-      }));      
-    });
+      .postData(this.g.urlServer + '/api/role/dropdown-role', {})
+      .subscribe((resp: any) => {
+        this.listRole = resp.map((item: any) => ({
+          id: item.ID,
+          name: item.NAME,
+        }));
+      });
   }
 
   onSubmit(): void {
     const { controls, invalid } = this.myForm;
     if (invalid || this.isNotMatchPass) {
-      console.log("inside invalid")
       this.g.markAllAsTouched(this.myForm);
     } else {
       this.adding = true;
       const param = {
-        kodeUser:  controls?.['kodeUser']?.value,
-        kodePassword:  controls?.['kodePassword']?.value,
+        kodeUser: controls?.['kodeUser']?.value,
+        kodePassword: controls?.['kodePassword']?.value,
         namaUser: controls?.['namaUser']?.value,
         statusAktif: controls?.['statusAktif']?.value,
         jabatan: controls?.['jabatan']?.value,
-        defaultLocation: controls?.['defaultLocation']?.value?.id ?? " ",
+        defaultLocation: controls?.['defaultLocation']?.value?.id ?? ' ',
         roleID: controls?.['roleID']?.value?.id,
       };
       this.service.insert('/api/users', param).subscribe({
@@ -150,16 +148,17 @@ export class MasterUserAddComponent implements OnInit {
   }
 
   onChangePassword(data: any, type: string) {
-    if(type === 'user') {
-      if((this.myForm.value.kodePassword!='' && this.myForm.value.konfirmasiKodePassword!='') && (this.myForm.value.kodePassword != this.myForm.value.konfirmasiKodePassword)) {  
-        this.isNotMatchPass = true
-      }
-      else {
-        this.isNotMatchPass = false
+    if (type === 'user') {
+      if (
+        this.myForm.value.kodePassword != '' &&
+        this.myForm.value.konfirmasiKodePassword != '' &&
+        this.myForm.value.kodePassword !=
+          this.myForm.value.konfirmasiKodePassword
+      ) {
+        this.isNotMatchPass = true;
+      } else {
+        this.isNotMatchPass = false;
       }
     }
-
   }
-  
-
 }

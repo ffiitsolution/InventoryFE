@@ -29,32 +29,32 @@ export class MasterCompanyComponent
   isFilterShown: boolean = false;
   selectedStatusFilter: any = '';
 
-
   constructor(
     private dataService: DataService,
     private g: GlobalService,
     private translation: TranslationService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.g.changeTitle(this.translation.instant('Master') + ' ' + this.translation.instant('Perusahaan') + ' - ' + this.g.tabTitle);
+    this.g.changeTitle(
+      this.translation.instant('Master') +
+        ' ' +
+        this.translation.instant('Perusahaan') +
+        ' - ' +
+        this.g.tabTitle
+    );
   }
 
   actionBtnClick(action: string) {
     let data = this.selectedRowData;
     this.g.alertConfirm(action, JSON.stringify(data)).then((result) => {
-      console.log(result);
+      //
     });
     if (action === 'edit') {
     }
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy(): void {}
 
-  }
-
-  ngAfterViewInit(): void {
-
-  }
+  ngAfterViewInit(): void {}
 }

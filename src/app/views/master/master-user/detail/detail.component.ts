@@ -30,7 +30,6 @@ export class MasterUserDetailComponent implements OnInit {
     this.detail = JSON.parse(
       this.g.getLocalstorage(LS_INV_SELECTED_USER)
     );
-    console.log("this.detail", this.detail);
     this.myForm = this.form.group({
       kodeUser: [this.detail.kodeUser],
       namaUser: [this.detail.namaUser],
@@ -70,8 +69,6 @@ export class MasterUserDetailComponent implements OnInit {
         this.listDefaultLokasi = filteredLokasiByUserLoc;
         const listLocations = this.listDefaultLokasi.map(item => item.name);
         const locationString = listLocations.join(",   ");
-
-        console.log("locationString", locationString)
         this.myForm.get('location')?.setValue(locationString); 
       });
     });
