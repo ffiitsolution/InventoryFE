@@ -32,6 +32,7 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   configSelectRole: any ;
   isNotMatchPass: boolean = false;
   listRole: any[] = [];
+  
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   bsConfig: Partial<BsDatepickerConfig>;
   listGudang: any[] = [];
