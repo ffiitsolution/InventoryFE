@@ -3,6 +3,7 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { TranslationService } from 'src/app/service/translation.service';
@@ -56,8 +57,12 @@ export class AddDataDetailDeliveryComponent
   buttonCaptionView: String = 'Lihat';
   public loading: boolean = false;
   page: number = 1;
-
+  listCurrentPage: number = 1;
+  totalLengthList: number = 1;
+  searchDetail = '';
   protected config = AppConfig.settings.apiServer;
+  filteredListTypeOrder: any[] = [];
+  validationMessages: { [key: number]: string } = {};
 
   constructor(
     public g: GlobalService,
@@ -67,7 +72,6 @@ export class AddDataDetailDeliveryComponent
     private appService: AppService,
     private toastr: ToastrService,
   ) {
-    this.g.navbarVisibility = true;
     this.selectedOrder = JSON.parse(this.selectedOrder);
     this.getDeliveryItemDetails()
   }
@@ -101,6 +105,7 @@ export class AddDataDetailDeliveryComponent
           qtyBPesanOld: data.qtyPesanBesar,
           totalQtyPesanOld: data.totalQtyPesan
         }));
+        this.filteredListTypeOrder = this.listOrderData;
         this.totalLength = res?.data?.length;
         this.page = 1;
         setTimeout(() => {
@@ -114,16 +119,38 @@ export class AddDataDetailDeliveryComponent
     );
   }
 
-  onInputValueItemDetail(event: any, index: number) {
+  onInputValueItemDetail(event: any, index: number, type: string, qtyType: string) {
     const target = event.target;
-    const value = target.value;
 
-    if (target.type === 'number') {
-      this.listOrderData[index][target.name] = Number(value);
+    const value = target.value;
+    let validationMessage = '';
+
+    if (type === 'numeric') {
+      const numericValue = parseFloat(value) || 0;
+
+      if (this.listOrderData[index]) {
+        this.listOrderData[index][target.name] = numericValue;
+        let newTempTotal = 0;
+        if (qtyType === 'besar') {
+          newTempTotal = numericValue * (this.listOrderData[index].konversi || 1) +
+            (this.listOrderData[index].qtyPesanKecil || 0);
+        } else if (qtyType === 'kecil') {
+          newTempTotal = this.listOrderData[index].qtyPesanBesar * (this.listOrderData[index].konversi || 1) + numericValue;
+        }
+        if (newTempTotal > (this.listOrderData[index].totalQtyPesanOld || 0)) {
+          validationMessage = `qty kirim harus < dari qty pesan`;
+        }
+      }
     } else {
-      this.listOrderData[index][target.name] = value;
+      if (this.listOrderData[index]) {
+        this.listOrderData[index][target.name] = value;
+      }
     }
+
+    // Simpan pesan validasi berdasarkan index
+    this.validationMessages[index] = validationMessage;
   }
+
   onFilterSearch(
     listData: any[],
     filterText: string,
@@ -135,11 +162,18 @@ export class AddDataDetailDeliveryComponent
   ngAfterViewInit(): void {
   }
   ngOnDestroy(): void {
-    this.g.navbarVisibility = true;
   }
 
   onBackPressed() {
     this.router.navigate(['/transaction/delivery-item/add-data']);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['listOrderData'] && changes['listOrderData'].currentValue) {
+      this.filteredListTypeOrder = JSON.parse(
+        JSON.stringify(this.listOrderData)
+      );
+    }
   }
 
   onPageChange(event: number) {
@@ -157,7 +191,8 @@ export class AddDataDetailDeliveryComponent
 
     const param = this.listOrderData
       .map((data: any) => {
-        totalKirim = (data.qtyPesanBesar * data.konversi) + data.qtyPesanKecil;
+
+        totalKirim = this.helper.sanitizedNumber((data.qtyPesanBesar * data.konversi).toString()) + this.helper.sanitizedNumber(data.qtyPesanKecil);
 
         if (totalKirim > data.totalQtyPesanOld) {
           this.toastr.error(
@@ -183,6 +218,12 @@ export class AddDataDetailDeliveryComponent
           satuanKecil: data.satuanKecil,
           satuanBesar: data.satuanBesar,
           totalQtyPesanOld: data.totalQtyPesanOld,
+          tglKirimGudang: moment(this.selectedOrder.validatedDeliveryDate, 'DD-MM-YYYY').set({
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+            milliseconds: 0,
+          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
         };
       })
       .filter((item) => item !== null); // Hapus item yang tidak valid
@@ -211,5 +252,36 @@ export class AddDataDetailDeliveryComponent
         this.adding = false;
       },
     });
+  }
+
+  onSearchDetail(event: any) {
+    this.searchDetail = event?.target?.value;
+    if (event?.target?.value) {
+      this.filteredListTypeOrder = this.listOrderData.filter(
+        (value: any) =>
+          Object.values(value).some(
+            (columnValue) =>
+              typeof columnValue === 'string' &&
+              columnValue
+                .toLowerCase()
+                .includes(this.searchDetail.toLowerCase())
+          ) ||
+          (value.items &&
+            Array.isArray(value.items) &&
+            value.items.some((item: any) =>
+              Object.values(item).some(
+                (nestedValue: any) =>
+                  typeof nestedValue === 'string' &&
+                  nestedValue
+                    .toLowerCase()
+                    .includes(this.searchDetail.toLowerCase())
+              )
+            ))
+      );
+    } else {
+      this.filteredListTypeOrder = JSON.parse(
+        JSON.stringify(this.listOrderData)
+      );
+    }
   }
 }

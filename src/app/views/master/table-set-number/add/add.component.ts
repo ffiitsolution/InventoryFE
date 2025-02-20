@@ -59,6 +59,44 @@ export class TableSetNumberAddComponent implements OnInit {
     }
   }
 
+  conditionInput(event: any, type: string): boolean {
+    var inp = String.fromCharCode(event.keyCode);
+    let temp_regex =
+      type == 'alphanumeric'
+        ? /^[a-zA-Z0-9 -]+$/
+        : type == 'alphabet'
+        ? /^[a-zA-Z -]+$/
+        : type == 'city'
+        ? /^[a-zA-Z0-9 -.]$/
+        : type == 'setNum'
+        ? /^[a-zA-Z0-9 .()\-/]$/
+        : type == 'numeric'
+        ? /^[0-9]$/
+        : type == 'phone'
+        ? /^[0-9-]$/
+        : type == 'email'
+        ? /^[a-zA-Z0-9@._-]$/
+        : type == 'excludedSensitive'
+        ? /^[a-zA-Z0-9 .,_@-]*$/
+        : type == 'kodeSingkat'
+        ? /^[a-zA-Z]+$/
+        : /^[a-zA-Z.() ,\-]*$/;
+
+    if (temp_regex.test(inp)) return true;
+    else {
+      event.preventDefault();
+      return false;
+    }
+  }
+
+
+  convertToUppercase(id: any) {
+    const control = this.myForm.get(id);
+    if (control) {
+      control.setValue(control.value.toUpperCase(), { emitEvent: false });
+    }
+  }
+
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_SET_NUMBER);
     this.router.navigate(['/master/master-set-number']);

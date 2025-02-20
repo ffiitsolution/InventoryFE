@@ -20,7 +20,6 @@ export class MasterLocationAddComponent implements OnInit {
   listCity: any[] = [];
   listRsc: any[] = [];
 
-
   constructor(
     private toastr: ToastrService,
     private form: FormBuilder,
@@ -28,7 +27,7 @@ export class MasterLocationAddComponent implements OnInit {
     private g: GlobalService,
     private service: AppService,
     private dataService: DataService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.myForm = this.form.group({
@@ -40,7 +39,7 @@ export class MasterLocationAddComponent implements OnInit {
       supportTo: ['D'],
       user: [''],
       statusSync: ['T'],
-      mainMenu: ['T']
+      mainMenu: ['T'],
     });
 
     this.getSelectCityConfig();
@@ -54,36 +53,36 @@ export class MasterLocationAddComponent implements OnInit {
       search: true, // Enable search functionality
       height: '200px', // Dropdown height
       placeholder: 'Pilih', // Placeholder text
-      customComparator: () => { }, // Custom sorting comparator
+      customComparator: () => {}, // Custom sorting comparator
       limitTo: 8, // Limit the number of displayed options
       moreText: 'lebih banyak', // Text for "more" options
       noResultsFound: 'Tidak ada hasil', // Text when no results are found
       searchPlaceholder: 'Cari Lokasi', // Placeholder for the search input
-      searchOnKey: 'name' // Key to search
-    }
+      searchOnKey: 'name', // Key to search
+    };
   }
 
-  getCityDropdown(){
+  getCityDropdown() {
     this.dataService
-    .postData(this.g.urlServer + '/api/city/dropdown-city',{})
-    .subscribe((resp: any) => {
-      this.listCity = resp.map((item: any) => ({
-        name: item.KETERANGAN_KOTA,
-        id: item.KETERANGAN_KOTA
-      }));      
-    });
+      .postData(this.g.urlServer + '/api/city/dropdown-city', {})
+      .subscribe((resp: any) => {
+        this.listCity = resp.map((item: any) => ({
+          name: item.KETERANGAN_KOTA,
+          id: item.KETERANGAN_KOTA,
+        }));
+      });
   }
 
-  getRscDropdown(){
+  getRscDropdown() {
     this.dataService
-    .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
-    .subscribe((resp: any) => {
-      this.listRsc = resp.map((item: any) => ({
-        name: item.KETERANGAN_RSC,
-        code: item.KODE_RSC,
-        id: item.KODE_RSC
-      }));      
-    });
+      .postData(this.g.urlServer + '/api/rsc/dropdown-rsc', {})
+      .subscribe((resp: any) => {
+        this.listRsc = resp.map((item: any) => ({
+          name: item.KETERANGAN_RSC,
+          code: item.KODE_RSC,
+          id: item.KODE_RSC,
+        }));
+      });
   }
 
   onSubmit(): void {
@@ -101,7 +100,7 @@ export class MasterLocationAddComponent implements OnInit {
         defaultRsc: controls?.['defaultRsc']?.value.code,
         supportTo: 'D',
         statusSync: 'T',
-        mainMenu: 'T'
+        mainMenu: 'T',
       };
       this.service.insert('/api/location/insert', param).subscribe({
         next: (res) => {
@@ -121,10 +120,41 @@ export class MasterLocationAddComponent implements OnInit {
 
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_RSC);
-    this.router.navigate(['/master/table-rsc']);
+    this.router.navigate(['/master/master-location']);
   }
 
   isFieldValid(fieldName: String) {
     return this.g.isFieldValid(this.myForm, fieldName);
+  }
+
+  convertToUppercase(id: any) {
+    const control = this.myForm.get(id);
+    if (control) {
+      control.setValue(control.value.toUpperCase(), { emitEvent: false });
+    }
+  }
+
+  conditionInput(event: any, type: string): boolean {
+    var inp = String.fromCharCode(event.keyCode);
+    let temp_regex =
+      type == 'alphanumeric'
+        ? /^[a-zA-Z0-9]$/
+        : type == 'numeric'
+        ? /^[0-9]$/
+        : type == 'phone'
+        ? /^[0-9-]$/
+        : type == 'email'
+        ? /^[a-zA-Z0-9@._-]$/
+        : type == 'excludedSensitive'
+        ? /^[a-zA-Z0-9 .,_@-]*$/
+        : type == 'kodeSingkat'
+        ? /^[a-zA-Z]+$/
+        : /^[a-zA-Z.() ,\-]*$/;
+
+    if (temp_regex.test(inp)) return true;
+    else {
+      event.preventDefault();
+      return false;
+    }
   }
 }

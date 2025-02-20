@@ -1,23 +1,74 @@
 .table {
-    th, td {
-      text-align: center;
-      vertical-align: middle;
-    }
-  
-    input, select {
-      width: 100%;
-    }
-  
-    .btn {
-      width: 100%;
-    }
+
+  th,
+  td {
+    text-align: center;
+    vertical-align: middle;
   }
 
-  .top-right-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 240px;
-    min-width: 240px;
+  input,
+  select {
+    width: 100%;
   }
+  .btn {
 
+    width: 100%;
+  }
+}
+
+.top-right-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 240px;
+  min-width: 240px;
+}
+
+.red-line {
+  border-right: 3px solid #3c4b64;
+  opacity: 1;
+  max-height: auto;
+  margin: 0px 20px;
+}
+
+.scroll-hover {
+  max-height: 30rem;
+  overflow-y: hidden;
+  scrollbar-gutter: stable;
+  /* Menjaga ruang scrollbar agar konten tidak bergeser */
+}
+
+.scroll-hover:hover {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  background-color: 0 4px 10px rgba(0, 0, 0, 0.1)
+}
+
+.c-modal-dialog {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+}
+
+.modal-bg-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  /* Transparansi dan warna hitam */
+  z-index: 1040;
+  /* Pastikan berada di belakang modal */
+  transition: all 0.3s ease-in-out;
+  /* Smooth transition untuk opacity */
+}
+
+.bg-selected-info {
+  background-color: #3c4b64;
+  table.dataTable tbody tr {
+    background-color: #3c4b64;
+  }
+}

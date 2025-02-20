@@ -28,7 +28,7 @@
   width: 160px;
 
   .inputQty {
-    width: 85px;
+    width: 70px;
   }
 
   .inputNumberSpace input::-webkit-outer-spin-button,
@@ -45,4 +45,8 @@
     width: 6em;
     text-align: right;
   }
+}
+
+.form-invalid {
+  border: 1px solid red;  /* Merahkan border input */
 }

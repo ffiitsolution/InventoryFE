@@ -5,7 +5,7 @@ import { GlobalService } from '../../../service/global.service';
 import { TranslationService } from '../../../service/translation.service';
 import { Subject } from 'rxjs';
 import { Page } from '../../../model/page';
-import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../constants';
+import { ACTION_CETAK, ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../constants';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { DataTableDirective } from 'angular-datatables';
 import moment from 'moment';
@@ -43,6 +43,7 @@ export class DeliveryItemComponent implements OnInit {
     )
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
+  selectedRowData: any;
 
   constructor(
     private dataService: DataService,
@@ -69,13 +70,13 @@ export class DeliveryItemComponent implements OnInit {
             minutes: 0,
             seconds: 0,
             milliseconds: 0,
-          }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
+          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
           endDate: moment(this.dateRangeFilter[1]).set({
             hours: 23,
             minutes: 59,
             seconds: 59,
             milliseconds: 999,
-          }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
+          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
         };
         setTimeout(() => {
           this.dataService
@@ -88,7 +89,11 @@ export class DeliveryItemComponent implements OnInit {
                   ...rest,
                   dtIndex: this.page.start + index + 1,
                   tglPesanan: this.g.transformDate(rest.tglPesanan),
-                  tglTransaksi: this.g.transformDate(rest.tglTransaksi)
+                  tglTransaksi: this.g.transformDate(rest.tglTransaksi),
+                  dateCreate: this.g.transformDate(rest.dateCreate),
+                  timeCreate: this.g.transformTime(rest.timeCreate),
+                  datePosted: this.g.transformDate(rest.datePosted),
+                  timePosted: this.g.transformTime(rest.timePosted)
                 };
                 return finalData;
               });
@@ -145,8 +150,14 @@ export class DeliveryItemComponent implements OnInit {
         },
         {
           title: 'Opsi',
+          className: 'text-center',
           render: () => {
-            return `<button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>`;
+            return `<div class="d-flex px-2 gap-1"> 
+              <button style="width: 74px" class="btn btn-sm action-view btn-outline-info btn-60 pe-2">
+              <i class="fa fa-eye pe-2"></i>${this.buttonCaptionView}</button>
+              <button style="width: 74px" class="btn btn-sm action-cetak btn-outline-success btn-60">
+              <i class="fa fa-print pe-2"></i>Cetak</button>
+            </div>`;
           },
         },
       ],
@@ -156,6 +167,18 @@ export class DeliveryItemComponent implements OnInit {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
         );
+        $('.action-cetak', row).on('click', () =>
+          this.actionBtnClick(ACTION_CETAK, data)
+        );
+        $('td', row).on('click', () => {
+          $('td').css({'background-color': ''}).removeClass('text-white fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).css({'background-color': '#BABBD8'}).addClass('text-white fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
         return row;
       },
     };
@@ -187,6 +210,8 @@ export class DeliveryItemComponent implements OnInit {
         JSON.stringify(data)
       );
       this.router.navigate(['/transaction/delivery-item/detail-transaction']); this
+    }
+    if (action === ACTION_CETAK) {
     }
   }
 

@@ -27,6 +27,9 @@
               class="form-control"
               formControlName="desc"
               [readOnly]="editing"
+              (input)="convertToUppercase('desc')"
+              (keypress)="conditionInput($event, 'alphanumeric')"
+              maxlength="30"
             />
           </div>
         </div>

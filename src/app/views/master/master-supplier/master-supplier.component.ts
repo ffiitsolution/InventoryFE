@@ -56,6 +56,8 @@ export class MasterSupplierComponent
   uomList: any;
   supplierList: any;
   defaultOrderGudangList: any;
+  configSelectCity: any = {};
+  configSelectRSC: any = {};
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
@@ -104,10 +106,12 @@ export class MasterSupplierComponent
         const requestData = {
           ...dataTablesParameters,
           status: this.selectedStatusFilter,
-          KODE_KOTA: this.selectedCityFilter,
-          KODE_RSC: this.selectedRscFilter,
-          TERIMA_CN: this.selectedTerimaCnFilter,
-          STATUS_SYNC: this.selectedStatusSyncFilter,
+          KODE_KOTA: Array.isArray(this.selectedCityFilter)
+            ? ''
+            : this.selectedCityFilter.id,
+          KODE_RSC: Array.isArray(this.selectedRscFilter)
+            ? ''
+            : this.selectedRscFilter.id,
           DEFAULT_GUDANG: this.selectedGudangFilter,
         };
         this.dataService
@@ -159,6 +163,7 @@ export class MasterSupplierComponent
         },
         { data: 'kota', title: 'Kota', orderable: true, searchable: true },
         { data: 'telpon1', title: 'Telpon', orderable: true, searchable: true },
+        { data: 'statusAktifLabel', title: 'Status', orderable: true },
         {
           title: 'Opsi',
           render: () => {
@@ -218,40 +223,54 @@ export class MasterSupplierComponent
     localStorage.removeItem(LS_INV_SELECTED_SUPPLIER);
 
     this.dataService
-    .postData(this.g.urlServer + '/api/city/dropdown-city',{})
-    .subscribe((resp: any) => {
-      this.cityOptions = resp.map((item: any) => ({
-        value: item.KODE_KOTA,
-        label: item.KETERANGAN_KOTA,
-      }));    
-    });
+      .postData(this.g.urlServer + '/api/city/dropdown-city', {})
+      .subscribe((resp: any) => {
+        this.cityOptions = resp.map((item: any) => ({
+          id: item.KODE_KOTA,
+          name: item.KODE_KOTA + ' - ' + item.KETERANGAN_KOTA,
+        }));
+        this.configSelectCity = {
+          displayKey: 'name',
+          search: true,
+          height: '200px',
+          customComparator: () => {},
+          moreText: 'lebih banyak',
+          noResultsFound: 'Tidak ada hasil',
+          searchOnKey: 'name',
+          placeholder: 'Pilih City',
+          searchPlaceholder: 'Cari City',
+          limitTo: this.cityOptions?.length,
+        };
+      });
 
-    
     this.dataService
-    .postData(this.g.urlServer + '/api/city/dropdown-city',{})
-    .subscribe((resp: any) => {
-      this.cityOptions = resp.map((item: any) => ({
-        value: item.KODE_KOTA,
-        label: item.KETERANGAN_KOTA,
-      }));    
-    });
-
+      .postData(this.g.urlServer + '/api/rsc/dropdown-rsc', {})
+      .subscribe((resp: any) => {
+        this.rscOptions = resp.map((item: any) => ({
+          id: item.KODE_RSC,
+          name: item.KETERANGAN_RSC,
+        }));
+        this.configSelectRSC = {
+          displayKey: 'name',
+          search: true,
+          height: '200px',
+          customComparator: () => {},
+          moreText: 'lebih banyak',
+          noResultsFound: 'Tidak ada hasil',
+          searchOnKey: 'name',
+          placeholder: 'Pilih RSC',
+          searchPlaceholder: 'Cari RSC',
+          limitTo: this.rscOptions.length,
+        };
+      });
     this.dataService
-    .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
-    .subscribe((resp: any) => {
-      this.rscOptions = resp.map((item: any) => ({
-        value: item.KODE_RSC,
-        label: item.KETERANGAN_RSC,
-      }));    
-    });
-    this.dataService
-    .postData(this.g.urlServer + '/api/supplier/dropdown-gudang',{})
-    .subscribe((resp: any) => {
-      this.gudangOptions = resp.map((item: any) => ({
-        value: item.DEFAULT_GUDANG,
-        label: item.KETERANGAN_GUDANG,
-      }));    
-    });
+      .postData(this.g.urlServer + '/api/supplier/dropdown-gudang', {})
+      .subscribe((resp: any) => {
+        this.gudangOptions = resp.map((item: any) => ({
+          value: item.DEFAULT_GUDANG,
+          label: item.KETERANGAN_GUDANG,
+        }));
+      });
   }
 
   actionBtnClick(action: string, data: any = null) {

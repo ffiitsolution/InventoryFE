@@ -44,6 +44,12 @@ export class MasterLocationComponent
   buttonCaptionEdit: String = 'Ubah';
   CONST_ACTION_ADD: string = ACTION_ADD;
   adding: boolean = false;
+  cityOptions: any;
+  rscOptions: any = '';
+  selectedCityFilter: any = '';
+  selectedRscFilter: any = '';
+  configSelectCity: any = {};
+  configSelectRSC: any = {};
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
@@ -77,6 +83,12 @@ export class MasterLocationComponent
         const requestData = {
           ...dataTablesParameters,
           status: this.selectedStatusFilter,
+          KODE_RSC: Array.isArray(this.selectedRscFilter)
+            ? ''
+            : this.selectedRscFilter.id,
+          KODE_KOTA: Array.isArray(this.selectedCityFilter)
+            ? ''
+            : this.selectedCityFilter.id,
         };
         this.dataService
           .postData(this.g.urlServer + '/api/location/dt', requestData)
@@ -188,6 +200,48 @@ export class MasterLocationComponent
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.buttonCaptionEdit = this.translation.instant('Ubah');
     localStorage.removeItem(LS_INV_SELECTED_LOCATION);
+
+    this.dataService
+      .postData(this.g.urlServer + '/api/city/dropdown-city', {})
+      .subscribe((resp: any) => {
+        this.cityOptions = resp.map((item: any) => ({
+          id: item.KETERANGAN_KOTA,
+          name: item.KODE_KOTA + ' - ' + item.KETERANGAN_KOTA,
+        }));
+        this.configSelectCity = {
+          displayKey: 'name',
+          search: true,
+          height: '200px',
+          customComparator: () => {},
+          moreText: 'lebih banyak',
+          noResultsFound: 'Tidak ada hasil',
+          searchOnKey: 'name',
+          placeholder: 'Pilih City',
+          searchPlaceholder: 'Cari City',
+          limitTo: this.cityOptions?.length,
+        };
+      });
+
+    this.dataService
+      .postData(this.g.urlServer + '/api/rsc/dropdown-rsc', {})
+      .subscribe((resp: any) => {
+        this.rscOptions = resp.map((item: any) => ({
+          id: item.KODE_RSC,
+          name: item.KODE_RSC + ' - ' + item.KETERANGAN_RSC,
+        }));
+        this.configSelectRSC = {
+          displayKey: 'name',
+          search: true,
+          height: '200px',
+          customComparator: () => {},
+          moreText: 'lebih banyak',
+          noResultsFound: 'Tidak ada hasil',
+          searchOnKey: 'name',
+          placeholder: 'Pilih RSC',
+          searchPlaceholder: 'Cari RSC',
+          limitTo: this.rscOptions.length,
+        };
+      });
   }
 
   actionBtnClick(action: string, data: any = null) {
@@ -220,5 +274,17 @@ export class MasterLocationComponent
 
   ngAfterViewInit(): void {
     this.rerenderDatatable();
+  }
+
+  onCityFilterChange(): void {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
+  }
+
+  onRscFilterChange(): void {
+    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
   }
 }

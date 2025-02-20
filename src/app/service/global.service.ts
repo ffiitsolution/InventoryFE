@@ -42,7 +42,7 @@ export class GlobalService {
     @Inject(DOCUMENT) private document: Document,
     private router: Router,
     private datePipe: DatePipe
-  ) {}
+  ) { }
 
   saveLocalstorage(key: string, value: any, type: string | boolean = 'json') {
     if (type === 'json' || type === true) {
@@ -72,6 +72,13 @@ export class GlobalService {
     );
   }
 
+  getUserAreaCode() {
+    return (
+      this.getLocalstorage('inv_currentUser')?.kodeRsc ||
+      ''
+    );
+  }
+
   removeLocalstorage(key: string) {
     return localStorage.removeItem(key);
   }
@@ -82,6 +89,12 @@ export class GlobalService {
     localStorage.removeItem('inv_token');
     localStorage.removeItem('inv_listMenu');
     // return localStorage.clear();
+  }
+
+  getLocalDateTime(date: Date) {
+    const offset = date.getTimezoneOffset() * 60000; // Offset dalam milidetik
+    const localISOTime = new Date(date.getTime() - offset).toISOString();
+    return localISOTime;
   }
 
   changeTitle(newTitle: string) {
@@ -217,7 +230,7 @@ export class GlobalService {
   }
 
   transformTime(time: string) {
-    if (isNull(time) || time.length < 6) {
+    if (isNull(time)) {
       return '00:00';
     } else {
       const hours = time.substring(0, 2);
@@ -283,5 +296,29 @@ export class GlobalService {
   }
   getUserCabangCode() {
     return 'defaultCabangCode';
+  }
+
+  conditionInput(event: any, type: string): boolean {
+    var inp = String.fromCharCode(event.keyCode);
+    let temp_regex =
+      type == 'alphanumeric'
+        ? /^[a-zA-Z0-9]$/
+        : type == 'numeric'
+          ? /^[0-9]$/
+          : type == 'phone'
+            ? /^[0-9-]$/
+            : type == 'email'
+              ? /^[a-zA-Z0-9@._-]$/
+              : type == 'excludedSensitive'
+                ? /^[a-zA-Z0-9 .,_@-]*$/
+                : type == 'kodeSingkat'
+                  ? /^[a-zA-Z]+$/
+                  : /^[a-zA-Z.() ,\-]*$/;
+
+    if (temp_regex.test(inp)) return true;
+    else {
+      event.preventDefault();
+      return false;
+    }
   }
 }

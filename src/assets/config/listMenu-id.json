@@ -17,19 +17,15 @@
         "url": "/master/master-user"
       },
       {
-        "name": "Master Cabang",
+        "name": "Master Cabang & Dept.",
         "url": "/master/master-branch"
-      },
-      {
-        "name": "Master Departemen",
-        "url": "/master/master-department"
       },
       {
         "name": "Master Location",
         "url": "/master/master-location"
       },
       {
-        "name": "Master Suplier",
+        "name": "Master Supplier",
         "url": "/master/master-supplier"
       },
       {
@@ -78,6 +74,13 @@
         "url": "/order/receiving-order"
       },
       {
+        "name": "Kirim Pesanan Ke Supplier (Via RSC)",
+        "url": "/order/send-order-to-supplier-via-rsc",
+        "iconComponent": {
+          "name": "cil-color-border"
+        }
+      },
+      {
         "name": "Kirim Pesanan Ke Gudang",
         "url": "/order/send-order-to-warehouse"
       }
@@ -95,12 +98,12 @@
       {
         "name": "Pengiriman",
         "url": "/transaction/delivery-item",
-        "iconComponent":{
+        "iconComponent": {
           "name": "cil-truck"
         },
         "children": [
           {
-            "name": "Display dan Tambah Data",
+            "name": "Display & Tambah",
             "url": "/transaction/delivery-item",
             "iconComponent": {
               "name": "cil-plus"
@@ -132,6 +135,9 @@
       {
         "name": "Penerimaan Dari Gudang",
         "url": "/transaction/receipt-from-warehouse/penerimaan-dari-gudang",
+        "iconComponent": {
+          "name": "cil-house"
+        },
         "children": [
           {
             "name": "Tambah Data",
@@ -144,7 +150,7 @@
         ]
       },{
         "name": "Pemusnahan Barang",
-        "url": "/transaction/receipt-from-branch/penerimaan-dari-cabang",
+        "url": "/transaction/wastage/list-dt",
         "iconComponent" : {
           "name" : "cil-trash"
         }
