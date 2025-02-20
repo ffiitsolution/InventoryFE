@@ -1,0 +1,241 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <div
+          class="d-grid gap-3 d-md-flex justify-content-start align-items-center"
+        >
+          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button>
+          <h5>{{ "Penerimaan Dari Gudang" | translate }}</h5>
+        </div>
+      </c-row>
+    </c-card-body>
+  </c-card>
+
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <div class="d-flex">
+          <div class="w-50 p-2">
+            <div class="">
+              <label for="nomorPesanan" class="form-label">{{
+                "Nomor Pesanan" | translate
+              }}</label>
+              <div class="d-flex">
+                <input
+                  type="text"
+                  placeholder=""
+                  class="form-control"
+                  id="nomorPesanan"
+                  [(ngModel)]="formData.nomorPesanan"
+                  name="nomorPesanan"
+                />
+                <button
+                  type="button"
+                  class="btn btn-primary ms-2"
+                  [cModalToggle]="formModal.id"
+                  (click)="onShowModal()"
+                >
+                  <i class="fa fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider mt-4"></div>
+        <div class="d-flex">
+          <div class="w-50 p-2 pb-0">
+            <div class="mb-3">
+              <label for="gudangPengirim" class="form-label">{{
+                "Gudang Pengirim" | translate
+              }}</label>
+              <div class="row">
+                <div class="col-3">
+                  <input
+                    placeholder=""
+                    type="text"
+                    class="form-control"
+                    id="kodeGudang"
+                    [(ngModel)]="formData.codeDestination"
+                    name="codeDestination"
+                    readonly
+                  />
+                </div>
+                <div class="col-9 px-0 pe-2">
+                  <input
+                    placeholder=""
+                    type="text"
+                    class="form-control"
+                    id="alamatGudang"
+                    [(ngModel)]="formData.namaCabang"
+                    name="namaGudang"
+                    readonly
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="d-flex mb-3">
+              <div class="w-100">
+                <label for="alamatPengirim" class="form-label">{{
+                  "Alamat Pengirim" | translate
+                }}</label>
+                <textarea
+                  placeholder=""
+                  class="form-control w-100"
+                  [(ngModel)]="formData.alamat1"
+                  id="exampleFormControlTextarea1"
+                  rows="1"
+                  name="alamat1"
+                  readonly
+                ></textarea>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="w-100">
+                <label for="statusAktif" class="form-label">{{
+                  "Status Aktif" | translate
+                }}</label>
+                <input
+                  placeholder=""
+                  type="text"
+                  class="form-control"
+                  id="statusAktif"
+                  [(ngModel)]="formData.deliveryStatus"
+                  name="statusAktif"
+                  readonly
+                />
+              </div>
+            </div>
+          </div>
+          <div class="w-50 p-2">
+            <div class="mb-3">
+              <div class="row">
+                <div class="col-12">
+                  <label for="nomorSuratJalan" class="form-label">{{
+                    "Nomor Surat Jalan" | translate
+                  }}</label>
+                  <input
+                    placeholder=""
+                    type="text"
+                    class="form-control"
+                    id="nomorSuratJalan"
+                    [(ngModel)]="formData.nomorSuratJan"
+                    name="nomorSuratJalan"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="tglSuratJalan" class="form-label">{{
+                "Tanggal Surat Jalan" | translate
+              }}</label>
+              <input
+                type="text"
+                id="tglSuratJalan"
+                class="form-control"
+                aria-describedby="tglSuratJalan"
+                #dp="bsDatepicker"
+                [bsConfig]="dpConfig"
+                [isDisabled]="false"
+                bsDatepicker
+                autocomplete="off"
+                [(ngModel)]="formData.tglPesan"
+                placeholder="{{ 'Tanggal Surat Jalan' | translate }}"
+                style="pointer-events: none"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="tglTerimaBarang" class="form-label">{{
+                "Tanggal Terima Barang" | translate
+              }}</label>
+              <input
+                type="text"
+                id="tglTerimaBarang"
+                class="form-control"
+                aria-describedby="tglTerimaBarang"
+                #dp="bsDatepicker"
+                [bsConfig]="dpConfig"
+                [isDisabled]="true"
+                bsDatepicker
+                autocomplete="off"
+                [(ngModel)]="formData.tglBrgDikirim"
+                placeholder="{{ '' | translate }}"
+                [minDate]="minDate"
+                [maxDate]="maxDate"
+                style="pointer-events: none"
+              />
+            </div>
+          </div>
+        </div>
+      </c-row>
+    </c-card-body>
+  </c-card>
+
+  <c-card class="mb-4">
+    <c-card-body class="slide-in">
+      <div class="d-flex">
+        <div class="w-100 p-2">
+          <div class="mb-3">
+            <label for="Note" class="form-label">{{
+              "Note" | translate
+            }}</label>
+            <input
+              placeholder=""
+              type="text"
+              class="form-control"
+              id="Note"
+              [(ngModel)]="formData.note"
+              name="Note"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end mb-3">
+        <button
+          class="btn btn-primary"
+          [disabled]="formData.nomorPesanan === ''"
+          (click)="onAddDetail()"
+        >
+          {{ "Detail Transaksi" | translate }}
+        </button>
+      </div>
+    </c-card-body>
+
+    <c-modal
+      #formModal
+      [fullscreen]="false"
+      [visible]="isShowModal"
+      [backdrop]="true"
+      #modalLg
+      size="xl"
+      id="formModal"
+    >
+      <c-modal-header>
+        <h5 cModalTitle>Daftar Pesanan Ke Gudang</h5>
+        <button
+          (click)="isShowModal = false"
+          type="button"
+          class="btn btn-primary ms-2"
+          [cModalToggle]="formModal.id"
+          cButtonClose
+        >
+          <i class="fa fa-times"></i>
+        </button>
+      </c-modal-header>
+      <c-modal-body>
+        <div class="table-responsive">
+          <table
+            datatable
+            [dtOptions]="dtOptions"
+            class="row-border hover w-100"
+          ></table>
+        </div>
+      </c-modal-body>
+    </c-modal>
+  </c-card>
+</div>

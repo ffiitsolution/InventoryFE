@@ -26,7 +26,9 @@ import { Page } from '../../../model/page';
   templateUrl: './packing-list.component.html',
   styleUrls: ['./packing-list.component.scss'],
 })
-export class PackagingListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PackagingListComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @ViewChild(DataTableDirective, { static: false }) datatableElement:
     | DataTableDirective
     | undefined;
@@ -48,6 +50,8 @@ export class PackagingListComponent implements OnInit, AfterViewInit, OnDestroy 
 
   dateRangeFilter: any = [new Date(), new Date()];
   dataUser: any;
+  listNoDO: { noSuratJalan: any }[] = [];
+  selectedRows: any[] = [];
 
   constructor(
     private dataService: DataService,
@@ -66,8 +70,7 @@ export class PackagingListComponent implements OnInit, AfterViewInit, OnDestroy 
       pageLength: 5,
       lengthMenu: [5],
       processing: true,
-      ajax: 
-      (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback) => {
         this.getProsesDoBalik(callback);
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
@@ -75,9 +78,26 @@ export class PackagingListComponent implements OnInit, AfterViewInit, OnDestroy 
       scrollX: true,
       autoWidth: true,
       columns: [
+        {
+          data: null,
+          title: 'Pilih Data',
+          className: 'text-center',
+          orderable: false,
+          render: (data: any, type: any, row: any) => {
+            return `<input type="checkbox" class="select-row action-select-data" data-id="${row.NO_SURAT_JALAN}">`;
+          },
+        },
         { data: 'NO_SURAT_JALAN', title: 'NO. Surat Jalan (D.O)' },
-        { data: 'TGL_TRANSAKSI', title: 'Tanggal Kirim', render:(data, type, row) => this.g.transformDate(data)},
-        { data: 'TGL_PESANAN', title: 'Tanggal Pesanan', render:(data, type, row) => this.g.transformDate(data)},
+        {
+          data: 'TGL_TRANSAKSI',
+          title: 'Tanggal Kirim',
+          render: (data, type, row) => this.g.transformDate(data),
+        },
+        {
+          data: 'TGL_PESANAN',
+          title: 'Tanggal Pesanan',
+          render: (data, type, row) => this.g.transformDate(data),
+        },
         { data: 'NOMOR_PESANAN', title: 'Nomor Pesanan' },
         { data: 'KODE_TUJUAN', title: 'Kode Tujuan' },
         { data: 'NAMA_TUJUAN', title: 'Keterangan Tujuan' },
@@ -89,6 +109,9 @@ export class PackagingListComponent implements OnInit, AfterViewInit, OnDestroy 
         );
         $('.action-posting', row).on('click', () =>
           this.actionBtnClick('POSTING', data)
+        );
+        $('.action-select-data', row).on('click', () =>
+          this.actionBtnClick('SELECT_DATA', data)
         );
         return row;
       },
@@ -128,10 +151,27 @@ export class PackagingListComponent implements OnInit, AfterViewInit, OnDestroy 
         },
       });
     }
+    if (action === 'SELECT_DATA') {
+      this.selectedRows.push(data);
+    }
   }
 
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
+
+    $('#select-all').on('click', function () {
+      const rows = $('#datatable').DataTable().rows({ search: 'applied' }).nodes();
+      $('input[type="checkbox"]', rows).prop('checked', (this as HTMLInputElement).checked);
+    });
+
+    $('#datatable tbody').on('change', 'input[type="checkbox"]', function () {
+      if (!this.checked) {
+        const el = $('#select-all').get(0);
+        if (el && (el as HTMLInputElement).checked && ('indeterminate' in el)) {
+          el.indeterminate = true;
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -169,15 +209,16 @@ export class PackagingListComponent implements OnInit, AfterViewInit, OnDestroy 
     console.log('Mengirim data ke backend:', params);
 
     this.dataService
-      .postData(
-        this.config.BASE_URL + '/delivery-order/packing-list',
-        params
-      )
+      .postData(this.config.BASE_URL + '/delivery-order/packing-list', params)
       .subscribe(
         (response: any) => {
           let index = 0;
           dtIndex: this.page.start + index + 1;
           this.reportProposeData = response.packingList;
+          this.reportProposeData.forEach((item) => {
+            this.listNoDO.push({ noSuratJalan: item.NO_SURAT_JALAN });
+          });
+
           this.totalLength = response.recordsTotal;
           callback({
             recordsTotal: response.recordsTotal,
@@ -205,5 +246,10 @@ export class PackagingListComponent implements OnInit, AfterViewInit, OnDestroy 
 
   navigateToDeliveryItem(): void {
     this.router.navigate(['/transaction/delivery-item/add-data']);
+  }
+  navigateToEntryPackingList(): void {
+
+    this.g.saveLocalstorage('listNoDO', JSON.stringify(this.selectedRows));
+    this.router.navigate(['/transaction/delivery-item/packing-list/entry-packing-list']);
   }
 }

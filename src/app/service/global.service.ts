@@ -72,6 +72,13 @@ export class GlobalService {
     );
   }
 
+  getUserAreaCode() {
+    return (
+      this.getLocalstorage('inv_currentUser')?.kodeRsc ||
+      ''
+    );
+  }
+
   removeLocalstorage(key: string) {
     return localStorage.removeItem(key);
   }

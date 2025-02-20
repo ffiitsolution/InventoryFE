@@ -3,22 +3,15 @@
     <c-card-body>
       <div class="row">
         <div class="col">
-          <h5>{{ "Packing List" | translate }}</h5>
+          <h5>{{ "Entry Packing List" | translate }}</h5>
         </div>
         <div class="d-grid gap-3 d-md-flex justify-content-end">
-          <button
-            class="btn btn-info text-white btn-150 pe-3"
-            (click)="navigateToEntryPackingList()"
-          >
-            <i class="fa fa-check pe-2"></i>
-            {{ "Entry Packing List" | translate }}
-          </button>
-
+          
           <button
             class="btn btn-danger text-white btn-150"
-            (click)="navigateToDeliveryItem()"
+            (click)="onShowModal()"
           >
-            <i class="fa fa-times pe-1"></i> {{ "Hapus" | translate }}
+            <i class="fa fa-print"></i> {{ "Print" | translate }}
           </button>
           <button
             type="button"
@@ -85,3 +78,35 @@
     </c-card-body>
   </c-card>
 </div>
+
+<c-modal
+      #formModal
+      [fullscreen]="false"  
+      [visible]="isShowModal"
+      [backdrop]="true"
+      #modalLg
+      size="xl"
+      id="formModal"
+    >
+      <c-modal-header>
+        <h5 cModalTitle>Daftar Pesanan Ke Gudang</h5>
+        <button
+          (click)="isShowModal = false"
+          type="button"
+          class="btn btn-primary ms-2"
+          [cModalToggle]="formModal.id"
+          cButtonClose
+        >
+          <i class="fa fa-times"></i>
+        </button>
+      </c-modal-header>
+      <c-modal-body>
+        <div class="table-responsive">
+          <table
+            datatable
+            [dtOptions]="dtOptions_2"
+            class="row-border hover  w-100"
+          ></table>
+        </div>
+      </c-modal-body>
+    </c-modal>
