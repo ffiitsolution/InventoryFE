@@ -46,7 +46,7 @@ export class MasterUserAddComponent implements OnInit {
       namaUser: ['', Validators.required],
       kodePassword: ['', Validators.required],
       konfirmasiKodePassword: ['', Validators.required],
-      statusAktif: ['A', Validators.required],
+      statusAktif: ['', Validators.required],
       defaultLocation: [null],
       jabatan: [''],
       roleID: [''],

@@ -25,7 +25,7 @@
               maxlength="10"
             />
             <span *ngIf="isFieldValid('kodeUser')" class="text-danger">{{
-              "Wajib diisi" | translate
+              "Wajib diisi (max.10 karakter)" | translate
             }}</span>
           </div>
         </div>
@@ -45,7 +45,7 @@
               maxlength="50"
             />
             <span *ngIf="isFieldValid('namaUser')" class="text-danger">{{
-              "Wajib diisi" | translate
+              "Wajib diisi (max.50 karakter)" | translate
             }}</span>
           </div>
         </div>
@@ -67,7 +67,7 @@
               (keyup)="onChangePassword($event, 'user')"
             />
             <span *ngIf="isFieldValid('kodePassword')" class="text-danger">{{
-              "Wajib diisi" | translate
+              "Wajib diisi (max.10 karakter)" | translate
             }}</span>
             
             <span *ngIf="isNotMatchPass" class="text-danger">
@@ -93,7 +93,7 @@
               (keyup)="onChangePassword($event, 'user')"
             />
             <span *ngIf="isFieldValid('konfirmasiKodePassword')" class="text-danger">{{
-              "Wajib diisi" | translate
+              "Wajib diisi (max.10 karakter)" | translate
             }}</span>
             
             <span *ngIf="isNotMatchPass && !isFieldValid('konfirmasiKodePassword')" class="text-danger">
@@ -105,19 +105,19 @@
 
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
-            "Status Aktif" | translate
+            "Status" | translate
           }}</label>
           <c-col xs="8">
             <c-row class="mt-2">
               <c-col xs="6">
                 <c-form-check class="flex align-items-center">
-                  <input cFormCheckInput checked id="active" type="radio" value="A" name="status" formControlName="status" (change)="onChangeSelect($event, 'status')"/>
+                  <input cFormCheckInput checked id="active" type="radio" value="A" name="status" formControlName="statusAktif" (change)="onChangeSelect($event, 'status')"/>
                   <label cFormCheckLabel for="active" style="margin-left: 4px;">Active</label>
                 </c-form-check>
               </c-col>
               <c-col xs="6">
                 <c-form-check class="flex align-items-center">
-                  <input cFormCheckInput id="inactive" type="radio" value="I" name="status" formControlName="status" (change)="onChangeSelect($event, 'status')"/>
+                  <input cFormCheckInput id="inactive" type="radio" value="I" name="status" formControlName="statusAktif" (change)="onChangeSelect($event, 'status')"/>
                   <label cFormCheckLabel for="inactive" style="margin-left: 4px;">Inactive</label>
                 </c-form-check>
               </c-col>
