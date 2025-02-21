@@ -1,11 +1,37 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/service/app.service';
 import { GlobalService } from 'src/app/service/global.service';
 import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_SET_NUMBER } from 'src/constants';
 import { DataService } from 'src/app/service/data.service';
+
+function noSpecialCharacters(
+  control: AbstractControl
+): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { specialCharNotAllowed: true };
+  }
+  return null;
+}
+
+function noSpecialCharactersExcept(
+  control: AbstractControl
+): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9.() ,\-s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { specialCharNotAllowedExcept: true };
+  }
+  return null;
+}
 
 @Component({
   selector: 'app-add',
@@ -42,13 +68,13 @@ export class MasterUserAddComponent implements OnInit {
 
   ngOnInit(): void {
     this.myForm = this.form.group({
-      kodeUser: ['', Validators.required],
-      namaUser: ['', Validators.required],
+      kodeUser: ['', [Validators.required, noSpecialCharacters]],
+      namaUser: ['', Validators.required, noSpecialCharactersExcept],
       kodePassword: ['', Validators.required],
       konfirmasiKodePassword: ['', Validators.required],
-      statusAktif: ['A', Validators.required],
+      statusAktif: ['', Validators.required],
       defaultLocation: [null],
-      jabatan: [''],
+      jabatan: ['', noSpecialCharactersExcept],
       roleID: [''],
     });
 
@@ -85,8 +111,12 @@ export class MasterUserAddComponent implements OnInit {
 
   onSubmit(): void {
     const { controls, invalid } = this.myForm;
+
     if (invalid || this.isNotMatchPass) {
       this.g.markAllAsTouched(this.myForm);
+      if (invalid) {
+        this.toastr.error('Beberapa kolom wajib diisi.');
+      }
     } else {
       this.adding = true;
       const param = {

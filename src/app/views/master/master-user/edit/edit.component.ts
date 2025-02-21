@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -7,6 +13,26 @@ import { AppService } from 'src/app/service/app.service';
 import { GlobalService } from 'src/app/service/global.service';
 import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_USER } from 'src/constants';
 import { DataService } from 'src/app/service/data.service';
+
+function noSpecialCharacters(
+  control: AbstractControl
+): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { specialCharNotAllowed: true };
+  }
+  return null;
+}
+
+function noSpecialCharactersExcept(
+  control: AbstractControl
+): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9.() ,\-s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { specialCharNotAllowedExcept: true };
+  }
+  return null;
+}
 
 @Component({
   selector: 'app-edit',
@@ -26,12 +52,12 @@ export class MasterUserEditComponent implements OnInit {
     customComparator: () => {}, // Custom sorting comparator
     moreText: 'lebih banyak', // Text for "more" options
     noResultsFound: 'Tidak ada hasil', // Text when no results are found
-    searchOnKey: 'name' // Key to search
+    searchOnKey: 'name', // Key to search
   };
 
-  configSelectDefaultLokasi: any ;
-  configSelectLokasi: any ;
-  configSelectRole: any ;
+  configSelectDefaultLokasi: any;
+  configSelectLokasi: any;
+  configSelectRole: any;
 
   selectedLocations: any;
 
@@ -40,9 +66,6 @@ export class MasterUserEditComponent implements OnInit {
   listRole: any[] = [];
 
   listuserLoc: any[] = [];
-
-
-
 
   constructor(
     private form: FormBuilder,
@@ -55,97 +78,92 @@ export class MasterUserEditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.detail = JSON.parse(
-      this.g.getLocalstorage(LS_INV_SELECTED_USER)
-    );
+    this.detail = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_USER));
+    console.log(this.detail);
     this.myForm = this.form.group({
       kodeUser: [
         { value: this.detail.kodeUser, disabled: true },
         Validators.required,
       ],
       namaUser: [
-        this.detail.namaUser ,
-        Validators.required,
+        this.detail.namaUser,
+        [Validators.required, noSpecialCharacters],
       ],
-      kodePassword: [
-        this.detail.kodePassword ,
-        Validators.required,
-      ],
-      
-      konfirmasiKodePassword:  [this.detail.kodePassword , Validators.required],
-      statusAktif: [
-        this.detail.statusAktif 
-      ],
-      jabatan: [
-        this.detail.jabatan 
-      ],
+      kodePassword: [this.detail.kodePassword, Validators.required],
+
+      konfirmasiKodePassword: [this.detail.kodePassword, Validators.required],
+      statusAktif: [this.detail.statusAktif],
+      jabatan: [this.detail.jabatan, noSpecialCharactersExcept],
       defaultLocation: [{}],
-      roleID:[],
-      location:[]
+      roleID: [],
+      location: [],
     });
+
+    console.log(this.myForm.get('statusAktif'));
 
     this.configSelectLokasi = {
       ...this.baseConfig,
       placeholder: 'Pilih Lokasi',
       searchPlaceholder: 'Cari Lokasi',
-      limitTo: this.listLokasi.length
+      limitTo: this.listLokasi.length,
     };
 
     this.configSelectDefaultLokasi = {
       ...this.baseConfig,
       placeholder: 'Pilih Default Lokasi',
       searchPlaceholder: 'Cari Default Lokasi',
-      limitTo: this.listLokasi.length
+      limitTo: this.listLokasi.length,
     };
     this.configSelectRole = {
       ...this.baseConfig,
       placeholder: 'Pilih Role',
       searchPlaceholder: 'Cari Role',
-      limitTo: this.listRole.length
+      limitTo: this.listRole.length,
     };
 
     this.dataService
-    .postData(this.g.urlServer + '/api/location/dropdown-lokasi',{})
-    .subscribe((resp: any) => {
-      this.listLokasi = resp.map((item: any) => ({
-        id: item.KODE_LOCATION,
-        name: item.KODE_LOCATION+" - "+item.KETERANGAN_LOKASI,
-      }));    
-      const getDefaultLocation = this.listLokasi.find(
-        (item: any) => item.id === this.detail.defaultLocation
-      );      
-      this.myForm.get('defaultLocation')?.setValue(getDefaultLocation);
-
-      this.dataService
-      .postData(this.g.urlServer + '/api/user-location/by-user',{"kodeUser":this.detail.kodeUser})
+      .postData(this.g.urlServer + '/api/location/dropdown-lokasi', {})
       .subscribe((resp: any) => {
-        this.listuserLoc = resp    
-        
-        const listuserLocArray = this.listuserLoc.map(item => item.KODE_LOCATION);
+        this.listLokasi = resp.map((item: any) => ({
+          id: item.KODE_LOCATION,
+          name: item.KODE_LOCATION + ' - ' + item.KETERANGAN_LOKASI,
+        }));
+        const getDefaultLocation = this.listLokasi.find(
+          (item: any) => item.id === this.detail.defaultLocation
+        );
+        this.myForm.get('defaultLocation')?.setValue(getDefaultLocation);
 
-        const filteredLokasiByUserLoc = this.listLokasi.filter(item => listuserLocArray.includes(item.id));
-        this.listDefaultLokasi = filteredLokasiByUserLoc
-        this.myForm.get('location')?.setValue(filteredLokasiByUserLoc);
+        this.dataService
+          .postData(this.g.urlServer + '/api/user-location/by-user', {
+            kodeUser: this.detail.kodeUser,
+          })
+          .subscribe((resp: any) => {
+            this.listuserLoc = resp;
 
+            const listuserLocArray = this.listuserLoc.map(
+              (item) => item.KODE_LOCATION
+            );
 
+            const filteredLokasiByUserLoc = this.listLokasi.filter((item) =>
+              listuserLocArray.includes(item.id)
+            );
+            this.listDefaultLokasi = filteredLokasiByUserLoc;
+            this.myForm.get('location')?.setValue(filteredLokasiByUserLoc);
+          });
       });
-    });
 
     this.dataService
-    .postData(this.g.urlServer + '/api/role/dropdown-role',{})
-    .subscribe((resp: any) => {
-      this.listRole = resp.map((item: any) => ({
-        id: item.ID,
-        name: item.NAME,
-      }));      
-      const getRoleID = this.listRole.find(
-        (item: any) => Number(item.id) === Number(this.detail.roleId)
-      );
-      this.myForm.get('roleID')?.setValue(getRoleID);
-    });
-
- 
-
+      .postData(this.g.urlServer + '/api/role/dropdown-role', {})
+      .subscribe((resp: any) => {
+        this.listRole = resp.map((item: any) => ({
+          id: item.ID,
+          name: item.NAME,
+        }));
+        const getRoleID = this.listRole.find(
+          (item: any) => Number(item.id) === Number(this.detail.roleId)
+        );
+        this.myForm.get('roleID')?.setValue(getRoleID);
+      });
   }
 
   onSubmit(): void {
@@ -155,13 +173,13 @@ export class MasterUserEditComponent implements OnInit {
     } else {
       this.editing = true;
       const param = {
-        kodeUser:  controls?.['kodeUser']?.value,
-        kodePassword:  controls?.['kodePassword']?.value,
+        kodeUser: controls?.['kodeUser']?.value,
+        kodePassword: controls?.['kodePassword']?.value,
         namaUser: controls?.['namaUser']?.value,
         statusAktif: controls?.['statusAktif']?.value,
         jabatan: controls?.['jabatan']?.value,
-        defaultLocation:controls?.['defaultLocation']?.value?.id ?? " ",
-        roleID: controls?.['roleID']?.value?.id?? " ",
+        defaultLocation: controls?.['defaultLocation']?.value?.id ?? ' ',
+        roleID: controls?.['roleID']?.value?.id ?? ' ',
       };
       this.service.patch('/api/users/current', param).subscribe({
         next: (res: any) => {
@@ -180,29 +198,32 @@ export class MasterUserEditComponent implements OnInit {
           alert('An error occurred while updating the user.');
           this.editing = false;
         },
-      });      
+      });
 
-      if(controls?.['location']?.value){
+      if (controls?.['location']?.value) {
         const paramsUserLoc = {
-          kodeUser:  controls?.['kodeUser']?.value,
-          statusSync : "T",
-          ListKodeLocation: controls?.['location']?.value?.map((item: any) => item.id) || [""]
+          kodeUser: controls?.['kodeUser']?.value,
+          statusSync: 'T',
+          ListKodeLocation: controls?.['location']?.value?.map(
+            (item: any) => item.id
+          ) || [''],
         };
-  
-        this.service.insert('/api/user-location/updateBatch', paramsUserLoc).subscribe({
-          next: (res: any) => {
-            if (!res.success) {
-              alert(res.message);
-            } 
-          },
-          error: (err: any) => {
-            console.error('Error updating user location:', err);
-            alert('An error occurred while updating the use locationr.');
-            this.editing = false;
-          },
-        });  
+
+        this.service
+          .insert('/api/user-location/updateBatch', paramsUserLoc)
+          .subscribe({
+            next: (res: any) => {
+              if (!res.success) {
+                alert(res.message);
+              }
+            },
+            error: (err: any) => {
+              console.error('Error updating user location:', err);
+              alert('An error occurred while updating the use locationr.');
+              this.editing = false;
+            },
+          });
       }
-      
     }
   }
 
@@ -216,7 +237,6 @@ export class MasterUserEditComponent implements OnInit {
     this.myForm.get('statusAktif')?.setValue(dataStatus);
   }
 
-  
   conditionInput(event: any, type: string): boolean {
     var inp = String.fromCharCode(event.keyCode);
     let temp_regex =
@@ -233,15 +253,18 @@ export class MasterUserEditComponent implements OnInit {
   }
 
   onChangePassword(data: any, type: string) {
-    if(type === 'user') {
-      if((this.myForm.value.kodePassword!='' && this.myForm.value.konfirmasiKodePassword!='') && (this.myForm.value.kodePassword != this.myForm.value.konfirmasiKodePassword)) {  
-        this.isNotMatchPass = true
-      }
-      else {
-        this.isNotMatchPass = false
+    if (type === 'user') {
+      if (
+        this.myForm.value.kodePassword != '' &&
+        this.myForm.value.konfirmasiKodePassword != '' &&
+        this.myForm.value.kodePassword !=
+          this.myForm.value.konfirmasiKodePassword
+      ) {
+        this.isNotMatchPass = true;
+      } else {
+        this.isNotMatchPass = false;
       }
     }
-
   }
 
   isFieldValid(fieldName: String) {
@@ -249,10 +272,14 @@ export class MasterUserEditComponent implements OnInit {
   }
 
   onChangeLocation(selected: any) {
-    const defaultLocationId = this.myForm.get('defaultLocation')?.value?.id
+    const defaultLocationId = this.myForm.get('defaultLocation')?.value?.id;
     this.listDefaultLokasi = selected;
-    if ((selected.some((item: { id: string; name: string }) => item.id === defaultLocationId)) == false) {
-      this.myForm.get('defaultLocation')?.setValue("");
+    if (
+      selected.some(
+        (item: { id: string; name: string }) => item.id === defaultLocationId
+      ) == false
+    ) {
+      this.myForm.get('defaultLocation')?.setValue('');
     }
     // You can perform further actions here
   }
