@@ -242,7 +242,7 @@ export class SendOrderToWarehouseComponent
                 <button class="btn btn-sm action-send btn-outline-info btn-60" ${isDisabled ? 'disabled' : ''}>
                   Kirim
                 </button>   
-                <button class="btn btn-sm action-print btn-outline-info btn-60" ${isDisabledCetak ? 'disabled' : ''}>${this.buttonCaptionPrint}</button>           
+                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>           
               </div>
             `;
             return htmlString;
@@ -355,6 +355,13 @@ export class SendOrderToWarehouseComponent
           nomorPesanan : data.nomorPesanan
         }
 
+        const base64Response = await lastValueFrom(
+          this.dataService.postData(this.config.BASE_URL + this.generatePdfUrl, param, true)
+        );
+        const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        window.open(url);
+        
         this.dataService
         .postData(this.g.urlServer + '/api/send-order-to-warehouse/update-status-cetak',param)
         .subscribe({
@@ -373,13 +380,6 @@ export class SendOrderToWarehouseComponent
             alert('An error occurred while updating the user.');
           },    
         });
-
-        const base64Response = await lastValueFrom(
-          this.dataService.postData(this.config.BASE_URL + this.generatePdfUrl, param, true)
-        );
-        const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        window.open(url);
       } catch (error: any) {
         this.toastr.error(error.message ?? 'Unknown error while generating PDF');
       }
