@@ -169,7 +169,7 @@ export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
           searchable: false,
           render: (data) => {
             if (data === 'Aktif') {
-              return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: green; width: 60px">Active</span></div>`;
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
             return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:grey; width: 60px">Inactive</span> </div>`;
           },

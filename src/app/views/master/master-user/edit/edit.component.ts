@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -7,6 +13,26 @@ import { AppService } from 'src/app/service/app.service';
 import { GlobalService } from 'src/app/service/global.service';
 import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_USER } from 'src/constants';
 import { DataService } from 'src/app/service/data.service';
+
+function noSpecialCharacters(
+  control: AbstractControl
+): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { specialCharNotAllowed: true };
+  }
+  return null;
+}
+
+function noSpecialCharactersExcept(
+  control: AbstractControl
+): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9.() ,\-s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { specialCharNotAllowedExcept: true };
+  }
+  return null;
+}
 
 @Component({
   selector: 'app-edit',
@@ -59,12 +85,15 @@ export class MasterUserEditComponent implements OnInit {
         { value: this.detail.kodeUser, disabled: true },
         Validators.required,
       ],
-      namaUser: [this.detail.namaUser, Validators.required],
+      namaUser: [
+        this.detail.namaUser,
+        [Validators.required, noSpecialCharacters],
+      ],
       kodePassword: [this.detail.kodePassword, Validators.required],
 
       konfirmasiKodePassword: [this.detail.kodePassword, Validators.required],
       statusAktif: [this.detail.statusAktif],
-      jabatan: [this.detail.jabatan],
+      jabatan: [this.detail.jabatan, noSpecialCharactersExcept],
       defaultLocation: [{}],
       roleID: [],
       location: [],

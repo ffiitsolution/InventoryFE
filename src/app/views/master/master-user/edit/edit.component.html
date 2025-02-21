@@ -43,6 +43,15 @@
             <span *ngIf="isFieldValid('namaUser')" class="text-danger">{{
               "Wajib diisi" | translate
             }}</span>
+            <span
+              *ngIf="
+                myForm.controls['namaUser'].hasError('specialCharNotAllowed')
+              "
+              class="text-danger"
+              >{{
+                "Nama User tidak boleh mengandung karakter khusus." | translate
+              }}</span
+            >
           </div>
         </div>
         <div class="mb-3 row">
@@ -156,6 +165,17 @@
             <span *ngIf="isFieldValid('jabatan')" class="text-danger">{{
               "Wajib diisi" | translate
             }}</span>
+            <span
+              *ngIf="
+                myForm.controls['jabatan'].hasError(
+                  'specialCharNotAllowedExcept'
+                )
+              "
+              class="text-danger"
+              >{{
+                " Jabatan tidak boleh mengandung karakter khusus." | translate
+              }}</span
+            >
           </div>
         </div>
 
