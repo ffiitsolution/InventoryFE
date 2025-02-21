@@ -17,19 +17,19 @@ export class MasterUserDetailComponent implements OnInit {
   listuserLoc: any[] = [];
   listLokasi: any[] = [];
   listDefaultLokasi: any[] = [];
+  roleId: any;
 
   constructor(
     private form: FormBuilder,
     private router: Router,
     private g: GlobalService,
     private dataService: DataService
-
-  ) {}
+  ) {
+    this.roleId = this.g.getLocalstorage('inv_currentUser')?.roleId;
+  }
 
   ngOnInit(): void {
-    this.detail = JSON.parse(
-      this.g.getLocalstorage(LS_INV_SELECTED_USER)
-    );
+    this.detail = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_USER));
     this.myForm = this.form.group({
       kodeUser: [this.detail.kodeUser],
       namaUser: [this.detail.namaUser],
@@ -37,41 +37,47 @@ export class MasterUserDetailComponent implements OnInit {
       statusAktif: [this.detail.statusAktif],
       defaultLocation: [this.detail.keteranganLokasi],
       jabatan: [this.detail.jabatan],
-      location: "",
+      location: '',
       userCreate: [this.detail.userCreate],
       userUpdate: [this.detail.userUpdate],
       dateCreate: [this.detail.dateCreate],
-      dateUpdate: [this.detail.dateUpdate], 
+      dateUpdate: [this.detail.dateUpdate],
     });
-
-
 
     this.dataService
-    .postData(this.g.urlServer + '/api/location/dropdown-lokasi',{})
-    .subscribe((resp: any) => {
-      this.listLokasi = resp.map((item: any) => ({
-        id: item.KODE_LOCATION,
-        name: item.KODE_LOCATION+" - "+item.KETERANGAN_LOKASI,
-      }));    
-      const getDefaultLocation = this.listLokasi.find(
-        (item: any) => item.id === this.detail.defaultLocation
-      );      
-      // this.myForm.get('defaultLocation')?.setValue(getDefaultLocation);
-
-      this.dataService
-      .postData(this.g.urlServer + '/api/user-location/by-user',{"kodeUser":this.detail.kodeUser})
+      .postData(this.g.urlServer + '/api/location/dropdown-lokasi', {})
       .subscribe((resp: any) => {
-        this.listuserLoc = resp    
-        
-        const listuserLocArray = this.listuserLoc.map(item => item.KODE_LOCATION);
+        this.listLokasi = resp.map((item: any) => ({
+          id: item.KODE_LOCATION,
+          name: item.KODE_LOCATION + ' - ' + item.KETERANGAN_LOKASI,
+        }));
+        const getDefaultLocation = this.listLokasi.find(
+          (item: any) => item.id === this.detail.defaultLocation
+        );
+        // this.myForm.get('defaultLocation')?.setValue(getDefaultLocation);
 
-        const filteredLokasiByUserLoc = this.listLokasi.filter(item => listuserLocArray.includes(item.id));
-        this.listDefaultLokasi = filteredLokasiByUserLoc;
-        const listLocations = this.listDefaultLokasi.map(item => item.name);
-        const locationString = listLocations.join(",   ");
-        this.myForm.get('location')?.setValue(locationString); 
+        this.dataService
+          .postData(this.g.urlServer + '/api/user-location/by-user', {
+            kodeUser: this.detail.kodeUser,
+          })
+          .subscribe((resp: any) => {
+            this.listuserLoc = resp;
+
+            const listuserLocArray = this.listuserLoc.map(
+              (item) => item.KODE_LOCATION
+            );
+
+            const filteredLokasiByUserLoc = this.listLokasi.filter((item) =>
+              listuserLocArray.includes(item.id)
+            );
+            this.listDefaultLokasi = filteredLokasiByUserLoc;
+            const listLocations = this.listDefaultLokasi.map(
+              (item) => item.name
+            );
+            const locationString = listLocations.join(',   ');
+            this.myForm.get('location')?.setValue(locationString);
+          });
       });
-    });
   }
 
   onPreviousPressed() {
