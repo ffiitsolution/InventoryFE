@@ -30,14 +30,17 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   };
   configSelectDefaultLokasi: any ;
   configSelectRole: any ;
-  isNotMatchPass: boolean = false;
   listRole: any[] = [];
   
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+  public dpConfigTglKirimBarang: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+  public dpConfigTglBatalPesanan: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+
   bsConfig: Partial<BsDatepickerConfig>;
   listGudang: any[] = [];
   configSelectGudang: any ;
   gudangDetail: any[] = [];
+  currentUser : any;
 
 
   constructor(
@@ -50,12 +53,13 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.currentUser = this.g.getLocalstorage('inv_currentUser');
     this.myForm = this.form.group({
 
       statusAktif:  ['A', Validators.required],
-      tanggalPesanan: [{ value: new Date(new Date().setDate(new Date().getDate() - 3)), disabled: true }, Validators.required],
-      tanggalKirimBarang: [new Date(), Validators.required], // Default: Today
-      tanggalBatalPesanan: [{ value: new Date(new Date().setDate(new Date().getDate()  + 4)), disabled: false }, Validators.required],
+      tanggalPesanan: [{ value: new Date(new Date().setDate(new Date().getDate())), disabled: true }, Validators.required],
+      tanggalKirimBarang: [ new Date(new Date().setDate(new Date().getDate()  + 3)), Validators.required], // Default: Today
+      tanggalBatalPesanan: [{ value: new Date(new Date().setDate(new Date().getDate()  + 7)), disabled: false }, Validators.required],
       gudangTujuan: ['', Validators.required],
       namaGudang:  [{value: '', disabled: true}],
       alamatGudang:  [{value: '', disabled: true}],
@@ -91,12 +95,21 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
       this.listGudang = resp.map((item: any) => ({
         id: item.KODE_CABANG,
         name: item.KODE_CABANG+' - '+item.NAMA_CABANG,
-      }));      
+      }));     
     });
 
 
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
+
+    this.dpConfigTglKirimBarang.dateInputFormat = 'DD/MM/YYYY';
+    this.dpConfigTglKirimBarang.adaptivePosition = true;
+    this.dpConfigTglKirimBarang.minDate = new Date(new Date().setHours(0, 0, 0, 0));
+
+    this.dpConfigTglBatalPesanan.dateInputFormat = 'DD/MM/YYYY';
+    this.dpConfigTglBatalPesanan.adaptivePosition = true;
+    this.dpConfigTglBatalPesanan.minDate = new Date(new Date().setHours(0, 0, 0, 0));
+    
     this.g.removeLocalstorage('TEMP_ORDHDK');
   }
 
@@ -104,11 +117,11 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
 
   onSubmit(): void {
     const currentUser = this.g.getLocalstorage('inv_currentUser');
-
+    
     const { controls, invalid } = this.myForm;
 
 
-     if (invalid || this.isNotMatchPass) {
+     if (invalid || (this.compareDates(this.myForm.value.tanggalKirimBarang, this.myForm.value.tanggalBatalPesanan)) || (currentUser?.defaultLocation?.kodeLocation === this.myForm.value?.gudangTujuan?.id) ) {
       this.g.markAllAsTouched(this.myForm);
     } else {
       this.adding = true;
@@ -133,62 +146,8 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
       }
       this.adding = false;
 
-      // const param = {
-      //     "kodeGudang": "00072",
-      //     "supplier": "00052",
-      //     "tipePesanan": "I",
-      //     "nomorPesanan": "RO-000720009999",
-      //     "tanggalPesanan": "07-02-2025",
-      //     "tanggalKirimBarang": "10-02-2025",
-      //     "tanggalBatalEXP": "14-02-2025",
-      //     "keteranganSatu": "72 ke 52"           
-      // }
-
-      // this.service.insert('/api/users', param).subscribe({
-      //   next: (res) => {
-      //     if (!res.success) {
-      //       alert(res.message);
-      //     } else {
-      //       this.toastr.success('Berhasil!');
-      //       setTimeout(() => {
-      //         this.onPreviousPressed();
-      //       }, DEFAULT_DELAY_TIME);
-      //     }
-      //     this.adding = false;
-      //   },
-      // });
     }
    
-    // if (invalid || this.isNotMatchPass) {
-    //   console.log("inside invalid")
-    //   this.g.markAllAsTouched(this.myForm);
-    // } else {
-    //   this.adding = true;
-    //   const param = {
-    //     kodeUser:  controls?.['kodeUser']?.value,
-    //     kodePassword:  controls?.['kodePassword']?.value,
-    //     namaUser: controls?.['namaUser']?.value,
-    //     statusAktif: controls?.['statusAktif']?.value,
-    //     jabatan: controls?.['jabatan']?.value,
-    //     defaultLocation: controls?.['defaultLocation']?.value?.id ?? " ",
-    //     roleID: controls?.['roleID']?.value?.id,
-    //   };
-    //   this.service.insert('/api/users', param).subscribe({
-    //     next: (res) => {
-    //       if (!res.success) {
-    //         alert(res.message);
-    //       } else {
-    //         this.toastr.success('Berhasil!');
-    //         setTimeout(() => {
-    //           this.onPreviousPressed();
-    //         }, DEFAULT_DELAY_TIME);
-    //       }
-    //       this.adding = false;
-    //     },
-    //   });
-    // }
-  // }
-
   onNextPressed() {
     this.router.navigate(['/order/send-order-to-warehouse/add-data-detail']);
   }
@@ -236,19 +195,10 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
     }
   }
 
-  onChangePassword(data: any, type: string) {
-    if(type === 'user') {
-      if((this.myForm.value.kodePassword!='' && this.myForm.value.konfirmasiKodePassword!='') && (this.myForm.value.kodePassword != this.myForm.value.konfirmasiKodePassword)) {  
-        this.isNotMatchPass = true
-      }
-      else {
-        this.isNotMatchPass = false
-      }
-    }
 
-  }
 
   onGudangTujuanChange(selectedValue: any) {
+    console.log("this gudangtujuan",this.myForm.value.gudangTujuan)
     this.getGudangDetail(selectedValue?.value?.id);
   }
 
@@ -272,6 +222,21 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
       this.myForm.get('kodeSingkat')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].KODE_SINGKAT : null);  
     }); 
 }
+
+onDateChangeTglKirimBarang(event: Date): void {
+  this.dpConfigTglBatalPesanan.minDate = event; //update the batal pesanan mindate to tanggal kirim barang
+  console.log('Selected Date:', event);
+}
+
+compareDates(date1: any, date2: any): boolean {
+  if (!date1 || !date2) return false; // Ensure both dates exist
+
+  const d1 = new Date(date1).setHours(0, 0, 0, 0); // Remove time
+  const d2 = new Date(date2).setHours(0, 0, 0, 0); // Remove time
+
+  return d1 > d2; // Compare only the date part
+}
+
 
 
 }
