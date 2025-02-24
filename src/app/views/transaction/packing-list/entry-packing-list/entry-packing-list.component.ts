@@ -17,6 +17,7 @@ import * as moment from 'moment';
 import {
   ACTION_SELECT,
   ACTION_VIEW,
+  DEFAULT_DELAY_TABLE,
   DEFAULT_DELAY_TIME,
   LS_INV_SELECTED_DELIVERY_ORDER,
 } from '../../../../../constants';
@@ -61,7 +62,6 @@ export class EntryPackingListComponent
     | undefined;
 
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
-  dtOptions: DataTables.Settings = {};
   dtOptions_2: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
@@ -98,13 +98,6 @@ export class EntryPackingListComponent
     private config: AppConfig,
     private appService: AppService
   ) {
-    this.minDate.setDate(this.minDate.getDate() - 7);
-  }
-
-  ngOnInit(): void {
-    this.nomorDoList = JSON.parse(localStorage.getItem('listNoDO') || '[]');
-    this.getProsesDoBalik();
-
     this.dtOptions_2 = {
       paging: true,
       pageLength: 10,
@@ -112,6 +105,7 @@ export class EntryPackingListComponent
       processing: true,
       serverSide: true,
       autoWidth: true,
+      info: true,
       drawCallback: () => { },
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start || 0; // Pastikan tidak NaN
@@ -121,8 +115,9 @@ export class EntryPackingListComponent
           ...dataTablesParameters,
           kodeArea: this.g.getUserAreaCode(),
         };
-
-        this.getListGudang(params, callback);
+        setTimeout(() => {
+          this.getListGudang(params, callback);
+        }, DEFAULT_DELAY_TABLE);
       },
       columns: [
         {
@@ -183,6 +178,14 @@ export class EntryPackingListComponent
       },
       order: [[1, 'asc']],
     };
+
+    this.minDate.setDate(this.minDate.getDate() - 7);
+
+  }
+
+  ngOnInit(): void {
+    this.nomorDoList = JSON.parse(localStorage.getItem('listNoDO') || '[]');
+    this.getProsesDoBalik();
   }
 
   actionBtnClick(action: string, data: any): void {
