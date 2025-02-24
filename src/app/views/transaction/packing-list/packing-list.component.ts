@@ -26,9 +26,7 @@ import { Page } from '../../../model/page';
   templateUrl: './packing-list.component.html',
   styleUrls: ['./packing-list.component.scss'],
 })
-export class PackagingListComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
+export class PackagingListComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(DataTableDirective, { static: false }) datatableElement:
     | DataTableDirective
     | undefined;
@@ -59,7 +57,7 @@ export class PackagingListComponent
     private router: Router,
     private toastr: ToastrService,
     private config: AppConfig,
-    private appService: AppService
+    private appService: AppService,
   ) {
     this.minDate.setDate(this.minDate.getDate() - 7);
   }
@@ -248,6 +246,11 @@ export class PackagingListComponent
     this.router.navigate(['/transaction/delivery-item/add-data']);
   }
   navigateToEntryPackingList(): void {
+
+    if (!this.selectedRows || this.selectedRows.length === 0) {
+      this.toastr.error('Harap Pilih Data!', 'Peringatan');
+      return;
+    }
 
     this.g.saveLocalstorage('listNoDO', JSON.stringify(this.selectedRows));
     this.router.navigate(['/transaction/delivery-item/packing-list/entry-packing-list']);

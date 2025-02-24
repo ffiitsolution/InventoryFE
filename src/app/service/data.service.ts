@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -22,9 +23,13 @@ export class DataService {
       'X-API-TOKEN': token.replaceAll('"', ''),
     });
     if (isGeneratePdf) {
-      return this.http.post(url, params, { headers, responseType: 'blob' });
+      return this.http.post(url, params, { headers, responseType: 'blob' }).pipe(
+        catchError(this.handleError)
+      );
     }
-    return this.http.post(url, params, { headers });
+    return this.http.post(url, params, { headers }).pipe(
+      catchError(this.handleError)
+    );
   }
 
   patchData(
@@ -69,5 +74,20 @@ export class DataService {
   searchOrder(orderNumber: string): Observable<any> {
     const url = `your-api-endpoint/orders/${orderNumber}`;
     return this.http.get<any>(url);
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      // A client-side or network error occurred.
+      console.error('An error occurred:', error.error.message);
+    } else {
+      // The backend returned an unsuccessful response code.
+      console.error(
+        `Backend returned code ${error.status}, ` +
+        `body was: ${error.error}`);
+    }
+    // Return an observable with a user-facing error message.
+    return throwError(
+      'Something bad happened; please try again later.');
   }
 }
