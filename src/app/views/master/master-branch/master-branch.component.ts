@@ -327,13 +327,6 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.rerenderDatatable();
   }
 
-  /*************  ✨ Codeium Command ⭐  *************/
-  /**
-   * Function to reload the datatable after the tipe cabang filter is changed.
-   * This function is called when the tipe cabang dropdown filter is changed.
-   * It reloads the datatable by calling the ajax.reload() method of the datatable instance.
-   */
-  /******  13e1a130-4bf9-4d2b-a30b-fea5928455c3  *******/
   onTipeCabangFilterChange() {
     this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
