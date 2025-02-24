@@ -42,6 +42,7 @@ export class MasterUserAddComponent implements OnInit {
   myForm: FormGroup;
   adding: boolean = false;
   showPassword: boolean = false;
+  showConfirmationPassword: boolean = false;
   listLokasi: any[] = [];
   baseConfig: any = {
     displayKey: 'name', // Key to display in the dropdown
@@ -69,7 +70,7 @@ export class MasterUserAddComponent implements OnInit {
   ngOnInit(): void {
     this.myForm = this.form.group({
       kodeUser: ['', [Validators.required, noSpecialCharacters]],
-      namaUser: ['', Validators.required, noSpecialCharactersExcept],
+      namaUser: ['', [Validators.required, noSpecialCharactersExcept]],
       kodePassword: ['', Validators.required],
       konfirmasiKodePassword: ['', Validators.required],
       statusAktif: ['', Validators.required],
@@ -115,7 +116,24 @@ export class MasterUserAddComponent implements OnInit {
     if (invalid || this.isNotMatchPass) {
       this.g.markAllAsTouched(this.myForm);
       if (invalid) {
-        this.toastr.error('Beberapa kolom wajib diisi.');
+        if (
+          Object.values(controls).some((control) =>
+            control.hasError('required')
+          )
+        ) {
+          this.toastr.error('Beberapa kolom wajib diisi.');
+        } else if (
+          Object.values(controls).some((control) =>
+            control.hasError('specialCharNotAllowed')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('specialCharNotAllowedExcept')
+          )
+        ) {
+          this.toastr.error(
+            'Beberapa kolom mengandung karakter khusus yang tidak diperbolehkan.'
+          );
+        }
       }
     } else {
       this.adding = true;
@@ -153,8 +171,12 @@ export class MasterUserAddComponent implements OnInit {
     return this.g.isFieldValid(this.myForm, fieldName);
   }
 
-  togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
+  togglePasswordVisibility(field: any): void {
+    if (field == 'password') {
+      this.showPassword = !this.showPassword;
+    } else {
+      this.showConfirmationPassword = !this.showConfirmationPassword;
+    }
   }
 
   onChangeSelect(data: any, field: string) {

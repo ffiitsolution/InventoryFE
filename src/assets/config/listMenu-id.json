@@ -60,7 +60,6 @@
   },
   {
     "name": "Pesanan",
-    "url": "/order",
     "iconComponent": {
       "name": "cil-speedometer"
     },
@@ -74,7 +73,7 @@
         "url": "/order/receiving-order"
       },
       {
-        "name": "Kirim Pesanan Ke Supplier (Via RSC)",
+        "name": "Kirim Pesanan Ke Supplier",
         "url": "/order/send-order-to-supplier-via-rsc",
         "iconComponent": {
           "name": "cil-color-border"

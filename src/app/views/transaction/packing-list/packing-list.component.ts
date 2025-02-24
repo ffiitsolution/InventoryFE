@@ -27,8 +27,7 @@ import { Page } from '../../../model/page';
   styleUrls: ['./packing-list.component.scss'],
 })
 export class PackagingListComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
+  implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(DataTableDirective, { static: false }) datatableElement:
     | DataTableDirective
     | undefined;
@@ -75,7 +74,6 @@ export class PackagingListComponent
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
       },
-      scrollX: true,
       autoWidth: true,
       columns: [
         {
@@ -113,6 +111,25 @@ export class PackagingListComponent
         $('.action-select-data', row).on('click', () =>
           this.actionBtnClick('SELECT_DATA', data)
         );
+        $('td', row).on('click', (event) => {
+          const checkbox = $(row).find('.select-row'); 
+          const index = this.selectedRows.findIndex(item => item === data);
+
+          if (index === -1) {
+            this.selectedRows.push(data);
+            $('td', row).addClass('bg-info text-white fw-semibold');
+            checkbox.prop('checked', true);
+          } else {
+            this.selectedRows.splice(index, 1);
+            $('td', row).css({ 'background-color': '' }).removeClass('bg-info text-white fw-semibold');
+            checkbox.prop('checked', false);
+          }
+          if ($(event.target).is('.select-row')) {
+            event.stopPropagation();
+          }
+        });
+
+
         return row;
       },
       order: [[2, 'desc']],
@@ -178,7 +195,7 @@ export class PackagingListComponent
     this.dtTrigger.unsubscribe();
   }
 
-  dtPageChange(event: any): void {}
+  dtPageChange(event: any): void { }
 
   search(): void {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {

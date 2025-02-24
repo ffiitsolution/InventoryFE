@@ -171,10 +171,10 @@ export class DeliveryItemComponent implements OnInit {
           this.actionBtnClick(ACTION_CETAK, data)
         );
         $('td', row).on('click', () => {
-          $('td').css({'background-color': ''}).removeClass('text-white fw-semibold');
+          $('td').removeClass('bg-secondary text-white fw-semibold');
           if (this.selectedRowData !== data) {
             this.selectedRowData = data;
-            $('td', row).css({'background-color': '#BABBD8'}).addClass('text-white fw-semibold');
+            $('td', row).addClass('bg-secondary text-white fw-semibold');
           } else {
             this.selectedRowData = undefined;
           }

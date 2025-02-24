@@ -40,12 +40,19 @@
               (keypress)="conditionInput($event, 'alphabet')"
               maxlength="50"
             />
-            <span *ngIf="isFieldValid('namaUser')" class="text-danger">{{
-              "Wajib diisi" | translate
-            }}</span>
             <span
               *ngIf="
-                myForm.controls['namaUser'].hasError('specialCharNotAllowed')
+                myForm.controls['namaUser'].hasError('required') &&
+                myForm.controls['namaUser'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max.50 karakter)" | translate }}</span
+            >
+            <span
+              *ngIf="
+                myForm.controls['namaUser'].hasError(
+                  'specialCharNotAllowedExcept'
+                )
               "
               class="text-danger"
               >{{
@@ -60,14 +67,26 @@
             <span class="stamp-required show">&nbsp;*</span>
           </label>
           <div class="col-sm-10">
-            <input
-              maxlength="10"
-              type="password"
-              class="form-control"
-              formControlName="kodePassword"
-              (keypress)="conditionInput($event, 'alphanumeric')"
-              (keyup)="onChangePassword($event, 'user')"
-            />
+            <div class="d-flex align-items-center">
+              <input
+                maxlength="10"
+                [type]="showPassword ? 'text' : 'password'"
+                class="form-control"
+                formControlName="kodePassword"
+                (keypress)="conditionInput($event, 'alphanumeric')"
+                (keyup)="onChangePassword($event, 'user')"
+              />
+              <span
+                class="input-group-text eye-icon text-center"
+                style="margin-right: 5px"
+                (click)="togglePasswordVisibility('password')"
+              >
+                <i
+                  class="fa"
+                  [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+                ></i>
+              </span>
+            </div>
             <span *ngIf="isFieldValid('kodePassword')" class="text-danger">{{
               "Wajib diisi" | translate
             }}</span>
@@ -84,14 +103,28 @@
             <span class="stamp-required show">&nbsp;*</span>
           </label>
           <div class="col-sm-10">
-            <input
-              maxlength="10"
-              type="password"
-              class="form-control"
-              (keypress)="conditionInput($event, 'alphanumeric')"
-              formControlName="konfirmasiKodePassword"
-              (keyup)="onChangePassword($event, 'user')"
-            />
+            <div class="d-flex align-items-center">
+              <input
+                maxlength="10"
+                [type]="showConfirmationPassword ? 'text' : 'password'"
+                class="form-control"
+                (keypress)="conditionInput($event, 'alphanumeric')"
+                formControlName="konfirmasiKodePassword"
+                (keyup)="onChangePassword($event, 'user')"
+              />
+              <span
+                class="input-group-text eye-icon text-center"
+                style="margin-right: 5px"
+                (click)="togglePasswordVisibility('confirmationPassword')"
+              >
+                <i
+                  class="fa"
+                  [ngClass]="
+                    showConfirmationPassword ? 'fa-eye-slash' : 'fa-eye'
+                  "
+                ></i>
+              </span>
+            </div>
             <span
               *ngIf="isFieldValid('konfirmasiKodePassword')"
               class="text-danger"

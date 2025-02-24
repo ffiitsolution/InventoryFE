@@ -63,6 +63,8 @@ export class MasterUserEditComponent implements OnInit {
 
   isNotMatchPass: boolean = false;
   isNotMatchPassPos: boolean = false;
+  showPassword: boolean = false;
+  showConfirmationPassword: boolean = false;
   listRole: any[] = [];
 
   listuserLoc: any[] = [];
@@ -87,7 +89,7 @@ export class MasterUserEditComponent implements OnInit {
       ],
       namaUser: [
         this.detail.namaUser,
-        [Validators.required, noSpecialCharacters],
+        [Validators.required, noSpecialCharactersExcept],
       ],
       kodePassword: [this.detail.kodePassword, Validators.required],
 
@@ -98,8 +100,6 @@ export class MasterUserEditComponent implements OnInit {
       roleID: [],
       location: [],
     });
-
-    console.log(this.myForm.get('statusAktif'));
 
     this.configSelectLokasi = {
       ...this.baseConfig,
@@ -170,6 +170,26 @@ export class MasterUserEditComponent implements OnInit {
     const { controls, invalid } = this.myForm;
     if (invalid || this.isNotMatchPass) {
       this.g.markAllAsTouched(this.myForm);
+      if (invalid) {
+        if (
+          Object.values(controls).some((control) =>
+            control.hasError('required')
+          )
+        ) {
+          this.toastr.error('Beberapa kolom wajib diisi.');
+        } else if (
+          Object.values(controls).some((control) =>
+            control.hasError('specialCharNotAllowed')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('specialCharNotAllowedExcept')
+          )
+        ) {
+          this.toastr.error(
+            'Beberapa kolom mengandung karakter khusus yang tidak diperbolehkan.'
+          );
+        }
+      }
     } else {
       this.editing = true;
       const param = {
@@ -269,6 +289,14 @@ export class MasterUserEditComponent implements OnInit {
 
   isFieldValid(fieldName: String) {
     return this.g.isFieldValid(this.myForm, fieldName);
+  }
+
+  togglePasswordVisibility(field: any): void {
+    if (field == 'password') {
+      this.showPassword = !this.showPassword;
+    } else {
+      this.showConfirmationPassword = !this.showConfirmationPassword;
+    }
   }
 
   onChangeLocation(selected: any) {
