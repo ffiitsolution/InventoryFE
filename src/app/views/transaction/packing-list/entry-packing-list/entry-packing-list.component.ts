@@ -15,7 +15,9 @@ import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { ToastrService } from 'ngx-toastr';
 import * as moment from 'moment';
 import {
+  ACTION_SELECT,
   ACTION_VIEW,
+  DEFAULT_DELAY_TIME,
   LS_INV_SELECTED_DELIVERY_ORDER,
 } from '../../../../../constants';
 import { AppService } from '../../../../service/app.service';
@@ -28,8 +30,7 @@ import { data } from 'jquery';
   styleUrls: ['./entry-packing-list.component.scss'],
 })
 export class EntryPackingListComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
+  implements OnInit, AfterViewInit, OnDestroy {
   numericInputRenderer(data: any, type: any, row: any, meta: any) {
     if (type === 'display') {
       return `
@@ -83,8 +84,8 @@ export class EntryPackingListComponent
 
   constructor(
     private dataService: DataService,
-    private g: GlobalService,
-    private router: Router,
+    public g: GlobalService,
+    public router: Router,
     private toastr: ToastrService,
     private config: AppConfig,
     private appService: AppService
@@ -94,61 +95,7 @@ export class EntryPackingListComponent
 
   ngOnInit(): void {
     this.nomorDoList = JSON.parse(localStorage.getItem('listNoDO') || '[]');
-    this.dtOptions = {
-      paging: true,
-      pageLength: 5,
-      lengthMenu: [5],
-      processing: true,
-      ajax: (dataTablesParameters: any, callback) => {
-        this.getProsesDoBalik(callback);
-        this.page.start = dataTablesParameters.start;
-        this.page.length = dataTablesParameters.length;
-      },
-      scrollX: true,
-      autoWidth: false,
-      columns: [
-        { data: 'KODE_BARANG', title: 'Kode Barang', className: 'text-center' },
-        { data: 'NAMA_BARANG', title: 'Nama Barang', className: 'text-center' },
-        { data: 'KONVERSI', title: 'Konversi', className: 'text-center' },
-        {
-          data: 'TOTAL_QTY_KIRIM',
-          title: 'Qty Kirim',
-          className: 'text-center',
-        },
-        {
-          data: 'NO_SURAT_JALAN',
-          title: 'No Surat Jalan',
-          className: 'text-center',
-        },
-        { data: 'KODE_TUJUAN', title: 'Kode Tujuan', className: 'text-center' },
-        { data: 'NAMA_CABANG', title: 'Nama Cabang', className: 'text-center' },
-        {
-          data: 'NOMOR_COLLI',
-          title: 'Nomor Colli',
-          className: 'text-center',
-          defaultContent: '',
-          render: (data, type, row, meta) => this.numericInputRenderer(data, type, row, meta),
-        },
-        {
-          data: 'JUMLAH_COLLI',
-          title: 'Jumlah Colli',
-          className: 'text-center',
-          defaultContent: '',
-          render: (data, type, row, meta) => this.numericInputRenderer(data, type, row, meta),
-        },
-      ],
-
-      rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        $('.action-view', row).on('click', () =>
-          this.actionBtnClick(ACTION_VIEW, data)
-        );
-        $('.action-posting', row).on('click', () =>
-          this.actionBtnClick('POSTING', data)
-        );
-        return row;
-      },
-      order: [[2, 'desc']],
-    };
+    this.getProsesDoBalik();
 
     this.dtOptions_2 = {
       paging: true,
@@ -195,28 +142,17 @@ export class EntryPackingListComponent
           },
         },
         { data: 'kota', title: 'Kota', className: 'text-center' },
-        // {
-        //   data: 'NOMOR_COLLI',
-        //   title: 'Nomor Colli',
-        //   className: 'text-center',
-        //   defaultContent: '',
-        //   render: this.numericInputRenderer,
-        // },
-        // {
-        //   data: 'JUMLAH_COLLI',
-        //   title: 'Jumlah Colli',
-        //   className: 'text-center',
-        //   defaultContent: '',
-        //   render: this.numericInputRenderer,
-        // },
+        {
+          title: 'Action',
+          render: () => {
+            return `<button class="btn btn-sm action-select btn-info btn-80 text-white">Pilih</button>`;
+          },
+        },
       ],
 
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        $('.action-view', row).on('click', () =>
-          this.actionBtnClick(ACTION_VIEW, data)
-        );
-        $('.action-posting', row).on('click', () =>
-          this.actionBtnClick('POSTING', data)
+        $('.action-select', row).on('click', () =>
+          this.actionBtnClick(ACTION_SELECT, data)
         );
         return row;
       },
@@ -226,36 +162,12 @@ export class EntryPackingListComponent
   }
 
   actionBtnClick(action: string, data: any): void {
-    if (action === ACTION_VIEW) {
-      this.g.saveLocalstorage(
-        LS_INV_SELECTED_DELIVERY_ORDER,
-        JSON.stringify(data)
-      );
-      this.router.navigate([
-        '/transaction/delivery-item/dobalik/detail-report-do-balik',
-      ]);
-      this;
-    }
-    if (action === 'POSTING') {
-      this.g.saveLocalstorage(
-        LS_INV_SELECTED_DELIVERY_ORDER,
-        JSON.stringify(data)
-      );
-      const param = {
-        kodeGudang: data.KODE_GUDANG,
-        noSuratJalan: data.NO_SURAT_JALAN,
-        userPosted: JSON.parse(localStorage.getItem('inv_currentUser') || '')
-          .namaUser,
-      };
-      this.appService.updateDeliveryOrderPostingStatus(param).subscribe({
-        next: (response) => {
-          this.toastr.success('Berhasil Posting DO Balik');
-          this.search();
-        },
-        error: (error) => {
-          this.toastr.error('Gagal Posting DO Balik');
-        },
-      });
+    if (action === ACTION_SELECT) {
+      const paramTujuan = {
+        tujuan: data.kodeCabang + ' - ' + data.namaCabang,
+        alamatTujuan: data.alamat1 + ',' + data.alamat2 + ',' + data.kota + ' ' + data.kodePos
+      }
+      this.onSubmit(paramTujuan);
     }
   }
 
@@ -278,7 +190,7 @@ export class EntryPackingListComponent
     // this.onSaveData();
   }
 
-  dtPageChange(event: any): void {}
+  dtPageChange(event: any): void { }
 
   search(): void {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -286,7 +198,7 @@ export class EntryPackingListComponent
     });
   }
 
-  getProsesDoBalik(callback: any): void {
+  getProsesDoBalik(): void {
     this.loading = true;
 
     // Format tanggal menjadi 'dd MM yyyy' sebelum dikirim ke backend
@@ -310,15 +222,15 @@ export class EntryPackingListComponent
       )
       .subscribe(
         (response: any) => {
-          let index = 0;
-          dtIndex: this.page.start + index + 1;
-          this.reportProposeData = response.packingList;
-          this.totalLength = response.recordsTotal;
-          callback({
-            recordsTotal: response.recordsTotal,
-            recordsFiltered: response.recordsFiltered,
-            data: this.reportProposeData,
+          this.listEntryPl = response.packingList;
+          this.listEntryPl.forEach((item: any) => {
+            item.nomorColli = '';
+            item.jumlahColli = '';
           });
+
+
+          this.filteredEntryPL = this.listEntryPl;
+          this.totalLength = response.recordsTotal;
           this.loading = false;
         },
         (error) => {
@@ -330,19 +242,6 @@ export class EntryPackingListComponent
 
   getListGudang(param: any, callback: any): void {
     this.loading = true;
-
-    // Format tanggal menjadi 'dd MM yyyy' sebelum dikirim ke backend
-    const formattedStartDate = moment(this.startDate).format('DD MMM yyyy');
-    const formattedEndDate = moment(this.endDate).format('DD MMM yyyy');
-
-    const parsedDoList = JSON.parse(this.nomorDoList);
-    const kodeGudangArray = [
-      ...new Set(parsedDoList?.map((item: any) => item.KODE_GUDANG)),
-    ];
-
-    const params = { kodeArea: this.g.getUserAreaCode() };
-
-    console.log('Mengirim data ke backend:', param);
 
     this.dataService
       .postData(this.config.BASE_URL + '/delivery-order/get-site-info', param)
@@ -383,4 +282,77 @@ export class EntryPackingListComponent
   navigateToDeliveryItem(): void {
     this.router.navigate(['/transaction/delivery-item/add-data']);
   }
+
+  searchDetail = '';
+  filteredEntryPL: any[] = [];
+  listEntryPl: any[] = [];
+  listCurrentPage: number = 1;
+  totalLengthList: number = 1;
+
+  onSearchDetail(event: any) {
+    this.searchDetail = event?.target?.value;
+    if (event?.target?.value) {
+      this.filteredEntryPL = this.listEntryPl.filter(
+        (value: any) =>
+          Object.values(value).some(
+            (columnValue) =>
+              typeof columnValue === 'string' &&
+              columnValue
+                .toLowerCase()
+                .includes(this.searchDetail.toLowerCase())
+          ) ||
+          (value.items &&
+            Array.isArray(value.items) &&
+            value.items.some((item: any) =>
+              Object.values(item).some(
+                (nestedValue: any) =>
+                  typeof nestedValue === 'string' &&
+                  nestedValue
+                    .toLowerCase()
+                    .includes(this.searchDetail.toLowerCase())
+              )
+            ))
+      );
+    } else {
+      this.filteredEntryPL = JSON.parse(
+        JSON.stringify(this.listEntryPl)
+      );
+    }
+  }
+
+  onInputValueItemDetail(event: any, index: number, type: string, qtyType: string) {
+    const target = event.target;
+    const value = target.value;
+
+    if (this.listEntryPl[index]) {
+      this.listEntryPl[index][target.name] = value;
+    }
+  }
+
+  onSubmit(tujuanReport: any) {
+
+    const params = this.listEntryPl.map((data: any) => {
+      return {
+        ...data,
+        nomorColli: parseInt(data.nomorColli, 10) || 0,
+        jumlahColli: parseInt(data.jumlahColli, 10) || 0,
+        tujuanReport: tujuanReport
+      }
+    })
+
+    this.dataService
+      .postData(this.config.BASE_URL + '/delivery-order/get-site-info', params)
+      .subscribe(
+        (response: any) => {
+          if (!response.success) {
+            alert(response.message);
+          } else {
+            this.toastr.success("Berhasil!");
+            setTimeout(() => {
+              this.router.navigate(["/transaction/packing-list"]);
+            }, DEFAULT_DELAY_TIME);
+          }
+        })
+  }
+
 }
