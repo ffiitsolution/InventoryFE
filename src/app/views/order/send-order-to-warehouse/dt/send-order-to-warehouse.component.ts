@@ -14,7 +14,7 @@ import {
   LS_INV_SELECTED_SEND_TO_WAREHOUSE_ORDER,
 } from '../../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
-import { Subject } from 'rxjs';
+import { lastValueFrom,Subject } from 'rxjs';
 import { Page } from 'src/app/model/page';
 import { DataService } from 'src/app/service/data.service';
 import { GlobalService } from 'src/app/service/global.service';
@@ -49,6 +49,7 @@ export class SendOrderToWarehouseComponent
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
   buttonCaptionView: String = 'Lihat';
+  buttonCaptionPrint: String = 'Cetak';
   currentDate: Date = new Date();
   startDateFilter: Date = new Date(
     this.currentDate.setDate(
@@ -57,6 +58,8 @@ export class SendOrderToWarehouseComponent
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
   dataUser: any;
+  generatePdfUrl: string = "/api/send-order-to-warehouse/report";
+  generateReportParam : string;
 
   protected config = AppConfig.settings.apiServer;
 
@@ -217,6 +220,14 @@ export class SendOrderToWarehouseComponent
             return statusLabel;
           }
         },
+        { 
+          data: 'keterangan1', 
+          title: 'Catatan1',
+          render: function (data, type, row) {
+            if (!data) return ""; // Handle null/undefined values
+            return data.substring(0, 20); // Cut the first 20 characters
+          }
+        },
 
         
         
@@ -224,12 +235,14 @@ export class SendOrderToWarehouseComponent
           title: 'Opsi',
           render: (data, type, row) => {
             const isDisabled = row?.statusKirim=="S"; // Set to true to disable the button
+            const isDisabledCetak = row?.statusCetak=="S"; // Set to true to disable the button
             const htmlString = `
               <div class="btn-group" role="group" aria-label="Action">
                 <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
                 <button class="btn btn-sm action-send btn-outline-info btn-60" ${isDisabled ? 'disabled' : ''}>
                   Kirim
-                </button>              
+                </button>   
+                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>           
               </div>
             `;
             return htmlString;
@@ -248,6 +261,9 @@ export class SendOrderToWarehouseComponent
         );
         $('.action-send', row).on('click', () =>
           this.updateStatus(data)
+        );
+        $('.action-print', row).on('click', () =>
+          this.onClickPrint(data)
         );
         return row;
       },
@@ -332,4 +348,67 @@ export class SendOrderToWarehouseComponent
   onAddPressed() {
     this.router.navigate(['/order/send-order-to-warehouse/add']);
   }
+
+    async onClickPrint(data: any) {
+      try {
+        const param = {
+          nomorPesanan : data.nomorPesanan
+        }
+
+        const base64Response = await lastValueFrom(
+          this.dataService.postData(this.config.BASE_URL + this.generatePdfUrl, param, true)
+        );
+        const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        window.open(url);
+        
+        this.dataService
+        .postData(this.g.urlServer + '/api/send-order-to-warehouse/update-status-cetak',param)
+        .subscribe({
+          next: (res: any) => {
+            if (!res.success) {
+              alert(res.message);
+            } else {
+              this.toastr.success(this.translation.instant('Berhasil!'));
+              setTimeout(() => {
+                window.location.reload();
+              }, DEFAULT_DELAY_TIME);
+            }
+          },
+          error: (err: any) => {
+            console.error('Error updating user:', err);
+            alert('An error occurred while updating the user.');
+          },    
+        });
+      } catch (error: any) {
+        this.toastr.error(error.message ?? 'Unknown error while generating PDF');
+      }
+
+    //   // this.updatingStatus = true;
+    //   try {
+    //     const updatePrintStatusResponse = await lastValueFrom(
+    //       this.dataService.postData(this.config.BASE_URL + this.updateStatusUrl, this.updatePrintStatusParam)
+    //     );
+  
+    //     if ((updatePrintStatusResponse as any).success) {
+    //       try {
+    //         const base64Response = await lastValueFrom(
+    //           this.dataService.postData(this.config.BASE_URL + this.generatePdfUrl, this.generateReportParam, true)
+    //         );
+    //         const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
+    //         const url = window.URL.createObjectURL(blob);
+    //         window.open(url);
+    //       } catch (error: any) {
+    //         this.toastr.error(error.message ?? 'Unknown error while generating PDF');
+    //       }
+    //     } else {
+    //       this.toastr.error((updatePrintStatusResponse as any).message);
+    //     }
+    //   } catch (error: any) {
+    //     this.toastr.error(error.message ?? 'Error updating status');
+    //   } finally {
+    //     // this.updatingStatus = false;
+    //     // this.reloadTable.emit();
+    //   }
+    }
 }

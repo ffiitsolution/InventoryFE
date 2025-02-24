@@ -60,7 +60,8 @@ export class AddDataDetailSendOrderToWarehouseComponent
   selectedRow:  any = {};
   pageModal = new Page();
   dataUser: any = {};
-  
+  validationMessageList: any[] = [];
+
   @ViewChild('formModal') formModal: any;
 
 
@@ -126,15 +127,22 @@ export class AddDataDetailSendOrderToWarehouseComponent
   // ];
   }
 
-  onInputValueItemDetail(event: any, index: number) {
-    const target = event.target;
-    const value = target.value;
+  onInputValueItemDetail(event: any, index: number, type: string, qtyType: string) {
+    // const target = event.target;
+    // const value = target.value;
+    let validationMessage = '';
 
-    if (target.type === 'number') {
-      this.listOrderData[index][target.name] = Number(value); 
-    } else {
-      this.listOrderData[index][target.name] = value;
+    console.log("listOrderData",this.listOrderData[index])
+
+    if(this.listOrderData[index].qtyPesanKecil > this.listOrderData[index].konversi  ){
+      this.validationMessageList[index] = "QTY kecil harus < Konversi";
     }
+    else{
+      this.validationMessageList[index] = "";
+    }
+    console.log(" this.validationMessageList", this.validationMessageList)
+
+
   }
   onFilterSearch(
     listData: any[],
@@ -151,7 +159,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/transaction/delivery-item/add-data']);
+    this.router.navigate(['/order/send-order-to-warehouse/add']);
   }
 
   onPageChange(event: number) {
@@ -335,14 +343,14 @@ export class AddDataDetailSendOrderToWarehouseComponent
       ...this.selectedRow
   });
 
-  
-
+  this.validationMessageList.push("")
     // this.mapOrderData(data);
     // this.onSaveData();
   }
 
   deleteBarang(index:any) {
     this.listOrderData.splice(index, 1);
+    this.validationMessageList.splice(index,1)
   }
 
   insertDetail(){
@@ -387,5 +395,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
   onPreviousPressed(): void {
     this.router.navigate(['order/send-order-to-warehouse']);
   }
+
+  
 
 }
