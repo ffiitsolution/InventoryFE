@@ -35,12 +35,11 @@ export class EntryPackingListComponent
     if (type === 'display') {
       return `
         <input type="number" class="form-control text-center"
-             value="${data || ''}" 
-             min="0" max="99999"
-             oninput="this.value = this.value.replace(/[^0-9]/g, ''); 
-                      if(this.value.length > 5) this.value = this.value.slice(0, 5);
-                      if(this.value > 99999) this.value = 99999;"
-             (change)="updateTableData(${meta.row}, '${meta.settings.aoColumns[meta.col].data}', this.value)">
+               value="${data || ''}" 
+               min="0" max="99999"
+               oninput="this.value = this.value.replace(/[^0-9]/g, ''); 
+                        if(this.value.length > 5) this.value = this.value.slice(0, 5);
+                        if(this.value > 99999) this.value = 99999;">
       `;
     }
     return data;
@@ -56,6 +55,7 @@ export class EntryPackingListComponent
       newValue
     );
   }
+
   @ViewChild(DataTableDirective, { static: false }) datatableElement:
     | DataTableDirective
     | undefined;
@@ -80,7 +80,15 @@ export class EntryPackingListComponent
   dataUser: any;
   nomorDoList: any;
   isShowModal: boolean = false;
+  isShowPrintModal: boolean = false;
   selectedRo: any = {};
+  selectedData: any;
+
+  searchDetail = '';
+  filteredEntryPL: any[] = [];
+  listEntryPl: any[] = [];
+  listCurrentPage: number = 1;
+  totalLengthList: number = 1;
 
   constructor(
     private dataService: DataService,
@@ -103,28 +111,31 @@ export class EntryPackingListComponent
       lengthMenu: [5],
       processing: true,
       serverSide: true,
+      autoWidth: true,
+      drawCallback: () => { },
       ajax: (dataTablesParameters: any, callback) => {
-        this.page.start = dataTablesParameters.start;
-        this.page.length = dataTablesParameters.length;
+        this.page.start = dataTablesParameters.start || 0; // Pastikan tidak NaN
+        this.page.length = dataTablesParameters.length || 10; // Pastikan tidak NaN
+
         const params = {
           ...dataTablesParameters,
           kodeArea: this.g.getUserAreaCode(),
         };
+
         this.getListGudang(params, callback);
-        this.page.start = dataTablesParameters.start;
-        this.page.length = dataTablesParameters.length;
       },
-      autoWidth: true,
       columns: [
         {
           data: 'kodeCabang',
           title: 'Kode Cabang',
           className: 'text-center',
+          searchable: true
         },
         {
           data: 'namaCabang',
           title: 'Nama Cabang',
           className: 'text-center',
+          searchable: true
         },
         {
           data: 'kodeGroup',
@@ -132,33 +143,46 @@ export class EntryPackingListComponent
           className: 'text-center',
         },
         {
-          data: null, // Tidak mengambil langsung dari satu field
-          title: 'Alamat', // Nama kolom yang sama untuk keduanya
+          data: null,
+          title: 'Alamat',
           className: 'text-center',
+          searchable: true,
           render: function (data, type, row) {
-            let alamat1 = row.alamat1 ? row.alamat1 : '-'; // Cek jika null
+            let alamat1 = row.alamat1 ? row.alamat1 : '-';
             let alamat2 = row.alamat2 ? row.alamat2 : '-';
             return `${alamat1} <br> ${alamat2}`;
           },
         },
         { data: 'kota', title: 'Kota', className: 'text-center' },
         {
-          title: 'Action',
-          render: () => {
-            return `<button class="btn btn-sm action-select btn-info btn-80 text-white">Pilih</button>`;
+          data: null,
+          title: 'Pilih',
+          className: 'text-center',
+          orderable: false,
+          render: function (data, type, row) {
+            return `<button class="btn btn-sm action-select btn-info btn-80 text-white pilih-btn" 
+                      data-kodeCabang="${row.kodeCabang}"
+                      data-namaCabang="${row.namaCabang}"
+                      data-kodeGroup="${row.kodeGroup}"
+                      data-alamat1="${row.alamat1}"
+                      data-alamat2="${row.alamat2}"
+                      data-kota="${row.kota}">
+                      Pilih
+                    </button>`;
           },
         },
       ],
-
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-select', row).on('click', () =>
           this.actionBtnClick(ACTION_SELECT, data)
         );
+        $('.pilih-btn', row).on('click', () =>
+          this.actionBtnClick(ACTION_VIEW, data)
+        );
         return row;
       },
-      order: [[2, 'desc']],
+      order: [[1, 'asc']],
     };
-
   }
 
   actionBtnClick(action: string, data: any): void {
@@ -167,8 +191,19 @@ export class EntryPackingListComponent
         tujuan: data.kodeCabang + ' - ' + data.namaCabang,
         alamatTujuan: data.alamat1 + ',' + data.alamat2 + ',' + data.kota + ' ' + data.kodePos
       }
-      this.onSubmit(paramTujuan);
+      this.selectedData = {
+        ...this.selectedData,
+        kodeCabang: data.kodeCabang,
+        namaCabang: data.namaCabang,
+        kodeGroup: data.kodeGroup,
+        alamat1: data.alamat1,
+        alamat2: data.alamat2,
+        kota: data.kota};
+      this.isShowPrintModal = true;
+      this.isShowModal = false;
+      // this.onSubmit(paramTujuan);
     }
+
   }
 
   ngAfterViewInit(): void {
@@ -184,10 +219,8 @@ export class EntryPackingListComponent
   }
   actionBtnClickInModal(action: string, data: any = null) {
     this.selectedRo = JSON.stringify(data);
-    // this.renderDataTables();
     this.isShowModal = false;
-    // this.mapOrderData(data);
-    // this.onSaveData();
+    this.isShowPrintModal = true;
   }
 
   dtPageChange(event: any): void { }
@@ -238,6 +271,13 @@ export class EntryPackingListComponent
           this.loading = false;
         }
       );
+    this.dataService
+      .postData(this.config.BASE_URL + '/delivery-order/generate', params[0])
+      .subscribe((response: any) => {
+        this.selectedData = {
+          packingListNumber: response.packingListNumber,
+        };
+      });
   }
 
   getListGudang(param: any, callback: any): void {
@@ -283,11 +323,7 @@ export class EntryPackingListComponent
     this.router.navigate(['/transaction/delivery-item/add-data']);
   }
 
-  searchDetail = '';
-  filteredEntryPL: any[] = [];
-  listEntryPl: any[] = [];
-  listCurrentPage: number = 1;
-  totalLengthList: number = 1;
+
 
   onSearchDetail(event: any) {
     this.searchDetail = event?.target?.value;
@@ -355,4 +391,26 @@ export class EntryPackingListComponent
         })
   }
 
+  openModal(): void {
+    this.isShowModal = true;
+  }
+
+  closeModal(): void {
+    this.isShowModal = false;
+    this.isShowPrintModal = false;
+  }
+
+  onCetakPdf(): void {
+    console.log('Cetak PDF');
+    // Implement your PDF printing logic here
+  }
+
+  onCetakPrinter(): void {
+    console.log('Cetak Printer');
+    // Implement your printer printing logic here
+  }
+  onPilihCabang(): void {
+    this.isShowPrintModal = false;
+    this.isShowModal = true;
+  }
 }

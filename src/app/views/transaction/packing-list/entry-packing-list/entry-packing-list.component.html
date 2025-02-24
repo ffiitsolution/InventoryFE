@@ -159,7 +159,67 @@
   </c-modal-header>
   <c-modal-body>
     <div class="table-responsive">
-      <table datatable [dtOptions]="dtOptions_2" class="row-border hover  w-100"></table>
+      <table
+        [dtOptions]="dtOptions_2"
+        class="row-border hover  w-100"
+      ></table>
     </div>
   </c-modal-body>
 </c-modal>
+
+<c-modal
+  #printModal
+  [fullscreen]="false"
+  [visible]="isShowPrintModal"
+  [backdrop]="true"
+  size="lg"
+  id="printModal"
+  class="custom-modal"
+>
+  <c-modal-body>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Konfirmasi Cetak Data</h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>No. Packing List</label>
+          <input type="text" [(ngModel)]="selectedData.packingListNumber" readonly class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label>Tujuan Kirim</label>
+          <div class="tujuan-kirim d-flex align-items-center">
+            <input type="text" [(ngModel)]="selectedData.kodeCabang" readonly class="form-control w-25">
+            <button class="btn btn-outline-secondary ms-2" (click)="onPilihCabang()">🔍</button>
+            <input type="text" [(ngModel)]="selectedData.namaCabang" readonly class="form-control w-50 ms-2">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Alamat Tujuan</label>
+          <textarea [(ngModel)]="selectedData.alamat1" readonly class="form-control"></textarea>
+        </div>
+
+        <p class="note text-center text-muted">
+          Siapkan kertas, jika anda ingin mencetak ke <strong>'PRINTER'</strong>
+        </p>
+      </div>
+
+      <div class="modal-footer justify-content-center">
+        <button class="btn btn-warning me-2" (click)="onCetakPdf()">
+          📄 Cetak PDF
+        </button>
+        <button class="btn btn-primary me-2" (click)="onCetakPrinter()">
+          🖨️ Cetak Printer
+        </button>
+        <button class="btn btn-danger" (click)="closeModal()">
+          ❌ Batal
+        </button>
+      </div>
+    </div>
+  </c-modal-body>
+</c-modal>
+
+
+
