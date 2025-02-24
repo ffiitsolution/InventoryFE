@@ -2,22 +2,18 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="row">
-        <div class="col">
-          <h5>{{ "Entry Packing List" | translate }}</h5>
-        </div>
-        <div class="d-grid gap-3 d-md-flex justify-content-end">
-          
-          <button
-            class="btn btn-danger text-white btn-150"
-            (click)="onShowModal()"
-          >
-            <i class="fa fa-print"></i> {{ "Print" | translate }}
+        <div class="col d-flex text-start align-items-center">
+          <button class="btn btn-light btn-120" (click)="router.navigate(['/transaction/delivery-item/packing-list'])">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
           </button>
-          <button
-            type="button"
-            class="btn btn-outline-dark me-2 btn-120"
-            (click)="toggleFilter()"
-          >
+          <h5 class="mb-0 ms-3">{{ "Entry Packing List" | translate }}</h5>
+        </div>
+        <div class="col text-end">
+          <button class="btn btn-outline-success btn-150 me-2" (click)="onShowModal()">
+            <i class="fa fa-print"></i> {{ "Cetak Packing List" | translate }}
+          </button>
+          <button type="button" class="btn btn-outline-dark me-2 btn-120" (click)="toggleFilter()">
             <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
             {{ "Filter" | translate }}
           </button>
@@ -31,29 +27,14 @@
               <c-col xs="3">
                 <label class="col-form-label">{{
                   "Tanggal Pesan" | translate
-                }}</label>
-                <input
-                  type="text"
-                  id="dateFilter"
-                  class="form-control"
-                  bsDaterangepicker
-                  [bsConfig]="dpConfig"
-                  aria-describedby="dateFilter"
-                  [(ngModel)]="dateRangeFilter"
-                  #dp="bsDaterangepicker"
-                  placeholder="{{ 'Tanggal Pesan' | translate }}"
-                />
+                  }}</label>
+                <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
+                  aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
+                  placeholder="{{ 'Tanggal Pesan' | translate }}" />
               </c-col>
               <c-col xs="6"></c-col>
-              <c-col
-                xs="3"
-                class="text-right d-flex align-items-end justify-content-end"
-              >
-                <button
-                  type="button"
-                  class="btn btn-outline-success me-2 btn-160"
-                  (click)="onFilterPressed()"
-                >
+              <c-col xs="3" class="text-right d-flex align-items-end justify-content-end">
+                <button type="button" class="btn btn-outline-success me-2 btn-160" (click)="onFilterPressed()">
                   {{ "Terapkan Filter" | translate }}
                 </button>
               </c-col>
@@ -69,44 +50,176 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="table-responsive">
-        <table
-          datatable
-          [dtOptions]="dtOptions"
-          class="row-border hover"
-        ></table>
+        <ng-container>
+          <div *ngIf="loading">
+            <app-loading></app-loading>
+          </div>
+
+          <div class="row justify-content-end py-2">
+            <div class="w-25 pb-2">
+              <c-input-group>
+                <span cInputGroupText id="basic-addon1"><i class="fa fa-search"></i></span>
+                <input id="appendedInputButton" (input)="onSearchDetail($event)" class="form-control" size="16"
+                  type="text" placeholder="Search...">
+              </c-input-group>
+            </div>
+          </div>
+
+          <table *ngIf="filteredEntryPL as list" bordered [hover]="true" [responsive]="true" [striped]="true"
+            align="middle" cTable class="mb-0 border">
+            <thead>
+              <tr>
+                <th scope="col" style=" vertical-align: middle;" class="text-center align-items-start" rowspan="2">No.
+                </th>
+                <th scope="col" style=" vertical-align: middle;" class="text-center align-items-start" rowspan="2">Kode
+                  Barang</th>
+                <th scope="col" style=" vertical-align: middle;" class="text-center align-items-start" rowspan="3">Nama
+                  Barang</th>
+                <th scope="col" style=" vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                  Konversi</th>
+
+                <th scope="col" style=" vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                  Qty Kirim</th>
+                  <th scope="col" style=" vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                    No. Surat Jalan</th>
+                <th scope="col" style=" vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                  Keterangan Tujuan
+                </th>
+
+                <th scope="col" style="background-color: #3C3E63; color:white; vertical-align: middle;"
+                  class="text-center align-items-start btn-danger" colspan="2">COLLI</th> <!-- Masih sejajar -->
+              </tr>
+              <tr>
+                <th scope="col" class="text-center" style="width:160px; vertical-align: middle; ">Nomor</th>
+                <th scope="col" class="text-center" style="width:160px; vertical-align: middle;">Jumlah</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="!list || list.length === 0">
+              <tr>
+                <td colspan="8" scope="col" class="text-center">
+                  No Data Found
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr *ngFor="let data of list | paginate: {
+                  itemsPerPage: 5,
+                  currentPage: listCurrentPage,
+                  totalItems:totalLengthList,
+                  id:'dataTableDetail'
+              }; let i = index">
+                <td class="text-center">{{ i + 1 }}</td>
+                <td class="text-center">{{ data.kodeBarang }}</td>
+                <td class="text-center">{{ data.namaBarang }}</td>
+                <td class="text-center">{{ data.konversi }} {{data.satuanKecil}}</td>
+                <td class="text-center">{{ data.totalQtyKirim }} {{data.satuanKecil}}</td>
+                <td class="text-center">{{ data.noSuratJalan }}</td>
+                <td class="text-center">{{ data.kodeTujuan }} - {{data.namaCabang}}</td>
+
+                <td class="text-center input-column">
+                  <div class="d-flex" style="gap: 5px;">
+                    <input type="text" numberOnly 
+                      class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.nomorColli"
+                      (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"  (keypress)="g.conditionInput($event, 'numeric')"/>
+                    
+                  </div>
+                </td>
+
+                <td class="text-center input-column">
+                  <div class="d-flex" style="gap: 5px;">
+                    <input type="text" numberOnly
+                      class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.jumlahColli"
+                      (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')" (keypress)="g.conditionInput($event, 'numeric')"/>
+                  </div>
+
+                </td>
+
+
+              </tr>
+            </tbody>
+          </table>
+          <div class="mt-2 text-start">
+            <c-pagination>
+              <pagination-controls (pageChange)="listCurrentPage = $event" id="dataTableDetail"></pagination-controls>
+            </c-pagination>
+          </div>
+        </ng-container>
       </div>
     </c-card-body>
   </c-card>
 </div>
 
+<c-modal #formModal [fullscreen]="false" [visible]="isShowModal" [backdrop]="true" #modalLg size="xl" id="formModal">
+  <c-modal-header>
+    <h5 cModalTitle>Daftar Pesanan Ke Gudang</h5>
+    <button (click)="isShowModal = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModal.id"
+      cButtonClose>
+      <i class="fa fa-times"></i>
+    </button>
+  </c-modal-header>
+  <c-modal-body>
+    <div class="table-responsive">
+      <table
+        [dtOptions]="dtOptions_2"
+        class="row-border hover  w-100"
+      ></table>
+    </div>
+  </c-modal-body>
+</c-modal>
+
 <c-modal
-      #formModal
-      [fullscreen]="false"  
-      [visible]="isShowModal"
-      [backdrop]="true"
-      #modalLg
-      size="xl"
-      id="formModal"
-    >
-      <c-modal-header>
-        <h5 cModalTitle>Daftar Pesanan Ke Gudang</h5>
-        <button
-          (click)="isShowModal = false"
-          type="button"
-          class="btn btn-primary ms-2"
-          [cModalToggle]="formModal.id"
-          cButtonClose
-        >
-          <i class="fa fa-times"></i>
-        </button>
-      </c-modal-header>
-      <c-modal-body>
-        <div class="table-responsive">
-          <table
-            datatable
-            [dtOptions]="dtOptions_2"
-            class="row-border hover  w-100"
-          ></table>
+  #printModal
+  [fullscreen]="false"
+  [visible]="isShowPrintModal"
+  [backdrop]="true"
+  size="lg"
+  id="printModal"
+  class="custom-modal"
+>
+  <c-modal-body>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Konfirmasi Cetak Data</h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>No. Packing List</label>
+          <input type="text" [(ngModel)]="selectedData.packingListNumber" readonly class="form-control">
         </div>
-      </c-modal-body>
-    </c-modal>
+
+        <div class="form-group">
+          <label>Tujuan Kirim</label>
+          <div class="tujuan-kirim d-flex align-items-center">
+            <input type="text" [(ngModel)]="selectedData.kodeCabang" readonly class="form-control w-25">
+            <button class="btn btn-outline-secondary ms-2" (click)="onPilihCabang()">🔍</button>
+            <input type="text" [(ngModel)]="selectedData.namaCabang" readonly class="form-control w-50 ms-2">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Alamat Tujuan</label>
+          <textarea [(ngModel)]="selectedData.alamat1" readonly class="form-control"></textarea>
+        </div>
+
+        <p class="note text-center text-muted">
+          Siapkan kertas, jika anda ingin mencetak ke <strong>'PRINTER'</strong>
+        </p>
+      </div>
+
+      <div class="modal-footer justify-content-center">
+        <button class="btn btn-warning me-2" (click)="onCetakPdf()">
+          📄 Cetak PDF
+        </button>
+        <button class="btn btn-primary me-2" (click)="onCetakPrinter()">
+          🖨️ Cetak Printer
+        </button>
+        <button class="btn btn-danger" (click)="closeModal()">
+          ❌ Batal
+        </button>
+      </div>
+    </div>
+  </c-modal-body>
+</c-modal>
+
+
+

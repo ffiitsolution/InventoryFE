@@ -214,10 +214,10 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
           }, 0);
         }
         $('td', row).on('click', () => {
-          $('td').css({'background-color': ''}).removeClass('text-white');
+          $('td').removeClass('bg-info text-white fw-semibold');
           if (this.selectedRowData !== data) {
             this.selectedRowData = data;
-            $('td', row).css({'background-color': '#3c4b64'}).addClass('text-white');
+            $('td', row).addClass('text-white bg-info fw-semibold');
           } else {
             this.selectedRowData = undefined;
           }

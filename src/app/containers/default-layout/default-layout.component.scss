@@ -9,3 +9,7 @@
 :host ::ng-deep .sidebar-nav .nav-group-items .nav-group-items .nav-link {
   padding-left: 110px !important;
 }
+
+:host ::ng-deep .sidebar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.788) !important;
+}

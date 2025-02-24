@@ -161,10 +161,10 @@ export class ReceivingOrderComponent
           this.actionBtnClick(ACTION_VIEW, data)
         );
         $('td', row).on('click', () => {
-          $('td').css({ 'background-color': '' }).removeClass('text-white fw-semibold');
+          $('td').removeClass('bg-info text-white fw-semibold');
           if (this.selectedRowData !== data) {
             this.selectedRowData = data;
-            $('td', row).css({ 'background-color': '#3C3E63' }).addClass('text-white fw-semibold');
+            $('td', row).addClass('bg-info text-white fw-semibold');
           } else {
             this.selectedRowData = undefined;
           }

@@ -157,9 +157,15 @@
                 <td class="text-center">{{ data.konversi }}</td>
                 <td class="text-center">{{(helper.sanitizedNumber(data.qtyPesanBesar) *
                   data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil) }} {{data.satuanKecil}}
+                  
+                  <!-- Validation message area -->
+                   <br>
+                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageQtyPesanList [i]">
+                    {{ validationMessageQtyPesanList[i] }}
+                  </span>
                 </td>
                 <td>
-                  <button class="btn btn-danger text-white btn-150" (click)="deleteBarang(i)">
+                  <button class="btn btn-danger text-white btn-150" (click)="onShowModalDelete(i)">
                     <i class="fa fa-trash pe-1"></i> {{ "Hapus" | translate }}
                   </button>
                 </td>
@@ -194,5 +200,41 @@
           </div>
         </c-modal-body>
     </c-modal>
+
+    <c-modal #formModalDelete [fullscreen]="false" [visible]="isShowModalDelete" backdrop="static" #modalLg 
+      id="formModalDelete"    [attr.aria-hidden]="!isShowModalDelete">
+        <c-modal-header>
+          <h5 cModalTitle>Konfirmasi Hapus</h5>
+          <button (click)="isShowModalDelete = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalDelete.id"
+            cButtonClose><i class="fa fa-times"></i></button>
+        </c-modal-header>
+        <c-modal-body>
+          <p class="text-center">Apakah anda ingin menghapus data?</p>
+          <div class="d-flex justify-center py-2">
+            <button class="btn btn-danger text-white" (click)="deleteBarang()">Iya</button>
+            &nbsp;
+            <button class="btn btn-light"  (click)="isShowModalDelete = false">Tidak</button>
+    
+          </div>
+        </c-modal-body>
+    </c-modal>
+
+    <!-- <c-modal #staticBackdropModal backdrop="static" id="staticBackdropModal">
+      <c-modal-header>
+        <h5 cModalTitle>Cetak</h5>
+        <button [cModalToggle]="staticBackdropModal.id" cButtonClose></button>
+      </c-modal-header>
+      <c-modal-body>
+        <div class="d-flex justify-center py-2">
+          <button class="btn btn-success" (click)="previewOrCetak('preview')">Preview</button>
+          &nbsp;
+          <button class="btn btn-light" (click)="previewOrCetak('Download')">Cetak</button>
+  
+        </div>
+      </c-modal-body>
+    </c-modal> -->
+  
+
+    
   </c-card>
 </div>

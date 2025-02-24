@@ -64,6 +64,7 @@ export class AddDataDetailDeliveryComponent
   filteredListTypeOrder: any[] = [];
   validationMessages: { [key: number]: string } = {};
 
+
   constructor(
     public g: GlobalService,
     private translation: TranslationService,
