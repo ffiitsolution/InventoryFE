@@ -33,7 +33,7 @@
                       myForm.controls['kodeCabang'].touched
                     "
                     class="text-danger"
-                    >{{ "Wajib diisi" | translate }}</span
+                    >{{ "Wajib diisi (max.10 karakter)" | translate }}</span
                   >
                   <span
                     *ngIf="myForm.controls['kodeCabang'].hasError('kodeCabang')"
@@ -65,7 +65,7 @@
                       myForm.controls['kodeSingkat'].touched
                     "
                     class="text-danger"
-                    >{{ "Wajib diisi" | translate }}</span
+                    >{{ "Wajib diisi (max.10 karakter)" | translate }}</span
                   >
                   <span
                     *ngIf="
@@ -102,7 +102,7 @@
                       myForm.controls['namaCabang'].touched
                     "
                     class="text-danger"
-                    >{{ "Wajib diisi" | translate }}
+                    >{{ "Wajib diisi (max.50 karakter)" | translate }}
                   </span>
                   <span
                     *ngIf="myForm.controls['namaCabang'].hasError('namaCabang')"
@@ -172,7 +172,7 @@
                       myForm.controls['alamat1'].touched
                     "
                     class="text-danger"
-                    >{{ "Wajib diisi" | translate }}
+                    >{{ "Wajib diisi (max.40 karakter)" | translate }}
                   </span>
                   <span
                     *ngIf="
