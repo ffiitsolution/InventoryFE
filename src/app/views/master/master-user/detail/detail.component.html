@@ -190,6 +190,7 @@
             {{ "Kembali" | translate }}
           </button>
           <button
+            *ngIf="roleId == '3'"
             class="btn btn-info text-white btn-150"
             (click)="onEditPressed()"
           >

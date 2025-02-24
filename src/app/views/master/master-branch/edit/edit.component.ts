@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/service/app.service';
@@ -10,6 +10,70 @@ import {
   LS_INV_SELECTED_BRANCH,
 } from 'src/constants';
 import { DataService } from 'src/app/service/data.service';
+
+function kodeCabang(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { kodeCabang: true };
+  }
+  return null;
+}
+
+function kodeSingkat(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9&-\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { kodeSingkat: true };
+  }
+  return null;
+}
+
+function namaCabang(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9&\-().\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { namaCabang: true };
+  }
+  return null;
+}
+
+function excludedSensitive(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9\s.,#\-()\/]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { excludedSensitive: true };
+  }
+  return null;
+}
+
+function numeric(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /^[0-9]+$/;
+  if (control.value && !specialCharRegex.test(control.value)) {
+    return { numeric: true };
+  }
+  return null;
+}
+
+function phone(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^0-9()-\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { phone: true };
+  }
+  return null;
+}
+
+function contactPerson(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z.\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { contactPerson: true };
+  }
+  return null;
+}
+
+function alphabet(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { alphabet: true };
+  }
+  return null;
+}
 
 @Component({
   selector: 'app-edit',
@@ -56,34 +120,37 @@ export class MasterBranchEditComponent implements OnInit {
     this.detail = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_BRANCH));
 
     this.myForm = this.form.group({
-      namaCabang: [this.detail.namaCabang, Validators.required],
+      namaCabang: [this.detail.namaCabang, [Validators.required, namaCabang]],
       kodeCabang: [
         { value: this.detail.kodeCabang, disabled: true },
-        Validators.required,
+        [Validators.required, kodeCabang],
       ],
-      kodeSingkat: [this.detail.kodeSingkat, Validators.required],
+      kodeSingkat: [
+        this.detail.kodeSingkat,
+        [Validators.required, kodeSingkat],
+      ],
       kodeGroup: [this.detail.kodeGroup, Validators.required],
       deskripsiGroup: [this.detail.deskripsiGroup],
       kota: [this.detail.kota],
-      alamat1: [this.detail.alamat1, Validators.required],
-      alamat2: [this.detail.alamat2],
-      kodePos: [this.detail.kodePos],
-      telpon1: [this.detail.telpon1],
-      telpon2: [this.detail.telpon2],
-      fax1: [this.detail.fax1],
-      fax2: [this.detail.fax2],
+      alamat1: [this.detail.alamat1, [Validators.required, excludedSensitive]],
+      alamat2: [this.detail.alamat2, [excludedSensitive]],
+      kodePos: [this.detail.kodePos, [numeric]],
+      telpon1: [this.detail.telpon1, [phone]],
+      telpon2: [this.detail.telpon2, [phone]],
+      fax1: [this.detail.fax1, [phone]],
+      fax2: [this.detail.fax2, [phone]],
       alamatEmail: [this.detail.alamatEmail],
       keteranganRsc: [this.detail.keteranganRsc],
       kodeRegion: [this.detail.kodeRegion],
       keteranganRegion: [this.detail.keteranganRegion],
       kodeArea: [this.detail.kodeArea],
       keteranganArea: [this.detail.keteranganArea],
-      contactPerson: [this.detail.contactPerson],
-      contactPhone: [this.detail.contactPhone],
-      keterangan: [this.detail.keterangan],
+      contactPerson: [this.detail.contactPerson, [contactPerson]],
+      contactPhone: [this.detail.contactPhone, [phone]],
+      keterangan: [this.detail.keterangan, [excludedSensitive]],
       alamatIp: [this.detail.alamatIp],
-      tipeCabang: [this.detail.tipeCabang],
-      status: [this.detail.statusAktif],
+      tipeCabang: [this.detail.tipeCabang, [alphabet]],
+      status: [this.detail.statusAktif, [Validators.required]],
       statusAktif: [this.detail.statusAktif],
       userCreate: [this.detail.userCreate],
       userUpdate: [this.detail.userUpdate],
@@ -189,6 +256,38 @@ export class MasterBranchEditComponent implements OnInit {
     const { controls, invalid } = this.myForm;
     if (invalid || !this.isEmailValid) {
       this.g.markAllAsTouched(this.myForm);
+      if (invalid) {
+        if (
+          Object.values(controls).some((control) =>
+            control.hasError('required')
+          )
+        ) {
+          this.toastr.error('Beberapa kolom wajib diisi.');
+        } else if (
+          Object.values(controls).some((control) =>
+            control.hasError('phone')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('kodeCabang')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('namaCabang')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('numeric')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('kodeSingkat')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('excludedSensitive')
+          )
+        ) {
+          this.toastr.error(
+            'Beberapa kolom mengandung karakter khusus yang tidak diperbolehkan.'
+          );
+        }
+      }
     } else {
       this.adding = true;
       const param = {
@@ -250,19 +349,25 @@ export class MasterBranchEditComponent implements OnInit {
   conditionInput(event: any, type: string): boolean {
     var inp = String.fromCharCode(event.keyCode);
     let temp_regex =
-      type == 'alphanumeric'
+      type == 'alphanumeric' //kode cabang
         ? /^[a-zA-Z0-9]$/
-        : type == 'numeric'
+        : type == 'namaCabang' //nama cabang
+        ? /^[a-zA-Z0-9-().& \-]*$/
+        : type == 'kodeSingkat' //kode singkat
+        ? /^[A-Z0-9&-]$/
+        : type == 'numeric' //kode pos
         ? /^[0-9]$/
-        : type == 'phone'
-        ? /^[0-9-]$/
-        : type == 'email'
+        : type == 'phone' //phone 1 & 2, Fax 1 & 2
+        ? /^[0-9-()\s]$/
+        : type == 'email' //email
         ? /^[a-zA-Z0-9@._-]$/
-        : type == 'excludedSensitive'
-        ? /^[a-zA-Z0-9 .,_@-]*$/
-        : type == 'kodeSingkat'
+        : type == 'contactPerson' //contactPerson
+        ? /^[a-zA-Z./s]$/
+        : type == 'alphabet' //tipe cabang
         ? /^[a-zA-Z]+$/
-        : /^[a-zA-Z.() ,\-]*$/;
+        : type == 'excludedSensitive' //keterangan & alamat 1-2
+        ? /^[a-zA-Z0-9\s.,#\-()\/]+$/
+        : /^[a-zA-Z.() ,\-]*$/; //alphabet
 
     if (temp_regex.test(inp)) return true;
     else {

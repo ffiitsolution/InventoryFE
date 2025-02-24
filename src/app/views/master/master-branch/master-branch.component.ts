@@ -88,7 +88,7 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onStatusFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
@@ -154,27 +154,20 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
         { data: 'keteranganRsc', title: 'RSC', searchable: true },
         { data: 'kota', title: 'Kota', searchable: true },
         { data: 'telpon1', title: 'Telp', searchable: true },
-        {
-          data: 'statusAktifLabel',
-          title: 'Status',
-          // render: (data) => {
-          //   if (data != 'A') {
-          //     return `
-          //       <div class="form-check form-switch">
-          //         <input class="form-check-input" type="checkbox" role="switch" id="status disabled">
-          //       </div>
-          //     `;
-          //   }
-          //   return `
-          //     <div class="form-check form-switch">
-          //       <input class="form-check-input action-status" type="checkbox" role="switch" id="status" checked disabled>
-          //     </div>
-          //   `;
-          // },
-        },
         { data: 'deskripsiGroup', title: 'Group', searchable: true },
         {
-          title: 'Opsi',
+          data: 'statusAktif',
+          title: 'Status',
+          searchable: false,
+          render: (data) => {
+            if (data === 'A') {
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+            }
+            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:grey; width: 60px">Inactive</span> </div>`;
+          },
+        },
+        {
+          title: 'Action',
           render: () => {
             return `
             <div class="btn-group" role="group" aria-label="Action">
@@ -186,7 +179,7 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
         },
       ],
       searchDelay: 1500,
-      order: [[1, 'asc']],
+      order: [[9, 'asc']],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
@@ -334,25 +327,32 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.rerenderDatatable();
   }
 
+  /*************  ✨ Codeium Command ⭐  *************/
+  /**
+   * Function to reload the datatable after the tipe cabang filter is changed.
+   * This function is called when the tipe cabang dropdown filter is changed.
+   * It reloads the datatable by calling the ajax.reload() method of the datatable instance.
+   */
+  /******  13e1a130-4bf9-4d2b-a30b-fea5928455c3  *******/
   onTipeCabangFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
 
   onRscFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
   onKotaFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
 
   onGroupFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
