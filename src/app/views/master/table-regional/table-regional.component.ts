@@ -92,8 +92,8 @@ export class TableRegionalComponent
       },
       columns: [
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
-        { data: 'kodeRegion', title: 'Kode', searchable: true },
-        { data: 'keteranganRegion', title: 'Nama', searchable: true },
+        { data: 'kodeRegion', title: 'Kode Regional', searchable: true },
+        { data: 'keteranganRegion', title: 'Nama Regional', searchable: true },
         { data: 'userCreate', title: 'Dibuat Oleh', searchable: false },
         { data: 'dateCreate', title: 'Tanggal Dibuat', searchable: false },
         { data: 'userUpdate', title: 'Diperbarui Oleh', searchable: false },

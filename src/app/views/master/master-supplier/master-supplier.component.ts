@@ -139,13 +139,13 @@ export class MasterSupplierComponent
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
         {
           data: 'kodeSupplier',
-          title: 'Kode',
+          title: 'Kode Supplier',
           orderable: true,
           searchable: true,
         },
         {
           data: 'namaSupplier',
-          title: 'Nama',
+          title: 'Nama Supplier ',
           orderable: true,
           searchable: true,
         },

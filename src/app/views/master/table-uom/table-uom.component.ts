@@ -93,13 +93,13 @@ export class TableUomComponent implements OnInit, OnDestroy, AfterViewInit {
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
         {
           data: 'kodeUom',
-          title: 'Kode',
+          title: 'Kode Satuan',
           orderable: true,
           searchable: true,
         },
         {
           data: 'keteranganUom',
-          title: 'Nama',
+          title: 'Nama Satuan',
           orderable: true,
           searchable: true,
         },
