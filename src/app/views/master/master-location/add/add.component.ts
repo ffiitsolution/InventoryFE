@@ -1,11 +1,41 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/service/app.service';
 import { GlobalService } from 'src/app/service/global.service';
 import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_RSC } from 'src/constants';
 import { DataService } from 'src/app/service/data.service';
+
+function kodeLocation(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^0-9]+$/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { kodeLocation: true };
+  }
+  return null;
+}
+
+function kodeInisial(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^A-Z]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { kodeInisial: true };
+  }
+  return null;
+}
+
+function keteranganLokasi(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^A-Z0-9-\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { keteranganLokasi: true };
+  }
+  return null;
+}
 
 @Component({
   selector: 'app-add',
@@ -31,9 +61,9 @@ export class MasterLocationAddComponent implements OnInit {
 
   ngOnInit(): void {
     this.myForm = this.form.group({
-      kodeLocation: ['', Validators.required],
-      kodeInisial: ['', Validators.required],
-      keteranganLokasi: ['', Validators.required],
+      kodeLocation: ['', [Validators.required, kodeLocation]],
+      kodeInisial: ['', [Validators.required, kodeInisial]],
+      keteranganLokasi: ['', [Validators.required, keteranganLokasi]],
       lokasiGudang: ['', Validators.required],
       defaultRsc: ['', Validators.required],
       supportTo: ['D'],
@@ -89,6 +119,29 @@ export class MasterLocationAddComponent implements OnInit {
     const { controls, invalid } = this.myForm;
     if (invalid) {
       this.g.markAllAsTouched(this.myForm);
+      if (invalid) {
+        if (
+          Object.values(controls).some((control) =>
+            control.hasError('required')
+          )
+        ) {
+          this.toastr.error('Beberapa kolom wajib diisi.');
+        } else if (
+          Object.values(controls).some((control) =>
+            control.hasError('kodeLocation')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('kodeInisial')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('keteranganLokasi')
+          )
+        ) {
+          this.toastr.error(
+            'Beberapa kolom mengandung karakter khusus yang tidak diperbolehkan.'
+          );
+        }
+      }
     } else {
       this.adding = true;
       const param = {
@@ -137,20 +190,13 @@ export class MasterLocationAddComponent implements OnInit {
   conditionInput(event: any, type: string): boolean {
     var inp = String.fromCharCode(event.keyCode);
     let temp_regex =
-      type == 'alphanumeric'
-        ? /^[a-zA-Z0-9]$/
-        : type == 'numeric'
+      type == 'alphanumeric' // Keterangan Lokasi
+        ? /^[a-zA-Z0-9-\s]$/
+        : type == 'numeric' //Kode Lokasi
         ? /^[0-9]$/
-        : type == 'phone'
-        ? /^[0-9-]$/
-        : type == 'email'
-        ? /^[a-zA-Z0-9@._-]$/
-        : type == 'excludedSensitive'
-        ? /^[a-zA-Z0-9 .,_@-]*$/
-        : type == 'kodeSingkat'
-        ? /^[a-zA-Z]+$/
+        : type == 'kodeInisial' //Kode Inisial
+        ? /^[A-Z]+$/
         : /^[a-zA-Z.() ,\-]*$/;
-
     if (temp_regex.test(inp)) return true;
     else {
       event.preventDefault();

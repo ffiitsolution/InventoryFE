@@ -29,6 +29,7 @@ export class TableRegionalDetailComponent implements OnInit {
       userUpdate: [{ value: this.detail.userUpdate, disabled: true }],
       dateUpdate: [{ value: this.detail.dateUpdate, disabled: true }],
     });
+    this.myForm.disable();
   }
 
   onPreviousPressed() {

@@ -277,13 +277,13 @@ export class MasterLocationComponent
   }
 
   onCityFilterChange(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
 
   onRscFilterChange(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }

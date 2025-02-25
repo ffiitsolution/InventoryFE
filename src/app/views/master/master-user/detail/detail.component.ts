@@ -43,6 +43,7 @@ export class MasterUserDetailComponent implements OnInit {
       dateCreate: [this.detail.dateCreate],
       dateUpdate: [this.detail.dateUpdate],
     });
+    this.myForm.disable();
 
     this.dataService
       .postData(this.g.urlServer + '/api/location/dropdown-lokasi', {})

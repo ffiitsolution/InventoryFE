@@ -115,15 +115,15 @@
   }
   
   // Kontainer utama modal
-  .modal-container {
-    background: white;
-    width: 450px;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    animation: fadeIn 0.3s ease-in-out;
-  }
+//   .modal-container {
+//     background: white;
+//     width: 450px;
+//     padding: 20px;
+//     border-radius: 8px;
+//     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+//     text-align: center;
+//     animation: fadeIn 0.3s ease-in-out;
+//   }
   
   // Animasi fade-in untuk modal
   @keyframes fadeIn {
@@ -268,3 +268,16 @@
     }
   }
   
+  .modal-bg-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    /* Transparansi dan warna hitam */
+    z-index: 1040;
+    /* Pastikan berada di belakang modal */
+    transition: all 0.3s ease-in-out;
+    /* Smooth transition untuk opacity */
+  }

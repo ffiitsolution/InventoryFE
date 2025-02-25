@@ -45,11 +45,12 @@
               id="tanggalKirimBarang"
               class="form-control"
               bsDatepicker
-              [bsConfig]="dpConfig"
+              [bsConfig]="dpConfigTglKirimBarang"
               aria-describedby="tanggalKirimBarang"
               formControlName="tanggalKirimBarang"
               #dp="bsDatepicker"
               placeholder="{{ 'Tanggal Kirim Barang' | translate }}"
+              (bsValueChange)="onDateChangeTglKirimBarang($event)"
             />
             <span *ngIf="isFieldValid('tanggalKirimBarang')" class="text-danger">{{
               "Wajib diisi" | translate
@@ -68,7 +69,7 @@
               id="tanggalBatalPesanan"
               class="form-control"
               bsDatepicker
-              [bsConfig]="dpConfig"
+              [bsConfig]="dpConfigTglBatalPesanan"
               aria-describedby="tanggalBatalPesanan"
               formControlName="tanggalBatalPesanan"
               #dp="bsDatepicker"
@@ -77,6 +78,9 @@
             <span *ngIf="isFieldValid('tanggalBatalPesanan')" class="text-danger">{{
               "Wajib diisi" | translate
             }}</span>
+            <span class="text-danger" *ngIf="compareDates(myForm.value.tanggalKirimBarang, myForm.value.tanggalBatalPesanan)">
+              {{"Tanggal batal pesanan tidak boleh kurang dari tanggal kirim barang" | translate}}
+            </span>
           </div>
         </div>
         <div class="divider"></div>
@@ -96,6 +100,14 @@
               (change)="onGudangTujuanChange($event)">
               >
             </ngx-select-dropdown>
+            <span *ngIf="isFieldValid('gudangTujuan')" class="text-danger">{{
+              "Wajib diisi" | translate
+            }}</span>
+            <span 
+            *ngIf="currentUser?.defaultLocation?.kodeLocation === myForm.value?.gudangTujuan?.id" 
+            class="text-danger">{{
+              "Tidak boleh order ke gudang sendiri" | translate
+            }}</span>
           </div>
         </div>
 

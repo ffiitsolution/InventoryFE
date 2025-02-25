@@ -63,18 +63,41 @@
           <label class="col-sm-2 col-form-label">{{
             "Status" | translate
           }}</label>
-          <div class="col-sm-10">
-            <input
-              type="text"
-              class="form-control"
-              [value]="
-                myForm.get('statusAktif')?.value === 'A'
-                  ? 'Aktif'
-                  : 'Tidak Aktif'
-              "
-              readonly
-            />
-          </div>
+          <c-col class="col-sm-10">
+            <c-row class="mt-2">
+              <c-col xs="6">
+                <c-form-check class="flex align-items-center">
+                  <input
+                    cFormCheckInput
+                    checked
+                    id="active"
+                    type="radio"
+                    value="A"
+                    name="status"
+                    formControlName="statusAktif"
+                  />
+                  <label cFormCheckLabel for="active" style="margin-left: 4px"
+                    >Active</label
+                  >
+                </c-form-check>
+              </c-col>
+              <c-col xs="6">
+                <c-form-check class="flex align-items-center">
+                  <input
+                    cFormCheckInput
+                    id="inactive"
+                    type="radio"
+                    value="I"
+                    name="status"
+                    formControlName="statusAktif"
+                  />
+                  <label cFormCheckLabel for="inactive" style="margin-left: 4px"
+                    >Inactive</label
+                  >
+                </c-form-check>
+              </c-col>
+            </c-row>
+          </c-col>
         </div>
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
@@ -190,6 +213,7 @@
             {{ "Kembali" | translate }}
           </button>
           <button
+            *ngIf="roleId == '3'"
             class="btn btn-info text-white btn-150"
             (click)="onEditPressed()"
           >

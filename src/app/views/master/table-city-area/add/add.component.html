@@ -23,9 +23,19 @@
               (keypress)="conditionInput($event, 'alphabet')"
               (input)="convertToUppercase('code')"
             />
-            <span *ngIf="isFieldValid('code')" class="text-danger">{{
-              "Wajib diisi" | translate
-            }}</span>
+            <span
+              *ngIf="
+                myForm.controls['code'].hasError('required') &&
+                myForm.controls['code'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max.10 karakter)" | translate }}
+            </span>
+            <span
+              *ngIf="myForm.controls['code'].hasError('code')"
+              class="text-danger"
+              >{{ "Kode Kota hanya boleh mengandung huruf kapital." | translate }}
+            </span>
           </div>
         </div>
         <div class="mb-3 row">
@@ -42,9 +52,22 @@
               (keypress)="conditionInput($event, 'city')"
               maxlength="30"
             />
-            <span *ngIf="isFieldValid('desc')" class="text-danger">{{
-              "Wajib diisi" | translate
-            }}</span>
+            <span
+              *ngIf="
+                myForm.controls['desc'].hasError('required') &&
+                myForm.controls['desc'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max.30 karakter)" | translate }}</span
+            >
+            <span
+              *ngIf="myForm.controls['desc'].hasError('desc')"
+              class="text-danger"
+              >{{
+                "Nama Kota hanya boleh mengandung huruf kapital, angka, spasi dan strip (-)."
+                  | translate
+              }}</span
+            >
           </div>
         </div>
         <div class="divider"></div>

@@ -217,18 +217,15 @@
               class="form-control"
               formControlName="jabatan"
               [readOnly]="adding"
-              (keypress)="conditionInput($event, 'alphabet')"
+              (keypress)="conditionInput($event, 'jabatan')"
               maxlength="50"
             />
             <span
-              *ngIf="
-                myForm.controls['jabatan'].hasError(
-                  'specialCharNotAllowedExcept'
-                )
-              "
+              *ngIf="myForm.controls['jabatan'].hasError('jabatan')"
               class="text-danger"
               >{{
-                " Jabatan tidak boleh mengandung karakter khusus." | translate
+                " Jabatan hanya boleh mengandung huruf, strip (-), underscore (_) dan spasi."
+                  | translate
               }}</span
             >
           </div>

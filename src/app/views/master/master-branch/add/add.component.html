@@ -12,12 +12,11 @@
         <div class="container">
           <div class="row">
             <!-- left column -->
-            <div class="col-md-6"> 
+            <div class="col-md-6">
               <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Kode Cabang" | translate
-                }}
-                <span class="stamp-required show">&nbsp;*</span>
+                <label class="col-sm-4 col-form-label"
+                  >{{ "Kode Cabang" | translate }}
+                  <span class="stamp-required show">&nbsp;*</span>
                 </label>
                 <div class="col-sm-8">
                   <input
@@ -25,20 +24,32 @@
                     class="form-control"
                     formControlName="kodeCabang"
                     [readOnly]="adding"
-                    (keypress)="conditionInput($event, 'numeric')"
+                    (keypress)="conditionInput($event, 'alphanumeric')"
                     maxlength="10"
                   />
-                  <span *ngIf="isFieldValid('kodeCabang')" class="text-danger">{{
-                    "Wajib diisi" | translate
-                  }}</span>
+                  <span
+                    *ngIf="
+                      myForm.controls['kodeCabang'].hasError('required') &&
+                      myForm.controls['kodeCabang'].touched
+                    "
+                    class="text-danger"
+                    >{{ "Wajib diisi (max.10 karakter)" | translate }}</span
+                  >
+                  <span
+                    *ngIf="myForm.controls['kodeCabang'].hasError('kodeCabang')"
+                    class="text-danger"
+                    >{{
+                      "Kode Cabang hanya boleh mengandung angka dan Huruf."
+                        | translate
+                    }}</span
+                  >
                 </div>
               </div>
               <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Kode Singkat" | translate
-                }}
-              <span class="stamp-required show">&nbsp;*</span>
-              </label>
+                <label class="col-sm-4 col-form-label"
+                  >{{ "Kode Singkat" | translate }}
+                  <span class="stamp-required show">&nbsp;*</span>
+                </label>
                 <div class="col-sm-8">
                   <input
                     type="text"
@@ -48,20 +59,33 @@
                     (keypress)="conditionInput($event, 'kodeSingkat')"
                     maxlength="10"
                   />
-                  <span *ngIf="isFieldValid('kodeSingkat')" class="text-danger">{{
-                    "Wajib diisi" | translate
-                  }}</span>
+                  <span
+                    *ngIf="
+                      myForm.controls['kodeSingkat'].hasError('required') &&
+                      myForm.controls['kodeSingkat'].touched
+                    "
+                    class="text-danger"
+                    >{{ "Wajib diisi (max.10 karakter)" | translate }}</span
+                  >
+                  <span
+                    *ngIf="
+                      myForm.controls['kodeSingkat'].hasError('kodeSingkat')
+                    "
+                    class="text-danger"
+                    >{{
+                      "Kode Singkat hanya boleh mengandung huruf, angka, spasi, ampersand (&), dan strip (-)."
+                        | translate
+                    }}</span
+                  >
                 </div>
               </div>
-
             </div>
             <!-- right column -->
-            <div class="col-md-6"> 
+            <div class="col-md-6">
               <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Nama Cabang" | translate
-                }}
-                <span class="stamp-required show">&nbsp;*</span>
+                <label class="col-sm-4 col-form-label"
+                  >{{ "Nama Cabang" | translate }}
+                  <span class="stamp-required show">&nbsp;*</span>
                 </label>
                 <div class="col-sm-8">
                   <input
@@ -69,21 +93,32 @@
                     class="form-control"
                     formControlName="namaCabang"
                     [readOnly]="adding"
-                    (keypress)="conditionInput($event, 'alphabet')"
+                    (keypress)="conditionInput($event, 'namaCabang')"
                     maxlength="50"
                   />
-                  <span *ngIf="isFieldValid('namaCabang')" class="text-danger">{{
-                    "Wajib diisi" | translate
-                  }}
-                </span>
+                  <span
+                    *ngIf="
+                      myForm.controls['namaCabang'].hasError('required') &&
+                      myForm.controls['namaCabang'].touched
+                    "
+                    class="text-danger"
+                    >{{ "Wajib diisi (max.50 karakter)" | translate }}
+                  </span>
+                  <span
+                    *ngIf="myForm.controls['namaCabang'].hasError('namaCabang')"
+                    class="text-danger"
+                    >{{
+                      "Nama Cabang hanya boleh mengandung huruf, angka, spasi, ampersand (&), strip (-), tanda kurung (), dan titik (.)."
+                        | translate
+                    }}</span
+                  >
                 </div>
               </div>
 
               <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Group" | translate
-                }}
-                <span class="stamp-required show">&nbsp;*</span>
+                <label class="col-sm-4 col-form-label"
+                  >{{ "Group" | translate }}
+                  <span class="stamp-required show">&nbsp;*</span>
                 </label>
                 <div class="col-sm-8">
                   <select
@@ -92,24 +127,25 @@
                     id="selectedKodeGroup"
                     formControlName="kodeGroup"
                   >
-                  <option value="" disabled selected hidden>
-                    {{ 'Pilih Group' | translate }}
-                  </option>
-                    <option *ngFor="let kodeGroup of kodeGroupOptions" [value]="kodeGroup.value">
+                    <option value="" disabled selected hidden>
+                      {{ "Pilih Group" | translate }}
+                    </option>
+                    <option
+                      *ngFor="let kodeGroup of kodeGroupOptions"
+                      [value]="kodeGroup.value"
+                    >
                       {{ kodeGroup.value }} - {{ kodeGroup.label | translate }}
                     </option>
                   </select>
                   <span *ngIf="isFieldValid('kodeGroup')" class="text-danger">{{
                     "Wajib diisi" | translate
-                  }}</span>   
+                  }}</span>
                 </div>
-             
               </div>
             </div>
           </div>
         </div>
 
-        
         <div class="divider"></div>
         <!-- alamat kota kode pos telp fax -->
         <div class="container">
@@ -117,9 +153,8 @@
             <div class="col-md-6">
               <!-- left column -->
               <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                    "Alamat 1" | translate
-                  }}
+                <label class="col-sm-4 col-form-label"
+                  >{{ "Alamat 1" | translate }}
                   <span class="stamp-required show">&nbsp;*</span>
                 </label>
                 <div class="col-sm-8">
@@ -129,12 +164,26 @@
                     formControlName="alamat1"
                     [readOnly]="adding"
                     maxlength="40"
-                    (keypress)="conditionInput($event, 'excludedSensitive')"                    
+                    (keypress)="conditionInput($event, 'excludedSensitive')"
                   />
-                  <span *ngIf="isFieldValid('alamat1')" class="text-danger">{{
-                    "Wajib diisi" | translate
-                  }}
-                </span>
+                  <span
+                    *ngIf="
+                      myForm.controls['alamat1'].hasError('required') &&
+                      myForm.controls['alamat1'].touched
+                    "
+                    class="text-danger"
+                    >{{ "Wajib diisi (max.40 karakter)" | translate }}
+                  </span>
+                  <span
+                    *ngIf="
+                      myForm.controls['alamat1'].hasError('excludedSensitive')
+                    "
+                    class="text-danger"
+                    >{{
+                      "Alamat 1 hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), dan tanda kurung ()."
+                        | translate
+                    }}
+                  </span>
                 </div>
               </div>
               <div class="mb-3 row">
@@ -148,11 +197,21 @@
                     formControlName="alamat2"
                     [readOnly]="adding"
                     maxlength="40"
-                    (keypress)="conditionInput($event, 'excludedSensitive')"                    
+                    (keypress)="conditionInput($event, 'excludedSensitive')"
                   />
+                  <span
+                    *ngIf="
+                      myForm.controls['alamat2'].hasError('excludedSensitive')
+                    "
+                    class="text-danger"
+                    >{{
+                      "Alamat 2 hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), dan tanda kurung ()."
+                        | translate
+                    }}
+                  </span>
                 </div>
               </div>
-          
+
               <div class="mb-3 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Kota" | translate
@@ -163,7 +222,8 @@
                     [config]="configSelectKota"
                     [options]="listKota"
                     formControlName="kota"
-                    id="kota">
+                    id="kota"
+                  >
                   </ngx-select-dropdown>
                 </div>
               </div>
@@ -180,6 +240,11 @@
                     (keypress)="conditionInput($event, 'numeric')"
                     maxlength="10"
                   />
+                  <span
+                    *ngIf="myForm.controls['kodePos'].hasError('numeric')"
+                    class="text-danger"
+                    >{{ "Kode Pos hanya boleh mengandung angka" | translate }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -198,6 +263,14 @@
                     (keypress)="conditionInput($event, 'phone')"
                     maxlength="30"
                   />
+                  <span
+                    *ngIf="myForm.controls['telpon1'].hasError('phone')"
+                    class="text-danger"
+                    >{{
+                      "Telpon 1 hanya boleh mengandung angka, spasi, strip (-), dan tanda kurung ()."
+                        | translate
+                    }}
+                  </span>
                 </div>
               </div>
               <div class="mb-3 row">
@@ -213,6 +286,14 @@
                     (keypress)="conditionInput($event, 'phone')"
                     maxlength="30"
                   />
+                  <span
+                    *ngIf="myForm.controls['telpon2'].hasError('phone')"
+                    class="text-danger"
+                    >{{
+                      "Telpon 2 hanya boleh mengandung angka, spasi, strip (-), dan tanda kurung ()."
+                        | translate
+                    }}
+                  </span>
                 </div>
               </div>
 
@@ -229,6 +310,14 @@
                     (keypress)="conditionInput($event, 'phone')"
                     maxlength="30"
                   />
+                  <span
+                    *ngIf="myForm.controls['fax1'].hasError('phone')"
+                    class="text-danger"
+                    >{{
+                      "FAX 1 hanya boleh mengandung angka, spasi, strip (-), dan tanda kurung ()."
+                        | translate
+                    }}
+                  </span>
                 </div>
               </div>
               <div class="mb-3 row">
@@ -244,14 +333,20 @@
                     (keypress)="conditionInput($event, 'phone')"
                     maxlength="30"
                   />
+                  <span
+                    *ngIf="myForm.controls['fax2'].hasError('phone')"
+                    class="text-danger"
+                    >{{
+                      "Fax 2 hanya boleh mengandung angka, spasi, strip (-), dan tanda kurung ()."
+                        | translate
+                    }}
+                  </span>
                 </div>
               </div>
-              
             </div>
           </div>
         </div>
         <div class="divider"></div>
-
 
         <div class="container">
           <div class="row">
@@ -287,10 +382,11 @@
                     [config]="configSelectRSC"
                     [options]="listRSC"
                     formControlName="keteranganRsc"
-                    id="keteranganRsc">
+                    id="keteranganRsc"
+                  >
                   </ngx-select-dropdown>
                 </div>
-              </div> 
+              </div>
               <div class="mb-3 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Region" | translate
@@ -301,10 +397,11 @@
                     [config]="configSelectRegion"
                     [options]="listRegion"
                     formControlName="keteranganRegion"
-                    id="keteranganRegion">
+                    id="keteranganRegion"
+                  >
                   </ngx-select-dropdown>
                 </div>
-              </div> 
+              </div>
 
               <div class="mb-3 row">
                 <label class="col-sm-4 col-form-label">{{
@@ -316,10 +413,11 @@
                     [config]="configSelectArea"
                     [options]="listArea"
                     formControlName="keteranganArea"
-                    id="keteranganArea">
+                    id="keteranganArea"
+                  >
                   </ngx-select-dropdown>
                 </div>
-              </div>               
+              </div>
             </div>
             <div class="col-md-6">
               <div class="mb-3 row">
@@ -332,9 +430,19 @@
                     class="form-control"
                     formControlName="contactPerson"
                     [readOnly]="adding"
-                    (keypress)="conditionInput($event, 'alphabet')"
+                    (keypress)="conditionInput($event, 'contactPerson')"
                     maxlength="50"
                   />
+                  <span
+                    *ngIf="
+                      myForm.controls['contactPerson'].hasError('contactPerson')
+                    "
+                    class="text-danger"
+                    >{{
+                      "Contact Person hanya boleh mengandung huruf, spasi, dan titik (.)."
+                        | translate
+                    }}
+                  </span>
                 </div>
               </div>
               <div class="mb-3 row">
@@ -347,9 +455,17 @@
                     class="form-control"
                     formControlName="contactPhone"
                     [readOnly]="adding"
-                    (keypress)="conditionInput($event, 'numeric')"
+                    (keypress)="conditionInput($event, 'phone')"
                     maxlength="30"
                   />
+                  <span
+                    *ngIf="myForm.controls['contactPhone'].hasError('phone')"
+                    class="text-danger"
+                    >{{
+                      "Contact Telp hanya boleh mengandung angka, spasi, strip (-), dan tanda kurung ()."
+                        | translate
+                    }}
+                  </span>
                 </div>
               </div>
               <div class="mb-3 row">
@@ -362,27 +478,62 @@
                     class="form-control"
                     formControlName="tipeCabang"
                     [readOnly]="adding"
-                    (keypress)="conditionInput($event, 'alphabet')"
+                    (keypress)="conditionInput($event, 'tipeCabang')"
                     maxlength="10"
                   />
+                  <span
+                    *ngIf="myForm.controls['tipeCabang'].hasError('alphabet')"
+                    class="text-danger"
+                    >{{
+                      "Tipe Cabang hanya boleh mengandung huruf" | translate
+                    }}
+                  </span>
                 </div>
               </div>
               <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Status Aktif" | translate
-                }}</label>
+                <label class="col-sm-4 col-form-label"
+                  >{{ "Status Aktif" | translate }}
+                  <span class="stamp-required show">&nbsp;*</span>
+                </label>
                 <c-col xs="8">
                   <c-row class="mt-2">
                     <c-col xs="6">
                       <c-form-check class="flex align-items-center">
-                        <input cFormCheckInput checked id="active" type="radio" value="A" name="status" formControlName="status" (change)="onChangeSelect($event, 'status')"/>
-                        <label cFormCheckLabel for="active" style="margin-left: 4px;">Aktif</label>
+                        <input
+                          cFormCheckInput
+                          checked
+                          id="active"
+                          type="radio"
+                          value="A"
+                          name="statusAktif"
+                          formControlName="statusAktif"
+                          (change)="onChangeSelect($event, 'status')"
+                        />
+                        <label
+                          cFormCheckLabel
+                          for="active"
+                          style="margin-left: 4px"
+                          >Aktif</label
+                        >
                       </c-form-check>
                     </c-col>
                     <c-col xs="6">
                       <c-form-check class="flex align-items-center">
-                        <input cFormCheckInput id="inactive" type="radio" value="T" name="status" formControlName="status" (change)="onChangeSelect($event, 'status')"/>
-                        <label cFormCheckLabel for="inactive" style="margin-left: 4px;">Tidak Aktif</label>
+                        <input
+                          cFormCheckInput
+                          id="inactive"
+                          type="radio"
+                          value="T"
+                          name="statusAktif"
+                          formControlName="statusAktif"
+                          (change)="onChangeSelect($event, 'status')"
+                        />
+                        <label
+                          cFormCheckLabel
+                          for="inactive"
+                          style="margin-left: 4px"
+                          >Tidak Aktif</label
+                        >
                       </c-form-check>
                     </c-col>
                   </c-row>
@@ -399,15 +550,26 @@
                     formControlName="keterangan"
                     [readOnly]="adding"
                     maxlength="50"
-                    (keypress)="conditionInput($event, 'excludedSensitive')"                    
+                    (keypress)="conditionInput($event, 'excludedSensitive')"
                   />
+                  <span
+                    *ngIf="
+                      myForm.controls['keterangan'].hasError(
+                        'excludedSensitive'
+                      )
+                    "
+                    class="text-danger"
+                    >{{
+                      "Keterangan hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), dan tanda kurung ()."
+                        | translate
+                    }}
+                  </span>
                 </div>
-              </div>  
+              </div>
             </div>
           </div>
         </div>
 
-      
         <div class="divider"></div>
 
         <div class="d-grid gap-3 d-md-flex justify-content-end">
@@ -415,15 +577,15 @@
             {{ "Kembali" | translate }}
           </button>
           <button
-          class="btn btn-info text-white btn-150"
-          type="submit"
-          [disabled]="adding"
-        >
-          <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
-          <span *ngIf="!adding"
-            >{{ "Buat" | translate }} {{ "Cabang" | translate }}</span
+            class="btn btn-info text-white btn-150"
+            type="submit"
+            [disabled]="adding"
           >
-        </button>
+            <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
+            <span *ngIf="!adding"
+              >{{ "Buat" | translate }} {{ "Cabang" | translate }}</span
+            >
+          </button>
         </div>
       </form>
     </c-card-body>
