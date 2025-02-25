@@ -28,6 +28,7 @@ export class TableSetNumberDetailComponent implements OnInit {
       code: [this.detail.kodeTransaksi],
       desc: [this.detail.keterangan],
     });
+    this.myForm.disable();
   }
 
   onPreviousPressed() {

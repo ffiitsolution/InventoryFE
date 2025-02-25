@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataService } from '../../../service/data.service';
 import { GlobalService } from '../../../service/global.service';
@@ -14,6 +14,7 @@ import {
 } from '../../../../constants';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { DataTableDirective } from 'angular-datatables';
+import moment from 'moment';
 
 @Component({
   selector: 'app-send-order-to-supplier',
@@ -27,7 +28,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
   tujuanFilter: string = '';
   dtOptions: DataTables.Settings = {};
   config: any = {
-    BASE_URL: 'http://localhost:8093/inventory/api/delivery-order',
+    BASE_URL: 'http://localhost:8093/inventory/api/send-order-to-supplier',
   };
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
@@ -37,8 +38,8 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
   selectedStatusFilter: string = '';
   orders: any[] = [];
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
-  datatableElement: DataTableDirective | undefined;
-  currentDate: Date = new Date();
+  @ViewChild(DataTableDirective, { static: false })
+  datatableElement: DataTableDirective | undefined;  currentDate: Date = new Date();
 
   startDateFilter: Date = new Date(
     this.currentDate.setDate(
@@ -67,65 +68,112 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.g.getUserLocationCode(),
-          startDate: this.g.transformDate(this.dateRangeFilter[0]),
-          endDate: this.g.transformDate(this.dateRangeFilter[1]),
+          tipePesanan: "R",
+          tglPesananStart :  moment(this.dateRangeFilter[0], "ddd MMM DD YYYY HH:mm:ss [GMT]Z").format("DD-MM-YYYY"),
+          tglPesananEnd :  moment(this.dateRangeFilter[1], "ddd MMM DD YYYY HH:mm:ss [GMT]Z").format("DD-MM-YYYY")
         };
         setTimeout(() => {
-          // this.dataService
-          //   .postData(this.config.BASE_URL + '/dt', params)
-          //   .subscribe((resp: any) => {
-          //     const mappedData = resp.data.map((item: any, index: number) => {
-          //       // hapus rn dari data
-          //       const { rn, ...rest } = item;
-          //       const finalData = {
-          //         ...rest,
-          //         dtIndex: this.page.start + index + 1,
-          //         tglPesanan: this.g.transformDate(rest.tglPesanan),
-          //         tglTransaksi: this.g.transformDate(rest.tglTransaksi)
-          //       };
-          //       return finalData;
-          //     });
-          //     this.page.recordsTotal = resp.recordsTotal;
-          //     this.page.recordsFiltered = resp.recordsFiltered;
-          //     this.showFilterSection = false;
-          //     callback({
-          //       recordsTotal: resp.recordsTotal,
-          //       recordsFiltered: resp.recordsFiltered,
-          //       data: mappedData,
-          //     });
-          //   });
+          this.dataService
+            .postData(this.config.BASE_URL + '/dt', params)
+            .subscribe((resp: any) => {
+              const mappedData = resp.data.map((item: any, index: number) => {
+                // hapus rn dari data
+                const { rn, ...rest } = item;
+                const finalData = {
+                  ...rest,
+                  dtIndex: this.page.start + index + 1,
+                  tglKirimBrg: this.g.transformDate(rest.tglKirimBrg),
+                  // tglTransaksi: this.g.transformDate(rest.tglTransaksi)
+                };
+                return finalData;
+              });
+              this.page.recordsTotal = resp.recordsTotal;
+              this.page.recordsFiltered = resp.recordsFiltered;
+              this.showFilterSection = false;
+              callback({
+                recordsTotal: resp.recordsTotal,
+                recordsFiltered: resp.recordsFiltered,
+                data: mappedData,
+              });
+            });
           callback({});
         }, DEFAULT_DELAY_TABLE);
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'tglTransaksi', title: 'Tanggal Kirim' },
+        // { data: 'tglTransaksi', title: 'Tanggal Kirim' },
         { data: 'tglPesanan', title: 'Tanggal Pesan' },
-        { data: 'tglBatal', title: 'Tanggal Batal' },
-        {
-          data: 'kodeTujuan',
-          title: 'Kode Tujuan',
-          orderable: true,
-          searchable: true,
-        },
-        {
-          data: 'namaTujuan',
-          title: 'Keterangan Tujuan',
-          orderable: true,
-          searchable: true,
-        },
-        {
-          data: 'statusPesanan',
+        { data: 'tglKirimBrg', title: 'Tanggal Kirim Barang' },
+        { data: 'tglBatalExp', title: 'Tanggal Batal' },
+        { data: 'nomorPesanan', title: 'Nomor Pesanan' },
+        { data: 'supplier', title: 'Kode Tujuan' },
+        { data: 'keteranganRsc', title: 'Keterangan Tujuan' },
+        { 
+          data: 'statusPesanan', 
           title: 'Status Pesanan',
+          render: function (data) {
+            let statusLabel = "";
+            
+            // Map statusPesanan values to labels
+            switch (data) {
+              case "1":
+                statusLabel = "Baru";
+                break;
+              case "2":
+                statusLabel = "Sisa";
+                break;
+              case "3":
+                statusLabel = "Dikirim";
+                break;
+              case "4":
+                statusLabel = "Batal";
+                break;
+              default:
+                statusLabel = "Tidak Diketahui"; // Default label for undefined values
+            }
+            return statusLabel;
+          }
         },
-        {
-          data: 'statusCetakPesanan',
-          title: 'Status Cetak Pesanan',
-        },
-        {
-          data: 'statusKirimData',
-          title: 'Status Kirim Data',
-        },
+        { data: 'statusCetak', 
+          title: 'Status Cetak',
+          render: function (data) {
+            let statusLabel = "";
+            
+            // Map statusPesanan values to labels
+            switch (data) {
+              case "S":
+                statusLabel = "Sudah";
+                break;
+              case "B":
+                statusLabel = "Belum";
+                break;
+              default:
+                statusLabel = "Tidak Diketahui"; // Default label for undefined values
+                break;
+            }
+            return statusLabel;
+          }
+         },
+        { data: 'statusKirim', 
+          title: 'Status Kirim',
+          render: function (data) {
+            let statusLabel = "";
+            
+            // Map statusPesanan values to labels
+            switch (data) {
+              case "S":
+                statusLabel = "Sudah";
+                break;
+              case "B":
+                statusLabel = "Belum";
+                break;
+              default:
+                statusLabel = "Tidak Diketahui"; // Default label for undefined values
+                break;
+            }
+            return statusLabel;
+          }
+         },
         {
           title: 'Aksi',
           render: () => {
@@ -220,13 +268,19 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
     console.log('Tujuan filter changed:', this.tujuanFilter);
   }
 
-  onFilterPressed(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
-      dtInstance.ajax.reload();
-    });
-    console.log('filter pressed');
+  onFilterPressed() {
+    console.log('filter pressed (luar)');
+    console.log(" this.datatableElement", this.datatableElement)
+    this.datatableElement?.dtInstance
+      .then((dtInstance: DataTables.Api) => {
+        console.log('dtInstance berhasil didapatkan');
+        dtInstance.ajax.reload();
+      })
+      .catch((error) => {
+        console.error('dtInstance gagal didapatkan:', error);
+      });
   }
-  dtPageChange(event: any): void {
+    dtPageChange(event: any): void {
     console.log('Page changed', event);
     // Logic for handling page change
     // You can fetch new data based on the page number or perform other actions

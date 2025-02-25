@@ -13,7 +13,7 @@ import { GlobalService } from 'src/app/service/global.service';
 import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_REGIONAL } from 'src/constants';
 
 function code(control: AbstractControl): ValidationErrors | null {
-  const specialCharRegex = /[^0-9]+$/;
+  const specialCharRegex = /[^a-zA-Z0-9]+$/;
   if (control.value && specialCharRegex.test(control.value)) {
     return { code: true };
   }
@@ -21,7 +21,7 @@ function code(control: AbstractControl): ValidationErrors | null {
 }
 
 function desc(control: AbstractControl): ValidationErrors | null {
-  const specialCharRegex = /[^a-zA-Z0-9-\s]/;
+  const specialCharRegex = /[^a-zA-Z0-9()-\s]/;
   if (control.value && specialCharRegex.test(control.value)) {
     return { desc: true };
   }
@@ -100,9 +100,9 @@ export class TableRegionalAddComponent {
     var inp = String.fromCharCode(event.keyCode);
     let temp_regex =
       type == 'code'
-        ? /^[0-9]+$/
+        ? /^[a-zA-Z0-9]+$/
         : type == 'desc' //desc
-        ? /^[a-zA-Z0-9-\s]$/
+        ? /^[a-zA-Z0-9()-\s]$/
         : /^[a-zA-Z.() ,\-]*$/;
     if (temp_regex.test(inp)) return true;
     else {
