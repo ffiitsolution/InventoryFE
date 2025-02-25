@@ -80,8 +80,8 @@
 
                 <th scope="col" style=" vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Qty Kirim</th>
-                  <th scope="col" style=" vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                    No. Surat Jalan</th>
+                <th scope="col" style=" vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                  No. Surat Jalan</th>
                 <th scope="col" style=" vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Keterangan Tujuan
                 </th>
@@ -118,18 +118,18 @@
 
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
-                    <input type="text" numberOnly 
-                      class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.nomorColli"
-                      (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"  (keypress)="g.conditionInput($event, 'numeric')"/>
-                    
+                    <input type="text" numberOnly class="form-control text-center inputQty inputNumberSpace"
+                      [(ngModel)]="data.nomorColli" (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
+                      (keypress)="g.conditionInput($event, 'numeric')" />
+
                   </div>
                 </td>
 
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
-                    <input type="text" numberOnly
-                      class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.jumlahColli"
-                      (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')" (keypress)="g.conditionInput($event, 'numeric')"/>
+                    <input type="text" numberOnly class="form-control text-center inputQty inputNumberSpace"
+                      [(ngModel)]="data.jumlahColli" (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')"
+                      (keypress)="g.conditionInput($event, 'numeric')" />
                   </div>
 
                 </td>
@@ -149,7 +149,7 @@
   </c-card>
 </div>
 
-<c-modal #formModal [fullscreen]="false" [visible]="isShowModal" [backdrop]="true" #modalLg size="xl" id="formModal">
+<c-modal #formModal [fullscreen]="false" [visible]="isShowModal" backdrop="static" #modalLg size="xl" id="formModal">
   <c-modal-header>
     <h5 cModalTitle>Daftar Pesanan Ke Gudang</h5>
     <button (click)="isShowModal = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModal.id"
@@ -167,21 +167,14 @@
   </c-modal-body>
 </c-modal>
 
-<c-modal
-  #printModal
-  [fullscreen]="false"
-  [visible]="isShowPrintModal"
-  [backdrop]="true"
-  size="lg"
-  id="printModal"
-  class="custom-modal"
->
+<c-modal #printModal [fullscreen]="false" [visible]="isShowPrintModal" backdrop="static" size="lg" id="printModal"
+  class="custom-modal">
   <c-modal-body>
     <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title">Konfirmasi Cetak Data</h3>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" *ngIf="isShowPrintModal">
         <div class="form-group">
           <label>No. Packing List</label>
           <input type="text" [(ngModel)]="selectedData.packingListNumber" readonly class="form-control">
@@ -190,15 +183,16 @@
         <div class="form-group">
           <label>Tujuan Kirim</label>
           <div class="tujuan-kirim d-flex align-items-center">
-            <input type="text" [(ngModel)]="selectedData.kodeCabang" readonly class="form-control w-25">
-            <button class="btn btn-outline-secondary ms-2" (click)="onPilihCabang()">🔍</button>
-            <input type="text" [(ngModel)]="selectedData.namaCabang" readonly class="form-control w-50 ms-2">
+            <input type="text" [(ngModel)]="selectedData.data.kodeCabang" readonly class="form-control w-25">
+            <button class="btn btn-outline-secondary ms-2" (click)="onChooseDestinaton()"><i
+                class="fa fa-search"></i></button>
+            <input type="text" [(ngModel)]="selectedData.data.namaCabang" readonly class="form-control w-50 ms-2">
           </div>
         </div>
 
         <div class="form-group">
           <label>Alamat Tujuan</label>
-          <textarea [(ngModel)]="selectedData.alamat1" readonly class="form-control"></textarea>
+          <textarea [(ngModel)]="selectedData.data.alamat1" readonly class="form-control"></textarea>
         </div>
 
         <p class="note text-center text-muted">
@@ -207,19 +201,21 @@
       </div>
 
       <div class="modal-footer justify-content-center">
-        <button class="btn btn-warning me-2" (click)="onCetakPdf()">
-          📄 Cetak PDF
+        <button class="btn btn-warning me-2" (click)="onSubmit()">
+          <i class="fa fa-file-pdf-o pe-2" *ngIf="!printing"></i> 
+          <i class="fa fa-spinner fa-spin" *ngIf="printing"></i>
+          PDF
         </button>
-        <button class="btn btn-primary me-2" (click)="onCetakPrinter()">
-          🖨️ Cetak Printer
+        <button class="btn btn-primary me-2">
+          <i class="fa fa-print pe-2" (click)="onSubmit()" *ngIf="!printing"></i>
+          <i class="fa fa-spinner fa-spin" *ngIf="printing"></i>
+          Printer
         </button>
-        <button class="btn btn-danger" (click)="closeModal()">
-          ❌ Batal
+        <button class="btn btn-danger" (click)="isShowPrintModal = false">
+          <i class="fa fa-times pe-2" [cModalToggle]="printModal.id" cButtonClose></i> Batal
         </button>
       </div>
     </div>
   </c-modal-body>
 </c-modal>
-
-
-
+<div class="modal-bg-backdrop" *ngIf="isShowModal || isShowPrintModal"></div>
