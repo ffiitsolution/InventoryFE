@@ -17,6 +17,7 @@ import * as moment from 'moment';
 import {
   ACTION_SELECT,
   ACTION_VIEW,
+  DEFAULT_DELAY_TABLE,
   DEFAULT_DELAY_TIME,
   LS_INV_SELECTED_DELIVERY_ORDER,
 } from '../../../../../constants';
@@ -37,7 +38,6 @@ export class EntryPackingListComponent
     | undefined;
 
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
-  dtOptions: DataTables.Settings = {};
   dtOptions_2: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   page = new Page();

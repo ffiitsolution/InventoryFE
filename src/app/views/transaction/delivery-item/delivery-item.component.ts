@@ -42,7 +42,11 @@ export class DeliveryItemComponent implements OnInit {
       this.currentDate.getDate() - DEFAULT_DATE_RANGE_RECEIVING_ORDER
     )
   );
-  dateRangeFilter: any = [this.startDateFilter, new Date()];
+  
+  endDateFilter: Date = new Date(
+    new Date().setDate(new Date().getDate() + 1)
+  );
+  dateRangeFilter: any = [this.startDateFilter, this.endDateFilter];
   selectedRowData: any;
 
   constructor(
@@ -171,10 +175,10 @@ export class DeliveryItemComponent implements OnInit {
           this.actionBtnClick(ACTION_CETAK, data)
         );
         $('td', row).on('click', () => {
-          $('td').removeClass('bg-secondary text-white fw-semibold');
+          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
           if (this.selectedRowData !== data) {
             this.selectedRowData = data;
-            $('td', row).addClass('bg-secondary text-white fw-semibold');
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
           } else {
             this.selectedRowData = undefined;
           }

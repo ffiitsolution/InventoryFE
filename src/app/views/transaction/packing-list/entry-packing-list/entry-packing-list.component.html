@@ -10,7 +10,7 @@
           <h5 class="mb-0 ms-3">{{ "Entry Packing List" | translate }}</h5>
         </div>
         <div class="col text-end">
-          <button class="btn btn-outline-success btn-150 me-2" (click)="onShowModal()">
+          <button class="btn btn-outline-success btn-150 me-2" [cModalToggle]="formModal.id" (click)="onShowModal()">
             <i class="fa fa-print"></i> {{ "Cetak Packing List" | translate }}
           </button>
           <button type="button" class="btn btn-outline-dark me-2 btn-120" (click)="toggleFilter()">
