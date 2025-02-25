@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/service/app.service';
@@ -10,6 +10,31 @@ import {
   LS_INV_SELECTED_RSC,
 } from 'src/constants';
 import { DataService } from 'src/app/service/data.service';
+
+
+function kodeLocation(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^0-9]+$/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { kodeLocation: true };
+  }
+  return null;
+}
+
+function kodeInisial(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^A-Z]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { kodeInisial: true };
+  }
+  return null;
+}
+
+function keteranganLokasi(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^A-Z0-9-\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { keteranganLokasi: true };
+  }
+  return null;
+}
 
 @Component({
   selector: 'app-edit',
@@ -38,9 +63,9 @@ export class MasterLocationEditComponent implements OnInit {
   ngOnInit(): void {
     this.detail = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_LOCATION));
     this.myForm = this.form.group({
-      kodeLocation: [this.detail.kodeLocation],
-      kodeInisial: [this.detail.kodeInisial],
-      keteranganLokasi: [this.detail.keteranganLokasi],
+      kodeLocation: [this.detail.kodeLocation, [kodeLocation]],
+      kodeInisial: [this.detail.kodeInisial, [kodeInisial]],
+      keteranganLokasi: [this.detail.keteranganLokasi, [keteranganLokasi]],
       lokasiGudang: [],
       defaultRsc: [],
       supportTo: [this.detail.keteranganRsc],
@@ -122,6 +147,29 @@ export class MasterLocationEditComponent implements OnInit {
     const { controls, invalid } = this.myForm;
     if (invalid) {
       this.g.markAllAsTouched(this.myForm);
+      if (invalid) {
+        if (
+          Object.values(controls).some((control) =>
+            control.hasError('required')
+          )
+        ) {
+          this.toastr.error('Beberapa kolom wajib diisi.');
+        } else if (
+          Object.values(controls).some((control) =>
+            control.hasError('kodeLocation')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('kodeInisial')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('keteranganLokasi')
+          )
+        ) {
+          this.toastr.error(
+            'Beberapa kolom mengandung karakter khusus yang tidak diperbolehkan.'
+          );
+        }
+      }
     } else {
       this.adding = true;
       const param = {
@@ -164,6 +212,23 @@ export class MasterLocationEditComponent implements OnInit {
     const control = this.myForm.get(id);
     if (control) {
       control.setValue(control.value.toUpperCase(), { emitEvent: false });
+    }
+  }
+
+  conditionInput(event: any, type: string): boolean {
+    var inp = String.fromCharCode(event.keyCode);
+    let temp_regex =
+      type == 'alphanumeric' // Keterangan Lokasi
+        ? /^[a-zA-Z0-9-\s]$/
+        : type == 'numeric' //Kode Lokasi
+        ? /^[0-9]$/
+        : type == 'kodeInisial' //Kode Inisial
+        ? /^[A-Z]+$/
+        : /^[a-zA-Z.() ,\-]*$/;
+    if (temp_regex.test(inp)) return true;
+    else {
+      event.preventDefault();
+      return false;
     }
   }
 }

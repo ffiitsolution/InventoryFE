@@ -22,9 +22,19 @@
               maxlength="10"
               (keypress)="conditionInput($event, 'alphanumeric')"
             />
-            <span *ngIf="isFieldValid('code')" class="text-danger">{{
-              "Wajib diisi" | translate
-            }}</span>
+            <span
+              *ngIf="
+                myForm.controls['code'].hasError('required') &&
+                myForm.controls['code'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 10 karakter)" | translate }}</span
+            >
+            <span
+              *ngIf="myForm.controls['code'].hasError('code')"
+              class="text-danger"
+              >{{ "Kode Regional hanya boleh mengandung angka." | translate }}
+            </span>
           </div>
         </div>
         <div class="mb-3 row">
@@ -37,12 +47,25 @@
               class="form-control"
               formControlName="desc"
               [readOnly]="adding"
-              (keypress)="conditionInput($event, 'alphanumeric')"
+              (keypress)="conditionInput($event, 'desc')"
               maxlength="30"
             />
-            <span *ngIf="isFieldValid('desc')" class="text-danger">{{
-              "Wajib diisi" | translate
-            }}</span>
+            <span
+              *ngIf="
+                myForm.controls['desc'].hasError('required') &&
+                myForm.controls['desc'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 30 karakter)" | translate }}</span
+            >
+            <span
+              *ngIf="myForm.controls['desc'].hasError('desc')"
+              class="text-danger"
+              >{{
+                "Nama Regional hanya boleh mengandung huruf, angka, spasi dan strip (-)."
+                  | translate
+              }}</span
+            >
           </div>
         </div>
         <div class="divider"></div>

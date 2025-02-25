@@ -34,6 +34,14 @@ function noSpecialCharactersExcept(
   return null;
 }
 
+function jabatan(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z_-\s.]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { jabatan: true };
+  }
+  return null;
+}
+
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.component.html',
@@ -95,7 +103,7 @@ export class MasterUserEditComponent implements OnInit {
 
       konfirmasiKodePassword: [this.detail.kodePassword, Validators.required],
       statusAktif: [this.detail.statusAktif],
-      jabatan: [this.detail.jabatan, noSpecialCharactersExcept],
+      jabatan: [this.detail.jabatan, jabatan],
       defaultLocation: [{}],
       roleID: [],
       location: [],
@@ -262,6 +270,8 @@ export class MasterUserEditComponent implements OnInit {
     let temp_regex =
       type == 'alphanumeric'
         ? /[a-zA-Z0-9]/
+        : type == 'jabatan'
+        ? /[a-zA-Z-_\s.]/
         : type == 'numeric'
         ? /[0-9]/
         : /^[a-zA-Z.() ,\-]*$/;

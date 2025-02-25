@@ -12,9 +12,10 @@
         <div class="row justify-content-start">
           <div class="col-6">
             <div class="mb-3 row">
-              <label class="col-sm-4 col-form-label">{{
-                "Kode Lokasi" | translate
-              }}</label>
+              <label class="col-sm-4 col-form-label"
+                >{{ "Kode Lokasi" | translate }}
+                <span class="stamp-required show">&nbsp;*</span></label
+              >
               <div class="col-sm-6">
                 <input
                   type="text"
@@ -25,33 +26,57 @@
                   (keypress)="conditionInput($event, 'numeric')"
                 />
                 <span
-                  *ngIf="isFieldValid('kodeLocation')"
+                  *ngIf="
+                    myForm.controls['kodeLocation'].hasError('required') &&
+                    myForm.controls['kodeLocation'].touched
+                  "
                   class="text-danger"
-                  >{{ "Wajib diisi" | translate }}</span
+                  >{{ "Wajib diisi (max.10 karakter)" | translate }}</span
+                >
+                <span
+                  *ngIf="
+                    myForm.controls['kodeLocation'].hasError('kodeLocation')
+                  "
+                  class="text-danger"
+                  >{{
+                    "Kode lokasi hanya boleh mengandung angka." | translate
+                  }}</span
                 >
               </div>
             </div>
           </div>
           <div class="col-6">
             <div class="mb-3 row">
-              <label class="col-sm-4 col-form-label">{{
-                "Keterangan Lokasi" | translate
-              }}</label>
+              <label class="col-sm-4 col-form-label"
+                >{{ "Keterangan Lokasi" | translate }}
+                <span class="stamp-required show">&nbsp;*</span></label
+              >
               <div class="col-sm-6">
                 <input
                   type="text"
                   class="form-control"
                   formControlName="keteranganLokasi"
                   [readOnly]="adding"
-                  maxlength="50"
-                  
+                  maxlength="30"
                   (keypress)="conditionInput($event, 'alphanumeric')"
                   (input)="convertToUppercase('keteranganLokasi')"
                 />
                 <span
-                  *ngIf="isFieldValid('keteranganLokasi')"
+                  *ngIf="
+                    myForm.controls['keteranganLokasi'].hasError('required') &&
+                    myForm.controls['keteranganLokasi'].touched
+                  "
                   class="text-danger"
-                  >{{ "Wajib diisi" | translate }}</span
+                  >{{ "Wajib diisi (max.30 karakter)" | translate }}</span
+                >
+                <span
+                  *ngIf="
+                    myForm.controls['keteranganLokasi'].hasError('keteranganLokasi')
+                  "
+                  class="text-danger"
+                  >{{
+                    "Keterangan lokasi hanya boleh mengandung huruf kapital, angka, spasi dan strip (-)." | translate
+                  }}</span
                 >
               </div>
             </div>
@@ -61,9 +86,10 @@
         <div class="row justify-content-start">
           <div class="col-6">
             <div class="mb-3 row">
-              <label class="col-sm-4 col-form-label">{{
-                "Inisial Lokasi" | translate
-              }}</label>
+              <label class="col-sm-4 col-form-label"
+                >{{ "Inisial Lokasi" | translate }}
+                <span class="stamp-required show">&nbsp;*</span></label
+              >
               <div class="col-sm-6">
                 <input
                   type="text"
@@ -72,18 +98,34 @@
                   [readOnly]="adding"
                   maxlength="3"
                   (input)="convertToUppercase('kodeInisial')"
+                  (keypress)="conditionInput($event, 'kodeInisial')"
                 />
-                <span *ngIf="isFieldValid('kodeInisial')" class="text-danger">{{
-                  "Wajib diisi" | translate
-                }}</span>
+                <span
+                  *ngIf="
+                    myForm.controls['kodeInisial'].hasError('required') &&
+                    myForm.controls['kodeInisial'].touched
+                  "
+                  class="text-danger"
+                  >{{ "Wajib diisi (max.3 karakter)" | translate }}</span
+                >
+                <span
+                  *ngIf="
+                    myForm.controls['kodeInisial'].hasError('kodeInisial')
+                  "
+                  class="text-danger"
+                  >{{
+                    "Inisial lokasi hanya boleh mengandung huruf kapital." | translate
+                  }}</span
+                >
               </div>
             </div>
           </div>
           <div class="col-6">
             <div class="mb-3 row">
-              <label class="col-sm-4 col-form-label">{{
-                "Default RSC" | translate
-              }}</label>
+              <label class="col-sm-4 col-form-label"
+                >{{ "Default RSC" | translate }}
+                <span class="stamp-required show">&nbsp;*</span></label
+              >
               <div class="col-sm-6">
                 <ngx-select-dropdown
                   [multiple]="false"
@@ -104,9 +146,10 @@
         <div class="row justify-content-start">
           <div class="col-6">
             <div class="mb-3 row">
-              <label class="col-sm-4 col-form-label">{{
-                "Lokasi Gudang" | translate
-              }}</label>
+              <label class="col-sm-4 col-form-label"
+                >{{ "Lokasi Gudang" | translate
+                }}<span class="stamp-required show">&nbsp;*</span></label
+              >
               <div class="col-sm-6">
                 <ngx-select-dropdown
                   [multiple]="false"
