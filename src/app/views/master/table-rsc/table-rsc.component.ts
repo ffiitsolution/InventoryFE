@@ -93,13 +93,13 @@ export class TableRscComponent implements OnInit, OnDestroy, AfterViewInit {
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
         {
           data: 'kodeRsc',
-          title: 'Kode',
+          title: 'RSC Kode',
           orderable: true,
           searchable: true,
         },
         {
           data: 'keteranganRsc',
-          title: 'Nama',
+          title: 'RSC Nama',
           orderable: true,
           searchable: true,
         },
