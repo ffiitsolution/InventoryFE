@@ -61,6 +61,9 @@ export class SendOrderToWarehouseComponent
   generatePdfUrl: string = "/api/send-order-to-warehouse/report";
   generateReportParam : string;
 
+  isShowModalKirim: boolean = false;
+  selectedRowKirim: any;
+
   protected config = AppConfig.settings.apiServer;
 
   constructor(
@@ -259,8 +262,12 @@ export class SendOrderToWarehouseComponent
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
         );
-        $('.action-send', row).on('click', () =>
-          this.updateStatus(data)
+        $('.action-send', row).on('click', () =>{
+          // this.updateStatus(data)
+          this.selectedRowKirim = data;
+          console.log("selectedRowKirim", this.selectedRowKirim)
+          this.isShowModalKirim=true;
+        }
         );
         $('.action-print', row).on('click', () =>
           this.onClickPrint(data)
@@ -289,7 +296,8 @@ export class SendOrderToWarehouseComponent
     }
   }
 
-  updateStatus(data: any = null) {
+  updateStatus() {
+    const data = this.selectedRowKirim
     this.dataUser = this.g.getLocalstorage('inv_currentUser');
     const params = {
       statusKirim : "S",
@@ -316,6 +324,7 @@ export class SendOrderToWarehouseComponent
         alert('An error occurred while updating the user.');
       },    
     });
+    this.isShowModalKirim = false;
   }
   dtPageChange(event: any) {}
 

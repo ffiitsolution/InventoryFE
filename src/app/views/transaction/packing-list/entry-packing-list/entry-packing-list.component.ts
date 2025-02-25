@@ -6,7 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
-import { Subject } from 'rxjs';
+import { lastValueFrom, Subject } from 'rxjs';
 import { DataService } from '../../../../service/data.service';
 import { GlobalService } from '../../../../service/global.service';
 import { Router } from '@angular/router';
@@ -23,6 +23,7 @@ import {
 import { AppService } from '../../../../service/app.service';
 import { Page } from '../../../../model/page';
 import { data } from 'jquery';
+import { forEach } from 'lodash-es';
 
 @Component({
   selector: 'app-entry-packing-list',
@@ -31,31 +32,6 @@ import { data } from 'jquery';
 })
 export class EntryPackingListComponent
   implements OnInit, AfterViewInit, OnDestroy {
-  numericInputRenderer(data: any, type: any, row: any, meta: any) {
-    if (type === 'display') {
-      return `
-        <input type="number" class="form-control text-center"
-               value="${data || ''}" 
-               min="0" max="99999"
-               oninput="this.value = this.value.replace(/[^0-9]/g, ''); 
-                        if(this.value.length > 5) this.value = this.value.slice(0, 5);
-                        if(this.value > 99999) this.value = 99999;">
-      `;
-    }
-    return data;
-  }
-
-  updateTableData(rowIndex: number, columnName: string, newValue: any) {
-    if (!this.reportProposeData[rowIndex]) return;
-
-    this.reportProposeData[rowIndex][columnName] = newValue;
-
-    console.log(
-      `Data pada baris ${rowIndex} kolom ${columnName} diperbarui:`,
-      newValue
-    );
-  }
-
   @ViewChild(DataTableDirective, { static: false }) datatableElement:
     | DataTableDirective
     | undefined;
@@ -75,21 +51,14 @@ export class EntryPackingListComponent
   showFilterSection: boolean = false;
   reportProposeData: any[] = [];
   totalLength: number = 0;
-
+  isShowPrintModal: boolean = false;
   dateRangeFilter: any = [new Date(), new Date()];
   dataUser: any;
   nomorDoList: any;
   isShowModal: boolean = false;
-  isShowPrintModal: boolean = false;
   selectedRo: any = {};
   selectedData: any;
-
-  searchDetail = '';
-  filteredEntryPL: any[] = [];
-  listEntryPl: any[] = [];
-  listCurrentPage: number = 1;
-  totalLengthList: number = 1;
-
+  printing: boolean = false;
   constructor(
     private dataService: DataService,
     public g: GlobalService,
@@ -101,40 +70,55 @@ export class EntryPackingListComponent
     this.minDate.setDate(this.minDate.getDate() - 7);
   }
 
+/*************  ✨ Codeium Command ⭐  *************/
+  /**
+   * Initializes component data and configurations.
+   * - Retrieves and parses 'listNoDO' from local storage.
+   * - Calls the method to process delivery orders.
+   * - Configures DataTables settings, including pagination and server-side processing.
+   * - Sets up AJAX call for retrieving warehouse list with area code filtering.
+   * - Defines table columns and their rendering logic.
+   * - Configures row callback for handling action button clicks.
+   */
+
+/******  4fa3670d-12eb-42f6-bc6c-660137910294  *******/
   ngOnInit(): void {
     this.nomorDoList = JSON.parse(localStorage.getItem('listNoDO') || '[]');
     this.getProsesDoBalik();
 
     this.dtOptions_2 = {
       paging: true,
-      pageLength: 10,
+      pageLength: 5,
       lengthMenu: [5],
       processing: true,
       serverSide: true,
-      autoWidth: true,
-      drawCallback: () => { },
+   
       ajax: (dataTablesParameters: any, callback) => {
-        this.page.start = dataTablesParameters.start || 0; // Pastikan tidak NaN
-        this.page.length = dataTablesParameters.length || 10; // Pastikan tidak NaN
-
+        this.page.start = dataTablesParameters.start;
+        this.page.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
           kodeArea: this.g.getUserAreaCode(),
         };
-
         this.getListGudang(params, callback);
+        this.page.start = dataTablesParameters.start;
+        this.page.length = dataTablesParameters.length;
       },
+      autoWidth: true,
+
       columns: [
         {
           data: 'kodeCabang',
           title: 'Kode Cabang',
           className: 'text-center',
-          searchable: true
+          orderable: true,
+          searchable:true
         },
         {
           data: 'namaCabang',
           title: 'Nama Cabang',
           className: 'text-center',
+          orderable: true,
           searchable: true
         },
         {
@@ -143,68 +127,50 @@ export class EntryPackingListComponent
           className: 'text-center',
         },
         {
-          data: null,
-          title: 'Alamat',
+          title: 'Alamat', // Nama kolom yang sama untuk keduanya
           className: 'text-center',
-          searchable: true,
           render: function (data, type, row) {
-            let alamat1 = row.alamat1 ? row.alamat1 : '-';
+            let alamat1 = row.alamat1 ? row.alamat1 : '-'; // Cek jika null
             let alamat2 = row.alamat2 ? row.alamat2 : '-';
             return `${alamat1} <br> ${alamat2}`;
           },
+          searchable: true
         },
         { data: 'kota', title: 'Kota', className: 'text-center' },
         {
-          data: null,
-          title: 'Pilih',
-          className: 'text-center',
-          orderable: false,
-          render: function (data, type, row) {
-            return `<button class="btn btn-sm action-select btn-info btn-80 text-white pilih-btn" 
-                      data-kodeCabang="${row.kodeCabang}"
-                      data-namaCabang="${row.namaCabang}"
-                      data-kodeGroup="${row.kodeGroup}"
-                      data-alamat1="${row.alamat1}"
-                      data-alamat2="${row.alamat2}"
-                      data-kota="${row.kota}">
-                      Pilih
-                    </button>`;
+          title: 'Action',
+          render: () => {
+            return `<button class="btn btn-sm action-select btn-info btn-80 text-white">Pilih</button>`;
           },
         },
       ],
+      searchDelay: 1000,
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-select', row).on('click', () =>
           this.actionBtnClick(ACTION_SELECT, data)
         );
-        $('.pilih-btn', row).on('click', () =>
-          this.actionBtnClick(ACTION_VIEW, data)
-        );
         return row;
       },
-      order: [[1, 'asc']],
+      order: [[2, 'desc']],
     };
+
   }
 
   actionBtnClick(action: string, data: any): void {
     if (action === ACTION_SELECT) {
+      this.isShowModal = false
+      this.isShowPrintModal = true;
+      this.selectedData = {
+        ...this.selectedData,
+        data
+      };
       const paramTujuan = {
         tujuan: data.kodeCabang + ' - ' + data.namaCabang,
         alamatTujuan: data.alamat1 + ',' + data.alamat2 + ',' + data.kota + ' ' + data.kodePos
       }
-      this.selectedData = {
-        ...this.selectedData,
-        kodeCabang: data.kodeCabang,
-        namaCabang: data.namaCabang,
-        kodeGroup: data.kodeGroup,
-        alamat1: data.alamat1,
-        alamat2: data.alamat2,
-        kota: data.kota};
-      this.isShowPrintModal = true;
-      this.isShowModal = false;
-      // this.onSubmit(paramTujuan);
     }
-
   }
+
 
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
@@ -219,8 +185,10 @@ export class EntryPackingListComponent
   }
   actionBtnClickInModal(action: string, data: any = null) {
     this.selectedRo = JSON.stringify(data);
+    // this.renderDataTables();
     this.isShowModal = false;
-    this.isShowPrintModal = true;
+    // this.mapOrderData(data);
+    // this.onSaveData();
   }
 
   dtPageChange(event: any): void { }
@@ -246,7 +214,13 @@ export class EntryPackingListComponent
       };
     });
 
-    console.log('Mengirim data ke backend:', params);
+    this.dataService
+      .postData(this.config.BASE_URL + '/delivery-order/generate', params[0])
+      .subscribe((response: any) => {
+        this.selectedData = {
+          packingListNumber: response.packingListNumber,
+        };
+      });
 
     this.dataService
       .postData(
@@ -271,13 +245,6 @@ export class EntryPackingListComponent
           this.loading = false;
         }
       );
-    this.dataService
-      .postData(this.config.BASE_URL + '/delivery-order/generate', params[0])
-      .subscribe((response: any) => {
-        this.selectedData = {
-          packingListNumber: response.packingListNumber,
-        };
-      });
   }
 
   getListGudang(param: any, callback: any): void {
@@ -323,7 +290,11 @@ export class EntryPackingListComponent
     this.router.navigate(['/transaction/delivery-item/add-data']);
   }
 
-
+  searchDetail = '';
+  filteredEntryPL: any[] = [];
+  listEntryPl: any[] = [];
+  listCurrentPage: number = 1;
+  totalLengthList: number = 1;
 
   onSearchDetail(event: any) {
     this.searchDetail = event?.target?.value;
@@ -365,52 +336,97 @@ export class EntryPackingListComponent
     }
   }
 
-  onSubmit(tujuanReport: any) {
+  async onSubmit() {
+    this.printing = true;
+    const tanggalCetak = new Date().toDateString();
+    const nomorPl = this.selectedData.packingListNumber;
+    const tujuan = `${this.selectedData.data.kodeCabang} - ${this.selectedData.data.namaCabang}`;
+    const alamatTujuan = `${this.selectedData.data.alamat1}, ${this.selectedData.data.alamat2}, ${this.selectedData.data.kota} ${this.selectedData.data.kodePos}`;
+    const namaGudang = this.g.getLocalstorage('inv_currentUser')?.namaCabang;
+    const kodeGudang = this.g.getLocalstorage('inv_currentUser')?.defaultLocation.kodeLocation;
 
-    const params = this.listEntryPl.map((data: any) => {
-      return {
-        ...data,
-        nomorColli: parseInt(data.nomorColli, 10) || 0,
-        jumlahColli: parseInt(data.jumlahColli, 10) || 0,
-        tujuanReport: tujuanReport
+    let totalColli = 0;
+    let totalBerat = 0;
+    let totalVolume = 0;
+    let tglKirim = '';
+
+    const groupedData = this.listEntryPl.reduce((acc, data, index) => {
+      const key = `${data.noSuratJalan}-${data.kodeBarang}`;
+      const jumlahQty = parseInt(data.totalQtyKirim) || 0;
+      const jumlahColli = parseInt(data.jumlahColli) || 0;
+      const konversi = data.konversi || 1;
+      const beratMaster = data.berat || 0;
+      const volumeMaster = data.volume || 0;
+  
+      if (!acc[key]) {
+        acc[key] = { ...data, totalBerat: 0, totalVolume: 0 };
       }
-    })
-
-    this.dataService
-      .postData(this.config.BASE_URL + '/delivery-order/get-site-info', params)
-      .subscribe(
-        (response: any) => {
-          if (!response.success) {
-            alert(response.message);
-          } else {
-            this.toastr.success("Berhasil!");
-            setTimeout(() => {
-              this.router.navigate(["/transaction/packing-list"]);
-            }, DEFAULT_DELAY_TIME);
-          }
-        })
+  
+      // Hitung total berat & volume
+      acc[key].totalBerat += (jumlahQty / konversi) * beratMaster;
+      acc[key].totalVolume += (jumlahQty / konversi) * volumeMaster;
+  
+      // Akumulasi total colli
+      totalColli += jumlahColli;
+  
+      // Simpan tanggal kirim dari entri pertama
+        tglKirim = moment(data.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY');
+  
+      return acc;
+    }, {} as { [key: string]: any });
+  
+    const listDataPL = Object.values(groupedData).map((item: any) => {
+      const totalBeratFix = parseFloat(item.totalBerat.toFixed(2));
+      const totalVolumeFix = parseFloat(item.totalVolume.toFixed(2));
+  
+      totalBerat += totalBeratFix;
+      totalVolume += totalVolumeFix;
+  
+      return {
+        ...item,
+        berat: totalBeratFix, // Perbarui berat dengan hasil pembulatan
+        totalVolume: totalVolumeFix, // Pastikan volume juga dibulatkan
+      };
+    });
+  
+    // 3. **Bulatkan total keseluruhan ke 2 desimal**
+    totalBerat = parseFloat(totalBerat.toFixed(2));
+    totalVolume = parseFloat(totalVolume.toFixed(2));
+  
+    // 4. **Membentuk parameter untuk API**
+    const params = {
+      outletBrand: 'KFC',
+      tanggalCetak,
+      nomorPl,
+      namaGudang,
+      tujuan,
+      alamatTujuan,
+      totalColli: totalColli.toString(),
+      totalBerat: totalBerat.toString(),
+      totalVolume: totalVolume.toString(),
+      listDataPL,
+      tanggalKirim: tglKirim,
+      kodeGudang: kodeGudang
+    };
+  
+    try {
+      const base64Response = await lastValueFrom(
+        this.dataService.postData(this.config.BASE_URL + '/delivery-order/entry-packing-list-report', params, true)
+      );
+      const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      this.toastr.success('Sukses mencetak Packing List');
+      this.router.navigate(['/transaction/delivery-item/packing-list'])
+      window.open(url);
+      this.printing = false;
+    } catch (error: any) {
+      this.toastr.error(error.message ?? 'Unknown error while generating PDF');
+    }
   }
 
-  openModal(): void {
-    this.isShowModal = true;
+
+  onChooseDestinaton() {
+    this.isShowPrintModal = true;
   }
 
-  closeModal(): void {
-    this.isShowModal = false;
-    this.isShowPrintModal = false;
-  }
-
-  onCetakPdf(): void {
-    console.log('Cetak PDF');
-    // Implement your PDF printing logic here
-  }
-
-  onCetakPrinter(): void {
-    console.log('Cetak Printer');
-    // Implement your printer printing logic here
-  }
-  onPilihCabang(): void {
-    this.isShowPrintModal = false;
-    this.isShowModal = true;
-  }
 }
