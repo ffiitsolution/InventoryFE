@@ -144,7 +144,7 @@ export class MasterLocationComponent
           searchable: true,
         },
         {
-          title: 'Opsi',
+          title: 'Action',
           render: () => {
             return `
             <div class="btn-group" role="group" aria-label="Action">

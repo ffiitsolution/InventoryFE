@@ -133,7 +133,7 @@ export class MasterProductComponent
         { data: 'satuanBesar', title: 'Satuan Besar', searchable: false },
         { data: 'statusAktifLabel', title: 'Status', searchable: false },
         {
-          title: 'Opsi',
+          title: 'Action',
           render: () => {
             return `
             <div class="btn-group" role="group" aria-label="Action">

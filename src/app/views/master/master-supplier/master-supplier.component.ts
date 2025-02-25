@@ -64,22 +64,22 @@ export class MasterSupplierComponent
   }
 
   onStatusFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
   onCityFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
   onRscFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
   onGudangFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
@@ -163,9 +163,19 @@ export class MasterSupplierComponent
         },
         { data: 'kota', title: 'Kota', orderable: true, searchable: true },
         { data: 'telpon1', title: 'Telpon', orderable: true, searchable: true },
-        { data: 'statusAktifLabel', title: 'Status', orderable: true },
         {
-          title: 'Opsi',
+          data: 'statusAktif',
+          title: 'Status',
+          searchable: false,
+          render: (data) => {
+            if (data === 'A') {
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+            }
+            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:grey; width: 60px">Inactive</span> </div>`;
+          },
+        },
+        {
+          title: 'Action',
           render: () => {
             return `
             <div class="btn-group" role="group" aria-label="Action">
@@ -177,7 +187,7 @@ export class MasterSupplierComponent
         },
       ],
       searchDelay: 1500,
-      order: [[1, 'asc']],
+      order: [[7, 'asc']],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)

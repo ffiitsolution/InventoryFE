@@ -333,7 +333,7 @@ export class MasterBranchAddComponent implements OnInit {
         : type == 'email' //email
         ? /^[a-zA-Z0-9@._-]$/
         : type == 'contactPerson' //contactPerson
-        ? /^[a-zA-Z./s]$/
+        ? /^[a-zA-Z.\s]$/
         : type == 'alphabet' //tipe cabang
         ? /^[a-zA-Z]+$/
         : type == 'excludedSensitive' //keterangan & alamat 1-2
