@@ -144,7 +144,7 @@ export class EntryPackingListComponent
           },
         },
       ],
-      searchDelay: 600,
+      searchDelay: 1000,
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-select', row).on('click', () =>
           this.actionBtnClick(ACTION_SELECT, data)

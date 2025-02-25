@@ -31,6 +31,7 @@ import { AppConfig } from '../../../../config/app.config';
 import { HelperService } from '../../../../service/helper.service';
 import { AppService } from '../../../../service/app.service';
 import moment from 'moment';
+import { data } from 'jquery';
 
 @Component({
   selector: 'app-add-data-detail-delivery-order',
@@ -60,7 +61,13 @@ export class AddDataDetailSendOrderToWarehouseComponent
   selectedRow:  any = {};
   pageModal = new Page();
   dataUser: any = {};
-  
+  validationMessageList: any[] = [];
+  validationMessageQtyPesanList: any[] = [];
+
+  isShowModalDelete: boolean = false;
+  indexDataDelete : any;
+
+
   @ViewChild('formModal') formModal: any;
 
 
@@ -85,7 +92,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
 
   ngOnInit(): void {
-    console.log("newOrhdk",this.newOrhdk)
     this.g.changeTitle(
       this.translation.instant('Detail Pesanan') + ' - ' + this.g.tabTitle
     );
@@ -126,14 +132,24 @@ export class AddDataDetailSendOrderToWarehouseComponent
   // ];
   }
 
-  onInputValueItemDetail(event: any, index: number) {
-    const target = event.target;
-    const value = target.value;
+  onInputValueItemDetail(event: any, index: number, type: string, qtyType: string) {
+    // const target = event.target;
+    // const value = target.value;
+    let validationMessage = '';
 
-    if (target.type === 'number') {
-      this.listOrderData[index][target.name] = Number(value); 
-    } else {
-      this.listOrderData[index][target.name] = value;
+
+    if(this.listOrderData[index].qtyPesanKecil > this.listOrderData[index].konversi  ){
+      this.validationMessageList[index] = "QTY kecil harus < Konversi";
+    }
+    else{
+      this.validationMessageList[index] = "";
+    }
+
+    if(this.listOrderData[index].qtyPesanKecil!=0 || this.listOrderData[index].qtyPesanBesar!=0){
+      this.validationMessageQtyPesanList[index] = ""
+    }
+    else{
+      this.validationMessageQtyPesanList[index] = "Quantity Pesan tidak Boleh 0"
     }
   }
   onFilterSearch(
@@ -151,7 +167,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/transaction/delivery-item/add-data']);
+    this.router.navigate(['/order/send-order-to-warehouse/add']);
   }
 
   onPageChange(event: number) {
@@ -163,85 +179,42 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
 
   onSubmit() {
-    console.log(this.listOrderData);
+    if(!this.isDataInvalid()){
+      // param for order Header
+      const paramHeader = this.newOrhdk;
+        
+      this.service.insert('/api/send-order-to-warehouse/insert-header', paramHeader).subscribe({
+        next: (res) => {
+          if (!res.success) {
+            alert(res.message);
+          } else {
+            this.newOrhdk.nomorPesanan =  res.item?.[0]?.nomorPesanan ;
 
-    // param for order Header
-    const paramHeader = this.newOrhdk;
-    
-    console.log("paramHeader:", paramHeader);
+            this.insertDetail()
+            setTimeout(() => {
+              this.onPreviousPressed();
+            }, DEFAULT_DELAY_TIME);
+            
+          }
+          this.adding = false;
+        },
+      });
 
+    }
 
-    this.service.insert('/api/send-order-to-warehouse/insert-header', paramHeader).subscribe({
-      next: (res) => {
-        if (!res.success) {
-          alert(res.message);
-        } else {
-          console.log("res header:", res); 
-          console.log("res item:", res.item?.[0]?.nomorPesanan ?? "Not found");
-          this.newOrhdk.nomorPesanan =  res.item?.[0]?.nomorPesanan ;
-
-          this.insertDetail()
-          setTimeout(() => {
-            this.onPreviousPressed();
-          }, DEFAULT_DELAY_TIME);
-          
-        }
-        this.adding = false;
-      },
-    });
-
-    // this.service.insert('/api/users', param).subscribe({
-    //   next: (res) => {
-    //     if (!res.success) {
-    //       alert(res.message);
-    //     } else {
-    //       this.toastr.success('Berhasil!');
-    //       setTimeout(() => {
-    //         this.onPreviousPressed();
-    //       }, DEFAULT_DELAY_TIME);
-    //     }
-    //     this.adding = false;
-    //   },
-    // });
-
-
-
-  
-
-  
-    // const param = this.listOrderData.map((data: any) => ({
-    //   kodeGudang: this.newOrhdk.kodeGudang,
-    //   kodeTujuan: this.newOrhdk.codeDestination,
-    //   tipeTransaksi: '3',
-    //   nomorPesanan: this.newOrhdk.nomorPesanan,
-    //   kodeBarang: data.kodeBarang, 
-    //   qtyBPesan: data.qtyPesanBesar,   
-    //   qtyKPesan: data.qtyPesanKecil,   
-    //   hargaSatuan: 0, 
-    //   userCreate: JSON.parse(localStorage.getItem('inv_currentUser') || '{}').namaUser,
-    //   konversi: data.konversi
-    // }));
-  
-    // this.appService.saveDeliveryOrder(param).subscribe({
-    //   next: (res) => {
-    //     if (!res.success) {
-    //       alert(res.message);
-    //     } else {
-    //       this.toastr.success('Berhasil!');
-    //       setTimeout(() => {
-    //         this.onBackPressed();
-    //       }, DEFAULT_DELAY_TIME);
-    //     }
-    //     this.adding = false;
-    //   },
-    //   error: (err) => {
-    //     console.error("Error saat insert:", err);
-    //   }
-    // });
+    else{
+      this.toastr.error("Data tidak valid")
+    }
+   
   }
   
   onShowModal() {
     this.isShowModal = true;
+  }
+
+  onShowModalDelete(i: any) {
+    this.indexDataDelete = i;
+    this.isShowModalDelete = true;
   }
 
   
@@ -302,10 +275,11 @@ export class AddDataDetailSendOrderToWarehouseComponent
 
         {
           title: 'Action',
-          render: () => {
+          render: (data, type, row) => {
             return `<button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>`;
           },
-        },
+        }
+        
 
       ],
       searchDelay: 1000,
@@ -320,29 +294,40 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
   actionBtnClick(action: string, data: any = null) {
     this.selectedRow = (data);
-    console.log("this.selectedRow:", this.selectedRow);
     this.renderDataTables();
     this.isShowModal = false;
-    this.listOrderData.push({
-      totalQtyPesan: 0,
-      qtyPesanBesar: 0,
-      namaBarang:  this.selectedRow?.namaBarang,
-      satuanKecil:this.selectedRow?.satuanKecil,
-      kodeBarang:this.selectedRow?.kodeBarang,
-      satuanBesar: this.selectedRow?.satuanBesar,
-      konversi: this.selectedRow?.konversi,
-      qtyPesanKecil: 0,
-      ...this.selectedRow
-  });
 
-  
+    console.log("selectedRow",this.selectedRow);
+    console.log("listOrderData",this.listOrderData)
 
-    // this.mapOrderData(data);
-    // this.onSaveData();
+    if(!this.listOrderData.some(order => order.kodeBarang === this.selectedRow.kodeBarang)){
+      this.listOrderData.push({
+        totalQtyPesan: 0,
+        qtyPesanBesar: 0,
+        namaBarang:  this.selectedRow?.namaBarang,
+        satuanKecil:this.selectedRow?.satuanKecil,
+        kodeBarang:this.selectedRow?.kodeBarang,
+        satuanBesar: this.selectedRow?.satuanBesar,
+        konversi: this.selectedRow?.konversi,
+        qtyPesanKecil: 0,
+        ...this.selectedRow
+      });
+      this.validationMessageList.push("")
+      this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
+        // this.mapOrderData(data);
+        // this.onSaveData();
+    }
+    else{
+      this.toastr.error("Barang sudah ditambahkan");
+    }
+
+ 
+
   }
 
-  deleteBarang(index:any) {
-    this.listOrderData.splice(index, 1);
+  deleteBarang() {
+    this.listOrderData.splice(this.indexDataDelete, 1);
+    this.isShowModalDelete = false;
   }
 
   insertDetail(){
@@ -367,7 +352,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
       if (!res.success) {
         alert(res.message);
       } else {
-        console.log("res detail:", res); 
         
         this.toastr.success('Berhasil!');
         // setTimeout(() => {
@@ -380,12 +364,22 @@ export class AddDataDetailSendOrderToWarehouseComponent
   });
   
 
-  console.log("Mapped paramDetail:", paramDetail);
 
   }
 
   onPreviousPressed(): void {
     this.router.navigate(['order/send-order-to-warehouse']);
   }
+
+  isDataInvalid() {
+    let dataInvalid = false;
+    dataInvalid = 
+    this.validationMessageList.some(msg => msg.trim() !== "") || 
+    this.validationMessageQtyPesanList.some(msg => msg.trim() !== "");
+    
+    return dataInvalid
+  }
+
+ 
 
 }

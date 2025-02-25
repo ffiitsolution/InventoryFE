@@ -1,11 +1,45 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/service/app.service';
 import { GlobalService } from 'src/app/service/global.service';
 import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_SET_NUMBER } from 'src/constants';
 import { DataService } from 'src/app/service/data.service';
+
+function noSpecialCharacters(
+  control: AbstractControl
+): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { specialCharNotAllowed: true };
+  }
+  return null;
+}
+
+function noSpecialCharactersExcept(
+  control: AbstractControl
+): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9.() ,\-s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { specialCharNotAllowedExcept: true };
+  }
+  return null;
+}
+
+function jabatan(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z_-\s.]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { jabatan: true };
+  }
+  return null;
+}
 
 @Component({
   selector: 'app-add',
@@ -16,6 +50,7 @@ export class MasterUserAddComponent implements OnInit {
   myForm: FormGroup;
   adding: boolean = false;
   showPassword: boolean = false;
+  showConfirmationPassword: boolean = false;
   listLokasi: any[] = [];
   baseConfig: any = {
     displayKey: 'name', // Key to display in the dropdown
@@ -42,13 +77,13 @@ export class MasterUserAddComponent implements OnInit {
 
   ngOnInit(): void {
     this.myForm = this.form.group({
-      kodeUser: ['', Validators.required],
-      namaUser: ['', Validators.required],
+      kodeUser: ['', [Validators.required, noSpecialCharacters]],
+      namaUser: ['', [Validators.required, noSpecialCharactersExcept]],
       kodePassword: ['', Validators.required],
       konfirmasiKodePassword: ['', Validators.required],
-      statusAktif: ['A', Validators.required],
+      statusAktif: ['', Validators.required],
       defaultLocation: [null],
-      jabatan: [''],
+      jabatan: ['', jabatan],
       roleID: [''],
     });
 
@@ -85,8 +120,29 @@ export class MasterUserAddComponent implements OnInit {
 
   onSubmit(): void {
     const { controls, invalid } = this.myForm;
+
     if (invalid || this.isNotMatchPass) {
       this.g.markAllAsTouched(this.myForm);
+      if (invalid) {
+        if (
+          Object.values(controls).some((control) =>
+            control.hasError('required')
+          )
+        ) {
+          this.toastr.error('Beberapa kolom wajib diisi.');
+        } else if (
+          Object.values(controls).some((control) =>
+            control.hasError('specialCharNotAllowed')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('specialCharNotAllowedExcept')
+          )
+        ) {
+          this.toastr.error(
+            'Beberapa kolom mengandung karakter khusus yang tidak diperbolehkan.'
+          );
+        }
+      }
     } else {
       this.adding = true;
       const param = {
@@ -123,8 +179,12 @@ export class MasterUserAddComponent implements OnInit {
     return this.g.isFieldValid(this.myForm, fieldName);
   }
 
-  togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
+  togglePasswordVisibility(field: any): void {
+    if (field == 'password') {
+      this.showPassword = !this.showPassword;
+    } else {
+      this.showConfirmationPassword = !this.showConfirmationPassword;
+    }
   }
 
   onChangeSelect(data: any, field: string) {
@@ -137,6 +197,8 @@ export class MasterUserAddComponent implements OnInit {
     let temp_regex =
       type == 'alphanumeric'
         ? /[a-zA-Z0-9]/
+        : type == 'jabatan'
+        ? /[a-zA-Z-_\s.]/
         : type == 'numeric'
         ? /[0-9]/
         : /^[a-zA-Z.() ,\-]*$/;

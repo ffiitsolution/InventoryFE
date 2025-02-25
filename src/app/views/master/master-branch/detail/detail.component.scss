@@ -1,30 +1,42 @@
 .password-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-  
-  .password-container .form-control {
-    padding-right: 40px; /* Ensure enough space for the icon */
-  }
-  
-  .eye-icon {
-    position: absolute;
-    right: 15px; /* Position the eye icon at the end */
-    cursor: pointer;
-    z-index: 1;
-  }
-  
-  .eye-icon i {
-    font-size: 16px; /* Adjust icon size */
-    color: #6c757d; /* Neutral color for the icon */
-    transition: color 0.3s ease;
-  }
-  
-  .eye-icon i:hover {
-    color: #000; /* Darker color on hover */
-  }
-  
-.input-group{
-    width: 83%  !important;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-container .form-control {
+  padding-right: 40px; /* Ensure enough space for the icon */
+}
+
+.eye-icon {
+  position: absolute;
+  right: 15px; /* Position the eye icon at the end */
+  cursor: pointer;
+  z-index: 1;
+}
+
+.eye-icon i {
+  font-size: 16px; /* Adjust icon size */
+  color: #6c757d; /* Neutral color for the icon */
+  transition: color 0.3s ease;
+}
+
+.eye-icon i:hover {
+  color: #000; /* Darker color on hover */
+}
+
+.input-group {
+  width: 83% !important;
+}
+
+.form-check-input:disabled {
+  pointer-events: none;
+  filter: none;
+  opacity: 1;
+}
+
+.form-check-input[disabled] ~ .form-check-label,
+.form-check-input:disabled ~ .form-check-label {
+  cursor: inherit;
+  opacity: 1;
 }
