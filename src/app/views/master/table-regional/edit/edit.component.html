@@ -10,9 +10,10 @@
     <c-card-body>
       <form [formGroup]="myForm" (submit)="onSubmit()">
         <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Kode" | translate
-          }}</label>
+          <label class="col-sm-2 col-form-label"
+            >{{ "Kode" | translate
+            }}<span class="stamp-required show">&nbsp;*</span></label
+          >
           <div class="col-sm-10">
             <input
               type="text"
@@ -20,7 +21,7 @@
               formControlName="code"
               [readOnly]="editing"
               maxlength="10"
-              (keypress)="conditionInput($event, 'alphanumeric')"
+              (keypress)="conditionInput($event, 'code')"
             />
             <span
               *ngIf="
@@ -38,9 +39,10 @@
           </div>
         </div>
         <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Nama" | translate
-          }}</label>
+          <label class="col-sm-2 col-form-label"
+            >{{ "Nama" | translate }}
+            <span class="stamp-required show">&nbsp;*</span></label
+          >
           <div class="col-sm-10">
             <input
               type="text"
@@ -62,7 +64,7 @@
               *ngIf="myForm.controls['desc'].hasError('desc')"
               class="text-danger"
               >{{
-                "Nama Regional hanya boleh mengandung huruf, angka, spasi dan strip (-)."
+                "Nama Regional hanya boleh mengandung huruf, angka, spasi, tanda kurung () dan strip (-)."
                   | translate
               }}</span
             >

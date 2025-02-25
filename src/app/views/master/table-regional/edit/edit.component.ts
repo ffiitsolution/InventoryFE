@@ -22,7 +22,7 @@ function code(control: AbstractControl): ValidationErrors | null {
 }
 
 function desc(control: AbstractControl): ValidationErrors | null {
-  const specialCharRegex = /[^a-zA-Z0-9-\s]/;
+  const specialCharRegex = /[^a-zA-Z0-9()-\s]/;
   if (control.value && specialCharRegex.test(control.value)) {
     return { desc: true };
   }
@@ -113,7 +113,7 @@ export class TableRegionalEditComponent implements OnInit {
       type == 'code'
         ? /^[0-9]+$/
         : type == 'desc' //desc
-        ? /^[a-zA-Z0-9-\s]$/
+        ? /^[a-zA-Z0-9()-\s]$/
         : /^[a-zA-Z.() ,\-]*$/;
     if (temp_regex.test(inp)) return true;
     else {

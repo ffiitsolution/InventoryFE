@@ -10,9 +10,10 @@
     <c-card-body>
       <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
         <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Kode" | translate
-          }}</label>
+          <label class="col-sm-2 col-form-label"
+            >{{ "Kode" | translate
+            }}<span class="stamp-required show">&nbsp;*</span></label
+          >
           <div class="col-sm-10">
             <input
               type="text"
@@ -34,14 +35,17 @@
             <span
               *ngIf="myForm.controls['code'].hasError('code')"
               class="text-danger"
-              >{{ "Kode Kota hanya boleh mengandung huruf kapital." | translate }}
+              >{{
+                "Kode Kota hanya boleh mengandung huruf kapital." | translate
+              }}
             </span>
           </div>
         </div>
         <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Nama" | translate
-          }}</label>
+          <label class="col-sm-2 col-form-label"
+            >{{ "Nama" | translate
+            }}<span class="stamp-required show">&nbsp;*</span></label
+          >
           <div class="col-sm-10">
             <input
               type="text"
