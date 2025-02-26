@@ -1,10 +1,80 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/service/app.service';
 import { GlobalService } from 'src/app/service/global.service';
 import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_SUPPLIER } from 'src/constants';
+
+function kodeSupplier(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^0-9\$]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { kodeSupplier: true };
+  }
+  return null;
+}
+
+function kodeSingkat(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9&-\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { kodeSingkat: true };
+  }
+  return null;
+}
+
+function namaSupplier(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9&'/\-+().,\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { namaSupplier: true };
+  }
+  return null;
+}
+
+function excludedSensitive(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9&\s.,#\-()\/]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { excludedSensitive: true };
+  }
+  return null;
+}
+
+function numeric(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /^[0-9]+$/;
+  if (control.value && !specialCharRegex.test(control.value)) {
+    return { numeric: true };
+  }
+  return null;
+}
+
+function phone(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^0-9()-\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { phone: true };
+  }
+  return null;
+}
+
+function contactPerson(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z.\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { contactPerson: true };
+  }
+  return null;
+}
+
+function alphabet(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { alphabet: true };
+  }
+  return null;
+}
 
 @Component({
   selector: 'app-add',
@@ -33,26 +103,26 @@ export class MasterSupplierAddComponent implements OnInit {
     private g: GlobalService
   ) {
     this.myForm = this.form.group({
-      code: ['', Validators.required],
-      name: ['', Validators.required],
-      address1: ['', Validators.required],
+      code: ['', [Validators.required, kodeSupplier]],
+      name: ['', [Validators.required, namaSupplier]],
+      address1: ['', [Validators.required, excludedSensitive]],
       warehouse: [''],
       warehouseDesc: [''],
-      address2: [''],
+      address2: ['', [excludedSensitive]],
       city: [''],
       cityDesc: [''],
-      pos: [''],
-      telephone1: [''],
-      telephone2: [''],
-      contactPerson: [''],
-      phone: [''],
-      fax1: [''],
-      fax2: [''],
+      pos: ['', numeric],
+      telephone1: ['', [phone]],
+      telephone2: ['', [phone]],
+      contactPerson: ['', [contactPerson]],
+      phone: ['', [phone]],
+      fax1: ['', [phone]],
+      fax2: ['', [phone]],
       email: [''],
       rsc: [''],
       rscDesc: [''],
-      status: ['A'],
-      desc: [''],
+      status: ['', [Validators.required]],
+      desc: ['', [excludedSensitive]],
       // cad1: [''],
       // cad2: [''],
     });
@@ -173,20 +243,23 @@ export class MasterSupplierAddComponent implements OnInit {
   conditionInput(event: any, type: string): boolean {
     var inp = String.fromCharCode(event.keyCode);
     let temp_regex =
-      type == 'alphanumeric'
-        ? /^[a-zA-Z0-9]$/
-        : type == 'numeric'
+      type == 'kodeSupplier' //kode supplier
+        ? /^[0-9\$]$/
+        : type == 'namaSupplier' //nama cabang
+        ? /^[a-zA-Z0-9-+().,&/ '\-]*$/
+        : type == 'kodeSingkat' //kode singkat
+        ? /^[A-Z0-9&-]$/
+        : type == 'numeric' //kode pos
         ? /^[0-9]$/
-        : type == 'phone'
-        ? /^[0-9-]$/
-        : type == 'email'
+        : type == 'phone' //phone 1 & 2, Fax 1 & 2
+        ? /^[0-9-()\s]$/
+        : type == 'email' //email
         ? /^[a-zA-Z0-9@._-]$/
-        : type == 'excludedSensitive'
-        ? /^[a-zA-Z0-9 .,_@-]*$/
-        : type == 'kodeSingkat'
-        ? /^[a-zA-Z]+$/
-        : /^[a-zA-Z.() ,\-]*$/;
-
+        : type == 'contactPerson' //contactPerson
+        ? /^[a-zA-Z.\s]$/
+        : type == 'excludedSensitive' //keterangan & alamat 1-2
+        ? /^[a-zA-Z0-9&\s.,#\-()\/]+$/
+        : /^[a-zA-Z.() ,\-]*$/; //alphabet
     if (temp_regex.test(inp)) return true;
     else {
       event.preventDefault();
@@ -196,17 +269,17 @@ export class MasterSupplierAddComponent implements OnInit {
 
   onChangeEmail(event: any) {
     const email = this.myForm.get('email')?.value;
-  
+
     // Email validation regex
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  
+
     if (!emailPattern.test(email)) {
-      this.isEmailValid = false
+      this.isEmailValid = false;
     } else {
-      this.isEmailValid = true
+      this.isEmailValid = true;
     }
-    if(email ==''){
-      this.isEmailValid = true
+    if (email == '') {
+      this.isEmailValid = true;
     }
   }
 
@@ -230,6 +303,38 @@ export class MasterSupplierAddComponent implements OnInit {
     const { controls, invalid } = this.myForm;
     if (invalid || !this.isEmailValid) {
       this.g.markAllAsTouched(this.myForm);
+      if (invalid) {
+        if (
+          Object.values(controls).some((control) =>
+            control.hasError('required')
+          )
+        ) {
+          this.toastr.error('Beberapa kolom wajib diisi.');
+        } else if (
+          Object.values(controls).some((control) =>
+            control.hasError('phone')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('kodeCabang')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('namaCabang')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('numeric')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('kodeSingkat')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('excludedSensitive')
+          )
+        ) {
+          this.toastr.error(
+            'Beberapa kolom mengandung karakter khusus yang tidak diperbolehkan.'
+          );
+        }
+      }
     } else {
       this.isSubmitting = true;
       const payload = {
@@ -239,7 +344,9 @@ export class MasterSupplierAddComponent implements OnInit {
         alamat2: controls?.['address2']?.value,
         kota: Array.isArray(controls?.['city']?.value)
           ? ''
-          : controls?.['city']?.value?.KODE_KOTA ? controls?.['city']?.value?.KODE_KOTA : '',
+          : controls?.['city']?.value?.KODE_KOTA
+          ? controls?.['city']?.value?.KODE_KOTA
+          : '',
         kodePos: controls?.['pos']?.value,
         telpon1: controls?.['telephone1']?.value,
         telpon2: controls?.['telephone2']?.value,

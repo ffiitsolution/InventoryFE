@@ -90,10 +90,10 @@ export class TableAreaComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       columns: [
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
-        { data: 'kodeArea', title: 'Kode', orderable: true, searchable: true },
+        { data: 'kodeArea', title: 'Kode Area', orderable: true, searchable: true },
         {
           data: 'keteranganArea',
-          title: 'Nama',
+          title: 'Nama Area',
           orderable: true,
           searchable: true,
         },
@@ -102,7 +102,7 @@ export class TableAreaComponent implements OnInit, OnDestroy, AfterViewInit {
         { data: 'userUpdate', title: 'Diperbarui Oleh', searchable: false },
         { data: 'dateUpdate', title: 'Tanggal Diperbarui', searchable: false },
         {
-          title: 'Opsi',
+          title: 'Action',
           render: () => {
             return `
             <div class="btn-group" role="group" aria-label="Action">

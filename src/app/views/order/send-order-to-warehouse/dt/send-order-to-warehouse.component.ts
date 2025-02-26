@@ -64,6 +64,9 @@ export class SendOrderToWarehouseComponent
   isShowModalKirim: boolean = false;
   selectedRowKirim: any;
 
+  selectedRowCetak: any = false;
+  isShowModalCetak: boolean;
+
   protected config = AppConfig.settings.apiServer;
 
   constructor(
@@ -265,12 +268,14 @@ export class SendOrderToWarehouseComponent
         $('.action-send', row).on('click', () =>{
           // this.updateStatus(data)
           this.selectedRowKirim = data;
-          console.log("selectedRowKirim", this.selectedRowKirim)
           this.isShowModalKirim=true;
         }
         );
-        $('.action-print', row).on('click', () =>
-          this.onClickPrint(data)
+        $('.action-print', row).on('click', () =>{
+          // this.onClickPrint(data)
+          this.selectedRowCetak = data;
+          this.isShowModalCetak=true;
+        }
         );
         return row;
       },
@@ -358,10 +363,10 @@ export class SendOrderToWarehouseComponent
     this.router.navigate(['/order/send-order-to-warehouse/add']);
   }
 
-    async onClickPrint(data: any) {
+    async onClickPrint() {
       try {
         const param = {
-          nomorPesanan : data.nomorPesanan
+          nomorPesanan : this.selectedRowCetak.nomorPesanan
         }
 
         const base64Response = await lastValueFrom(

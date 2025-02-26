@@ -1,23 +1,12 @@
-import {
-  Component,
-  AfterViewInit,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { DataService } from '../../../../service/data.service';
-import { GlobalService } from '../../../../service/global.service';
-import { TranslationService } from '../../../../service/translation.service';
-import { Subject } from 'rxjs';
-import { DataTableDirective } from 'angular-datatables';
+import { ToastrService } from 'ngx-toastr';
+import { AppService } from 'src/app/service/app.service';
+import { GlobalService } from 'src/app/service/global.service';
+import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_SET_NUMBER } from 'src/constants';
+import { DataService } from 'src/app/service/data.service';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { Page } from '../../../../model/page';
-import { AppService } from '../../../../service/app.service';
-import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
 import moment from 'moment';
 
 @Component({
@@ -26,227 +15,230 @@ import moment from 'moment';
   styleUrls: ['./add-data.component.scss'],
 
 })
-export class AddDataSendOrderToSupplierComponent implements OnInit, AfterViewInit, OnDestroy {
-  nomorPesanan: any;
-  public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
-  @ViewChild(DataTableDirective, { static: false })
-  dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings = {};
-  isShowModal: boolean = false;
-  dtTrigger: Subject<any> = new Subject();
-  bsConfig: Partial<BsDatepickerConfig>;
-  page = new Page();
-  selectedRo: any = {};
-  minDate: Date;
-  maxDate: Date;
-
-  @ViewChild('formModal') formModal: any;
-  // Form data object
-  formData = {
-    nomorPesanan: '',
-    deliveryStatus: '',
-    namaCabang: '',
-    alamat1: '',
-    tglPesan: '',
-    tglBrgDikirim: '',
-    tglKadaluarsa: '',
-    validatedDeliveryDate: '',
-    notes: '',
-    codeDestination: '',
-    kodeGudang: ''
+export class AddDataSendOrderToSupplierComponent implements OnInit {
+  myForm: FormGroup;
+  adding: boolean = false;
+  showPassword: boolean = false;
+  listLokasi: any[] = [];
+  baseConfig: any = {
+    displayKey: 'name', // Key to display in the dropdown
+    search: true, // Enable search functionality
+    height: '200px', // Dropdown height
+    customComparator: () => {}, // Custom sorting comparator
+    moreText: 'lebih banyak', // Text for "more" options
+    noResultsFound: 'Tidak ada hasil', // Text when no results are found
+    searchOnKey: 'name' // Key to search
   };
+  configSelectDefaultLokasi: any ;
+  configSelectRole: any ;
+  listRole: any[] = [];
+  
+  public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+  public dpConfigTglKirimBarang: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+  public dpConfigTglBatalPesanan: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+
+  bsConfig: Partial<BsDatepickerConfig>;
+  listGudang: any[] = [];
+  configSelectGudang: any ;
+  gudangDetail: any[] = [];
+  currentUser : any;
+
 
   constructor(
+    private toastr: ToastrService,
+    private form: FormBuilder,
     private router: Router,
+    private g: GlobalService,
+    private service: AppService,
     private dataService: DataService,
-    private globalService: GlobalService,
-    private translationService: TranslationService,
-    private deliveryDataService: DeliveryDataService,
-    private appService: AppService
-  ) {
-    this.dpConfig.containerClass = 'theme-dark-blue';
-    this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
-    this.dpConfig.adaptivePosition = true;
-  }
-
+  ) {}
 
   ngOnInit(): void {
-    this.bsConfig = Object.assign(
-      {},
-      {
-        containerClass: 'theme-default',
-        rangeInputFormat: 'dd/MMm/yyyy',
-      }
-    );
+    this.currentUser = this.g.getLocalstorage('inv_currentUser');
+    this.myForm = this.form.group({
 
-    this.renderDataTables();
-    const today = new Date().toISOString().split('T')[0];
-    this.minDate = new Date(today);
-  }
+      statusAktif:  ['A', Validators.required],
+      tanggalPesanan: [{ value: new Date(new Date().setDate(new Date().getDate())), disabled: true }, Validators.required],
+      tanggalKirimBarang: [ new Date(new Date().setDate(new Date().getDate()  + 3)), Validators.required], // Default: Today
+      tanggalBatalPesanan: [{ value: new Date(new Date().setDate(new Date().getDate()  + 7)), disabled: false }, Validators.required],
+      gudangTujuan: ['', Validators.required],
+      namaGudang:  [{value: '', disabled: true}],
+      alamatGudang:  [{value: '', disabled: true}],
+      statusGudang:  [{value: '', disabled: true}],
+      kodeSingkat:  [{value: '', disabled: true}],
+      catatan1: [''],
+      catatan2: [''],
+    });
 
-  actionBtnClick(action: string, data: any = null) {
-    this.selectedRo = JSON.stringify(data);
-    this.renderDataTables();
-    this.isShowModal = false;
-    this.mapOrderData(data);
-    this.onSaveData();
-  }
-
-  onAddDetail() {
-    this.router.navigate(['/transaction/delivery-item/add-data-detail']);
-    this.globalService.saveLocalstorage(
-      LS_INV_SELECTED_DELIVERY_ORDER,
-      JSON.stringify(this.formData)
-    );
-  }
-
-  ngAfterViewInit(): void {
-    this.dtTrigger.next(null);
-  }
-
-  ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
-  }
-
-
-  onPreviousPressed(): void {
-    this.router.navigate(['/transaction/delivery-item']);
-  }
-
-  onSaveData(): void {
-    const today = new Date().getDate();
-    this.minDate = new Date(today);
-  }
-  onShowModal() {
-    this.isShowModal = true;
-  }
-
-  prosesDobalik() {
-    const route = this.router.createUrlTree(['/transaction/delivery-item/dobalik']);
-    this.router.navigateByUrl(route);
-  }
-
-  renderDataTables(): void {
-    this.dtOptions = {
-      language:
-        this.translationService.getCurrentLanguage() == 'id' ? this.translationService.idDatatable : {},
-      processing: true,
-      serverSide: true,
-      autoWidth: true,
-      info: true,
-      drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
-        this.page.start = dataTablesParameters.start;
-        this.page.length = dataTablesParameters.length;
-        const params = {
-          ...dataTablesParameters,
-          kodeGudang: this.globalService.getUserLocationCode(),
-          // startDate: this.g.transformDate(this.dateRangeFilter[0]),
-          // endDate: this.g.transformDate(this.dateRangeFilter[1]),
-        };
-        this.appService.getNewReceivingOrder(params)
-          .subscribe((resp: any) => {
-            const mappedData = resp.data.map((item: any, index: number) => {
-              // hapus rn dari data
-              const { rn, ...rest } = item;
-              const finalData = {
-                ...rest,
-                dtIndex: this.page.start + index + 1,
-                // kodePemesan: `(${rest.kodeGudang}) ${rest.namaGudang}`,
-                // tglPesan: this.g.transformDate(rest.tglPesan),
-                // tglKirim: this.g.transformDate(rest.tglKirim),
-                // tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
-              };
-              return finalData;
-            });
-            this.page.recordsTotal = resp.recordsTotal;
-            this.page.recordsFiltered = resp.recordsFiltered;
-            // this.showFilterSection = false;
-            callback({
-              recordsTotal: resp.recordsTotal,
-              recordsFiltered: resp.recordsFiltered,
-              data: mappedData,
-            });
-          });
-      },
-      columns: [
-        // { data: 'dtIndex', title: '#' },
-        { data: 'kodeGudang', title: 'Kode Gudang' },
-        { data: 'kodePemesan', title: 'Kode Pemesan' },
-        { data: 'nomorPesanan', title: 'Nomor Pesanan' },
-        { data: 'tglPesan', title: 'Tanggal Pesan' },
-        { data: 'tglBrgDikirim', title: 'Tanggal Dikirim', },
-        { data: 'keterangan1', title: 'Keterangan', },
-        {
-          data: 'statusRecieve',
-          title: 'Status Penerimaan',
-          render: (data) => {
-            const isCancel = data == CANCEL_STATUS;
-            const label = this.globalService.getsatusDeliveryOrderLabel(data);
-            if (isCancel) {
-              return `<span class="text-center text-danger">${label}</span>`;
-            }
-            return label;
-          },
-        },
-        {
-          data: 'statusCetak',
-          title: 'Status Cetak',
-          render: (data) => this.globalService.getsatusDeliveryOrderLabel(data, true),
-        },
-        {
-          title: 'Action',
-          render: () => {
-            return `<button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>`;
-          },
-        },
-
-      ],
-      searchDelay: 1000,
-      // delivery: [],
-      rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        $('.action-select', row).on('click', () =>
-          this.actionBtnClick(ACTION_SELECT, data)
-        );
-        return row;
-      },
+    this.configSelectDefaultLokasi = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Default Lokasi',
+      searchPlaceholder: 'Cari Default Lokasi',
+      limitTo: this.listLokasi.length
     };
+    this.configSelectRole = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Role',
+      searchPlaceholder: 'Cari Role',
+      limitTo: this.listRole.length
+    };
+    this.configSelectGudang = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Gudang',
+      searchPlaceholder: 'Cari Gudang',
+      limitTo: this.listGudang.length,
+      width: '10px',  // Force width
+    };
+
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/branch/dropdown-gudang',{})
+    .subscribe((resp: any) => {
+      this.listGudang = resp.map((item: any) => ({
+        id: item.KODE_CABANG,
+        name: item.KODE_CABANG+' - '+item.NAMA_CABANG,
+      }));     
+    });
+
+
+    this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
+    this.dpConfig.adaptivePosition = true;
+
+    this.dpConfigTglKirimBarang.dateInputFormat = 'DD/MM/YYYY';
+    this.dpConfigTglKirimBarang.adaptivePosition = true;
+    this.dpConfigTglKirimBarang.minDate = new Date(new Date().setHours(0, 0, 0, 0));
+
+    this.dpConfigTglBatalPesanan.dateInputFormat = 'DD/MM/YYYY';
+    this.dpConfigTglBatalPesanan.adaptivePosition = true;
+    this.dpConfigTglBatalPesanan.minDate = new Date(new Date().setHours(0, 0, 0, 0));
+    
+    this.g.removeLocalstorage('TEMP_ORDHDK');
   }
 
-  private mapOrderData(orderData: any): void {
-    this.formData.deliveryStatus = 'Aktif';
-    this.formData.codeDestination = orderData.kodePemesan
-    this.formData.namaCabang = orderData.namaCabang || '';
-    this.formData.alamat1 = orderData.alamat1 || '';
-    this.formData.tglPesan = moment(orderData.tglPesan, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.tglBrgDikirim = moment(orderData.tglBrgDikirim, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.tglKadaluarsa = moment(orderData.tglKadaluarsa, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.notes = orderData.keterangan1 || '';
-    this.formData.nomorPesanan = orderData.nomorPesanan || '';
-    this.formData.validatedDeliveryDate = this.formData.tglBrgDikirim || '';
-    this.formData.kodeGudang = orderData.kodeGudang || '';
-    this.maxDate = new Date(this.formData.tglKadaluarsa);
-    this.minDate = new Date(this.formData.tglBrgDikirim);
+  
+
+  onSubmit(): void {
+    const currentUser = this.g.getLocalstorage('inv_currentUser');
+    
+    const { controls, invalid } = this.myForm;
+
+
+     if (invalid || (this.compareDates(this.myForm.value.tanggalKirimBarang, this.myForm.value.tanggalBatalPesanan)) || (currentUser?.defaultLocation?.kodeLocation === this.myForm.value?.gudangTujuan?.id) ) {
+      this.g.markAllAsTouched(this.myForm);
+    } else {
+      this.adding = true;
+      const param = {
+        kodeGudang:   currentUser?.defaultLocation?.kodeLocation,
+        kodeSingkat:   controls?.['kodeSingkat']?.value,
+        supplier:  controls?.['gudangTujuan']?.value?.id,
+        namaSupplier:  controls?.['gudangTujuan']?.value?.name,
+        tanggalPesanan:  moment(  controls?.['tanggalPesanan']?.value).format("DD-MM-YYYY"),
+        tanggalKirimBarang:  moment(  controls?.['tanggalKirimBarang']?.value).format("DD-MM-YYYY"),
+        tanggalBatalEXP: moment(  controls?.['tanggalPesanan']?.value).format("DD-MM-YYYY"),
+        keteranganSatu: controls?.['catatan1']?.value,
+        keteranganDua: controls?.['catatan2']?.value,
+
+      };
+
+      this.g.saveLocalstorage('TEMP_ORDHDK', param);
+
+      setTimeout(() => {
+          this.onNextPressed();
+        }, DEFAULT_DELAY_TIME);
+      }
+      this.adding = false;
+
+    }
+   
+  onNextPressed() {
+    this.router.navigate(['/order/send-order-to-warehouse/add-data-detail']);
   }
+
+  onPreviousPressed() {
+    localStorage.removeItem(LS_INV_SELECTED_SET_NUMBER);
+    this.router.navigate(['/order/send-order-to-warehouse/']);
+  }
+
+
+  isFieldValid(fieldName: String) {
+    return this.g.isFieldValid(this.myForm, fieldName);
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  onChangeSelect(data: any, field: string) {
+    const dataStatus = data?.target?.value;
+    this.myForm.get('statusAktif')?.setValue(dataStatus);
+  }
+
+  conditionInput(event: any, type: string): boolean {
+    var inp = String.fromCharCode(event.keyCode);
+    let temp_regex =
+         type == 'alphanumeric'
+        ? /^[a-zA-Z0-9]$/
+        : type == 'numeric'
+        ? /^[0-9]$/
+        : type == 'phone'
+        ? /^[0-9-]$/
+        : type =='email'
+        ? /^[a-zA-Z0-9@._-]$/
+        : type == 'excludedSensitive'
+        ?/^[a-zA-Z0-9 .,_@-]*$/
+        : type =='kodeSingkat'
+        ? /^[a-zA-Z]+$/
+        :/^[a-zA-Z.() ,\-]*$/;
+        
+    if (temp_regex.test(inp)) return true;
+    else {
+      event.preventDefault();
+      return false;
+    }
+  }
+
+
+
+  onGudangTujuanChange(selectedValue: any) {
+    console.log("this gudangtujuan",this.myForm.value.gudangTujuan)
+    this.getGudangDetail(selectedValue?.value?.id);
+  }
+
+  getGudangDetail(kodeGudang: any) {
+  if (!kodeGudang || kodeGudang.trim() === '') {
+    return; // Stop execution if kodeGudang is empty or invalid
+  }
+
+  this.dataService
+    .postData(this.g.urlServer + '/api/branch/branch-detail', { "kodeCabang": kodeGudang })
+    .subscribe((resp: any) => {
+      this.gudangDetail = resp;
+
+      this.myForm.get('namaGudang')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].NAMA_CABANG : null);
+      this.myForm.get('alamatGudang')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].ALAMAT1 : null);
+      this.myForm.get('statusGudang')?.setValue(
+        this.gudangDetail?.length
+          ? (this.gudangDetail[0].STATUS_AKTIF === "A" ? "Aktif" : "Tidak Aktif")
+          : null
+      );    
+      this.myForm.get('kodeSingkat')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].KODE_SINGKAT : null);  
+    }); 
+}
+
+onDateChangeTglKirimBarang(event: Date): void {
+  this.dpConfigTglBatalPesanan.minDate = event; //update the batal pesanan mindate to tanggal kirim barang
+  console.log('Selected Date:', event);
+}
+
+compareDates(date1: any, date2: any): boolean {
+  if (!date1 || !date2) return false; // Ensure both dates exist
+
+  const d1 = new Date(date1).setHours(0, 0, 0, 0); // Remove time
+  const d2 = new Date(date2).setHours(0, 0, 0, 0); // Remove time
+
+  return d1 > d2; // Compare only the date part
+}
+
+
 
 }
-@Injectable({
-  providedIn: 'root',
-})
-export class DeliveryDataService {
-  constructor(private http: HttpClient) { }
-
-  saveDeliveryData(data: any): Observable<any> {
-    const apiUrl = 'http://localhost:8093/inventory/api/delivery-order/status-descriptions';
-    return this.http.post<any>(apiUrl, data);
-  }
-}
-
-
-
-
-
-
-
-
-

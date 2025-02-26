@@ -1,50 +1,80 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <h5>{{ "Edit" | translate }} {{ "Supplier" | translate }}</h5>
+      <h5>{{ "Ubah" | translate }} {{ "Supplier" | translate }}</h5>
     </c-card-body>
   </c-card>
 </div>
 <div class="fade-in">
-  <c-card class="mb-4">
+  <c-card class="mb-4 p-2">
     <c-card-body>
       <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
         <div class="row justify-content-start">
           <div class="col-6 mb-3">
             <div class="row">
-              <label class="col-sm-4 col-form-label">{{
-                "Kode" | translate
-              }}</label>
+              <label class="col-sm-4 col-form-label"
+                >{{ "Kode" | translate }}
+                <span class="stamp-required show">&nbsp;*</span></label
+              >
               <div class="col-sm-8">
                 <input
                   type="text"
                   class="form-control"
                   formControlName="code"
                   maxlength="15"
+                  (keypress)="conditionInput($event, 'kodeSupplier')"
                 />
               </div>
-              <span *ngIf="isInvalid('code')" class="col-sm-10 text-danger"
-                >{{ "Wajib diisi" | translate }}
+              <div class="col-sm-4"></div>
+              <span
+                *ngIf="
+                  myForm.controls['code']?.hasError('required') &&
+                  myForm.controls['code']?.touched
+                "
+                class="col-sm-8 text-danger"
+                >{{ "Wajib diisi (max.15 karakter)" | translate }}
               </span>
+              <span
+                *ngIf="myForm.controls['code']?.hasError('kodeSupplier')"
+                class="col-sm-8 text-danger"
+                >{{
+                  "Kode Cabang hanya boleh mengandung angka dan tanda dollar sign ($)."
+                    | translate
+                }}</span
+              >
             </div>
           </div>
           <div class="col-6 mb-3">
             <div class="row">
-              <label class="col-sm-4 col-form-label">{{
-                "Nama Supplier" | translate
-              }}</label>
+              <label class="col-sm-4 col-form-label"
+                >{{ "Nama Supplier" | translate }}
+                <span class="stamp-required show">&nbsp;*</span></label
+              >
               <div class="col-sm-8">
                 <input
                   type="text"
                   class="form-control"
                   formControlName="name"
                   (input)="convertToUppercase('name')"
+                  (keypress)="conditionInput($event, 'namaSupplier')"
                   maxlength="50"
-                />
+                /><span
+                  *ngIf="
+                    myForm.controls['name']?.hasError('required') &&
+                    myForm.controls['name']?.touched
+                  "
+                  class="col-sm-8 text-danger"
+                  >{{ "Wajib diisi (max.50 karakter)" | translate }}
+                </span>
+                <span
+                  *ngIf="myForm.controls['name']?.hasError('namaSupplier')"
+                  class="col-sm-8 text-danger"
+                  >{{
+                    "Nama Supplier hanya boleh mengandung huruf, angka, spasi, ampersand (&), strip (-), tanda kurung (), dan titik (.)."
+                      | translate
+                  }}</span
+                >
               </div>
-              <span *ngIf="isInvalid('name')" class="col-sm-10 text-danger"
-                >{{ "Wajib diisi" | translate }}
-              </span>
             </div>
           </div>
           <div class="col-6">
@@ -92,16 +122,35 @@
         </div>
         <div class="divider"></div>
         <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Alamat 1" | translate
-          }}</label>
+          <label class="col-sm-2 col-form-label"
+            >{{ "Alamat 1" | translate }}
+            <span class="stamp-required show">&nbsp;*</span></label
+          >
           <div class="col-sm-4">
             <input
               type="text"
               class="form-control"
               formControlName="address1"
               maxlength="40"
+              (keypress)="conditionInput($event, 'excludedSensitive')"
+              (input)="convertToUppercase('address1')"
             />
+            <span
+              *ngIf="
+                myForm.controls['address1']?.hasError('required') &&
+                myForm.controls['address1']?.touched
+              "
+              class="col-sm-4 text-danger"
+              >{{ "Wajib diisi (max.40 karakter)" | translate }}
+            </span>
+            <span
+              *ngIf="myForm.controls['address1']?.hasError('excludedSensitive')"
+              class="col-sm-4 text-danger"
+              >{{
+                "Alamat 1 hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), dan tanda kurung ()."
+                  | translate
+              }}
+            </span>
           </div>
           <label class="col-sm-2 col-form-label">{{
             "Kota" | translate
@@ -117,11 +166,6 @@
             >
             </ngx-select-dropdown>
           </div>
-
-          <div class="col-sm-2"></div>
-          <span *ngIf="isInvalid('address1')" class="col-sm-10 text-danger"
-            >{{ "Wajib diisi" | translate }}
-          </span>
         </div>
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
@@ -133,7 +177,17 @@
               class="form-control"
               formControlName="address2"
               maxlength="40"
+              (keypress)="conditionInput($event, 'excludedSensitive')"
+              (input)="convertToUppercase('address2')"
             />
+            <span
+              *ngIf="myForm.controls['address2']?.hasError('excludedSensitive')"
+              class="col-sm-4 text-danger"
+              >{{
+                "Alamat 2 hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), tanda ampersand (&),  dan tanda kurung ()."
+                  | translate
+              }}
+            </span>
           </div>
           <label class="col-sm-2 col-form-label">{{
             "Kode POS" | translate
@@ -144,7 +198,13 @@
               class="form-control"
               formControlName="pos"
               maxlength="10"
+              (keypress)="conditionInput($event, 'numeric')"
             />
+            <span
+              *ngIf="myForm.controls['pos']?.hasError('numeric')"
+              class="col-sm-4 text-danger"
+              >{{ "Kode Pos hanya boleh mengandung angka" | translate }}
+            </span>
           </div>
         </div>
 
@@ -160,7 +220,16 @@
               class="form-control"
               formControlName="telephone1"
               maxlength="40"
+              (keypress)="conditionInput($event, 'phone')"
             />
+            <span
+              *ngIf="myForm.controls['telephone1']?.hasError('phone')"
+              class="text-danger"
+              >{{
+                "Telepon 1 hanya boleh mengandung angka, spasi, strip (-), dan tanda kurung ()."
+                  | translate
+              }}
+            </span>
           </div>
           <label class="col-sm-2 col-form-label">{{
             "Kontak Pribadi" | translate
@@ -171,7 +240,19 @@
               class="form-control"
               formControlName="contactPerson"
               maxlength="30"
+              (keypress)="conditionInput($event, 'contactPerson')"
+              (input)="convertToUppercase('contactPerson')"
             />
+            <span
+              *ngIf="
+                myForm.controls['contactPerson']?.hasError('contactPerson')
+              "
+              class="text-danger"
+              >{{
+                "Contact Person hanya boleh mengandung huruf, spasi, dan titik (.)."
+                  | translate
+              }}
+            </span>
           </div>
         </div>
         <div class="mb-3 row">
@@ -184,7 +265,16 @@
               class="form-control"
               formControlName="telephone2"
               maxlength="40"
+              (keypress)="conditionInput($event, 'phone')"
             />
+            <span
+              *ngIf="myForm.controls['telephone2']?.hasError('phone')"
+              class="text-danger"
+              >{{
+                "Telepon 2 hanya boleh mengandung angka, spasi, strip (-), dan tanda kurung ()."
+                  | translate
+              }}
+            </span>
           </div>
           <label class="col-sm-2 col-form-label">{{
             "Telepon Kontak" | translate
@@ -195,7 +285,16 @@
               class="form-control"
               formControlName="phone"
               maxlength="30"
+              (keypress)="conditionInput($event, 'phone')"
             />
+            <span
+              *ngIf="myForm.controls['phone']?.hasError('phone')"
+              class="text-danger"
+              >{{
+                "Telepon Kontak Telp hanya boleh mengandung angka, spasi, strip (-), dan tanda kurung ()."
+                  | translate
+              }}
+            </span>
           </div>
         </div>
         <div class="mb-3 row">
@@ -208,7 +307,16 @@
               class="form-control"
               formControlName="fax1"
               maxlength="30"
+              (keypress)="conditionInput($event, 'phone')"
             />
+            <span
+              *ngIf="myForm.controls['fax1']?.hasError('phone')"
+              class="text-danger"
+              >{{
+                "Fax 1 hanya boleh mengandung angka, spasi, strip (-), dan tanda kurung ()."
+                  | translate
+              }}
+            </span>
           </div>
           <label class="col-sm-2 col-form-label">{{
             "Email" | translate
@@ -222,11 +330,10 @@
               (keyup)="onChangeEmail($event)"
               maxlength="50"
             />
+            <span *ngIf="!isEmailValid" class="col-sm-6 text-danger">{{
+              "Alamat email tidak valid" | translate
+            }}</span>
           </div>
-          <div class="col-sm-6"></div>
-          <span *ngIf="!isEmailValid" class="col-sm-6 text-danger">{{
-            "Alamat email tidak valid" | translate
-          }}</span>
         </div>
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
@@ -238,7 +345,16 @@
               class="form-control"
               formControlName="fax2"
               maxlength="30"
+              (keypress)="conditionInput($event, 'phone')"
             />
+            <span
+              *ngIf="myForm.controls['fax2']?.hasError('phone')"
+              class="text-danger"
+              >{{
+                "Fax 2 hanya boleh mengandung angka, spasi, strip (-), dan tanda kurung ()."
+                  | translate
+              }}
+            </span>
           </div>
         </div>
         <div class="divider"></div>
@@ -246,28 +362,27 @@
           <label class="col-sm-2 col-form-label">{{
             "Keterangan" | translate
           }}</label>
-          <div class="col-sm-10">
+          <div class="col-sm-4">
             <input
               type="text"
               class="form-control"
               formControlName="desc"
               maxlength="50"
+              (keypress)="conditionInput($event, 'excludedSensitive')"
             />
+            <span
+              *ngIf="myForm.controls['desc']?.hasError('excludedSensitive')"
+              class="text-danger"
+              >{{
+                "Keterangan hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), dan tanda kurung ()."
+                  | translate
+              }}
+            </span>
           </div>
-        </div>
-        <!-- <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{ "CAD" | translate }}</label>
-          <div class="col-sm-5">
-            <input type="text" class="form-control" formControlName="cad1" />
-          </div>
-          <div class="col-sm-5">
-            <input type="text" class="form-control" formControlName="cad2" />
-          </div>
-        </div> -->
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Status Aktif" | translate
-          }}</label>
+          <label class="col-sm-2 col-form-label"
+            >{{ "Status Aktif" | translate }}
+            <span class="stamp-required show">&nbsp;*</span></label
+          >
           <c-col xs="4">
             <c-row class="mt-2">
               <c-col xs="6">
@@ -300,67 +415,15 @@
                 </c-form-check>
               </c-col>
             </c-row>
+            <span
+              *ngIf="
+                myForm.controls['status']?.hasError('required') &&
+                myForm.controls['status']?.touched
+              "
+              class="col-sm-8 text-danger"
+              >{{ "Wajib diisi" | translate }}
+            </span>
           </c-col>
-          <div class="col-sm-6"></div>
-        </div>
-        <div class="divider"></div>
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6">
-              <!-- left column -->
-              <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Dibuat Oleh" | translate
-                }}</label>
-                <div class="col-sm-8">
-                  <input
-                    type="text"
-                    class="form-control"
-                    formControlName="userCreate"
-                  />
-                </div>
-              </div>
-              <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Tanggal Dibuat" | translate
-                }}</label>
-                <div class="col-sm-8">
-                  <input
-                    type="text"
-                    class="form-control"
-                    formControlName="dateCreate"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <!-- right column -->
-              <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Diperbarui Oleh" | translate
-                }}</label>
-                <div class="col-sm-8">
-                  <input
-                    type="text"
-                    class="form-control"
-                    formControlName="userUpdate"
-                  />
-                </div>
-              </div>
-              <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Tanggal Diperbarui" | translate
-                }}</label>
-                <div class="col-sm-8">
-                  <input
-                    type="text"
-                    class="form-control"
-                    formControlName="dateUpdate"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div class="divider"></div>
