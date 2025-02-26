@@ -21,3 +21,29 @@
     min-width: 240px;
   }
 
+
+.pd-0{
+  padding: 0px;
+}
+
+.fixed-width-select {
+  width: 200px !important;
+}
+
+.fixed-width-select .dropdown-display {
+  width: 200px !important;
+  max-width: 200px !important;
+}
+
+.fixed-width-select .dropdown-list {
+  width: 200px !important;
+  max-width: 200px !important;
+}
+
+ngx-select-dropdown .ngxdropdown-container div{
+  width: 10px !important;
+}
+
+.ngx-dropdown-container{
+  color: red;
+}

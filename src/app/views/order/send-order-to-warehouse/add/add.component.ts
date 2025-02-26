@@ -41,7 +41,7 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   configSelectGudang: any ;
   gudangDetail: any[] = [];
   currentUser : any;
-
+  isShowDetail = false;
 
   constructor(
     private toastr: ToastrService,
@@ -132,7 +132,7 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
         namaSupplier:  controls?.['gudangTujuan']?.value?.name,
         tanggalPesanan:  moment(  controls?.['tanggalPesanan']?.value).format("DD-MM-YYYY"),
         tanggalKirimBarang:  moment(  controls?.['tanggalKirimBarang']?.value).format("DD-MM-YYYY"),
-        tanggalBatalEXP: moment(  controls?.['tanggalPesanan']?.value).format("DD-MM-YYYY"),
+        tanggalBatalEXP: moment(  controls?.['tanggalBatalPesanan']?.value).format("DD-MM-YYYY"),
         keteranganSatu: controls?.['catatan1']?.value,
         keteranganDua: controls?.['catatan2']?.value,
 
@@ -141,7 +141,14 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
       this.g.saveLocalstorage('TEMP_ORDHDK', param);
 
       setTimeout(() => {
-          this.onNextPressed();
+        this.isShowDetail = true;
+        this.myForm.get('catatan1')?.disable();
+        this.myForm.get('catatan2')?.disable();
+        this.myForm.get('gudangTujuan')?.disable();
+        this.myForm.get('tanggalKirimBarang')?.disable();
+        this.myForm.get('tanggalBatalPesanan')?.disable();
+        
+          // this.onNextPressed();
         }, DEFAULT_DELAY_TIME);
       }
       this.adding = false;

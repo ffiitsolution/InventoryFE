@@ -66,6 +66,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
 
   isShowModalDelete: boolean = false;
   indexDataDelete : any;
+  isShowModalOnSubmit: boolean = false;
 
 
   @ViewChild('formModal') formModal: any;
@@ -215,6 +216,10 @@ export class AddDataDetailSendOrderToWarehouseComponent
   onShowModalDelete(i: any) {
     this.indexDataDelete = i;
     this.isShowModalDelete = true;
+  }
+
+  onShowModalOnSubmit() {
+    this.isShowModalOnSubmit = true;
   }
 
   
@@ -375,7 +380,12 @@ export class AddDataDetailSendOrderToWarehouseComponent
     let dataInvalid = false;
     dataInvalid = 
     this.validationMessageList.some(msg => msg.trim() !== "") || 
-    this.validationMessageQtyPesanList.some(msg => msg.trim() !== "");
+    this.validationMessageQtyPesanList.some(msg => msg.trim() !== "")||
+    this.listOrderData.length === 0;
+
+    if(this.listOrderData.length === 0){
+      this.toastr.error("Data kosong")
+    }
     
     return dataInvalid
   }
