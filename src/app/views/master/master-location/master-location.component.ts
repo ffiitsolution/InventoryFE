@@ -115,19 +115,19 @@ export class MasterLocationComponent
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
         {
           data: 'kodeLocation',
-          title: 'Kode',
+          title: 'Kode Lokasi',
           orderable: true,
           searchable: true,
         },
         {
           data: 'kodeInisial',
-          title: 'Inisial',
+          title: 'Inisial Lokasi',
           orderable: true,
           searchable: true,
         },
         {
           data: 'keteranganLokasi',
-          title: 'Keterangan',
+          title: 'Keterangan Lokasi',
           orderable: true,
           searchable: true,
         },
@@ -144,7 +144,7 @@ export class MasterLocationComponent
           searchable: true,
         },
         {
-          title: 'Opsi',
+          title: 'Action',
           render: () => {
             return `
             <div class="btn-group" role="group" aria-label="Action">
