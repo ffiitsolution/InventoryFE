@@ -131,9 +131,9 @@ export class MasterProductComponent
         { data: 'satuanKecil', title: 'Satuan Kecil', searchable: false },
         { data: 'konversi', title: 'Konversi', searchable: false },
         { data: 'satuanBesar', title: 'Satuan Besar', searchable: false },
-        { data: 'statusAktif', title: 'Status', searchable: false },
+        { data: 'statusAktifLabel', title: 'Status', searchable: false },
         {
-          title: 'Opsi',
+          title: 'Action',
           render: () => {
             return `
             <div class="btn-group" role="group" aria-label="Action">

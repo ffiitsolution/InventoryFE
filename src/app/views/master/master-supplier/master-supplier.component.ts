@@ -56,28 +56,30 @@ export class MasterSupplierComponent
   uomList: any;
   supplierList: any;
   defaultOrderGudangList: any;
+  configSelectCity: any = {};
+  configSelectRSC: any = {};
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
   }
 
   onStatusFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
   onCityFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
   onRscFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
   onGudangFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
@@ -104,10 +106,12 @@ export class MasterSupplierComponent
         const requestData = {
           ...dataTablesParameters,
           status: this.selectedStatusFilter,
-          KODE_KOTA: this.selectedCityFilter,
-          KODE_RSC: this.selectedRscFilter,
-          TERIMA_CN: this.selectedTerimaCnFilter,
-          STATUS_SYNC: this.selectedStatusSyncFilter,
+          KODE_KOTA: Array.isArray(this.selectedCityFilter)
+            ? ''
+            : this.selectedCityFilter.id,
+          KODE_RSC: Array.isArray(this.selectedRscFilter)
+            ? ''
+            : this.selectedRscFilter.id,
           DEFAULT_GUDANG: this.selectedGudangFilter,
         };
         this.dataService
@@ -135,13 +139,13 @@ export class MasterSupplierComponent
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
         {
           data: 'kodeSupplier',
-          title: 'Kode',
+          title: 'Kode Supplier',
           orderable: true,
           searchable: true,
         },
         {
           data: 'namaSupplier',
-          title: 'Nama',
+          title: 'Nama Supplier ',
           orderable: true,
           searchable: true,
         },
@@ -160,7 +164,18 @@ export class MasterSupplierComponent
         { data: 'kota', title: 'Kota', orderable: true, searchable: true },
         { data: 'telpon1', title: 'Telpon', orderable: true, searchable: true },
         {
-          title: 'Opsi',
+          data: 'statusAktif',
+          title: 'Status',
+          searchable: false,
+          render: (data) => {
+            if (data === 'A') {
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+            }
+            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:grey; width: 60px">Inactive</span> </div>`;
+          },
+        },
+        {
+          title: 'Action',
           render: () => {
             return `
             <div class="btn-group" role="group" aria-label="Action">
@@ -172,7 +187,7 @@ export class MasterSupplierComponent
         },
       ],
       searchDelay: 1500,
-      order: [[1, 'asc']],
+      order: [[7, 'asc']],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
@@ -218,40 +233,54 @@ export class MasterSupplierComponent
     localStorage.removeItem(LS_INV_SELECTED_SUPPLIER);
 
     this.dataService
-    .postData(this.g.urlServer + '/api/city/dropdown-city',{})
-    .subscribe((resp: any) => {
-      this.cityOptions = resp.map((item: any) => ({
-        value: item.KODE_KOTA,
-        label: item.KETERANGAN_KOTA,
-      }));    
-    });
+      .postData(this.g.urlServer + '/api/city/dropdown-city', {})
+      .subscribe((resp: any) => {
+        this.cityOptions = resp.map((item: any) => ({
+          id: item.KODE_KOTA,
+          name: item.KODE_KOTA + ' - ' + item.KETERANGAN_KOTA,
+        }));
+        this.configSelectCity = {
+          displayKey: 'name',
+          search: true,
+          height: '200px',
+          customComparator: () => {},
+          moreText: 'lebih banyak',
+          noResultsFound: 'Tidak ada hasil',
+          searchOnKey: 'name',
+          placeholder: 'Pilih City',
+          searchPlaceholder: 'Cari City',
+          limitTo: this.cityOptions?.length,
+        };
+      });
 
-    
     this.dataService
-    .postData(this.g.urlServer + '/api/city/dropdown-city',{})
-    .subscribe((resp: any) => {
-      this.cityOptions = resp.map((item: any) => ({
-        value: item.KODE_KOTA,
-        label: item.KETERANGAN_KOTA,
-      }));    
-    });
-
+      .postData(this.g.urlServer + '/api/rsc/dropdown-rsc', {})
+      .subscribe((resp: any) => {
+        this.rscOptions = resp.map((item: any) => ({
+          id: item.KODE_RSC,
+          name: item.KETERANGAN_RSC,
+        }));
+        this.configSelectRSC = {
+          displayKey: 'name',
+          search: true,
+          height: '200px',
+          customComparator: () => {},
+          moreText: 'lebih banyak',
+          noResultsFound: 'Tidak ada hasil',
+          searchOnKey: 'name',
+          placeholder: 'Pilih RSC',
+          searchPlaceholder: 'Cari RSC',
+          limitTo: this.rscOptions.length,
+        };
+      });
     this.dataService
-    .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
-    .subscribe((resp: any) => {
-      this.rscOptions = resp.map((item: any) => ({
-        value: item.KODE_RSC,
-        label: item.KETERANGAN_RSC,
-      }));    
-    });
-    this.dataService
-    .postData(this.g.urlServer + '/api/supplier/dropdown-gudang',{})
-    .subscribe((resp: any) => {
-      this.gudangOptions = resp.map((item: any) => ({
-        value: item.DEFAULT_GUDANG,
-        label: item.KETERANGAN_GUDANG,
-      }));    
-    });
+      .postData(this.g.urlServer + '/api/supplier/dropdown-gudang', {})
+      .subscribe((resp: any) => {
+        this.gudangOptions = resp.map((item: any) => ({
+          value: item.DEFAULT_GUDANG,
+          label: item.KETERANGAN_GUDANG,
+        }));
+      });
   }
 
   actionBtnClick(action: string, data: any = null) {

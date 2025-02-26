@@ -10,62 +10,87 @@
     <c-card-body>
       <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
         <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Kode User" | translate
-          }}
-          <span class="stamp-required show">&nbsp;*</span>
-          </label>          
-        <div class="col-sm-10">
+          <label class="col-sm-2 col-form-label"
+            >{{ "Kode User" | translate }}
+            <span class="stamp-required show">&nbsp;*</span>
+          </label>
+          <div class="col-sm-10">
             <input
-            type="text"
-            class="form-control"
-            formControlName="kodeUser"
-            (keypress)="conditionInput($event, 'alphanumeric')"
-            maxlength="10"
+              type="text"
+              class="form-control"
+              formControlName="kodeUser"
+              (keypress)="conditionInput($event, 'alphanumeric')"
+              maxlength="10"
             />
-          <span *ngIf="isFieldValid('kodeUser')" class="text-danger">{{
-            "Wajib diisi" | translate
-          }}</span>
+            <span *ngIf="isFieldValid('kodeUser')" class="text-danger">{{
+              "Wajib diisi" | translate
+            }}</span>
           </div>
         </div>
         <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Nama User" | translate
-          }}
+          <label class="col-sm-2 col-form-label"
+            >{{ "Nama User" | translate }}
             <span class="stamp-required show">&nbsp;*</span>
-          </label>          
-        <div class="col-sm-10">
+          </label>
+          <div class="col-sm-10">
             <input
               type="text"
               class="form-control"
               formControlName="namaUser"
               (keypress)="conditionInput($event, 'alphabet')"
               maxlength="50"
-              />          
-            <span *ngIf="isFieldValid('namaUser')" class="text-danger">{{
-              "Wajib diisi" | translate
-            }}</span>
+            />
+            <span
+              *ngIf="
+                myForm.controls['namaUser'].hasError('required') &&
+                myForm.controls['namaUser'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max.50 karakter)" | translate }}</span
+            >
+            <span
+              *ngIf="
+                myForm.controls['namaUser'].hasError(
+                  'specialCharNotAllowedExcept'
+                )
+              "
+              class="text-danger"
+              >{{
+                "Nama User tidak boleh mengandung karakter khusus." | translate
+              }}</span
+            >
           </div>
         </div>
         <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Password" | translate
-          }}
-          <span class="stamp-required show">&nbsp;*</span>
-          </label>                 
+          <label class="col-sm-2 col-form-label"
+            >{{ "Password" | translate }}
+            <span class="stamp-required show">&nbsp;*</span>
+          </label>
           <div class="col-sm-10">
-            <input
-              maxlength="10"
-              type="password"
-              class="form-control"
-              formControlName="kodePassword"
-              (keypress)="conditionInput($event, 'alphanumeric')"
-              (keyup)="onChangePassword($event, 'user')"
-            />
+            <div class="d-flex align-items-center">
+              <input
+                maxlength="10"
+                [type]="showPassword ? 'text' : 'password'"
+                class="form-control"
+                formControlName="kodePassword"
+                (keypress)="conditionInput($event, 'alphanumeric')"
+                (keyup)="onChangePassword($event, 'user')"
+              />
+              <span
+                class="input-group-text eye-icon text-center"
+                style="margin-right: 5px"
+                (click)="togglePasswordVisibility('password')"
+              >
+                <i
+                  class="fa"
+                  [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+                ></i>
+              </span>
+            </div>
             <span *ngIf="isFieldValid('kodePassword')" class="text-danger">{{
               "Wajib diisi" | translate
             }}</span>
-            
+
             <span *ngIf="isNotMatchPass" class="text-danger">
               {{ "Password Tidak Cocok" | translate }}
             </span>
@@ -73,25 +98,43 @@
         </div>
 
         <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Konfirmasi Password" | translate
-          }}
-          <span class="stamp-required show">&nbsp;*</span>
-          </label>                 
+          <label class="col-sm-2 col-form-label"
+            >{{ "Konfirmasi Password" | translate }}
+            <span class="stamp-required show">&nbsp;*</span>
+          </label>
           <div class="col-sm-10">
-            <input
-              maxlength="10"
-              type="password"
-              class="form-control"
-              (keypress)="conditionInput($event, 'alphanumeric')"
-              formControlName="konfirmasiKodePassword"
-              (keyup)="onChangePassword($event, 'user')"
-            />
-            <span *ngIf="isFieldValid('konfirmasiKodePassword')" class="text-danger">{{
-              "Wajib diisi" | translate
-            }}</span>
-            
-            <span *ngIf="isNotMatchPass && !isFieldValid('konfirmasiKodePassword')" class="text-danger">
+            <div class="d-flex align-items-center">
+              <input
+                maxlength="10"
+                [type]="showConfirmationPassword ? 'text' : 'password'"
+                class="form-control"
+                (keypress)="conditionInput($event, 'alphanumeric')"
+                formControlName="konfirmasiKodePassword"
+                (keyup)="onChangePassword($event, 'user')"
+              />
+              <span
+                class="input-group-text eye-icon text-center"
+                style="margin-right: 5px"
+                (click)="togglePasswordVisibility('confirmationPassword')"
+              >
+                <i
+                  class="fa"
+                  [ngClass]="
+                    showConfirmationPassword ? 'fa-eye-slash' : 'fa-eye'
+                  "
+                ></i>
+              </span>
+            </div>
+            <span
+              *ngIf="isFieldValid('konfirmasiKodePassword')"
+              class="text-danger"
+              >{{ "Wajib diisi" | translate }}</span
+            >
+
+            <span
+              *ngIf="isNotMatchPass && !isFieldValid('konfirmasiKodePassword')"
+              class="text-danger"
+            >
               {{ "Password Tidak Cocok" | translate }}
             </span>
           </div>
@@ -99,20 +142,41 @@
 
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
-            "Status Aktif" | translate
+            "Status" | translate
           }}</label>
           <c-col xs="8">
             <c-row class="mt-2">
               <c-col xs="6">
                 <c-form-check class="flex align-items-center">
-                  <input cFormCheckInput checked id="active" type="radio" value="A" name="status" formControlName="status" (change)="onChangeSelect($event, 'status')"/>
-                  <label cFormCheckLabel for="active" style="margin-left: 4px;">Active</label>
+                  <input
+                    cFormCheckInput
+                    checked
+                    id="active"
+                    type="radio"
+                    value="A"
+                    name="status"
+                    formControlName="statusAktif"
+                    (change)="onChangeSelect($event, 'status')"
+                  />
+                  <label cFormCheckLabel for="active" style="margin-left: 4px"
+                    >Active</label
+                  >
                 </c-form-check>
               </c-col>
               <c-col xs="6">
                 <c-form-check class="flex align-items-center">
-                  <input cFormCheckInput id="inactive" type="radio" value="I" name="status" formControlName="status" (change)="onChangeSelect($event, 'status')"/>
-                  <label cFormCheckLabel for="inactive" style="margin-left: 4px;">Inactive</label>
+                  <input
+                    cFormCheckInput
+                    id="inactive"
+                    type="radio"
+                    value="I"
+                    name="status"
+                    formControlName="statusAktif"
+                    (change)="onChangeSelect($event, 'status')"
+                  />
+                  <label cFormCheckLabel for="inactive" style="margin-left: 4px"
+                    >Inactive</label
+                  >
                 </c-form-check>
               </c-col>
             </c-row>
@@ -130,10 +194,18 @@
               formControlName="jabatan"
               (keypress)="conditionInput($event, 'alphabet')"
               maxlength="50"
-              />    
+            />
             <span *ngIf="isFieldValid('jabatan')" class="text-danger">{{
               "Wajib diisi" | translate
-            }}</span>      
+            }}</span>
+            <span
+              *ngIf="myForm.controls['jabatan'].hasError('jabatan')"
+              class="text-danger"
+              >{{
+                " Jabatan hanya boleh mengandung huruf, strip (-), underscore (_) dan spasi."
+                  | translate
+              }}</span
+            >
           </div>
         </div>
 
@@ -164,7 +236,8 @@
               [config]="configSelectDefaultLokasi"
               [options]="listDefaultLokasi"
               formControlName="defaultLocation"
-              id="default-location">
+              id="default-location"
+            >
             </ngx-select-dropdown>
           </div>
         </div>
@@ -179,11 +252,12 @@
               [config]="configSelectRole"
               [options]="listRole"
               formControlName="roleID"
-              id="roleID">
+              id="roleID"
+            >
             </ngx-select-dropdown>
           </div>
         </div>
-        
+
         <div class="divider"></div>
         <div class="d-grid gap-3 d-md-flex justify-content-end">
           <button

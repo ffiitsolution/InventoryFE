@@ -6,25 +6,17 @@
           <h5>{{ "Kirim pesanan ke Cabang atau Gudang" | translate }}</h5>
         </div>
         <div class="col text-end">
-          <button
-            type="button"
-            class="btn btn-outline-dark me-2 btn-120"
-            (click)="toggleFilter()"
-          >
+          <button type="button" class="btn btn-outline-dark me-2 btn-120" (click)="toggleFilter()">
             <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
             {{ "Filter" | translate }}
           </button>
-          <button
-            type="button"
-            class="btn btn-success text-white me-2 btn-240"
-            data-toggle="modal"
-            (click)="onAddPressed()"
-          >
+          <button type="button" class="btn btn-success text-white me-2 btn-240" data-toggle="modal"
+            (click)="onAddPressed()">
             <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
             {{ "Tambah Penerimaan" | translate }}
           </button>
         </div>
-        
+
       </div>
       <div [visible]="showFilterSection" cCollapse>
         <div class="divider"></div>
@@ -34,28 +26,13 @@
               <c-col>
                 <label class="col-form-label">{{
                   "Tanggal Pesan" | translate
-                }}</label>
-                <input
-                  type="text"
-                  id="dateFilter"
-                  class="form-control"
-                  bsDaterangepicker
-                  [bsConfig]="dpConfig"
-                  aria-describedby="dateFilter"
-                  [(ngModel)]="dateRangeFilter"
-                  #dp="bsDaterangepicker"
-                  placeholder="{{ 'Tanggal Pesan' | translate }}"
-                />
+                  }}</label>
+                <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
+                  aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
+                  placeholder="{{ 'Tanggal Pesan' | translate }}" />
               </c-col>
-              <c-col
-                xs="3"
-                class="text-right d-flex align-items-end justify-content-end"
-              >
-                <button
-                  type="button"
-                  class="btn btn-outline-success me-2 btn-160"
-                  (click)="onFilterPressed()"
-                >
+              <c-col xs="3" class="text-right d-flex align-items-end justify-content-end">
+                <button type="button" class="btn btn-outline-success me-2 btn-160" (click)="onFilterPressed()">
                   {{ "Terapkan Filter" | translate }}
                 </button>
               </c-col>
@@ -70,12 +47,74 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="table-responsive">
-        <table
-          datatable
-          [dtOptions]="dtOptions"
-          (page.dt)="dtPageChange($event)"
-          class="row-border hover"
-        ></table>
+        <table datatable [dtOptions]="dtOptions" (page.dt)="dtPageChange($event)" class="row-border hover"></table>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<div class="fade-in">
+
+  <c-card class="c-card" *ngIf="selectedRowData">
+    <c-card-body>
+      <div class="row p-2 justify-content-end">
+        <div class="col-6">
+          <div class="w-100 mb-2">
+            <label for="alamatTujuan" class="form-label">{{ "Alamat" | translate }}</label>
+            <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+              [(ngModel)]="selectedRowData.alamatTujuan" name="alamatTujuan" />
+          </div>
+          <div class="w-100 mb-2">
+            <label for="alamat1" class="form-label">{{ "Keterangan" | translate }}</label>
+            <input type="text" readonly placeholder="Keterangan" class="form-control" id="nomorPesanan"
+              [(ngModel)]="selectedRowData.keterangan" name="keterangan" />
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="row justify-content-end">
+            
+            <div class="col-4"></div>
+            <div class="col-4">
+              <div class="w-100 mb-2">
+                <label for="userCreate" class="form-label">{{ "User Create" | translate }}</label>
+                <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                  [(ngModel)]="selectedRowData.userCreate" name="userCreate" />
+              </div>
+  
+              <div class="w-100 mb-2">
+                <label for="dateCreate" class="form-label">{{ "Date Create" | translate }}</label>
+                <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                  [(ngModel)]="selectedRowData.dateCreate" name="dateCreate" />
+              </div>
+  
+              <!-- <div class="w-100 mb-2">
+                <label for="timeCreate" class="form-label">{{ "Time Create" | translate }}</label>
+                <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                  [(ngModel)]="selectedRowData.timeCreate" name="timeCreate" />
+              </div> -->
+            </div>
+            <div class="col-4">
+              <div class="w-100 mb-2">
+                <label for="userPosted" class="form-label">{{ "User Posted" | translate }}</label>
+                <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                  [(ngModel)]="selectedRowData.userPosted" name="userPosted" />
+              </div>
+  
+              <div class="w-100 mb-2">
+                <label for="datePosted" class="form-label">{{ "Date Posted" | translate }}</label>
+                <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                  [(ngModel)]="selectedRowData.datePosted" name="datePosted" />
+              </div>
+  
+              <!-- <div class="w-100 mb-2">
+                <label for="timePosted" class="form-label">{{ "Time Posted" | translate }}</label>
+                <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                  [(ngModel)]="selectedRowData.timePosted" name="timePosted" />
+              </div> -->
+            </div>
+          </div>
+          
+        </div>
       </div>
     </c-card-body>
   </c-card>

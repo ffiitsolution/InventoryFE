@@ -24,9 +24,7 @@ import { Router } from '@angular/router';
   templateUrl: 'master-user.component.html',
   styleUrl: 'master-user.component.scss',
 })
-export class MasterUserComponent
-  implements OnInit, OnDestroy, AfterViewInit
-{
+export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
   columns: any;
   page = new Page();
   data: any;
@@ -50,33 +48,34 @@ export class MasterUserComponent
     customComparator: () => {}, // Custom sorting comparator
     moreText: 'lebih banyak', // Text for "more" options
     noResultsFound: 'Tidak ada hasil', // Text when no results are found
-    searchOnKey: 'name' // Key to search
+    searchOnKey: 'name', // Key to search
   };
-  configSelectStatus: any ;
+  configSelectStatus: any;
   listStatus: any[] = [
     {
       id: 'A',
-      name: 'Aktif'
+      name: 'Aktif',
     },
     {
       id: 'I',
-      name: 'Tidak Aktif'
-    }
+      name: 'Tidak Aktif',
+    },
   ];
-  formStatusFilter: any ;
+  formStatusFilter: any;
 
-  configSelectLokasi: any ;
+  configSelectLokasi: any;
   listLokasi: any[] = [];
-  formLokasiFilter: any ;
+  formLokasiFilter: any;
 
-  configSelectJabatan: any ;
+  configSelectJabatan: any;
   listJabatan: any[] = [];
-  formJabatanFilter: any ;
+  formJabatanFilter: any;
 
-  
-  configSelectRole: any ;
+  configSelectRole: any;
   listRole: any[] = [];
-  formRoleFilter: any ;
+  formRoleFilter: any;
+
+  roleId: any;
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
@@ -93,7 +92,6 @@ export class MasterUserComponent
     });
   }
   onJabatanFilterChange() {
-
     this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
@@ -110,6 +108,7 @@ export class MasterUserComponent
     private translation: TranslationService,
     private router: Router
   ) {
+    this.roleId = this.g.getLocalstorage('inv_currentUser')?.roleId;
     this.dtOptions = {
       language:
         translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
@@ -125,10 +124,12 @@ export class MasterUserComponent
         this.page.length = dataTablesParameters.length;
         const requestData = {
           ...dataTablesParameters,
-          status: this.formStatusFilter?.id ? this.formStatusFilter.id : "",
-          defaultLocation: this.formLokasiFilter?.id ? this.formLokasiFilter.id : "",
-          jabatan: this.formJabatanFilter?.id ? this.formJabatanFilter?.id:"",
-          roleID:  this.formRoleFilter?.id ? this.formRoleFilter?.id:"",
+          status: this.formStatusFilter?.id ? this.formStatusFilter.id : '',
+          defaultLocation: this.formLokasiFilter?.id
+            ? this.formLokasiFilter.id
+            : '',
+          jabatan: this.formJabatanFilter?.id ? this.formJabatanFilter?.id : '',
+          roleID: this.formRoleFilter?.id ? this.formRoleFilter?.id : '',
         };
         this.dataService
           .postData(this.g.urlServer + '/api/users/dt', requestData)
@@ -156,12 +157,35 @@ export class MasterUserComponent
         { data: 'kodeUser', title: 'Kode', searchable: false },
         { data: 'namaUser', title: 'Nama', searchable: false },
         { data: 'jabatan', title: 'Jabatan', searchable: false },
-        { data: 'statusAktif', title: 'Status', searchable: false },
-        { data: 'keteranganLokasi', title: 'Default Lokasi', searchable: false },
+        {
+          data: 'keteranganLokasi',
+          title: 'Default Lokasi',
+          searchable: false,
+        },
         { data: 'roleName', title: 'Role', searchable: false },
         {
-          title: 'Opsi',
+          data: 'statusAktif',
+          title: 'Status',
+          searchable: false,
+          render: (data) => {
+            if (data === 'A') {
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+            }
+            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:grey; width: 60px">Inactive</span> </div>`;
+          },
+        },
+        {
+          title: 'Action',
+          orderable: false,
           render: () => {
+            if (this.roleId !== '3') {
+              return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
+                </div>
+              `;
+            }
+
             return `
             <div class="btn-group" role="group" aria-label="Action">
               <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
@@ -172,21 +196,21 @@ export class MasterUserComponent
         },
       ],
       searchDelay: 1500,
-      order: [[1, 'asc']],
+      order: [[6, 'asc']],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
-            $('.action-view', row).on('click', () =>
-              this.actionBtnClick(ACTION_VIEW, data)
-            );
-            $('.action-edit', row).on('click', () =>
-              this.actionBtnClick(ACTION_EDIT, data)
-            );
-            if (this.selectedRowData !== data) {
-              this.selectedRowData = data;
-            } else {
-              this.selectedRowData = undefined;
-            }
-            return row;
-          },
+        $('.action-view', row).on('click', () =>
+          this.actionBtnClick(ACTION_VIEW, data)
+        );
+        $('.action-edit', row).on('click', () =>
+          this.actionBtnClick(ACTION_EDIT, data)
+        );
+        if (this.selectedRowData !== data) {
+          this.selectedRowData = data;
+        } else {
+          this.selectedRowData = undefined;
+        }
+        return row;
+      },
     };
     this.dtColumns = this.dtOptions.columns;
   }
@@ -206,77 +230,81 @@ export class MasterUserComponent
   }
 
   ngOnInit(): void {
-    this.g.changeTitle(this.translation.instant('Master') + ' ' + this.translation.instant('User') + ' - ' + this.g.tabTitle);
+    this.g.changeTitle(
+      this.translation.instant('Master') +
+        ' ' +
+        this.translation.instant('User') +
+        ' - ' +
+        this.g.tabTitle
+    );
     localStorage.removeItem(LS_INV_SELECTED_USER);
 
     this.dataService
-    .postData(this.g.urlServer + '/api/location/dropdown-lokasi',{})
-    .subscribe((resp: any) => {
-      this.listLokasi = resp.map((item: any) => ({
-        id: item.KODE_LOCATION,
-        name: item.KODE_LOCATION+" - " +item.KETERANGAN_LOKASI,
-      }));    
-      console.log('this.listLokasi',this.listLokasi)
-    });
+      .postData(this.g.urlServer + '/api/location/dropdown-lokasi', {})
+      .subscribe((resp: any) => {
+        this.listLokasi = resp.map((item: any) => ({
+          id: item.KODE_LOCATION,
+          name: item.KODE_LOCATION + ' - ' + item.KETERANGAN_LOKASI,
+        }));
+      });
 
     this.dataService
-    .postData(this.g.urlServer + '/api/users/dropdown-jabatan',{})
-    .subscribe((resp: any) => {
-      this.listJabatan = resp.map((item: any) => ({
-        id: item.JABATAN,
-        name: item.JABATAN,
-      }));    
-    });
+      .postData(this.g.urlServer + '/api/users/dropdown-jabatan', {})
+      .subscribe((resp: any) => {
+        this.listJabatan = resp.map((item: any) => ({
+          id: item.JABATAN,
+          name: item.JABATAN,
+        }));
+      });
 
     this.dataService
-    .postData(this.g.urlServer + '/api/role/dropdown-role',{})
-    .subscribe((resp: any) => {
-      this.listRole = resp.map((item: any) => ({
-        id: item.ID,
-        name: item.NAME,
-      }));    
-    });
+      .postData(this.g.urlServer + '/api/role/dropdown-role', {})
+      .subscribe((resp: any) => {
+        this.listRole = resp.map((item: any) => ({
+          id: item.ID,
+          name: item.NAME,
+        }));
+      });
 
     this.configSelectStatus = {
       ...this.baseConfig,
       placeholder: 'Pilih Status',
       searchPlaceholder: 'Cari Status',
-      limitTo: this.listStatus.length
+      limitTo: this.listStatus.length,
     };
     this.configSelectLokasi = {
       ...this.baseConfig,
       placeholder: 'Pilih Lokasi',
       searchPlaceholder: 'Cari Lokasi',
-      limitTo: this.listLokasi.length
+      limitTo: this.listLokasi.length,
     };
     this.configSelectJabatan = {
       ...this.baseConfig,
       placeholder: 'Pilih Jabatan',
       searchPlaceholder: 'Cari Jabatan',
-      limitTo: this.listJabatan.length
+      limitTo: this.listJabatan.length,
     };
     this.configSelectRole = {
       ...this.baseConfig,
       placeholder: 'Pilih Role',
       searchPlaceholder: 'Cari Role',
-      limitTo: this.listRole.length
+      limitTo: this.listRole.length,
     };
   }
 
-    actionBtnClick(action: string, data: any = null) {
-      if (action === ACTION_VIEW) {
-        this.g.saveLocalstorage(LS_INV_SELECTED_USER, JSON.stringify(data));
-        this.router.navigate(['/master/master-user/detail']);
-      } else if (action === ACTION_EDIT) {
-        this.g.saveLocalstorage(LS_INV_SELECTED_USER, JSON.stringify(data));
-        this.router.navigate(['/master/master-user/edit']);
-      } else if (action === ACTION_ADD) {
-        this.router.navigate(['/master/master-user/add']);
-      }
-      else if (action === 'add') {
-        this.router.navigate(['/master/master-user/add']);
-      }
+  actionBtnClick(action: string, data: any = null) {
+    if (action === ACTION_VIEW) {
+      this.g.saveLocalstorage(LS_INV_SELECTED_USER, JSON.stringify(data));
+      this.router.navigate(['/master/master-user/detail']);
+    } else if (action === ACTION_EDIT) {
+      this.g.saveLocalstorage(LS_INV_SELECTED_USER, JSON.stringify(data));
+      this.router.navigate(['/master/master-user/edit']);
+    } else if (action === ACTION_ADD) {
+      this.router.navigate(['/master/master-user/add']);
+    } else if (action === 'add') {
+      this.router.navigate(['/master/master-user/add']);
     }
+  }
 
   dtPageChange(event: any) {
     this.selectedRowData = undefined;

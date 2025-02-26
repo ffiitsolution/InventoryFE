@@ -1,5 +1,5 @@
 <div class="fade-in">
-  <c-card class="mb-4">
+  <c-card class="mb-2">
     <c-card-body>
       <div class="row">
         <div class="col">
@@ -18,8 +18,9 @@
             class="btn btn-success text-white me-2"
             (click)="actionBtnClick(CONST_ACTION_ADD)"
           >
-            <i class="fa fa-plus pe-1 icon-12" aria-hidden="true"></i>
-            {{ "Tambah" | translate }} {{ "Cabang" | translate }}
+            <!-- <i class="fa fa-plus pe-1 icon-12" aria-hidden="true"></i> -->
+            {{ "Tambah" | translate }}
+            <!-- {{ "Cabang" | translate }} -->
           </button>
         </div>
       </div>
@@ -28,68 +29,64 @@
           <c-card-body>
             <div class="row">
               <div class="col-md-4">
-                  <label>{{
-                    "Status Aktif" | translate
-                  }}</label>
-                  <div>
-                    <ngx-select-dropdown
-                      [multiple]="false"
-                      [config]="configSelectStatus"
-                      [options]="listStatus"
-                      [(ngModel)]="formStatusFilter" 
-                      (ngModelChange)="onStatusFilterChange()"
-                      id="status">
-                    </ngx-select-dropdown>
-                  </div>
+                <label>{{ "Status Aktif" | translate }}</label>
+                <div>
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [config]="configSelectStatus"
+                    [options]="listStatus"
+                    [(ngModel)]="formStatusFilter"
+                    (ngModelChange)="onStatusFilterChange()"
+                    id="status"
+                  >
+                  </ngx-select-dropdown>
+                </div>
               </div>
-             
+
               <div class="col-md-4">
-                  <label>{{
-                    "RSC" | translate
-                  }}</label>
-                  <div>
-                    <ngx-select-dropdown
-                      [multiple]="false"
-                      [config]="configSelectRsc"
-                      [options]="listRsc"
-                      [(ngModel)]="formRscFilter" 
-                      (ngModelChange)="onRscFilterChange()"
-                      id="RSC">
-                    </ngx-select-dropdown>
-                  </div>
+                <label>{{ "RSC" | translate }}</label>
+                <div>
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [config]="configSelectRsc"
+                    [options]="listRsc"
+                    [(ngModel)]="formRscFilter"
+                    (ngModelChange)="onRscFilterChange()"
+                    id="RSC"
+                  >
+                  </ngx-select-dropdown>
+                </div>
               </div>
-          
+
               <div class="col-md-4">
-                <label>{{
-                  "Kota" | translate
-                }}</label>
+                <label>{{ "Kota" | translate }}</label>
                 <div>
                   <ngx-select-dropdown
                     [multiple]="false"
                     [config]="configSelectKota"
                     [options]="listKota"
-                    [(ngModel)]="formKotaFilter" 
+                    [(ngModel)]="formKotaFilter"
                     (ngModelChange)="onKotaFilterChange()"
-                    id="Kota">
+                    id="Kota"
+                  >
                   </ngx-select-dropdown>
                 </div>
               </div>
               <div class="col-md-4">
-                <label>{{
-                  "Group" | translate
-                }}</label>
+                <label>{{ "Group" | translate }}</label>
                 <div>
                   <ngx-select-dropdown
                     [multiple]="false"
                     [config]="configSelectGroup"
                     [options]="listGroup"
-                    [(ngModel)]="formGroupFilter" 
+                    [(ngModel)]="formGroupFilter"
                     (ngModelChange)="onGroupFilterChange()"
-                    id="Kota">
+                    id="Kota"
+                  >
                   </ngx-select-dropdown>
                 </div>
               </div>
-          
+
               <!-- <div class="col-md-4">
                 <label cLabel for="selectedtipeCabangFilter">{{ 'Group' | translate }}:</label>
                 <select
@@ -112,6 +109,27 @@
     </c-card-body>
   </c-card>
 </div>
+
+<div class="fade-in">
+  <c-card class="mb-2">
+    <c-card-body>
+      <div class="row">
+        <div class="col-sm-12">
+          <i
+            class="fa fa-exclamation-circle text-center"
+            style="font-size: large; color: #3c4b64"
+          ></i>
+          &nbsp;
+          <span class="fw-bold"
+            >Master Cabang digunakan untuk melihat dan mengelola daftar cabang
+            beserta detail informasi dan statusnya.</span
+          >
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>

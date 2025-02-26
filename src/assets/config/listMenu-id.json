@@ -17,19 +17,15 @@
         "url": "/master/master-user"
       },
       {
-        "name": "Master Cabang",
+        "name": "Master Cabang & Dept.",
         "url": "/master/master-branch"
-      },
-      {
-        "name": "Master Departemen",
-        "url": "/master/master-department"
       },
       {
         "name": "Master Location",
         "url": "/master/master-location"
       },
       {
-        "name": "Master Suplier",
+        "name": "Master Supplier",
         "url": "/master/master-supplier"
       },
       {
@@ -64,7 +60,6 @@
   },
   {
     "name": "Pesanan",
-    "url": "/order",
     "iconComponent": {
       "name": "cil-speedometer"
     },
@@ -76,6 +71,13 @@
       {
         "name": "Terima Pesanan",
         "url": "/order/receiving-order"
+      },
+      {
+        "name": "Kirim Pesanan Ke Supplier",
+        "url": "/order/send-order-to-supplier-via-rsc",
+        "iconComponent": {
+          "name": "cil-color-border"
+        }
       },
       {
         "name": "Kirim Pesanan Ke Gudang",
@@ -95,7 +97,7 @@
       {
         "name": "Pengiriman",
         "url": "/transaction/delivery-item",
-        "iconComponent":{
+        "iconComponent": {
           "name": "cil-truck"
         },
         "children": [

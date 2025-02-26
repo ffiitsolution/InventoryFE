@@ -39,7 +39,8 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedRo: any = {};
   minDate: Date;
   maxDate: Date;
-
+  isShowDetail: boolean = false;
+  selectedRowData: any;
   @ViewChild('formModal') formModal: any;
   // Form data object
   formData = {
@@ -78,6 +79,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
         rangeInputFormat: 'dd/MMm/yyyy',
       }
     );
+    this.globalService.navbarVisibility = false;
 
     this.renderDataTables();
     const today = new Date().toISOString().split('T')[0];
@@ -93,7 +95,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onAddDetail() {
-    this.router.navigate(['/transaction/delivery-item/add-data-detail']);
+    this.isShowDetail = true;
     this.globalService.saveLocalstorage(
       LS_INV_SELECTED_DELIVERY_ORDER,
       JSON.stringify(this.formData)
@@ -106,6 +108,9 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
+    this.globalService.removeLocalstorage(
+      LS_INV_SELECTED_DELIVERY_ORDER
+    );
   }
 
 
@@ -134,7 +139,9 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: () => { },
+      drawCallback: (drawCallback) => {
+        this.selectedRowData = undefined;
+      },
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
@@ -152,16 +159,11 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
               const finalData = {
                 ...rest,
                 dtIndex: this.page.start + index + 1,
-                // kodePemesan: `(${rest.kodeGudang}) ${rest.namaGudang}`,
-                // tglPesan: this.g.transformDate(rest.tglPesan),
-                // tglKirim: this.g.transformDate(rest.tglKirim),
-                // tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
               };
               return finalData;
             });
             this.page.recordsTotal = resp.recordsTotal;
             this.page.recordsFiltered = resp.recordsFiltered;
-            // this.showFilterSection = false;
             callback({
               recordsTotal: resp.recordsTotal,
               recordsFiltered: resp.recordsFiltered,
@@ -170,7 +172,6 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
           });
       },
       columns: [
-        // { data: 'dtIndex', title: '#' },
         { data: 'kodeGudang', title: 'Kode Gudang' },
         { data: 'kodePemesan', title: 'Kode Pemesan' },
         { data: 'nomorPesanan', title: 'Nomor Pesanan' },
@@ -197,18 +198,34 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
         {
           title: 'Action',
           render: () => {
-            return `<button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>`;
+            return `<button class="btn btn-sm action-select btn-info btn-80 text-white">Pilih</button>`;
           },
         },
 
       ],
       searchDelay: 1000,
-      // delivery: [],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-select', row).on('click', () =>
           this.actionBtnClick(ACTION_SELECT, data)
         );
+        if (index === 0 && !this.selectedRowData) {
+          setTimeout(() => {
+            $(row).trigger('td'); 
+          }, 0);
+        }
+        $('td', row).on('click', () => {
+          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
+      
+    
         return row;
+
       },
     };
   }

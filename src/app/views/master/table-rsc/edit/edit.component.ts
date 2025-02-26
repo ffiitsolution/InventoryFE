@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -7,6 +7,21 @@ import { AppService } from 'src/app/service/app.service';
 import { GlobalService } from 'src/app/service/global.service';
 import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_RSC } from 'src/constants';
 
+function code(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^0-9]+$/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { code: true };
+  }
+  return null;
+}
+
+function desc(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9-\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { desc: true };
+  }
+  return null;
+}
 @Component({
   selector: 'app-edit-rsc',
   templateUrl: './edit.component.html',
@@ -31,9 +46,9 @@ export class TableRscEditComponent implements OnInit {
     this.myForm = this.form.group({
       code: [
         { value: this.detail.kodeRsc, disabled: true },
-        Validators.required,
+        [Validators.required, code],
       ],
-      desc: [this.detail.keteranganRsc, Validators.required],
+      desc: [this.detail.keteranganRsc, [Validators.required, desc]],
       dateCreate: [{ value: this.detail.dateCreate, disabled: true }],
       userCreate: [{ value: this.detail.userCreate, disabled: true }],
       userUpdate: [{ value: this.detail.userUpdate, disabled: true }],
@@ -45,6 +60,22 @@ export class TableRscEditComponent implements OnInit {
     const { controls, invalid } = this.myForm;
     if (invalid) {
       this.g.markAllAsTouched(this.myForm);
+      if (invalid) {
+        if (
+          Object.values(controls).some((control) =>
+            control.hasError('required')
+          )
+        ) {
+          this.toastr.error('Beberapa kolom wajib diisi.');
+        } else if (
+          Object.values(controls).some((control) => control.hasError('code')) ||
+          Object.values(controls).some((control) => control.hasError('area'))
+        ) {
+          this.toastr.error(
+            'Beberapa kolom mengandung karakter khusus yang tidak diperbolehkan.'
+          );
+        }
+      }
     } else {
       this.editing = true;
       const param = {
@@ -66,6 +97,28 @@ export class TableRscEditComponent implements OnInit {
           this.editing = false;
         },
       });
+    }
+  }
+
+  conditionInput(event: any, type: string): boolean {
+    var inp = String.fromCharCode(event.keyCode);
+    let temp_regex =
+      type == 'code'
+        ? /^[0-9]+$/
+        : type == 'desc' //desc
+        ? /^[a-zA-Z0-9-\s]$/
+        : /^[a-zA-Z.() ,\-]*$/;
+    if (temp_regex.test(inp)) return true;
+    else {
+      event.preventDefault();
+      return false;
+    }
+  }
+
+  convertToUppercase(id: any) {
+    const control = this.myForm.get(id);
+    if (control) {
+      control.setValue(control.value.toUpperCase(), { emitEvent: false });
     }
   }
 

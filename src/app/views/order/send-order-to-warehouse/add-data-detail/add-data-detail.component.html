@@ -1,5 +1,5 @@
 <div class="fade-in">
-  <c-card class="mb-4">
+  <!-- <c-card class="mb-4">
     <c-card-body>
       <c-row>
         <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
@@ -11,75 +11,20 @@
         </div>
       </c-row>
     </c-card-body>
-  </c-card>
+  </c-card> -->
   <c-card class="mb-4">
-    <c-card-body>
-      <div class="d-grid gap-3 d-md-flex justify-content-end">
-        <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
-          <i class="fa fa-check pe-2"></i> {{ "Proses" | translate }}  {{ "Simpan" | translate }} {{ "Data" | translate }}
-        </button>
-
-        <button class="btn btn-danger text-white btn-150" (click)="onBackPressed()">
-          <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
-        </button>
-      </div>
-
-      <div class="row">
-        <div class="divider mt-4"></div>
-        <div class="col">
-          <div class="row order-details">
-            <div class="detail-item">
-              <span class="label">{{ "Tgl. Pesanan" | translate }}</span>
-              <span class="value">{{ newOrhdk.tanggalPesanan }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Tgl. Kirim Barang" | translate }}</span>
-              <span class="value">{{ newOrhdk.tanggalKirimBarang }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label ">{{ "Tgl. Batal Pesanan" | translate }}</span>
-              <span class="value">{{ newOrhdk.tanggalBatalEXP }}</span>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="row order-details">
-            <div class="detail-item">
-              <span class="label">{{ "Catatan 1" | translate }}</span>
-              <span class="value"> {{ newOrhdk.keteranganSatu }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Catatan 2" | translate }}</span>
-              <span class="value"> {{ newOrhdk.keteranganDua }}</span>
-            </div>
-
-            <div class="detail-item">
-              <span class="label">{{ "Jumlah Item " | translate }}</span>
-              <span class="value">{{ totalLength || "-" }}</span>
-            </div>
-
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <div class="row">
-            <div class="row">
-              <span class="label2 col-sm-2">{{ "Gudang Tujuan" | translate }}</span>
-              <span class="value2 col-sm-10"> {{ newOrhdk.namaSupplier }}</span>
-            </div>
-          
-
-          </div>
-        </div>
-
-      </div>
-    </c-card-body>
+  
   </c-card>
 </div>
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
+      <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
+        <button class="btn btn-info text-white btn-150 pe-3" (click)="onShowModalOnSubmit()">
+          <i class="fa fa-check pe-2"></i> {{ "Proses" | translate }}  {{ "Simpan" | translate }} {{ "Data" | translate }}
+        </button>
+
+      </div>
       <div class="table-responsive">
         <ng-container>
           <div *ngIf="loading">
@@ -127,7 +72,8 @@
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
                     <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                      [(ngModel)]="data.qtyPesanBesar" (input)="onInputValueItemDetail($event, i)" />
+                      [(ngModel)]="data.qtyPesanBesar"  (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
+                      />
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanBesar}}
                     </span>
@@ -135,20 +81,36 @@
                 </td>
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
-                    <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                      [(ngModel)]="data.qtyPesanKecil" (input)="onInputValueItemDetail($event, i)" />
+                    <input type="text" numberOnly max="{{data.qtyPesanKecil}}" min="0"
+                      [ngClass]="{'form-invalid': validationMessageList[i]}"
+                      class="form-control text-center inputQty inputNumberSpace" 
+                      [(ngModel)]="data.qtyPesanKecil"
+                      (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')" 
+                      (keypress)="g.conditionInput($event, 'numeric')" />
+                
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanKecil}}
                     </span>
                   </div>
+                  
+                  <!-- Validation message area -->
+                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageList[i]">
+                    {{ validationMessageList[i] }}
+                  </span>
                 </td>
 
                 <td class="text-center">{{ data.konversi }}</td>
                 <td class="text-center">{{(helper.sanitizedNumber(data.qtyPesanBesar) *
                   data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil) }} {{data.satuanKecil}}
+                  
+                  <!-- Validation message area -->
+                   <br>
+                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageQtyPesanList [i]">
+                    {{ validationMessageQtyPesanList[i] }}
+                  </span>
                 </td>
                 <td>
-                  <button class="btn btn-danger text-white btn-150" (click)="deleteBarang(i)">
+                  <button class="btn btn-danger text-white btn-150" (click)="onShowModalDelete(i)">
                     <i class="fa fa-trash pe-1"></i> {{ "Hapus" | translate }}
                   </button>
                 </td>
@@ -183,5 +145,58 @@
           </div>
         </c-modal-body>
     </c-modal>
+
+    <c-modal #formModalDelete [fullscreen]="false" [visible]="isShowModalDelete" backdrop="static" #modalLg 
+      id="formModalDelete"    [attr.aria-hidden]="!isShowModalDelete">
+        <c-modal-header>
+          <h5 cModalTitle>Konfirmasi Hapus</h5>
+          <button (click)="isShowModalDelete = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalDelete.id"
+            cButtonClose><i class="fa fa-times"></i></button>
+        </c-modal-header>
+        <c-modal-body>
+          <p class="text-center">Apakah anda ingin menghapus data?</p>
+          <div class="d-flex justify-center py-2">
+            <button class="btn btn-danger text-white" (click)="deleteBarang()">Iya</button>
+            &nbsp;
+            <button class="btn btn-light"  (click)="isShowModalDelete = false">Tidak</button>
+    
+          </div>
+        </c-modal-body>
+    </c-modal>
+
+    <c-modal #formModalOnSubmit [fullscreen]="false" [visible]="isShowModalOnSubmit" backdrop="static" #modalLg 
+    id="formModalOnSubmit"    [attr.aria-hidden]="!isShowModalOnSubmit">
+      <c-modal-header>
+        <h5 cModalTitle>Konfirmasi Simpan  </h5>
+        <button (click)="isShowModalOnSubmit = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalOnSubmit.id"
+          cButtonClose><i class="fa fa-times"></i></button>
+      </c-modal-header>
+      <c-modal-body>
+        <p class="text-center">Apakah anda ingin menyimpan data?</p>
+        <div class="d-flex justify-center py-2">
+          <button class="btn btn-danger text-white" (click)="onSubmit()">Iya</button>
+          &nbsp;
+          <button class="btn btn-light"  (click)="isShowModalOnSubmit = false">Tidak</button>
+  
+        </div>
+      </c-modal-body>
+  </c-modal>
+    <!-- <c-modal #staticBackdropModal backdrop="static" id="staticBackdropModal">
+      <c-modal-header>
+        <h5 cModalTitle>Cetak</h5>
+        <button [cModalToggle]="staticBackdropModal.id" cButtonClose></button>
+      </c-modal-header>
+      <c-modal-body>
+        <div class="d-flex justify-center py-2">
+          <button class="btn btn-success" (click)="previewOrCetak('preview')">Preview</button>
+          &nbsp;
+          <button class="btn btn-light" (click)="previewOrCetak('Download')">Cetak</button>
+  
+        </div>
+      </c-modal-body>
+    </c-modal> -->
+  
+
+    
   </c-card>
-</div>
+<!-- </div> -->

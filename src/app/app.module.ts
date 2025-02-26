@@ -59,6 +59,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
+import { NgxPaginationModule } from 'ngx-pagination';
+
 
 const APP_CONTAINERS = [
   DefaultFooterComponent,
@@ -119,6 +121,7 @@ export function initializeApp(appConfig: AppConfig) {
     BsDatepickerModule.forRoot(),
     NgxDaterangepickerMd.forRoot(),
     SelectDropDownModule,
+    NgxPaginationModule
   ],
   providers: [
     {
