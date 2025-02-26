@@ -14,7 +14,7 @@ import { RevisiDoEditComponent } from './revisi-do/revisi-do-edit/revisi-do-edit
 import { WastageListComponent } from './pemusnahan-wastage/dt-list/wastage-list.component';
 import { AddWastageComponent } from './pemusnahan-wastage/add-data/add-data.component';
 import { AddDataDetailWastageComponent } from './pemusnahan-wastage/add-data-detail/add-data-detail.component';
-
+import { AddDataDetailGudangComponent } from './add-data-gudang/detail-add-data-gudang/detail-add-data-gudang.component';
 const routes: Routes = [
   {
     path: '',
@@ -67,6 +67,10 @@ const routes: Routes = [
       {
         path: 'receipt-from-warehouse/tambah-data',
         component: AddDataGudangComponent,
+      },
+      { 
+        path: 'receipt-from-warehouse/tambah-data/detail-add-data-gudang',
+        component: AddDataDetailGudangComponent,
       },
     ],
   },

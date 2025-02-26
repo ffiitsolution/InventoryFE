@@ -38,6 +38,7 @@ import { RevisiDoEditComponent } from './revisi-do/revisi-do-edit/revisi-do-edit
 import { WastageListComponent } from './pemusnahan-wastage/dt-list/wastage-list.component';
 import { AddWastageComponent } from './pemusnahan-wastage/add-data/add-data.component';
 import { AddDataDetailWastageComponent } from './pemusnahan-wastage/add-data-detail/add-data-detail.component';
+import { AddDataDetailGudangComponent } from './add-data-gudang/detail-add-data-gudang/detail-add-data-gudang.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -79,7 +80,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     RevisiDoEditComponent,
     WastageListComponent,
     AddWastageComponent,
-    AddDataDetailWastageComponent
+    AddDataDetailWastageComponent,
+    AddDataDetailGudangComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })
