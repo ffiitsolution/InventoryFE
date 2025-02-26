@@ -179,7 +179,10 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
         },
       ],
       searchDelay: 1500,
-      order: [[9, 'asc']],
+      order: [
+        [9, 'asc'],
+        [1, 'asc'],
+      ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)

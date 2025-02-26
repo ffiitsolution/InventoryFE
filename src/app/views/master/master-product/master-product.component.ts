@@ -155,7 +155,10 @@ export class MasterProductComponent
         },
       ],
       searchDelay: 1500,
-      order: [[7, 'asc']],
+      order: [
+        [7, 'asc'],
+        [1, 'asc'],
+      ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
