@@ -245,7 +245,7 @@ export class MasterSupplierAddComponent implements OnInit {
     let temp_regex =
       type == 'kodeSupplier' //kode supplier
         ? /^[0-9\$]$/
-        : type == 'namaSupplier' //nama cabang
+        : type == 'namaSupplier' //nama supplier
         ? /^[a-zA-Z0-9-+().,&/ '\-]*$/
         : type == 'kodeSingkat' //kode singkat
         ? /^[A-Z0-9&-]$/

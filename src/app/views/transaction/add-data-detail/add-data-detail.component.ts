@@ -167,7 +167,7 @@ export class AddDataDetailDeliveryComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/transaction/delivery-item/add-data']);
+    this.router.navigate(['/transaction/delivery-item']);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

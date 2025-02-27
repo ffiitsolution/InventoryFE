@@ -17,7 +17,6 @@ import * as moment from 'moment';
 import {
   ACTION_SELECT,
   ACTION_VIEW,
-  DEFAULT_DELAY_TABLE,
   DEFAULT_DELAY_TIME,
   LS_INV_SELECTED_DELIVERY_ORDER,
 } from '../../../../../constants';
@@ -68,24 +67,6 @@ export class EntryPackingListComponent
     private appService: AppService
   ) {
     this.minDate.setDate(this.minDate.getDate() - 7);
-  }
-
-/*************  ✨ Codeium Command ⭐  *************/
-  /**
-   * Initializes component data and configurations.
-   * - Retrieves and parses 'listNoDO' from local storage.
-   * - Calls the method to process delivery orders.
-   * - Configures DataTables settings, including pagination and server-side processing.
-   * - Sets up AJAX call for retrieving warehouse list with area code filtering.
-   * - Defines table columns and their rendering logic.
-   * - Configures row callback for handling action button clicks.
-   */
-
-/******  4fa3670d-12eb-42f6-bc6c-660137910294  *******/
-  ngOnInit(): void {
-    this.nomorDoList = JSON.parse(localStorage.getItem('listNoDO') || '[]');
-    this.getProsesDoBalik();
-
     this.dtOptions_2 = {
       paging: true,
       pageLength: 5,
@@ -144,7 +125,7 @@ export class EntryPackingListComponent
           },
         },
       ],
-      searchDelay: 1000,
+      searchDelay: 600,
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-select', row).on('click', () =>
           this.actionBtnClick(ACTION_SELECT, data)
@@ -153,6 +134,11 @@ export class EntryPackingListComponent
       },
       order: [[2, 'desc']],
     };
+  }
+
+  ngOnInit(): void {
+    this.nomorDoList = JSON.parse(localStorage.getItem('listNoDO') || '[]');
+    this.getProsesDoBalik();
 
   }
 
