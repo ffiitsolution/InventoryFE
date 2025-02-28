@@ -42,7 +42,9 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.g.clearLocalstorage();
+    if (!this.service.isLoggednIn()) {
+      this.g.clearLocalstorage();
+    }
   }
 
   onLoginPressed() {
@@ -69,12 +71,14 @@ export class LoginComponent implements OnInit {
             this.errorMessage = res.message;
           } else {
             const { locations, user, token } = res.data;
-            console.log("user.defaultLocation",user.defaultLocation)
+            console.log('user.defaultLocation', user.defaultLocation);
             const transformedUser = {
               ...user,
               defaultLocation: user.defaultLocation
-              ? locations.find((item: any) => item.kodeLocation === user.defaultLocation)
-              : null,         
+                ? locations.find(
+                    (item: any) => item.kodeLocation === user.defaultLocation
+                  )
+                : null,
             };
             this.g.saveLocalstorage('inv_locations', locations);
             this.g.saveLocalstorage('inv_currentUser', transformedUser);
