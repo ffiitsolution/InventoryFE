@@ -93,18 +93,18 @@ export class TableSetNumberComponent
         },
         {
           data: 'kodeTransaksi',
-          title: 'Kode',
+          title: 'Kode Loket',
           orderable: true,
           searchable: true,
         },
         {
           data: 'keterangan',
-          title: 'Keterangan',
+          title: 'Keterangan Loket',
           orderable: true,
           searchable: true,
         },
         {
-          title: 'Opsi',
+          title: 'Action',
           render: () => {
             return `
             <div class="btn-group" role="group" aria-label="Action">

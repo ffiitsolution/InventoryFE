@@ -10,17 +10,40 @@
     <c-card-body>
       <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
         <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Kode" | translate
-          }}</label>
+          <label class="col-sm-2 col-form-label"
+            >{{ "Kode Satuan" | translate }}
+            <span class="stamp-required show">&nbsp;*</span>
+          </label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" formControlName="code" />
+            <input
+              type="text"
+              class="form-control"
+              formControlName="code"
+              [readOnly]="editing"
+              maxlength="10"
+              (keypress)="conditionInput($event, 'code')"
+              (input)="convertToUppercase('code')"
+            />
+            <span
+              *ngIf="
+                myForm.controls['code'].hasError('required') &&
+                myForm.controls['code'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 10 karakter)" | translate }}</span
+            >
+            <span
+              *ngIf="myForm.controls['code'].hasError('code')"
+              class="text-danger"
+              >{{ "Kode Satuan hanya boleh mengandung huruf." | translate }}
+            </span>
           </div>
         </div>
         <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Nama" | translate
-          }}</label>
+          <label class="col-sm-2 col-form-label">
+            {{ "Nama Satuan" | translate }}
+            <span class="stamp-required show">&nbsp;* </span>
+          </label>
           <div class="col-sm-10">
             <input
               type="text"
@@ -28,69 +51,22 @@
               formControlName="desc"
               [readOnly]="editing"
               (input)="convertToUppercase('desc')"
-              (keypress)="conditionInput($event, 'alphabet')"
+              (keypress)="conditionInput($event, 'desc')"
               maxlength="30"
             />
-          </div>
-        </div>
-        <div class="divider"></div>
-
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6">
-              <!-- left column -->
-              <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Dibuat Oleh" | translate
-                }}</label>
-                <div class="col-sm-8">
-                  <input
-                    type="text"
-                    class="form-control"
-                    formControlName="userCreate"
-                  />
-                </div>
-              </div>
-              <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Tanggal Dibuat" | translate
-                }}</label>
-                <div class="col-sm-8">
-                  <input
-                    type="text"
-                    class="form-control"
-                    formControlName="dateCreate"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <!-- right column -->
-              <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Diperbarui Oleh" | translate
-                }}</label>
-                <div class="col-sm-8">
-                  <input
-                    type="text"
-                    class="form-control"
-                    formControlName="userUpdate"
-                  />
-                </div>
-              </div>
-              <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Tanggal Diperbarui" | translate
-                }}</label>
-                <div class="col-sm-8">
-                  <input
-                    type="text"
-                    class="form-control"
-                    formControlName="dateUpdate"
-                  />
-                </div>
-              </div>
-            </div>
+            <span
+              *ngIf="
+                myForm.controls['desc'].hasError('required') &&
+                myForm.controls['desc'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 30 karakter)" | translate }}</span
+            >
+            <span
+              *ngIf="myForm.controls['desc'].hasError('desc')"
+              class="text-danger"
+              >{{ "Nama Satuan hanya boleh mengandung huruf." | translate }}
+            </span>
           </div>
         </div>
 

@@ -117,11 +117,11 @@ export class PackagingListComponent
 
           if (index === -1) {
             this.selectedRows.push(data);
-            $('td', row).addClass('bg-info text-white fw-semibold');
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
             checkbox.prop('checked', true);
           } else {
             this.selectedRows.splice(index, 1);
-            $('td', row).css({ 'background-color': '' }).removeClass('bg-info text-white fw-semibold');
+            $('td', row).css({ 'background-color': '' }).removeClass('bg-secondary bg-opacity-25 fw-semibold');
             checkbox.prop('checked', false);
           }
           if ($(event.target).is('.select-row')) {

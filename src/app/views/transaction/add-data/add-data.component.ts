@@ -79,7 +79,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
         rangeInputFormat: 'dd/MMm/yyyy',
       }
     );
-    this.globalService.navbarVisibility = true;
+    this.globalService.navbarVisibility = false;
 
     this.renderDataTables();
     const today = new Date().toISOString().split('T')[0];
@@ -214,10 +214,10 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
           }, 0);
         }
         $('td', row).on('click', () => {
-          $('td').removeClass('bg-info text-white fw-semibold');
+          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
           if (this.selectedRowData !== data) {
             this.selectedRowData = data;
-            $('td', row).addClass('text-white bg-info fw-semibold');
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
           } else {
             this.selectedRowData = undefined;
           }

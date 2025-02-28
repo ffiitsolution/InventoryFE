@@ -1,249 +1,249 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <c-row>
-        <div
-          class="d-grid gap-3 d-md-flex justify-content-start align-items-center"
-        >
-          <h5>{{ "Tambah Order To Supplier Via RSC" | translate }}</h5>
-        </div>
-      </c-row>
+      <h5>{{ "Tambah" | translate }} {{ "Pesanan" | translate }} {{ "Ke" | translate }}  {{ "Supplier" | translate }}  {{ "Melalui" | translate }} {{ "RSC" | translate }}   </h5>
     </c-card-body>
   </c-card>
-
+</div>
+<div class="fade-in">
   <c-card class="mb-4">
-    <c-card-body>
-      <c-row>
-        <div class="d-flex">
-          <div class="col-sm-12 d-flex gap-2">
-            <div style="width: 25%">
-              <label for="nomorPesanan" class="form-label">{{
-                "Tanggal Pesanan" | translate
-              }}</label>
-              <div class="d-flex">
-                <input
-                  type="date"
-                  placeholder="Order Number"
-                  class="form-control"
-                  id="nomorPesanan"
-                  [(ngModel)]="formData.nomorPesanan"
-                  name="nomorPesanan"
-                />
-                <!-- <button
-                  type="button"
-                  class="btn btn-primary ms-2"
-                  [cModalToggle]="formModal.id"
-                  (click)="onShowModal()"
-                >
-                  <i class="fa fa-search"></i>
-                </button> -->
-              </div>
-            </div>
-            <div style="width: 25%">
-              <label for="nomorPesanan" class="form-label">{{
-                "Tanggal Kirim Barang" | translate
-              }}</label>
-              <div class="d-flex">
-                <input
-                  type="date"
-                  placeholder="Order Number"
-                  class="form-control"
-                  id="nomorPesanan"
-                  [(ngModel)]="formData.nomorPesanan"
-                  name="nomorPesanan"
-                />
-                <!-- <button
-                  type="button"
-                  class="btn btn-primary ms-2"
-                  [cModalToggle]="formModal.id"
-                  (click)="onShowModal()"
-                >
-                  <i class="fa fa-search"></i>
-                </button> -->
-              </div>
-            </div>
-            <div style="width: 25%">
-              <label for="nomorPesanan" class="form-label">{{
-                "Tanggal Batal Pesanan" | translate
-              }}</label>
-              <div class="d-flex">
-                <input
-                  type="date"
-                  placeholder="Order Number"
-                  class="form-control"
-                  id="nomorPesanan"
-                  [(ngModel)]="formData.nomorPesanan"
-                  name="nomorPesanan"
-                />
-                <!-- <button
-                  type="button"
-                  class="btn btn-primary ms-2"
-                  [cModalToggle]="formModal.id"
-                  (click)="onShowModal()"
-                >
-                  <i class="fa fa-search"></i>
-                </button> -->
-              </div>
-            </div>
-            <div style="width: 25%">
-              <label for="nomorPesanan" class="form-label">{{
-                "Tujuan Admin RSC" | translate
-              }}</label>
-              <div class="d-flex">
-                <input
-                  type="text"
-                  placeholder="Order Number"
-                  class="form-control"
-                  id="nomorPesanan"
-                  [(ngModel)]="formData.nomorPesanan"
-                  name="nomorPesanan"
-                />
-                <button
-                  type="button"
-                  class="btn btn-primary ms-2"
-                  [cModalToggle]="formModal.id"
-                  (click)="onShowModal()"
-                >
-                  <i class="fa fa-search"></i>
-                </button>
-              </div>
-            </div>
+    <div class="row">
+      <div class="col-4 pe-0" sty>
+        <div>
+          <div class="p-2">
+            <c-card-body class="pd-0">
+              <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+
+                <div class="mb-3 row">
+                  <label class="col-sm-6 col-form-label">{{
+                      "Tgl. Pesanan" | translate
+                    }}
+                    <span class="stamp-required show">&nbsp;*</span>
+                  </label>
+                  <div class="col-sm-6">
+                    <input
+                      type="text"
+                      id="tanggalPesanan"
+                      class="form-control"
+                      bsDatepicker
+                      [bsConfig]="dpConfig"
+                      aria-describedby="tanggalPesanan"
+                      formControlName="tanggalPesanan"
+                      #dp="bsDatepicker"
+                      placeholder="{{ 'Tanggal Pesanan' | translate }}"
+                    />
+                    <span *ngIf="isFieldValid('tanggalPesanan')" class="text-danger">{{
+                      "Wajib diisi" | translate
+                    }}</span>
+                  </div>
+                </div>
+                <div class="mb-3 row">
+                  <label class="col-sm-6 col-form-label">{{
+                      "Tgl. Kirim Barang" | translate
+                    }}
+                    <span class="stamp-required show">&nbsp;*</span>
+                  </label>
+                  <div class="col-sm-6">
+                    <input
+                      type="text"
+                      id="tanggalKirimBarang"
+                      class="form-control"
+                      bsDatepicker
+                      [bsConfig]="dpConfigTglKirimBarang"
+                      aria-describedby="tanggalKirimBarang"
+                      formControlName="tanggalKirimBarang"
+                      #dp="bsDatepicker"
+                      placeholder="{{ 'Tanggal Kirim Barang' | translate }}"
+                      (bsValueChange)="onDateChangeTglKirimBarang($event)"
+                    />
+                    <span *ngIf="isFieldValid('tanggalKirimBarang')" class="text-danger">{{
+                      "Wajib diisi" | translate
+                    }}</span>
+                  </div>
+                </div>
+                <div class="mb-3 row">
+                  <label class="col-sm-6 col-form-label">{{
+                    "Tgl. Batal Pesanan" | translate
+                  }}
+                  <span class="stamp-required show">&nbsp;*</span>
+                  </label>
+                  <div class="col-sm-6">
+                    <input
+                      type="text"
+                      id="tanggalBatalPesanan"
+                      class="form-control"
+                      bsDatepicker
+                      [bsConfig]="dpConfigTglBatalPesanan"
+                      aria-describedby="tanggalBatalPesanan"
+                      formControlName="tanggalBatalPesanan"
+                      #dp="bsDatepicker"
+                      placeholder="{{ 'Tanggal Batal Pesanan' | translate }}"
+                    />
+                    <span *ngIf="isFieldValid('tanggalBatalPesanan')" class="text-danger">{{
+                      "Wajib diisi" | translate
+                    }}</span>
+                    <span class="text-danger" *ngIf="compareDates(myForm.value.tanggalKirimBarang, myForm.value.tanggalBatalPesanan)">
+                      {{"Tanggal batal pesanan tidak boleh kurang dari tanggal kirim barang" | translate}}
+                    </span>
+                  </div>
+                </div>
+                <div class="divider"></div>
+                <div class="mb-3 row">
+                  <label class="col-sm-12 col-form-label">{{
+                    "Gudang Tujuan" | translate
+                  }}
+                    <span class="stamp-required show">&nbsp;*</span>
+                  </label>
+                  <div class="col-sm-12">
+                    <ngx-select-dropdown
+                      [multiple]="false"
+                      [config]="configSelectGudang"
+                      [options]="listGudang"
+                      formControlName="gudangTujuan"
+                      id="gudangTujuan"
+                      (change)="onGudangTujuanChange($event)"
+                      style="width: 250px !important; max-width: 250px !important;">
+                      >
+                    </ngx-select-dropdown>
+                    <span *ngIf="isFieldValid('gudangTujuan')" class="text-danger">{{
+                      "Wajib diisi" | translate
+                    }}</span>
+                    <span 
+                    *ngIf="currentUser?.defaultLocation?.kodeLocation === myForm.value?.gudangTujuan?.id" 
+                    class="text-danger">{{
+                      "Tidak boleh order ke gudang sendiri" | translate
+                    }}</span>
+                  </div>
+                </div>
+
+                <!-- <div class="mb-3 row">
+                  <label class="col-sm-12 col-form-label">{{
+                    "Nama Gudang" | translate
+                  }}
+                </label>
+                  <div class="col-sm-12">
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="namaGudang"
+                      [readOnly]="adding"
+                      (keypress)="conditionInput($event, 'alphanumeric')"
+                      maxlength="50"
+                    />
+                    <span *ngIf="isFieldValid('namaGudang')" class="text-danger">{{
+                      "Wajib diisi" | translate
+                    }}</span>
+                  </div>
+                </div>
+                <div class="mb-3 row">
+                  <label class="col-sm-12 col-form-label">{{
+                    "Alamat Gudang" | translate 
+                    }} 
+                  </label>
+                  <div class="col-sm-12">
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="alamatGudang"
+                      [readOnly]="adding"
+                      (keypress)="conditionInput($event, 'alphabet')"
+                      maxlength="100"
+                    />
+                    <span *ngIf="isFieldValid('alamatGudang')" class="text-danger">{{
+                      "Wajib diisi" | translate
+                    }}</span>
+                  </div>
+                </div>
+              
+                
+                <div class="mb-3 row">
+                  <label class="col-sm-12 col-form-label">{{
+                    "Status Gudang" | translate
+                  }}</label>
+                  <div class="col-sm-12">
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="statusGudang"
+                      [readOnly]="adding"
+                      maxlength="20"
+                    />
+                  </div>
+                </div> -->
+
+                <div class="mb-3 row">
+                  <label class="col-sm-12 col-form-label">{{
+                    "Kode Singkat" | translate
+                  }}</label>
+                  <div class="col-sm-12">
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="kodeSingkat"
+                      [readOnly]="adding"
+                      maxlength="20"
+                    />
+                  </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="mb-3 row">
+                  <label class="col-sm-12 col-form-label">{{
+                    "Catatan 1" | translate
+                  }}</label>
+                  <div class="col-sm-12">
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="catatan1"
+                      [readOnly]="adding"
+                      (keypress)="conditionInput($event, 'excludedSensitive')"
+                      maxlength="100"
+                    />
+                  </div>
+                </div>
+
+                <div class="mb-3 row">
+                  <label class="col-sm-12 col-form-label">{{
+                    "Catatan 2" | translate
+                  }}</label>
+                  <div class="col-sm-12">
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="catatan2"
+                      [readOnly]="adding"
+                      (keypress)="conditionInput($event, 'excludedSensitive')"
+                      maxlength="50"
+                    />
+                  </div>
+                </div>
+                <div class="divider"></div>
+                <div class="d-grid gap-3 d-md-flex justify-content-end">
+                  <button
+                    class="btn btn-light btn-120"
+                    (click)="onPreviousPressed()"
+                    [disabled]="adding"
+                  >
+                    {{ "Kembali" | translate }}
+                  </button>
+                  <button
+                    class="btn btn-info text-white btn-150"
+                    type="submit"
+                    [disabled]="adding"
+                  >
+                    <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
+                    <span *ngIf="!adding"
+                      >{{ "Buat" | translate }} {{ "Pesanan" | translate }}</span
+                    >
+                  </button>
+                </div>
+              </form>
+            </c-card-body>
           </div>
         </div>
-
-        <div class="divider mt-4"></div>
-        <div class="d-flex col-sm-12 gap-1">
-          <div style="width: 45%">
-            <label for="alamat1" class="form-label">{{
-              "Destination Address" | translate
-            }}</label>
-            <textarea
-              placeholder="Destination Address"
-              class="form-control w-100"
-              [(ngModel)]="formData.alamat1"
-              id="exampleFormControlTextarea1"
-              rows="1"
-              name="alamat1"
-              readonly
-            ></textarea>
-          </div>
-          <div style="width: 45%">
-            <label for="alamat1" class="form-label">{{
-              "Destination Address" | translate
-            }}</label>
-            <textarea
-              placeholder="Destination Address"
-              class="form-control w-100"
-              [(ngModel)]="formData.alamat1"
-              id="exampleFormControlTextarea1"
-              rows="1"
-              name="alamat1"
-              readonly
-            ></textarea>
-          </div>
-          <div style="width: 10%">
-            <label for="alamat1" class="form-label">{{
-              "Jumlah Item" | translate
-            }}</label>
-            <input
-              placeholder="0"
-              class="form-control w-100"
-              [(ngModel)]="formData.alamat1"
-              id="exampleFormControlTextarea1"
-              rows="1"
-              name="alamat1"
-              readonly
-            />
-          </div>
-        </div>
-      </c-row>
-    </c-card-body>
-  </c-card>
-
-  <c-card class="mb-4">
-    <c-card-body class="slide-in">
-      <div class="d-flex">
-        <!-- <div class="w-50 p-2">
-          <div class="mb-3">
-            <label for="validatedDeliveryDate" class="form-label"
-              >{{ "Validated Delivery Date" | translate }}
-              <span class="text-danger">*</span></label
-            >
-
-            <input
-              type="text"
-              id="validatedDeliveryDate"
-              class="form-control"
-              aria-describedby="validatedDeliveryDate"
-              #dp="bsDatepicker"
-              [bsConfig]="dpConfig"
-              bsDatepicker
-              autocomplete="off"
-              [(ngModel)]="formData.validatedDeliveryDate"
-              placeholder="{{ 'Validated Delivery Date' | translate }}"
-              [minDate]="minDate"
-              [maxDate]="maxDate"
-              [readOnly]="formData.nomorPesanan === ''"
-            />
-          </div>
-        </div>
-        <div class="w-50 p-2">
-          <div class="mb-3">
-            <label for="notes" class="form-label">{{
-              "Notes" | translate
-            }}</label>
-            <input
-              placeholder="Notes"
-              type="text"
-              class="form-control"
-              id="notes"
-              [(ngModel)]="formData.notes"
-              name="notes"
-            />
-          </div>
-        </div> -->
       </div>
-      <div class="d-flex justify-content-end mb-3">
-        <!-- <button
-          class="btn btn-primary"
-          [disabled]="formData.nomorPesanan === ''"
-          (click)="onAddDetail()"
-        >
-          {{ "Detail Transaksi" | translate }}
-        </button> -->
-      </div>
-    </c-card-body>
-
-    <c-modal
-      #formModal
-      [fullscreen]="false"
-      [visible]="isShowModal"
-      [backdrop]="true"
-      #modalLg
-      size="xl"
-      id="formModal"
-    >
-      <c-modal-header>
-        <h5 cModalTitle>Add Receiving Order</h5>
-        <button
-          (click)="isShowModal = false"
-          type="button"
-          class="btn btn-primary ms-2"
-          [cModalToggle]="formModal.id"
-          cButtonClose
-        >
-          <i class="fa fa-times"></i>
-        </button>
-      </c-modal-header>
-      <c-modal-body>
-        <div class="table-responsive">
-          <table
-            datatable
-            [dtOptions]="dtOptions"
-            class="row-border hover w-100"
-          ></table>
-        </div>
-      </c-modal-body>
-    </c-modal>
+    </div>
   </c-card>
 </div>

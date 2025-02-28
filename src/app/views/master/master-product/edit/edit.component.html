@@ -24,11 +24,25 @@
                     class="form-control"
                     formControlName="kodeBarang"
                     maxlength="10"
+                    (keypress)="conditionInput($event, 'kodeBarang')"
                   />
-                  <span *ngIf="isInvalid('kodeBarang')" class="text-danger"
-                    >{{ "Wajib diisi" | translate }}
-                  </span>
                 </div>
+                <span
+                  *ngIf="
+                    myForm.controls['kodeBarang']?.hasError('required') &&
+                    myForm.controls['kodeBarang']?.touched
+                  "
+                  class="text-danger"
+                  >{{ "Wajib diisi (max. 10 karakter)" | translate }}
+                </span>
+                <span
+                  *ngIf="myForm.controls['kodeBarang']?.hasError('kodeBarang')"
+                  class="text-danger"
+                  >{{
+                    "Kode Cabang hanya boleh mengandung angka dan tanda strip (-)."
+                      | translate
+                  }}</span
+                >
               </div>
             </div>
             <!-- right column -->
@@ -45,11 +59,25 @@
                     formControlName="namaBarang"
                     maxlength="50"
                     (input)="convertToUppercase('namaBarang')"
+                    (keypress)="conditionInput($event, 'namaBarang')"
                   />
-                  <span *ngIf="isInvalid('namaBarang')" class="text-danger"
-                    >{{ "Wajib diisi" | translate }}
-                  </span>
                 </div>
+                <span
+                  *ngIf="
+                    myForm.controls['namaBarang']?.hasError('required') &&
+                    myForm.controls['namaBarang']?.touched
+                  "
+                  class="text-danger"
+                  >{{ "Wajib diisi (max. 10 karakter)" | translate }}
+                </span>
+                <span
+                  *ngIf="myForm.controls['namaBarang']?.hasError('namaBarang')"
+                  class="col-sm-8 text-danger"
+                  >{{
+                    "Nama Barang hanya boleh mengandung huruf, angka, spasi, ampersand (&), strip (-), tanda kurung (), dan titik (.)."
+                      | translate
+                  }}</span
+                >
               </div>
             </div>
           </div>
@@ -59,13 +87,13 @@
         <!-- detail Konversi dan default gudang -->
         <div class="container">
           <div class="row">
-            <div class="col-md-4 vertical-divider mb-3">
+            <div class="col-md-3 vertical-divider mb-3">
               <div class="row">
-                <label class="col-sm-5 col-form-label">
+                <label class="col-sm-6 col-form-label">
                   {{ "Konversi " | translate }}
                   <span class="stamp-required show">&nbsp;*</span>
                 </label>
-                <div class="col-sm-7">
+                <div class="col-sm-6">
                   <input
                     style="text-align: right"
                     type="text"
@@ -96,13 +124,13 @@
                 </span>
               </div>
             </div>
-            <div class="col-md-4 vertical-divider mb-3">
+            <div class="col-md-3 vertical-divider mb-3">
               <div class="row">
-                <label class="col-sm-5 col-form-label">
+                <label class="col-sm-6 col-form-label">
                   {{ "Satuan Kecil " | translate }}
                   <span class="stamp-required show">&nbsp;*</span>
                 </label>
-                <div class="col-sm-7">
+                <div class="col-sm-6">
                   <ngx-select-dropdown
                     [multiple]="false"
                     [options]="uomSatuanKecilList"
@@ -140,14 +168,14 @@
                     </div>
                   </div> -->
             </div>
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 vertical-divider mb-3">
               <!-- right column -->
               <div class="row">
-                <label class="col-sm-5 col-form-label">
+                <label class="col-sm-6 col-form-label">
                   {{ "Satuan Besar " | translate }}
                   <span class="stamp-required show">&nbsp;*</span>
                 </label>
-                <div class="col-sm-7">
+                <div class="col-sm-6">
                   <ngx-select-dropdown
                     [multiple]="false"
                     [options]="uomSatuanBesarList"
@@ -160,6 +188,40 @@
                   <span *ngIf="isInvalid('satuanBesar')" class="text-danger"
                     >{{ "Wajib diisi" | translate }}
                   </span>
+                </div>
+              </div>
+              <!-- <div class="row">
+                    <label
+                      class="d-flex justify-content-center align-items-end col-form-label"
+                      >{{ "Satuan Besar" | translate
+                      }}<span class="stamp-required show">&nbsp;*</span></label
+                    >
+                    <div class="col-sm-12">
+                      <ngx-select-dropdown
+                        [multiple]="false"
+                        formControlName="keteranganRsc"
+                        id="keteranganRsc"
+                      >
+                      </ngx-select-dropdown>
+                    </div>
+                  </div> -->
+            </div>
+            <div class="col-md-3 mb-3">
+              <!-- right column -->
+              <div class="row">
+                <label class="col-sm-6 col-form-label">
+                  {{ "Satuan Min Order " | translate }}
+                </label>
+                <div class="col-sm-6">
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [options]="uomList"
+                    [config]="configUomSelect"
+                    [bindLabel]="'keteranganUom'"
+                    [bindValue]="'kodeUom'"
+                    formControlName="satuanMinOrder"
+                  >
+                  </ngx-select-dropdown>
                 </div>
               </div>
               <!-- <div class="row">
@@ -434,22 +496,6 @@
                   }}
                 </span>
               </div>
-              <div class="row mb-3">
-                <label class="col-sm-6 col-form-label">
-                  {{ "Satuan Min Order" | translate }}
-                </label>
-                <div class="col-sm-6">
-                  <ngx-select-dropdown
-                    [multiple]="false"
-                    [options]="uomList"
-                    [config]="configUomSelect"
-                    [bindLabel]="'keteranganUom'"
-                    [bindValue]="'kodeUom'"
-                    formControlName="satuanMinOrder"
-                  >
-                  </ngx-select-dropdown>
-                </div>
-              </div>
             </div>
             <div class="col-md-4 mb-3">
               <div class="row mb-3">
@@ -614,13 +660,27 @@
                     class="form-control"
                     formControlName="lokasiBarang"
                     maxlength="50"
+                    (keypress)="conditionInput($event, 'excludedSensitive')"
                   />
                 </div>
+                <span
+                  *ngIf="
+                    myForm.controls['lokasiBarang']?.hasError(
+                      'excludedSensitive'
+                    )
+                  "
+                  class="text-danger"
+                  >{{
+                    "Lokasi Rak Barang hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), dan tanda kurung ()."
+                      | translate
+                  }}
+                </span>
               </div>
               <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Status Aktif" | translate
-                }}</label>
+                <label class="col-sm-4 col-form-label"
+                  >{{ "Status Aktif" | translate
+                  }}<span class="stamp-required show">&nbsp;*</span>
+                </label>
                 <c-col xs="8">
                   <c-row class="mt-2">
                     <c-col xs="6">
@@ -631,7 +691,7 @@
                           id="active"
                           type="radio"
                           value="A"
-                          name="status"
+                          name="statusAktif"
                           formControlName="statusAktif"
                         />
                         <label
@@ -649,7 +709,7 @@
                           id="inactive"
                           type="radio"
                           value="T"
-                          name="status"
+                          name="statusAktif"
                           formControlName="statusAktif"
                         />
                         <label
@@ -662,6 +722,14 @@
                     </c-col>
                   </c-row>
                 </c-col>
+                <span
+                  *ngIf="
+                    myForm.controls['statusAktif']?.hasError('required') &&
+                    myForm.controls['statusAktif']?.touched
+                  "
+                  class="text-danger"
+                  >{{ "Wajib diisi" | translate }}
+                </span>
               </div>
             </div>
             <div class="col-md-6">
@@ -674,8 +742,21 @@
                     cFormControl
                     rows="4"
                     formControlName="keteranganBrg"
+                    (keypress)="conditionInput($event, 'excludedSensitive')"
                   ></textarea>
                 </div>
+                <span
+                  *ngIf="
+                    myForm.controls['keteranganBrg']?.hasError(
+                      'excludedSensitive'
+                    )
+                  "
+                  class="text-danger"
+                  >{{
+                    "Keterangan hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), dan tanda kurung ()."
+                      | translate
+                  }}
+                </span>
               </div>
             </div>
           </div>

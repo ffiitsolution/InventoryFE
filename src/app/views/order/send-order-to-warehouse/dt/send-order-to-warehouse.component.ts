@@ -61,6 +61,12 @@ export class SendOrderToWarehouseComponent
   generatePdfUrl: string = "/api/send-order-to-warehouse/report";
   generateReportParam : string;
 
+  isShowModalKirim: boolean = false;
+  selectedRowKirim: any;
+
+  selectedRowCetak: any = false;
+  isShowModalCetak: boolean;
+
   protected config = AppConfig.settings.apiServer;
 
   constructor(
@@ -259,11 +265,17 @@ export class SendOrderToWarehouseComponent
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
         );
-        $('.action-send', row).on('click', () =>
-          this.updateStatus(data)
+        $('.action-send', row).on('click', () =>{
+          // this.updateStatus(data)
+          this.selectedRowKirim = data;
+          this.isShowModalKirim=true;
+        }
         );
-        $('.action-print', row).on('click', () =>
-          this.onClickPrint(data)
+        $('.action-print', row).on('click', () =>{
+          // this.onClickPrint(data)
+          this.selectedRowCetak = data;
+          this.isShowModalCetak=true;
+        }
         );
         return row;
       },
@@ -289,7 +301,8 @@ export class SendOrderToWarehouseComponent
     }
   }
 
-  updateStatus(data: any = null) {
+  updateStatus() {
+    const data = this.selectedRowKirim
     this.dataUser = this.g.getLocalstorage('inv_currentUser');
     const params = {
       statusKirim : "S",
@@ -316,6 +329,7 @@ export class SendOrderToWarehouseComponent
         alert('An error occurred while updating the user.');
       },    
     });
+    this.isShowModalKirim = false;
   }
   dtPageChange(event: any) {}
 
@@ -349,10 +363,10 @@ export class SendOrderToWarehouseComponent
     this.router.navigate(['/order/send-order-to-warehouse/add']);
   }
 
-    async onClickPrint(data: any) {
+    async onClickPrint() {
       try {
         const param = {
-          nomorPesanan : data.nomorPesanan
+          nomorPesanan : this.selectedRowCetak.nomorPesanan
         }
 
         const base64Response = await lastValueFrom(

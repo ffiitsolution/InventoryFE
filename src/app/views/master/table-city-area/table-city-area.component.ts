@@ -93,10 +93,10 @@ export class TableCityAreaComponent
       },
       columns: [
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
-        { data: 'kodeKota', title: 'Kode', orderable: true, searchable: true },
+        { data: 'kodeKota', title: 'Kode Kota', orderable: true, searchable: true },
         {
           data: 'keteranganKota',
-          title: 'Nama',
+          title: 'Nama Kota',
           orderable: true,
           searchable: true,
         },
@@ -105,7 +105,7 @@ export class TableCityAreaComponent
         { data: 'userUpdate', title: 'Diperbarui Oleh', searchable: false },
         { data: 'dateUpdate', title: 'Tanggal Diperbarui', searchable: false },
         {
-          title: 'Opsi',
+          title: 'Action',
           render: () => {
             return `
             <div class="btn-group" role="group" aria-label="Action">

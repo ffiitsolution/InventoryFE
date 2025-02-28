@@ -89,6 +89,7 @@ export class AddDataDetailDeliveryComponent
     this.alreadyPrint =
       this.selectedOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
+    this.g.navbarVisibility = false;
   }
 
   getDeliveryItemDetails() {
@@ -166,7 +167,7 @@ export class AddDataDetailDeliveryComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/transaction/delivery-item/add-data']);
+    this.router.navigate(['/transaction/delivery-item']);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

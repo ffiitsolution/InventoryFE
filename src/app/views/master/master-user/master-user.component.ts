@@ -196,7 +196,10 @@ export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
         },
       ],
       searchDelay: 1500,
-      order: [[6, 'asc']],
+      order: [
+        [6, 'asc'],
+        [1, 'asc'],
+      ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
