@@ -7,53 +7,53 @@
     }
   },
   {
-    "name": "Master",
+    "name": "Masters",
     "iconComponent": {
-      "name": "cil-speedometer"
+      "name": "cil-storage"
     },
     "children": [
       {
-        "name": "Master User",
+        "name": "User",
         "url": "/master/master-user"
       },
       {
-        "name": "Master Cabang & Dept.",
+        "name": "Cabang & Dept.",
         "url": "/master/master-branch"
       },
       {
-        "name": "Master Location",
+        "name": "Location",
         "url": "/master/master-location"
       },
       {
-        "name": "Master Supplier",
+        "name": "Supplier",
         "url": "/master/master-supplier"
       },
       {
-        "name": "Master Barang",
+        "name": "Barang",
         "url": "/master/master-product"
       },
       {
-        "name": "Master RSC",
+        "name": "RSC",
         "url": "/master/master-rsc"
       },
       {
-        "name": "Master Regional",
+        "name": "Regional",
         "url": "/master/master-regional"
       },
       {
-        "name": "Master Area",
+        "name": "Area",
         "url": "/master/master-area"
       },
       {
-        "name": "Master Satuan",
+        "name": "Satuan",
         "url": "/master/master-uom"
       },
       {
-        "name": "Master Wilayah Kota",
+        "name": "Wilayah Kota",
         "url": "/master/master-city-area"
       },
       {
-        "name": "Master Loket",
+        "name": "Loket",
         "url": "/master/master-set-number"
       }
     ]
@@ -61,7 +61,7 @@
   {
     "name": "Pesanan",
     "iconComponent": {
-      "name": "cil-speedometer"
+      "name": "cil-inbox"
     },
     "badge": {
       "color": "info",

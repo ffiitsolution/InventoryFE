@@ -178,7 +178,7 @@ export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
           title: 'Action',
           orderable: false,
           render: () => {
-            if (this.roleId !== '3') {
+            if (this.roleId !== '3' && this.roleId !== '2') {
               return `
                 <div class="btn-group" role="group" aria-label="Action">
                   <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
