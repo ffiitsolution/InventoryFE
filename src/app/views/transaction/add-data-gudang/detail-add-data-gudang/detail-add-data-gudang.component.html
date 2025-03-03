@@ -21,18 +21,39 @@
           class="btn btn-info text-white btn-150 pe-3"
           (click)="onSubmit()"
         >
-          <i class="fa fa-arrow-circle-down" *ngIf="!adding"></i>
+          <i class="fa fa-print" *ngIf="!adding"></i>
           {{ "Simpan" | translate }}
         </button>
 
-        <button
-          class="btn btn-danger text-white btn-150"
-          (click)="onBackPressed()"
-        >
-          <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
-        </button>
+        <div class="btn-group">
+          <button
+            class="btn btn-danger text-white btn-150 dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            (click)="onCetakAtauPrintReport(false, this.selectedOrder.nomorPesanan)"
+          >
+            <i class="fa fa-file-pdf-o"></i> Cetak / Download Report
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <button
+                class="dropdown-item"
+                (click)="handleCetakAtauPrint(false)"
+              >
+                <i class="fa fa-print"></i> Print Report
+              </button>
+            </li>
+            <li>
+              <button
+                class="dropdown-item"
+                (click)="handleCetakAtauPrint(true)"
+              >
+                <i class="fa fa-download"></i> Download PDF
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
-
       <div class="row">
         <div class="divider mt-4"></div>
         <div class="col">
@@ -50,7 +71,9 @@
               <span class="value">{{ selectedOrder.tglPesan }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tanggal Barang Di Terima" | translate }}</span>
+              <span class="label">{{
+                "Tanggal Barang Di Terima" | translate
+              }}</span>
               <span class="value">{{ selectedOrder.tglTerimaBarang }}</span>
             </div>
           </div>
@@ -58,10 +81,21 @@
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">
-              <span class="label">{{ "Kode Gudang Pengirim" | translate }}</span>
+              <span class="label">{{
+                "Tanggal Barang Di Terima" | translate
+              }}</span>
+              <span class="value">{{ selectedOrder.tglTerimaBarang }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{
+                "Kode Gudang Pengirim" | translate
+              }}</span>
               <span class="value">{{ selectedOrder.codeDestination }}</span>
             </div>
-            <div class="detail-item"> <span class="label">{{"Nama Gudang Pengirim" | translate}}</span>
+            <div class="detail-item">
+              <span class="label">{{
+                "Nama Gudang Pengirim" | translate
+              }}</span>
               <span class="value"> {{ selectedOrder.notes }}</span>
             </div>
           </div>
@@ -89,41 +123,78 @@
             <thead>
               <tr>
                 <th
-                  scope="col" style="vertical-align: middle" class="text-center align-items-start" rowspan="2">
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
                   No.
                 </th>
                 <th
-                  scope="col" style="vertical-align: middle" class="text-center align-items-start" rowspan="2">
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
                   Kode Barang
                 </th>
                 <th
-                  scope="col" style="vertical-align: middle" class="text-center align-items-start" rowspan="2">
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
                   Nama Barang
                 </th>
                 <th
-                  scope="col" style="vertical-align: middle" class="text-center align-items-start" rowspan="2">
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
                   Konversi
                 </th>
                 <th
-                  scope="col" style="vertical-align: middle" class="text-center align-items-start" rowspan="2">
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
                   Qty Pesan Besar
                 </th>
                 <th
-                  scope="col" style="vertical-align: middle" class="text-center align-items-start" rowspan="2">
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
                   Qty Pesan Kecil
                 </th>
                 <th
-                  scope="col" style="vertical-align: middle" class="text-center align-items-start" rowspan="2">
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
                   Total Qty Pesan
                 </th>
-                <th scope="col" style="vertical-align: middle" class="text-center align-items-start" rowspan="2">
+                <th
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
                   Total Qty Terima
                 </th>
-                <th scope="col" style="vertical-align: middle" class="text-center align-items-start" rowspan="2">
+                <th
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
                   Total Qty Expired
                 </th>
               </tr>
-              
             </thead>
             <tbody *ngIf="!listOrderData || listOrderData.length === 0">
               <tr>
@@ -146,7 +217,6 @@
                   <div class="d-flex justify-content-center" style="gap: 5px">
                     <input
                       type="number"
-                      
                       max="{{ data.TOTAL_QTY_EXPIRED }}"
                       min="0"
                       class="form-control text-center inputQty inputNumberSpace"

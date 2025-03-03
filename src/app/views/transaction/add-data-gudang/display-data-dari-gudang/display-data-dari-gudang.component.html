@@ -1,0 +1,101 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>{{ "Display Data Dari Gudang" | translate }}</h5>
+        </div>
+        <div class="col text-end">
+          <button type="button" class="btn btn-outline-dark me-2 btn-120" (click)="toggleFilter()">
+            <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
+            {{ "Filter" | translate }}
+          </button>
+        </div>
+
+      </div>
+      <div [visible]="showFilterSection" cCollapse>
+        <div class="divider"></div>
+        <div class="row" style="margin-top: -16px">
+          <c-card-body>
+            <c-row>
+              <c-col>
+                <label class="col-form-label">{{
+                  "Tanggal Terima" | translate
+                  }}</label>
+                <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
+                  aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
+                  placeholder="{{ 'Tanggal Terima' | translate }}" />
+              </c-col>
+              <c-col xs="3" class="text-right d-flex align-items-end justify-content-end">
+                <button type="button" class="btn btn-outline-success me-2 btn-160" (click)="onFilterPressed()">
+                  {{ "Terapkan Filter" | translate }}
+                </button>
+              </c-col>
+            </c-row>
+          </c-card-body>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" (page.dt)="dtPageChange($event)" class="row-border hover"></table>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<div class="fade-in">
+
+  <c-card class="c-card" *ngIf="selectedRowData">
+    <c-card-body>
+      <div class="row p-2 justify-content-end">
+        <div class="col-6">
+          <div class="w-100 mb-2">
+            <label for="tanggalTerima" class="form-label">{{ "Tanggal Terima" | translate }}</label>
+            <input type="text" readonly placeholder="Tanggal Pesan" class="form-control" id="tanggalTerima"
+              [(ngModel)]="selectedRowData.tanggalTerima" name="tanggalTerima" />
+          </div>
+          <div class="w-100 mb-2">
+            <label for="tanggaSuratJalan" class="form-label">{{ "Tanggal Surat Jalan" | translate }}</label>
+            <input type="text" readonly placeholder="Tanggal Surat Jalan" class="form-control" id="tanggaSuratJalan"
+              [(ngModel)]="selectedRowData.tanggalSuratJalan" name="tanggaSuratJalan" />
+          </div>
+          <div class="w-100 mb-2">
+            <label for="nomorPesanan" class="form-label">{{ "Nomor Pesanan" | translate }}</label>
+            <input type="text" readonly placeholder="Nomor Pesanan" class="form-control" id="nomorPesanan"
+              [(ngModel)]="selectedRowData.nomorPesanan" name="nomorPesanan" />
+          </div>
+          <div class="w-100 mb-2">
+            <label for="nomorSuratJalan" class="form-label">{{ "Nomor Surat Jalan" | translate }}</label>
+            <input type="text" readonly placeholder="Nomor Surat Jalan" class="form-control" id="nomorSuratJalan"
+              [(ngModel)]="selectedRowData.nomorSuratJalan" name="nomorSuratJalan" />
+          </div>
+          <div class="w-100 mb-2">
+            <label for="nomorPenerimaan" class="form-label">{{ "Nomor Penerimaan" | translate }}</label>
+            <input type="text" readonly placeholder="Nomor Penerimaan" class="form-control" id="nomorPenerimaan"
+              [(ngModel)]="selectedRowData.nomorPenerimaan" name="nomorPenerimaan" />
+          </div>
+          <div class="w-100 mb-2">
+            <label for="kodeGudangPengirim" class="form-label">{{ "Pengirim" | translate }}</label>
+            <input type="text" readonly placeholder="Kode Gudang Pengirim" class="form-control" id="kodeGudangPengirim"
+              [(ngModel)]="selectedRowData.kodeGudangPengirim" name="kodeGudangPengirim" />
+          </div>
+          <div class="w-100 mb-2">
+            <label for="namaGudangPengirim" class="form-label">{{ "Nama Gudang Pengirim" | translate }}</label>
+            <input type="text" readonly placeholder="Nama Gudang Pengirim" class="form-control" id="namaGudangPengirim"
+              [(ngModel)]="selectedRowData.namaGudangPengirim" name="namaGudangPengirim" />
+          </div>
+          <div class="w-100 mb-2">
+            <label for="statusTransaksi" class="form-label">{{ "Status Transaksi" | translate }}</label>
+            <input type="text" readonly placeholder="Status Transaksi" class="form-control" id="statusTransaksi"
+              [(ngModel)]="selectedRowData.statusTransaksi" name="statusTransaksi" />
+          </div>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>

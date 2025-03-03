@@ -29,15 +29,14 @@ import { HelperService } from '../../../../service/helper.service';
 import { AppService } from '../../../../service/app.service';
 import * as moment from 'moment';
 import { data } from 'jquery';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-detail-add-data-gudang',
   templateUrl: './detail-add-data-gudang.component.html',
   styleUrls: ['./detail-add-data-gudang.component.scss'],
 })
-export class AddDataDetailGudangComponent
-  implements OnInit, OnDestroy, AfterViewInit
-{
+export class AddDataDetailGudangComponent {
   columns: any;
   orders: any[] = [];
   selectedOrder: any = JSON.parse(localStorage[LS_INV_SELECTED_DELIVERY_ORDER]);
@@ -63,7 +62,9 @@ export class AddDataDetailGudangComponent
     private router: Router,
     public helper: HelperService,
     private appService: AppService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private http: HttpClient,
+    private dataService: DataService
   ) {
     this.g.navbarVisibility = true;
     this.selectedOrder = JSON.parse(this.selectedOrder);
@@ -86,8 +87,6 @@ export class AddDataDetailGudangComponent
     this.loading = true;
     this.listOrderData = [];
 
-    console.log(this.selectedOrder);
-
     const params = {
       nomorPesanan: this.selectedOrder.nomorPesanan,
     };
@@ -97,7 +96,6 @@ export class AddDataDetailGudangComponent
         this.listOrderData = res.detailPesanan.map((data: any) => ({
           ...data,
         }));
-        console.log('listorderdata1', this.listOrderData);
         this.totalLength = res?.data?.length;
         this.page = 1;
         setTimeout(() => {
@@ -106,35 +104,34 @@ export class AddDataDetailGudangComponent
       },
       () => {
         this.loading = false;
-        // this.toastr.error(this.errorShowMessage, 'Maaf, Terjadi Kesalahan!');
       }
     );
   }
 
-  onInputValueItemDetail(event: any, index: number) {
-    const target = event.target;
-    const value = target.value;
+  // onInputValueItemDetail(event: any, index: number) {
+  //   const target = event.target;
+  //   const value = target.value;
 
-    if (target.type === 'number') {
-      this.listOrderData[index][target.name] = Number(value);
-    } else {
-      this.listOrderData[index][target.name] = value;
-    }
-  }
+  //   if (target.type === 'number') {
+  //     this.listOrderData[index][target.name] = Number(value);
+  //   } else {
+  //     this.listOrderData[index][target.name] = value;
+  //   }
+  // }
 
-  onFilterSearch(
-    listData: any[],
-    filterText: string,
-    startAfter: number = 1
-  ): any[] {
-    return this.helper.applyFilterList(listData, filterText, startAfter);
-  }
+  // onFilterSearch(
+  //   listData: any[],
+  //   filterText: string,
+  //   startAfter: number = 1
+  // ): any[] {
+  //   return this.helper.applyFilterList(listData, filterText, startAfter);
+  // }
 
-  ngAfterViewInit(): void {}
+  // ngAfterViewInit(): void {}
 
-  ngOnDestroy(): void {
-    this.g.navbarVisibility = true;
-  }
+  // ngOnDestroy(): void {
+  //   this.g.navbarVisibility = true;
+  // }
 
   onBackPressed() {
     this.router.navigate(['/transaction/receipt-from-warehouse/tambah-data']);
@@ -149,6 +146,36 @@ export class AddDataDetailGudangComponent
   }
 
   onSubmit() {
+    Swal.fire({
+      title: 'Apa Anda Sudah Yakin?',
+      text: 'Pastikan data yang dimasukkan sudah benar!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Simpan!',
+      cancelButtonText: 'Batal',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.prosesSimpan(); // Jalankan fungsi simpan
+      } else {
+        this.toastr.info('Penyimpanan dibatalkan');
+      }
+    });
+  }
+
+  onInputValueItemDetail(event: any, index: number) {
+    const target = event.target;
+    const value = target.value;
+
+    if (target.type === 'number') {
+      this.listOrderData[index][target.name] = Number(value);
+    } else {
+      this.listOrderData[index][target.name] = value;
+    }
+  }
+
+  prosesSimpan() {
     this.adding = true;
     let hasInvalidData = false;
 
@@ -160,7 +187,7 @@ export class AddDataDetailGudangComponent
         let qtyDiterima = data?.TOTAL_QTY_TERIMA ?? 0;
         let total_qty_expired = data.TOTAL_QTY_EXPIRED - data.TOTAL_QTY_PESAN;
 
-        if ( data.TOTAL_QTY_EXPIRED > data.TOTAL_QTY_PESAN) {
+        if (data.TOTAL_QTY_EXPIRED > data.TOTAL_QTY_PESAN) {
           this.toastr.error(
             `Total Qty Expired (${totalQtyExpired}) tidak boleh lebih besar dari Total Qty Pesan (${totalQtyPesan})`
           );
@@ -211,5 +238,56 @@ export class AddDataDetailGudangComponent
       .finally(() => {
         this.adding = false;
       });
+  }
+
+  handleCetakAtauPrint(isDownload: boolean) {
+    this.onCetakAtauPrintReport(isDownload, this.selectedOrder.nomorPesanan);
+  }
+
+  onCetakAtauPrintReport(isDownload: boolean, nomorPesanan: string) {
+    const requestBody = {
+      nomorPesanan: nomorPesanan,
+      isDownload: isDownload, // true untuk download, false untuk print
+    };
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/pdf',
+    });
+
+    this.dataService
+      .postData(
+        `${this.config.BASE_URL}/api/delivery-order/report-penerimaan-dari-gudang`,
+        requestBody,
+        true
+      )
+      .subscribe(
+        (response) => {
+          const blob = new Blob([response], { type: 'application/pdf' });
+          const url = window.URL.createObjectURL(blob);
+
+          if (isDownload) {
+            // Download PDF
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'report-penerimaan-dari-gudang.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          } else {
+            // Print PDF (Buka di tab baru)
+            const printWindow = window.open(url, '_blank');
+            if (printWindow) {
+              printWindow.onload = () => {
+                printWindow.print();
+              };
+            }
+          }
+        },
+        (error) => {
+          console.error('Gagal mengambil laporan:', error);
+          alert('Gagal mengambil laporan. Silakan coba lagi.');
+        }
+      );
   }
 }

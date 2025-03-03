@@ -125,6 +125,8 @@
                     id="nomorSuratJalan"
                     [(ngModel)]="formData.nomorSuratJan"
                     name="nomorSuratJalan"
+                    pattern="[0-9]*"
+                    keypress="return isNumberKey(event)"
                   />
                 </div>
               </div>

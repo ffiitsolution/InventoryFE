@@ -19,6 +19,8 @@ import { Page } from '../../../model/page';
 import { AppService } from '../../../service/app.service';
 import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../constants';
 import moment from 'moment';
+import { event } from 'jquery';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-add-data-gudang',
@@ -49,7 +51,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     namaCabang: '',
     alamatPengiriman: '',
     deliveryStatus: '',
-    tglBrgDikirim: null,
+    tglBrgDikirim: '',
     note: '',
     nomorSuratJan: 'DO-',
   };
@@ -68,6 +70,17 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     this.dpConfig.adaptivePosition = true;
   }
 
+  isValidNomorSuratJalan: boolean = true;
+
+  validateNumber(event: KeyboardEvent) {
+    const inputChar = String.fromCharCode(event.charCode);
+    if (!/^\d+$/.test(inputChar)) {
+      event.preventDefault();
+      this.isValidNomorSuratJalan = false;
+    } else {
+      this.isValidNomorSuratJalan = true;
+    }
+  }
 
   ngOnInit(): void {
     this.bsConfig = Object.assign(
@@ -92,6 +105,10 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   onAddDetail() {
+    if (!/^DO-\d+$/.test(this.formData.nomorSuratJan) || this.formData.nomorSuratJan.length > 20) {
+      Swal.fire('Error', 'Nomor Surat Jalan Salah', 'error');
+      return;
+    }
     this.router.navigate(['/transaction/receipt-from-warehouse/tambah-data/detail-add-data-gudang']);
     this.globalService.saveLocalstorage(
       LS_INV_SELECTED_DELIVERY_ORDER,
@@ -154,7 +171,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
       },
       columns: [
         { data: 'NOMOR_PESANAN', title: 'Nomor Pesanan' },
-        { data: 'KODE_GUDANG', title: 'Kode Gudang' },
+        { data: 'SUPPLIER', title: 'Kode Gudang' },
         { data: 'NAMA_CABANG', title: 'Alamat Gudang' },
         { data: 'ALAMAT1', title: 'Alamat Pengirim' },
         { data: 'TGL_KIRIM_BRG', title: 'Tanggal Surat Jalan', },
@@ -195,11 +212,12 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   private mapOrderData(orderData: any): void {
+    console.log('Order data: ', orderData);
     this.formData.nomorPesanan = orderData.NOMOR_PESANAN;
     this.formData.tglPesan = moment(orderData.TGL_PESANAN, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
     this.formData.tglBrgDikirim = moment(orderData.TGL_KIRIM_BRG, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
     this.formData.tglTerimaBarang = moment(orderData.TGL_PESANAN, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.codeDestination = orderData.KODE_GUDANG
+    this.formData.codeDestination = orderData.SUPPLIER;
     this.formData.namaCabang = orderData.NAMA_CABANG;
     this.formData.deliveryStatus = 'Aktif';
     this.formData.alamat1 = orderData.ALAMAT1;
@@ -224,12 +242,4 @@ export class DeliveryDataService {
     return this.http.post<any>(apiUrl, data);
   }
 }
-
-
-
-
-
-
-
-
 
