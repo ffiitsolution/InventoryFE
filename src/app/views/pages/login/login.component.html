@@ -38,12 +38,14 @@
               </form>
             </c-card-body>
           </c-card>
-          <c-card [ngStyle]="{'width.%': 44}" class="text-white bg-primary py-5">
+          <c-card [ngStyle]="{'width.%': 44}" class="py-5 bg-warehouse  ">
             <c-card-body class="text-center">
               <div>
-                <h2>{{'labelAppName' | translate}}</h2>
-                <br>{{'labelCompany' | translate}}
-                <br>Version {{version}}
+                <img src="../../../../assets/img/brand/logo_kfc.png">
+                <div class="labelversion">
+                  <br>{{'labelCompany' | translate}}
+                  <br>Version {{version}}
+                </div>
               </div>
             </c-card-body>
           </c-card>
