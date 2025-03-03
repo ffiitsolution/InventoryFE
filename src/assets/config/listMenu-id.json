@@ -9,7 +9,7 @@
   {
     "name": "Masters",
     "iconComponent": {
-      "name": "cil-speedometer"
+      "name": "cil-storage"
     },
     "children": [
       {
@@ -61,7 +61,7 @@
   {
     "name": "Pesanan",
     "iconComponent": {
-      "name": "cil-speedometer"
+      "name": "cil-inbox"
     },
     "badge": {
       "color": "info",
