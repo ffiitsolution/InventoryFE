@@ -58,6 +58,7 @@ export class MasterSupplierComponent
   defaultOrderGudangList: any;
   configSelectCity: any = {};
   configSelectRSC: any = {};
+  roleId: any;
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
@@ -177,6 +178,13 @@ export class MasterSupplierComponent
         {
           title: 'Action',
           render: () => {
+            if (this.roleId !== '3' && this.roleId !== '2') {
+              return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
+                </div>
+              `;
+            }
             return `
             <div class="btn-group" role="group" aria-label="Action">
               <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
@@ -224,6 +232,7 @@ export class MasterSupplierComponent
   }
 
   ngOnInit(): void {
+    this.roleId = this.g.getLocalstorage('inv_currentUser')?.roleId;
     this.g.changeTitle(
       this.translation.instant('Master') +
         ' ' +

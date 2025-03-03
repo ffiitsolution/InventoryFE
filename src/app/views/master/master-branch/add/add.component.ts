@@ -70,7 +70,7 @@ function contactPerson(control: AbstractControl): ValidationErrors | null {
 }
 
 function alphabet(control: AbstractControl): ValidationErrors | null {
-  const specialCharRegex = /[^a-zA-Z]/;
+  const specialCharRegex = /[^a-zA-Z\s]/;
   if (control.value && specialCharRegex.test(control.value)) {
     return { alphabet: true };
   }
