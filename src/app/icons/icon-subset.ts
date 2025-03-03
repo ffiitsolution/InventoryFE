@@ -96,6 +96,15 @@ import {
   cilColorBorder,
   cilHouse,
   cilStorage,
+  cilCircle,
+  cilSquare,
+  cibCodesandbox,
+  cilFastfood,
+  cilContact,
+  cibDropbox,
+  cilGlobeAlt,
+  cilWindow,
+  cilIndustry
 } from '@coreui/icons';
 
 export const iconSubset = {
@@ -196,6 +205,15 @@ export const iconSubset = {
   cilColorBorder,
   cilHouse,
   cilStorage,
+  cilCircle,
+  cilSquare,
+  cibCodesandbox,
+  cilFastfood,
+  cilContact,
+  cibDropbox,
+  cilGlobeAlt,
+  cilWindow,
+  cilIndustry
 };
 
 export enum IconSubset {
