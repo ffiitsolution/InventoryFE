@@ -1,7 +1,7 @@
 .bg-warehouse {
     position: relative; /* Needed for absolute positioning of ::before */
     z-index: 0; /* Ensure the main content remains above */
-}
+}up
 
 .bg-warehouse::before {
     content: ""; /* Required for ::before to render */
@@ -16,4 +16,9 @@
     background-position: center;
     opacity: 0.2; /* Apply transparency only to the background */
     z-index: -1; /* Push behind content */
+}
+
+.kfc-logo{
+    height: 90px;
+    margin-bottom: 20px !important;
 }
