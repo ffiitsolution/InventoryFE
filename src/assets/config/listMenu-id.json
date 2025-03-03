@@ -98,10 +98,6 @@
     "iconComponent": {
       "name": "cil-inbox"
     },
-    "badge": {
-      "color": "info",
-      "text": "NEW"
-    },
     "children": [
       {
         "name": "Terima Pesanan",
@@ -130,10 +126,6 @@
     "name": "Transaksi",
     "url": "/transaksi",
     "icon": "fa fa-exchange",
-    "badge": {
-      "color": "info",
-      "text": "NEW"
-    },
     "children": [
       {
         "name": "Pengiriman",
@@ -167,7 +159,7 @@
             "name": "Packing List",
             "url": "/transaction/delivery-item/packing-list",
             "iconComponent": {
-              "name": "cil-square"
+              "name": "cil-circle"
             }
           }
         ]
@@ -204,5 +196,90 @@
       }
     
     ]
+  },
+  {
+    "name": "Stock Opname",
+    "iconComponent": {
+      "name": "cil-circle"
+    },
+    "children": [
+      {
+        "name": "Setup SO",
+        "url": "/dashboard",
+        "iconComponent": {
+          "name": "cil-circle"
+        }
+      },
+      {
+        "name": "Cetak Form SO",
+        "url": "/dashboard",
+        "iconComponent": {
+          "name": "cil-circle"
+        }
+      },
+      {
+        "name": "Entry Stock Opname",
+        "url": "/dashboard",
+        "iconComponent": {
+          "name": "cil-circle"
+        }
+      },
+      {
+        "name": "Laporan Selisih SO (Sementara)",
+        "url": "/dashboard",
+        "iconComponent": {
+          "name": "cil-circle"
+        }
+      },
+      {
+        "name": "Proses Posting SO",
+        "url": "/dashboard",
+        "iconComponent": {
+          "name": "cil-circle"
+        }
+      },
+      {
+        "name": "Laporan Hasil SO",
+        "url": "/dashboard",
+        "iconComponent": {
+          "name": "cil-circle"
+        }
+      },
+      {
+        "name": "Display Selisih SO",
+        "url": "/dashboard",
+        "iconComponent": {
+          "name": "cil-circle"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Tutup Bulan",
+    "url": "/dashboard",
+    "iconComponent": {
+      "name": "cil-circle"
+    }
+  },
+  {
+    "name": "Planning Order",
+    "url": "/dashboard",
+    "iconComponent": {
+      "name": "cil-circle"
+    }
+  },
+  {
+    "name": "Laporan",
+    "url": "/dashboard",
+    "iconComponent": {
+      "name": "cil-circle"
+    }
+  },
+  {
+    "name": "Kirim Terima Data",
+    "url": "/dashboard",
+    "iconComponent": {
+      "name": "cil-circle"
+    }
   }
 ]
