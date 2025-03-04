@@ -14,47 +14,82 @@
     "children": [
       {
         "name": "User",
-        "url": "/master/master-user"
+        "url": "/master/master-user",
+        "iconComponent": {
+          "name": "cil-user"
+        }
       },
       {
         "name": "Cabang & Dept.",
-        "url": "/master/master-branch"
+        "url": "/master/master-branch",
+        "iconComponent": {
+          "name": "cil-house"
+        }
       },
       {
         "name": "Location",
-        "url": "/master/master-location"
+        "url": "/master/master-location",
+        "iconComponent": {
+          "name": "cil-location-pin"
+        }
       },
       {
         "name": "Supplier",
-        "url": "/master/master-supplier"
+        "url": "/master/master-supplier",
+        "iconComponent": {
+          "name": "cib-codesandbox"
+        }
       },
       {
         "name": "Barang",
-        "url": "/master/master-product"
+        "url": "/master/master-product",
+        "iconComponent": {
+          "name": "cil-fastfood"
+        }
       },
       {
         "name": "RSC",
-        "url": "/master/master-rsc"
+        "url": "/master/master-rsc",
+        "iconComponent": {
+          "name": "cil-contact"
+        }
+
       },
       {
         "name": "Regional",
-        "url": "/master/master-regional"
+        "url": "/master/master-regional",
+        "iconComponent": {
+          "name": "cil-map"
+        }
       },
       {
         "name": "Area",
-        "url": "/master/master-area"
+        "url": "/master/master-area",
+        "iconComponent": {
+          "name": "cil-location-pin"
+        }
       },
       {
         "name": "Satuan",
-        "url": "/master/master-uom"
+        "url": "/master/master-uom",
+        "iconComponent": {
+          "name": "cib-dropbox"
+        }
       },
       {
         "name": "Wilayah Kota",
-        "url": "/master/master-city-area"
+        "url": "/master/master-city-area",
+        "iconComponent": {
+          "name": "cil-globe-alt"
+        }
+        
       },
       {
         "name": "Loket",
-        "url": "/master/master-set-number"
+        "url": "/master/master-set-number",
+        "iconComponent": {
+          "name": "cil-window"
+        }
       }
     ]
   },
@@ -63,25 +98,27 @@
     "iconComponent": {
       "name": "cil-inbox"
     },
-    "badge": {
-      "color": "info",
-      "text": "NEW"
-    },
     "children": [
       {
         "name": "Terima Pesanan",
-        "url": "/order/receiving-order"
+        "url": "/order/receiving-order",
+        "iconComponent": {
+          "name": "cil-envelope-open"
+        }
       },
       {
         "name": "Kirim Pesanan Ke Supplier",
         "url": "/order/send-order-to-supplier-via-rsc",
         "iconComponent": {
-          "name": "cil-color-border"
+          "name": "cil-envelope-closed"
         }
       },
       {
         "name": "Kirim Pesanan Ke Gudang",
-        "url": "/order/send-order-to-warehouse"
+        "url": "/order/send-order-to-warehouse",
+        "iconComponent": {
+          "name": "cil-envelope-closed"
+        }
       }
     ]
   },
@@ -89,10 +126,6 @@
     "name": "Transaksi",
     "url": "/transaksi",
     "icon": "fa fa-exchange",
-    "badge": {
-      "color": "info",
-      "text": "NEW"
-    },
     "children": [
       {
         "name": "Pengiriman",
@@ -105,28 +138,28 @@
             "name": "Display & Tambah",
             "url": "/transaction/delivery-item",
             "iconComponent": {
-              "name": "cil-plus"
+              "name": "cil-circle"
             }
           },
           {
             "name": "Proses Do Balik",
             "url": "/transaction/delivery-item/dobalik",
             "iconComponent": {
-              "name": "cil-note-add"
+              "name": "cil-circle"
             }
           },
           {
             "name": "Revisi DO",
             "url": "/transaction/delivery-item/revisi-do",
             "iconComponent": {
-              "name": "cil-sync"
+              "name": "cil-circle"
             }
           },
           {
             "name": "Packing List",
             "url": "/transaction/delivery-item/packing-list",
             "iconComponent": {
-              "name": "cil-check"
+              "name": "cil-circle"
             }
           }
         ]
@@ -135,26 +168,118 @@
         "name": "Penerimaan Dari Gudang",
         "url": "/transaction/receipt-from-warehouse/penerimaan-dari-gudang",
         "iconComponent": {
-          "name": "cil-house"
+          "name": "cil-industry"
         },
         "children": [
           {
             "name": "Tambah Data",
-            "url": "/transaction/receipt-from-warehouse/tambah-data"
+            "url": "/transaction/receipt-from-warehouse/tambah-data",
+            "iconComponent": {
+              "name": "cil-circle"
+            }
           },
           {
             "name": "Display Dan Cetak",
-            "url": "/transaction/receipt-from-warehouse/display-dan-cetak"
+            "url": "/transaction/receipt-from-warehouse/display-dan-cetak",
+            "iconComponent": {
+              "name": "cil-circle"
+            }
           }
         ]
-      },{
+      },
+      {
         "name": "Pemusnahan Barang",
         "url": "/transaction/wastage/list-dt",
-        "iconComponent" : {
-          "name" : "cil-trash"
+        "iconComponent": {
+          "name": "cil-trash"
         }
       }
     
     ]
+  },
+  {
+    "name": "Stock Opname",
+    "iconComponent": {
+      "name": "cil-circle"
+    },
+    "children": [
+      {
+        "name": "Setup SO",
+        "url": "/dashboard",
+        "iconComponent": {
+          "name": "cil-circle"
+        }
+      },
+      {
+        "name": "Cetak Form SO",
+        "url": "/dashboard",
+        "iconComponent": {
+          "name": "cil-circle"
+        }
+      },
+      {
+        "name": "Entry Stock Opname",
+        "url": "/dashboard",
+        "iconComponent": {
+          "name": "cil-circle"
+        }
+      },
+      {
+        "name": "Laporan Selisih SO (Sementara)",
+        "url": "/dashboard",
+        "iconComponent": {
+          "name": "cil-circle"
+        }
+      },
+      {
+        "name": "Proses Posting SO",
+        "url": "/dashboard",
+        "iconComponent": {
+          "name": "cil-circle"
+        }
+      },
+      {
+        "name": "Laporan Hasil SO",
+        "url": "/dashboard",
+        "iconComponent": {
+          "name": "cil-circle"
+        }
+      },
+      {
+        "name": "Display Selisih SO",
+        "url": "/dashboard",
+        "iconComponent": {
+          "name": "cil-circle"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Tutup Bulan",
+    "url": "/dashboard",
+    "iconComponent": {
+      "name": "cil-circle"
+    }
+  },
+  {
+    "name": "Planning Order",
+    "url": "/dashboard",
+    "iconComponent": {
+      "name": "cil-circle"
+    }
+  },
+  {
+    "name": "Laporan",
+    "url": "/dashboard",
+    "iconComponent": {
+      "name": "cil-circle"
+    }
+  },
+  {
+    "name": "Kirim Terima Data",
+    "url": "/dashboard",
+    "iconComponent": {
+      "name": "cil-circle"
+    }
   }
 ]

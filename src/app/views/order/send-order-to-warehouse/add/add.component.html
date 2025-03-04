@@ -9,10 +9,10 @@
   <c-card class="mb-4">
     <c-card-body >
       <div class="row">
-        <div [ngClass]="isShowDetail ? 'col-3' : 'col-4'" class="pe-0 d-flex">
+        <div [ngClass]="isShowDetail ? 'col-3' : 'col-4'" class="pe-0 d-flex red-line">
           <div class="w-100">
             <div class="p-2">
-              <h5 class="mb-2 p-2" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5>
+              <h5 class="mb-2 p-2 pl-0" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5>
 
               <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
 
