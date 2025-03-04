@@ -16,4 +16,32 @@
 .justify-center {
   justify-content: center;
 }
-$primary: red;
+
+$primary: #b51823;
+$info: #b51823; // Change to your desired color
+
+$theme-colors: map-merge(
+  $theme-colors,
+  (
+    "primary": $primary,
+    "info": $info,
+  )
+);
+
+
+$primary: #b51823;
+$info: #b51823; // Change to your desired color
+
+$theme-colors: map-merge(
+  $theme-colors,
+  (
+    "primary": $primary,
+    "info": $info,
+  )
+);
+
+// 
+
+.sidebar{
+  background-color: $primary;
+}

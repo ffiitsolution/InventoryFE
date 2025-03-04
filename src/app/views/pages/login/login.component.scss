@@ -1,7 +1,7 @@
 .bg-warehouse {
     position: relative; /* Needed for absolute positioning of ::before */
     z-index: 0; /* Ensure the main content remains above */
-}up
+}
 
 .bg-warehouse::before {
     content: ""; /* Required for ::before to render */
