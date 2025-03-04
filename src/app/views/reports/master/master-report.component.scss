@@ -1,0 +1,24 @@
+.d-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 10px;
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.pointer-only {
+  cursor: pointer;
+  padding: 2px;
+}
+
+.pointer-only:hover{
+  background-color: gray;
+  color:white;
+  padding-left: 6px;
+}

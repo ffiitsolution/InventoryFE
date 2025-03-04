@@ -36,15 +36,10 @@
             <c-card class="mb-4">
               <c-card-body>
                 <div class="row">
-                  <div class="col-12 d-grid"
-                    [style.gridTemplateColumns]="'repeat(' + getGroupedReports().length + ', 1fr)'">
-                    <ng-container *ngFor="let reportChunk of getGroupedReports(); let columnIndex = index">
-                      <div class="row">
-                        <div *ngFor="let report of reportChunk; let i = index" class="mb-3">
-                          <div class="col pointer-only" (click)="onClickReport(reports[selectedCategory][report])">
-                            {{ (columnIndex * verticalItemCount) + (i + 1) }}. {{ reports[selectedCategory][report]['name'] }}
-                          </div>
-                        </div>
+                  <div class="col-12" [ngClass]="{ 'd-grid': true, 'grid-cols-1': true, 'grid-cols-2': reports[selectedCategory] && getObjectKeys(reports[selectedCategory]).length > 5 }">
+                    <ng-container *ngFor="let report of getObjectKeys(this.reports[selectedCategory]); let i = index;" class="card mb-3">
+                      <div class="col pointer-only" (click)="onClickReport(reports[selectedCategory][report])">
+                        {{ i + 1 }}. {{ reports[selectedCategory][report]['name'] }}
                       </div>
                     </ng-container>
                   </div>
