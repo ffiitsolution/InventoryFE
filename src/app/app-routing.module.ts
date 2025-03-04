@@ -92,6 +92,16 @@ const routes: Routes = [
           import('./views/transaction/transaction.module').then((m) => m.TransactionModule),
       },
       {
+        path: 'stock-opname',
+        loadChildren: () =>
+          import('./views/stock-opname/stock-opname.module').then((m) => m.StockOpnameModule),
+      },
+      {
+        path: 'reports',
+        loadChildren: () =>
+          import('./views/reports/report.module').then((m) => m.ReportModule),
+      },
+      {
         path: 'account-setting',
         component: AccountSettingComponent,
       },
