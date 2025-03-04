@@ -3,6 +3,7 @@
 // export { AddDataDetailSendOrderToWarehouseComponent } from './add-data-detail/add-data-detail.component';
 export { SendOrderToSupplierViaRSCComponent } from './send-order-to-supplier'
 export { AddDataSendOrderToSupplierComponent } from './add/add-data.component'
+export { AddDataDetailSendOrderToSupplierComponent } from './add-data-detail/add-data-detail.component'
 
 // export { ReceivingOrderDetailComponent } from './detail/detail.component';
 // export { ReceivingOrderAddFormComponent } from './add-form/add-form.component';

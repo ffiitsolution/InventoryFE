@@ -42,6 +42,7 @@ export class TableCityAreaComponent
   buttonCaptionEdit: String = 'Ubah';
   CONST_ACTION_ADD: string = ACTION_ADD;
   adding: boolean = false;
+  roleId: any;
 
   constructor(
     private dataService: DataService,
@@ -49,6 +50,7 @@ export class TableCityAreaComponent
     private translation: TranslationService,
     private router: Router
   ) {
+    this.roleId = this.g.getLocalstorage('inv_currentUser')?.roleId;
     this.dtOptions = {
       language:
         translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
@@ -93,7 +95,12 @@ export class TableCityAreaComponent
       },
       columns: [
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
-        { data: 'kodeKota', title: 'Kode Kota', orderable: true, searchable: true },
+        {
+          data: 'kodeKota',
+          title: 'Kode Kota',
+          orderable: true,
+          searchable: true,
+        },
         {
           data: 'keteranganKota',
           title: 'Nama Kota',
@@ -107,6 +114,13 @@ export class TableCityAreaComponent
         {
           title: 'Action',
           render: () => {
+            if (this.roleId !== '3' && this.roleId !== '2') {
+              return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
+                </div>
+              `;
+            }
             return `
             <div class="btn-group" role="group" aria-label="Action">
               <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>

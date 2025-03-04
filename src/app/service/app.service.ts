@@ -23,6 +23,24 @@ export class AppService {
     );
   }
 
+  getToken() {
+    if (!localStorage.getItem('inv_listMenu')) {
+      return null;
+    }
+    if (!localStorage.getItem('inv_token')) {
+      return null;
+    }
+    if (localStorage.getItem('inv_currentUser')) {
+      return localStorage.getItem('inv_currentUser');
+    } else {
+      return null;
+    }
+  }
+
+  isLoggednIn() {
+    return this.getToken();
+  }
+
   getListMenu(): Observable<any> {
     const languange = this.translation.getCurrentLanguage();
     const url = `../../assets/config/listMenu-${languange}.json`;
@@ -171,7 +189,7 @@ export class AppService {
       payload
     );
   }
-  
+
   getItemRevisiDO(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/delivery-order/list-item-revisi-do`,

@@ -14,6 +14,7 @@
             {{ "Filter" | translate }}
           </button>
           <button
+            *ngIf="this.roleId === '3' || this.roleId === '2'"
             type="button"
             class="btn btn-success text-white me-2"
             (click)="actionBtnClick('add')"
@@ -27,7 +28,7 @@
           <c-card-body>
             <div class="row">
               <div class="col-md-4">
-                <label>{{ "Status Aktif" | translate }}</label>
+                <label>{{ "Status" | translate }}</label>
                 <div>
                   <ngx-select-dropdown
                     [multiple]="false"
@@ -117,7 +118,9 @@
           ></i>
           &nbsp;
           <span class="fw-bold"
-            >Master User digunakan untuk melihat daftar akun pengguna sistem, termasuk detail peran, status, dan lokasi gudang yang dapat diakses.</span
+            >Master User digunakan untuk melihat daftar akun pengguna sistem,
+            termasuk detail peran, status, dan lokasi gudang yang dapat
+            diakses.</span
           >
         </div>
       </div>

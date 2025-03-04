@@ -14,6 +14,7 @@ import { AppService } from 'src/app/service/app.service';
 import { GlobalService } from 'src/app/service/global.service';
 import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_PRODUCT } from 'src/constants';
 
+
 function nonZeroValidator(control: AbstractControl): ValidationErrors | null {
   if (
     control.value === null ||
@@ -21,6 +22,30 @@ function nonZeroValidator(control: AbstractControl): ValidationErrors | null {
     parseFloat(control.value) === 0
   ) {
     return { nonZero: true };
+  }
+  return null;
+}
+
+function kodeBarang(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^0-9-]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { kodeBarang: true };
+  }
+  return null;
+}
+
+function namaBarang(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9&'/\-+().,\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { namaBarang: true };
+  }
+  return null;
+}
+
+function excludedSensitive(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9&\s.,#\-()\/]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { excludedSensitive: true };
   }
   return null;
 }
@@ -98,8 +123,8 @@ export class MasterProductEditComponent implements OnInit {
     private g: GlobalService
   ) {
     this.myForm = this.form.group({
-      kodeBarang: ['', Validators.required],
-      namaBarang: ['', Validators.required],
+      kodeBarang: ['', [Validators.required, kodeBarang]],
+      namaBarang: ['', [Validators.required, namaBarang]],
       konversi: [
         this.defaultValue.toFixed(2),
         [nonZeroValidator, decimal10_2Validator()],
@@ -128,9 +153,9 @@ export class MasterProductEditComponent implements OnInit {
       tinggi: [this.defaultValue.toFixed(2), decimal12_2Validator()],
       volume: [this.defaultValue.toFixed(2), decimal12_6Validator()],
       berat: [this.defaultValue.toFixed(2), decimal10_2Validator()],
-      lokasiBarang: [''],
-      statusAktif: ['A'],
-      keteranganBrg: [''],
+      lokasiBarang: ['', excludedSensitive],
+      statusAktif: ['', Validators.required],
+      keteranganBrg: ['', excludedSensitive],
     });
 
     this.myForm.get('konversi')?.valueChanges.subscribe((value) => {
@@ -350,6 +375,10 @@ export class MasterProductEditComponent implements OnInit {
     let temp_regex =
       type == 'alphanumeric'
         ? /^[a-zA-Z0-9]$/
+        : type == 'kodeBarang' //kode barang
+        ? /^[0-9-]$/
+        : type == 'namaBarang' //nama barang
+        ? /^[a-zA-Z0-9-+().,&/ '\-]*$/
         : type == 'numeric'
         ? /^[0-9.]$/
         : type == 'phone'
@@ -380,6 +409,32 @@ export class MasterProductEditComponent implements OnInit {
     const { controls, invalid } = this.myForm;
     if (invalid) {
       this.g.markAllAsTouched(this.myForm);
+      if (invalid) {
+        if (
+          Object.values(controls).some((control) =>
+            control.hasError('required')
+          )
+        ) {
+          this.toastr.error('Beberapa kolom wajib diisi.');
+        } else if (
+          Object.values(controls).some((control) =>
+            control.hasError('kodeBarang')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('namaBarang')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('invalidDecimal')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('excludedSensitive')
+          )
+        ) {
+          this.toastr.error(
+            'Beberapa kolom mengandung karakter khusus yang tidak diperbolehkan.'
+          );
+        }
+      }
     } else {
       this.isSubmitting = true;
       const payload = {

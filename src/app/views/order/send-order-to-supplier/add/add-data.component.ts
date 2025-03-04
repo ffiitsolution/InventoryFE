@@ -38,11 +38,11 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
   public dpConfigTglBatalPesanan: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
 
   bsConfig: Partial<BsDatepickerConfig>;
-  listGudang: any[] = [];
-  configSelectGudang: any ;
+  listRSC: any[] = [];
+  configSelectRSC: any ;
   gudangDetail: any[] = [];
   currentUser : any;
-
+  isShowDetail = false;
 
   constructor(
     private toastr: ToastrService,
@@ -61,7 +61,7 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
       tanggalPesanan: [{ value: new Date(new Date().setDate(new Date().getDate())), disabled: true }, Validators.required],
       tanggalKirimBarang: [ new Date(new Date().setDate(new Date().getDate()  + 3)), Validators.required], // Default: Today
       tanggalBatalPesanan: [{ value: new Date(new Date().setDate(new Date().getDate()  + 7)), disabled: false }, Validators.required],
-      gudangTujuan: ['', Validators.required],
+      RSCTujuan: ['', Validators.required],
       namaGudang:  [{value: '', disabled: true}],
       alamatGudang:  [{value: '', disabled: true}],
       statusGudang:  [{value: '', disabled: true}],
@@ -82,21 +82,20 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
       searchPlaceholder: 'Cari Role',
       limitTo: this.listRole.length
     };
-    this.configSelectGudang = {
+    this.configSelectRSC = {
       ...this.baseConfig,
-      placeholder: 'Pilih Gudang',
-      searchPlaceholder: 'Cari Gudang',
-      limitTo: this.listGudang.length,
-      width: '10px',  // Force width
+      placeholder: 'Pilih RSC',
+      searchPlaceholder: 'Cari RSC',
+      limitTo: this.listRSC.length
     };
 
 
     this.dataService
-    .postData(this.g.urlServer + '/api/branch/dropdown-gudang',{})
+    .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
     .subscribe((resp: any) => {
-      this.listGudang = resp.map((item: any) => ({
-        id: item.KODE_CABANG,
-        name: item.KODE_CABANG+' - '+item.NAMA_CABANG,
+      this.listRSC = resp.map((item: any) => ({
+        id: item.KODE_RSC,
+        name: item.KODE_RSC+' - '+item.KETERANGAN_RSC,
       }));     
     });
 
@@ -123,18 +122,18 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
     const { controls, invalid } = this.myForm;
 
 
-     if (invalid || (this.compareDates(this.myForm.value.tanggalKirimBarang, this.myForm.value.tanggalBatalPesanan)) || (currentUser?.defaultLocation?.kodeLocation === this.myForm.value?.gudangTujuan?.id) ) {
+     if (invalid || (this.compareDates(this.myForm.value.tanggalKirimBarang, this.myForm.value.tanggalBatalPesanan)) || (currentUser?.defaultLocation?.kodeLocation === this.myForm.value?.RSCTujuan?.id) ) {
       this.g.markAllAsTouched(this.myForm);
     } else {
       this.adding = true;
       const param = {
         kodeGudang:   currentUser?.defaultLocation?.kodeLocation,
         kodeSingkat:   controls?.['kodeSingkat']?.value,
-        supplier:  controls?.['gudangTujuan']?.value?.id,
-        namaSupplier:  controls?.['gudangTujuan']?.value?.name,
+        supplier:  controls?.['RSCTujuan']?.value?.id,
+        namaSupplier:  controls?.['RSCTujuan']?.value?.name,
         tanggalPesanan:  moment(  controls?.['tanggalPesanan']?.value).format("DD-MM-YYYY"),
         tanggalKirimBarang:  moment(  controls?.['tanggalKirimBarang']?.value).format("DD-MM-YYYY"),
-        tanggalBatalEXP: moment(  controls?.['tanggalPesanan']?.value).format("DD-MM-YYYY"),
+        tanggalBatalEXP: moment(  controls?.['tanggalBatalPesanan']?.value).format("DD-MM-YYYY"),
         keteranganSatu: controls?.['catatan1']?.value,
         keteranganDua: controls?.['catatan2']?.value,
 
@@ -143,7 +142,14 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
       this.g.saveLocalstorage('TEMP_ORDHDK', param);
 
       setTimeout(() => {
-          this.onNextPressed();
+        this.isShowDetail = true;
+        this.myForm.get('catatan1')?.disable();
+        this.myForm.get('catatan2')?.disable();
+        this.myForm.get('RSCTujuan')?.disable();
+        this.myForm.get('tanggalKirimBarang')?.disable();
+        this.myForm.get('tanggalBatalPesanan')?.disable();
+        
+          // this.onNextPressed();
         }, DEFAULT_DELAY_TIME);
       }
       this.adding = false;
@@ -151,12 +157,12 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
     }
    
   onNextPressed() {
-    this.router.navigate(['/order/send-order-to-warehouse/add-data-detail']);
+    this.router.navigate(['/order/send-order-to-supplier/add-data-detail']);
   }
 
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_SET_NUMBER);
-    this.router.navigate(['/order/send-order-to-warehouse/']);
+    this.router.navigate(['/order/send-order-to-supplier/']);
   }
 
 
@@ -199,8 +205,8 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
 
 
 
-  onGudangTujuanChange(selectedValue: any) {
-    console.log("this gudangtujuan",this.myForm.value.gudangTujuan)
+  onRSCTujuanChange(selectedValue: any) {
+    console.log("this RSCTujuan",this.myForm.value.RSCTujuan)
     this.getGudangDetail(selectedValue?.value?.id);
   }
 

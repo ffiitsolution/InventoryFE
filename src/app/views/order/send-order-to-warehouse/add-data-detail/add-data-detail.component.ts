@@ -34,7 +34,7 @@ import moment from 'moment';
 import { data } from 'jquery';
 
 @Component({
-  selector: 'app-add-data-detail-delivery-order',
+  selector: 'app-add-data-detail-send-order-to-warehouse',
   templateUrl: './add-data-detail.component.html',
   styleUrl: './add-data-detail.component.scss',
 })

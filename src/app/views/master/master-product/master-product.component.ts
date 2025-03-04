@@ -51,13 +51,14 @@ export class MasterProductComponent
   satuanMinOrderOptions: any = [];
   configSelectDefaultOrder: any = {};
   configSelectSatuanMinOrder: any = {};
+  roleId: any;
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
   }
 
   onStatusFilterChange() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
@@ -68,6 +69,7 @@ export class MasterProductComponent
     private translation: TranslationService,
     private router: Router
   ) {
+    this.roleId = this.g.getLocalstorage('inv_currentUser')?.roleId;
     this.dtOptions = {
       language:
         translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
@@ -131,10 +133,27 @@ export class MasterProductComponent
         { data: 'satuanKecil', title: 'Satuan Kecil', searchable: false },
         { data: 'konversi', title: 'Konversi', searchable: false },
         { data: 'satuanBesar', title: 'Satuan Besar', searchable: false },
-        { data: 'statusAktifLabel', title: 'Status', searchable: false },
+        {
+          data: 'statusAktif',
+          title: 'Status',
+          searchable: false,
+          render: (data) => {
+            if (data === 'A') {
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+            }
+            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:grey; width: 60px">Inactive</span> </div>`;
+          },
+        },
         {
           title: 'Action',
           render: () => {
+            if (this.roleId !== '3' && this.roleId !== '2') {
+              return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
+                </div>
+              `;
+            }
             return `
             <div class="btn-group" role="group" aria-label="Action">
               <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
@@ -145,7 +164,10 @@ export class MasterProductComponent
         },
       ],
       searchDelay: 1500,
-      order: [[1, 'asc']],
+      order: [
+        [7, 'asc'],
+        [1, 'asc'],
+      ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)

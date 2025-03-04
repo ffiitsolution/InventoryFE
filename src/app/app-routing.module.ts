@@ -6,6 +6,7 @@ import { Page404Component } from './views/pages/page404/page404.component';
 import { Page500Component } from './views/pages/page500/page500.component';
 import { LoginComponent } from './views/pages/login/login.component';
 import { AccountSettingComponent } from './views/pages/account-setting';
+import { AuthGuard } from './service/auth.guard';
 
 const routes: Routes = [
   {
@@ -16,6 +17,7 @@ const routes: Routes = [
   {
     path: '',
     component: DefaultLayoutComponent,
+    canActivate:[AuthGuard],
     data: {
       title: 'Home',
     },
@@ -88,6 +90,16 @@ const routes: Routes = [
         path: 'transaction',
         loadChildren: () =>
           import('./views/transaction/transaction.module').then((m) => m.TransactionModule),
+      },
+      {
+        path: 'stock-opname',
+        loadChildren: () =>
+          import('./views/stock-opname/stock-opname.module').then((m) => m.StockOpnameModule),
+      },
+      {
+        path: 'reports',
+        loadChildren: () =>
+          import('./views/reports/report.module').then((m) => m.ReportModule),
       },
       {
         path: 'account-setting',

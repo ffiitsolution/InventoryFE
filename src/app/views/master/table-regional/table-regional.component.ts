@@ -41,6 +41,7 @@ export class TableRegionalComponent
   buttonCaptionView: String = 'Lihat';
   buttonCaptionEdit: String = 'Ubah';
   CONST_ACTION_ADD: string = ACTION_ADD;
+  roleId: any;
 
   constructor(
     private dataService: DataService,
@@ -101,6 +102,13 @@ export class TableRegionalComponent
         {
           title: 'Action',
           render: () => {
+            if (this.roleId !== '3' && this.roleId !== '2') {
+              return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
+                </div>
+              `;
+            }
             return `
             <div class="btn-group" role="group" aria-label="Action">
               <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
@@ -131,6 +139,7 @@ export class TableRegionalComponent
   }
 
   ngOnInit(): void {
+    this.roleId = this.g.getLocalstorage('inv_currentUser')?.roleId;
     this.g.changeTitle(
       this.translation.instant('Tabel') +
         ' ' +

@@ -37,7 +37,8 @@ import {
 } from './send-order-to-warehouse';
 import {
   SendOrderToSupplierViaRSCComponent,
-  AddDataSendOrderToSupplierComponent
+  AddDataSendOrderToSupplierComponent,
+  AddDataDetailSendOrderToSupplierComponent,
 } from './send-order-to-supplier'
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
@@ -78,7 +79,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     DetailSendOrderToWarehouseComponent,
     AddDataDetailSendOrderToWarehouseComponent,
     SendOrderToSupplierViaRSCComponent,
-    AddDataSendOrderToSupplierComponent
+    AddDataSendOrderToSupplierComponent,
+    AddDataDetailSendOrderToSupplierComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })
