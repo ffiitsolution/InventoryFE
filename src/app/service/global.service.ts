@@ -241,6 +241,9 @@ export class GlobalService {
   }
 
   transformDate(date: string, format: any = 'dd MMM yyyy') {
+    if (date == '-' || date == null){
+      return '-';
+    }
     return this.datePipe.transform(date, format);
   }
 

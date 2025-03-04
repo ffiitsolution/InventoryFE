@@ -53,7 +53,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     deliveryStatus: '',
     tglBrgDikirim: '',
     note: '',
-    nomorSuratJan: 'DO-',
+    nomorSuratJan: '',
   };
   
 
@@ -176,6 +176,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
         { data: 'ALAMAT1', title: 'Alamat Pengirim' },
         { data: 'TGL_KIRIM_BRG', title: 'Tanggal Surat Jalan', },
         { data: 'KETERANGAN1', title: 'Keterangan', },
+        { data: 'NO_SURAT_JALAN', title: 'Nomor Surat Jalan', },
         {
           data: 'statusRecieve',
           title: 'Status Penerimaan',
@@ -199,7 +200,6 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
             return `<button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>`;
           },
         },
-
       ],
       searchDelay: 1000,
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
@@ -223,7 +223,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     this.formData.alamat1 = orderData.ALAMAT1;
     this.formData.notes = orderData.KETERANGAN1;
     this.formData.validatedDeliveryDate = this.formData.TGL_BATAL_EXP;
-
+    this.formData.nomorSuratJan = orderData.NO_SURAT_JALAN;
   }
 
   onPreviousPressed(): void {
@@ -242,4 +242,6 @@ export class DeliveryDataService {
     return this.http.post<any>(apiUrl, data);
   }
 }
+
+
 

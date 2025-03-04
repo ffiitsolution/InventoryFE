@@ -74,18 +74,12 @@
               <span class="label">{{
                 "Tanggal Barang Di Terima" | translate
               }}</span>
-              <span class="value">{{ selectedOrder.tglTerimaBarang }}</span>
+              <span class="value">{{ selectedOrder.tglBrgDikirim }}</span>
             </div>
           </div>
         </div>
         <div class="col">
           <div class="row order-details">
-            <div class="detail-item">
-              <span class="label">{{
-                "Tanggal Barang Di Terima" | translate
-              }}</span>
-              <span class="value">{{ selectedOrder.tglTerimaBarang }}</span>
-            </div>
             <div class="detail-item">
               <span class="label">{{
                 "Kode Gudang Pengirim" | translate
@@ -95,6 +89,12 @@
             <div class="detail-item">
               <span class="label">{{
                 "Nama Gudang Pengirim" | translate
+              }}</span>
+              <span class="value"> {{ selectedOrder.namaCabang }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{
+                "Catatan" | translate
               }}</span>
               <span class="value"> {{ selectedOrder.notes }}</span>
             </div>
