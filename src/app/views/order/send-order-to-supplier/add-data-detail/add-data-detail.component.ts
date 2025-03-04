@@ -34,11 +34,11 @@ import moment from 'moment';
 import { data } from 'jquery';
 
 @Component({
-  selector: 'app-add-data-detail-send-order-to-warehouse',
+  selector: 'app-add-data-detail-send-order-to-supplier',
   templateUrl: './add-data-detail.component.html',
   styleUrl: './add-data-detail.component.scss',
 })
-export class AddDataDetailSendOrderToWarehouseComponent
+export class AddDataDetailSendOrderToSupplierComponent
   implements OnInit, OnDestroy, AfterViewInit {
   columns: any;
   orders: any[] = [];
@@ -168,7 +168,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/order/send-order-to-warehouse/add']);
+    this.router.navigate(['/order/send-order-to-supplier/add']);
   }
 
   onPageChange(event: number) {
