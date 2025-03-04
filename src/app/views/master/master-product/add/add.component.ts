@@ -24,6 +24,30 @@ function nonZeroValidator(control: AbstractControl): ValidationErrors | null {
   return null;
 }
 
+function kodeBarang(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^0-9-]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { kodeBarang: true };
+  }
+  return null;
+}
+
+function namaBarang(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9&'/\-+().,\s]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { namaBarang: true };
+  }
+  return null;
+}
+
+function excludedSensitive(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9&\s.,#\-()\/]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { excludedSensitive: true };
+  }
+  return null;
+}
+
 function decimal10_2Validator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const value = control.value;
@@ -88,6 +112,7 @@ export class MasterProductAddComponent implements OnInit {
     searchOnKey: 'keteranganUom', // Key to search
   };
 
+
   constructor(
     private toastr: ToastrService,
     private form: FormBuilder,
@@ -96,8 +121,8 @@ export class MasterProductAddComponent implements OnInit {
     private g: GlobalService
   ) {
     this.myForm = this.form.group({
-      kodeBarang: ['', Validators.required],
-      namaBarang: ['', Validators.required],
+      kodeBarang: ['', [Validators.required, kodeBarang]],
+      namaBarang: ['', [Validators.required, namaBarang]],
       konversi: [
         this.defaultValue.toFixed(2),
         [nonZeroValidator, decimal10_2Validator()],
@@ -126,9 +151,9 @@ export class MasterProductAddComponent implements OnInit {
       tinggi: [this.defaultValue.toFixed(2), decimal12_2Validator()],
       volume: [this.defaultValue.toFixed(2), decimal12_6Validator()],
       berat: [this.defaultValue.toFixed(2), decimal10_2Validator()],
-      lokasiBarang: [''],
-      statusAktif: ['A'],
-      keteranganBrg: [''],
+      lokasiBarang: ['', excludedSensitive],
+      statusAktif: ['', Validators.required],
+      keteranganBrg: ['', excludedSensitive],
     });
 
     this.myForm.get('satuanKecil')?.disable();
@@ -291,6 +316,10 @@ export class MasterProductAddComponent implements OnInit {
     let temp_regex =
       type == 'alphanumeric'
         ? /^[a-zA-Z0-9]$/
+        : type == 'kodeBarang' //kode barang
+        ? /^[0-9-]$/
+        : type == 'namaBarang' //nama barang
+        ? /^[a-zA-Z0-9-+().,&/ '\-]*$/
         : type == 'numeric'
         ? /^[0-9.]$/
         : type == 'phone'
@@ -298,7 +327,7 @@ export class MasterProductAddComponent implements OnInit {
         : type == 'email'
         ? /^[a-zA-Z0-9@._-]$/
         : type == 'excludedSensitive'
-        ? /^[a-zA-Z0-9 .,_@-]*$/
+        ? /^[a-zA-Z0-9&\s.,#\-()\/]+$/
         : type == 'kodeSingkat'
         ? /^[a-zA-Z]+$/
         : /^[a-zA-Z.() ,\-]*$/;
@@ -321,6 +350,32 @@ export class MasterProductAddComponent implements OnInit {
     const { controls, invalid } = this.myForm;
     if (invalid) {
       this.g.markAllAsTouched(this.myForm);
+      if (invalid) {
+        if (
+          Object.values(controls).some((control) =>
+            control.hasError('required')
+          )
+        ) {
+          this.toastr.error('Beberapa kolom wajib diisi.');
+        } else if (
+          Object.values(controls).some((control) =>
+            control.hasError('kodeBarang')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('namaBarang')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('invalidDecimal')
+          ) ||
+          Object.values(controls).some((control) =>
+            control.hasError('excludedSensitive')
+          )
+        ) {
+          this.toastr.error(
+            'Beberapa kolom mengandung karakter khusus yang tidak diperbolehkan.'
+          );
+        }
+      }
     } else {
       this.isSubmitting = true;
       const payload = {
