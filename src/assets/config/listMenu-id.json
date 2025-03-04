@@ -82,7 +82,7 @@
         "iconComponent": {
           "name": "cil-globe-alt"
         }
-        
+
       },
       {
         "name": "Loket",
@@ -194,18 +194,18 @@
           "name": "cil-trash"
         }
       }
-    
+
     ]
   },
   {
     "name": "Stock Opname",
     "iconComponent": {
-      "name": "cil-circle"
+      "name": "cil-book"
     },
     "children": [
       {
         "name": "Setup SO",
-        "url": "/dashboard",
+        "url": "/stock-opname/setup-so",
         "iconComponent": {
           "name": "cil-circle"
         }
@@ -258,28 +258,28 @@
     "name": "Tutup Bulan",
     "url": "/dashboard",
     "iconComponent": {
-      "name": "cil-circle"
+      "name": "cil-calendar-check"
     }
   },
   {
     "name": "Planning Order",
     "url": "/dashboard",
     "iconComponent": {
-      "name": "cil-circle"
+      "name": "cil-av-timer"
     }
   },
   {
     "name": "Laporan",
     "url": "/dashboard",
     "iconComponent": {
-      "name": "cil-circle"
+      "name": "cib-adobe-acrobat-reader"
     }
   },
   {
     "name": "Kirim Terima Data",
     "url": "/dashboard",
     "iconComponent": {
-      "name": "cil-circle"
+      "name": "cil-swap-vertical"
     }
   }
 ]

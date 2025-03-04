@@ -44,6 +44,7 @@
     "datatables.net": "^1.13.11",
     "datatables.net-dt": "^1.11.3",
     "font-awesome": "^4.7.0",
+    "inventory": "file:",
     "jquery": "^3.6.0",
     "lodash-es": "^4.17.21",
     "moment": "^2.30.1",
