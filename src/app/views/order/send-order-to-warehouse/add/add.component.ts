@@ -42,6 +42,7 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   gudangDetail: any[] = [];
   currentUser : any;
   isShowDetail = false;
+  newNomorPesanan :any;
 
   constructor(
     private toastr: ToastrService,
@@ -67,6 +68,7 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
       kodeSingkat:  [{value: '', disabled: true}],
       catatan1: [''],
       catatan2: [''],
+      newNomorPesanan: [{value: '', disabled: true}]
     });
 
     this.configSelectDefaultLokasi = {
@@ -98,6 +100,15 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
       }));     
     });
 
+    this.dataService
+    .postData(this.g.urlServer + '/api/send-order-to-warehouse/get-nopesanan',
+      {"kodeGudang":  this.currentUser?.defaultLocation?.kodeLocation}
+    )
+    .subscribe((resp: any) => {
+      this.newNomorPesanan = resp;
+      this.myForm.get('newNomorPesanan')?.setValue(this.newNomorPesanan.newNomorPesanan);
+      console.log("this.newNomorPesanan",this.newNomorPesanan.newNomorPesanan);
+    });
 
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
