@@ -3,9 +3,9 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { TranslationService } from 'src/app/service/translation.service';
 import {
   ACTION_VIEW,
   CANCEL_STATUS,
@@ -19,9 +19,6 @@ import {
 } from '../../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
 import { lastValueFrom, Subject } from 'rxjs';
-import { Page } from 'src/app/model/page';
-import { DataService } from 'src/app/service/data.service';
-import { GlobalService } from 'src/app/service/global.service';
 import { Router } from '@angular/router';
 // import { AppConfig } from 'src/app/config/app.config.ts';
 import { ToastrService } from 'ngx-toastr';
@@ -31,6 +28,11 @@ import { AppConfig } from '../../../../config/app.config';
 import { HelperService } from '../../../../service/helper.service';
 import { AppService } from '../../../../service/app.service';
 import moment from 'moment';
+import { GlobalService } from '../../../../service/global.service';
+import { TranslationService } from '../../../../service/translation.service';
+import { DataService } from '../../../../service/data.service';
+import { Page } from '../../../../model/page';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 
 @Component({
   selector: 'app-add-data-detail-wastage',
@@ -41,7 +43,7 @@ export class AddDataDetailWastageComponent
   implements OnInit, OnDestroy, AfterViewInit {
   columns: any;
   orders: any[] = [];
-  headerWastage: any = (localStorage.getItem('headerWastage') || '{}'  );
+  newOrhdk: any = (localStorage.getItem('TEMP_ORDHDK') || '{}');
   adding: boolean = false;
   loadingIndicator: boolean = false;
   showFilterSection: boolean = false;
@@ -51,19 +53,25 @@ export class AddDataDetailWastageComponent
   RejectingOrder: boolean = false;
   alreadyPrint: Boolean = false;
   totalLength: number = 0;
-  listOrderData: any[] = [];
+  // listProductData: any[] = [];
+  listEntryExpired: any[] = [];
   buttonCaptionView: String = 'Lihat';
   public loading: boolean = false;
   page: number = 1;
   isShowModal: boolean = false;
   dtOptions: DataTables.Settings = {};
-  selectedRow:  any = {};
+  selectedRow: any = {};
   pageModal = new Page();
   dataUser: any = {};
-  
+  validationMessageList: any[] = [];
+  validationMessageQtyPesanList: any[] = [];
+  isShowModalExpired: boolean = false;
+  isShowModalDelete: boolean = false;
+  indexDataDelete: any;
+  selectedExpProduct: any = {};
+
   @ViewChild('formModal') formModal: any;
-
-
+  public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   protected config = AppConfig.settings.apiServer;
 
   constructor(
@@ -79,61 +87,46 @@ export class AddDataDetailWastageComponent
     private service: AppService,
 
   ) {
-    this.g.navbarVisibility = true;
-    this.headerWastage = JSON.parse(this.headerWastage);
-    this.getDeliveryItemDetails()
+    this.g.navbarVisibility = false;
+    this.newOrhdk = JSON.parse(this.newOrhdk);
   }
 
   ngOnInit(): void {
-    console.log("headerWastage",this.headerWastage)
     this.g.changeTitle(
       this.translation.instant('Detail Pesanan') + ' - ' + this.g.tabTitle
     );
     this.dataUser = this.g.getLocalstorage('inv_currentUser');
 
-    const isCanceled = this.headerWastage.statusPesanan == CANCEL_STATUS;
+    const isCanceled = this.newOrhdk.statusPesanan == CANCEL_STATUS;
     this.disabledPrintButton = isCanceled;
     this.disabledCancelButton = isCanceled;
     this.alreadyPrint =
-      this.headerWastage.statusCetak == SEND_PRINT_STATUS_SUDAH;
+      this.newOrhdk.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.renderDataTables();
 
-
-
-  }
-  
-
-  getDeliveryItemDetails() {
-    this.loading = true;
-    this.listOrderData = [];
-
-    const params = {
-      nomorPesanan: this.headerWastage.nomorPesanan
-    };
-
-  //   this.listOrderData = [
-  //     {
-  //       totalQtyPesan: 0,
-  //       qtyPesanBesar: 5,
-  //       namaBarang: "DAGING SAPI SLICE",
-  //       satuanKecil: "PCS",
-  //       kodeBarang: "02-2001",
-  //       satuanBesar: "KG",
-  //       konversi: 5,
-  //       qtyPesanKecil: 10
-  //     }
-  // ];
   }
 
-  onInputValueItemDetail(event: any, index: number) {
-    const target = event.target;
-    const value = target.value;
 
-    if (target.type === 'number') {
-      this.listOrderData[index][target.name] = Number(value); 
-    } else {
-      this.listOrderData[index][target.name] = value;
+
+  onInputValueItemDetail(event: any, index: number, type: string, qtyType: string) {
+    // const target = event.target;
+    // const value = target.value;
+    let validationMessage = '';
+
+
+    if (this.listProductData[index].qtyPesanKecil > this.listProductData[index].konversi) {
+      this.validationMessageList[index] = "QTY kecil harus < Konversi";
+    }
+    else {
+      this.validationMessageList[index] = "";
+    }
+
+    if (this.listProductData[index].qtyPesanKecil != 0 || this.listProductData[index].qtyPesanBesar != 0) {
+      this.validationMessageQtyPesanList[index] = ""
+    }
+    else {
+      this.validationMessageQtyPesanList[index] = "Quantity Pesan tidak Boleh 0"
     }
   }
   onFilterSearch(
@@ -151,7 +144,7 @@ export class AddDataDetailWastageComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/transaction/delivery-item/add-data']);
+    this.router.navigate(['/order/send-order-to-warehouse/add']);
   }
 
   onPageChange(event: number) {
@@ -163,88 +156,50 @@ export class AddDataDetailWastageComponent
   }
 
   onSubmit() {
-    console.log(this.listOrderData);
+    if (!this.isDataInvalid()) {
+      // param for order Header
+      const paramHeader = this.newOrhdk;
 
-    // param for order Header
-    const paramHeader = this.headerWastage;
-    
-    console.log("paramHeader:", paramHeader);
+      this.service.insert('/api/send-order-to-warehouse/insert-header', paramHeader).subscribe({
+        next: (res) => {
+          if (!res.success) {
+            alert(res.message);
+          } else {
+            this.newOrhdk.nomorPesanan = res.item?.[0]?.nomorPesanan;
 
+            this.insertDetail()
+            setTimeout(() => {
+              this.onPreviousPressed();
+            }, DEFAULT_DELAY_TIME);
 
-    this.service.insert('/api/send-order-to-warehouse/insert-header', paramHeader).subscribe({
-      next: (res) => {
-        if (!res.success) {
-          alert(res.message);
-        } else {
-          console.log("res header:", res); 
-          console.log("res item:", res.item?.[0]?.nomorPesanan ?? "Not found");
-          this.headerWastage.nomorPesanan =  res.item?.[0]?.nomorPesanan ;
+          }
+          this.adding = false;
+        },
+      });
 
-          this.insertDetail()
-          setTimeout(() => {
-            this.onPreviousPressed();
-          }, DEFAULT_DELAY_TIME);
-          
-        }
-        this.adding = false;
-      },
-    });
+    }
 
-    // this.service.insert('/api/users', param).subscribe({
-    //   next: (res) => {
-    //     if (!res.success) {
-    //       alert(res.message);
-    //     } else {
-    //       this.toastr.success('Berhasil!');
-    //       setTimeout(() => {
-    //         this.onPreviousPressed();
-    //       }, DEFAULT_DELAY_TIME);
-    //     }
-    //     this.adding = false;
-    //   },
-    // });
+    else {
+      this.toastr.error("Data tidak valid")
+    }
 
-
-
-  
-
-  
-    // const param = this.listOrderData.map((data: any) => ({
-    //   kodeGudang: this.headerWastage.kodeGudang,
-    //   kodeTujuan: this.headerWastage.codeDestination,
-    //   tipeTransaksi: '3',
-    //   nomorPesanan: this.headerWastage.nomorPesanan,
-    //   kodeBarang: data.kodeBarang, 
-    //   qtyBPesan: data.qtyPesanBesar,   
-    //   qtyKPesan: data.qtyPesanKecil,   
-    //   hargaSatuan: 0, 
-    //   userCreate: JSON.parse(localStorage.getItem('inv_currentUser') || '{}').namaUser,
-    //   konversi: data.konversi
-    // }));
-  
-    // this.appService.saveDeliveryOrder(param).subscribe({
-    //   next: (res) => {
-    //     if (!res.success) {
-    //       alert(res.message);
-    //     } else {
-    //       this.toastr.success('Berhasil!');
-    //       setTimeout(() => {
-    //         this.onBackPressed();
-    //       }, DEFAULT_DELAY_TIME);
-    //     }
-    //     this.adding = false;
-    //   },
-    //   error: (err) => {
-    //     console.error("Error saat insert:", err);
-    //   }
-    // });
   }
-  
+
   onShowModal() {
     this.isShowModal = true;
   }
 
-  
+  onShowModalDelete(i: any) {
+    this.indexDataDelete = i;
+    this.isShowModalDelete = true;
+  }
+
+  onShowModalExpired(event: any, index: number) {
+    this.selectedExpProduct = this.listProductData[index];
+    this.isShowModalExpired = true;
+  }
+
+
   renderDataTables(): void {
     this.dtOptions = {
       language:
@@ -253,20 +208,22 @@ export class AddDataDetailWastageComponent
       serverSide: true,
       autoWidth: true,
       info: true,
+      lengthMenu: [5, 10, 25, 50, 100],
+      pageLength: 5,
       drawCallback: () => { },
       ajax: (dataTablesParameters: any, callback) => {
+
         this.pageModal.start = dataTablesParameters.start;
-        dataTablesParameters.length = 10;
         this.pageModal.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
-          defaultGudang: this.headerWastage?.kodeSingkat,
+          defaultGudang: this.newOrhdk?.kodeSingkat,
           // startDate: this.g.transformDate(this.dateRangeFilter[0]),
           // endDate: this.g.transformDate(this.dateRangeFilter[1]),
         };
         // this.appService.getNewReceivingOrder(params)
         this.dataService
-        .postData(this.g.urlServer + '/api/product/dt-pesanan', params)
+          .postData(this.g.urlServer + '/api/product/dt-pesanan', params)
           .subscribe((resp: any) => {
             const mappedData = resp.data.map((item: any, index: number) => {
               // hapus rn dari data
@@ -303,10 +260,11 @@ export class AddDataDetailWastageComponent
 
         {
           title: 'Action',
-          render: () => {
+          render: (data, type, row) => {
             return `<button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>`;
           },
-        },
+        }
+
 
       ],
       searchDelay: 1000,
@@ -321,37 +279,45 @@ export class AddDataDetailWastageComponent
   }
   actionBtnClick(action: string, data: any = null) {
     this.selectedRow = (data);
-    console.log("this.selectedRow:", this.selectedRow);
     this.renderDataTables();
     this.isShowModal = false;
-    this.listOrderData.push({
-      totalQtyPesan: 0,
-      qtyPesanBesar: 0,
-      namaBarang:  this.selectedRow?.namaBarang,
-      satuanKecil:this.selectedRow?.satuanKecil,
-      kodeBarang:this.selectedRow?.kodeBarang,
-      satuanBesar: this.selectedRow?.satuanBesar,
-      konversi: this.selectedRow?.konversi,
-      qtyPesanKecil: 0,
-      ...this.selectedRow
-  });
 
-  
+    if (!this.listProductData.some(order => order.kodeBarang === this.selectedRow.kodeBarang)) {
+      this.listProductData.push({
+        totalQtyPesan: 0,
+        qtyWasteBesar: null,
+        namaBarang: this.selectedRow?.namaBarang,
+        satuanKecil: this.selectedRow?.satuanKecil,
+        kodeBarang: this.selectedRow?.kodeBarang,
+        satuanBesar: this.selectedRow?.satuanBesar,
+        konversi: this.selectedRow?.konversi,
+        qtyWasteKecil: null,
+        ...this.selectedRow
+      });
+      this.validationMessageList.push("")
+      this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
+      // this.mapOrderData(data);
+      // this.onSaveData();
+    }
+    else {
+      this.toastr.error("Barang sudah ditambahkan");
+    }
 
-    // this.mapOrderData(data);
-    // this.onSaveData();
+
+
   }
 
-  deleteBarang(index:any) {
-    this.listOrderData.splice(index, 1);
+  deleteBarang() {
+    this.listProductData.splice(this.indexDataDelete, 1);
+    this.isShowModalDelete = false;
   }
 
-  insertDetail(){
+  insertDetail() {
     // param for order header detail
-    const paramDetail = this.listOrderData.map(item => ({
-      kodeGudang: this.headerWastage.kodeGudang,
-      kodeTujuan: this.headerWastage.supplier,
-      nomorPesanan: this.headerWastage.nomorPesanan,
+    const paramDetail = this.listProductData.map(item => ({
+      kodeGudang: this.newOrhdk.kodeGudang,
+      kodeTujuan: this.newOrhdk.supplier,
+      nomorPesanan: this.newOrhdk.nomorPesanan,
       kodeBarang: item.kodeBarang,
       konversi: item.konversi,
       satuanKecil: item.satuanKecil,
@@ -360,28 +326,26 @@ export class AddDataDetailWastageComponent
       qtyPesanKecil: item.qtyPesanKecil,
       totalQtyPesan: (this.helper.sanitizedNumber(item.qtyPesanBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyPesanKecil),
       hargaUnit: item.unitPrice
-  }));
+    }));
 
 
-  this.service.insert('/api/send-order-to-warehouse/insert-detail', paramDetail).subscribe({
-    next: (res) => {
-      if (!res.success) {
-        alert(res.message);
-      } else {
-        console.log("res detail:", res); 
-        
-        this.toastr.success('Berhasil!');
-        // setTimeout(() => {
-        //   this.onPreviousPressed();
-        // }, DEFAULT_DELAY_TIME);
-        
-      }
-      this.adding = false;
-    },
-  });
-  
+    this.service.insert('/api/send-order-to-warehouse/insert-detail', paramDetail).subscribe({
+      next: (res) => {
+        if (!res.success) {
+          alert(res.message);
+        } else {
 
-  console.log("Mapped paramDetail:", paramDetail);
+          this.toastr.success('Berhasil!');
+          // setTimeout(() => {
+          //   this.onPreviousPressed();
+          // }, DEFAULT_DELAY_TIME);
+
+        }
+        this.adding = false;
+      },
+    });
+
+
 
   }
 
@@ -389,4 +353,39 @@ export class AddDataDetailWastageComponent
     this.router.navigate(['order/send-order-to-warehouse']);
   }
 
-}
+  isDataInvalid() {
+    let dataInvalid = false;
+    dataInvalid =
+      this.validationMessageList.some(msg => msg.trim() !== "") ||
+      this.validationMessageQtyPesanList.some(msg => msg.trim() !== "");
+
+    return dataInvalid
+  }
+
+  listProductData: any[] = [
+    { kodeBarang: '', namaBarang: '', konversi: '', satuanKecil: '', satuanBesar: '', qtyWasteBesar: '', qtyWasteKecil: '' }
+  ];
+  tempKodeBarang: string = '';
+
+  handleEnter(event: any, index: number) {
+    event.preventDefault();
+
+    if (this.tempKodeBarang.trim() !== '') {
+      this.listProductData[index].kodeBarang = this.tempKodeBarang;
+      this.listProductData[index].isConfirmed = true;
+
+      this.tempKodeBarang = '';
+
+      if (index === this.listProductData.length - 1) {
+        this.listProductData.push({ kodeBarang: '', namaBarang: '', konversi: '', satuanKecil: '', satuanBesar: '', isConfirmed: false });
+      }
+    }
+  }
+
+  getProductRow(){
+    
+  }
+
+
+
+}    

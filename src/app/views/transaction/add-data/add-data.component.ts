@@ -79,7 +79,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
         rangeInputFormat: 'dd/MMm/yyyy',
       }
     );
-    this.globalService.navbarVisibility = false;
+    this.globalService.navbarVisibility = true;
 
     this.renderDataTables();
     const today = new Date().toISOString().split('T')[0];
@@ -246,7 +246,12 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
     this.minDate = new Date(this.formData.tglBrgDikirim);
   }
 
+  handleEnter(event: any) {
+  
+  }
 }
+
+
 @Injectable({
   providedIn: 'root',
 })

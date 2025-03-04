@@ -303,8 +303,8 @@ export class GlobalService {
     let temp_regex =
       type == 'alphanumeric'
         ? /^[a-zA-Z0-9]$/
-        : type == 'numeric'
-          ? /^[0-9]$/
+       : type == 'numeric'
+          ? /^[0-9]$/ 
           : type == 'phone'
             ? /^[0-9-]$/
             : type == 'email'

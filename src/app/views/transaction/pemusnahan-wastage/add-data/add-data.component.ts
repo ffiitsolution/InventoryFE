@@ -39,6 +39,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedRo: any = {};
   minDate: Date;
   maxDate: Date;
+  isShowDetail: boolean = true;
 
   @ViewChild('formModal') formModal: any;
   // Form data object
@@ -83,7 +84,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
       JSON.stringify(this.formData)
 
     );
-    this.router.navigate(['/transaction/wastage/add-data-detail']);
+    this.isShowDetail = true;
   }
 
   get isFormInvalid(): boolean {
@@ -96,6 +97,9 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
+    this.globalService.removeLocalstorage(
+      'headerWastage',
+    );
   }
 
 
