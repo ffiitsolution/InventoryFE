@@ -138,28 +138,28 @@
             "name": "Display & Tambah",
             "url": "/transaction/delivery-item",
             "iconComponent": {
-              "name": "cil-circle"
+              "name": "cil-plus"
             }
           },
           {
             "name": "Proses Do Balik",
             "url": "/transaction/delivery-item/dobalik",
             "iconComponent": {
-              "name": "cil-circle"
+              "name": "cil-note-add"
             }
           },
           {
             "name": "Revisi DO",
             "url": "/transaction/delivery-item/revisi-do",
             "iconComponent": {
-              "name": "cil-circle"
+              "name": "cil-sync"
             }
           },
           {
             "name": "Packing List",
             "url": "/transaction/delivery-item/packing-list",
             "iconComponent": {
-              "name": "cil-circle"
+              "name": "cil-check"
             }
           }
         ]
