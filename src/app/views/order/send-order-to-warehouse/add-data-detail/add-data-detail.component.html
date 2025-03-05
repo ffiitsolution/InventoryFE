@@ -138,14 +138,20 @@
     <c-modal #formModal [fullscreen]="false" [visible]="isShowModal" backdrop="static" #modalLg size="xl"
       id="formModal"    [attr.aria-hidden]="!isShowModal">
         <c-modal-header>
-          <h5 cModalTitle>Add Receiving Order</h5>
+          <h5 cModalTitle>Tambah Barang</h5>
           <button (click)="isShowModal = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModal.id"
             cButtonClose><i class="fa fa-times"></i></button>
         </c-modal-header>
         <c-modal-body>
           <div class="table-responsive">
-            <table datatable [dtOptions]=" dtOptions" class="row-border hover w-100"></table>
+            <table datatable [dtOptions]=" dtOptions" class="row-border hover w-100" id="listBarangTable"></table>
           </div>
+          <div class="d-grid gap-3 d-md-flex justify-content-end mt-3">
+            <button class="btn btn-info text-white btn-150 pe-3" (click)="onAddListDataBarang()">
+              <i class="fa fa-check pe-2"></i> {{ "Tambah" | translate }} {{ "Data" | translate }}
+            </button>
+    
+          </div>        
         </c-modal-body>
     </c-modal>
 

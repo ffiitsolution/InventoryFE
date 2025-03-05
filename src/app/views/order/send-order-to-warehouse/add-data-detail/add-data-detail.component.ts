@@ -67,7 +67,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
   isShowModalDelete: boolean = false;
   indexDataDelete : any;
   isShowModalOnSubmit: boolean = false;
-
+  barangTemp: any[] = []; 
 
   @ViewChild('formModal') formModal: any;
 
@@ -162,6 +162,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
 
   ngAfterViewInit(): void {
+
   }
   ngOnDestroy(): void {
     this.g.navbarVisibility = true;
@@ -226,6 +227,40 @@ export class AddDataDetailSendOrderToWarehouseComponent
     this.isShowModalOnSubmit = true;
   }
 
+  onAddListDataBarang(){
+    let errorMessage
+    console.log("test")
+    this.isShowModal = false;
+    
+    for (let barang of this.barangTemp) {
+        console.log("barang",barang);
+
+      if(!this.listOrderData.some(order => order.kodeBarang === barang.kodeBarang)){
+        this.listOrderData.push({
+          totalQtyPesan: 0,
+          qtyPesanBesar: 0,
+          namaBarang:  barang?.namaBarang,
+          satuanKecil:barang?.satuanKecil,
+          kodeBarang:barang?.kodeBarang,
+          satuanBesar: barang?.satuanBesar,
+          konversi: barang?.konversi,
+          qtyPesanKecil: 0,
+          ...barang
+        });
+        this.validationMessageList.push("")
+        this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
+          // this.mapOrderData(data);
+          // this.onSaveData();
+      }
+      else{
+          errorMessage = "Beberapa barang sudah ditambahkan"
+      }
+    }
+    if(errorMessage)
+      this.toastr.error(errorMessage);
+
+  }
+
   
   renderDataTables(): void {
     this.dtOptions = {
@@ -273,6 +308,15 @@ export class AddDataDetailSendOrderToWarehouseComponent
           });
       },
       columns: [
+        {
+          title: 'Pilih Barang  ',
+          className: 'text-center',
+          render: (data, type, row) => {
+            let isChecked = this.barangTemp.some(item => item.kodeBarang === row.kodeBarang) ? 'checked' : '';
+            return `<input type="checkbox" class="row-checkbox" data-id="${row.kodeBarang}" ${isChecked}>`;
+        }
+        
+      },
         { data: 'kodeBarang', title: 'Kode Barang' },
         { data: 'namaBarang', title: 'Nama Barang' },
         { data: 'konversi', title: 'Konversi' },
@@ -281,59 +325,54 @@ export class AddDataDetailSendOrderToWarehouseComponent
         { data: 'defaultGudang', title: 'Default Gudang' },
         { data: 'flagConversion', title: 'Conversion Factor' },
         { data: 'statusAktif', title: 'Status Aktif' },
-
-        {
-          title: 'Action',
-          render: (data, type, row) => {
-            return `<button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>`;
-          },
-        }
         
 
       ],
       searchDelay: 1000,
       // delivery: [],
-      rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        $('.action-select', row).on('click', () =>
-          this.actionBtnClick(ACTION_SELECT, data)
-        );
+      rowCallback: (row: Node, data: any, index: number) => {
+   
+
+        // Handle Checkbox Click
+        // $('.row-checkbox', row).on('change', function () {
+        //   let totalCheckboxes = $('.row-checkbox').length;
+        //   let checkedCheckboxes = $('.row-checkbox:checked').length;
+
+        //   // If all row checkboxes are checked, check "Select All", otherwise uncheck
+        //   $('#selectAllCheckbox').prop('checked', totalCheckboxes === checkedCheckboxes);
+        //   console.log("row",row);
+        //   console.log("data",data);
+        // });
+
+        // Handle Checkbox Click
+        $(row).find('.row-checkbox').off('change').on('change', (event: JQuery.ChangeEvent<HTMLElement>) => {
+            this.handleCheckboxChange(event , data);
+        });
+
+        $('td', row).on('click', (event) => {
+          const checkbox = $(row).find('.row-checkbox'); 
+          const index = this.barangTemp.findIndex(item => item === data);
+
+          if (index === -1) {
+            this.barangTemp.push(data);
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+            checkbox.prop('checked', true);
+          } else {
+            this.barangTemp.splice(index, 1);
+            $('td', row).css({ 'background-color': '' }).removeClass('bg-secondary bg-opacity-25 fw-semibold');
+            checkbox.prop('checked', false);
+          }
+          if ($(event.target).is('.select-row')) {
+            event.stopPropagation();
+          }
+        });
+
         return row;
       },
     };
   }
-  actionBtnClick(action: string, data: any = null) {
-    this.selectedRow = (data);
-    this.renderDataTables();
-    this.isShowModal = false;
-
-    console.log("selectedRow",this.selectedRow);
-    console.log("listOrderData",this.listOrderData)
-
-    if(!this.listOrderData.some(order => order.kodeBarang === this.selectedRow.kodeBarang)){
-      this.listOrderData.push({
-        totalQtyPesan: 0,
-        qtyPesanBesar: 0,
-        namaBarang:  this.selectedRow?.namaBarang,
-        satuanKecil:this.selectedRow?.satuanKecil,
-        kodeBarang:this.selectedRow?.kodeBarang,
-        satuanBesar: this.selectedRow?.satuanBesar,
-        konversi: this.selectedRow?.konversi,
-        qtyPesanKecil: 0,
-        ...this.selectedRow
-      });
-      this.validationMessageList.push("")
-      this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
-        // this.mapOrderData(data);
-        // this.onSaveData();
-    }
-    else{
-      this.toastr.error("Barang sudah ditambahkan");
-    }
-
+  
  
-
-  }
-
   deleteBarang() {
     this.listOrderData.splice(this.indexDataDelete, 1);
     this.isShowModalDelete = false;
@@ -394,6 +433,24 @@ export class AddDataDetailSendOrderToWarehouseComponent
     return dataInvalid
   }
 
+
+
+
  
+  handleCheckboxChange(event: JQuery.ChangeEvent<HTMLElement>, data: any) {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    console.log("isChecked",isChecked)
+    if (isChecked) {
+        // Add kodeBarang if checked
+        if (! this.barangTemp.some(item => item.kodeBarang === data.kodeBarang)) {
+            this.barangTemp.push(data);
+        }
+    } else {
+        // Remove kodeBarang if unchecked
+        this.barangTemp = this.barangTemp.filter(item => item.kodeBarang !== data.kodeBarang);
+        console.log("this.barangTemp else",this.barangTemp)
+    }
+    console.log("barangTemp",this.barangTemp)
+}
 
 }
