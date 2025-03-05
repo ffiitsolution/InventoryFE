@@ -43,6 +43,7 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   currentUser : any;
   isShowDetail = false;
   newNomorPesanan :any;
+  isShowModalBack: boolean = false;
 
   constructor(
     private toastr: ToastrService,
@@ -221,40 +222,43 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   }
 
   getGudangDetail(kodeGudang: any) {
-  if (!kodeGudang || kodeGudang.trim() === '') {
-    return; // Stop execution if kodeGudang is empty or invalid
+    if (!kodeGudang || kodeGudang.trim() === '') {
+      return; // Stop execution if kodeGudang is empty or invalid
+    }
+
+    this.dataService
+      .postData(this.g.urlServer + '/api/branch/branch-detail', { "kodeCabang": kodeGudang })
+      .subscribe((resp: any) => {
+        this.gudangDetail = resp;
+
+        this.myForm.get('namaGudang')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].NAMA_CABANG : null);
+        this.myForm.get('alamatGudang')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].ALAMAT1 : null);
+        this.myForm.get('statusGudang')?.setValue(
+          this.gudangDetail?.length
+            ? (this.gudangDetail[0].STATUS_AKTIF === "A" ? "Aktif" : "Tidak Aktif")
+            : null
+        );    
+        this.myForm.get('kodeSingkat')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].KODE_SINGKAT : null);  
+      }); 
   }
 
-  this.dataService
-    .postData(this.g.urlServer + '/api/branch/branch-detail', { "kodeCabang": kodeGudang })
-    .subscribe((resp: any) => {
-      this.gudangDetail = resp;
+  onDateChangeTglKirimBarang(event: Date): void {
+    this.dpConfigTglBatalPesanan.minDate = event; //update the batal pesanan mindate to tanggal kirim barang
+    console.log('Selected Date:', event);
+  }
 
-      this.myForm.get('namaGudang')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].NAMA_CABANG : null);
-      this.myForm.get('alamatGudang')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].ALAMAT1 : null);
-      this.myForm.get('statusGudang')?.setValue(
-        this.gudangDetail?.length
-          ? (this.gudangDetail[0].STATUS_AKTIF === "A" ? "Aktif" : "Tidak Aktif")
-          : null
-      );    
-      this.myForm.get('kodeSingkat')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].KODE_SINGKAT : null);  
-    }); 
-}
+  compareDates(date1: any, date2: any): boolean {
+    if (!date1 || !date2) return false; // Ensure both dates exist
 
-onDateChangeTglKirimBarang(event: Date): void {
-  this.dpConfigTglBatalPesanan.minDate = event; //update the batal pesanan mindate to tanggal kirim barang
-  console.log('Selected Date:', event);
-}
+    const d1 = new Date(date1).setHours(0, 0, 0, 0); // Remove time
+    const d2 = new Date(date2).setHours(0, 0, 0, 0); // Remove time
 
-compareDates(date1: any, date2: any): boolean {
-  if (!date1 || !date2) return false; // Ensure both dates exist
+    return d1 > d2; // Compare only the date part
+  }
 
-  const d1 = new Date(date1).setHours(0, 0, 0, 0); // Remove time
-  const d2 = new Date(date2).setHours(0, 0, 0, 0); // Remove time
-
-  return d1 > d2; // Compare only the date part
-}
-
+  onShowModalBack() {
+    this.isShowModalBack= true;
+  }
 
 
 }

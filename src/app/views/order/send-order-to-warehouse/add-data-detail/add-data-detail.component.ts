@@ -68,6 +68,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
   indexDataDelete : any;
   isShowModalOnSubmit: boolean = false;
   barangTemp: any[] = []; 
+  isShowModalCancel: boolean = false;
 
   @ViewChild('formModal') formModal: any;
 
@@ -172,9 +173,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
     this.router.navigate(['/order/send-order-to-warehouse/add']);
   }
 
-  onCancelPressed() {
-    window.location.reload();
-  }
 
   onPageChange(event: number) {
     this.page = event;
@@ -225,6 +223,13 @@ export class AddDataDetailSendOrderToWarehouseComponent
 
   onShowModalOnSubmit() {
     this.isShowModalOnSubmit = true;
+  }
+  onShowModalCancel() {
+    this.isShowModalCancel= true;
+  }
+  
+  onCancelPressed() {
+    window.location.reload();
   }
 
   onAddListDataBarang(){
@@ -434,9 +439,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
 
 
-
-
- 
   handleCheckboxChange(event: JQuery.ChangeEvent<HTMLElement>, data: any) {
     const isChecked = (event.target as HTMLInputElement).checked;
     console.log("isChecked",isChecked)
@@ -451,6 +453,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
         console.log("this.barangTemp else",this.barangTemp)
     }
     console.log("barangTemp",this.barangTemp)
-}
+  }
 
 }
