@@ -3,7 +3,7 @@
     "name": "Dashboard",
     "url": "/dashboard",
     "iconComponent": {
-      "name": "cil-speedometer"
+      "name": "cil-settings"
     }
   },
   {
@@ -181,6 +181,75 @@
           {
             "name": "Display Data",
             "url": "/transaction/receipt-from-warehouse/display-data-dari-gudang",
+            "iconComponent": {
+              "name": "cil-circle"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Kirim Barang Retur Ke Supplier",
+        "url": "/transaction/Kirim-Barang-Retur-Ke-Supplier",
+        "iconComponent": {
+          "name": "cib-minutemailer"
+        },
+        "children": [
+          {
+            "name": "Tambah Data",
+            "url": "/transaction/Kirim-Barang-Retur-Ke-Supplier/tambah-data-pengembalian-barang-ke-supplier",
+            "iconComponent": {
+              "name": "cil-circle"
+            }
+          },
+          {
+            "name": "Display Data",
+            "url": "/transaction/Kirim-Barang-Retur-Ke-Supplier/display-data-pengembalian-barang-ke-supplier",
+            "iconComponent": {
+              "name": "cil-circle"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Kirim Barang Retur Ke Site",
+        "url": "/transaction/Kirim-Barang-Retur-Ke-Site",
+        "iconComponent": {
+          "name": "cil-factory"
+        },
+        "children": [
+          {
+            "name": "Tambah Data",
+            "url": "/transaction/Kirim-Barang-Retur-Ke-Site/tambah-data-pengembalian-barang-ke-site",
+            "iconComponent": {
+              "name": "cil-circle"
+            }
+          },
+          {
+            "name": "Display Data",
+            "url": "/transaction/Kirim-Barang-Retur-Ke-Site/display-data-pengembalian-barang-ke-site",
+            "iconComponent": {
+              "name": "cil-circle"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Pemakaian Barang Sendiri",
+        "url": "/transaction/transaksi-pemakaian-barang-sendiri",
+        "iconComponent": {
+          "name": "cil-hand-point-right"
+        },
+        "children": [
+          {
+            "name": "Tambah Data",
+            "url": "/transaction/pemakaian-barang-sendiri/tambah-data-pemakaian-barang-sendiri",
+            "iconComponent": {
+              "name": "cil-circle"
+            }
+          },
+          {
+            "name": "Display Data",
+            "url": "/transaction/transaksi-pemakaian-barang-sendiri/display-data-pemakaian-barang-sendiri",
             "iconComponent": {
               "name": "cil-circle"
             }
