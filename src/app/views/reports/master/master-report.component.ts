@@ -16,20 +16,61 @@ import { Page } from '../../../model/page';
 import { DataService } from '../../../service/data.service';
 import { GlobalService } from '../../../service/global.service';
 import { TranslationService } from '../../../service/translation.service';
-import { reports } from './reports';
 
 @Component({
-  selector: 'app-all-report',
-  templateUrl: './all-report.component.html',
-  styleUrl: './all-report.component.scss',
+  selector: 'app-master-report',
+  templateUrl: './master-report.component.html',
+  styleUrl: './master-report.component.scss',
 })
-export class AllReportComponent implements OnInit, OnDestroy, AfterViewInit {
-  reports = reports;
+export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
   columns: any;
   page = new Page();
   data: any;
   loadingIndicator = true;
   selectedRowData: any;
+  reports: any = {
+    master: {
+      cabang: {
+        id: 1,
+        name: 'Master Cabang',
+        path: '/reports/master',
+      },
+      department: {
+        id: 2,
+        name: 'Master Department',
+        path: '/reports/report-department',
+      },
+      gudang: {
+        id: 2,
+        name: 'Master Gudang',
+        path: '/reports/report-gudang',
+      },
+    },
+    pesanan: {
+      cabang: {
+        id: 1,
+        name: 'Ke Supplier',
+        path: '/reports/report-pesanan-ke-supplier',
+      },
+      department: {
+        id: 2,
+        name: 'Ke Gudang',
+        path: '/reports/report-pesanan-ke-gudang',
+      },
+    },
+    analisis: {
+      cabang: {
+        id: 1,
+        name: 'Pembelian By Supplier',
+        path: '/reports/report-pembelian-by-supplier',
+      },
+      department: {
+        id: 2,
+        name: 'Ke Gudang',
+        path: '/reports/report-pesanan-ke-gudang',
+      },
+    },
+  };
 
   constructor(
     private dataService: DataService,
@@ -46,7 +87,7 @@ export class AllReportComponent implements OnInit, OnDestroy, AfterViewInit {
         ' - ' +
         this.g.tabTitle
     );
-    this.selectedCategory = this.getObjectKeys(reports)[0];
+    this.selectedCategory = this.getObjectKeys(this.reports)[0];
   }
 
   ngOnDestroy(): void {
@@ -74,26 +115,11 @@ export class AllReportComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getSortedItems() {
-    const allItems = Object.values(reports).flatMap((category:any) => Object.values(category));
+    const allItems = Object.values(this.reports).flatMap((category:any) => Object.values(category));
     return allItems.sort((a: any, b: any) => a.id - b.id);
   }
 
   onClickReport(report : any){
-    this.router.navigate([report.path],
-      {
-        queryParams: {report: report.name},
-        skipLocationChange: true
-      });
-  }
-
-  verticalItemCount: number = 6;
-
-  getGroupedReports(): any[] {
-    const reportsArray : any[] = this.getObjectKeys(reports[this.selectedCategory]);
-    const chunkedReports: any[][] = [];
-    for (let i = 0; i < reportsArray.length; i += this.verticalItemCount) {
-      chunkedReports.push(reportsArray.slice(i, i + this.verticalItemCount));
-    }
-    return chunkedReports;
+    console.log(JSON.stringify(report));
   }
 }

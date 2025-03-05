@@ -25,6 +25,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
 import { ReportRoutingModule } from './report-routing.module';
 import { AllReportComponent } from './all-report/all-report.component';
+import { AnalysisReportComponent } from './analysis/analysis-report.component';
+import { MasterReportComponent } from './master/master-report.component';
+import { OrderReportComponent } from './order/order-report.component';
+import { StockReportComponent } from './stock/stock-report.component';
+import { TransactionReportComponent } from './transaction/transaction-report.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -53,6 +58,11 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   declarations: [
     AllReportComponent,
+    AnalysisReportComponent,
+    MasterReportComponent,
+    OrderReportComponent,
+    StockReportComponent,
+    TransactionReportComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

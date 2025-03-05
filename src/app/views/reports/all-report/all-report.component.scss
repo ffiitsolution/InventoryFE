@@ -1,0 +1,15 @@
+.d-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.pointer-only {
+  cursor: pointer;
+  padding: 2px;
+}
+
+.pointer-only:hover {
+  background-color: gray;
+  color: white;
+  padding-left: 6px;
+}
