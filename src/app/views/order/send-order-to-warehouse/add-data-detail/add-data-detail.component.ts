@@ -328,8 +328,30 @@ export class AddDataDetailSendOrderToWarehouseComponent
         { data: 'satuanKecil', title: 'Satuan Kecil' },
         { data: 'satuanBesar', title: 'Satuan Besar' },
         { data: 'defaultGudang', title: 'Default Gudang' },
-        { data: 'flagConversion', title: 'Conversion Factor' },
-        { data: 'statusAktif', title: 'Status Aktif' },
+        { data: 'flagConversion', 
+          title: 'Conversion Factor',
+          render: (data, type, row) => {
+            if (data === 'T') 
+              return "Tidak";
+            else if (data === 'Y') 
+              return "Ya";
+          
+            else
+              return data
+          }
+        },
+        { data: 'statusAktif', 
+          title: 'Status Aktif',
+          render: (data, type, row) => {
+            if (data === 'T') 
+              return "Inactive";
+            else if (data === 'A') 
+              return "Active";
+          
+            else
+              return data
+          }
+         },
         
 
       ],
