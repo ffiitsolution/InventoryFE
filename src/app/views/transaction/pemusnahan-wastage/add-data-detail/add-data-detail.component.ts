@@ -71,7 +71,10 @@ export class AddDataDetailWastageComponent
   selectedExpProduct: any = {};
 
   @ViewChild('formModal') formModal: any;
-  public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+  public dpConfig: Partial<BsDatepickerConfig> = {
+    dateInputFormat: 'DD/MM/YYYY',
+    containerClass: 'theme-dark-blue',
+  };
   protected config = AppConfig.settings.apiServer;
 
   constructor(
@@ -110,11 +113,6 @@ export class AddDataDetailWastageComponent
 
 
   onInputValueItemDetail(event: any, index: number, type: string, qtyType: string) {
-    // const target = event.target;
-    // const value = target.value;
-    let validationMessage = '';
-
-
     if (this.listProductData[index].qtyPesanKecil > this.listProductData[index].konversi) {
       this.validationMessageList[index] = "QTY kecil harus < Konversi";
     }
@@ -196,7 +194,71 @@ export class AddDataDetailWastageComponent
 
   onShowModalExpired(event: any, index: number) {
     this.selectedExpProduct = this.listProductData[index];
+    let totalQtySum = (this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteBesar) *
+      this.selectedExpProduct.konversi) + this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteKecil);
+
+    if (!this.listEntryExpired.some(item => item.kodeBarang === this.selectedExpProduct.kodeBarang)) {
+      this.listEntryExpired.push({
+        tglExpired: new Date(),
+        keteranganTanggal: moment(new Date()).locale('id').format('D MMMM YYYY'),
+        qtyWasteBesar: this.selectedExpProduct.qtyWasteBesar,
+        qtyWasteKecil: this.selectedExpProduct.qtyWasteKecil,
+        satuanKecil: this.selectedExpProduct.satuanKecil,
+        satuanBesar: this.selectedExpProduct.satuanBesar,
+        konversi: this.selectedExpProduct.konversi,
+        totalQty: totalQtySum,
+        kodeBarang: this.selectedExpProduct.kodeBarang
+      })
+    }
+
     this.isShowModalExpired = true;
+  }
+
+  onAddExpiredRow() {
+    this.listEntryExpired.push({
+      tglExpired: '',
+      keteranganTanggal: '',
+      qtyWasteBesar: '',
+      qtyWasteKecil: '',
+      satuanKecil: this.selectedExpProduct.satuanKecil,
+      satuanBesar: this.selectedExpProduct.satuanBesar,
+      konversi: this.selectedExpProduct.konversi,
+      totalQty: '',
+      kodeBarang: this.selectedExpProduct.kodeBarang
+    })
+  }
+
+  updateKeteranganTanggal(item: any) {
+    item.keteranganTanggal = moment(item.tglExpired).locale('id').format('D MMMM YYYY');
+  }
+
+  isValidQtyExpired: boolean = true;
+
+  onSaveEntryExpired() {
+    let totalQtyExpired = 0;
+
+    const totalQtyWaste = (this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteBesar) *
+      this.selectedExpProduct.konversi) + this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteKecil);
+
+    this.listEntryExpired.forEach((item: any) => {
+      if (item.kodeBarang === this.selectedExpProduct.kodeBarang) {
+        item.totalQty = (this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyWasteKecil);
+        item.kodeBarang = this.selectedExpProduct.kodeBarang;
+        totalQtyExpired += item.totalQty;
+      }
+    });
+
+
+    if (totalQtyExpired > totalQtyWaste) {
+      this.toastr.error("Total Qty Expired harus sama dengan Qty Waste");
+    } else {
+      this.isShowModalExpired = false;
+    }
+  }
+
+
+  get filteredList() {
+    return this.listEntryExpired.filter(item => item.kodeBarang === this.selectedExpProduct.kodeBarang);
   }
 
 
@@ -283,7 +345,7 @@ export class AddDataDetailWastageComponent
     this.isShowModal = false;
 
     if (!this.listProductData.some(order => order.kodeBarang === this.selectedRow.kodeBarang)) {
-      this.listProductData.push({
+      const productData = {
         totalQtyPesan: 0,
         qtyWasteBesar: null,
         namaBarang: this.selectedRow?.namaBarang,
@@ -292,19 +354,14 @@ export class AddDataDetailWastageComponent
         satuanBesar: this.selectedRow?.satuanBesar,
         konversi: this.selectedRow?.konversi,
         qtyWasteKecil: null,
+        isConfirmed: true,
         ...this.selectedRow
-      });
-      this.validationMessageList.push("")
-      this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
-      // this.mapOrderData(data);
-      // this.onSaveData();
+      }
+      this.listProductData.splice(this.listProductData.length - 1, 0, productData);
     }
     else {
       this.toastr.error("Barang sudah ditambahkan");
     }
-
-
-
   }
 
   deleteBarang() {
@@ -363,29 +420,54 @@ export class AddDataDetailWastageComponent
   }
 
   listProductData: any[] = [
-    { kodeBarang: '', namaBarang: '', konversi: '', satuanKecil: '', satuanBesar: '', qtyWasteBesar: '', qtyWasteKecil: '' }
+    { kodeBarang: '', namaBarang: '', konversi: '', satuanKecil: '', satuanBesar: '', qtyWasteBesar: '', qtyWasteKecil: '', isConfirmed: false }
   ];
   tempKodeBarang: string = '';
 
   handleEnter(event: any, index: number) {
     event.preventDefault();
 
-    if (this.tempKodeBarang.trim() !== '') {
-      this.listProductData[index].kodeBarang = this.tempKodeBarang;
-      this.listProductData[index].isConfirmed = true;
-
-      this.tempKodeBarang = '';
-
-      if (index === this.listProductData.length - 1) {
-        this.listProductData.push({ kodeBarang: '', namaBarang: '', konversi: '', satuanKecil: '', satuanBesar: '', isConfirmed: false });
-      }
+    let kodeBarang = this.listProductData[index].kodeBarang?.trim();
+    if (kodeBarang !== '') {
+      this.getProductRow(kodeBarang, index);
     }
   }
 
-  getProductRow(){
-    
+  getProductRow(kodeBarang: string, index: number) {
+    let param = { kodeBarang: kodeBarang };
+
+    if (kodeBarang !== '') {
+      const isDuplicate = this.listProductData.some(
+        (item, i) => item.kodeBarang === kodeBarang && i !== index
+      );
+
+      if (isDuplicate) {
+        this.toastr.error("Barang sudah ditambahkan")
+        return;
+      }
+
+      this.appService.getProductById(param).subscribe({
+        next: (res) => {
+          if (res) {
+            this.listProductData[index].namaBarang = res.namaBarang;
+            this.listProductData[index].satuanKecil = res.satuanKecil;
+            this.listProductData[index].satuanBesar = res.satuanBesar;
+            this.listProductData[index].konversi = res.konversi;
+
+            this.listProductData[index].isConfirmed = true;
+            this.listProductData[index].isLoading = false;
+
+            if (index === this.listProductData.length - 1) {
+              this.listProductData.push({
+                kodeBarang: '', namaBarang: '', konversi: '',
+                satuanKecil: '', satuanBesar: '', isConfirmed: false,
+                isLoading: false
+              });
+            }
+          }
+        },
+      });
+    }
   }
-
-
 
 }    
