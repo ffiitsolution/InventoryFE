@@ -66,7 +66,7 @@
                     [ngClass]="{'form-invalid': validationMessages[i]}"
                     class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyPesanBesar"
                     (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')" 
-                    (keypress)="g.conditionInput($event, 'numeric')"
+                    (keypress)="g.conditionInput($event, 'numeric')" autofocus
                      />
                   <span class="d-flex align-items-center justify-content-center">{{data.satuanBesar}}</span>
                 </div>

@@ -171,6 +171,10 @@ export class AddDataDetailSendOrderToWarehouseComponent
     this.router.navigate(['/order/send-order-to-warehouse/add']);
   }
 
+  onCancelPressed() {
+    window.location.reload();
+  }
+
   onPageChange(event: number) {
     this.page = event;
   }

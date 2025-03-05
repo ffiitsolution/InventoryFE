@@ -9,6 +9,7 @@ import { ACTION_CETAK, ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { DataTableDirective } from 'angular-datatables';
 import moment from 'moment';
+import { AppConfig } from '../../../config/app.config';
 
 @Component({
   selector: 'app-delivery-item',
@@ -21,9 +22,7 @@ export class DeliveryItemComponent implements OnInit {
   expiredFilter: string = '';
   tujuanFilter: string = '';
   dtOptions: DataTables.Settings = {};
-  config: any = {
-    BASE_URL: 'http://localhost:8093/inventory/api/delivery-order',
-  };
+  protected config = AppConfig.settings.apiServer;
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
   dtColumns: any = [];
@@ -84,7 +83,7 @@ export class DeliveryItemComponent implements OnInit {
         };
         setTimeout(() => {
           this.dataService
-            .postData(this.config.BASE_URL + '/dt', params)
+            .postData(this.config.BASE_URL + '/api/delivery-order/dt', params)
             .subscribe((resp: any) => {
               const mappedData = resp.data.map((item: any, index: number) => {
                 // hapus rn dari data

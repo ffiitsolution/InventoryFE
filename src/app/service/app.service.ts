@@ -203,4 +203,11 @@ export class AppService {
       payload
     );
   }
+  
+  getProductById(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/product/get-by-id`,
+      payload
+    );
+  }
 }

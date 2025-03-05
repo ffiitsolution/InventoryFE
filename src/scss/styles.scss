@@ -76,6 +76,12 @@ $enable-rtl: true;
     display: contents;
   }
 }
+
+.vh100 {
+  height: 100vh; /* Full screen height */
+  overflow: hidden; /* Prevents scrolling */
+}
+
 /* Importing Bootstrap SCSS file. */
 @import "./node_modules/bootstrap/scss/bootstrap";
 

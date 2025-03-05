@@ -16,7 +16,7 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="row">
-        <div [ngClass]="isShowDetail ? 'col-4' : 'col-5'" class="pe-0 d-flex">
+        <div [ngClass]="isShowDetail ? 'col-4' : 'col-5'" class="pe-0 d-flex red-line">
           <div class="w-100">
             <div class="p-2">
               <h5 class="mb-2 p-2" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5>
@@ -27,7 +27,7 @@
 
                 <div class="col-8 pe-0 d-flex">
                   <input type="text" placeholder="Nomor pesanan" class="form-control" id="nomorPesanan"
-                    [(ngModel)]="formData.nomorPesanan" name="nomorPesanan" />
+                    [(ngModel)]="formData.nomorPesanan" name="nomorPesanan" (keydown.enter)="handleEnter($event)"/>
                   <button *ngIf="isShowDetail === false" type="button" class="btn btn-info ms-2"
                     [cModalToggle]="staticBackdropModal.id" (click)="onShowModal()" readOnly><i
                       class="fa fa-search text-white"></i></button>
@@ -138,7 +138,6 @@
                 </button>
               </div>
             </div>
-            <hr class="red-line" />
 
           </div>
         </div>
