@@ -2,8 +2,11 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { GlobalService } from 'src/app/service/global.service';
 import { INavData } from '@coreui/angular';
+import { GlobalService } from '../../service/global.service';
+import { menu_id } from './default-sidebar/id';
+import { menu_en } from './default-sidebar/en';
+import { TranslationService } from '../../service/translation.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,8 +14,6 @@ import { INavData } from '@coreui/angular';
   styleUrls: ['./default-layout.component.scss'],
 })
 export class DefaultLayoutComponent implements OnInit, AfterViewInit {
-  public navItems: any;
-
   public perfectScrollbarConfig = {
     suppressScrollX: true,
   };
@@ -30,7 +31,11 @@ export class DefaultLayoutComponent implements OnInit, AfterViewInit {
   previousUrl: string = '';
   currentUrl: string = '';
 
-  constructor(public g: GlobalService, private router: Router) {
+  constructor(
+    public g: GlobalService,
+    private router: Router,
+    public translation: TranslationService
+  ) {
     this.changes = new MutationObserver((mutations) => {
       this.sidebarMinimized =
         document.body.classList.contains('sidebar-minimized');
@@ -52,7 +57,8 @@ export class DefaultLayoutComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.dataOutlet = this.g.getLocalstorage('inv_outletData');
     this.dataUser = this.g.getLocalstorage('inv_currentUser');
-    this.navItems = this.g.getLocalstorage('inv_listMenu');
+    this.translation.listMenuSidebar =
+      this.translation.getCurrentLanguage() === 'id' ? menu_id : menu_en;
   }
 
   updateSelectedNavItem(currentUrl: string) {

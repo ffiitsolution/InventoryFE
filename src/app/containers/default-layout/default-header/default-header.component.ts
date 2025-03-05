@@ -8,11 +8,13 @@ import {
 import { Router } from '@angular/router';
 import { HeaderComponent } from '@coreui/angular';
 import { isEmpty } from 'lodash-es';
-import { AppService } from 'src/app/service/app.service';
-import { GlobalService } from 'src/app/service/global.service';
-import { TimeService } from 'src/app/service/time.service';
-import { TranslationService } from 'src/app/service/translation.service';
-import { WebsocketService } from 'src/app/service/websocket.service';
+import { GlobalService } from '../../../service/global.service';
+import { TranslationService } from '../../../service/translation.service';
+import { TimeService } from '../../../service/time.service';
+import { WebsocketService } from '../../../service/websocket.service';
+import { AppService } from '../../../service/app.service';
+import { menu_id } from '../default-sidebar/id';
+import { menu_en } from '../default-sidebar/en';
 
 @Component({
   selector: 'app-default-header',
@@ -54,20 +56,23 @@ export class DefaultHeaderComponent
   }
 
   switchLanguage() {
+    const currentLang = this.translation.getCurrentLanguage();
     this.translation
-      .switchLanguage(
-        this.translation.getCurrentLanguage() === 'id' ? 'en' : 'id'
-      )
+      .switchLanguage(currentLang === 'id' ? 'en' : 'id')
       .then(() => {
-        this.service.getListMenu().subscribe({
-          next: (res) => {
-            if (res) {
-              this.g.saveLocalstorage('inv_listMenu', res);
-              window.location.reload();
-            }
-          },
-          error: (err) => alert(err),
-        });
+        this.translation.listMenuSidebar =
+          currentLang === 'id' ? menu_en : menu_id;
+        window.location.reload();
+        // Jika ingin menggunakan menu dari API/DB
+        // this.service.getListMenu().subscribe({
+        //   next: (res) => {
+        //     if (res) {
+        //       this.g.saveLocalstorage('inv_listMenu', res);
+        //       window.location.reload();
+        //     }
+        //   },
+        //   error: (err) => alert(err),
+        // });
       });
   }
 
