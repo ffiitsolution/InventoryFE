@@ -83,22 +83,28 @@ export class LoginComponent implements OnInit {
             this.g.saveLocalstorage('inv_locations', locations);
             this.g.saveLocalstorage('inv_currentUser', transformedUser);
             this.g.saveLocalstorage('inv_token', token);
-            this.service.getListMenu().subscribe({
-              next: (res) => {
-                if (res) {
-                  this.g.saveLocalstorage('inv_listMenu', res);
-                }
-                if (isEmpty(user.defaultLocation)) {
-                  this.router.navigate(['account-setting']);
-                } else {
-                  this.router.navigate([this.redirectUrl]);
-                }
-              },
-              error: (err) => {
-                this.errorMessage = err.message;
-                console.log(err.message);
-              },
-            });
+            // this.translation.listMenuSidebar;
+            if (isEmpty(user.defaultLocation)) {
+              this.router.navigate(['account-setting']);
+            } else {
+              this.router.navigate([this.redirectUrl]);
+            }
+            // this.service.getListMenu().subscribe({
+            //   next: (res) => {
+            //     if (res) {
+            //       this.g.saveLocalstorage('inv_listMenu', res);
+            //     }
+            //     if (isEmpty(user.defaultLocation)) {
+            //       this.router.navigate(['account-setting']);
+            //     } else {
+            //       this.router.navigate([this.redirectUrl]);
+            //     }
+            //   },
+            //   error: (err) => {
+            //     this.errorMessage = err.message;
+            //     console.log(err.message);
+            //   },
+            // });
           }
           this.logingIn = false;
         },

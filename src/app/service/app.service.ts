@@ -24,9 +24,9 @@ export class AppService {
   }
 
   getToken() {
-    if (!localStorage.getItem('inv_listMenu')) {
-      return null;
-    }
+    // if (!localStorage.getItem('inv_listMenu')) {
+    //   return null;
+    // }
     if (!localStorage.getItem('inv_token')) {
       return null;
     }
@@ -203,7 +203,7 @@ export class AppService {
       payload
     );
   }
-  
+
   getProductById(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/product/get-by-id`,

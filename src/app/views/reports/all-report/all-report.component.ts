@@ -85,15 +85,23 @@ export class AllReportComponent implements OnInit, OnDestroy, AfterViewInit {
         skipLocationChange: true
       });
   }
-
   verticalItemCount: number = 6;
 
   getGroupedReports(): any[] {
-    const reportsArray : any[] = this.getObjectKeys(reports[this.selectedCategory]);
+    const reportsArray: any[] = this.getObjectKeys(reports[this.selectedCategory]);
     const chunkedReports: any[][] = [];
+
     for (let i = 0; i < reportsArray.length; i += this.verticalItemCount) {
       chunkedReports.push(reportsArray.slice(i, i + this.verticalItemCount));
     }
+
+    const lastChunk = chunkedReports[chunkedReports.length - 1];
+    const missingItems = this.verticalItemCount - lastChunk.length;
+
+    for (let i = 0; i < missingItems; i++) {
+      lastChunk.push(null);
+    }
+
     return chunkedReports;
   }
 }

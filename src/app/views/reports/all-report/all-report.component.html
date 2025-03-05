@@ -41,14 +41,17 @@
                     <ng-container *ngFor="let reportChunk of getGroupedReports(); let columnIndex = index">
                       <div class="row">
                         <div *ngFor="let report of reportChunk; let i = index" class="mb-3">
-                          <div class="col pointer-only" (click)="onClickReport(reports[selectedCategory][report])">
-                            {{ (columnIndex * verticalItemCount) + (i + 1) }}. {{ reports[selectedCategory][report]['name'] }}
+                          <div class="col pointer-only" (click)="onClickReport(reports[selectedCategory][report])" *ngIf="report !== null">
+                            {{ (columnIndex * verticalItemCount) + (i + 1) }}. {{ reports[selectedCategory][report].name }}
                           </div>
+                          <!-- Render an empty placeholder for null/empty items -->
+                          <div class="col empty-placeholder" *ngIf="report === null"></div>
                         </div>
                       </div>
                     </ng-container>
                   </div>
                 </div>
+
               </c-card-body>
             </c-card>
           </div>
