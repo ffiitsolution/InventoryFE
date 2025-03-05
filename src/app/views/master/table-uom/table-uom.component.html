@@ -7,6 +7,7 @@
         </div>
         <div class="col text-end">
           <button
+            *ngIf="this.roleId === '3' || this.roleId === '2'"
             type="button"
             class="btn btn-success text-white me-2 btn-120"
             (click)="actionBtnClick(CONST_ACTION_ADD)"
@@ -30,7 +31,8 @@
           ></i>
           &nbsp;
           <span class="fw-bold"
-            >Master Satuan digunakan untuk mengelola daftar satuan ukuran besar dan kecil yang digunakan dalam sistem.</span
+            >Master Satuan digunakan untuk mengelola daftar satuan ukuran besar
+            dan kecil yang digunakan dalam sistem.</span
           >
         </div>
       </div>

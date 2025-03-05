@@ -34,7 +34,7 @@ import moment from 'moment';
 import { data } from 'jquery';
 
 @Component({
-  selector: 'app-add-data-detail-delivery-order',
+  selector: 'app-add-data-detail-send-order-to-warehouse',
   templateUrl: './add-data-detail.component.html',
   styleUrl: './add-data-detail.component.scss',
 })
@@ -169,6 +169,10 @@ export class AddDataDetailSendOrderToWarehouseComponent
 
   onBackPressed() {
     this.router.navigate(['/order/send-order-to-warehouse/add']);
+  }
+
+  onCancelPressed() {
+    window.location.reload();
   }
 
   onPageChange(event: number) {

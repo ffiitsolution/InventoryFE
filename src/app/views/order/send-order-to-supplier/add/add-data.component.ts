@@ -91,11 +91,11 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
 
 
     this.dataService
-    .postData(this.g.urlServer + '/api/branch/dropdown-gudang',{})
+    .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
     .subscribe((resp: any) => {
       this.listRSC = resp.map((item: any) => ({
-        id: item.KODE_CABANG,
-        name: item.KODE_CABANG+' - '+item.NAMA_CABANG,
+        id: item.KODE_RSC,
+        name: item.KODE_RSC+' - '+item.KETERANGAN_RSC,
       }));     
     });
 
@@ -157,12 +157,12 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
     }
    
   onNextPressed() {
-    this.router.navigate(['/order/send-order-to-warehouse/add-data-detail']);
+    this.router.navigate(['/order/send-order-to-supplier/add-data-detail']);
   }
 
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_SET_NUMBER);
-    this.router.navigate(['/order/send-order-to-warehouse/']);
+    this.router.navigate(['/order/send-order-to-supplier/']);
   }
 
 

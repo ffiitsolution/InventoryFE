@@ -60,6 +60,8 @@ const routes: Routes = [
         path: 'send-order-to-supplier-via-rsc/add-data',
         component: AddDataSendOrderToSupplierComponent,
       },
+
+      
     ],
   },
 ];

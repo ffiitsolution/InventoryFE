@@ -5,6 +5,7 @@ import { IconSetService } from '@coreui/icons-angular';
 import { iconSubset } from './icons/icon-subset';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
+import { freeSet, brandSet, flagSet } from '@coreui/icons';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +22,7 @@ export class AppComponent implements OnInit {
   ) {
     titleService.setTitle(this.title);
     // iconSet singleton
-    iconSetService.icons = { ...iconSubset };
+    iconSetService.icons = { ...freeSet, ...brandSet, ...flagSet };
     translate.addLangs(['en', 'id']);
     translate.setDefaultLang('id');
   }

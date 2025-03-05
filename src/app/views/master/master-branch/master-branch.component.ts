@@ -43,6 +43,7 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
   buttonCaptionView: string = BUTTON_CAPTION_VIEW;
   buttonCaptionEdit: string = BUTTON_CAPTION_EDIT;
   CONST_ACTION_ADD: string = ACTION_ADD;
+  roleId: any;
 
   baseConfig: any = {
     displayKey: 'name', // Key to display in the dropdown
@@ -169,6 +170,13 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
         {
           title: 'Action',
           render: () => {
+            if (this.roleId !== '3' && this.roleId !== '2') {
+              return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
+                </div>
+              `;
+            }
             return `
             <div class="btn-group" role="group" aria-label="Action">
               <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
@@ -219,6 +227,7 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.roleId = this.g.getLocalstorage('inv_currentUser')?.roleId;
     localStorage.removeItem(LS_INV_SELECTED_BRANCH);
 
     this.g.changeTitle(

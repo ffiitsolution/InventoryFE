@@ -247,6 +247,7 @@ export enum IconSubset {
   cilBookmark = 'cilBookmark',
   cilCalculator = 'cilCalculator',
   cilCalendar = 'cilCalendar',
+  cilCalendarClock = 'cilCalendarClock',
   cilChart = 'cilChart',
   cilChartPie = 'cilChartPie',
   cilCheck = 'cilCheck',

@@ -15,6 +15,23 @@
               <h5 class="mb-2 p-2 pl-0" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5>
 
               <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+                <div class="mb-3 row">
+                  <label class="col-sm-4 col-form-label">{{
+                    "Nomor Pesanan" | translate
+                  }}
+                </label>
+                  <div class="col-sm-8">
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="newNomorPesanan"
+                      [readOnly]="adding"
+                      (keypress)="conditionInput($event, 'alphanumeric')"
+                      maxlength="50"
+                    />
+                 
+                  </div>
+                </div>
 
                 <div class="mb-3 row">
                   <label class="col-sm-4 col-form-label">{{
@@ -222,7 +239,7 @@
                   </div>
                 </div>
                 <div class="divider"></div>
-                <div class="d-grid gap-3 d-md-flex justify-content-end">
+                <div class="d-grid gap-3 d-md-flex justify-content-end" *ngIf="!isShowDetail">
                   <button
                     class="btn btn-light btn-120"
                     (click)="onPreviousPressed()"
@@ -247,7 +264,7 @@
         </div>
         <div [ngClass]="isShowDetail ? 'col-9' : 'col-8'" >
             <div  class="p-2" *ngIf="isShowDetail">
-              <app-add-data-detail-delivery-order></app-add-data-detail-delivery-order>
+              <app-add-data-detail-send-order-to-warehouse></app-add-data-detail-send-order-to-warehouse>
             </div>
         </div>
       </div>

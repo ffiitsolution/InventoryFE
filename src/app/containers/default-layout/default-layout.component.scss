@@ -6,6 +6,17 @@
   }
 }
 
+:host ::ng-deep c-sidebar-nav.sidebar-nav > c-sidebar-nav-link>a,
+:host ::ng-deep c-sidebar-nav.sidebar-nav > c-sidebar-nav-group>a {
+  margin-left: -10px;
+}
+
+// :host ::ng-deep c-sidebar-nav.sidebar-nav c-sidebar-nav-group{
+//   margin-left: -10px;
+//   background-color: purple;
+// }
+
+
 :host ::ng-deep .sidebar-nav .nav-group-items .nav-group-items .nav-link {
   padding-left: 100px !important;
   font-size: 15px;
@@ -17,7 +28,11 @@
 }
 
 :host ::ng-deep .sidebar-nav .nav-group-items .nav-link .nav-icon {
-  margin-right: -10px !important;
+  margin-right: -11px !important;
+}
+
+:host ::ng-deep .sidebar-nav .nav-group-items .nav-group-items .nav-link .nav-icon {
+  margin-right: -11px !important;
 }
 
 :host ::ng-deep .sidebar-nav .nav-link {

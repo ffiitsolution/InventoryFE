@@ -82,7 +82,7 @@
         "iconComponent": {
           "name": "cil-globe-alt"
         }
-        
+
       },
       {
         "name": "Loket",
@@ -138,28 +138,28 @@
             "name": "Display & Tambah",
             "url": "/transaction/delivery-item",
             "iconComponent": {
-              "name": "cil-circle"
+              "name": "cil-plus"
             }
           },
           {
             "name": "Proses Do Balik",
             "url": "/transaction/delivery-item/dobalik",
             "iconComponent": {
-              "name": "cil-circle"
+              "name": "cil-note-add"
             }
           },
           {
             "name": "Revisi DO",
             "url": "/transaction/delivery-item/revisi-do",
             "iconComponent": {
-              "name": "cil-circle"
+              "name": "cil-sync"
             }
           },
           {
             "name": "Packing List",
             "url": "/transaction/delivery-item/packing-list",
             "iconComponent": {
-              "name": "cil-circle"
+              "name": "cil-check"
             }
           }
         ]
@@ -194,18 +194,18 @@
           "name": "cil-trash"
         }
       }
-    
+
     ]
   },
   {
     "name": "Stock Opname",
     "iconComponent": {
-      "name": "cil-circle"
+      "name": "cil-book"
     },
     "children": [
       {
         "name": "Setup SO",
-        "url": "/dashboard",
+        "url": "/stock-opname/setup-so",
         "iconComponent": {
           "name": "cil-circle"
         }
@@ -256,30 +256,30 @@
   },
   {
     "name": "Tutup Bulan",
-    "url": "/dashboard",
+    "url": "/end-of-day",
     "iconComponent": {
-      "name": "cil-circle"
+      "name": "cil-calendar-check"
     }
   },
   {
     "name": "Planning Order",
-    "url": "/dashboard",
+    "url": "/planning-order",
     "iconComponent": {
-      "name": "cil-circle"
+      "name": "cil-av-timer"
     }
   },
   {
     "name": "Laporan",
-    "url": "/dashboard",
+    "url": "/reports/all",
     "iconComponent": {
-      "name": "cil-circle"
+      "name": "cib-adobe-acrobat-reader"
     }
   },
   {
     "name": "Kirim Terima Data",
-    "url": "/dashboard",
+    "url": "/sync-data",
     "iconComponent": {
-      "name": "cil-circle"
+      "name": "cil-swap-vertical"
     }
   }
 ]
