@@ -44,6 +44,7 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   isShowDetail = false;
   newNomorPesanan :any;
   isShowModalBack: boolean = false;
+  isShowModalBuatPesanan: boolean = false;
 
   constructor(
     private toastr: ToastrService,
@@ -128,6 +129,7 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   
 
   onSubmit(): void {
+    this.isShowModalBuatPesanan = false;
     const currentUser = this.g.getLocalstorage('inv_currentUser');
     
     const { controls, invalid } = this.myForm;
@@ -260,5 +262,8 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
     this.isShowModalBack= true;
   }
 
+  onShowModalBuatPesanan() {
+    this.isShowModalBuatPesanan= true;
+  }
 
 }
