@@ -1,6 +1,12 @@
 .d-grid {
   display: grid;
   gap: 10px;
+  grid-template-rows: auto;
+}
+
+.empty-placeholder {
+  height: 1.8rem;
+  visibility: hidden;
 }
 
 .pointer-only {

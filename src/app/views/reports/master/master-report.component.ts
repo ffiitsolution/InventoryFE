@@ -11,7 +11,7 @@ import {
   ACTION_VIEW,
   LS_INV_SELECTED_UOM,
 } from '../../../../constants';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Page } from '../../../model/page';
 import { DataService } from '../../../service/data.service';
 import { GlobalService } from '../../../service/global.service';
@@ -28,55 +28,14 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
   data: any;
   loadingIndicator = true;
   selectedRowData: any;
-  reports: any = {
-    master: {
-      cabang: {
-        id: 1,
-        name: 'Master Cabang',
-        path: '/reports/master',
-      },
-      department: {
-        id: 2,
-        name: 'Master Department',
-        path: '/reports/report-department',
-      },
-      gudang: {
-        id: 2,
-        name: 'Master Gudang',
-        path: '/reports/report-gudang',
-      },
-    },
-    pesanan: {
-      cabang: {
-        id: 1,
-        name: 'Ke Supplier',
-        path: '/reports/report-pesanan-ke-supplier',
-      },
-      department: {
-        id: 2,
-        name: 'Ke Gudang',
-        path: '/reports/report-pesanan-ke-gudang',
-      },
-    },
-    analisis: {
-      cabang: {
-        id: 1,
-        name: 'Pembelian By Supplier',
-        path: '/reports/report-pembelian-by-supplier',
-      },
-      department: {
-        id: 2,
-        name: 'Ke Gudang',
-        path: '/reports/report-pesanan-ke-gudang',
-      },
-    },
-  };
+  currentReport: any = '';
 
   constructor(
     private dataService: DataService,
     private g: GlobalService,
     private translation: TranslationService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -87,7 +46,9 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
         ' - ' +
         this.g.tabTitle
     );
-    this.selectedCategory = this.getObjectKeys(this.reports)[0];
+    this.route.queryParams.subscribe((params) => {
+      this.currentReport = params['report'];
+    });
   }
 
   ngOnDestroy(): void {
@@ -103,23 +64,11 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {}
 
-
-  selectedCategory: any = null;
-
-  getObjectKeys(obj : Object) {
+  getObjectKeys(obj: Object) {
     return Object.keys(obj);
   }
 
-  onCategoryClick(category: any) {
-    this.selectedCategory = category;
-  }
-
-  getSortedItems() {
-    const allItems = Object.values(this.reports).flatMap((category:any) => Object.values(category));
-    return allItems.sort((a: any, b: any) => a.id - b.id);
-  }
-
-  onClickReport(report : any){
-    console.log(JSON.stringify(report));
+  getBack() {
+    this.router.navigate(['/reports/all']);
   }
 }
