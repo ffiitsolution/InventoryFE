@@ -322,12 +322,12 @@ export class AddDataDetailSendOrderToWarehouseComponent
         }
         
       },
-        { data: 'kodeBarang', title: 'Kode Barang' },
-        { data: 'namaBarang', title: 'Nama Barang' },
-        { data: 'konversi', title: 'Konversi' },
-        { data: 'satuanKecil', title: 'Satuan Kecil' },
-        { data: 'satuanBesar', title: 'Satuan Besar' },
-        { data: 'defaultGudang', title: 'Default Gudang' },
+        { data: 'kodeBarang', title: 'Kode Barang', orderable: true},
+        { data: 'namaBarang', title: 'Nama Barang', orderable: true },
+        { data: 'konversi', title: 'Konversi', orderable: true },
+        { data: 'satuanKecil', title: 'Satuan Kecil', orderable: true },
+        { data: 'satuanBesar', title: 'Satuan Besar', orderable: true },
+        { data: 'defaultGudang', title: 'Default Gudang', orderable: true },
         { data: 'flagConversion', 
           title: 'Conversion Factor',
           render: (data, type, row) => {
@@ -338,7 +338,8 @@ export class AddDataDetailSendOrderToWarehouseComponent
           
             else
               return data
-          }
+          }, 
+          orderable: true
         },
         { data: 'statusAktif', 
           title: 'Status Aktif',
@@ -350,12 +351,16 @@ export class AddDataDetailSendOrderToWarehouseComponent
           
             else
               return data
-          }
+          },
+          orderable: true
          },
         
 
       ],
       searchDelay: 1000,
+      // order: [
+      //   [8, 'desc'],
+      // ],
       // delivery: [],
       rowCallback: (row: Node, data: any, index: number) => {
    
