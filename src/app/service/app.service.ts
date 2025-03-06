@@ -57,6 +57,9 @@ export class AppService {
   patch(url: string, params: any): Observable<any> {
     return this.dataService.patchData(this.config.BASE_URL + url, params);
   }
+  getFile(url: String, params: any): Observable<any> {
+    return this.dataService.postData(this.config.BASE_URL + url, params, true);
+  }
 
   getReceivingOrderItem(nomorPesanan: String) {
     return this.dataService.postData(

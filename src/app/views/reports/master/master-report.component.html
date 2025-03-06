@@ -9,7 +9,8 @@
           <h5>{{currentReport}}</h5>
         </div>
         <div class="col text-end">
-          <button class="btn btn-outline-primary" (click)="getBack()">
+          <button class="btn btn-outline-primary w-120" (click)="getBack()">
+            <i class="fa fa-arrow-left me-2"></i>
             Back
           </button>
         </div>
@@ -20,11 +21,102 @@
 <c-card class="fade-in mb-4">
   <c-card-body>
 
+
+    <ng-container *ngIf="['Master Cabang'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Kode Region
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <ng-container *ngIf="loadingState['selectedRegion']">
+            <div class="loading-input">
+              <i class="fa fa-spinner fa-spin"></i>
+              <span>Loading...</span>
+            </div>
+          </ng-container>
+          <ngx-select-dropdown *ngIf="!loadingState['selectedRegion']" [multiple]="false" [config]="configRegion"
+            [options]="listRegion" [(ngModel)]="selectedRegion" style="width: 100%" (change)="
+      onChangeList(
+        $event.value,
+        'code',
+        'description',
+        'selectedRegion'
+      )
+    ">
+          </ngx-select-dropdown>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="['Master Cabang'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Status Aktif
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <c-button-group role="group">
+            <input class="btn-check" type="radio" [(ngModel)]="paramStatusAktif" name="statusAktif"
+              id="statusAktifSemua" value="ALL" />
+            <label cButton cFormCheckLabel class="w-120" variant="outline" for="statusAktifSemua">Semua</label>
+
+            <input class="btn-check" type="radio" [(ngModel)]="paramStatusAktif" name="statusAktif" id="statusAktifA"
+              value="A" />
+            <label cButton cFormCheckLabel class="w-120" variant="outline" for="statusAktifA">Aktif</label>
+
+            <input class="btn-check" type="radio" [(ngModel)]="paramStatusAktif" name="statusAktif" id="statusAktifT"
+              value="T" />
+            <label cButton cFormCheckLabel class="w-120" variant="outline" for="statusAktifT">Tidak Aktif</label>
+          </c-button-group>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="['Master Cabang'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Tipe Listing
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <c-button-group role="group">
+            <input class="btn-check" type="radio" [(ngModel)]="paramTipeListing" name="tipeListing"
+              id="tipeListingHeader" value="header" />
+            <label cButton cFormCheckLabel class="w-120" variant="outline" for="tipeListingHeader">Header</label>
+
+            <input class="btn-check" type="radio" [(ngModel)]="paramTipeListing" name="tipeListing"
+              id="tipeListingDetail" value="detail" />
+            <label cButton cFormCheckLabel class="w-120" variant="outline" for="tipeListingDetail">Detail</label>
+          </c-button-group>
+        </div>
+      </div>
+    </ng-container>
+
     <!-- footer -->
-     <div class="text-end">
-      <button class="btn btn-primary">
-        Submit
+    <div class="border-top mt-4 pt-3" *ngIf="loadingState['submit']">
+      <div class="loading-input">
+        <i class="fa fa-spinner fa-spin"></i>
+        <span>Loading...</span>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end align-items-center border-top mt-4 pt-3" *ngIf="!loadingState['submit']">
+      <c-dropdown>
+        <button cButton cDropdownToggle color="primary" variant="outline">
+          <i class="fa fa-download me-2"></i>
+          Download
+        </button>
+        <ul cDropdownMenu>
+          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')">PDF</button></li>
+          <li><button class="btn btn-outline-primary w-100" (click)="doSubmit('xls')">Excel</button></li>
+        </ul>
+      </c-dropdown>
+
+      <button class="btn btn-primary ms-4 w-120" (click)="doSubmit('preview')">
+        <i class="fa fa-search me-2"></i>
+        Preview
       </button>
-     </div>
+    </div>
+
   </c-card-body>
 </c-card>

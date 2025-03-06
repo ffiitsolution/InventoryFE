@@ -42,7 +42,7 @@ export class GlobalService {
     @Inject(DOCUMENT) private document: Document,
     private router: Router,
     private datePipe: DatePipe
-  ) { }
+  ) {}
 
   saveLocalstorage(key: string, value: any, type: string | boolean = 'json') {
     if (type === 'json' || type === true) {
@@ -73,10 +73,7 @@ export class GlobalService {
   }
 
   getUserAreaCode() {
-    return (
-      this.getLocalstorage('inv_currentUser')?.kodeRsc ||
-      ''
-    );
+    return this.getLocalstorage('inv_currentUser')?.kodeRsc || '';
   }
 
   removeLocalstorage(key: string) {
@@ -241,7 +238,7 @@ export class GlobalService {
   }
 
   transformDate(date: string, format: any = 'dd MMM yyyy') {
-    if (date == '-' || date == null){
+    if (date == '-' || date == null) {
       return '-';
     }
     return this.datePipe.transform(date, format);
@@ -306,22 +303,57 @@ export class GlobalService {
     let temp_regex =
       type == 'alphanumeric'
         ? /^[a-zA-Z0-9]$/
-       : type == 'numeric'
-          ? /^[0-9]$/ 
-          : type == 'phone'
-            ? /^[0-9-]$/
-            : type == 'email'
-              ? /^[a-zA-Z0-9@._-]$/
-              : type == 'excludedSensitive'
-                ? /^[a-zA-Z0-9 .,_@-]*$/
-                : type == 'kodeSingkat'
-                  ? /^[a-zA-Z]+$/
-                  : /^[a-zA-Z.() ,\-]*$/;
+        : type == 'numeric'
+        ? /^[0-9]$/
+        : type == 'phone'
+        ? /^[0-9-]$/
+        : type == 'email'
+        ? /^[a-zA-Z0-9@._-]$/
+        : type == 'excludedSensitive'
+        ? /^[a-zA-Z0-9 .,_@-]*$/
+        : type == 'kodeSingkat'
+        ? /^[a-zA-Z]+$/
+        : /^[a-zA-Z.() ,\-]*$/;
 
     if (temp_regex.test(inp)) return true;
     else {
       event.preventDefault();
       return false;
     }
+  }
+  dropdownConfig(
+    name: string,
+    limit: number = 15,
+    selectAll: boolean = false,
+    search: boolean = true,
+    placeholder: string = 'Pilih salah satu ...'
+  ) {
+    var result = {
+      displayKey: name,
+      search: search,
+      height: 'auto',
+      placeholder: placeholder,
+      customComparator: () => {},
+      limitTo: limit,
+      moreText: 'lainnya...',
+      noResultsFound: 'Tidak ditemukan!',
+      searchPlaceholder: 'Cari ...',
+      searchOnKey: name,
+      clearOnSelection: false,
+      inputDirection: 'ltr',
+      selectAllLabel: 'Pilih Semua',
+      enableSelectAll: selectAll,
+    };
+    return result;
+  }
+
+  formatUrlSafeString(input: string): string {
+    if (!input) {
+      return '';
+    }
+    return input
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, ' ')
+      .replace(/\s+/g, '-');
   }
 }

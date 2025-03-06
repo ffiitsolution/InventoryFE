@@ -1,6 +1,6 @@
 // Here you can add other styles
 
-.pointer{
+.pointer {
   cursor: pointer;
   transition: transform 0.3s ease;
 }
@@ -28,7 +28,6 @@ $theme-colors: map-merge(
   )
 );
 
-
 $primary: #b51823;
 $info: #b51823; // Change to your desired color
 
@@ -40,8 +39,35 @@ $theme-colors: map-merge(
   )
 );
 
-// 
+//
 
-.sidebar{
+.sidebar {
   background-color: $primary;
+}
+
+.w-120 {
+  width: 120px;
+}
+
+.loading-input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9f9f9;
+  color: #888;
+  font-size: 14px;
+  position: relative;
+}
+
+.loading-input i {
+  font-size: 1.5rem;
+  margin-right: 10px;
+}
+
+.loading-input span {
+  font-size: 1rem;
 }
