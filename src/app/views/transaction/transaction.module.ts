@@ -83,7 +83,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     WastageListComponent,
     AddWastageComponent,
     AddDataDetailWastageComponent,
-    DetailWastageComponent
+    DetailWastageComponent,
     AddDataDetailGudangComponent,
     DisplayDataGudangComponent,
   ],
