@@ -14,6 +14,7 @@ import { RevisiDoEditComponent } from './revisi-do/revisi-do-edit/revisi-do-edit
 import { WastageListComponent } from './pemusnahan-wastage/dt-list/wastage-list.component';
 import { AddWastageComponent } from './pemusnahan-wastage/add-data/add-data.component';
 import { AddDataDetailWastageComponent } from './pemusnahan-wastage/add-data-detail/add-data-detail.component';
+import { DetailWastageComponent } from './pemusnahan-wastage/detail/detail.component';
 
 const routes: Routes = [
   {
@@ -85,6 +86,10 @@ const routes: Routes = [
         path: 'add-data-detail',
         component: AddDataDetailWastageComponent,
       },
+      {
+        path: 'detail',
+        component: DetailWastageComponent,
+      }
     ],
   },
 ];
