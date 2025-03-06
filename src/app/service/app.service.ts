@@ -24,9 +24,9 @@ export class AppService {
   }
 
   getToken() {
-    if (!localStorage.getItem('inv_listMenu')) {
-      return null;
-    }
+    // if (!localStorage.getItem('inv_listMenu')) {
+    //   return null;
+    // }
     if (!localStorage.getItem('inv_token')) {
       return null;
     }
@@ -157,7 +157,7 @@ export class AppService {
 
   saveDeliveryOrder(payload: any) {
     return this.dataService.postData(
-      `${this.config.BASE_URL}/api/delivery-order/insert-delivery`,
+      `${this.config.BASE_URL}/api/delivery-order/simpan-data-penerimaan-dari-gudang`,
       payload
     );
   }
@@ -193,6 +193,13 @@ export class AppService {
   getItemRevisiDO(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/delivery-order/list-item-revisi-do`,
+      payload
+    );
+  }
+
+  getDetailTransaksiPenerimaanGudang(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/detail-transaksi-penerimaan-dari-gudang`,
       payload
     );
   }

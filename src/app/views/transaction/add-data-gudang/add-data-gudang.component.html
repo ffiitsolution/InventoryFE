@@ -125,6 +125,8 @@
                     id="nomorSuratJalan"
                     [(ngModel)]="formData.nomorSuratJan"
                     name="nomorSuratJalan"
+                    pattern="[0-9]*"
+                    keypress="return isNumberKey(event)"
                   />
                 </div>
               </div>
@@ -184,14 +186,15 @@
             <label for="Note" class="form-label">{{
               "Note" | translate
             }}</label>
-            <input
-              placeholder=""
-              type="text"
-              class="form-control"
-              id="Note"
-              [(ngModel)]="formData.note"
-              name="Note"
-            />
+            <textarea
+            placeholder=""
+            class="form-control w-100"
+            [(ngModel)]="formData.notes"
+            id="exampleFormControlTextarea1"
+            rows="1"
+            name="keterangan1"
+            readonly
+            ></textarea>
           </div>
         </div>
       </div>

@@ -6,6 +6,8 @@ import { firstValueFrom } from 'rxjs';
   providedIn: 'root',
 })
 export class TranslationService {
+  listMenuSidebar: any[] = [];
+
   constructor(private translate: TranslateService) {
     let lang = localStorage.getItem('inv_language') || 'id';
     this.setLanguage(lang.replace('"', '')).catch((error) => {

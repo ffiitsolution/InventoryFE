@@ -1,4 +1,4 @@
-[
+export const menu_en: any = [
   {
     "name": "Dashboard",
     "url": "/dashboard",
@@ -99,6 +99,6 @@
         "url": "/transaction/delivery-item"
       }
     ]
-    
+
   }
 ]

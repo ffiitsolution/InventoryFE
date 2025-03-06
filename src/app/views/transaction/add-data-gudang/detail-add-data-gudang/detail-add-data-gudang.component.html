@@ -1,0 +1,242 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <div
+          class="d-grid gap-3 d-md-flex justify-content-start align-items-center"
+        >
+          <button class="btn btn-light btn-120" (click)="onBackPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button>
+          <h5>{{ "Detail Tambah Pengiriman" | translate }}</h5>
+        </div>
+      </c-row>
+    </c-card-body>
+  </c-card>
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="d-grid gap-3 d-md-flex justify-content-end">
+        <button
+          class="btn btn-info text-white btn-150 pe-3"
+          (click)="onSubmit()"
+        >
+          <i class="fa fa-print" *ngIf="!adding"></i>
+          {{ "Simpan" | translate }}
+        </button>
+
+        <div class="btn-group">
+          <button
+            class="btn btn-danger text-white btn-150 dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            (click)="onCetakAtauPrintReport(false, this.selectedOrder.nomorPesanan)"
+          >
+            <i class="fa fa-file-pdf-o"></i> Cetak / Download Report
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <button
+                class="dropdown-item"
+                (click)="handleCetakAtauPrint(false)"
+              >
+                <i class="fa fa-print"></i> Print Report
+              </button>
+            </li>
+            <li>
+              <button
+                class="dropdown-item"
+                (click)="handleCetakAtauPrint(true)"
+              >
+                <i class="fa fa-download"></i> Download PDF
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="divider mt-4"></div>
+        <div class="col">
+          <div class="row order-details">
+            <div class="detail-item">
+              <span class="label">{{ "Nomor Pesanan" | translate }}</span>
+              <span class="value">{{ selectedOrder.nomorPesanan }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "No. Surat Jalan" | translate }}</span>
+              <span class="value">{{ selectedOrder.nomorSuratJan }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Tanggal Surat Jalan" | translate }}</span>
+              <span class="value">{{ selectedOrder.tglPesan }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{
+                "Tanggal Barang Di Terima" | translate
+              }}</span>
+              <span class="value">{{ selectedOrder.tglBrgDikirim }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row order-details">
+            <div class="detail-item">
+              <span class="label">{{
+                "Kode Gudang Pengirim" | translate
+              }}</span>
+              <span class="value">{{ selectedOrder.codeDestination }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{
+                "Nama Gudang Pengirim" | translate
+              }}</span>
+              <span class="value"> {{ selectedOrder.namaCabang }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{
+                "Catatan" | translate
+              }}</span>
+              <span class="value"> {{ selectedOrder.notes }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="table-responsive">
+        <ng-container>
+          <div *ngIf="loading">
+            <app-loading></app-loading>
+          </div>
+          <table
+            bordered
+            [hover]="true"
+            [striped]="true"
+            align="middle"
+            cTable
+            class="mb-0 border"
+          >
+            <thead>
+              <tr>
+                <th
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
+                  No.
+                </th>
+                <th
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
+                  Kode Barang
+                </th>
+                <th
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
+                  Nama Barang
+                </th>
+                <th
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
+                  Konversi
+                </th>
+                <th
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
+                  Qty Pesan Besar
+                </th>
+                <th
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
+                  Qty Pesan Kecil
+                </th>
+                <th
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
+                  Total Qty Pesan
+                </th>
+                <th
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
+                  Total Qty Terima
+                </th>
+                <th
+                  scope="col"
+                  style="vertical-align: middle"
+                  class="text-center align-items-start"
+                  rowspan="2"
+                >
+                  Total Qty Expired
+                </th>
+              </tr>
+            </thead>
+            <tbody *ngIf="!listOrderData || listOrderData.length === 0">
+              <tr>
+                <td colspan="12" scope="col" class="text-center">
+                  No Data Found
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr *ngFor="let data of listOrderData; let i = index">
+                <td class="text-center">{{ i + 1 }}</td>
+                <td class="text-center">{{ data.KODE_GUDANG }}</td>
+                <td class="text-center">{{ data.NAMA_BARANG }}</td>
+                <td class="text-center">{{ data.KONVERSI }}</td>
+                <td class="text-center">{{ data.QTY_PESAN_BESAR }}</td>
+                <td class="text-center">{{ data.QTY_PESAN_KECIL }}</td>
+                <td class="text-center">{{ data.TOTAL_QTY_PESAN }}</td>
+                <td class="text-center">{{ data.TOTAL_QTY_TERIMA }}</td>
+                <td class="text-center input-column">
+                  <div class="d-flex justify-content-center" style="gap: 5px">
+                    <input
+                      type="number"
+                      max="{{ data.TOTAL_QTY_EXPIRED }}"
+                      min="0"
+                      class="form-control text-center inputQty inputNumberSpace"
+                      [(ngModel)]="data.TOTAL_QTY_EXPIRED"
+                      (input)="onInputValueItemDetail($event, i)"
+                    />
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <c-pagination class="text-right">
+            <pagination-controls
+              (pageChange)="onPageChange(1)"
+              id="dataTable"
+            ></pagination-controls>
+          </c-pagination>
+        </ng-container>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>

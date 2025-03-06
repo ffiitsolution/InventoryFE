@@ -39,7 +39,8 @@ import { WastageListComponent } from './pemusnahan-wastage/dt-list/wastage-list.
 import { AddWastageComponent } from './pemusnahan-wastage/add-data/add-data.component';
 import { AddDataDetailWastageComponent } from './pemusnahan-wastage/add-data-detail/add-data-detail.component';
 import { DetailWastageComponent } from './pemusnahan-wastage/detail/detail.component';
-
+import { AddDataDetailGudangComponent } from './add-data-gudang/detail-add-data-gudang/detail-add-data-gudang.component';
+import { DisplayDataGudangComponent } from './add-data-gudang/display-data-dari-gudang/display-data-dari-gudang.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
@@ -83,6 +84,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     AddWastageComponent,
     AddDataDetailWastageComponent,
     DetailWastageComponent
+    AddDataDetailGudangComponent,
+    DisplayDataGudangComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

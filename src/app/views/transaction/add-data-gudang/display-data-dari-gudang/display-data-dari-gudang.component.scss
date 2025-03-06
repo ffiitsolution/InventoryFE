@@ -1,0 +1,57 @@
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .btn-120 {
+    width: 120px;
+  }
+  
+  .btn-240 {
+    width: 240px;
+  }
+  
+  .icon-12 {
+    font-size: 12px;
+  }
+  
+  .icon-gap {
+    margin-right: 8px;
+  }
+  
+  .divider {
+    border-top: 1px solid #dee2e6;
+    margin: 16px 0;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+  }
+  
+  .row-border {
+    border: 1px solid #dee2e6;
+  }
+  
+  .hover {
+    cursor: pointer;
+  }
+
+  .c-card {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  }
+  
+  .c-card.ng-star-inserted {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  

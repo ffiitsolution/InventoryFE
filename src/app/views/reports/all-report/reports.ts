@@ -107,6 +107,68 @@ export const reports: Reports = {
       name: 'Kirim Retur Ke Supplier',
       path: '/reports/transaction',
     },
+    7: {
+      name: 'Kirim Retur Ke Site',
+      path: '/reports/transaction',
+    },
+    8: {
+      name: 'Terima Retur Dari Site',
+      path: '/reports/transaction',
+    },
+    9: {
+      name: 'Penerimaan Barang Bekas',
+      path: '/reports/transaction',
+    },
+    10: {
+      name: 'Penjualan Barang Bekas',
+      path: '/reports/transaction',
+    },
+    11: {
+      name: 'Pemakaian Barang Sendiri',
+      path: '/reports/transaction',
+    },
+    12: {
+      name: 'Produksi',
+      path: '/reports/transaction',
+    },
+  },
+  stock: {
+    1: {
+      name: 'Stock Barang',
+      path: '/reports/stock',
+    },
+    2: {
+      name: 'Stock Card',
+      path: '/reports/stock',
+    },
+    3: {
+      name: 'Stock Barang By Expired',
+      path: '/reports/stock',
+    },
+    4: {
+      name: 'Transaksi Detail Barang Expired',
+      path: '/reports/stock',
+    },
+    5: {
+      name: 'Stock Yang Mendekati Tgl Expired',
+      path: '/reports/stock',
+    },
+    6: {
+      name: 'Stock Barang Dibawah Minimum',
+      path: '/reports/stock',
+    },
+    7: {
+      name: 'Stock Barang Diatas Maximum',
+      path: '/reports/stock',
+    },
+    8: {
+      name: 'Stock JATIM-INDOTIM',
+      path: '/reports/stock',
+    },
+    9: {
+      name: 'Inventory Movement',
+      path: '/reports/stock',
+    },
   },
   analysis: {
     1: {
@@ -114,7 +176,35 @@ export const reports: Reports = {
       path: '/reports/analysis',
     },
     2: {
-      name: 'Ke Gudang',
+      name: 'Penerimaan By Pengirim',
+      path: '/reports/analysis',
+    },
+    3: {
+      name: 'Pengirim By Tujuan',
+      path: '/reports/analysis',
+    },
+    4: {
+      name: 'Persiapan Pengiriman Barang',
+      path: '/reports/analysis',
+    },
+    5: {
+      name: 'DO Yang Belum Balik',
+      path: '/reports/analysis',
+    },
+    6: {
+      name: 'Rekap Transaksi 3 Periode (By Type)',
+      path: '/reports/analysis',
+    },
+    7: {
+      name: 'DO - REVISI',
+      path: '/reports/analysis',
+    },
+    8: {
+      name: 'Jumlah Transaksi',
+      path: '/reports/analysis',
+    },
+    9: {
+      name: 'Mutasi Stock Harian',
       path: '/reports/analysis',
     },
   },
