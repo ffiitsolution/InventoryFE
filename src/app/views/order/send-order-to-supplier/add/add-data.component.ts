@@ -103,7 +103,7 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
     });
 
     this.dataService
-    .postData(this.g.urlServer + '/api/send-order-to-warehouse/get-nopesanan',
+    .postData(this.g.urlServer + '/api/send-order-to-supplier/get-nopesanan',
       {"kodeGudang":  this.currentUser?.defaultLocation?.kodeLocation}
     )
     .subscribe((resp: any) => {
