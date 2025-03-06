@@ -28,14 +28,23 @@ export class AppInterceptor implements HttpInterceptor {
       }),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-          this.toastr.error('Sesi Anda telah habis. Silakan login kembali.', 'Error 401');
+          this.toastr.error(
+            'Sesi Anda telah habis. Silakan login kembali.',
+            'Error 401'
+          );
           this.router.navigateByUrl('/login');
         } else if (error.status === 403) {
-          this.toastr.warning('Anda tidak memiliki izin untuk melakukan aksi ini.', 'Error 403');
+          this.toastr.warning(
+            'Anda tidak memiliki izin untuk melakukan aksi ini.',
+            'Error 403'
+          );
         } else if (error.status === 500) {
-          this.toastr.error('Terjadi kesalahan pada server. Silakan coba lagi nanti.', 'Error 500');
+          this.toastr.error(
+            `Terjadi kesalahan : ${error.message}`,
+            'Error 500'
+          );
         } else {
-          this.toastr.error(` ${error.error.message}`, 'Error');
+          this.toastr.error(`Terjadi kesalahan: ${error.message}`, 'Error');
         }
         return throwError(() => error);
       })
