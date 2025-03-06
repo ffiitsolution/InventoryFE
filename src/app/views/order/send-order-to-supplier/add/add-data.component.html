@@ -14,7 +14,24 @@
             <div class="p-2">
               <h5 class="mb-2 p-2 pl-0" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5>
 
-              <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+              <form [formGroup]="myForm" (ngSubmit)="onShowModalBuatPesanan()">
+                <div class="mb-3 row">
+                  <label class="col-sm-4 col-form-label">{{
+                    "Nomor Pesanan" | translate
+                  }}
+                </label>
+                  <div class="col-sm-8">
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="newNomorPesanan"
+                      [readOnly]="adding"
+                      (keypress)="conditionInput($event, 'alphanumeric')"
+                      maxlength="50"
+                    />
+                 
+                  </div>
+                </div>
 
                 <div class="mb-3 row">
                   <label class="col-sm-4 col-form-label">{{
@@ -117,8 +134,6 @@
                     }}</span>
                   </div>
                 </div>
-
-        
                 <div class="divider"></div>
 
                 <div class="mb-3 row">
@@ -153,10 +168,10 @@
                   </div>
                 </div>
                 <div class="divider"></div>
-                <div class="d-grid gap-3 d-md-flex justify-content-end">
+                <div class="d-grid gap-3 d-md-flex justify-content-end" *ngIf="!isShowDetail">
                   <button
                     class="btn btn-light btn-120"
-                    (click)="onPreviousPressed()"
+                    (click)="onShowModalBack()"
                     [disabled]="adding"
                   >
                     {{ "Kembali" | translate }}
@@ -183,6 +198,39 @@
         </div>
       </div>
     </c-card-body>
-
   </c-card>
+  <c-modal #formModalBack [fullscreen]="false" [visible]="isShowModalBack" backdrop="static" #modalLg 
+    id="formModalBack"    [attr.aria-hidden]="!isShowModalBack">
+      <c-modal-header>
+        <h5 cModalTitle>Konfirmasi Kembali </h5>
+        <button (click)="isShowModalBack = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalBack.id"
+          cButtonClose><i class="fa fa-times"></i></button>
+      </c-modal-header>
+      <c-modal-body>
+        <p class="text-center">Apakah anda ingin kembali ke halaman sebelumnya?</p>
+        <div class="d-flex justify-center py-2">
+          <button class="btn btn-light"  (click)="isShowModalBack = false">Tidak</button>
+          &nbsp;
+          <button class="btn btn-danger text-white" (click)="onPreviousPressed()">Iya</button>
+
+        </div>
+      </c-modal-body>
+  </c-modal>
+  <c-modal #formModalBuatPesanan [fullscreen]="false" [visible]="isShowModalBuatPesanan" backdrop="static" #modalLg 
+  id="formModalBuatPesanan"    [attr.aria-hidden]="!isShowModalBuatPesanan">
+    <c-modal-header>
+      <h5 cModalTitle>Konfirmasi Buat Pesanan </h5>
+      <button (click)="isShowModalBuatPesanan = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalBack.id"
+        cButtonClose><i class="fa fa-times"></i></button>
+    </c-modal-header>
+    <c-modal-body>
+      <p class="text-center">Apakah anda ingin membuat pesanan?</p>
+      <div class="d-flex justify-center py-2">
+        <button class="btn btn-light"  (click)="isShowModalBuatPesanan = false">Tidak</button>
+        &nbsp;
+        <button class="btn btn-danger text-white" (click)="onSubmit()">Iya</button>
+
+      </div>
+    </c-modal-body>
+</c-modal>
 </div>

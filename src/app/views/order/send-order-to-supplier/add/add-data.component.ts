@@ -43,6 +43,9 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
   gudangDetail: any[] = [];
   currentUser : any;
   isShowDetail = false;
+  newNomorPesanan :any;
+  isShowModalBack: boolean = false;
+  isShowModalBuatPesanan: boolean = false;
 
   constructor(
     private toastr: ToastrService,
@@ -68,6 +71,7 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
       kodeSingkat:  [{value: '', disabled: true}],
       catatan1: [''],
       catatan2: [''],
+      newNomorPesanan: [{value: '', disabled: true}]
     });
 
     this.configSelectDefaultLokasi = {
@@ -89,7 +93,6 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
       limitTo: this.listRSC.length
     };
 
-
     this.dataService
     .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
     .subscribe((resp: any) => {
@@ -99,6 +102,15 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
       }));     
     });
 
+    this.dataService
+    .postData(this.g.urlServer + '/api/send-order-to-warehouse/get-nopesanan',
+      {"kodeGudang":  this.currentUser?.defaultLocation?.kodeLocation}
+    )
+    .subscribe((resp: any) => {
+      this.newNomorPesanan = resp;
+      this.myForm.get('newNomorPesanan')?.setValue(this.newNomorPesanan.newNomorPesanan);
+      console.log("this.newNomorPesanan",this.newNomorPesanan.newNomorPesanan);
+    });
 
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
@@ -117,12 +129,13 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
   
 
   onSubmit(): void {
+    this.isShowModalBuatPesanan = false;
     const currentUser = this.g.getLocalstorage('inv_currentUser');
     
     const { controls, invalid } = this.myForm;
 
 
-     if (invalid || (this.compareDates(this.myForm.value.tanggalKirimBarang, this.myForm.value.tanggalBatalPesanan)) || (currentUser?.defaultLocation?.kodeLocation === this.myForm.value?.RSCTujuan?.id) ) {
+    if (invalid || (this.compareDates(this.myForm.value.tanggalKirimBarang, this.myForm.value.tanggalBatalPesanan)) || (currentUser?.defaultLocation?.kodeLocation === this.myForm.value?.RSCTujuan?.id) ) {
       this.g.markAllAsTouched(this.myForm);
     } else {
       this.adding = true;
@@ -156,14 +169,15 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
 
     }
    
-  onNextPressed() {
-    this.router.navigate(['/order/send-order-to-supplier/add-data-detail']);
-  }
-
-  onPreviousPressed() {
-    localStorage.removeItem(LS_INV_SELECTED_SET_NUMBER);
-    this.router.navigate(['/order/send-order-to-supplier/']);
-  }
+    onNextPressed() {
+      this.router.navigate(['/order/send-order-to-supplier/add-data-detail']);
+    }
+  
+    onPreviousPressed() {
+      localStorage.removeItem(LS_INV_SELECTED_SET_NUMBER);
+      this.router.navigate(['/order/send-order-to-supplier/']);
+    }
+  
 
 
   isFieldValid(fieldName: String) {
@@ -211,40 +225,46 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
   }
 
   getGudangDetail(kodeGudang: any) {
-  if (!kodeGudang || kodeGudang.trim() === '') {
-    return; // Stop execution if kodeGudang is empty or invalid
+    if (!kodeGudang || kodeGudang.trim() === '') {
+      return; // Stop execution if kodeGudang is empty or invalid
+    }
+
+    this.dataService
+      .postData(this.g.urlServer + '/api/branch/branch-detail', { "kodeCabang": kodeGudang })
+      .subscribe((resp: any) => {
+        this.gudangDetail = resp;
+
+        this.myForm.get('namaGudang')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].NAMA_CABANG : null);
+        this.myForm.get('alamatGudang')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].ALAMAT1 : null);
+        this.myForm.get('statusGudang')?.setValue(
+          this.gudangDetail?.length
+            ? (this.gudangDetail[0].STATUS_AKTIF === "A" ? "Aktif" : "Tidak Aktif")
+            : null
+        );    
+        this.myForm.get('kodeSingkat')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].KODE_SINGKAT : null);  
+      }); 
   }
 
-  this.dataService
-    .postData(this.g.urlServer + '/api/branch/branch-detail', { "kodeCabang": kodeGudang })
-    .subscribe((resp: any) => {
-      this.gudangDetail = resp;
+  onDateChangeTglKirimBarang(event: Date): void {
+    this.dpConfigTglBatalPesanan.minDate = event; //update the batal pesanan mindate to tanggal kirim barang
+    console.log('Selected Date:', event);
+  }
 
-      this.myForm.get('namaGudang')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].NAMA_CABANG : null);
-      this.myForm.get('alamatGudang')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].ALAMAT1 : null);
-      this.myForm.get('statusGudang')?.setValue(
-        this.gudangDetail?.length
-          ? (this.gudangDetail[0].STATUS_AKTIF === "A" ? "Aktif" : "Tidak Aktif")
-          : null
-      );    
-      this.myForm.get('kodeSingkat')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].KODE_SINGKAT : null);  
-    }); 
-}
+  compareDates(date1: any, date2: any): boolean {
+    if (!date1 || !date2) return false; // Ensure both dates exist
 
-onDateChangeTglKirimBarang(event: Date): void {
-  this.dpConfigTglBatalPesanan.minDate = event; //update the batal pesanan mindate to tanggal kirim barang
-  console.log('Selected Date:', event);
-}
+    const d1 = new Date(date1).setHours(0, 0, 0, 0); // Remove time
+    const d2 = new Date(date2).setHours(0, 0, 0, 0); // Remove time
 
-compareDates(date1: any, date2: any): boolean {
-  if (!date1 || !date2) return false; // Ensure both dates exist
+    return d1 > d2; // Compare only the date part
+  }
 
-  const d1 = new Date(date1).setHours(0, 0, 0, 0); // Remove time
-  const d2 = new Date(date2).setHours(0, 0, 0, 0); // Remove time
+  onShowModalBack() {
+    this.isShowModalBack= true;
+  }
 
-  return d1 > d2; // Compare only the date part
-}
-
-
+  onShowModalBuatPesanan() {
+    this.isShowModalBuatPesanan= true;
+  }
 
 }
