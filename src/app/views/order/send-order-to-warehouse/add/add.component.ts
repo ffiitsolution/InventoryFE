@@ -94,81 +94,83 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
 
 
     this.dataService
-    .postData(this.g.urlServer + '/api/branch/dropdown-gudang',{})
-    .subscribe((resp: any) => {
-      this.listGudang = resp.map((item: any) => ({
-        id: item.KODE_CABANG,
-        name: item.KODE_CABANG+' - '+item.NAMA_CABANG,
-      }));     
-    });
+      .postData(this.g.urlServer + '/api/branch/dropdown-gudang',{})
+      .subscribe((resp: any) => {
+        this.listGudang = resp.map((item: any) => ({
+          id: item.KODE_CABANG,
+          name: item.KODE_CABANG+' - '+item.NAMA_CABANG,
+        }));     
+      });
 
-    this.dataService
-    .postData(this.g.urlServer + '/api/send-order-to-warehouse/get-nopesanan',
-      {"kodeGudang":  this.currentUser?.defaultLocation?.kodeLocation}
-    )
-    .subscribe((resp: any) => {
-      this.newNomorPesanan = resp;
-      this.myForm.get('newNomorPesanan')?.setValue(this.newNomorPesanan.newNomorPesanan);
-      console.log("this.newNomorPesanan",this.newNomorPesanan.newNomorPesanan);
-    });
+      this.dataService
+      .postData(this.g.urlServer + '/api/send-order-to-warehouse/get-nopesanan',
+        {"kodeGudang":  this.currentUser?.defaultLocation?.kodeLocation}
+      )
+      .subscribe((resp: any) => {
+        this.newNomorPesanan = resp;
+        this.myForm.get('newNomorPesanan')?.setValue(this.newNomorPesanan.newNomorPesanan);
+      });
 
-    this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
-    this.dpConfig.adaptivePosition = true;
+      this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
+      this.dpConfig.adaptivePosition = true;
 
-    this.dpConfigTglKirimBarang.dateInputFormat = 'DD/MM/YYYY';
-    this.dpConfigTglKirimBarang.adaptivePosition = true;
-    this.dpConfigTglKirimBarang.minDate = new Date(new Date().setHours(0, 0, 0, 0));
+      this.dpConfigTglKirimBarang.dateInputFormat = 'DD/MM/YYYY';
+      this.dpConfigTglKirimBarang.adaptivePosition = true;
+      this.dpConfigTglKirimBarang.minDate = new Date(new Date().setHours(0, 0, 0, 0));
 
-    this.dpConfigTglBatalPesanan.dateInputFormat = 'DD/MM/YYYY';
-    this.dpConfigTglBatalPesanan.adaptivePosition = true;
-    this.dpConfigTglBatalPesanan.minDate = new Date(new Date().setHours(0, 0, 0, 0));
-    
-    this.g.removeLocalstorage('TEMP_ORDHDK');
-  }
+      this.dpConfigTglBatalPesanan.dateInputFormat = 'DD/MM/YYYY';
+      this.dpConfigTglBatalPesanan.adaptivePosition = true;
+      this.dpConfigTglBatalPesanan.minDate = new Date(new Date().setHours(0, 0, 0, 0));
+      
+      this.g.removeLocalstorage('TEMP_ORDHDK');
+    }
 
   
 
-  onSubmit(): void {
+    onSubmit(): void {
     this.isShowModalBuatPesanan = false;
     const currentUser = this.g.getLocalstorage('inv_currentUser');
-    
+
     const { controls, invalid } = this.myForm;
 
 
-     if (invalid || (this.compareDates(this.myForm.value.tanggalKirimBarang, this.myForm.value.tanggalBatalPesanan)) || (currentUser?.defaultLocation?.kodeLocation === this.myForm.value?.gudangTujuan?.id) ) {
+    if (invalid || (this.compareDates(this.myForm.value.tanggalKirimBarang, this.myForm.value.tanggalBatalPesanan)) || (currentUser?.defaultLocation?.kodeLocation === this.myForm.value?.gudangTujuan?.id) ||(this.compareDates(this.  myForm?.controls?.['tanggalPesanan']?.value, this.myForm.value.tanggalKirimBarang)) ) {
       this.g.markAllAsTouched(this.myForm);
+
+      this.toastr.error("Form tidak valid");
+
+
     } else {
       this.adding = true;
       const param = {
-        kodeGudang:   currentUser?.defaultLocation?.kodeLocation,
-        kodeSingkat:   controls?.['kodeSingkat']?.value,
-        supplier:  controls?.['gudangTujuan']?.value?.id,
-        namaSupplier:  controls?.['gudangTujuan']?.value?.name,
-        tanggalPesanan:  moment(  controls?.['tanggalPesanan']?.value).format("DD-MM-YYYY"),
-        tanggalKirimBarang:  moment(  controls?.['tanggalKirimBarang']?.value).format("DD-MM-YYYY"),
-        tanggalBatalEXP: moment(  controls?.['tanggalBatalPesanan']?.value).format("DD-MM-YYYY"),
-        keteranganSatu: controls?.['catatan1']?.value,
-        keteranganDua: controls?.['catatan2']?.value,
+      kodeGudang:   currentUser?.defaultLocation?.kodeLocation,
+      kodeSingkat:   controls?.['kodeSingkat']?.value,
+      supplier:  controls?.['gudangTujuan']?.value?.id,
+      namaSupplier:  controls?.['gudangTujuan']?.value?.name,
+      tanggalPesanan:  moment(  controls?.['tanggalPesanan']?.value).format("DD-MM-YYYY"),
+      tanggalKirimBarang:  moment(  controls?.['tanggalKirimBarang']?.value).format("DD-MM-YYYY"),
+      tanggalBatalEXP: moment(  controls?.['tanggalBatalPesanan']?.value).format("DD-MM-YYYY"),
+      keteranganSatu: controls?.['catatan1']?.value,
+      keteranganDua: controls?.['catatan2']?.value,
+    };
 
-      };
+    this.g.saveLocalstorage('TEMP_ORDHDK', param);
 
-      this.g.saveLocalstorage('TEMP_ORDHDK', param);
+    setTimeout(() => {
+    this.isShowDetail = true;
+    this.myForm.get('catatan1')?.disable();
+    this.myForm.get('catatan2')?.disable();
+    this.myForm.get('gudangTujuan')?.disable();
+    this.myForm.get('tanggalKirimBarang')?.disable();
+    this.myForm.get('tanggalBatalPesanan')?.disable();
 
-      setTimeout(() => {
-        this.isShowDetail = true;
-        this.myForm.get('catatan1')?.disable();
-        this.myForm.get('catatan2')?.disable();
-        this.myForm.get('gudangTujuan')?.disable();
-        this.myForm.get('tanggalKirimBarang')?.disable();
-        this.myForm.get('tanggalBatalPesanan')?.disable();
-        
-          // this.onNextPressed();
-        }, DEFAULT_DELAY_TIME);
-      }
-      this.adding = false;
+      // this.onNextPressed();
+    }, DEFAULT_DELAY_TIME);
+    }
+    this.adding = false;
 
     }
-   
+
   onNextPressed() {
     this.router.navigate(['/order/send-order-to-warehouse/add-data-detail']);
   }
@@ -219,7 +221,6 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
 
 
   onGudangTujuanChange(selectedValue: any) {
-    console.log("this gudangtujuan",this.myForm.value.gudangTujuan)
     this.getGudangDetail(selectedValue?.value?.id);
   }
 
@@ -246,15 +247,13 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
 
   onDateChangeTglKirimBarang(event: Date): void {
     this.dpConfigTglBatalPesanan.minDate = event; //update the batal pesanan mindate to tanggal kirim barang
-    console.log('Selected Date:', event);
   }
 
   compareDates(date1: any, date2: any): boolean {
     if (!date1 || !date2) return false; // Ensure both dates exist
-
+    
     const d1 = new Date(date1).setHours(0, 0, 0, 0); // Remove time
     const d2 = new Date(date2).setHours(0, 0, 0, 0); // Remove time
-
     return d1 > d2; // Compare only the date part
   }
 
