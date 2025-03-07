@@ -233,26 +233,26 @@ export const menu_id: any = [
       },
       {
         name: 'Pemakaian Barang Sendiri',
-        url: '/transaction/transaksi-pemakaian-barang-sendiri',
+        url: '/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri',
         iconComponent: {
           name: 'cil-hand-point-right',
         },
-        children: [
-          {
-            name: 'Tambah Data',
-            url: '/transaction/pemakaian-barang-sendiri/tambah-data-pemakaian-barang-sendiri',
-            iconComponent: {
-              name: 'cil-circle',
-            },
-          },
-          {
-            name: 'Display Data',
-            url: '/transaction/transaksi-pemakaian-barang-sendiri/display-data-pemakaian-barang-sendiri',
-            iconComponent: {
-              name: 'cil-circle',
-            },
-          },
-        ],
+        // children: [
+        //   {
+        //     name: 'Tambah Data',
+        //     url: '/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri',
+        //     iconComponent: {
+        //       name: 'cil-circle',
+        //     },
+        //   },
+        //   {
+        //     name: 'Display Data',
+        //     url: '/transaction/transaksi-pemakaian-barang-sendiri/display-data-pemakaian-barang-sendiri',
+        //     iconComponent: {
+        //       name: 'cil-circle',
+        //     },
+        //   },
+        // ],
       },
       {
         name: 'Pemusnahan Barang',
