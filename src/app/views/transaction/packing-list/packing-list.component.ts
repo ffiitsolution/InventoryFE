@@ -226,7 +226,7 @@ export class PackagingListComponent
     console.log('Mengirim data ke backend:', params);
 
     this.dataService
-      .postData(this.config.BASE_URL + '/delivery-order/packing-list', params)
+      .postData(this.config.BASE_URL + '/api/delivery-order/packing-list', params)
       .subscribe(
         (response: any) => {
           let index = 0;

@@ -193,7 +193,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.dataService
       .postData(
-        this.config.BASE_URL + '/delivery-order/proses-do-balik',
+        this.config.BASE_URL + '/api/delivery-order/proses-do-balik',
         params
       )
       .subscribe(
