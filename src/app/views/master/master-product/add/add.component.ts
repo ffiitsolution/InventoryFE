@@ -321,7 +321,7 @@ export class MasterProductAddComponent implements OnInit {
     this.selectedSupplier = data;
     this.renderDataTables();
     this.myForm.patchValue({
-      kodeSupplier: this.selectedSupplier.kodeSupplier,
+      defaultSupplier: this.selectedSupplier.kodeSupplier,
       namaSupplier: this.selectedSupplier.namaSupplier,
     });
     this.isShowModal = false;
@@ -515,10 +515,10 @@ export class MasterProductAddComponent implements OnInit {
         satuanBesar: controls?.['satuanBesar']?.value?.kodeUom,
         defaultGudang: Array.isArray(controls?.['defaultGudang']?.value)
           ? ''
-          : controls?.['defaultGudang']?.value?.kodeSingkat,
-        defaultSupplier: Array.isArray(controls?.['defaultSupplier']?.value)
+          : controls?.['defaultGudang']?.value == ''
           ? ''
-          : controls?.['defaultSupplier']?.value?.kodeSupplier,
+          : controls?.['defaultGudang']?.value?.kodeSingkat,
+        defaultSupplier: controls?.['defaultSupplier']?.value,
         flagCom: controls?.['flagCom']?.value ? 'Y' : 'T',
         flagDry: controls?.['flagDry']?.value ? 'Y' : 'T',
         flagPrd: controls?.['flagPrd']?.value ? 'Y' : 'T',

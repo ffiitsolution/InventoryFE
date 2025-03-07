@@ -277,7 +277,6 @@
                     class="form-control"
                     formControlName="namaSupplier"
                     readonly
-                    maxlength="13"
                   />
                   <button
                     type="button"
@@ -286,14 +285,7 @@
                     style="background-color: #b51823; color: white"
                     (click)="onShowModal()"
                   >
-                    <i
-                      [class]="
-                        'fa ' +
-                        (myForm?.get('namaSupplier')?.value != ''
-                          ? 'fa-refresh'
-                          : 'fa-search')
-                      "
-                    ></i>
+                    <i class="fa fa-search"></i>
                   </button>
                   <!-- <ngx-select-dropdown
                     [multiple]="false"
