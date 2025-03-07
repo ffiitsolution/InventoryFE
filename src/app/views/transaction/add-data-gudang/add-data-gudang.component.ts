@@ -41,6 +41,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
   selectedRo: any = {};
   minDate: Date;
   maxDate: Date;
+  isShowDetail: boolean = false;
 
   @ViewChild('formModal') formModal: any;
   // Form data object
@@ -121,11 +122,14 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
       Swal.fire('Error', 'Nomor Surat Jalan Salah', 'error');
       return;
     }
-    this.router.navigate(['/transaction/receipt-from-warehouse/tambah-data/detail-add-data-gudang']);
-    this.globalService.saveLocalstorage(
-      LS_INV_SELECTED_DELIVERY_ORDER,
-      JSON.stringify(this.formData)
-    );
+    else{
+      this.isShowDetail = true;
+      // this.router.navigate(['/transaction/receipt-from-warehouse/tambah-data/detail-add-data-gudang']);
+      this.globalService.saveLocalstorage(
+        LS_INV_SELECTED_DELIVERY_ORDER,
+        JSON.stringify(this.formData)
+      );
+    }
   }
 
   ngAfterViewInit(): void {

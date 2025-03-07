@@ -21,7 +21,7 @@
     <c-card-body>
       <div class="row">
         <div
-          [ngClass]="isShowModal ? 'col-4' : 'col-5'"
+          [ngClass]="isShowDetail ? 'col-4' : 'col-5'"
           class="pe-0 d-flex red-line"
         >
           <div class="w-100">
@@ -232,16 +232,9 @@
         </div>
 
         <!-- Bagian Detail -->
-        <div class="ps-0" [ngClass]="isShowModal ? 'col-8' : 'col-7'">
-          <div class="p-2" *ngIf="">
-            <button
-          class="btn btn-primary"
-          [disabled]="formData.nomorPesanan === ''"
-          (click)="onAddDetail()"
-        >
-          {{ "Detail Transaksi" | translate }}
-        </button>
-            <app-add-data-detail-delivery-order></app-add-data-detail-delivery-order>
+        <div class="ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
+          <div class="p-2" *ngIf="isShowDetail">
+            <app-detail-add-data-gudang></app-detail-add-data-gudang>
           </div>
         </div>
       </div>

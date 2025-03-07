@@ -66,7 +66,7 @@ export class AddDataDetailGudangComponent {
     private http: HttpClient,
     private dataService: DataService
   ) {
-    this.g.navbarVisibility = true;
+    this.g.navbarVisibility = false;
     this.selectedOrder = JSON.parse(this.selectedOrder);
     this.getDeliveryItemDetails();
   }
@@ -129,9 +129,9 @@ export class AddDataDetailGudangComponent {
 
   // ngAfterViewInit(): void {}
 
-  // ngOnDestroy(): void {
-  //   this.g.navbarVisibility = true;
-  // }
+  ngOnDestroy(): void {
+    this.g.navbarVisibility = true;
+  }
 
   onBackPressed() {
     this.router.navigate(['/transaction/receipt-from-warehouse/tambah-data']);
