@@ -193,12 +193,11 @@ export class AddDataDetailWastageComponent
           kodeBarang: expiredItem.kodeBarang,
           tglExpired: moment(expiredItem.tglExpired, "DD-MM-YYYY").format("D MMM YYYY"),
           konversi: expiredItem.konversi,
-          qtyBesar: parseInt(expiredItem.qtyWasteBesar) || 0,
-          qtyKecil: parseInt(expiredItem.qtyWasteKecil) || 0,
-          totalQty: expiredItem.totalQty
+          qtyBesar: -Math.abs(parseInt(expiredItem.qtyWasteBesar)) || 0,
+          qtyKecil: -Math.abs(parseInt(expiredItem.qtyWasteKecil)) || 0,
+          totalQty: expiredItem.totalQty ? -Math.abs(expiredItem.totalQty) : 0
         })) || []
       };
-
       this.service.insert('/api/wastage/insert', param).subscribe({
         next: (res) => {
           if (!res.success) {

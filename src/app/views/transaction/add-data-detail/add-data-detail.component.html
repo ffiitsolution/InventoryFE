@@ -103,9 +103,9 @@
           </tbody>
         </table>
         <div class="mt-2 text-start">
-          <c-pagination>
+          <!-- <c-pagination>
             <pagination-controls (pageChange)="listCurrentPage = $event" id="dataTableDetail"></pagination-controls>
-          </c-pagination>
+          </c-pagination> -->
         </div>
       </ng-container>
     </div>
@@ -119,7 +119,7 @@
     {{ "Proses Pengiriman" | translate }}
   </button>
 
-  <button class="btn btn-danger text-white btn-150" (click)="onBackPressed()">
+  <button class="btn btn-secondary text-white btn-150" (click)="onBackPressed()">
     <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
   </button>
 </div>
