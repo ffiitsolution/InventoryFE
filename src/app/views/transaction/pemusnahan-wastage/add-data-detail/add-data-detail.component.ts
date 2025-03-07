@@ -43,7 +43,9 @@ export class AddDataDetailWastageComponent
   implements OnInit, OnDestroy, AfterViewInit {
   columns: any;
   orders: any[] = [];
-  newOrhdk: any = (localStorage.getItem('TEMP_ORDHDK') || '{}');
+  headerWastage: any = JSON.parse(
+    localStorage['headerWastage']
+  );
   adding: boolean = false;
   loadingIndicator: boolean = false;
   showFilterSection: boolean = false;
@@ -91,7 +93,7 @@ export class AddDataDetailWastageComponent
 
   ) {
     this.g.navbarVisibility = false;
-    this.newOrhdk = JSON.parse(this.newOrhdk);
+    this.headerWastage = JSON.parse(this.headerWastage);
   }
 
   ngOnInit(): void {
@@ -100,11 +102,11 @@ export class AddDataDetailWastageComponent
     );
     this.dataUser = this.g.getLocalstorage('inv_currentUser');
 
-    const isCanceled = this.newOrhdk.statusPesanan == CANCEL_STATUS;
+    const isCanceled = this.headerWastage.statusPesanan == CANCEL_STATUS;
     this.disabledPrintButton = isCanceled;
     this.disabledCancelButton = isCanceled;
     this.alreadyPrint =
-      this.newOrhdk.statusCetak == SEND_PRINT_STATUS_SUDAH;
+      this.headerWastage.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.renderDataTables();
 
@@ -156,17 +158,53 @@ export class AddDataDetailWastageComponent
   onSubmit() {
     if (!this.isDataInvalid()) {
       // param for order Header
-      const paramHeader = this.newOrhdk;
-
-      this.service.insert('/api/send-order-to-warehouse/insert-header', paramHeader).subscribe({
+      const param = {
+        kodeGudang: this.g.getUserLocationCode(),
+        tglTransaksi: moment(this.headerWastage.tglTransaksi, "DD-MM-YYYY").format("D MMM YYYY"),
+        statusPosting: 'P',
+        keterangan: this.headerWastage.keterangan,
+        namaSaksi: this.headerWastage.namaSaksi,
+        jabatanSaksi: this.headerWastage.jabatanSaksi,
+        userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+        details: this.listProductData
+          .filter(item => item.kodeBarang && item.kodeBarang.trim() !== '')
+          .map(item => ({
+            kodeGudang: this.g.getUserLocationCode(),
+            tglTransaksi: moment(this.headerWastage.tglTransaksi, "DD-MM-YYYY").format("D MMM YYYY"),
+            tipeTransaksi: 4,
+            kodeBarang: item.kodeBarang,
+            konversi: item.konversi,
+            satuanKecil: item.satuanKecil,
+            satuanBesar: item.satuanBesar,
+            qtyBesar: item.qtyWasteBesar || 0,
+            qtyKecil: item.qtyWasteKecil || 0,
+            flagExpired: 'Y',
+            totalQty: (this.helper.sanitizedNumber(item.qtyWasteBesar) *
+              item.konversi) + this.helper.sanitizedNumber(item.qtyWasteKecil),
+            totalQtyExpired: (this.helper.sanitizedNumber(item.qtyWasteBesar) *
+              item.konversi) + this.helper.sanitizedNumber(item.qtyWasteKecil),
+            hargaSatuan: 0,
+            userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+          })),
+        detailsExpired: this.listEntryExpired?.map(expiredItem => ({
+          kodeGudang: this.g.getUserLocationCode(),
+          tglTransaksi: moment(this.headerWastage.tglTransaksi, "DD-MM-YYYY").format("D MMM YYYY"),
+          tipeTransaksi: 4,
+          kodeBarang: expiredItem.kodeBarang,
+          tglExpired: moment(expiredItem.tglExpired, "DD-MM-YYYY").format("D MMM YYYY"),
+          konversi: expiredItem.konversi,
+          qtyBesar: -Math.abs(parseInt(expiredItem.qtyWasteBesar)) || 0,
+          qtyKecil: -Math.abs(parseInt(expiredItem.qtyWasteKecil)) || 0,
+          totalQty: expiredItem.totalQty ? -Math.abs(expiredItem.totalQty) : 0
+        })) || []
+      };
+      this.service.insert('/api/wastage/insert', param).subscribe({
         next: (res) => {
           if (!res.success) {
-            alert(res.message);
+            this.toastr.error(res.message);
           } else {
-            this.newOrhdk.nomorPesanan = res.item?.[0]?.nomorPesanan;
-
-            this.insertDetail()
             setTimeout(() => {
+              this.toastr.success("Data wastage berhasil dibuat");
               this.onPreviousPressed();
             }, DEFAULT_DELAY_TIME);
 
@@ -218,8 +256,8 @@ export class AddDataDetailWastageComponent
     this.listEntryExpired.push({
       tglExpired: '',
       keteranganTanggal: '',
-      qtyWasteBesar: '',
-      qtyWasteKecil: '',
+      qtyWasteBesar: 0,
+      qtyWasteKecil: 0,
       satuanKecil: this.selectedExpProduct.satuanKecil,
       satuanBesar: this.selectedExpProduct.satuanBesar,
       konversi: this.selectedExpProduct.konversi,
@@ -279,7 +317,7 @@ export class AddDataDetailWastageComponent
         this.pageModal.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
-          defaultGudang: this.newOrhdk?.kodeSingkat,
+          defaultGudang: this.headerWastage?.kodeSingkat,
           // startDate: this.g.transformDate(this.dateRangeFilter[0]),
           // endDate: this.g.transformDate(this.dateRangeFilter[1]),
         };
@@ -372,9 +410,9 @@ export class AddDataDetailWastageComponent
   insertDetail() {
     // param for order header detail
     const paramDetail = this.listProductData.map(item => ({
-      kodeGudang: this.newOrhdk.kodeGudang,
-      kodeTujuan: this.newOrhdk.supplier,
-      nomorPesanan: this.newOrhdk.nomorPesanan,
+      kodeGudang: this.headerWastage.kodeGudang,
+      kodeTujuan: this.headerWastage.supplier,
+      nomorPesanan: this.headerWastage.nomorPesanan,
       kodeBarang: item.kodeBarang,
       konversi: item.konversi,
       satuanKecil: item.satuanKecil,
@@ -407,7 +445,7 @@ export class AddDataDetailWastageComponent
   }
 
   onPreviousPressed(): void {
-    this.router.navigate(['order/send-order-to-warehouse']);
+    this.router.navigate(['wastage/list-dt']);
   }
 
   isDataInvalid() {

@@ -153,7 +153,6 @@ export class ReceivingOrderComponent
       ],
       searchDelay: 1000,
       order: [
-        [2, 'asc'],
         [4, 'asc'],
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {

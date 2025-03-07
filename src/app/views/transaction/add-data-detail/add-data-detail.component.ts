@@ -230,7 +230,6 @@ export class AddDataDetailDeliveryComponent
       })
       .filter((item) => item !== null); // Hapus item yang tidak valid
 
-    // 🚨 Jika ada data yang tidak valid, hentikan proses sebelum kirim ke API
     if (hasInvalidData || param.length === 0) {
       this.adding = false;
       return;

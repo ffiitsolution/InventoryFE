@@ -20,7 +20,7 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
-        <button class="btn btn-light  btn-150" (click)="onCancelPressed()">
+        <button class="btn btn-light  btn-150" (click)="onShowModalCancel()">
           <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
         </button> 
         <button class="btn btn-info text-white btn-150 pe-3" (click)="onShowModalOnSubmit()">
@@ -113,7 +113,7 @@
                   </span>
                 </td>
                 <td>
-                  <button class="btn btn-danger text-white btn-150" (click)="onShowModalDelete(i)">
+                  <button class="btn btn-primary text-white btn-150" (click)="onShowModalDelete(i)">
                     <i class="fa fa-trash pe-1"></i> {{ "Hapus" | translate }}
                   </button>
                 </td>
@@ -138,14 +138,20 @@
     <c-modal #formModal [fullscreen]="false" [visible]="isShowModal" backdrop="static" #modalLg size="xl"
       id="formModal"    [attr.aria-hidden]="!isShowModal">
         <c-modal-header>
-          <h5 cModalTitle>Add Receiving Order</h5>
+          <h5 cModalTitle>Tambah Barang</h5>
           <button (click)="isShowModal = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModal.id"
             cButtonClose><i class="fa fa-times"></i></button>
         </c-modal-header>
         <c-modal-body>
           <div class="table-responsive">
-            <table datatable [dtOptions]=" dtOptions" class="row-border hover w-100"></table>
+            <table datatable [dtOptions]=" dtOptions" class="row-border hover w-100" id="listBarangTable"></table>
           </div>
+          <div class="d-grid gap-3 d-md-flex justify-content-end mt-3">
+            <button class="btn btn-info text-white btn-150 pe-3" (click)="onAddListDataBarang()">
+              <i class="fa fa-check pe-2"></i> {{ "Tambah" | translate }} {{ "Data" | translate }}
+            </button>
+    
+          </div>        
         </c-modal-body>
     </c-modal>
 
@@ -159,10 +165,10 @@
         <c-modal-body>
           <p class="text-center">Apakah anda ingin menghapus data?</p>
           <div class="d-flex justify-center py-2">
-            <button class="btn btn-danger text-white" (click)="deleteBarang()">Iya</button>
-            &nbsp;
             <button class="btn btn-light"  (click)="isShowModalDelete = false">Tidak</button>
-    
+            &nbsp;
+            <button class="btn btn-primary text-white" (click)="deleteBarang()">Iya</button>
+
           </div>
         </c-modal-body>
     </c-modal>
@@ -177,28 +183,30 @@
       <c-modal-body>
         <p class="text-center">Apakah anda ingin menyimpan data?</p>
         <div class="d-flex justify-center py-2">
-          <button class="btn btn-danger text-white" (click)="onSubmit()">Iya</button>
-          &nbsp;
           <button class="btn btn-light"  (click)="isShowModalOnSubmit = false">Tidak</button>
-  
+          &nbsp;
+          <button class="btn btn-primary text-white" (click)="onSubmit()">Iya</button>
+
         </div>
       </c-modal-body>
   </c-modal>
-    <!-- <c-modal #staticBackdropModal backdrop="static" id="staticBackdropModal">
+  <c-modal #formModalCancel [fullscreen]="false" [visible]="isShowModalCancel" backdrop="static" #modalLg 
+    id="formModalCancel"    [attr.aria-hidden]="!isShowModalCancel">
       <c-modal-header>
-        <h5 cModalTitle>Cetak</h5>
-        <button [cModalToggle]="staticBackdropModal.id" cButtonClose></button>
+        <h5 cModalTitle>Konfirmasi Batal </h5>
+        <button (click)="isShowModalCancel = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalCancel.id"
+          cButtonClose><i class="fa fa-times"></i></button>
       </c-modal-header>
       <c-modal-body>
+        <p class="text-center">Apakah anda ingin membatalkan pesanan?</p>
         <div class="d-flex justify-center py-2">
-          <button class="btn btn-success" (click)="previewOrCetak('preview')">Preview</button>
+          <button class="btn btn-light"  (click)="isShowModalCancel = false">Tidak</button>
           &nbsp;
-          <button class="btn btn-light" (click)="previewOrCetak('Download')">Cetak</button>
-  
+          <button class="btn btn-primary text-white" (click)="onCancelPressed()">Iya</button>
+
         </div>
       </c-modal-body>
-    </c-modal> -->
-  
+  </c-modal>
 
     
   </c-card>

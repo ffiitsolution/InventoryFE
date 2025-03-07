@@ -1,0 +1,23 @@
+.order-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.label {
+  font-weight: bold;
+  width: 30%; /* Adjust width as needed */
+  text-align: left;
+  padding-right: 10px;
+}
+
+.value {
+  width: 70%; /* Adjust width as needed */
+  text-align: left;
+  padding-left: 10px;
+}

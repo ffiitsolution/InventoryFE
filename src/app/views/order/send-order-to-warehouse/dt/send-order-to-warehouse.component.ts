@@ -287,6 +287,8 @@ export class SendOrderToWarehouseComponent
     );
     this.buttonCaptionView = this.translation.instant('Lihat');
     localStorage.removeItem(LS_INV_SELECTED_SEND_TO_WAREHOUSE_ORDER);
+    this.dataUser = this.g.getLocalstorage('inv_currentUser');
+
   }
 
   actionBtnClick(action: string, data: any = null) {
@@ -301,7 +303,6 @@ export class SendOrderToWarehouseComponent
 
   updateStatus() {
     const data = this.selectedRowKirim
-    this.dataUser = this.g.getLocalstorage('inv_currentUser');
     const params = {
       statusKirim : "S",
       userKirim : this.dataUser.kodeUser,
@@ -364,7 +365,9 @@ export class SendOrderToWarehouseComponent
     async onClickPrint() {
       try {
         const param = {
-          nomorPesanan : this.selectedRowCetak.nomorPesanan
+          nomorPesanan : this.selectedRowCetak.nomorPesanan,
+          userCetak:  this.dataUser.kodeUser,
+          kodeCabang:  this.dataUser.defaultLocation.kodeLocation,
         }
 
         const base64Response = await lastValueFrom(
@@ -396,31 +399,5 @@ export class SendOrderToWarehouseComponent
         this.toastr.error(error.message ?? 'Unknown error while generating PDF');
       }
 
-    //   // this.updatingStatus = true;
-    //   try {
-    //     const updatePrintStatusResponse = await lastValueFrom(
-    //       this.dataService.postData(this.config.BASE_URL + this.updateStatusUrl, this.updatePrintStatusParam)
-    //     );
-  
-    //     if ((updatePrintStatusResponse as any).success) {
-    //       try {
-    //         const base64Response = await lastValueFrom(
-    //           this.dataService.postData(this.config.BASE_URL + this.generatePdfUrl, this.generateReportParam, true)
-    //         );
-    //         const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
-    //         const url = window.URL.createObjectURL(blob);
-    //         window.open(url);
-    //       } catch (error: any) {
-    //         this.toastr.error(error.message ?? 'Unknown error while generating PDF');
-    //       }
-    //     } else {
-    //       this.toastr.error((updatePrintStatusResponse as any).message);
-    //     }
-    //   } catch (error: any) {
-    //     this.toastr.error(error.message ?? 'Error updating status');
-    //   } finally {
-    //     // this.updatingStatus = false;
-    //     // this.reloadTable.emit();
-    //   }
     }
 }

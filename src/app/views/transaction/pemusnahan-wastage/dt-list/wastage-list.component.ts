@@ -166,10 +166,10 @@ export class WastageListComponent implements OnInit {
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage(
-        LS_INV_SELECTED_DELIVERY_ORDER,
+        'selectedWastage',
         JSON.stringify(data)
       );
-      this.router.navigate(['/transaction/delivery-item/detail-transaction']); this
+      this.router.navigate(['/transaction/wastage/detail']); this
     }
   }
 
@@ -182,7 +182,7 @@ export class WastageListComponent implements OnInit {
   }
 
   refreshData(): void {
-    const route = this.router.createUrlTree(['/transaction/delivery-item/detail-transaction']);
+    const route = this.router.createUrlTree(['/transaction/wastage/detail']);
     this.router.navigateByUrl(route);
   }
   onFilterStatusChange(event: Event): void {

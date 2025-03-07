@@ -39,7 +39,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedRo: any = {};
   minDate: Date;
   maxDate: Date;
-  isShowDetail: boolean = true;
+  isShowDetail: boolean = false;
 
   @ViewChild('formModal') formModal: any;
   // Form data object
