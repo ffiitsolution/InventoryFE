@@ -9,11 +9,17 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin, Observable } from 'rxjs';
+import { Page } from 'src/app/model/page';
 import { AppService } from 'src/app/service/app.service';
+import { DataService } from 'src/app/service/data.service';
+import { forkJoin, Observable } from 'rxjs';
 import { GlobalService } from 'src/app/service/global.service';
-import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_PRODUCT } from 'src/constants';
-
+import { TranslationService } from 'src/app/service/translation.service';
+import {
+  ACTION_SELECT,
+  DEFAULT_DELAY_TIME,
+  LS_INV_SELECTED_PRODUCT,
+} from 'src/constants';
 
 function nonZeroValidator(control: AbstractControl): ValidationErrors | null {
   if (
@@ -92,6 +98,11 @@ export class MasterProductEditComponent implements OnInit {
   defaultValue = 0;
   isSubmitting: boolean = false;
 
+  dtOptions: DataTables.Settings = {};
+  selectedSupplier: any;
+
+  page = new Page();
+
   uomList: any;
   supplierList: any;
   defaultOrderGudangList: any;
@@ -106,6 +117,8 @@ export class MasterProductEditComponent implements OnInit {
   myForm: FormGroup;
   detail: any;
 
+  isShowModal: boolean = false;
+
   baseConfig: any = {
     displayKey: 'keteranganUom', // Key to display in the dropdown
     search: true, // Enable search functionality
@@ -116,11 +129,13 @@ export class MasterProductEditComponent implements OnInit {
   };
 
   constructor(
+    private translationService: TranslationService,
     private toastr: ToastrService,
     private form: FormBuilder,
     private router: Router,
     private service: AppService,
-    private g: GlobalService
+    private g: GlobalService,
+    private dataService: DataService
   ) {
     this.myForm = this.form.group({
       kodeBarang: ['', [Validators.required, kodeBarang]],
@@ -133,6 +148,7 @@ export class MasterProductEditComponent implements OnInit {
       satuanBesar: ['', Validators.required],
       defaultGudang: [''],
       defaultSupplier: [''],
+      namaSupplier: [''],
       flagCom: [false],
       flagDry: [false],
       flagPrd: [false],
@@ -176,6 +192,7 @@ export class MasterProductEditComponent implements OnInit {
     // this.getUomList();
     // this.getSupplierList();
     // this.getDefaultOrderGudangList();
+    this.renderDataTables();
 
     forkJoin({
       uomList: this.getUomList(),
@@ -210,10 +227,11 @@ export class MasterProductEditComponent implements OnInit {
             (defaultGudang: any) =>
               defaultGudang.kodeSingkat === this.detail.defaultGudang
           ),
-          defaultSupplier: this.supplierList.find(
+          defaultSupplier: this.detail.defaultSupplier,
+          namaSupplier: this.supplierList.find(
             (supplier: any) =>
               supplier.kodeSupplier === this.detail.defaultSupplier
-          ),
+          )?.namaSupplier,
           flagCom: this.detail.flagCom === 'Y',
           flagDry: this.detail.flagDry === 'Y',
           flagPrd: this.detail.flagPrd === 'Y',
@@ -269,6 +287,114 @@ export class MasterProductEditComponent implements OnInit {
       search: true,
       height: '300px',
       placeholder: 'Pilih Supplier',
+    };
+  }
+
+  actionBtnClick(action: string, data: any = null) {
+    this.selectedSupplier = data;
+    this.renderDataTables();
+    this.myForm.patchValue({
+      kodeSupplier: this.selectedSupplier.kodeSupplier,
+      namaSupplier: this.selectedSupplier.namaSupplier,
+    });
+    this.isShowModal = false;
+  }
+
+  renderDataTables(): void {
+    this.dtOptions = {
+      language:
+        this.translationService.getCurrentLanguage() == 'id'
+          ? this.translationService.idDatatable
+          : {},
+      processing: true,
+      serverSide: true,
+      autoWidth: true,
+      info: true,
+
+      ajax: (dataTablesParameters: any, callback) => {
+        this.page.start = dataTablesParameters.start;
+        this.page.length = dataTablesParameters.length;
+        const requestData = {
+          ...dataTablesParameters,
+        };
+        this.dataService
+          .postData(this.g.urlServer + '/api/supplier/dt', requestData)
+          .subscribe((resp: any) => {
+            const mappedData = resp.data.map((item: any, index: number) => {
+              // hapus rn
+              const { rn, ...rest } = item;
+              const finalData = {
+                dtIndex: this.page.start + index + 1,
+                ...rest,
+              };
+              return finalData;
+            });
+            this.page.recordsTotal = resp.recordsTotal;
+            this.page.recordsFiltered = resp.recordsFiltered;
+            callback({
+              recordsTotal: resp.recordsTotal,
+              recordsFiltered: resp.recordsFiltered,
+              data: mappedData,
+            });
+          });
+      },
+      columns: [
+        { data: 'dtIndex', title: '#', orderable: false, searchable: false },
+        {
+          data: 'kodeSupplier',
+          title: 'Kode Supplier',
+          orderable: true,
+          searchable: true,
+        },
+        {
+          data: 'namaSupplier',
+          title: 'Nama Supplier ',
+          orderable: true,
+          searchable: true,
+        },
+        {
+          data: 'alamat1',
+          title: 'Alamat' + ' 1',
+          orderable: true,
+          searchable: true,
+        },
+        {
+          data: 'alamat2',
+          title: 'Alamat' + ' 2',
+          orderable: true,
+          searchable: true,
+        },
+        { data: 'kota', title: 'Kota', orderable: true, searchable: true },
+        { data: 'telpon1', title: 'Telpon', orderable: true, searchable: true },
+        {
+          data: 'statusAktif',
+          title: 'Status',
+          searchable: false,
+          render: (data) => {
+            if (data === 'A') {
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+            }
+            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:grey; width: 60px">Inactive</span> </div>`;
+          },
+        },
+        {
+          title: 'Action',
+          render: (data, type, row) => {
+            return `<button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>`;
+          },
+        },
+      ],
+      searchDelay: 1500,
+      order: [
+        [7, 'asc'],
+        [1, 'asc'],
+      ],
+      rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        $('.action-select', row).on('click', () =>
+          this.actionBtnClick(ACTION_SELECT, data)
+        );
+        return row;
+      },
     };
   }
 
@@ -405,9 +531,21 @@ export class MasterProductEditComponent implements OnInit {
     }
   }
 
+  onShowModal() {
+    this.isShowModal = true;
+  }
+
   onSubmit(): void {
     const { controls, invalid } = this.myForm;
     if (invalid) {
+      Object.keys(controls).forEach((controlName) => {
+        if (controls[controlName].errors) {
+          console.log(
+            `Error pada ${controlName}:`,
+            controls[controlName].errors
+          );
+        }
+      });
       this.g.markAllAsTouched(this.myForm);
       if (invalid) {
         if (
@@ -445,10 +583,10 @@ export class MasterProductEditComponent implements OnInit {
         satuanBesar: controls?.['satuanBesar']?.value?.kodeUom,
         defaultGudang: Array.isArray(controls?.['defaultGudang']?.value)
           ? ''
-          : controls?.['defaultGudang']?.value?.kodeSingkat,
-        defaultSupplier: Array.isArray(controls?.['defaultSupplier']?.value)
+          : controls?.['defaultGudang']?.value == ''
           ? ''
-          : controls?.['defaultSupplier']?.value?.kodeSupplier,
+          : controls?.['defaultGudang']?.value?.kodeSingkat,
+        defaultSupplier: controls?.['defaultSupplier']?.value,
         flagCom: controls?.['flagCom']?.value ? 'Y' : 'T',
         flagDry: controls?.['flagDry']?.value ? 'Y' : 'T',
         flagPrd: controls?.['flagPrd']?.value ? 'Y' : 'T',

@@ -270,8 +270,24 @@
                 <label class="col-sm-4 col-form-label">
                   {{ "Default Supplier " | translate }}
                 </label>
-                <div class="col-sm-8">
-                  <ngx-select-dropdown
+                <div class="col-sm-8 d-flex">
+                  <input
+                    style="width: 80%"
+                    type="text"
+                    class="form-control"
+                    formControlName="namaSupplier"
+                    readonly
+                  />
+                  <button
+                    type="button"
+                    style="width: 20%"
+                    class="btn ms-2"
+                    style="background-color: #b51823; color: white"
+                    (click)="onShowModal()"
+                  >
+                    <i class="fa fa-search"></i>
+                  </button>
+                  <!-- <ngx-select-dropdown
                     [multiple]="false"
                     [options]="supplierList"
                     [config]="configSupplierSelect"
@@ -279,7 +295,7 @@
                     [bindValue]="'kodeSingkatan'"
                     formControlName="defaultSupplier"
                   >
-                  </ngx-select-dropdown>
+                  </ngx-select-dropdown> -->
                 </div>
               </div>
             </div>
@@ -780,4 +796,39 @@
       </form>
     </c-card-body>
   </c-card>
+
+  <c-modal
+    #formModal
+    [fullscreen]="false"
+    [visible]="isShowModal"
+    backdrop="static"
+    #modalLg
+    size="xl"
+    id="formModal"
+    [attr.aria-hidden]="!isShowModal"
+  >
+    <c-modal-header>
+      <h5 cModalTitle>{{ "Daftar Supplier" | translate }}</h5>
+      <button
+        (click)="isShowModal = false"
+        type="button"
+        class="btn btn-primary ms-2"
+        [cModalToggle]="formModal.id"
+        cButtonClose
+      >
+        <i class="fa fa-times"></i>
+      </button>
+    </c-modal-header>
+    <c-modal-body>
+      <div class="table-responsive">
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          class="row-border hover w-100"
+        ></table>
+      </div>
+    </c-modal-body>
+  </c-modal>
+
+  <div class="modal-bg-backdrop" *ngIf="isShowModal"></div>
 </div>
