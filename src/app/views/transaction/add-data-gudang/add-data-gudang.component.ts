@@ -104,8 +104,20 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     this.onSaveData();
   }
 
+  isDoNumberValid(){
+    // dicek apakah  this.selectedRo.nosuratjalan ada
+    //
+    if (this.selectedRo.nomorSuratJan && this.selectedRo.nomorSuratJan != this.formData.nomorSuratJan)  {
+      return false;
+    }
+    else if ((this.formData.nomorSuratJan?.length && !/^DO-\d+$/.test(this.formData.nomorSuratJan)) || this.formData.nomorSuratJan.length > 20) {
+      return true;
+    }
+    return false
+  }
+
   onAddDetail() {
-    if (!/^DO-\d+$/.test(this.formData.nomorSuratJan) || this.formData.nomorSuratJan.length > 20) {
+    if (this.isDoNumberValid()) {
       Swal.fire('Error', 'Nomor Surat Jalan Salah', 'error');
       return;
     }
@@ -242,6 +254,8 @@ export class DeliveryDataService {
     return this.http.post<any>(apiUrl, data);
   }
 }
+
+
 
 
 

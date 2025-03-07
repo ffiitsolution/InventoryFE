@@ -163,6 +163,7 @@ export class AddDataDetailGudangComponent {
       }
     });
   }
+  
 
   onInputValueItemDetail(event: any, index: number) {
     const target = event.target;
@@ -177,24 +178,21 @@ export class AddDataDetailGudangComponent {
 
   prosesSimpan() {
     this.adding = true;
-    let hasInvalidData = false;
-
+  
     const param: any[] = this.listOrderData
       .map((data: any) => {
         if (!data) return null;
+  
         let totalQtyPesan = data?.TOTAL_QTY_PESAN ?? 0;
         let totalQtyExpired = data?.TOTAL_QTY_EXPIRED ?? 0;
-        let qtyDiterima = data?.TOTAL_QTY_TERIMA ?? 0;
-        let total_qty_expired = data.TOTAL_QTY_EXPIRED - data.TOTAL_QTY_PESAN;
-
+  
         if (data.TOTAL_QTY_EXPIRED > data.TOTAL_QTY_PESAN) {
           this.toastr.error(
             `Total Qty Expired (${totalQtyExpired}) tidak boleh lebih besar dari Total Qty Pesan (${totalQtyPesan})`
           );
-          hasInvalidData = true;
           return null;
         }
-
+  
         return {
           kodeGudang: data.KODE_GUDANG ?? '',
           nomorPesanan: data.NOMOR_PESANAN ?? '',
@@ -207,11 +205,13 @@ export class AddDataDetailGudangComponent {
         };
       })
       .filter((item) => item !== null);
-    if (hasInvalidData) {
+  
+    if (param.length === 0) {
       this.adding = false;
       return;
     }
-
+  
+    // Simpan data ke server
     fetch(
       'http://localhost:8093/inventory/api/delivery-order/simpan-data-penerimaan-dari-gudang',
       {
@@ -221,13 +221,20 @@ export class AddDataDetailGudangComponent {
       }
     )
       .then((response) => {
-        if (!response.ok)
-          throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         return response.json();
       })
       .then((data) => {
         if (data.some((item: any) => item.message)) {
-          this.toastr.success('Data penerimaan berhasil disimpan!');
+          Swal.fire({
+            title: 'Sukses!',
+            text: 'Data penerimaan berhasil disimpan!',
+            icon: 'success',
+            confirmButtonColor: '#3085d6',
+          }).then(() => {
+            // ✅ Navigasi ke halaman setelah penyimpanan berhasil
+            this.router.navigate(['/transaction/receipt-from-warehouse/display-data-dari-gudang']);
+          });
         } else if (data.some((item: any) => item.error)) {
           this.toastr.error('Gagal menyimpan: ' + data[0].error);
         }
