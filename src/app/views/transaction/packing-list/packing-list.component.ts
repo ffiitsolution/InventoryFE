@@ -51,13 +51,13 @@ export class PackagingListComponent
   dataUser: any;
   listNoDO: { noSuratJalan: any }[] = [];
   selectedRows: any[] = [];
+  protected config = AppConfig.settings.apiServer;
 
   constructor(
     private dataService: DataService,
     private g: GlobalService,
     private router: Router,
     private toastr: ToastrService,
-    private config: AppConfig,
     private appService: AppService,
   ) {
     this.minDate.setDate(this.minDate.getDate() - 7);
