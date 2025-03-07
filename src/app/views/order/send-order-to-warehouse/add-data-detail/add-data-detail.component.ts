@@ -213,8 +213,20 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
   
   onShowModal() {
+    this.barangTemp = []; // Reset selected items
+
+
+    
+    setTimeout(() => {
+        $('#listBarangTable tbody tr').each(function () {
+          $(this).find('td').removeClass('bg-secondary bg-opacity-25 fw-semibold'); // Remove styling from <td>
+          $(this).find('.row-checkbox').prop('checked', false); // Uncheck all checkboxes
+        });
+    }, 0);
+
     this.isShowModal = true;
-  }
+}
+
 
   onShowModalDelete(i: any) {
     this.indexDataDelete = i;
@@ -234,7 +246,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
 
   onAddListDataBarang(){
     let errorMessage
-    console.log("test")
     this.isShowModal = false;
     
     for (let barang of this.barangTemp) {
@@ -282,10 +293,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
         const params = {
           ...dataTablesParameters,
           defaultGudang: this.newOrhdk?.kodeSingkat,
-          // startDate: this.g.transformDate(this.dateRangeFilter[0]),
-          // endDate: this.g.transformDate(this.dateRangeFilter[1]),
         };
-        // this.appService.getNewReceivingOrder(params)
         this.dataService
         .postData(this.g.urlServer + '/api/product/dt-pesanan', params)
           .subscribe((resp: any) => {
@@ -295,10 +303,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
               const finalData = {
                 ...rest,
                 dtIndex: this.pageModal.start + index + 1,
-                // kodePemesan: `(${rest.kodeGudang}) ${rest.namaGudang}`,
-                // tglPesan: this.g.transformDate(rest.tglPesan),
-                // tglKirim: this.g.transformDate(rest.tglKirim),
-                // tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
               };
               return finalData;
             });
@@ -317,10 +321,10 @@ export class AddDataDetailSendOrderToWarehouseComponent
           title: 'Pilih Barang  ',
           className: 'text-center',
           render: (data, type, row) => {
+            console.log("this.barangTemp",this.barangTemp)
             let isChecked = this.barangTemp.some(item => item.kodeBarang === row.kodeBarang) ? 'checked' : '';
             return `<input type="checkbox" class="row-checkbox" data-id="${row.kodeBarang}" ${isChecked}>`;
         }
-        
       },
         { data: 'kodeBarang', title: 'Kode Barang', orderable: true},
         { data: 'namaBarang', title: 'Nama Barang', orderable: true },
@@ -364,23 +368,12 @@ export class AddDataDetailSendOrderToWarehouseComponent
       // delivery: [],
       rowCallback: (row: Node, data: any, index: number) => {
    
-
-        // Handle Checkbox Click
-        // $('.row-checkbox', row).on('change', function () {
-        //   let totalCheckboxes = $('.row-checkbox').length;
-        //   let checkedCheckboxes = $('.row-checkbox:checked').length;
-
-        //   // If all row checkboxes are checked, check "Select All", otherwise uncheck
-        //   $('#selectAllCheckbox').prop('checked', totalCheckboxes === checkedCheckboxes);
-        //   console.log("row",row);
-        //   console.log("data",data);
-        // });
-
         // Handle Checkbox Click
         $(row).find('.row-checkbox').off('change').on('change', (event: JQuery.ChangeEvent<HTMLElement>) => {
             this.handleCheckboxChange(event , data);
         });
 
+        // handle row click
         $('td', row).on('click', (event) => {
           const checkbox = $(row).find('.row-checkbox'); 
           const index = this.barangTemp.findIndex(item => item === data);
@@ -401,6 +394,10 @@ export class AddDataDetailSendOrderToWarehouseComponent
 
         return row;
       },
+      initComplete: (settings, json) => {
+        console.log("DataTable initialized");
+      },
+    
     };
   }
   
@@ -481,5 +478,4 @@ export class AddDataDetailSendOrderToWarehouseComponent
     }
     console.log("barangTemp",this.barangTemp)
   }
-
 }
