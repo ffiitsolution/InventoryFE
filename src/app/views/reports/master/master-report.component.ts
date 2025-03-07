@@ -13,9 +13,15 @@ import {
 } from '../../../../constants';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Page } from '../../../model/page';
-import { DataService } from '../../../service/data.service';
 import { GlobalService } from '../../../service/global.service';
 import { TranslationService } from '../../../service/translation.service';
+import {
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
+} from '@angular/forms';
+import { AppService } from 'src/app/service/app.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-master-report',
@@ -23,17 +29,31 @@ import { TranslationService } from '../../../service/translation.service';
   styleUrl: './master-report.component.scss',
 })
 export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
-  columns: any;
-  page = new Page();
-  data: any;
-  loadingIndicator = true;
-  selectedRowData: any;
-  currentReport: any = '';
+  [key: string]: any;
+  loadingState: { [key: string]: boolean } = {
+    submit: false,
+    selectedRegion: false,
+    statusAktif: false,
+    tipeListing: false,
+  };
+  currentReport: string = '';
+  rangeDateVal = [new Date(), new Date()];
+  downloadURL: any = [];
+
+  configRegion: any;
+
+  listRegion: any = [];
+
+  selectedRegion: any;
+
+  paramStatusAktif: string = 'ALL';
+  paramTipeListing: string = 'header';
 
   constructor(
-    private dataService: DataService,
+    private service: AppService,
     private g: GlobalService,
     private translation: TranslationService,
+    private datePipe: DatePipe,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -49,18 +69,15 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     this.route.queryParams.subscribe((params) => {
       this.currentReport = params['report'];
     });
+
+    this.configRegion = this.g.dropdownConfig('description');
+
+    if (['Master Cabang'].includes(this.currentReport)) {
+      this.getListParam('listRegion');
+    }
   }
 
-  ngOnDestroy(): void {
-    $.fn['dataTable'].ext.search.pop();
-  }
-
-  capitalizeWords(str: string) {
-    return str
-      .split(/(?=[A-Z])/)
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  }
+  ngOnDestroy(): void {}
 
   ngAfterViewInit(): void {}
 
@@ -70,5 +87,145 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getBack() {
     this.router.navigate(['/reports/all']);
+  }
+
+  getListParam(type: string, report: string = '') {
+    this.loadingState['selectedRegion'] = true;
+    this.service
+      .insert('/api/report/list-report-param', { type: type, report: report })
+      .subscribe({
+        next: (res) => {
+          const data = res.data ?? [];
+          const allVal = {
+            code: '',
+            description: 'Semua',
+          };
+          this.listRegion = [allVal, ...data];
+          this.selectedRegion = allVal;
+          this.loadingState['selectedRegion'] = false;
+        },
+        error: (error) => {
+          console.log(error);
+          this.loadingState['selectedRegion'] = false;
+        },
+      });
+  }
+
+  onChangeList(
+    selected: any,
+    paramCode: string,
+    paramName: string,
+    targetProperty: any
+  ) {
+    this[targetProperty] = selected;
+    if (this[targetProperty].length < 1) {
+      this[targetProperty] = {
+        [paramCode]: paramName == 'outletName' ? 'ALL' : 'Semua',
+        [paramName]: paramName == 'outletName' ? 'All' : 'Semua',
+      };
+    } else if (selected instanceof Array) {
+      this[targetProperty] = selected?.filter(
+        (item: any) => item[paramName] != 'Semua'
+      );
+    }
+  }
+
+  doSubmit(type: string) {
+    if (
+      this.currentReport === 'Master Cabang' &&
+      !this.selectedRegion['description']
+    ) {
+      this.g.alertWarning('Gagal!', 'Silahkan pilih Kode Region');
+    }
+
+    this.loadingState['submit'] = true;
+
+    let param = {};
+    if (this.currentReport === 'Master Cabang') {
+      param = {
+        kodeGudang: '00072',
+        kodeRegion: this.selectedRegion['code'],
+        status: this.paramStatusAktif,
+        tipeListing: this.paramTipeListing,
+      };
+    } else if (this.currentReport === 'Master Department') {
+      param = {
+        kodeRegion: this.selectedRegion['code'],
+        status: this.paramStatusAktif,
+        tipeListing: this.paramTipeListing,
+      };
+    }
+
+    param = {
+      ...param,
+      isDownloadCsv: type === 'csv',
+      reportName: this.currentReport,
+      reportSlug: this.g.formatUrlSafeString(this.currentReport),
+    };
+    this.service
+      .getFile('/api/report/report-jasper', param)
+      .subscribe({
+        next: (res) => {
+          this.loadingState['submit'] = false;
+
+          if (type === 'preview') {
+            return this.previewPdf(res);
+          } else if (type === 'csv') {
+            return this.downloadCsv(res, type);
+          } else {
+            return this.downloadPDF(res, type);
+          }
+        },
+        error: (error) => {
+          console.log(error);
+          this.loadingState['submit'] = false;
+        },
+      });
+  }
+
+  previewPdf(res: any) {
+    var blob = new Blob([res], { type: 'application/pdf' });
+    this.downloadURL = window.URL.createObjectURL(blob);
+    window.open(this.downloadURL);
+  }
+
+  downloadPDF(res: any, reportType: string) {
+    var blob = new Blob([res], { type: 'application/pdf' });
+    this.downloadURL = window.URL.createObjectURL(blob);
+
+    if (this.downloadURL.length) {
+      var link = document.createElement('a');
+      link.href = this.downloadURL;
+      link.download = `${reportType} Report ${this.datePipe.transform(
+        this.rangeDateVal[0],
+        'dd-MMM-yyyy'
+      )} s.d. ${this.datePipe.transform(
+        this.rangeDateVal[1],
+        'dd-MMM-yyyy'
+      )}.pdf`;
+      link.click();
+      this.g.alertError('Sukses', 'File sudah terunduh.');
+    } else
+      this.g.alertError('Maaf, Ada kesalahan!', 'File tidak dapat terunduh.');
+  }
+
+  downloadCsv(res: any, reportType: string) {
+    var blob = new Blob([res], { type: 'text/csv' });
+    this.downloadURL = window.URL.createObjectURL(blob);
+
+    if (this.downloadURL.length) {
+      var link = document.createElement('a');
+      link.href = this.downloadURL;
+      link.download = `${reportType} Report ${this.datePipe.transform(
+        this.rangeDateVal[0],
+        'dd-MMM-yyyy'
+      )} s.d. ${this.datePipe.transform(
+        this.rangeDateVal[1],
+        'dd-MMM-yyyy'
+      )}.csv`;
+      link.click();
+      this.g.alertError('Sukses', 'File sudah terunduh.');
+    } else
+      this.g.alertError('Maaf, Ada kesalahan!', 'File tidak dapat terunduh.');
   }
 }

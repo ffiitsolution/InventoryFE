@@ -10,10 +10,13 @@ import {
   ButtonGroupModule,
   CardModule,
   CollapseDirective,
+  DropdownModule,
+  FormCheckLabelDirective,
   FormModule,
   GridModule,
   ListGroupModule,
   ModalModule,
+  ProgressComponent,
   TextColorDirective,
   UtilitiesModule,
 } from '@coreui/angular';
@@ -55,6 +58,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     ModalModule,
     SelectDropDownModule,
     ListGroupModule,
+    FormCheckLabelDirective,
+    DropdownModule,
+    ProgressComponent,
   ],
   declarations: [
     AllReportComponent,
