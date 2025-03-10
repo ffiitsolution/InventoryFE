@@ -152,6 +152,16 @@
                       (keypress)="conditionInput($event, 'excludedSensitive')"
                       maxlength="100"
                     ></textarea>
+                    <span
+                      *ngIf="
+                        myForm.controls['catatan1'].hasError('excludedSensitive')
+                      "
+                      class="text-danger"
+                      >{{
+                        "Catatan1 hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), dan tanda kurung ()."
+                          | translate
+                      }}
+                    </span>
                   </div>
                 </div>
 
@@ -168,6 +178,16 @@
                       (keypress)="conditionInput($event, 'excludedSensitive')"
                       maxlength="50"
                     ></textarea>
+                    <span
+                      *ngIf="
+                        myForm.controls['catatan2'].hasError('excludedSensitive')
+                      "
+                      class="text-danger"
+                      >{{
+                        "Catatan2 hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), dan tanda kurung ()."
+                          | translate
+                      }}
+                    </span>
                   </div>
                 </div>
                 <div class="divider"></div>
