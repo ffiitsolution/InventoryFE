@@ -322,7 +322,7 @@ export const menu_id: any = [
   },
   {
     name: 'Tutup Bulan',
-    url: '/end-of-day',
+    url: '/end-of-month',
     iconComponent: {
       name: 'cil-calendar-check',
     },

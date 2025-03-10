@@ -51,13 +51,13 @@ export class PackagingListComponent
   dataUser: any;
   listNoDO: { noSuratJalan: any }[] = [];
   selectedRows: any[] = [];
+  protected config = AppConfig.settings.apiServer;
 
   constructor(
     private dataService: DataService,
     private g: GlobalService,
     private router: Router,
     private toastr: ToastrService,
-    private config: AppConfig,
     private appService: AppService,
   ) {
     this.minDate.setDate(this.minDate.getDate() - 7);
@@ -226,7 +226,7 @@ export class PackagingListComponent
     console.log('Mengirim data ke backend:', params);
 
     this.dataService
-      .postData(this.config.BASE_URL + '/delivery-order/packing-list', params)
+      .postData(this.config.BASE_URL + '/api/delivery-order/packing-list', params)
       .subscribe(
         (response: any) => {
           let index = 0;

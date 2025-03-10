@@ -97,6 +97,11 @@ const routes: Routes = [
           import('./views/stock-opname/stock-opname.module').then((m) => m.StockOpnameModule),
       },
       {
+        path: 'end-of-month',
+        loadChildren: () =>
+          import('./views/end-of-month/end-of-month.module').then((m) => m.EndOfMonthModule),
+      },
+      {
         path: 'reports',
         loadChildren: () =>
           import('./views/reports/report.module').then((m) => m.ReportModule),

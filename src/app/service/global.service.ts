@@ -356,4 +356,12 @@ export class GlobalService {
       .replace(/[^a-z0-9-]/g, ' ')
       .replace(/\s+/g, '-');
   }
+
+  generateNumberRange(start: number, end: number): number[] {
+    const range: number[] = [];
+    for (let i = start; i <= end; i++) {
+      range.push(i);
+    }
+    return range;
+  }
 }

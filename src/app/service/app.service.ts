@@ -37,6 +37,11 @@ export class AppService {
     }
   }
 
+  getUserData(){
+    const userString = this.getToken() ?? '';
+    return JSON.parse(userString);
+  }
+
   isLoggednIn() {
     return this.getToken();
   }

@@ -6,3 +6,17 @@
 .custom-mt{
  margin-top: 4.3;
 }
+
+.modal-bg-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  /* Transparansi dan warna hitam */
+  z-index: 1040;
+  /* Pastikan berada di belakang modal */
+  transition: all 0.3s ease-in-out;
+  /* Smooth transition untuk opacity */
+}
