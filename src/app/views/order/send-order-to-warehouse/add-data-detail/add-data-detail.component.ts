@@ -5,6 +5,13 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { TranslationService } from 'src/app/service/translation.service';
 import {
   ACTION_VIEW,
@@ -61,7 +68,8 @@ export class AddDataDetailSendOrderToWarehouseComponent
   selectedRow:  any = {};
   pageModal = new Page();
   dataUser: any = {};
-  validationMessageList: any[] = [];
+  validationMessageListSatuanKecil: any[] = [];
+  validationMessageListSatuanBesar: any[] = [];
   validationMessageQtyPesanList: any[] = [];
 
   isShowModalDelete: boolean = false;
@@ -140,11 +148,23 @@ export class AddDataDetailSendOrderToWarehouseComponent
     let validationMessage = '';
 
 
-    if(this.listOrderData[index].qtyPesanKecil > this.listOrderData[index].konversi  ){
-      this.validationMessageList[index] = "QTY kecil harus < Konversi";
+
+    if (this.isNotNumber(this.listOrderData[index].qtyPesanKecil)) {
+      this.validationMessageListSatuanKecil[index] = "QTY kecil harus angka";
+    }
+    
+    else if(this.listOrderData[index].qtyPesanKecil > this.listOrderData[index].konversi  ){
+      this.validationMessageListSatuanKecil[index] = "QTY kecil harus < Konversi";
     }
     else{
-      this.validationMessageList[index] = "";
+      this.validationMessageListSatuanKecil[index] = "";
+    }
+
+    if (this.isNotNumber(this.listOrderData[index].qtyPesanBesar)) {
+      this.validationMessageListSatuanBesar[index] = "QTY besar harus angka";
+    }
+    else{
+      this.validationMessageListSatuanBesar[index] = "";
     }
 
     if(this.listOrderData[index].qtyPesanKecil!=0 || this.listOrderData[index].qtyPesanBesar!=0){
@@ -249,7 +269,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
     this.isShowModal = false;
     
     for (let barang of this.barangTemp) {
-        console.log("barang",barang);
 
       if(!this.listOrderData.some(order => order.kodeBarang === barang.kodeBarang)){
         this.listOrderData.push({
@@ -263,8 +282,10 @@ export class AddDataDetailSendOrderToWarehouseComponent
           qtyPesanKecil: 0,
           ...barang
         });
-        this.validationMessageList.push("")
+        this.validationMessageListSatuanKecil.push("")
         this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
+        this.validationMessageListSatuanBesar.push("")
+
           // this.mapOrderData(data);
           // this.onSaveData();
       }
@@ -295,7 +316,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
           defaultGudang: this.newOrhdk?.kodeSingkat,
         };
         this.dataService
-        .postData(this.g.urlServer + '/api/product/dt-pesanan', params)
+        .postData(this.g.urlServer + '/api/product/dt', params)
           .subscribe((resp: any) => {
             const mappedData = resp.data.map((item: any, index: number) => {
               // hapus rn dari data
@@ -317,15 +338,21 @@ export class AddDataDetailSendOrderToWarehouseComponent
           });
       },
       columns: [
+        // { data: 'dtIndex', title: '#', orderable: false, searchable: false },
         {
+          data: 'dtIndex',
           title: 'Pilih Barang  ',
           className: 'text-center',
           render: (data, type, row) => {
-            console.log("this.barangTemp",this.barangTemp)
             let isChecked = this.barangTemp.some(item => item.kodeBarang === row.kodeBarang) ? 'checked' : '';
+            if(row.statusAktif === 'T'){
+              return `<input type="checkbox" class="row-checkbox" data-id="${row.kodeBarang}" ${isChecked} disabled>`;
+
+            }
             return `<input type="checkbox" class="row-checkbox" data-id="${row.kodeBarang}" ${isChecked}>`;
-        }
-      },
+          },
+          searchable: false,
+        },
         { data: 'kodeBarang', title: 'Kode Barang', orderable: true},
         { data: 'namaBarang', title: 'Nama Barang', orderable: true },
         { data: 'konversi', title: 'Konversi', orderable: true },
@@ -361,10 +388,10 @@ export class AddDataDetailSendOrderToWarehouseComponent
         
 
       ],
-      searchDelay: 1000,
-      // order: [
-      //   [8, 'desc'],
-      // ],
+      searchDelay: 1500,
+      order: [
+        [8, 'asc'],
+      ],
       // delivery: [],
       rowCallback: (row: Node, data: any, index: number) => {
    
@@ -375,27 +402,26 @@ export class AddDataDetailSendOrderToWarehouseComponent
 
         // handle row click
         $('td', row).on('click', (event) => {
-          const checkbox = $(row).find('.row-checkbox'); 
-          const index = this.barangTemp.findIndex(item => item === data);
+          if(data.statusAktif !== 'T'){
+            const checkbox = $(row).find('.row-checkbox'); 
+            const index = this.barangTemp.findIndex(item => item === data);
 
-          if (index === -1) {
-            this.barangTemp.push(data);
-            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
-            checkbox.prop('checked', true);
-          } else {
-            this.barangTemp.splice(index, 1);
-            $('td', row).css({ 'background-color': '' }).removeClass('bg-secondary bg-opacity-25 fw-semibold');
-            checkbox.prop('checked', false);
-          }
-          if ($(event.target).is('.select-row')) {
-            event.stopPropagation();
+            if (index === -1) {
+              this.barangTemp.push(data);
+              $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+              checkbox.prop('checked', true);
+            } else {
+              this.barangTemp.splice(index, 1);
+              $('td', row).css({ 'background-color': '' }).removeClass('bg-secondary bg-opacity-25 fw-semibold');
+              checkbox.prop('checked', false);
+            }
+            if ($(event.target).is('.select-row')) {
+              event.stopPropagation();
+            }
           }
         });
 
         return row;
-      },
-      initComplete: (settings, json) => {
-        console.log("DataTable initialized");
       },
     
     };
@@ -404,6 +430,11 @@ export class AddDataDetailSendOrderToWarehouseComponent
  
   deleteBarang() {
     this.listOrderData.splice(this.indexDataDelete, 1);
+    
+    this.validationMessageListSatuanKecil.splice(this.indexDataDelete, 1);
+    this.validationMessageQtyPesanList.splice(this.indexDataDelete, 1);
+    this.validationMessageListSatuanBesar.splice(this.indexDataDelete, 1);
+
     this.isShowModalDelete = false;
   }
 
@@ -451,8 +482,9 @@ export class AddDataDetailSendOrderToWarehouseComponent
   isDataInvalid() {
     let dataInvalid = false;
     dataInvalid = 
-    this.validationMessageList.some(msg => msg.trim() !== "") || 
+    this.validationMessageListSatuanKecil.some(msg => msg.trim() !== "") || 
     this.validationMessageQtyPesanList.some(msg => msg.trim() !== "")||
+    this.validationMessageListSatuanBesar.some(msg => msg.trim() !== "")||
     this.listOrderData.length === 0;
 
     if(this.listOrderData.length === 0){
@@ -465,7 +497,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
 
   handleCheckboxChange(event: JQuery.ChangeEvent<HTMLElement>, data: any) {
     const isChecked = (event.target as HTMLInputElement).checked;
-    console.log("isChecked",isChecked)
     if (isChecked) {
         // Add kodeBarang if checked
         if (! this.barangTemp.some(item => item.kodeBarang === data.kodeBarang)) {
@@ -474,8 +505,14 @@ export class AddDataDetailSendOrderToWarehouseComponent
     } else {
         // Remove kodeBarang if unchecked
         this.barangTemp = this.barangTemp.filter(item => item.kodeBarang !== data.kodeBarang);
-        console.log("this.barangTemp else",this.barangTemp)
     }
-    console.log("barangTemp",this.barangTemp)
   }
+
+  isNotNumber(value: any){
+    return !/^\d+(\.\d+)?$/.test(value)
+  }
+
+  
+
+
 }
