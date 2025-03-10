@@ -190,7 +190,7 @@ export class AddDataDetailSendOrderToSupplierComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/order/send-order-to-warehouse/add']);
+    this.router.navigate(['/order/send-order-to-supplier-via-rsc/add']);
   }
 
 
@@ -207,7 +207,7 @@ export class AddDataDetailSendOrderToSupplierComponent
       // param for order Header
       const paramHeader = this.newOrhdk;
         
-      this.service.insert('/api/send-order-to-warehouse/insert-header', paramHeader).subscribe({
+      this.service.insert('/api/send-order-to-supplier/insert-header', paramHeader).subscribe({
         next: (res) => {
           if (!res.success) {
             alert(res.message);
@@ -455,7 +455,7 @@ export class AddDataDetailSendOrderToSupplierComponent
   }));
 
 
-  this.service.insert('/api/send-order-to-warehouse/insert-detail', paramDetail).subscribe({
+  this.service.insert('/api/send-order-to-supplier/insert-detail', paramDetail).subscribe({
     next: (res) => {
       if (!res.success) {
         alert(res.message);
@@ -476,7 +476,7 @@ export class AddDataDetailSendOrderToSupplierComponent
   }
 
   onPreviousPressed(): void {
-    this.router.navigate(['order/send-order-to-warehouse']);
+    this.router.navigate(['order/send-order-to-supplier-via-rsc']);
   }
 
   isDataInvalid() {
