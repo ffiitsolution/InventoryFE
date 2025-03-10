@@ -135,8 +135,10 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
     const { controls, invalid } = this.myForm;
 
 
-    if (invalid || (this.compareDates(this.myForm.value.tanggalKirimBarang, this.myForm.value.tanggalBatalPesanan)) || (currentUser?.defaultLocation?.kodeLocation === this.myForm.value?.RSCTujuan?.id) ) {
+    if (invalid || (this.compareDates(this.myForm.value.tanggalKirimBarang, this.myForm.value.tanggalBatalPesanan)) || (currentUser?.defaultLocation?.kodeLocation === this.myForm.value?.gudangTujuan?.id) ||(this.compareDates(this.  myForm?.controls?.['tanggalPesanan']?.value, this.myForm.value.tanggalKirimBarang)) ) {
       this.g.markAllAsTouched(this.myForm);
+      this.toastr.error("Form tidak valid");
+
     } else {
       this.adding = true;
       const param = {

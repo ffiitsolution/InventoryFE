@@ -78,6 +78,9 @@
                     <span *ngIf="isFieldValid('tanggalKirimBarang')" class="text-danger">{{
                       "Wajib diisi" | translate
                     }}</span>
+                    <span class="text-danger" *ngIf="compareDates(myForm?.controls?.['tanggalPesanan']?.value, myForm.value.tanggalKirimBarang)">
+                      {{"Tanggal kirim barang tidak boleh kurang dari tanggal pesanan" | translate}}
+                    </span>
                   </div>
                 </div>
                 <div class="mb-3 row">
