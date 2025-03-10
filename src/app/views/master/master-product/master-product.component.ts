@@ -130,8 +130,22 @@ export class MasterProductComponent
           searchable: true,
         },
         { data: 'defaultGudang', title: 'Default Gudang', searchable: false },
-        { data: 'satuanKecil', title: 'Satuan Kecil', searchable: false },
-        { data: 'konversi', title: 'Konversi', searchable: false },
+        {
+          data: 'satuanKecil',
+          title: 'Satuan Kecil',
+          searchable: false,
+        },
+        {
+          data: 'konversi',
+          title: 'Konversi',
+          searchable: false,
+          render: (data) => {
+            if (!isNaN(parseFloat(data)) && isFinite(data)) {
+              return parseFloat(data).toFixed(2);
+            }
+            return data; // Return as is if not a number
+          },
+        },
         { data: 'satuanBesar', title: 'Satuan Besar', searchable: false },
         {
           data: 'statusAktif',
@@ -141,7 +155,7 @@ export class MasterProductComponent
             if (data === 'A') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
-            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:grey; width: 60px">Inactive</span> </div>`;
+            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
           },
         },
         {
