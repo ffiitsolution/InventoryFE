@@ -12,19 +12,20 @@ import {
   NavModule,
   ProgressModule,
   TableModule,
-  TabsModule
+  TabsModule,
 } from '@coreui/angular';
 import { IconModule } from '@coreui/icons-angular';
 import { ChartjsModule } from '@coreui/angular-chartjs';
 
-import { DashboardRoutingModule } from './dashboard-routing.module';
-import { DashboardComponent } from './dashboard.component';
-
 import { WidgetsModule } from '../widgets/widgets.module';
+import { EndOfMonthRoutingModule } from './end-of-month-routing.module';
+import { EndOfMonthComponent } from './end-of-month.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
-    DashboardRoutingModule,
+    EndOfMonthRoutingModule,
+    TranslateModule.forChild(),
     CardModule,
     NavModule,
     IconModule,
@@ -40,9 +41,8 @@ import { WidgetsModule } from '../widgets/widgets.module';
     ChartjsModule,
     AvatarModule,
     TableModule,
-    WidgetsModule
+    WidgetsModule,
   ],
-  declarations: [DashboardComponent]
+  declarations: [EndOfMonthComponent],
 })
-export class DashboardModule {
-}
+export class EndOfMonthModule {}
