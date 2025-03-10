@@ -179,12 +179,12 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
     }
    
     onNextPressed() {
-      this.router.navigate(['/order/send-order-to-supplier/add-data-detail']);
+      this.router.navigate(['/order/send-order-to-supplier-via-rsc/add-data-detail']);
     }
   
     onPreviousPressed() {
       localStorage.removeItem(LS_INV_SELECTED_SET_NUMBER);
-      this.router.navigate(['/order/send-order-to-supplier/']);
+      this.router.navigate(['/order/send-order-to-supplier-via-rsc/']);
     }
   
 
