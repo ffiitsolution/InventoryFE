@@ -17,6 +17,7 @@ import { AppConfig } from '../../../../config/app.config';
 import { AppService } from '../../../../service/app.service';
 import { ACTION_SELECT } from '../../../../../constants';
 import { TranslationService } from '../../../../service/translation.service';
+import { data } from 'jquery';
 
 @Component({
   selector: 'app-list-barang-untuk-pemakaian-sendiri',
@@ -28,17 +29,20 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
-  dtOptions: DataTables.Settings = {};
-  dtOptionsModal: DataTables.Settings = {};
-  protected config = AppConfig.settings.apiServer;
+dtOptions: DataTables.Settings = {};
+dtOptionsModal: DataTables.Settings = {};
+protected config = AppConfig.settings.apiServer;
 isShowModal: boolean = false;
+pageSize: number = 10; // Define the pageSize property
   dtTrigger: Subject<any> = new Subject();
+  currentPage: number = 1;
   page = new Page();
   dtColumns: any = [];
   showFilterSection: boolean = false;
   buttonCaptionView: String = 'Lihat';
   selectedStatusFilter: string = '';
   orders: any[] = [];
+  totalRecords: number = 0;
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false }) datatableElement:
     | DataTableDirective
@@ -69,29 +73,23 @@ isShowModal: boolean = false;
       serverSide: true,
       autoWidth: true,
       info: true,
+      paging: true,
+      searching: true,
+      pageLength: this.pageSize,
+      lengthMenu: [[5, 10, 20, 50], [5, 10, 20, 50]],
       drawCallback: () => {},
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
+          search: dataTablesParameters.search.value,
           kodeGudang: this.g.getUserLocationCode(),
-          startDate: moment(this.dateRangeFilter[0])
-            .set({
-              hours: 0,
-              minutes: 0,
-              seconds: 0,
-              milliseconds: 0,
-            })
-            .format('DD-MM-YYYY'),
-          endDate: moment(this.dateRangeFilter[1])
-            .set({
-              hours: 23,
-              minutes: 59,
-              seconds: 59,
-              milliseconds: 999,
-            })
-            .format('DD-MM-YYYY'),
+          startDate: moment(this.dateRangeFilter[0]).format('YYYY-MM-DD'),
+          endDate: moment(this.dateRangeFilter[1]).format('YYYY-MM-DD'),
+          limit: this.pageSize,
+          offset: (this.currentPage - 1) * this.pageSize,
+           
         };
         setTimeout(() => {
           this.dataService
@@ -112,21 +110,20 @@ isShowModal: boolean = false;
                 };
                 return finalData;
               });
-              this.page.recordsTotal = resp.recordsTotal;
-              this.page.recordsFiltered = resp.recordsFiltered;
-              this.showFilterSection = false;
+              this.totalRecords = resp.totalRecords;
               callback({
-                recordsTotal: resp.recordsTotal,
-                recordsFiltered: resp.recordsFiltered,
-                data: mappedData,
+                recordsTotal: resp.totalRecords,
+          recordsFiltered: resp.totalRecords,
+          data: mappedData,
               });
             });
         }, DEFAULT_DELAY_TABLE);
       },
       columns: [
+        { data: 'dtIndex', title: 'No.'},
         {
           data: null,
-          title: '',
+          title: 'Pilih',
           orderable: false,
           searchable: false,
           render: (data, type, row) => {

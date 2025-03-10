@@ -20,7 +20,7 @@ import { DisplayDataGudangComponent } from './add-data-gudang/display-data-dari-
 import { ListBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri.component';
 import { AddDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian-sendiri/tambah-data-pemakaian-barang-sendiri/add-data-pemakaian-barang-sendiri.component';
 import { DisplayDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian-sendiri/display-data-pemakaian-barang-sendiri/display-data-pemakaian-barang-sendiri-detail.component';
-// import { DetailBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakaian-sendiri/detail-pemakaian-barang/detail-barang-pemakaian-sendiri.component';
+import { DetailBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakaian-sendiri/detail-pemakaian-barang/detail-barang-untuk-pemakaian-sendiri.component';
 const routes: Routes = [
   {
     path: '',
@@ -120,10 +120,10 @@ const routes: Routes = [
         path: 'display-data-pemakaian-barang-sendiri',
         component: DisplayDataPemakaianBarangSendiriComponent,
       },
-      // {
-      //   path: 'detail-barang-untuk-pemakaian-sendiri/detail-barang-pemakaian-sendiri',
-      //   component: DetailBarangUntukPemakaianSendiriComponent,
-      // }
+      {
+        path: 'detail-barang-untuk-pemakaian-sendiri/detail-barang-pemakaian-sendiri',
+        component: DetailBarangUntukPemakaianSendiriComponent,
+      }
     ],
   }
 ];

@@ -280,12 +280,10 @@ export class DisplayDataPemakaianBarangSendiriComponent
         const params = {
           ...dataTablesParameters,
           defaultGudang: this.newOrhdk?.kodeSingkat,
-          // startDate: this.g.transformDate(this.dateRangeFilter[0]),
-          // endDate: this.g.transformDate(this.dateRangeFilter[1]),
+          
         };
-        // this.appService.getNewReceivingOrder(params)
         this.dataService
-          .postData(this.g.urlServer + '/api/product/dt-pesanan', params)
+          .postData(this.g.urlServer + '/api/delivery-order/display-data-pemakaian-barang-sendiri', params)
           .subscribe((resp: any) => {
             const mappedData = resp.data.map((item: any, index: number) => {
               // hapus rn dari data
@@ -293,16 +291,12 @@ export class DisplayDataPemakaianBarangSendiriComponent
               const finalData = {
                 ...rest,
                 dtIndex: this.pageModal.start + index + 1,
-                // kodePemesan: `(${rest.kodeGudang}) ${rest.namaGudang}`,
-                // tglPesan: this.g.transformDate(rest.tglPesan),
-                // tglKirim: this.g.transformDate(rest.tglKirim),
-                // tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
+                
               };
               return finalData;
             });
             this.pageModal.recordsTotal = resp.recordsTotal;
             this.pageModal.recordsFiltered = resp.recordsFiltered;
-            // this.showFilterSection = false;
             callback({
               recordsTotal: resp.recordsTotal,
               recordsFiltered: resp.recordsFiltered,

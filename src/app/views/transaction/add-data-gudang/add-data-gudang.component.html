@@ -219,7 +219,7 @@
               <div class="p-2">
                 <button
                   class="shadow-sm btn w-100 btn-info text-white"
-                  *ngIf="!isShowModal"
+                  *ngIf="!isShowDetail"
                   [disabled]="formData.nomorPesanan === ''"
                   (click)="onAddDetail()"
                 >
@@ -270,8 +270,10 @@
             <table
               datatable
               [dtOptions]="dtOptions"
-              class="row-border hover w-100"
-            ></table>
+              class="datatable row-border hover stripe"
+              >
+            <!-- <thead class="table-header"> </thead> -->
+            </table>
           </div>
         </c-card-body>
       </c-card>

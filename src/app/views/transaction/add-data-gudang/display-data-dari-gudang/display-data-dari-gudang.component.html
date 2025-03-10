@@ -6,12 +6,15 @@
           <h5>{{ "Display Data Dari Gudang" | translate }}</h5>
         </div>
         <div class="col text-end">
-          <button type="button" class="btn btn-outline-dark me-2 btn-120" (click)="toggleFilter()">
+          <button
+            type="button"
+            class="btn btn-outline-dark me-2 btn-120"
+            (click)="toggleFilter()"
+          >
             <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
             {{ "Filter" | translate }}
           </button>
         </div>
-
       </div>
       <div [visible]="showFilterSection" cCollapse>
         <div class="divider"></div>
@@ -21,13 +24,28 @@
               <c-col>
                 <label class="col-form-label">{{
                   "Tanggal Terima" | translate
-                  }}</label>
-                <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
-                  aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
-                  placeholder="{{ 'Tanggal Terima' | translate }}" />
+                }}</label>
+                <input
+                  type="text"
+                  id="dateFilter"
+                  class="form-control"
+                  bsDaterangepicker
+                  [bsConfig]="dpConfig"
+                  aria-describedby="dateFilter"
+                  [(ngModel)]="dateRangeFilter"
+                  #dp="bsDaterangepicker"
+                  placeholder="{{ 'Tanggal Terima' | translate }}"
+                />
               </c-col>
-              <c-col xs="3" class="text-right d-flex align-items-end justify-content-end">
-                <button type="button" class="btn btn-outline-success me-2 btn-160" (click)="onFilterPressed()">
+              <c-col
+                xs="3"
+                class="text-right d-flex align-items-end justify-content-end"
+              >
+                <button
+                  type="button"
+                  class="btn btn-outline-success me-2 btn-160"
+                  (click)="onFilterPressed()"
+                >
                   {{ "Terapkan Filter" | translate }}
                 </button>
               </c-col>
@@ -42,7 +60,14 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="table-responsive">
-        <table datatable [dtOptions]="dtOptions" (page.dt)="dtPageChange($event)" class="row-border hover"></table>
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          (page.dt)="dtPageChange($event)"
+          class="datatable row-border hover stripe"
+        >
+          <!-- <thead class="table-header"> </thead> -->
+        </table>
       </div>
     </c-card-body>
   </c-card>
