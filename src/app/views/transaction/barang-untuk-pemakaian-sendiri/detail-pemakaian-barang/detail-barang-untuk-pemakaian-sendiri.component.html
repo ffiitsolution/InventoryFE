@@ -1,0 +1,156 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
+          <button class="btn btn-light btn-120" (click)="onBackPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button>
+          <h5>{{ "Detail Barang Untuk Pemakaian Sendiri" | translate }}</h5>
+        </div>       
+      </c-row>
+    </c-card-body>
+  </c-card>
+
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="row">
+        <div class="col text-end">
+          <app-print-button
+            [alreadyPrint]="alreadyPrint"
+            [disabledPrintButton]="disabledPrintButton"
+            [updateStatusUrl]="'/api/delivery-order/update-print-status'"
+            [generatePdfUrl]="'/api/delivery-order/delivery-order-report'"
+            [updatePrintStatusParam]="paramUpdatePrintStatus"
+            [generateReportParam]="paramGenerateReport"
+            (reloadTable)="reloadTable()"
+          ></app-print-button>
+        </div>
+      </div>
+
+      <div class="divider mt-4"></div>
+
+      <div class="row">
+        <div class="col">
+          <div class="row order-details">
+            <div class="detail-item">
+              <span class="label">{{ "Nomor Transaksi" | translate }}</span>
+              <span class="value">{{ selectedOrder.NOMOR_TRANSAKSI }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Tgl Transaksi" | translate }}</span>
+              <span class="value">{{ selectedOrder.TGL_TRANSAKSI }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="detail-item">
+              <span class="label">{{ "Status Transaksi" | translate }}</span>
+              <span class="value">{{ getStatusPostingLegend(selectedOrder.STATUS_POSTING) }}</span>
+            </div>
+          <div class="detail-item">
+            <span class="label">{{ "Catatan" | translate }}</span>
+            <span class="value">{{ selectedOrder.KETERANGAN }}</span>
+          </div>
+        </div>
+      </div>
+
+    </c-card-body>
+  </c-card>
+</div>
+
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="table-responsive">
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          (page.dt)="dtPageChange($event)"
+          class="datatable row-border hover stripe"
+        ></table>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+
+
+
+
+
+<!-- <div class="modal fade" id="itemDetailModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">Detail Barang</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row mb-2">
+            <div class="col-4 fw-bold">Kode dan Nama Barang</div>
+            <div class="col-8">
+              <input type="text" class="form-control" [(ngModel)]="item.kodeBarang" readonly />
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-4 fw-bold">Konversi Barang</div>
+            <div class="col-8">
+              <input type="text" class="form-control" [(ngModel)]="item.konversi" readonly />
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-4 fw-bold">Quantity Besar</div>
+            <div class="col-8">
+              <input type="number" class="form-control" [(ngModel)]="item.qtyBesar" readonly />
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-4 fw-bold">Quantity Kecil</div>
+            <div class="col-8">
+              <input type="number" class="form-control" [(ngModel)]="item.qtyKecil" readonly />
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-4 fw-bold">Total QTY</div>
+            <div class="col-8">
+              <input type="text" class="form-control fw-bold text-primary" [(ngModel)]="item.totalQty" readonly />
+            </div>
+          </div>
+
+          <table class="table table-bordered">
+            <thead class="table-primary">
+              <tr>
+                <th>Tgl Expired</th>
+                <th>Keterangan Tanggal</th>
+                <th>Qty Besar</th>
+                <th>Qty Kecil</th>
+                <th>Total Qty</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let exp of expiredItems">
+                <td>{{ exp.tglExpired }}</td>
+                <td>{{ exp.keteranganTanggal }}</td>
+                <td>{{ exp.qtyBesar }} {{ item.satuanBesar }}</td>
+                <td>{{ exp.qtyKecil }} {{ item.satuanKecil }}</td>
+                <td>{{ exp.totalQty }} {{ item.satuanKecil }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="text-end fw-bold text-primary">
+            TOTAL QTY EXPIRED: {{ totalQtyExpired }} PCS
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keluar Menu</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+

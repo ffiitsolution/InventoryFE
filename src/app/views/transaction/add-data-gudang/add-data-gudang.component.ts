@@ -41,6 +41,8 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
   selectedRo: any = {};
   minDate: Date;
   maxDate: Date;
+  isShowDetail: boolean = false;
+  selectedRowData: any;
 
   @ViewChild('formModal') formModal: any;
   // Form data object
@@ -104,16 +106,31 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     this.onSaveData();
   }
 
+  isDoNumberValid(){
+    // dicek apakah  this.selectedRo.nosuratjalan ada
+    //
+    if (this.selectedRo.nomorSuratJan && this.selectedRo.nomorSuratJan != this.formData.nomorSuratJan)  {
+      return false;
+    }
+    else if ((this.formData.nomorSuratJan?.length && !/^DO-\d+$/.test(this.formData.nomorSuratJan)) || this.formData.nomorSuratJan.length > 20) {
+      return true;
+    }
+    return false
+  }
+
   onAddDetail() {
-    if (!/^DO-\d+$/.test(this.formData.nomorSuratJan) || this.formData.nomorSuratJan.length > 20) {
+    if (this.isDoNumberValid()) {
       Swal.fire('Error', 'Nomor Surat Jalan Salah', 'error');
       return;
     }
-    this.router.navigate(['/transaction/receipt-from-warehouse/tambah-data/detail-add-data-gudang']);
-    this.globalService.saveLocalstorage(
-      LS_INV_SELECTED_DELIVERY_ORDER,
-      JSON.stringify(this.formData)
-    );
+    else{
+      this.isShowDetail = true;
+      // this.router.navigate(['/transaction/receipt-from-warehouse/tambah-data/detail-add-data-gudang']);
+      this.globalService.saveLocalstorage(
+        LS_INV_SELECTED_DELIVERY_ORDER,
+        JSON.stringify(this.formData)
+      );
+    }
   }
 
   ngAfterViewInit(): void {
@@ -140,14 +157,26 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
       serverSide: true,
       autoWidth: true,
       info: true,
+      pageLength: 5,
+      lengthMenu: [[5, 10, 15, 20], [5, 10, 15, 20]],
+      searching: true,
+      ordering: true,
+      paging: true,
       drawCallback: () => { },
       ajax: (dataTablesParameters: any, callback) => {
-        this.page.start = dataTablesParameters.start;
-        this.page.length = dataTablesParameters.length;
+        let page = Math.floor(dataTablesParameters.start / dataTablesParameters.length);
+        let limit = dataTablesParameters.length || 5;
+        let offset = page * limit;
+        // this.page.start = dataTablesParameters.start || 0;
+        // this.page.length = dataTablesParameters.length|| 10;
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.globalService.getUserLocationCode(),
           tipePesanan : 'I',
+          // limit : this.page.length,
+          // offset : this.page.start,
+          limit: limit, 
+          offset: offset,
         };
         this.appService.getNewReceivingOrderGudang(params)
           .subscribe((resp: any) => {
@@ -156,27 +185,34 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
               const { rn, ...rest } = item;
               const finalData = {
                 ...rest,
-                dtIndex: this.page.start + index + 1,
+                // dtIndex: this.page.start + index + 1,
+                dtIndex: offset + index + 1,
               };
               return finalData;
             });
-            this.page.recordsTotal = resp.recordsTotal;
-            this.page.recordsFiltered = resp.recordsFiltered;
+            // this.page.recordsTotal = resp.recordsTotal || mappedData.length;
+            // this.page.recordsFiltered = resp.recordsFiltered || mappedData.length;  
+            const totalRecords = resp.totalRecords !== undefined && !isNaN(resp.totalRecords) 
+              ? resp.totalRecords 
+              : mappedData.length;
             callback({
-              recordsTotal: resp.recordsTotal,
-              recordsFiltered: resp.recordsFiltered,
+              // recordsTotal: resp.recordsTotal,
+              // recordsFiltered: resp.recordsFiltered,
+              recordsTotal: totalRecords,
+              recordsFiltered: totalRecords,
               data: mappedData,
             });
           });
       },
       columns: [
+        { data: 'dtIndex', title: 'No.', render: (data) => `<strong>${data || '-'}</strong>` },
         { data: 'NOMOR_PESANAN', title: 'Nomor Pesanan' },
         { data: 'SUPPLIER', title: 'Kode Gudang' },
         { data: 'NAMA_CABANG', title: 'Alamat Gudang' },
         { data: 'ALAMAT1', title: 'Alamat Pengirim' },
-        { data: 'TGL_KIRIM_BRG', title: 'Tanggal Surat Jalan', },
-        { data: 'KETERANGAN1', title: 'Keterangan', },
-        { data: 'NO_SURAT_JALAN', title: 'Nomor Surat Jalan', },
+        { data: 'TGL_KIRIM_BRG', title: 'Tanggal Surat Jalan', render: (data) => data ? data : '-'},
+        { data: 'KETERANGAN1', title: 'Keterangan', render: (data) => data ? data : '-' },
+        { data: 'NO_SURAT_JALAN', title: 'Nomor Surat Jalan', render: (data) => data ? data : '-'},
         {
           data: 'statusRecieve',
           title: 'Status Penerimaan',
@@ -206,6 +242,20 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
         $('.action-select', row).on('click', () =>
           this.actionBtnClick(ACTION_SELECT, data)
         );
+        if (index === 0 && !this.selectedRowData) {
+          setTimeout(() => {
+            $(row).trigger('td'); 
+          }, 0);
+        }
+        $('td', row).on('click', () => {
+          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
         return row;
       },
     };
@@ -227,7 +277,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   onPreviousPressed(): void {
-    this.router.navigate(['/transaction/delivery-item']);
+    this.router.navigate(['/transaction/receipt-from-warehouse/display-data-dari-gudang']);
   }
 
 }
@@ -235,13 +285,17 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
   providedIn: 'root',
 })
 export class DeliveryDataService {
+  private baseUrl: string = 'http://localhost:8093/inventory'; // Replace with your actual base URL
+
   constructor(private http: HttpClient) { }
 
   saveDeliveryData(data: any): Observable<any> {
-    const apiUrl = 'http://localhost:8093/inventory/api/delivery-order/status-descriptions';
+    const apiUrl = `${this.baseUrl}/inventory/api/delivery-order/status-descriptions`; // Gunakan baseUrl
     return this.http.post<any>(apiUrl, data);
   }
 }
+
+
 
 
 
