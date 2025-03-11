@@ -269,7 +269,7 @@ const routes: Routes = [
         component: TablePositionAddComponent,
       },
       {
-        path: 'masteposition/edit',
+        path: 'master-position/edit',
         component: TablePositionEditComponent,
       },
       {

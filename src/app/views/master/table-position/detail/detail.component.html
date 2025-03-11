@@ -1,7 +1,7 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <h5>{{ "Lihat" | translate }} {{ "RSC" | translate }}</h5>
+      <h5>{{ "Lihat" | translate }} {{ "Jabatan" | translate }}</h5>
     </c-card-body>
   </c-card>
 </div>
@@ -11,7 +11,7 @@
       <form [formGroup]="myForm">
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
-            "Kode RSC" | translate
+            "Kode Jabatan" | translate
           }}</label>
           <div class="col-sm-10">
             <input
@@ -24,7 +24,7 @@
         </div>
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
-            "Nama RSC" | translate
+            "Nama Jabatan" | translate
           }}</label>
           <div class="col-sm-10">
             <input
@@ -103,7 +103,7 @@
             class="btn btn-info text-white btn-120"
             (click)="onEditPressed()"
           >
-            {{ "Ubah" | translate }} RSC
+            {{ "Ubah" | translate }} Jabatan
           </button>
         </div>
       </form>

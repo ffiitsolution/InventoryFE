@@ -34,10 +34,10 @@ export class TablePositionDetailComponent implements OnInit {
 
   onPreviousPressed() {
     localStorage.removeItem(LS_INV_SELECTED_RSC);
-    this.router.navigate(['/master/master-rsc']);
+    this.router.navigate(['/master/master-position']);
   }
 
   onEditPressed() {
-    this.router.navigate(['/master/table-rsc/edit']);
+    this.router.navigate(['/master/table-position/edit']);
   }
 }
