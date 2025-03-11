@@ -299,6 +299,6 @@ export class DetailBarangUntukPemakaianSendiriComponent
       U: 'Unposted',
       D: 'Draft',
     };
-    return legends[status] || 'Unknown'; // Jika status tidak dikenali, tampilkan "Unknown"
+    return legends[status] || 'Unknown'; 
   }
 }
