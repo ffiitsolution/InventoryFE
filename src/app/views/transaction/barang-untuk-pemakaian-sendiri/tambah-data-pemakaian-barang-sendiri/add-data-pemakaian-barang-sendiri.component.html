@@ -7,7 +7,7 @@
             <i class="fa fa-chevron-left icon-12 icon-gap"></i>
             {{ "Kembali" | translate }}
           </button>
-          <h5>{{ "Tambah Pemusnahan Barang" | translate }}</h5>
+          <h5>{{ "Tambah Pemakaian Barang Sendiri" | translate }}</h5>
         </div>
       </c-row>
     </c-card-body>
@@ -25,32 +25,47 @@
                   <label for="tglTransaksi">{{ "Tgl. Transaksi" | translate }} <span
                       class="text-danger">*</span></label>
                 </div>
+
                 <div class="col-8 pe-0 d-flex">
                   <input type="text" id="tglTransaksi" class="form-control" aria-describedby="tglTransaksi"
                     #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker autocomplete="off"
                     [(ngModel)]="formData.tglTransaksi" placeholder="{{ 'Tanggal transaksi' | translate }}" />
                 </div>
               </div>
+              <div class="divider mt-4"></div>
+
+              <!-- <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="namaSaksi">{{ "Nama Saksi" | translate }}</label>
+                </div>
+
+                <div class="col-8 pe-0 d-flex">
+                  <input placeholder="Nama saksi" type="text" class="form-control" id="namaSaksi"
+                    [(ngModel)]="formData.namaSaksi" name="namaSaksi" />
+                </div>
+              </div> -->
+
+              <!-- <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="jabatanSaksi">{{ "Jabatan Saksi" | translate }}</label>
+                </div>
+
+                <div class="col-8 pe-0 d-flex">
+                  <input placeholder="Jabatan saksi" type="text" class="form-control" id="namaSaksi"
+                    [(ngModel)]="formData.jabatanSaksi" name="jabatanSaksi" />
+                </div>
+              </div> -->
+
               <div class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
                   <label for="keterangan">{{ "Catatan" | translate }}</label>
                 </div>
+
                 <div class="col-8 pe-0 d-flex">
                   <textarea placeholder="Catatan" type="text" class="form-control" id="keterangan"
                     [(ngModel)]="formData.keterangan" name="keterangan"></textarea>
                 </div>
               </div>
-              <div class="w-100 px-2 py-1 row">
-                <div class="col-4 d-flex align-items-center">
-                  <label for="jumlahItem">{{ "Jumlah Item" | translate }} <span
-                      class="text-danger">*</span></label>
-                </div>
-                <div class="col-8 pe-0 d-flex">
-                  <input type="text" id="jumlahItem" class="form-control" aria-describedby="jumlahItem"
-                    [(ngModel)]="formData.jumlahItem" placeholder="{{ 'Jumlah Item' | translate }}" />
-                </div>
-              </div>
-              
               <div style="width: 96%;" class="p-2">
                 <button class="shadow-sm btn w-100 btn-info text-white" *ngIf="!isShowDetail" [disabled]="isFormInvalid"
                   (click)="onAddDetail()">
@@ -64,7 +79,7 @@
 
         <div class=" ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
           <div class="p-2" *ngIf="isShowDetail">
-            <app-add-data-detail-pemakaian-barang-sendiri></app-add-data-detail-pemakaian-barang-sendiri>
+            <app-add-data-detail-wastage></app-add-data-detail-wastage>
           </div>
         </div>
 

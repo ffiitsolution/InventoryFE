@@ -83,6 +83,10 @@ export class DetailBarangUntukPemakaianSendiriComponent
         serverSide: true,
         autoWidth: true,
         info: true,
+        paging: true, 
+  ordering: true,
+  pageLength: 10, 
+  lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
         drawCallback: () => {},
         ajax: (dataTablesParameters: any, callback) => {
           this.page.start = dataTablesParameters.start;
@@ -91,7 +95,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
             KODE_GUDANG: kodeGudang,
             TIPE_TRANSAKSI: tipeTransaksi,
             NOMOR_TRANSAKSI: nomorTransaksi,
-          } = this.selectedOrder ?? {};
+          } = this.selectedOrder ?? {}; 
           const params = {
             ...dataTablesParameters,
             kodeGudang: kodeGudang ?? '',
@@ -299,6 +303,6 @@ export class DetailBarangUntukPemakaianSendiriComponent
       U: 'Unposted',
       D: 'Draft',
     };
-    return legends[status] || 'Unknown'; 
+    return legends[status] || 'Unknown'; // Jika status tidak dikenali, tampilkan "Unknown"
   }
 }

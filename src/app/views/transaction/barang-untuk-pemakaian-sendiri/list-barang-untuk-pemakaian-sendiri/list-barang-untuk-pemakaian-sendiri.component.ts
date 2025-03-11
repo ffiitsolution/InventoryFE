@@ -178,7 +178,7 @@ pageSize: number = 10; // Define the pageSize property
   }
 
   onAddPressed(): void {
-    const route = this.router.createUrlTree(['/transaction/wastage/add-data']);
+    const route = this.router.createUrlTree(['/transaction/barang-untuk-pemakaian-sendiri/tambah-data-pemakaian-barang-sendiri']);
     this.router.navigateByUrl(route);
   }
 

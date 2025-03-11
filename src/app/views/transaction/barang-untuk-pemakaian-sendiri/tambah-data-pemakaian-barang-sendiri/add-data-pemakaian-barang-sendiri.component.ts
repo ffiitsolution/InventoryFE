@@ -19,11 +19,9 @@ import { Page } from '../../../../model/page';
 import { AppService } from '../../../../service/app.service';
 import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
 import moment from 'moment';
-import Swal from 'sweetalert2';
-// import { AddDataDetailPemakaianBarangSendiriComponent } from './add-data-pemakaian-barang-sendiri.component.spec';
 
 @Component({
-  selector: 'add-data-pemakaian-barang-sendiri',
+  selector: 'app-data-pemakaian-barang-sendiri',
   templateUrl: './add-data-pemakaian-barang-sendiri.component.html',
   styleUrls: ['./add-data-pemakaian-barang-sendiri.component.scss'],
 
@@ -41,23 +39,14 @@ export class AddDataPemakaianBarangSendiriComponent implements OnInit, AfterView
   selectedRo: any = {};
   minDate: Date;
   maxDate: Date;
-  isShowDetail: boolean = true;
+  isShowDetail: boolean = false;
 
   @ViewChild('formModal') formModal: any;
   // Form data object
   formData = {
     keterangan: '',
-    tglTransaksi: '',
-    jumlahItem: 0,
+    tglTransaksi: ''
   };
-
-  item: any[] = [];
-  keterangan: string = '';
-  validatedDeliveryDate: string = '';
-
-  onSaveData(): void {
-    this.validatedDeliveryDate = new Date().toISOString().split('T')[0];
-  }
 
   constructor(
     private router: Router,
@@ -65,9 +54,7 @@ export class AddDataPemakaianBarangSendiriComponent implements OnInit, AfterView
     private globalService: GlobalService,
     private translationService: TranslationService,
     private deliveryDataService: DeliveryDataService,
-    private appService: AppService,
-    private http: HttpClient
-    
+    private appService: AppService
   ) {
     this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
@@ -91,7 +78,7 @@ export class AddDataPemakaianBarangSendiriComponent implements OnInit, AfterView
     this.formData.tglTransaksi = moment(this.formData.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
 
     this.globalService.saveLocalstorage(
-      'headerPemakaianBarang',
+      'addpemakaianbarangsendiri',
       JSON.stringify(this.formData)
 
     );
@@ -109,7 +96,7 @@ export class AddDataPemakaianBarangSendiriComponent implements OnInit, AfterView
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
     this.globalService.removeLocalstorage(
-      'headerWastage',
+      'addpemakaianbarangsendiri',
     );
   }
 
@@ -123,24 +110,6 @@ export class AddDataPemakaianBarangSendiriComponent implements OnInit, AfterView
   }
 
 
-validateData() {
-  if (!this.formData.keterangan || !this.formData.tglTransaksi || !this.formData.jumlahItem) {
-    Swal.fire('Error', 'Semua kolom wajib diisi!', 'error');
-    return false;
-  }
-  return true;
-}
-
-onSubmit() {
-  if (!this.validateData()) return;
-
-  this.http.post('http://localhost:8080/api/tambah-data-pemakaian-barang-sendiri', this.formData)
-    .subscribe(response => {
-      Swal.fire('Success', 'Data berhasil ditambahkan!', 'success');
-    }, error => {
-      Swal.fire('Error', 'Gagal menambahkan data!', 'error');
-    });
-}
 }
 @Injectable({
   providedIn: 'root',
@@ -152,13 +121,6 @@ export class DeliveryDataService {
     const apiUrl = 'http://localhost:8093/inventory/api/delivery-order/status-descriptions';
     return this.http.post<any>(apiUrl, data);
   }
-
-  onAddItem(item: any): boolean {
-    if (!item || Object.keys(item).length === 0) {
-      Swal.fire('Error', 'Semua kolom wajib diisi!', 'error');
-      return false;
-    }
-    return true;
-  }
 }
+
 
