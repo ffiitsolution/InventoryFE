@@ -240,6 +240,38 @@
       </div>
       <!-- Tutup row -->
     </c-card-body>
+
+    <c-modal
+      #formModal
+      [fullscreen]="false"
+      [visible]="isShowModal"
+      [backdrop]="true"
+      #modalLg
+      size="xl"
+      id="formModal"
+    >
+      <c-modal-header>
+        <h5 cModalTitle>Daftar Pesanan Ke Gudang</h5>
+        <button
+          (click)="isShowModal = false"
+          type="button"
+          class="btn btn-primary ms-2"
+          [cModalToggle]="formModal.id"
+          cButtonClose
+        >
+          <i class="fa fa-times"></i>
+        </button>
+      </c-modal-header>
+      <c-modal-body>
+        <div class="table-responsive">
+          <table
+            datatable
+            [dtOptions]="dtOptions"
+            class="row-border hover stripe w-100"
+          ></table>
+        </div>
+      </c-modal-body>
+    </c-modal>
   </c-card>
 
   <!-- Modal Pilih Pesanan -->

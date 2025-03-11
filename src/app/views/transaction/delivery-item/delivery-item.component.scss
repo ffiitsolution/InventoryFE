@@ -55,3 +55,10 @@
     transform: translateY(0);
   }
   
+  table.dataTable.stripe tbody tr:nth-child(odd) {
+    background-color: #f2f2f2; /* Warna striping */
+}
+
+table.dataTable.stripe tbody tr:nth-child(even) {
+    background-color: #ffffff; /* Warna putih untuk selang-seling */
+}

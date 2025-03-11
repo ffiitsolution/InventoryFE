@@ -62,7 +62,7 @@ export class AddDataDetailWastageComponent
   page: number = 1;
   isShowModal: boolean = false;
   dtOptions: DataTables.Settings = {};
-  selectedRow: any = {};
+  selectedRow: any[] = [];
   pageModal = new Page();
   dataUser: any = {};
   validationMessageList: any[] = [];
@@ -198,20 +198,36 @@ export class AddDataDetailWastageComponent
           totalQty: expiredItem.totalQty ? -Math.abs(expiredItem.totalQty) : 0
         })) || []
       };
-      this.service.insert('/api/wastage/insert', param).subscribe({
-        next: (res) => {
-          if (!res.success) {
-            this.toastr.error(res.message);
-          } else {
-            setTimeout(() => {
-              this.toastr.success("Data wastage berhasil dibuat");
-              this.onPreviousPressed();
-            }, DEFAULT_DELAY_TIME);
 
-          }
-          this.adding = false;
-        },
-      });
+      Swal.fire({
+            title: 'Apa Anda Sudah Yakin?',
+            text: 'Pastikan data yang dimasukkan sudah benar!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Simpan!',
+            cancelButtonText: 'Batal',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.service.insert('/api/wastage/insert', param).subscribe({
+                next: (res) => {
+                  if (!res.success) {
+                    this.toastr.error(res.message);
+                  } else {
+                    setTimeout(() => {
+                      this.toastr.success("Data wastage berhasil dibuat");
+                      this.onPreviousPressed();
+                    }, DEFAULT_DELAY_TIME);
+        
+                  }
+                  this.adding = false;
+                },
+              });
+            } else {
+              this.toastr.info('Penyimpanan dibatalkan');
+            }
+          });
 
     }
 
@@ -349,6 +365,14 @@ export class AddDataDetailWastageComponent
           });
       },
       columns: [
+        {
+          title: 'Pilih Barang  ',
+          className: 'text-center',
+          render: (data, type, row) => {
+            let isChecked = this.selectedRow.some(item => item.kodeBarang === row.kodeBarang) ? 'checked' : '';
+            return `<input type="checkbox" class="row-checkbox" data-id="${row.kodeBarang}" ${isChecked}>`;
+          }
+        },
         { data: 'kodeBarang', title: 'Kode Barang' },
         { data: 'namaBarang', title: 'Nama Barang' },
         { data: 'konversi', title: 'Konversi' },
@@ -357,49 +381,111 @@ export class AddDataDetailWastageComponent
         { data: 'defaultGudang', title: 'Default Gudang' },
         { data: 'flagConversion', title: 'Conversion Factor' },
         { data: 'statusAktif', title: 'Status Aktif' },
-
-        {
-          title: 'Action',
-          render: (data, type, row) => {
-            return `<button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>`;
-          },
-        }
-
-
       ],
       searchDelay: 1000,
       // delivery: [],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        $('.action-select', row).on('click', () =>
-          this.actionBtnClick(ACTION_SELECT, data)
-        );
+        $(row).find('.row-checkbox').off('change').on('change', (event: JQuery.ChangeEvent<HTMLElement>) => {
+          this.handleCheckboxChange(event , data);
+      });
+
+      $('td', row).on('click', (event) => {
+        const checkbox = $(row).find('.row-checkbox'); 
+        const index = this.selectedRow.findIndex(item => item === data);
+
+        if (index === -1) {
+          this.selectedRow.push(data);
+          $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+          checkbox.prop('checked', true);
+        } else {
+          this.selectedRow.splice(index, 1);
+          $('td', row).css({ 'background-color': '' }).removeClass('bg-secondary bg-opacity-25 fw-semibold');
+          checkbox.prop('checked', false);
+        }
+        if ($(event.target).is('.select-row')) {
+          event.stopPropagation();
+        }
+      });
         return row;
       },
     };
   }
-  actionBtnClick(action: string, data: any = null) {
-    this.selectedRow = (data);
-    this.renderDataTables();
+
+  handleCheckboxChange(event: JQuery.ChangeEvent<HTMLElement>, data: any) {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    console.log("isChecked",isChecked)
+    if (isChecked) {
+        // Add kodeBarang if checked
+        if (! this.selectedRow.some(item => item.kodeBarang === data.kodeBarang)) {
+            this.selectedRow.push(data);
+        }
+    } else {
+        // Remove kodeBarang if unchecked
+        this.selectedRow = this.selectedRow.filter(item => item.kodeBarang !== data.kodeBarang);
+        console.log("this.selectedRow else",this.selectedRow)
+    }
+    console.log("selectedRow",this.selectedRow)
+  }
+  
+  // actionBtnClick(action: string, data: any = null) {
+  //   this.selectedRow = (data);
+  //   this.renderDataTables();
+  //   this.isShowModal = false;
+
+  //   if (!this.listProductData.some(order => order.kodeBarang === this.selectedRow.kodeBarang)) {
+  //     const productData = {
+  //       totalQtyPesan: 0,
+  //       qtyWasteBesar: null,
+  //       namaBarang: this.selectedRow?.namaBarang,
+  //       satuanKecil: this.selectedRow?.satuanKecil,
+  //       kodeBarang: this.selectedRow?.kodeBarang,
+  //       satuanBesar: this.selectedRow?.satuanBesar,
+  //       konversi: this.selectedRow?.konversi,
+  //       qtyWasteKecil: null,
+  //       isConfirmed: true,
+  //       ...this.selectedRow
+  //     }
+  //     this.listProductData.splice(this.listProductData.length - 1, 0, productData);
+  //   }
+  //   else {
+  //     this.toastr.error("Barang sudah ditambahkan");
+  //   }
+  // }
+
+  onAddListDataBarang() {
+    let errorMessage
+    console.log("test")
     this.isShowModal = false;
 
-    if (!this.listProductData.some(order => order.kodeBarang === this.selectedRow.kodeBarang)) {
-      const productData = {
-        totalQtyPesan: 0,
-        qtyWasteBesar: null,
-        namaBarang: this.selectedRow?.namaBarang,
-        satuanKecil: this.selectedRow?.satuanKecil,
-        kodeBarang: this.selectedRow?.kodeBarang,
-        satuanBesar: this.selectedRow?.satuanBesar,
-        konversi: this.selectedRow?.konversi,
-        qtyWasteKecil: null,
-        isConfirmed: true,
-        ...this.selectedRow
+    for (let barang of this.selectedRow) {
+      console.log("barang", barang);
+
+      if (!this.listProductData.some(order => order.kodeBarang === barang.kodeBarang)) {
+        const productData = {
+          totalQtyPesan: 0,
+          qtyWasteBesar: null,
+          namaBarang: barang?.namaBarang,
+          satuanKecil: barang?.satuanKecil,
+          kodeBarang: barang?.kodeBarang,
+          satuanBesar: barang?.satuanBesar,
+          konversi: barang?.konversi,
+          qtyWasteKecil: null,
+          isConfirmed: true,
+          ...barang
+        }
+        this.listProductData.splice(this.listProductData.length - 1, 0, productData);
+        this.validationMessageList.push("")
+        this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
+        // this.mapOrderData(data);
+        // this.onSaveData();
       }
-      this.listProductData.splice(this.listProductData.length - 1, 0, productData);
+      else {
+        errorMessage = "Beberapa barang sudah ditambahkan"
+      }
     }
-    else {
-      this.toastr.error("Barang sudah ditambahkan");
-    }
+    if (errorMessage)
+      this.toastr.error(errorMessage);
+
   }
 
   deleteBarang() {
@@ -445,7 +531,7 @@ export class AddDataDetailWastageComponent
   }
 
   onPreviousPressed(): void {
-    this.router.navigate(['wastage/list-dt']);
+    this.router.navigate(['/transaction/wastage/list-dt']);
   }
 
   isDataInvalid() {

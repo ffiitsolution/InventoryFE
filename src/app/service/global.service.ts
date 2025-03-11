@@ -42,7 +42,7 @@ export class GlobalService {
     @Inject(DOCUMENT) private document: Document,
     private router: Router,
     private datePipe: DatePipe
-  ) {}
+  ) { }
 
   saveLocalstorage(key: string, value: any, type: string | boolean = 'json') {
     if (type === 'json' || type === true) {
@@ -304,16 +304,16 @@ export class GlobalService {
       type == 'alphanumeric'
         ? /^[a-zA-Z0-9]$/
         : type == 'numeric'
-        ? /^[0-9]$/
-        : type == 'phone'
-        ? /^[0-9-]$/
-        : type == 'email'
-        ? /^[a-zA-Z0-9@._-]$/
-        : type == 'excludedSensitive'
-        ? /^[a-zA-Z0-9 .,_@-]*$/
-        : type == 'kodeSingkat'
-        ? /^[a-zA-Z]+$/
-        : /^[a-zA-Z.() ,\-]*$/;
+          ? /^[0-9]$/
+          : type == 'phone'
+            ? /^[0-9-]$/
+            : type == 'email'
+              ? /^[a-zA-Z0-9@._-]$/
+              : type == 'excludedSensitive'
+                ? /^[a-zA-Z0-9 .,_@-]*$/
+                : type == 'kodeSingkat'
+                  ? /^[a-zA-Z]+$/
+                  : /^[a-zA-Z.() ,\-]*$/;
 
     if (temp_regex.test(inp)) return true;
     else {
@@ -333,7 +333,7 @@ export class GlobalService {
       search: search,
       height: 'auto',
       placeholder: placeholder,
-      customComparator: () => {},
+      customComparator: () => { },
       limitTo: limit,
       moreText: 'lainnya...',
       noResultsFound: 'Tidak ditemukan!',
@@ -355,6 +355,10 @@ export class GlobalService {
       .toLowerCase()
       .replace(/[^a-z0-9-]/g, ' ')
       .replace(/\s+/g, '-');
+  }
+
+  formatToDecimal(value: number): string {
+    return value.toFixed(2);
   }
 
   generateNumberRange(start: number, end: number): number[] {

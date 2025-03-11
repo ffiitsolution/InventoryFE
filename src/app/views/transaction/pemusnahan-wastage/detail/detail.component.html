@@ -21,8 +21,7 @@
           <app-print-button
           [alreadyPrint]="alreadyPrint"
           [disabledPrintButton]="disabledPrintButton"
-          [updateStatusUrl]="'/api/delivery-order/update-print-status'"
-          [generatePdfUrl]="'/api/delivery-order/delivery-order-report'"
+          [generatePdfUrl]="'/api/report-wastage-jasper'"
           [updatePrintStatusParam]="paramUpdatePrintStatus"
           [generateReportParam]="paramGenerateReport"
           (reloadTable)="reloadTable()"
@@ -74,7 +73,7 @@
           datatable
           [dtOptions]="dtOptions"
           (page.dt)="dtPageChange($event)"
-          class="row-border hover"
+          class="row-border hover stripe"
         ></table>
       </div>
     </c-card-body>
