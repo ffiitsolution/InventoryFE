@@ -151,7 +151,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
         { data: 'nomorPesanan', title: 'Nomor Pesanan' },
         {
           data: 'supplier',
-          title: 'Gudang Tujuan',
+          title: 'Kode Tujuan',
           render: function (data, type, row) {
             return row.supplier && row.namaSupplier ? `${row.supplier} - ${row.namaSupplier}` : row.supplier || row.namaSupplier || "";
           }
@@ -296,7 +296,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
         LS_INV_SELECTED_SEND_TO_WAREHOUSE_ORDER,
         JSON.stringify(data)
       );
-      this.router.navigate(['/order/send-order-to-supplier/detail']);
+      this.router.navigate(['/order/send-order-to-supplier-via-rsc/detail']);
     }
   }
 
