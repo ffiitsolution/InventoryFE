@@ -163,6 +163,14 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
 
       this.g.saveLocalstorage('TEMP_ORDHDK', param);
 
+      const tglkirimbrg =  moment(controls?.['tanggalKirimBarang']?.value).format("DD/MM/YYYY");
+      this.myForm.controls['tanggalKirimBarang'].setValue("00/00/0000");
+      this.myForm.controls['tanggalKirimBarang'].setValue(tglkirimbrg);
+      const tglbatalpsnn =  moment(controls?.['tanggalBatalPesanan']?.value).format("DD/MM/YYYY");
+      this.myForm.controls['tanggalBatalPesanan'].setValue("00/00/0000");
+      this.myForm.controls['tanggalBatalPesanan'].setValue(tglbatalpsnn);
+      
+
       setTimeout(() => {
         this.isShowDetail = true;
         this.myForm.get('catatan1')?.disable();
@@ -217,8 +225,9 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
         ?/^[a-zA-Z0-9 .,_@-]*$/
         : type =='kodeSingkat'
         ? /^[a-zA-Z]+$/
-        :/^[a-zA-Z.() ,\-]*$/;
-        
+        : type =='tanggal'
+        ? /^[0-9\/]+$/
+        : /^[a-zA-Z.() ,\-]*$/;        
     if (temp_regex.test(inp)) return true;
     else {
       event.preventDefault();
