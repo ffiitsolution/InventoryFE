@@ -109,7 +109,12 @@ export class DetailTransactionComponent
                   ...rest,
                   dtIndex: this.page.start + index + 1,
                   tglPesanan: this.g.transformDate(rest.tglPesanan),
-                  tglTransaksi: this.g.transformDate(rest.tglTransaksi)
+                  tglTransaksi: this.g.transformDate(rest.tglTransaksi),
+                  konversi: this.g.formatToDecimal(rest.konversi),
+                  totalQtyPesan: this.g.formatToDecimal(rest.totalQtyPesan),
+                  qtyBKirim: this.g.formatToDecimal(rest.qtyBKirim),
+                  qtyKKirim: this.g.formatToDecimal(rest.qtyKKirim),
+                  totalQtyKirim: this.g.formatToDecimal(rest.totalQtyKirim),
                 }
                 return finalData;
               });

@@ -356,4 +356,9 @@ export class GlobalService {
       .replace(/[^a-z0-9-]/g, ' ')
       .replace(/\s+/g, '-');
   }
+
+  formatToDecimal(value: number): string {
+    return value.toFixed(2);
+  }
+  
 }
