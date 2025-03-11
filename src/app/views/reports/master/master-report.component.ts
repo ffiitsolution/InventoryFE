@@ -36,6 +36,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     statusAktif: false,
     tipeListing: false,
   };
+  userData: any;
   currentReport: string = '';
   rangeDateVal = [new Date(), new Date()];
   downloadURL: any = [];
@@ -46,7 +47,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
 
   selectedRegion: any;
 
-  paramStatusAktif: string = 'ALL';
+  paramStatusAktif: string = '';
   paramTipeListing: string = 'header';
 
   constructor(
@@ -71,6 +72,8 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.configRegion = this.g.dropdownConfig('description');
+
+    this.userData = this.service.getUserData();
 
     if (['Master Cabang'].includes(this.currentReport)) {
       this.getListParam('listRegion');
@@ -118,16 +121,16 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     targetProperty: any
   ) {
     this[targetProperty] = selected;
-    if (this[targetProperty].length < 1) {
-      this[targetProperty] = {
-        [paramCode]: paramName == 'outletName' ? 'ALL' : 'Semua',
-        [paramName]: paramName == 'outletName' ? 'All' : 'Semua',
-      };
-    } else if (selected instanceof Array) {
-      this[targetProperty] = selected?.filter(
-        (item: any) => item[paramName] != 'Semua'
-      );
-    }
+    // if (this[targetProperty].length < 1) {
+    //   this[targetProperty] = {
+    //     [paramCode]: paramName == 'outletName' ? 'ALL' : 'Semua',
+    //     [paramName]: paramName == 'outletName' ? 'All' : 'Semua',
+    //   };
+    // } else if (selected instanceof Array) {
+    //   this[targetProperty] = selected?.filter(
+    //     (item: any) => item[paramName] != 'Semua'
+    //   );
+    // }
   }
 
   doSubmit(type: string) {
@@ -158,29 +161,28 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
 
     param = {
       ...param,
+      userData: this.userData,
       isDownloadCsv: type === 'csv',
       reportName: this.currentReport,
       reportSlug: this.g.formatUrlSafeString(this.currentReport),
     };
-    this.service
-      .getFile('/api/report/report-jasper', param)
-      .subscribe({
-        next: (res) => {
-          this.loadingState['submit'] = false;
+    this.service.getFile('/api/report/report-jasper', param).subscribe({
+      next: (res) => {
+        this.loadingState['submit'] = false;
 
-          if (type === 'preview') {
-            return this.previewPdf(res);
-          } else if (type === 'csv') {
-            return this.downloadCsv(res, type);
-          } else {
-            return this.downloadPDF(res, type);
-          }
-        },
-        error: (error) => {
-          console.log(error);
-          this.loadingState['submit'] = false;
-        },
-      });
+        if (type === 'preview') {
+          return this.previewPdf(res);
+        } else if (type === 'csv') {
+          return this.downloadCsv(res, type);
+        } else {
+          return this.downloadPDF(res, type);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+        this.loadingState['submit'] = false;
+      },
+    });
   }
 
   previewPdf(res: any) {
@@ -204,7 +206,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
         'dd-MMM-yyyy'
       )}.pdf`;
       link.click();
-      this.g.alertError('Sukses', 'File sudah terunduh.');
+      this.g.alertSuccess('Sukses', 'File sudah terunduh.');
     } else
       this.g.alertError('Maaf, Ada kesalahan!', 'File tidak dapat terunduh.');
   }
@@ -224,7 +226,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
         'dd-MMM-yyyy'
       )}.csv`;
       link.click();
-      this.g.alertError('Sukses', 'File sudah terunduh.');
+      this.g.alertSuccess('Sukses', 'File sudah terunduh.');
     } else
       this.g.alertError('Maaf, Ada kesalahan!', 'File tidak dapat terunduh.');
   }

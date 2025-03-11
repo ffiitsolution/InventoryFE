@@ -1,0 +1,76 @@
+<div class="fade-in">
+  <c-card class="mb-2">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>Proses Tutup Bulan (Closing)</h5>
+        </div>
+        <div class="col text-end">
+          <button class="btn btn-outline-primary" *ngIf="currentView === 'closing'" (click)="setCurrentView('history')">
+            Riwayat Proses
+          </button>
+          <button class="btn btn-outline-primary" *ngIf="currentView === 'history'" (click)="setCurrentView('closing')">
+            Proses Closing
+          </button>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+
+  <c-card class="mb-2" *ngIf="currentView === 'closing'">
+    <c-card-body>
+      <div class="text-center">
+        <div class="mx-auto card" style="width: fit-content;">
+          <div class="card-body">
+
+            <div class="text-center mb-2">
+              Pastikan semua transaksi pada periode tersebut sudah di 'Entry'
+              <br>(Tidak ada transaksi yang tertunda/pending)
+            </div>
+            <div class="row mb-2">
+              <div class="col">
+                Periode Bulan-Tahun
+              </div>
+              <div class="col">
+                <select cSelect>
+                  <option *ngFor="let num of rangeBulan" [value]="num">{{num}}</option>
+                </select>
+              </div>
+              <div class="col">
+                <select cSelect>
+                  <option *ngFor="let num of rangeTahun" [value]="num">{{num}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="text-end mb-2">
+              <input cFormControl class="text-end w-120" disabled type="text" value="31/03/2025">
+            </div>
+            <div class="text-danger mb-2">
+              Semua User tidak boleh ada yang melakukan transaksi Mutasi Stock ..!!
+            </div>
+            <hr>
+            <div class="text-end">
+              <button class="btn btn-primary">
+                <i class="fa fa-check me-2"></i>
+                Proses Closing
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+
+  <c-card class="mb-2" *ngIf="currentView === 'history'">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>History Proses Tutup Bulan</h5>
+        </div>
+        <div class="col text-end">
+        </div>
+      </div>
+      <div class="table"></div>
+    </c-card-body>
+  </c-card>
+</div>

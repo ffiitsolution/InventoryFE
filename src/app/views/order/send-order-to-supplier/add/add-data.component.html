@@ -1,7 +1,7 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <h5>{{ "Tambah" | translate }} {{ "Pesanan" | translate }} {{ "Ke" | translate }}  {{ "Gudang" | translate }} </h5>
+      <h5>{{ "Tambah" | translate }} {{ "Pesanan" | translate }} {{ "Ke" | translate }}  {{ "Supplier" | translate }} </h5>
     </c-card-body>
   </c-card>
 </div>
@@ -14,7 +14,7 @@
             <div class="p-2">
               <h5 class="mb-2 p-2 pl-0" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5>
 
-              <form [formGroup]="myForm" (ngSubmit)="onShowModalBuatPesanan()">
+              <form [formGroup]="myForm">
                 <div class="mb-3 row">
                   <label class="col-sm-4 col-form-label">{{
                     "Nomor Pesanan" | translate
@@ -78,6 +78,9 @@
                     <span *ngIf="isFieldValid('tanggalKirimBarang')" class="text-danger">{{
                       "Wajib diisi" | translate
                     }}</span>
+                    <span class="text-danger" *ngIf="compareDates(myForm?.controls?.['tanggalPesanan']?.value, myForm.value.tanggalKirimBarang)">
+                      {{"Tanggal kirim barang tidak boleh kurang dari tanggal pesanan" | translate}}
+                    </span>
                   </div>
                 </div>
                 <div class="mb-3 row">
@@ -149,6 +152,16 @@
                       (keypress)="conditionInput($event, 'excludedSensitive')"
                       maxlength="100"
                     ></textarea>
+                    <span
+                      *ngIf="
+                        myForm.controls['catatan1'].hasError('excludedSensitive')
+                      "
+                      class="text-danger"
+                      >{{
+                        "Catatan1 hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), dan tanda kurung ()."
+                          | translate
+                      }}
+                    </span>
                   </div>
                 </div>
 
@@ -165,6 +178,16 @@
                       (keypress)="conditionInput($event, 'excludedSensitive')"
                       maxlength="50"
                     ></textarea>
+                    <span
+                      *ngIf="
+                        myForm.controls['catatan2'].hasError('excludedSensitive')
+                      "
+                      class="text-danger"
+                      >{{
+                        "Catatan2 hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), dan tanda kurung ()."
+                          | translate
+                      }}
+                    </span>
                   </div>
                 </div>
                 <div class="divider"></div>
@@ -180,6 +203,7 @@
                     class="btn btn-info text-white btn-150"
                     type="submit"
                     [disabled]="adding"
+                    (click)="onShowModalBuatPesanan()"                    
                   >
                     <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
                     <span *ngIf="!adding"

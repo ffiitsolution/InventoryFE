@@ -46,7 +46,7 @@ $theme-colors: map-merge(
 }
 
 .w-120 {
-  width: 120px;
+  width: 120px !important;
 }
 
 .loading-input {

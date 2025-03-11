@@ -357,8 +357,18 @@ export class GlobalService {
       .replace(/\s+/g, '-');
   }
 
+<<<<<<< HEAD
   formatToDecimal(value: number): string {
     return value.toFixed(2);
   }
   
+=======
+  generateNumberRange(start: number, end: number): number[] {
+    const range: number[] = [];
+    for (let i = start; i <= end; i++) {
+      range.push(i);
+    }
+    return range;
+  }
+>>>>>>> 48ec3064fb7a9a4614a32db0ade9cb6f7876a884
 }

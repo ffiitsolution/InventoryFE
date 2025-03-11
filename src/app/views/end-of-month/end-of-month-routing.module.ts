@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { EndOfMonthComponent } from './end-of-month.component';
 
-import { DashboardComponent } from './dashboard.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: DashboardComponent,
+    component: EndOfMonthComponent,
     data: {
-      title: $localize`Dashboard`
+      title: `Tutup Bulan`
     }
   }
 ];
@@ -17,5 +17,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class DashboardRoutingModule {
+export class EndOfMonthRoutingModule {
 }
