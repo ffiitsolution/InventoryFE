@@ -116,7 +116,6 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
     .subscribe((resp: any) => {
       this.newNomorPesanan = resp;
       this.myForm.get('newNomorPesanan')?.setValue(this.newNomorPesanan.newNomorPesanan);
-      console.log("this.newNomorPesanan",this.newNomorPesanan.newNomorPesanan);
     });
 
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
@@ -238,7 +237,6 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
 
 
   onRSCTujuanChange(selectedValue: any) {
-    console.log("this RSCTujuan",this.myForm.value.RSCTujuan)
     this.getGudangDetail(selectedValue?.value?.id);
   }
 
@@ -265,7 +263,6 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
 
   onDateChangeTglKirimBarang(event: Date): void {
     this.dpConfigTglBatalPesanan.minDate = event; //update the batal pesanan mindate to tanggal kirim barang
-    console.log('Selected Date:', event);
   }
 
   compareDates(date1: any, date2: any): boolean {

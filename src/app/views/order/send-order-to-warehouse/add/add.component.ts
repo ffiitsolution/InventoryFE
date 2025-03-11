@@ -164,7 +164,6 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
 
         this.g.saveLocalstorage('TEMP_ORDHDK', param);
 
-        console.log("controls?.['tanggalKirimBarang']?.value",controls?.['tanggalKirimBarang']?.value)
 
         const tglkirimbrg =  moment(controls?.['tanggalKirimBarang']?.value).format("DD/MM/YYYY");
         this.myForm.controls['tanggalKirimBarang'].setValue("00/00/0000");
@@ -175,7 +174,6 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
         
 
 
-        console.log("this.myForm",  this.myForm)
 
         setTimeout(() => {
         this.isShowDetail = true;
@@ -269,7 +267,6 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   }
 
   onDateChangeTglKirimBarang(event: Date): void {
-    console.log("onDateChangeTglKirimBarang", event);
     this.dpConfigTglBatalPesanan.minDate = event; //update the batal pesanan mindate to tanggal kirim barang
   }
 
@@ -290,8 +287,6 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   }
   // validateDateTglKirimBarang(event: any) {
   //   const inputValue = event.target.value;
-  //   console.log("Input Value:", inputValue);
-  //   console.log
   
   //   // Regular expression to match DD/MM/YYYY format
   //   const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
