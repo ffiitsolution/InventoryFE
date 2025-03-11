@@ -49,6 +49,7 @@ export class TablePositionAddComponent implements OnInit {
     this.myForm = this.form.group({
       code: ['', [Validators.required, code]],
       desc: ['', [Validators.required, desc]],
+      status: ['', [Validators.required]],
     });
   }
 
@@ -78,9 +79,13 @@ export class TablePositionAddComponent implements OnInit {
         code: controls?.['code']?.value,
         desc: controls?.['desc']?.value,
         user: this.g.getLocalstorage('inv_currentUser')?.kodeUser,
-        statusSync: 'T',
+        cond: 'JABATAN',
+        value: 0,
+        remark: null,
+        note: null,
+        status: controls?.['status']?.value,
       };
-      this.service.insert('/api/rsc/insert', param).subscribe({
+      this.service.insert('/api/position/insert', param).subscribe({
         next: (res) => {
           if (!res.success) {
             alert(res.message);

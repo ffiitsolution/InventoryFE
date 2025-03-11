@@ -10,7 +10,7 @@ import {
   ACTION_ADD,
   ACTION_EDIT,
   ACTION_VIEW,
-  LS_INV_SELECTED_RSC,
+  LS_INV_SELECTED_POSITION,
 } from '../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
@@ -24,7 +24,9 @@ import { Router } from '@angular/router';
   templateUrl: './table-position.component.html',
   styleUrl: './table-position.component.scss',
 })
-export class TablePositionComponent implements OnInit, OnDestroy, AfterViewInit {
+export class TablePositionComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   columns: any;
   page = new Page();
   data: any;
@@ -62,7 +64,7 @@ export class TablePositionComponent implements OnInit, OnDestroy, AfterViewInit 
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         this.dataService
-          .postData(this.g.urlServer + '/api/rsc/dt', dataTablesParameters)
+          .postData(this.g.urlServer + '/api/position/dt', dataTablesParameters)
           .subscribe((resp: any) => {
             const mappedData = resp.data.map((item: any, index: number) => {
               // hapus rn
@@ -70,14 +72,7 @@ export class TablePositionComponent implements OnInit, OnDestroy, AfterViewInit 
               const finalData = {
                 ...rest,
                 dtIndex: this.page.start + index + 1,
-                dateCreate: this.g.transformDateTime(
-                  item.dateCreate,
-                  item.timeCreate
-                ),
-                dateUpdate: this.g.transformDateTime(
-                  item.dateUpdate,
-                  item.timeUpdate
-                ),
+                dateUpd: this.g.transformDateTime(item.dateUpd, item.timeUpd),
               };
               return finalData;
             });
@@ -93,19 +88,30 @@ export class TablePositionComponent implements OnInit, OnDestroy, AfterViewInit 
       columns: [
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
         {
-          data: 'kodeRsc',
+          data: 'code',
           title: 'Kode Jabatan',
           orderable: true,
           searchable: true,
         },
         {
-          data: 'keteranganRsc',
+          data: 'description',
           title: 'Jabatan',
           orderable: true,
           searchable: true,
         },
-        { data: 'userCreate', title: 'Dibuat Oleh', searchable: false },
-        { data: 'dateCreate', title: 'Tanggal Dibuat', searchable: false },
+        { data: 'userUpd', title: 'DiUpdate Oleh', searchable: false },
+        { data: 'dateUpd', title: 'Tanggal DiUpdate', searchable: false },
+        {
+          data: 'status',
+          title: 'Status',
+          searchable: false,
+          render: (data) => {
+            if (data === 'A') {
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+            }
+            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
+          },
+        },
         {
           title: 'Action',
           render: () => {
@@ -126,7 +132,10 @@ export class TablePositionComponent implements OnInit, OnDestroy, AfterViewInit 
         },
       ],
       searchDelay: 1500,
-      order: [[1, 'asc']],
+      order: [
+        [1, 'asc'],
+        [5, 'asc'],
+      ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
@@ -156,7 +165,7 @@ export class TablePositionComponent implements OnInit, OnDestroy, AfterViewInit 
     );
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.buttonCaptionEdit = this.translation.instant('Ubah');
-    localStorage.removeItem(LS_INV_SELECTED_RSC);
+    localStorage.removeItem(LS_INV_SELECTED_POSITION);
   }
 
   rerenderDatatable(): void {
@@ -169,10 +178,10 @@ export class TablePositionComponent implements OnInit, OnDestroy, AfterViewInit 
 
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
-      this.g.saveLocalstorage(LS_INV_SELECTED_RSC, JSON.stringify(data));
+      this.g.saveLocalstorage(LS_INV_SELECTED_POSITION, JSON.stringify(data));
       this.router.navigate(['/master/master-position/detail']);
     } else if (action === ACTION_EDIT) {
-      this.g.saveLocalstorage(LS_INV_SELECTED_RSC, JSON.stringify(data));
+      this.g.saveLocalstorage(LS_INV_SELECTED_POSITION, JSON.stringify(data));
       this.router.navigate(['/master/master-position/edit']);
     } else if (action === ACTION_ADD) {
       this.router.navigate(['/master/master-position/add']);

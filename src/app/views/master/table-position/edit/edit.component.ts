@@ -1,11 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { values } from 'lodash-es';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/service/app.service';
 import { GlobalService } from 'src/app/service/global.service';
-import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_RSC } from 'src/constants';
+import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_POSITION } from 'src/constants';
 
 function code(control: AbstractControl): ValidationErrors | null {
   const specialCharRegex = /[^0-9]+$/;
@@ -42,17 +49,18 @@ export class TablePositionEditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.detail = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_RSC));
+    this.detail = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_POSITION));
+    console.log(this.detail.cond);
     this.myForm = this.form.group({
+      cond: [{ value: this.detail.cond, disabled: true }],
       code: [
-        { value: this.detail.kodeRsc, disabled: true },
+        { value: this.detail.code, disabled: true },
         [Validators.required, code],
       ],
-      desc: [this.detail.keteranganRsc, [Validators.required, desc]],
-      dateCreate: [{ value: this.detail.dateCreate, disabled: true }],
-      userCreate: [{ value: this.detail.userCreate, disabled: true }],
-      userUpdate: [{ value: this.detail.userUpdate, disabled: true }],
-      dateUpdate: [{ value: this.detail.dateUpdate, disabled: true }],
+      desc: [this.detail.description, [Validators.required, desc]],
+      status: [this.detail.status, [Validators.required]],
+      userUpd: [{ value: this.detail.userUpd, disabled: true }],
+      dateUpd: [{ value: this.detail.dateUpd, disabled: true }],
     });
   }
 
@@ -81,10 +89,11 @@ export class TablePositionEditComponent implements OnInit {
       const param = {
         code: controls?.['code']?.value,
         desc: controls?.['desc']?.value,
+        status: controls?.['status']?.value,
+        cond: controls?.['cond']?.value,
         user: this.g.getLocalstorage('inv_currentUser')?.kodeUser,
-        statusSync: 'T',
       };
-      this.service.insert('/api/rsc/update', param).subscribe({
+      this.service.insert('/api/position/update', param).subscribe({
         next: (res) => {
           if (!res.success) {
             alert(res.message);
@@ -123,7 +132,7 @@ export class TablePositionEditComponent implements OnInit {
   }
 
   onPreviousPressed() {
-    localStorage.removeItem(LS_INV_SELECTED_RSC);
+    localStorage.removeItem(LS_INV_SELECTED_POSITION);
     this.router.navigate(['/master/master-position']);
   }
 }
