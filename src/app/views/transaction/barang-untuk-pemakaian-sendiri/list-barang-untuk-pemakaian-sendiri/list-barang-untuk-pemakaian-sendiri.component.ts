@@ -188,13 +188,13 @@ pageSize: number = 10; // Define the pageSize property
   // }
 
   actionBtnClick(action: string, data: any = null) {
+    console.log('button clickef');
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage(
-        LS_INV_SELECTED_DELIVERY_ORDER,
+        'pemakaianBarangSendiri',
         JSON.stringify(data)
       );
-      this.router.navigate(['/transaction/delivery-item/detail-transaction']);
-      this;
+      this.router.navigate(['/transaction/barang-untuk-pemakaian-sendiri/detail-barang-untuk-pemakaian-sendiri']);
     }
   }
 

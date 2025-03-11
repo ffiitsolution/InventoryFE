@@ -121,7 +121,7 @@ const routes: Routes = [
         component: DisplayDataPemakaianBarangSendiriComponent,
       },
       {
-        path: 'detail-barang-untuk-pemakaian-sendiri/detail-barang-pemakaian-sendiri',
+        path: 'detail-barang-untuk-pemakaian-sendiri',
         component: DetailBarangUntukPemakaianSendiriComponent,
       }
     ],

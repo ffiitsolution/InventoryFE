@@ -16,7 +16,12 @@ import { Router } from '@angular/router';
 // import { AppConfig } from 'src/app/config/app.config.ts';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
-import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DELAY_TABLE, SEND_PRINT_STATUS_SUDAH } from '../../../../../constants';
+import {
+  ACTION_VIEW,
+  CANCEL_STATUS,
+  DEFAULT_DELAY_TABLE,
+  SEND_PRINT_STATUS_SUDAH,
+} from '../../../../../constants';
 import { AppConfig } from '../../../../config/app.config';
 
 @Component({
@@ -25,7 +30,8 @@ import { AppConfig } from '../../../../config/app.config';
   styleUrl: './detail-barang-untuk-pemakaian-sendiri.component.scss',
 })
 export class DetailBarangUntukPemakaianSendiriComponent
-  implements OnInit, OnDestroy, AfterViewInit {
+  implements OnInit, OnDestroy, AfterViewInit
+{
   columns: any;
   page = new Page();
 
@@ -35,9 +41,9 @@ export class DetailBarangUntukPemakaianSendiriComponent
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
-  selectedOrder: any = JSON.parse(
-    localStorage['selectedWastage']
-  );
+  selectedOrder: any = localStorage.getItem('pemakaianBarangSendiri')
+    ? JSON.parse(localStorage.getItem('pemakaianBarangSendiri')!)
+    : {};
   adding: boolean = false;
   loadingIndicator: boolean = false;
   showFilterSection: boolean = false;
@@ -62,48 +68,63 @@ export class DetailBarangUntukPemakaianSendiriComponent
   ) {
     this.g.navbarVisibility = true;
     this.selectedOrder = JSON.parse(this.selectedOrder);
-    this.selectedOrder.tglPesanan = this.g.transformDate(this.selectedOrder.tglPesanan),
-      this.selectedOrder.tglTransaksi = this.g.transformDate(this.selectedOrder.tglTransaksi),
-      this.dtOptions = {
+    (this.selectedOrder.tglPesanan = this.g.transformDate(
+      this.selectedOrder.tglPesanan
+    )),
+      (this.selectedOrder.tglTransaksi = this.g.transformDate(
+        this.selectedOrder.tglTransaksi
+      )),
+      (this.dtOptions = {
         language:
-          translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
+          translation.getCurrentLanguage() == 'id'
+            ? translation.idDatatable
+            : {},
         processing: true,
         serverSide: true,
         autoWidth: true,
         info: true,
-        drawCallback: () => { },
+        drawCallback: () => {},
         ajax: (dataTablesParameters: any, callback) => {
           this.page.start = dataTablesParameters.start;
           this.page.length = dataTablesParameters.length;
+          const {
+            KODE_GUDANG: kodeGudang,
+            TIPE_TRANSAKSI: tipeTransaksi,
+            NOMOR_TRANSAKSI: nomorTransaksi,
+          } = this.selectedOrder ?? {};
           const params = {
             ...dataTablesParameters,
-            nomorTransaksi: this.selectedOrder.nomorTransaksi,
-            kodeGudang: this.g.getUserLocationCode(),
-          };
+            kodeGudang: kodeGudang ?? '',
+            tipeTransaksi: tipeTransaksi?.toString() ?? '',
+            nomorTransaksi: nomorTransaksi?.trim() ?? '',
+          };          
           setTimeout(() => {
             this.dataService
               .postData(
-                this.config.BASE_URL + '/api/wastage/detail',
+                this.config.BASE_URL +
+                  '/api/delivery-order/detail-display-data-pemakaian-barang-sendiri',
                 params
               )
               .subscribe((resp: any) => {
-                const updatedSelectedOrder = {
-                  ...this.selectedOrder,
-                  noSjPengirim: resp.data[0]?.noSjPengirim || ' ',
-                };
+                const updatedSelectedOrder = resp.data?.length
+                  ? {
+                      ...this.selectedOrder,
+                      noSjPengirim: resp.data[0]?.noSjPengirim || '',
+                    }
+                  : this.selectedOrder;
                 this.selectedOrder = updatedSelectedOrder;
-                this.g.saveLocalstorage(
-                  'selectedWastage',
-                  JSON.stringify(updatedSelectedOrder)
-                );
+                this.g.saveLocalstorage('PemakaianBarangSendiri', JSON.stringify(updatedSelectedOrder));
+
                 const mappedData = resp.data.map((item: any, index: number) => {
                   const { rn, ...rest } = item;
                   const finalData = {
                     ...rest,
                     dtIndex: this.page.start + index + 1,
-                    tglPesanan: this.g.transformDate(rest.tglPesanan),
-                    tglTransaksi: this.g.transformDate(rest.tglTransaksi)
-                  }
+                    tglExpired: this.g.transformDate(rest.tglExpired),
+                    keteranganTanggal: this.g.transformDate(
+                      rest.keteranganTanggal
+                    ),
+                  };
                   return finalData;
                 });
                 this.page.recordsTotal = resp.recordsTotal;
@@ -114,7 +135,6 @@ export class DetailBarangUntukPemakaianSendiriComponent
                   recordsFiltered: resp.recordsFiltered,
                   data: mappedData,
                 });
-
               });
             this.paramGenerateReport = {
               outletBrand: 'KFC',
@@ -125,34 +145,38 @@ export class DetailBarangUntukPemakaianSendiriComponent
               tglBrgDikirim: this.selectedOrder.tglTransaksi,
               tglPesan: this.selectedOrder.tglPesanan,
               tglEntry: this.selectedOrder.dateCreate,
-              jamEntry: this.selectedOrder.timePosted.replace(/(\d{2})(?=\d)/g, '$1:'),
               kodeTujuan: this.selectedOrder.kodeTujuan,
               namaTujuan: this.selectedOrder.namaTujuan,
-              keterangan: this.selectedOrder.keterangan
+              keterangan: this.selectedOrder.keterangan,
             };
             this.paramUpdatePrintStatus = {
-              noSuratJalan: this.selectedOrder.noSuratJalan
-            }
+              noSuratJalan: this.selectedOrder.noSuratJalan,
+            };
           }, DEFAULT_DELAY_TABLE);
         },
         columns: [
           { data: 'KODE_BARANG', title: 'Kode Barang' },
           { data: 'NAMA_BARANG', title: 'Nama Barang' },
           {
-            data: 'KONVERSI', title: 'Konversi',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
+            data: 'KONVERSI',
+            title: 'Konversi',
+            render: function (data, type, row) {
+              return data + ' ' + row.SATUAN_KECIL;
+            }
           },
           {
-            data: 'qtyBesar', title: 'Qty Besar',
-            render: (data, type, row) => `${data} ${row.satuanBesar}`
+            data: 'QTY_BESAR',
+            title: 'Qty Besar',
+            render: function (data, type, row) {
+              return data + ' ' + row.SATUAN_BESAR;
+            }
           },
           {
-            data: 'qtyKecil', title: 'Qty Kecil',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
-          },
-          {
-            data: 'totalQty', title: 'Total Qty',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
+            data: 'QTY_KECIL',
+            title: 'Qty Kecil',
+            render: function (data, type, row) {
+              return data + ' ' + row.SATUAN_KECIL;
+            }
           },
           {
             title: 'Cek Qty. Expired',
@@ -171,7 +195,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
           );
           return row;
         },
-      };
+      });
     this.dtColumns = this.dtOptions.columns;
   }
   reloadTable() {
@@ -193,11 +217,9 @@ export class DetailBarangUntukPemakaianSendiriComponent
       this.selectedOrder.cetakSuratJalan == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
   }
-  actionBtnClick(action: string, data: any = null) { 
-    
-  }
+  actionBtnClick(action: string, data: any = null) {}
 
-  dtPageChange(event: any) { }
+  dtPageChange(event: any) {}
 
   ngAfterViewInit(): void {
     this.rerenderDatatable();
@@ -219,7 +241,9 @@ export class DetailBarangUntukPemakaianSendiriComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri']);
+    this.router.navigate([
+      '/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri',
+    ]);
   }
 
   onDelete() {
@@ -241,7 +265,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
             keterangan2,
             nomorPesanan: this.selectedOrder.nomorPesanan,
           };
-          const url = `${this.config.BASE_URL}/inventory/api/delivery-order/detail-display-data-pemakaian-barang-sendiri`;
+          const url = `${this.config.BASE_URL}/api/delivery-order/detail-display-data-pemakaian-barang-sendiri`;
           const response = await lastValueFrom(
             this.dataService.postData(url, params)
           );
@@ -267,5 +291,14 @@ export class DetailBarangUntukPemakaianSendiriComponent
       return 'Belum';
     }
     return 'Sudah';
+  }
+
+  getStatusPostingLegend(status: string): string {
+    const legends: { [key: string]: string } = {
+      P: 'Posted',
+      U: 'Unposted',
+      D: 'Draft',
+    };
+    return legends[status] || 'Unknown'; // Jika status tidak dikenali, tampilkan "Unknown"
   }
 }
