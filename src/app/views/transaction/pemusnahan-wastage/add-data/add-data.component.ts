@@ -58,7 +58,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
     private deliveryDataService: DeliveryDataService,
     private appService: AppService
   ) {
-    this.dpConfig.containerClass = 'theme-dark-blue';
+    this.dpConfig.containerClass = 'theme-red';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
   }

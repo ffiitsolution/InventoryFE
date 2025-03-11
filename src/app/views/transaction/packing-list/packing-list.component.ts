@@ -82,7 +82,8 @@ export class PackagingListComponent
           className: 'text-center',
           orderable: false,
           render: (data: any, type: any, row: any) => {
-            return `<input type="checkbox" class="select-row action-select-data" data-id="${row.NO_SURAT_JALAN}">`;
+            let isChecked = this.selectedRows.some(item => item.NO_SURAT_JALAN === row.NO_SURAT_JALAN) ? 'checked' : '';
+            return `<input type="checkbox" class="select-row action-select-data" data-id="${row.NO_SURAT_JALAN}" ${isChecked}>`;
           },
         },
         { data: 'NO_SURAT_JALAN', title: 'NO. Surat Jalan (D.O)' },
@@ -111,8 +112,11 @@ export class PackagingListComponent
         $('.action-select-data', row).on('click', () =>
           this.actionBtnClick('SELECT_DATA', data)
         );
+        $(row).find('.select-row').off('change').on('change', (event: JQuery.ChangeEvent<HTMLElement>) => {
+          this.handleCheckboxChange(event, data);
+        });
         $('td', row).on('click', (event) => {
-          const checkbox = $(row).find('.select-row'); 
+          const checkbox = $(row).find('.select-row');
           const index = this.selectedRows.findIndex(item => item === data);
 
           if (index === -1) {
@@ -134,6 +138,22 @@ export class PackagingListComponent
       },
       order: [[2, 'desc']],
     };
+  }
+
+  handleCheckboxChange(event: JQuery.ChangeEvent<HTMLElement>, data: any) {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    console.log("isChecked",isChecked)
+    if (isChecked) {
+        // Add kodeBarang if checked
+        if (! this.selectedRows.some(item => item.kodeBarang === data.kodeBarang)) {
+            this.selectedRows.push(data);
+        }
+    } else {
+        // Remove kodeBarang if unchecked
+        this.selectedRows = this.selectedRows.filter(item => item.kodeBarang !== data.kodeBarang);
+        console.log("this.selectedRows else",this.selectedRows)
+    }
+    console.log("selectedRows",this.selectedRows)
   }
 
   actionBtnClick(action: string, data: any): void {

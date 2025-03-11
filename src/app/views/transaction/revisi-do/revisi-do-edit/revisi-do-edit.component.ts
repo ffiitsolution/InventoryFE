@@ -89,7 +89,7 @@ export class RevisiDoEditComponent
         this.listOrderData = res.data.map((data: any) => ({
           ...data,
           qtyBPesanOld: data.qtyBKirim,
-          totalQtyPesanOld: data.totalQtyPesan
+          totalQtyPesanOld: data.totalQtyPesan,
         }));
         this.totalLength = res?.data?.length;
         this.page = 1;
@@ -153,7 +153,7 @@ export class RevisiDoEditComponent
           this.toastr.error(
             `Kode Barang: ${data.kodeBarang}, Qty Kirim (${totalKirim}) tidak boleh lebih besar dari Qty Pesan (${data.totalQtyPesanOld})`
           );
-          hasInvalidData = true; 
+          hasInvalidData = true;
           return null; // Hentikan pemrosesan item ini
         }
 
@@ -165,29 +165,46 @@ export class RevisiDoEditComponent
           noSuratJalan: this.selectedOrder.noSuratJalan
         };
       })
-      .filter((item) => item !== null); 
+      .filter((item) => item !== null);
 
     if (hasInvalidData || param.length === 0) {
       this.adding = false;
       return;
     }
 
-    this.appService.revisiQtyDo(param).subscribe({
-      next: (res) => {
-        if (!res.success) {
-          alert(res.message);
-        } else {
-          this.toastr.success("Berhasil!");
-          setTimeout(() => {
-            this.router.navigate(["/transaction/delivery-item/revisi-do"]);
-          }, DEFAULT_DELAY_TIME);
-        }
-        this.adding = false;
-      },
-      error: (err) => {
-        console.error("Error saat insert:", err);
-        this.adding = false;
-      },
+    Swal.fire({
+      title: 'Apa Anda Sudah Yakin?',
+      text: 'Pastikan data yang dimasukkan sudah benar!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Simpan!',
+      cancelButtonText: 'Batal',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.appService.revisiQtyDo(param).subscribe({
+          next: (res) => {
+            if (!res.success) {
+              alert(res.message);
+            } else {
+              this.toastr.success("Berhasil!");
+              setTimeout(() => {
+                this.router.navigate(["/transaction/delivery-item/revisi-do"]);
+              }, DEFAULT_DELAY_TIME);
+            }
+            this.adding = false;
+          },
+          error: (err) => {
+            console.error("Error saat insert:", err);
+            this.adding = false;
+          },
+        });
+      } else {
+        this.toastr.info('Penyimpanan dibatalkan');
+      }
     });
+
+
   }
 }

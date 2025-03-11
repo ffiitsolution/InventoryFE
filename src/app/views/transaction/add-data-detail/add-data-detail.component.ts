@@ -105,7 +105,7 @@ export class AddDataDetailDeliveryComponent
         this.listOrderData = res.data.map((data: any) => ({
           ...data,
           qtyBPesanOld: data.qtyPesanBesar,
-          totalQtyPesanOld: data.totalQtyPesan
+          totalQtyPesanOld: data.totalQtyPesan,
         }));
         this.filteredListTypeOrder = this.listOrderData;
         this.totalLength = res?.data?.length;
@@ -235,24 +235,41 @@ export class AddDataDetailDeliveryComponent
       return;
     }
 
+        Swal.fire({
+          title: 'Apa Anda Sudah Yakin?',
+          text: 'Pastikan data yang dimasukkan sudah benar!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, Simpan!',
+          cancelButtonText: 'Batal',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.appService.saveDeliveryOrder(param).subscribe({
+
+              next: (res) => {
+                if (!res.success) {
+                  alert(res.message);
+                } else {
+                  this.toastr.success("Berhasil!");
+                  setTimeout(() => {
+                    this.router.navigate(["/transaction/delivery-item"]);
+                  }, DEFAULT_DELAY_TIME);
+                }
+                this.adding = false;
+              },
+              error: (err) => {
+                console.error("Error saat insert:", err);
+                this.adding = false;
+              },
+            });
+          } else {
+            this.toastr.info('Penyimpanan dibatalkan');
+          }
+        });
     // ✅ Jika semua valid, lanjutkan dengan pemanggilan API
-    this.appService.saveDeliveryOrder(param).subscribe({
-      next: (res) => {
-        if (!res.success) {
-          alert(res.message);
-        } else {
-          this.toastr.success("Berhasil!");
-          setTimeout(() => {
-            this.router.navigate(["/transaction/delivery-item"]);
-          }, DEFAULT_DELAY_TIME);
-        }
-        this.adding = false;
-      },
-      error: (err) => {
-        console.error("Error saat insert:", err);
-        this.adding = false;
-      },
-    });
+    
   }
 
   onSearchDetail(event: any) {

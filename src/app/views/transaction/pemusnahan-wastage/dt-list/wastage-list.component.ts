@@ -9,6 +9,7 @@ import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { DataTableDirective } from 'angular-datatables';
 import moment from 'moment';
+import { AppConfig } from '../../../../config/app.config';
 
 @Component({
   selector: 'app-wastage-list',
@@ -21,9 +22,8 @@ export class WastageListComponent implements OnInit {
   expiredFilter: string = '';
   tujuanFilter: string = '';
   dtOptions: DataTables.Settings = {};
-  config: any = {
-    BASE_URL: 'http://localhost:8093/inventory/api'
-  };
+    protected config = AppConfig.settings.apiServer;
+  
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
   dtColumns: any = [];
@@ -79,7 +79,7 @@ export class WastageListComponent implements OnInit {
         };
         setTimeout(() => {
           this.dataService
-            .postData(this.config.BASE_URL + '/wastage/dt', params)
+            .postData(this.config.BASE_URL + '/api/wastage/dt', params)
             .subscribe((resp: any) => {
               const mappedData = resp.data.map((item: any, index: number) => {
                 // hapus rn dari data

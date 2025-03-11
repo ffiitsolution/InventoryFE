@@ -77,6 +77,9 @@ export class ReceivingOrderAddDetailFormComponent
                   konversiProduct: `${rest.konversiProduct || 0} ${
                     rest.satuanBesarProduct || '-'
                   }/${rest.satuanKecilProduct || '-'}`,
+                  qtyPesanBesar: this.g.formatToDecimal(rest.qtyPesanBesar),
+                  totalQtyPesan: this.g.formatToDecimal(rest.totalQtyPesan),
+                  qtyPesanKecil: this.g.formatToDecimal(rest.qtyPesanKecil),
                 };
                 return finalData;
               });

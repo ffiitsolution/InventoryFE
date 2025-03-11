@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators,AbstractControl,ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/service/app.service';
@@ -9,6 +9,13 @@ import { DataService } from 'src/app/service/data.service';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import moment from 'moment';
 
+function excludedSensitive(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9\s.,#\-()\/]/;
+  if (control.value && specialCharRegex.test(control.value)) {
+    return { excludedSensitive: true };
+  }
+  return null;
+}
 @Component({
   selector: 'app-add-data',
   templateUrl: './add-data.component.html',
@@ -69,8 +76,8 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
       alamatGudang:  [{value: '', disabled: true}],
       statusGudang:  [{value: '', disabled: true}],
       kodeSingkat:  [{value: '', disabled: true}],
-      catatan1: [''],
-      catatan2: [''],
+      catatan1: ['',[excludedSensitive]],
+      catatan2: ['',[excludedSensitive]],
       newNomorPesanan: [{value: '', disabled: true}]
     });
 
@@ -172,12 +179,12 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
     }
    
     onNextPressed() {
-      this.router.navigate(['/order/send-order-to-supplier/add-data-detail']);
+      this.router.navigate(['/order/send-order-to-supplier-via-rsc/add-data-detail']);
     }
   
     onPreviousPressed() {
       localStorage.removeItem(LS_INV_SELECTED_SET_NUMBER);
-      this.router.navigate(['/order/send-order-to-supplier/']);
+      this.router.navigate(['/order/send-order-to-supplier-via-rsc/']);
     }
   
 

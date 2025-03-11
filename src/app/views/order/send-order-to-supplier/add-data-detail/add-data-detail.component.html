@@ -76,16 +76,21 @@
                   <div class="d-flex" style="gap: 5px;">
                     <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
                       [(ngModel)]="data.qtyPesanBesar"  (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
+                      (keypress)="g.conditionInput($event, 'numeric')" [ngClass]="{'form-invalid': validationMessageListSatuanBesar[i]}"
                       />
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanBesar}}
                     </span>
                   </div>
+                    <!-- Validation message area -->
+                    <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageListSatuanBesar[i]">
+                    {{ validationMessageListSatuanBesar[i] }}
+                  </span>
                 </td>
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
                     <input type="text" numberOnly max="{{data.qtyPesanKecil}}" min="0"
-                      [ngClass]="{'form-invalid': validationMessageList[i]}"
+                      [ngClass]="{'form-invalid': validationMessageListSatuanKecil[i]}"
                       class="form-control text-center inputQty inputNumberSpace" 
                       [(ngModel)]="data.qtyPesanKecil"
                       (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')" 
@@ -95,16 +100,15 @@
                       / {{data.satuanKecil}}
                     </span>
                   </div>
-                  
                   <!-- Validation message area -->
-                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageList[i]">
-                    {{ validationMessageList[i] }}
+                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageListSatuanKecil[i]">
+                    {{ validationMessageListSatuanKecil[i] }}
                   </span>
                 </td>
 
-                <td class="text-center">{{ data.konversi }}</td>
+                <td class="text-center">{{ data.konversi }}.00</td>
                 <td class="text-center">{{(helper.sanitizedNumber(data.qtyPesanBesar) *
-                  data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil) }} {{data.satuanKecil}}
+                  data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil) }}.00 {{data.satuanKecil}}
                   
                   <!-- Validation message area -->
                    <br>
@@ -144,7 +148,7 @@
         </c-modal-header>
         <c-modal-body>
           <div class="table-responsive">
-            <table datatable [dtOptions]=" dtOptions" class="row-border hover w-100" id="listBarangTable"></table>
+            <table datatable [dtOptions]=" dtOptions" class="row-border hover stripe w-100" id="listBarangTable"></table>
           </div>
           <div class="d-grid gap-3 d-md-flex justify-content-end mt-3">
             <button class="btn btn-info text-white btn-150 pe-3" (click)="onAddListDataBarang()">

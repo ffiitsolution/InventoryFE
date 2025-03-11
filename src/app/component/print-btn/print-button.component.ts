@@ -14,8 +14,8 @@ export class PrintButtonSharedComponent {
   @Input() alreadyPrint: boolean = false;
   @Input() rejectingOrder: boolean = false;
   @Input() disabledPrintButton: boolean = false;
-  @Input() updateStatusUrl: string = ''; 
-  @Input() generatePdfUrl: string = ''; 
+  @Input() updateStatusUrl: string = '';
+  @Input() generatePdfUrl: string = '';
   @Input() generateReportParam: any = {};
   @Input() updatePrintStatusParam: any = {};
   @Output() reloadTable = new EventEmitter<void>();
@@ -28,28 +28,26 @@ export class PrintButtonSharedComponent {
     private dataService: DataService,
     private toastr: ToastrService,
     private g: GlobalService
-  ) {}
+  ) { }
 
   async onClick() {
     this.updatingStatus = true;
     try {
-      const updatePrintStatusResponse = await lastValueFrom(
-        this.dataService.postData(this.config.BASE_URL + this.updateStatusUrl, this.updatePrintStatusParam)
-      );
+      if (this.updateStatusUrl !== '' || this.updatePrintStatusParam !== '') {
+        await lastValueFrom(
+          this.dataService.postData(this.config.BASE_URL + this.updateStatusUrl, this.updatePrintStatusParam)
+        );
+      }
 
-      if ((updatePrintStatusResponse as any).success) {
-        try {
-          const base64Response = await lastValueFrom(
-            this.dataService.postData(this.config.BASE_URL + this.generatePdfUrl, this.generateReportParam, true)
-          );
-          const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
-          const url = window.URL.createObjectURL(blob);
-          window.open(url);
-        } catch (error: any) {
-          this.toastr.error(error.message ?? 'Unknown error while generating PDF');
-        }
-      } else {
-        this.toastr.error((updatePrintStatusResponse as any).message);
+      try {
+        const base64Response = await lastValueFrom(
+          this.dataService.postData(this.config.BASE_URL + this.generatePdfUrl, this.generateReportParam, true)
+        );
+        const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        window.open(url);
+      } catch (error: any) {
+        this.toastr.error(error.message ?? 'Unknown error while generating PDF');
       }
     } catch (error: any) {
       this.toastr.error(error.message ?? 'Error updating status');

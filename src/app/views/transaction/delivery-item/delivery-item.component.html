@@ -13,7 +13,7 @@
           <button type="button" class="btn btn-success text-white me-2 btn-240" data-toggle="modal"
             (click)="onAddPressed()">
             <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
-            {{ "Tambah Penerimaan" | translate }}
+            {{ "Tambah Pengiriman" | translate }}
           </button>
         </div>
 
@@ -47,7 +47,7 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="table-responsive">
-        <table datatable [dtOptions]="dtOptions" (page.dt)="dtPageChange($event)" class="row-border hover"></table>
+        <table datatable [dtOptions]="dtOptions" (page.dt)="dtPageChange($event)" class="row-border hover stripe"></table>
       </div>
     </c-card-body>
   </c-card>
@@ -61,12 +61,12 @@
         <div class="col-6">
           <div class="w-100 mb-2">
             <label for="alamatTujuan" class="form-label">{{ "Alamat" | translate }}</label>
-            <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+            <input type="text" disabled placeholder="Alamat 1" class="form-control" id="nomorPesanan"
               [(ngModel)]="selectedRowData.alamatTujuan" name="alamatTujuan" />
           </div>
           <div class="w-100 mb-2">
             <label for="alamat1" class="form-label">{{ "Keterangan" | translate }}</label>
-            <input type="text" readonly placeholder="Keterangan" class="form-control" id="nomorPesanan"
+            <input type="text" disabled placeholder="Keterangan" class="form-control" id="nomorPesanan"
               [(ngModel)]="selectedRowData.keterangan" name="keterangan" />
           </div>
         </div>
@@ -77,38 +77,38 @@
             <div class="col-4">
               <div class="w-100 mb-2">
                 <label for="userCreate" class="form-label">{{ "User Create" | translate }}</label>
-                <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                <input type="text" disabled placeholder="Alamat 1" class="form-control" id="nomorPesanan"
                   [(ngModel)]="selectedRowData.userCreate" name="userCreate" />
               </div>
   
               <div class="w-100 mb-2">
                 <label for="dateCreate" class="form-label">{{ "Date Create" | translate }}</label>
-                <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                <input type="text" disabled placeholder="Alamat 1" class="form-control" id="nomorPesanan"
                   [(ngModel)]="selectedRowData.dateCreate" name="dateCreate" />
               </div>
   
               <!-- <div class="w-100 mb-2">
                 <label for="timeCreate" class="form-label">{{ "Time Create" | translate }}</label>
-                <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                <input type="text" disabled placeholder="Alamat 1" class="form-control" id="nomorPesanan"
                   [(ngModel)]="selectedRowData.timeCreate" name="timeCreate" />
               </div> -->
             </div>
             <div class="col-4">
               <div class="w-100 mb-2">
                 <label for="userPosted" class="form-label">{{ "User Posted" | translate }}</label>
-                <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                <input type="text" disabled placeholder="Alamat 1" class="form-control" id="nomorPesanan"
                   [(ngModel)]="selectedRowData.userPosted" name="userPosted" />
               </div>
   
               <div class="w-100 mb-2">
                 <label for="datePosted" class="form-label">{{ "Date Posted" | translate }}</label>
-                <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                <input type="text" disabled placeholder="Alamat 1" class="form-control" id="nomorPesanan"
                   [(ngModel)]="selectedRowData.datePosted" name="datePosted" />
               </div>
   
               <!-- <div class="w-100 mb-2">
                 <label for="timePosted" class="form-label">{{ "Time Posted" | translate }}</label>
-                <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                <input type="text" disabled placeholder="Alamat 1" class="form-control" id="nomorPesanan"
                   [(ngModel)]="selectedRowData.timePosted" name="timePosted" />
               </div> -->
             </div>

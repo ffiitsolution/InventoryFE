@@ -111,6 +111,11 @@ export class DetailReportDoBalikComponent
                 const { rn, ...rest } = item;
                 const finalData = {
                   ...rest,
+                  konversi: this.g.formatToDecimal(rest.konversi),
+                  totalQtyPesan: this.g.formatToDecimal(rest.totalQtyPesan),
+                  qtyBKirim: this.g.formatToDecimal(rest.qtyBKirim),
+                  qtyKKirim: this.g.formatToDecimal(rest.qtyKKirim),
+                  totalQtyKirim: this.g.formatToDecimal(rest.totalQtyKirim),
                   dtIndex: this.page.start + index + 1,
                 };
                 return finalData;

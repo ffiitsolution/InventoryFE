@@ -3,11 +3,11 @@
     <c-card-body>
       <div class="row">
         <div class="col">
-          <h5>{{ "Kirim pesanan ke Supplier Melalui RSC" | translate }}</h5>
+          <h5>{{ "Kirim Pesanan Ke Supplier" | translate }}</h5>
         </div>
         <div class="col text-end">
           <button
-            type="button"s
+            type="button"
             class="btn btn-outline-dark me-2 btn-120"
             (click)="toggleFilter()"
           >
@@ -21,22 +21,21 @@
             (click)="onAddPressed()"
           >
             <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
-            {{ "Tambah Data" | translate }}
+            {{ "Tambah Pesanan" | translate }}
           </button>
         </div>
-        
       </div>
       <div [visible]="showFilterSection" cCollapse>
         <div class="divider"></div>
         <div class="row" style="margin-top: -16px">
           <c-card-body>
             <c-row>
-              <c-col>
+              <c-col cols="12" md="6">
                 <label class="col-form-label">{{
                   "Tanggal Pesan" | translate
                 }}</label>
                 <input
-                  type="text" 
+                  type="text"
                   id="dateFilter"
                   class="form-control"
                   bsDaterangepicker
@@ -48,7 +47,7 @@
                 />
               </c-col>
               <c-col
-                xs="3"
+                xs="6"
                 class="text-right d-flex align-items-end justify-content-end"
               >
                 <button
@@ -74,9 +73,141 @@
           datatable
           [dtOptions]="dtOptions"
           (page.dt)="dtPageChange($event)"
-          class="row-border hover"
+          class="row-border hover stripe"
         ></table>
       </div>
     </c-card-body>
   </c-card>
 </div>
+
+<c-modal #formModalKirim [fullscreen]="false" [visible]="isShowModalKirim" backdrop="static" #modalLg  size="lg"
+id="formModalKirim"    [attr.aria-hidden]="!isShowModalKirim">
+  <c-modal-header>
+    <h5 cModalTitle>Konfirmasi Kirim Data Pesanan</h5>
+    <button (click)="isShowModalKirim = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalKirim.id"
+      cButtonClose><i class="fa fa-times"></i></button>
+  </c-modal-header>
+  <c-modal-body>
+    <div >
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Tujuan Pesanan" | translate
+          }}</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              [value]="(selectedRowKirim?.supplier || '') + ' - '+(selectedRowKirim?.namaSupplier || '') "
+              readonly
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Nomor Pesanan" | translate
+          }}</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              [value]="(selectedRowKirim?.nomorPesanan || '')"              
+              readonly
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Tgl. Pesan" | translate
+          }}</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              [value]="(selectedRowKirim?.tglPesanan || '')"              
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Tgl. Brg. Dikirim" | translate
+          }}</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              [value]="(selectedRowKirim?.tglKirimBrg || '')"              
+
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Tgl. Batal Pesanan" | translate
+          }}</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              [value]="(selectedRowKirim?.tglBatalExp || '')"              
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Keterangan 1 " | translate
+          }}</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              [value]="(selectedRowKirim?.keterangan1 || '')" 
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Keterangan 2" | translate
+          }}</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              [value]="(selectedRowKirim?.keterangan2 || '')" 
+            />
+          </div>
+        </div>
+        <div class="d-flex justify-content-center align-items-center flex-column">
+          <span class="fw-bold text-center text-red">Pastikan Semua Data Sudah Benar ...!!</span>
+          <span class="fw-bold text-center text-red">Data yang sudah dikirim tidak dapat dirubah kembali...!!</span>
+        </div>
+        
+      </div>
+    </c-modal-body>
+    <c-modal-footer class="justify-center">
+      <button type="button" class="btn btn-light" data-bs-dismiss="modal" (click)="isShowModalKirim = false">Close</button>
+      <button type="button" class="btn btn-success text-white" (click)="updateStatus()">Proses kirim Data</button>
+    </c-modal-footer>
+</c-modal>
+
+<c-modal #formModalDelete [fullscreen]="false" [visible]="isShowModalCetak" backdrop="static" #modalLg 
+id="formModalDelete"    [attr.aria-hidden]="!isShowModalCetak">
+  <c-modal-header>
+    <h5 cModalTitle>Konfirmasi Cetak</h5>
+    <button (click)="isShowModalCetak = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalDelete.id"
+      cButtonClose><i class="fa fa-times"></i></button>
+  </c-modal-header>
+  <c-modal-body>
+    <p class="text-center">Apakah anda ingin mencetak data?</p>
+    <div class="d-flex justify-center py-2">
+      <button class="btn btn-light"  (click)="isShowModalCetak = false">Tidak</button>
+      &nbsp;
+      <button class="btn btn-primary text-white" (click)="onClickPrint()">Iya</button>
+    </div>
+  </c-modal-body>
+</c-modal>
+
