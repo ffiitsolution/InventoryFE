@@ -158,8 +158,6 @@ export class DeliveryItemComponent implements OnInit {
             return `<div class="d-flex px-2 gap-1"> 
               <button style="width: 74px" class="btn btn-sm action-view btn-outline-info btn-60 pe-2">
               <i class="fa fa-eye pe-2"></i>${this.buttonCaptionView}</button>
-              <button style="width: 74px" class="btn btn-sm action-cetak btn-outline-success btn-60">
-              <i class="fa fa-print pe-2"></i>Cetak</button>
             </div>`;
           },
         },

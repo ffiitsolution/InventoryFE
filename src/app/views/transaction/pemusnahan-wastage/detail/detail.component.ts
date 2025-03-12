@@ -117,17 +117,13 @@ export class DetailWastageComponent
 
               });
             this.paramGenerateReport = {
-              outletBrand: 'KFC',
+              nomorTransaksi: this.selectedOrder.nomorTransaksi,
               userEntry: this.selectedOrder.userCreate,
-              nomorPesanan: this.selectedOrder?.nomorPesanan,
-              isDownloadCsv: true,
-              noSuratJalan: this.selectedOrder.noSuratJalan,
-              tglBrgDikirim: this.selectedOrder.tglTransaksi,
-              tglPesan: this.selectedOrder.tglPesanan,
-              tglEntry: this.selectedOrder.dateCreate,
-              jamEntry: this.selectedOrder.timePosted.replace(/(\d{2})(?=\d)/g, '$1:'),
-              kodeTujuan: this.selectedOrder.kodeTujuan,
-              namaTujuan: this.selectedOrder.namaTujuan,
+              jamEntry: this.g.transformTime(this.selectedOrder.timeCreate),
+              tglEntry: this.g.transformDate(this.selectedOrder.dateCreate),
+              outletBrand: 'KFC',
+              namaSaksi: this.selectedOrder.namaSaksi,
+              jabatanSaksi: this.selectedOrder.jabatanSaksi,
               keterangan: this.selectedOrder.keterangan
             };
             this.paramUpdatePrintStatus = {
@@ -154,14 +150,14 @@ export class DetailWastageComponent
             data: 'totalQty', title: 'Total Qty',
             render: (data, type, row) => `${data} ${row.satuanKecil}`
           },
-          {
-            title: 'Cek Qty. Expired',
-            render: () => {
-              return `<div class="d-flex justify-content-start">
-            <button class="btn btn-sm action-view btn-outline-success w-50"><i class="fa fa-check pe-1"></i> Cek</button>
-            </div>`;
-            },
-          },
+          // {
+          //   title: 'Cek Qty. Expired',
+          //   render: () => {
+          //     return `<div class="d-flex justify-content-start">
+          //   <button class="btn btn-sm action-view btn-outline-success w-50"><i class="fa fa-check pe-1"></i> Cek</button>
+          //   </div>`;
+          //   },
+          // },
         ],
         searchDelay: 1000,
         order: [[1, 'asc']],

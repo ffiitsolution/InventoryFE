@@ -58,12 +58,13 @@ export class EntryPackingListComponent
   selectedRo: any = {};
   selectedData: any;
   printing: boolean = false;
+  protected config = AppConfig.settings.apiServer;
+
   constructor(
     private dataService: DataService,
     public g: GlobalService,
     public router: Router,
     private toastr: ToastrService,
-    private config: AppConfig,
     private appService: AppService
   ) {
     this.minDate.setDate(this.minDate.getDate() - 7);
@@ -201,7 +202,7 @@ export class EntryPackingListComponent
     });
 
     this.dataService
-      .postData(this.config.BASE_URL + '/delivery-order/generate', params[0])
+      .postData(this.config.BASE_URL + '/api/delivery-order/generate', params[0])
       .subscribe((response: any) => {
         this.selectedData = {
           packingListNumber: response.packingListNumber,
@@ -210,7 +211,7 @@ export class EntryPackingListComponent
 
     this.dataService
       .postData(
-        this.config.BASE_URL + '/delivery-order/entry-packing-list',
+        this.config.BASE_URL + '/api/delivery-order/entry-packing-list',
         params
       )
       .subscribe(
@@ -237,7 +238,7 @@ export class EntryPackingListComponent
     this.loading = true;
 
     this.dataService
-      .postData(this.config.BASE_URL + '/delivery-order/get-site-info', param)
+      .postData(this.config.BASE_URL + '/api/delivery-order/get-site-info', param)
       .subscribe(
         (response: any) => {
           console.log('Site info data:', response.data.length);
