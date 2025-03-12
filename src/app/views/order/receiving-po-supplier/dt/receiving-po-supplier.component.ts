@@ -23,9 +23,9 @@ import { AppConfig } from 'src/app/config/app.config';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 
 @Component({
-  selector: 'app-receiving-order',
-  templateUrl: './receiving-order.component.html',
-  styleUrl: './receiving-order.component.scss',
+  selector: 'app-receiving-po-supplier',
+  templateUrl: './receiving-po-supplier.component.html',
+  styleUrl: './receiving-po-supplier.component.scss',
 })
 export class ReceivingPoSupplierComponent
   implements OnInit, OnDestroy, AfterViewInit {

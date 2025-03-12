@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReceivingPoSupplierComponent } from './receiving-order.component';
+import { ReceivingPoSupplierComponent } from './receiving-po-supplier.component';
 
 describe('ReceivingPoSupplierComponent', () => {
   let component: ReceivingPoSupplierComponent;

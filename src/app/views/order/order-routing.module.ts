@@ -81,7 +81,7 @@ const routes: Routes = [
       },
       {
         path: 'receiving-po-supplierr/add/detail',
-        component: ReceivingPoSupplierAddFormComponent,
+        component: ReceivingPoSupplierAddDetailFormComponent,
       },
       {
         path: 'receiving-po-supplier/detail',

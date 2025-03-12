@@ -27,7 +27,7 @@ import Swal from 'sweetalert2';
 import { AppService } from '../../../../service/app.service';
 
 @Component({
-  selector: 'app-detail-receiving-order',
+  selector: 'app-detail-receiving-po-supplier',
   templateUrl: './detail.component.html',
   styleUrl: './detail.component.scss',
 })
