@@ -102,7 +102,7 @@ export class AddDataPemakaianBarangSendiriComponent implements OnInit, AfterView
     
     
       onPreviousPressed(): void {
-        this.router.navigate(['/transaction/delivery-item']);
+        this.router.navigate(['/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri']);
       }
     
       onShowModal() {
