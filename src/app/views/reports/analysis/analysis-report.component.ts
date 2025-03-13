@@ -5,17 +5,16 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import {
-  ACTION_ADD,
-  ACTION_EDIT,
-  ACTION_VIEW,
-  LS_INV_SELECTED_UOM,
-} from '../../../../constants';
-import { Router } from '@angular/router';
-import { Page } from '../../../model/page';
-import { DataService } from '../../../service/data.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalService } from '../../../service/global.service';
 import { TranslationService } from '../../../service/translation.service';
+import {
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
+} from '@angular/forms';
+import { AppService } from '../../../service/app.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-analysis-report',
@@ -23,60 +22,34 @@ import { TranslationService } from '../../../service/translation.service';
   styleUrl: './analysis-report.component.scss',
 })
 export class AnalysisReportComponent implements OnInit, OnDestroy, AfterViewInit {
-  columns: any;
-  page = new Page();
-  data: any;
-  loadingIndicator = true;
-  selectedRowData: any;
-  reports: any = {
-    master: {
-      cabang: {
-        id: 1,
-        name: 'Master Cabang',
-        path: '/reports/master',
-      },
-      department: {
-        id: 2,
-        name: 'Master Department',
-        path: '/reports/report-department',
-      },
-      gudang: {
-        id: 2,
-        name: 'Master Gudang',
-        path: '/reports/report-gudang',
-      },
-    },
-    pesanan: {
-      cabang: {
-        id: 1,
-        name: 'Ke Supplier',
-        path: '/reports/report-pesanan-ke-supplier',
-      },
-      department: {
-        id: 2,
-        name: 'Ke Gudang',
-        path: '/reports/report-pesanan-ke-gudang',
-      },
-    },
-    analisis: {
-      cabang: {
-        id: 1,
-        name: 'Pembelian By Supplier',
-        path: '/reports/report-pembelian-by-supplier',
-      },
-      department: {
-        id: 2,
-        name: 'Ke Gudang',
-        path: '/reports/report-pesanan-ke-gudang',
-      },
-    },
+  [key: string]: any;
+  loadingState: { [key: string]: boolean } = {
+    submit: false,
+    selectedRegion: false,
+    statusAktif: false,
+    tipeListing: false,
   };
+  userData: any;
+  currentReport: string = '';
+  rangeDateVal = [new Date(), new Date()];
+  downloadURL: any = [];
+
+  configRegion: any;
+
+  listRegion: any = [];
+
+  selectedRegion: any;
+
+  paramStatusAktif: string = '';
+  paramTipeListing: string = 'header';
 
   constructor(
-    private dataService: DataService,
+    private service: AppService,
     private g: GlobalService,
     private translation: TranslationService,
-    private router: Router
+    private datePipe: DatePipe,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -87,39 +60,157 @@ export class AnalysisReportComponent implements OnInit, OnDestroy, AfterViewInit
         ' - ' +
         this.g.tabTitle
     );
-    this.selectedCategory = this.getObjectKeys(this.reports)[0];
+    this.route.queryParams.subscribe((params) => {
+      this.currentReport = params['report'];
+    });
+
+    this.configRegion = this.g.dropdownConfig('description');
+
+    this.userData = this.service.getUserData();
+
+    if (['Master Cabang'].includes(this.currentReport)) {
+      this.getListParam('listRegion');
+    }
   }
 
-  ngOnDestroy(): void {
-    $.fn['dataTable'].ext.search.pop();
-  }
-
-  capitalizeWords(str: string) {
-    return str
-      .split(/(?=[A-Z])/)
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  }
+  ngOnDestroy(): void {}
 
   ngAfterViewInit(): void {}
 
-
-  selectedCategory: any = null;
-
-  getObjectKeys(obj : Object) {
+  getObjectKeys(obj: Object) {
     return Object.keys(obj);
   }
 
-  onCategoryClick(category: any) {
-    this.selectedCategory = category;
+  getBack() {
+    this.router.navigate(['/reports/all']);
   }
 
-  getSortedItems() {
-    const allItems = Object.values(this.reports).flatMap((category:any) => Object.values(category));
-    return allItems.sort((a: any, b: any) => a.id - b.id);
+  getListParam(type: string, report: string = '') {
+    this.loadingState['selectedRegion'] = true;
+    this.service
+      .insert('/api/report/list-report-param', { type: type, report: report })
+      .subscribe({
+        next: (res) => {
+          const data = res.data ?? [];
+          const allVal = {
+            code: '',
+            description: 'Semua',
+          };
+          this.listRegion = [allVal, ...data];
+          this.selectedRegion = allVal;
+          this.loadingState['selectedRegion'] = false;
+        },
+        error: (error) => {
+          console.log(error);
+          this.loadingState['selectedRegion'] = false;
+        },
+      });
   }
 
-  onClickReport(report : any){
-    console.log(JSON.stringify(report));
+  onChangeList(
+    selected: any,
+    paramCode: string,
+    paramName: string,
+    targetProperty: any
+  ) {
+    this[targetProperty] = selected;
+  }
+
+  doSubmit(type: string) {
+    if (
+      this.currentReport === 'Master Cabang' &&
+      !this.selectedRegion['description']
+    ) {
+      this.g.alertWarning('Gagal!', 'Silahkan pilih Kode Region');
+    }
+
+    this.loadingState['submit'] = true;
+
+    let param = {};
+    if (this.currentReport === 'Master Cabang') {
+      param = {
+        kodeGudang: '00072',
+        kodeRegion: this.selectedRegion['code'],
+        status: this.paramStatusAktif,
+        tipeListing: this.paramTipeListing,
+      };
+    } else if (this.currentReport === 'Master Department') {
+      param = {
+        kodeRegion: this.selectedRegion['code'],
+        status: this.paramStatusAktif,
+        tipeListing: this.paramTipeListing,
+      };
+    }
+
+    param = {
+      ...param,
+      userData: this.userData,
+      isDownloadCsv: type === 'csv',
+      reportName: this.currentReport,
+      reportSlug: this.g.formatUrlSafeString(this.currentReport),
+    };
+    this.service.getFile('/api/report/report-jasper', param).subscribe({
+      next: (res) => {
+        this.loadingState['submit'] = false;
+
+        if (type === 'preview') {
+          return this.previewPdf(res);
+        } else if (type === 'csv') {
+          return this.downloadCsv(res, type);
+        } else {
+          return this.downloadPDF(res, type);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+        this.loadingState['submit'] = false;
+      },
+    });
+  }
+
+  previewPdf(res: any) {
+    var blob = new Blob([res], { type: 'application/pdf' });
+    this.downloadURL = window.URL.createObjectURL(blob);
+    window.open(this.downloadURL);
+  }
+
+  downloadPDF(res: any, reportType: string) {
+    var blob = new Blob([res], { type: 'application/pdf' });
+    this.downloadURL = window.URL.createObjectURL(blob);
+
+    if (this.downloadURL.length) {
+      var link = document.createElement('a');
+      link.href = this.downloadURL;
+      link.download = `${reportType} Report ${this.datePipe.transform(
+        this.rangeDateVal[0],
+        'dd-MMM-yyyy'
+      )} s.d. ${this.datePipe.transform(
+        this.rangeDateVal[1],
+        'dd-MMM-yyyy'
+      )}.pdf`;
+      link.click();
+      this.g.alertSuccess('Sukses', 'File sudah terunduh.');
+    } else
+      this.g.alertError('Maaf, Ada kesalahan!', 'File tidak dapat terunduh.');
+  }
+
+  downloadCsv(res: any, reportType: string) {
+    var blob = new Blob([res], { type: 'text/csv' });
+    this.downloadURL = window.URL.createObjectURL(blob);
+
+    if (this.downloadURL.length) {
+      var link = document.createElement('a');
+      link.href = this.downloadURL;
+      link.download = `${reportType} Report ${this.datePipe.transform(
+        this.rangeDateVal[0],
+        'dd-MMM-yyyy'
+      )} s.d. ${this.datePipe.transform(
+        this.rangeDateVal[1],
+        'dd-MMM-yyyy'
+      )}.csv`;
+      link.click();
+      this.g.alertSuccess('Sukses', 'File sudah terunduh.');
+    } else
+      this.g.alertError('Maaf, Ada kesalahan!', 'File tidak dapat terunduh.');
   }
 }

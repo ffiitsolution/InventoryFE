@@ -25,6 +25,7 @@ import { SelectDropDownModule } from 'ngx-select-dropdown';
 import { SetupSoDetailComponent } from './1-setup-so/detail/detail.component';
 import { SetupSoComponent } from './1-setup-so/setup-so.component';
 import { StockOpnameRoutingModule } from './stock-opname-routing.module';
+import { StockSoAddComponent } from './1-setup-so/add/add.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -53,6 +54,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   declarations: [
     SetupSoComponent,
     SetupSoDetailComponent,
+    StockSoAddComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })
