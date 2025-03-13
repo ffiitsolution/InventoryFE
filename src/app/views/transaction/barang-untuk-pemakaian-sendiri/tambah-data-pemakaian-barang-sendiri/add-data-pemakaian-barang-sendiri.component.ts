@@ -48,79 +48,78 @@ export class AddDataPemakaianBarangSendiriComponent implements OnInit, AfterView
     tglTransaksi: ''
   };
 
-  constructor(
-    private router: Router,
-    private dataService: DataService,
-    private globalService: GlobalService,
-    private translationService: TranslationService,
-    private deliveryDataService: DeliveryDataService,
-    private appService: AppService
-  ) {
-    this.dpConfig.containerClass = 'theme-dark-blue';
-    this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
-    this.dpConfig.adaptivePosition = true;
-  }
-
-
-  ngOnInit(): void {
-    this.bsConfig = Object.assign(
-      {},
-      {
-        containerClass: 'theme-default',
-        rangeInputFormat: 'dd/MMm/yyyy',
+    constructor(
+        private router: Router,
+        private dataService: DataService,
+        private globalService: GlobalService,
+        private translationService: TranslationService,
+        private deliveryDataService: DeliveryDataService,
+        private appService: AppService
+      ) {
+        this.dpConfig.containerClass = 'theme-red';
+        this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
+        this.dpConfig.adaptivePosition = true;
       }
-    );
-    const today = new Date().toISOString().split('T')[0];
-    this.minDate = new Date(today);
-  }
-
-  onAddDetail() {
-    this.formData.tglTransaksi = moment(this.formData.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-
-    this.globalService.saveLocalstorage(
-      'addpemakaianbarangsendiri',
-      JSON.stringify(this.formData)
-
-    );
-    this.isShowDetail = true;
-  }
-
-  get isFormInvalid(): boolean {
-    return Object.values(this.formData).some(value => value === '');
-  }
-
-  ngAfterViewInit(): void {
-    this.dtTrigger.next(null);
-  }
-
-  ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
-    this.globalService.removeLocalstorage(
-      'addpemakaianbarangsendiri',
-    );
-  }
-
-
-  onPreviousPressed(): void {
-    this.router.navigate(['/transaction/delivery-item']);
-  }
-
-  onShowModal() {
-    this.isShowModal = true;
-  }
-
-
-}
-@Injectable({
-  providedIn: 'root',
-})
-export class DeliveryDataService {
-  constructor(private http: HttpClient) { }
-
-  saveDeliveryData(data: any): Observable<any> {
-    const apiUrl = 'http://localhost:8093/inventory/api/delivery-order/status-descriptions';
-    return this.http.post<any>(apiUrl, data);
-  }
-}
-
+    
+    
+      ngOnInit(): void {
+        this.bsConfig = Object.assign(
+          {},
+          {
+            containerClass: 'theme-default',
+            rangeInputFormat: 'dd/MMm/yyyy',
+          }
+        );
+        const today = new Date().toISOString().split('T')[0];
+        this.minDate = new Date(today);
+      }
+    
+      onAddDetail() {
+        this.formData.tglTransaksi = moment(this.formData.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
+    
+        this.globalService.saveLocalstorage(
+          'headerWastage',
+          JSON.stringify(this.formData)
+    
+        );
+        this.isShowDetail = true;
+      }
+    
+      get isFormInvalid(): boolean {
+        return Object.values(this.formData).some(value => value === '');
+      }
+    
+      ngAfterViewInit(): void {
+        this.dtTrigger.next(null);
+      }
+    
+      ngOnDestroy(): void {
+        this.dtTrigger.unsubscribe();
+        this.globalService.removeLocalstorage(
+          'headerWastage',
+        );
+      }
+    
+    
+      onPreviousPressed(): void {
+        this.router.navigate(['/transaction/delivery-item']);
+      }
+    
+      onShowModal() {
+        this.isShowModal = true;
+      }
+    
+    
+    }
+    @Injectable({
+      providedIn: 'root',
+    })
+    export class DeliveryDataService {
+      constructor(private http: HttpClient) { }
+    
+      saveDeliveryData(data: any): Observable<any> {
+        const apiUrl = 'http://localhost:8093/inventory/api/delivery-order/status-descriptions';
+        return this.http.post<any>(apiUrl, data);
+      }
+    }
 
