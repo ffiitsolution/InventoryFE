@@ -87,7 +87,6 @@ export class DetailSendOrderToWarehouseComponent
   }
 
   ngOnInit(): void {
-    console.log("newOrhdk",this.newOrhdk)
     this.g.changeTitle(
       this.translation.instant('Detail Pesanan') + ' - ' + this.g.tabTitle
     );
@@ -101,7 +100,6 @@ export class DetailSendOrderToWarehouseComponent
     this.renderDataTables();
 
     this.detailDataSendToWarehouse = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_SEND_TO_WAREHOUSE_ORDER));
-    console.log("detailDataSendToWarehouse",this.detailDataSendToWarehouse);
 
     const params = {
       nomorPesanan: this.detailDataSendToWarehouse?.nomorPesanan
@@ -128,7 +126,6 @@ export class DetailSendOrderToWarehouseComponent
     // this.dataService
     // .getData(this.g.urlServer + '/api/send-order-to-warehouse/detail-header')
     // .subscribe((resp: any) => {
-    //   console.log("resp2",resp);
     // });
 
 
@@ -194,21 +191,16 @@ export class DetailSendOrderToWarehouseComponent
   }
 
   onSubmit() {
-    console.log(this.listOrderData);
 
     // param for order Header
     const paramHeader = this.newOrhdk;
-    
-    console.log("paramHeader:", paramHeader);
-
+  
 
     this.service.insert('/api/send-order-to-warehouse/insert-header', paramHeader).subscribe({
       next: (res) => {
         if (!res.success) {
           alert(res.message);
         } else {
-          console.log("res header:", res); 
-          console.log("res item:", res.item?.[0]?.nomorPesanan ?? "Not found");
           this.newOrhdk.nomorPesanan =  res.item?.[0]?.nomorPesanan ;
 
           this.insertDetail()
@@ -351,7 +343,6 @@ export class DetailSendOrderToWarehouseComponent
   }
   actionBtnClick(action: string, data: any = null) {
     this.selectedRow = (data);
-    console.log("this.selectedRow:", this.selectedRow);
     this.renderDataTables();
     this.isShowModal = false;
     this.listOrderData.push({
@@ -398,7 +389,6 @@ export class DetailSendOrderToWarehouseComponent
       if (!res.success) {
         alert(res.message);
       } else {
-        console.log("res detail:", res); 
         
         this.toastr.success('Berhasil!');
         // setTimeout(() => {
@@ -411,7 +401,6 @@ export class DetailSendOrderToWarehouseComponent
   });
   
 
-  console.log("Mapped paramDetail:", paramDetail);
 
   }
 

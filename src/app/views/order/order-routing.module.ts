@@ -7,6 +7,12 @@ import {
   ReceivingOrderAddDetailFormComponent,
 } from './receiving-order';
 import {
+  ReceivingPoSupplierComponent,
+  ReceivingPoSupplierDetailComponent,
+  ReceivingPoSupplierAddFormComponent,
+  ReceivingPoSupplierAddDetailFormComponent,
+} from './receiving-po-supplier';
+import {
   SendOrderToWarehouseComponent,
   SendOrderToWarehouseAddComponent,
   AddDataDetailSendOrderToWarehouseComponent,
@@ -65,6 +71,24 @@ const routes: Routes = [
         path: 'send-order-to-supplier-via-rsc/detail',
         component: DetailSendOrderToSupplierComponent,
       },      
+      {
+        path: 'receiving-po-supplier',
+        component: ReceivingPoSupplierComponent,
+      },
+      {
+        path: 'receiving-po-supplier/add',
+        component: ReceivingPoSupplierAddFormComponent,
+      },
+      {
+        path: 'receiving-po-supplierr/add/detail',
+        component: ReceivingPoSupplierAddFormComponent,
+      },
+      {
+        path: 'receiving-po-supplier/detail',
+        component: ReceivingPoSupplierDetailComponent,
+      },
+
+
     ],
   },
 ];

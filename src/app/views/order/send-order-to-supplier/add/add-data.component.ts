@@ -116,7 +116,6 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
     .subscribe((resp: any) => {
       this.newNomorPesanan = resp;
       this.myForm.get('newNomorPesanan')?.setValue(this.newNomorPesanan.newNomorPesanan);
-      console.log("this.newNomorPesanan",this.newNomorPesanan.newNomorPesanan);
     });
 
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
@@ -162,6 +161,14 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
       };
 
       this.g.saveLocalstorage('TEMP_ORDHDK', param);
+
+      const tglkirimbrg =  moment(controls?.['tanggalKirimBarang']?.value).format("DD/MM/YYYY");
+      this.myForm.controls['tanggalKirimBarang'].setValue("00/00/0000");
+      this.myForm.controls['tanggalKirimBarang'].setValue(tglkirimbrg);
+      const tglbatalpsnn =  moment(controls?.['tanggalBatalPesanan']?.value).format("DD/MM/YYYY");
+      this.myForm.controls['tanggalBatalPesanan'].setValue("00/00/0000");
+      this.myForm.controls['tanggalBatalPesanan'].setValue(tglbatalpsnn);
+      
 
       setTimeout(() => {
         this.isShowDetail = true;
@@ -217,8 +224,9 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
         ?/^[a-zA-Z0-9 .,_@-]*$/
         : type =='kodeSingkat'
         ? /^[a-zA-Z]+$/
-        :/^[a-zA-Z.() ,\-]*$/;
-        
+        : type =='tanggal'
+        ? /^[0-9\/]+$/
+        : /^[a-zA-Z.() ,\-]*$/;        
     if (temp_regex.test(inp)) return true;
     else {
       event.preventDefault();
@@ -229,7 +237,6 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
 
 
   onRSCTujuanChange(selectedValue: any) {
-    console.log("this RSCTujuan",this.myForm.value.RSCTujuan)
     this.getGudangDetail(selectedValue?.value?.id);
   }
 
@@ -256,7 +263,6 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
 
   onDateChangeTglKirimBarang(event: Date): void {
     this.dpConfigTglBatalPesanan.minDate = event; //update the batal pesanan mindate to tanggal kirim barang
-    console.log('Selected Date:', event);
   }
 
   compareDates(date1: any, date2: any): boolean {

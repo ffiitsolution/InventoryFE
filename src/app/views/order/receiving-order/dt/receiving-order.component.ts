@@ -84,7 +84,6 @@ export class ReceivingOrderComponent
             .subscribe((resp: any) => {
               const mappedData = resp.data.map((item: any, index: number) => {
                 // hapus rn
-                console.log(item);
                 const { rn, ...rest } = item;
                 const finalData = {
                   ...rest,

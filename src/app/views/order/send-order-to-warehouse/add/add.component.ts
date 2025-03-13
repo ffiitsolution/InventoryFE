@@ -136,46 +136,57 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   
 
     onSubmit(): void {
-    this.isShowModalBuatPesanan = false;
-    const currentUser = this.g.getLocalstorage('inv_currentUser');
+      this.isShowModalBuatPesanan = false;
+      const currentUser = this.g.getLocalstorage('inv_currentUser');
 
-    const { controls, invalid } = this.myForm;
-
-
-    if (invalid || (this.compareDates(this.myForm.value.tanggalKirimBarang, this.myForm.value.tanggalBatalPesanan)) || (currentUser?.defaultLocation?.kodeLocation === this.myForm.value?.gudangTujuan?.id) ||(this.compareDates(this.  myForm?.controls?.['tanggalPesanan']?.value, this.myForm.value.tanggalKirimBarang)) ) {
-      this.g.markAllAsTouched(this.myForm);
-
-      this.toastr.error("Form tidak valid");
+      const { controls, invalid } = this.myForm;
 
 
-    } else {
-      this.adding = true;
-      const param = {
-      kodeGudang:   currentUser?.defaultLocation?.kodeLocation,
-      kodeSingkat:   controls?.['kodeSingkat']?.value,
-      supplier:  controls?.['gudangTujuan']?.value?.id,
-      namaSupplier:  controls?.['gudangTujuan']?.value?.name,
-      tanggalPesanan:  moment(  controls?.['tanggalPesanan']?.value).format("DD-MM-YYYY"),
-      tanggalKirimBarang:  moment(  controls?.['tanggalKirimBarang']?.value).format("DD-MM-YYYY"),
-      tanggalBatalEXP: moment(  controls?.['tanggalBatalPesanan']?.value).format("DD-MM-YYYY"),
-      keteranganSatu: controls?.['catatan1']?.value,
-      keteranganDua: controls?.['catatan2']?.value,
-    };
+      if (invalid || (this.compareDates(this.myForm.value.tanggalKirimBarang, this.myForm.value.tanggalBatalPesanan)) || (currentUser?.defaultLocation?.kodeLocation === this.myForm.value?.gudangTujuan?.id) ||(this.compareDates(this.  myForm?.controls?.['tanggalPesanan']?.value, this.myForm.value.tanggalKirimBarang)) ) {
+        this.g.markAllAsTouched(this.myForm);
 
-    this.g.saveLocalstorage('TEMP_ORDHDK', param);
+        this.toastr.error("Form tidak valid");
 
-    setTimeout(() => {
-    this.isShowDetail = true;
-    this.myForm.get('catatan1')?.disable();
-    this.myForm.get('catatan2')?.disable();
-    this.myForm.get('gudangTujuan')?.disable();
-    this.myForm.get('tanggalKirimBarang')?.disable();
-    this.myForm.get('tanggalBatalPesanan')?.disable();
 
-      // this.onNextPressed();
-    }, DEFAULT_DELAY_TIME);
-    }
-    this.adding = false;
+      } else {
+        this.adding = true;
+        const param = {
+          kodeGudang:   currentUser?.defaultLocation?.kodeLocation,
+          kodeSingkat:   controls?.['kodeSingkat']?.value,
+          supplier:  controls?.['gudangTujuan']?.value?.id,
+          namaSupplier:  controls?.['gudangTujuan']?.value?.name,
+          tanggalPesanan:  moment(  controls?.['tanggalPesanan']?.value).format("DD-MM-YYYY"),
+          tanggalKirimBarang:  moment(  controls?.['tanggalKirimBarang']?.value).format("DD-MM-YYYY"),
+          tanggalBatalEXP: moment(  controls?.['tanggalBatalPesanan']?.value).format("DD-MM-YYYY"),
+          keteranganSatu: controls?.['catatan1']?.value,
+          keteranganDua: controls?.['catatan2']?.value,
+        };
+
+        this.g.saveLocalstorage('TEMP_ORDHDK', param);
+
+
+        const tglkirimbrg =  moment(controls?.['tanggalKirimBarang']?.value).format("DD/MM/YYYY");
+        this.myForm.controls['tanggalKirimBarang'].setValue("00/00/0000");
+        this.myForm.controls['tanggalKirimBarang'].setValue(tglkirimbrg);
+        const tglbatalpsnn =  moment(controls?.['tanggalBatalPesanan']?.value).format("DD/MM/YYYY");
+        this.myForm.controls['tanggalBatalPesanan'].setValue("00/00/0000");
+        this.myForm.controls['tanggalBatalPesanan'].setValue(tglbatalpsnn);
+        
+
+
+
+        setTimeout(() => {
+        this.isShowDetail = true;
+        this.myForm.get('catatan1')?.disable();
+        this.myForm.get('catatan2')?.disable();
+        this.myForm.get('gudangTujuan')?.disable();
+        this.myForm.get('tanggalKirimBarang')?.disable();
+        this.myForm.get('tanggalBatalPesanan')?.disable();
+
+          // this.onNextPressed();
+        }, DEFAULT_DELAY_TIME);
+      }
+      this.adding = false;
 
     }
 
@@ -208,7 +219,7 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
          type == 'alphanumeric'
         ? /^[a-zA-Z0-9]$/
         : type == 'numeric'
-        ? /^[0-9]$/
+        ? /^[0-9]$/ 
         : type == 'phone'
         ? /^[0-9-]$/
         : type =='email'
@@ -217,7 +228,9 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
         ?/^[a-zA-Z0-9 .,_@-]*$/
         : type =='kodeSingkat'
         ? /^[a-zA-Z]+$/
-        :/^[a-zA-Z.() ,\-]*$/;
+        : type =='tanggal'
+        ? /^[0-9\/]+$/
+        : /^[a-zA-Z.() ,\-]*$/;
         
     if (temp_regex.test(inp)) return true;
     else {
@@ -272,5 +285,17 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   onShowModalBuatPesanan() {
     this.isShowModalBuatPesanan= true;
   }
-
+  // validateDateTglKirimBarang(event: any) {
+  //   const inputValue = event.target.value;
+  
+  //   // Regular expression to match DD/MM/YYYY format
+  //   const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+  
+  //   // Check if input matches the date format
+  //   if (!dateRegex.test(inputValue)) {
+  //     this.myForm.get('tanggalKirimBarang')?.setValue(this.myForm.get('tanggalKirimBarang')?.get('tanggalKirimBarang'));
+  //   }
+  // }
+  
+  
 }

@@ -1,43 +1,50 @@
 import {
-  Component,
   AfterViewInit,
+  Component,
   OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { Router } from '@angular/router';
-import { Page } from 'src/app/model/page';
-import { DataService } from 'src/app/service/data.service';
-import { GlobalService } from 'src/app/service/global.service';
 import { TranslationService } from 'src/app/service/translation.service';
 import {
   ACTION_VIEW,
+  CANCEL_STATUS,
   DEFAULT_DATE_RANGE_RECEIVING_ORDER,
   DEFAULT_DELAY_TABLE,
   LS_INV_SELECTED_RECEIVING_ORDER,
-} from 'src/constants';
-import { AppConfig } from 'src/app/config/app.config';
-import { Subject } from 'rxjs';
+} from '../../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
+import { Subject } from 'rxjs';
+import { Page } from 'src/app/model/page';
+import { DataService } from 'src/app/service/data.service';
+import { GlobalService } from 'src/app/service/global.service';
+import { Router } from '@angular/router';
+import { AppConfig } from 'src/app/config/app.config';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 
 @Component({
-  selector: 'receving-order-add-form',
-  templateUrl: './add-form.component.html',
-  styleUrl: './add-form.component.scss',
+  selector: 'app-receiving-order',
+  templateUrl: './receiving-order.component.html',
+  styleUrl: './receiving-order.component.scss',
 })
-export class ReceivingOrderAddFormComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
-  @ViewChild(DataTableDirective, { static: false }) datatableElement:
-    | DataTableDirective
-    | undefined;
-
-  protected config = AppConfig.settings.apiServer;
+export class ReceivingPoSupplierComponent
+  implements OnInit, OnDestroy, AfterViewInit {
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
 
-  dtOptions: DataTables.Settings = {};
   page = new Page();
+  columns: any;
+  data: any;
+  orders: any[] = [];
+  dtColumns: any = [];
+  adding: boolean = false;
+  loadingIndicator: boolean = false;
+  showFilterSection: boolean = false;
+  searchTriggered: boolean = false;
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject();
+  @ViewChild(DataTableDirective, { static: false })
+  datatableElement: DataTableDirective | undefined;
+  buttonCaptionView: String = 'Lihat';
   currentDate: Date = new Date();
   startDateFilter: Date = new Date(
     this.currentDate.setDate(
@@ -45,27 +52,23 @@ export class ReceivingOrderAddFormComponent
     )
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
-  dtColumns: any = [];
-  buttonCaptionView: string = 'Lihat';
-  dtTrigger: Subject<any> = new Subject();
-  showFilterSection: boolean = false;
+  selectedRowData: any;
+  protected config = AppConfig.settings.apiServer;
 
   constructor(
     private dataService: DataService,
     private g: GlobalService,
-    public translation: TranslationService,
+    private translation: TranslationService,
     private router: Router
   ) {
     this.dtOptions = {
       language:
-        this.translation.getCurrentLanguage() == 'id'
-          ? this.translation.idDatatable
-          : {},
+        translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
       processing: true,
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: () => {},
+      drawCallback: () => { },
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
@@ -77,10 +80,7 @@ export class ReceivingOrderAddFormComponent
         };
         setTimeout(() => {
           this.dataService
-            .postData(
-              this.config.BASE_URL_HQ + '/api/receiving-order/get-from-hq/dt',
-              params
-            )
+            .postData(this.config.BASE_URL + '/api/receiving-order/dt', params)
             .subscribe((resp: any) => {
               const mappedData = resp.data.map((item: any, index: number) => {
                 // hapus rn
@@ -89,15 +89,11 @@ export class ReceivingOrderAddFormComponent
                   ...rest,
                   dtIndex: this.page.start + index + 1,
                   kodePemesan: `(${rest.kodePemesan}) ${rest.namaPemesan}`,
-                  tglPesan: this.g.transformDateTime(
-                    rest.tglPesan,
-                    rest.jamProsesPemesan
-                  ),
-                  tglBrgDikirim: this.g.transformDateTime(
-                    rest.tglBrgDikirim,
-                    rest.jamProsesPengirim
-                  ),
-                  tglBatasExp: this.g.transformDate(rest.tglBatasExp),
+                  tglPesan: this.g.transformDate(rest.tglPesan),
+                  tglBrgDikirim: this.g.transformDate(rest.tglBrgDikirim),
+                  tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
+                  dateCreate: this.g.transformDate(rest.dateCreate),
+                  timeCreate: this.g.transformTime(rest.timeCreate),
                 };
                 return finalData;
               });
@@ -110,13 +106,13 @@ export class ReceivingOrderAddFormComponent
                 data: mappedData,
               });
             });
-        }, DEFAULT_DELAY_TABLE);
+        },);
       },
       columns: [
         { data: 'dtIndex', title: '#' },
         { data: 'tglPesan', title: 'Tanggal Pesan' },
         { data: 'tglBrgDikirim', title: 'Tanggal Kirim' },
-        { data: 'tglBatasExp', title: 'Tanggal Kedaluwarsa' },
+        { data: 'tglKadaluarsa', title: 'Tanggal Kedaluwarsa' },
         { data: 'nomorPesanan', title: 'Nomor Pesanan', searchable: true },
         {
           data: 'kodePemesan',
@@ -125,9 +121,27 @@ export class ReceivingOrderAddFormComponent
           searchable: true,
         },
         {
+          data: 'tipeData',
+          title: 'Tipe Pesanan',
+          render: (data) => this.g.getStatusOrderLabel(data),
+        },
+        {
           data: 'statusPesanan',
           title: 'Status Pesanan',
-          render: (data) => this.g.getStatusOrderLabel(data),
+          searchable: true,
+          render: (data) => {
+            const isCancel = data == CANCEL_STATUS;
+            const label = this.g.getStatusOrderLabel(data);
+            if (isCancel) {
+              return `<span class="text-center text-danger">${label}</span>`;
+            }
+            return label;
+          },
+        },
+        {
+          data: 'statusCetak',
+          title: 'Status Cetak',
+          render: (data) => this.g.getStatusOrderLabel(data, true),
         },
         {
           title: 'Opsi',
@@ -138,13 +152,21 @@ export class ReceivingOrderAddFormComponent
       ],
       searchDelay: 1000,
       order: [
-        [2, 'asc'],
         [4, 'asc'],
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
         );
+        $('td', row).on('click', () => {
+          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
         return row;
       },
     };
@@ -152,21 +174,23 @@ export class ReceivingOrderAddFormComponent
   }
 
   ngOnInit(): void {
+    this.g.changeTitle(
+      this.translation.instant('Terima Pesanan') + ' - ' + this.g.tabTitle
+    );
     this.buttonCaptionView = this.translation.instant('Lihat');
+    localStorage.removeItem(LS_INV_SELECTED_RECEIVING_ORDER);
   }
 
   actionBtnClick(action: string, data: any = null) {
-    if (action == ACTION_VIEW) {
-      this.g.saveLocalstorage(LS_INV_SELECTED_RECEIVING_ORDER, data);
-      this.router.navigate(['/order/receiving-order/add/detail']);
+    if (action === ACTION_VIEW) {
+      this.g.saveLocalstorage(
+        LS_INV_SELECTED_RECEIVING_ORDER,
+        JSON.stringify(data)
+      );
+      this.router.navigate(['/order/receiving-order/detail']);
     }
   }
-
-  ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
-    $.fn['dataTable'].ext.search.pop();
-  }
-  dtPageChange(event: any) {}
+  dtPageChange(event: any) { }
 
   ngAfterViewInit(): void {
     this.rerenderDatatable();
@@ -179,18 +203,22 @@ export class ReceivingOrderAddFormComponent
       }
     });
   }
-  onFilterApplied() {
+
+  ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
+    $.fn['dataTable'].ext.search.pop();
+  }
+
+  onFilterPressed() {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
     });
   }
-  onPreviousPressed() {
-    this.router.navigate(['/order/receiving-order']);
-  }
-  onFilterTogglePressed() {
+
+  toggleFilter() {
     this.showFilterSection = !this.showFilterSection;
   }
-  AfterViewInit() {
-    this.rerenderDatatable();
+  onAddPressed() {
+    this.router.navigate(['/order/receiving-order/add']);
   }
 }

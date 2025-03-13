@@ -26,7 +26,7 @@ import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
   templateUrl: './add-form.component.html',
   styleUrl: './add-form.component.scss',
 })
-export class ReceivingOrderAddFormComponent
+export class ReceivingPoSupplierAddFormComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
   @ViewChild(DataTableDirective, { static: false }) datatableElement:
