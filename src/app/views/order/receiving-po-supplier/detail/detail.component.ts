@@ -349,10 +349,10 @@ export class ReceivingPoSupplierDetailComponent
         if (!res.success) {
           alert(res.message);
         } else {
+          console.log("finish statuscetak");
           this.toastr.success(this.translation.instant('Berhasil!'));
-          setTimeout(() => {
-            window.location.reload();
-          }, DEFAULT_DELAY_TIME);
+          this.refreshDetail();
+    
         }
       },
       error: (err: any) => {
@@ -360,7 +360,53 @@ export class ReceivingPoSupplierDetailComponent
         alert('An error occurred while updating the user.');
       },    
     });
+
+
   }
+
+  refreshDetail(){
+    this.dataService
+    .postData(this.g.urlServer + '/api/receiving-po-supplier/detail-header',{"nomorPesanan": this.selectedOrder.nomorPesanan})
+    .subscribe({
+      next: (res: any) => {
+        console.log("res0",res)
+        if (!(res && res.length > 0)){
+          alert(res.message);
+        } else {
+            console.log("res",res[0])
+            this.g.saveLocalstorage(
+              LS_INV_SELECTED_RECEIVING_ORDER,
+              JSON.stringify(this.convertKeysToCamelCase(res[0]))
+            );
+            setTimeout(() => {
+              window.location.reload();
+            }, DEFAULT_DELAY_TIME);
+      
+          }  
+      },
+      error: (err: any) => {
+        console.error('Error updating user:', err);
+        alert('An error occurred while updating the user.');
+      },    
+    });
+  }
+
+
+  convertKeysToCamelCase(obj: any): any {
+    const newObj: any = {};
+  
+    Object.keys(obj).forEach(key => {
+      // Convert UPPERCASE_UNDERSCORE to camelCase
+      const camelCaseKey = key
+        .toLowerCase()
+        .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
+  
+      newObj[camelCaseKey] = obj[key]; // Assign value to new key
+    });
+  
+    return newObj;
+  }
+  
 
   downloadPDF() {
     var link = document.createElement('a');
