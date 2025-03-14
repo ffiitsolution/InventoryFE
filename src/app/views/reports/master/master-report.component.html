@@ -49,7 +49,34 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="['Master Cabang'].includes(currentReport)">
+    <ng-container *ngIf="['Master Department'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Kode RSC
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <ng-container *ngIf="loadingState['selectedRsc']">
+            <div class="loading-input">
+              <i class="fa fa-spinner fa-spin"></i>
+              <span>Loading...</span>
+            </div>
+          </ng-container>
+          <ngx-select-dropdown *ngIf="!loadingState['selectedRsc']" [multiple]="false" [config]="configRsc"
+            [options]="listRsc" [(ngModel)]="selectedRsc" style="width: 100%" (change)="
+      onChangeList(
+        $event.value,
+        'code',
+        'description',
+        'selectedRegion'
+      )
+    ">
+          </ngx-select-dropdown>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="['Master Cabang','Master Department'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Status Aktif
@@ -73,7 +100,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="['Master Cabang'].includes(currentReport)">
+    <ng-container *ngIf="['Master Cabang','Master Department'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Tipe Listing
