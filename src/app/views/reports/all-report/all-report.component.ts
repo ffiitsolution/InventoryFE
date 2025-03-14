@@ -30,10 +30,12 @@ export class AllReportComponent implements OnInit, OnDestroy, AfterViewInit {
   data: any;
   loadingIndicator = true;
   selectedRowData: any;
+  verticalItemCount: number = 6;
+  reportCategoryData: any;
 
   constructor(
     private dataService: DataService,
-    private g: GlobalService,
+    public g: GlobalService,
     private translation: TranslationService,
     private router: Router
   ) {}
@@ -46,7 +48,10 @@ export class AllReportComponent implements OnInit, OnDestroy, AfterViewInit {
         ' - ' +
         this.g.tabTitle
     );
-    this.selectedCategory = this.getObjectKeys(reports)[0];
+    if (!this.g.selectedReportCategory) {
+      this.g.selectedReportCategory = this.getObjectKeys(reports)[0];
+    }
+    this.getGroupedReports();
   }
 
   ngOnDestroy(): void {
@@ -62,33 +67,33 @@ export class AllReportComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {}
 
-
-  selectedCategory: any = null;
-
-  getObjectKeys(obj : Object) {
+  getObjectKeys(obj: Object) {
     return Object.keys(obj);
   }
 
   onCategoryClick(category: any) {
-    this.selectedCategory = category;
+    this.g.selectedReportCategory = category;
+    this.getGroupedReports();
   }
 
   getSortedItems() {
-    const allItems = Object.values(reports).flatMap((category:any) => Object.values(category));
+    const allItems = Object.values(reports).flatMap((category: any) =>
+      Object.values(category)
+    );
     return allItems.sort((a: any, b: any) => a.id - b.id);
   }
 
-  onClickReport(report : any){
-    this.router.navigate([report.path],
-      {
-        queryParams: {report: report.name},
-        skipLocationChange: true
-      });
+  onClickReport(report: any) {
+    this.router.navigate([report.path], {
+      queryParams: { report: report.name },
+      skipLocationChange: true,
+    });
   }
-  verticalItemCount: number = 6;
 
-  getGroupedReports(): any[] {
-    const reportsArray: any[] = this.getObjectKeys(reports[this.selectedCategory]);
+  getGroupedReports() {
+    const reportsArray: any[] = this.getObjectKeys(
+      reports[this.g.selectedReportCategory]
+    );
     const chunkedReports: any[][] = [];
 
     for (let i = 0; i < reportsArray.length; i += this.verticalItemCount) {
@@ -102,6 +107,6 @@ export class AllReportComponent implements OnInit, OnDestroy, AfterViewInit {
       lastChunk.push(null);
     }
 
-    return chunkedReports;
+    this.reportCategoryData = chunkedReports;
   }
 }

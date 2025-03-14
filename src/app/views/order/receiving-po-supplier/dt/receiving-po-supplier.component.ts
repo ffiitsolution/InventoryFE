@@ -23,9 +23,9 @@ import { AppConfig } from 'src/app/config/app.config';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 
 @Component({
-  selector: 'app-receiving-order',
-  templateUrl: './receiving-order.component.html',
-  styleUrl: './receiving-order.component.scss',
+  selector: 'app-receiving-po-supplier',
+  templateUrl: './receiving-po-supplier.component.html',
+  styleUrl: './receiving-po-supplier.component.scss',
 })
 export class ReceivingPoSupplierComponent
   implements OnInit, OnDestroy, AfterViewInit {
@@ -74,13 +74,13 @@ export class ReceivingPoSupplierComponent
         this.page.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
-          kodeTujuan: this.g.getUserLocationCode(),
+          kodeGudang: this.g.getUserLocationCode(),
           startDate: this.g.transformDate(this.dateRangeFilter[0]),
           endDate: this.g.transformDate(this.dateRangeFilter[1]),
         };
         setTimeout(() => {
-          this.dataService
-            .postData(this.config.BASE_URL + '/api/receiving-order/dt', params)
+          this.dataService  
+            .postData(this.config.BASE_URL + '/api/receiving-po-supplier/dt', params)
             .subscribe((resp: any) => {
               const mappedData = resp.data.map((item: any, index: number) => {
                 // hapus rn
@@ -110,24 +110,22 @@ export class ReceivingPoSupplierComponent
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'tglPesan', title: 'Tanggal Pesan' },
-        { data: 'tglBrgDikirim', title: 'Tanggal Kirim' },
-        { data: 'tglKadaluarsa', title: 'Tanggal Kedaluwarsa' },
-        { data: 'nomorPesanan', title: 'Nomor Pesanan', searchable: true },
+        { data: 'tglPesanan', title: 'Tanggal P.O' },
+        { data: 'tglKirimBrg', title: 'Tanggal Kirim' },
+        { data: 'tglBatalExp', title: 'Tanggal Batal' },
+        { data: 'nomorPesanan', title: 'Nomor P.O', searchable: true },
         {
-          data: 'kodePemesan',
-          title: 'Nama Pemesan',
+          data: 'supplier',
+          title: 'Nama Supplier',
           orderable: true,
           searchable: true,
-        },
-        {
-          data: 'tipeData',
-          title: 'Tipe Pesanan',
-          render: (data) => this.g.getStatusOrderLabel(data),
+          render: function (data, type, row) {
+            return data +"-"+row.namaSupplier
+          },
         },
         {
           data: 'statusPesanan',
-          title: 'Status Pesanan',
+          title: 'Status P.O',
           searchable: true,
           render: (data) => {
             const isCancel = data == CANCEL_STATUS;
@@ -187,7 +185,7 @@ export class ReceivingPoSupplierComponent
         LS_INV_SELECTED_RECEIVING_ORDER,
         JSON.stringify(data)
       );
-      this.router.navigate(['/order/receiving-order/detail']);
+      this.router.navigate(['/order/receiving-po-supplier/detail']);
     }
   }
   dtPageChange(event: any) { }

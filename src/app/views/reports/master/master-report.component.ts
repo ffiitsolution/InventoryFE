@@ -5,14 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import {
-  ACTION_ADD,
-  ACTION_EDIT,
-  ACTION_VIEW,
-  LS_INV_SELECTED_UOM,
-} from '../../../../constants';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Page } from '../../../model/page';
 import { GlobalService } from '../../../service/global.service';
 import { TranslationService } from '../../../service/translation.service';
 import {
@@ -20,7 +13,7 @@ import {
   UntypedFormControl,
   UntypedFormGroup,
 } from '@angular/forms';
-import { AppService } from 'src/app/service/app.service';
+import { AppService } from '../../../service/app.service';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -143,16 +136,6 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     targetProperty: any
   ) {
     this[targetProperty] = selected;
-    // if (this[targetProperty].length < 1) {
-    //   this[targetProperty] = {
-    //     [paramCode]: paramName == 'outletName' ? 'ALL' : 'Semua',
-    //     [paramName]: paramName == 'outletName' ? 'All' : 'Semua',
-    //   };
-    // } else if (selected instanceof Array) {
-    //   this[targetProperty] = selected?.filter(
-    //     (item: any) => item[paramName] != 'Semua'
-    //   );
-    // }
   }
 
   doSubmit(type: string) {
