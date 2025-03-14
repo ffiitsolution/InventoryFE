@@ -1,0 +1,85 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <h5>{{ "Tambah" | translate }} {{ "Stock Opname" | translate }}</h5>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body class="mt-3">
+      <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+        <div class="container">
+          <div class="row">
+            <!-- left column -->
+            <div class="col-md-6">
+              <div class="mb-3 row">
+                <label class="col-sm-4 col-form-label">{{
+                  "Tahun" | translate
+                  }}</label>
+                <div class="col-sm-8">
+                  <ngx-select-dropdown [multiple]="false" [config]="configSelectTahun" [options]="listTahun"
+                    (change)="onChangeSelect($event,'tahun')" formControlName="tahun" id="tahun">
+                  </ngx-select-dropdown>
+                </div>
+              </div>
+            </div>
+            <!-- right column -->
+            <div class="col-md-6">
+              <div class="mb-3 row">
+                <label class="col-sm-4 col-form-label">{{
+                  "Bulan" | translate
+                  }}</label>
+                <div class="col-sm-8">
+                  <ngx-select-dropdown [multiple]="false" [config]="configSelectBulan" [options]="listBulan"
+                    (change)="onChangeSelect($event,'bulan')" formControlName="bulan" id="bulan">
+                  </ngx-select-dropdown>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <!-- alamat kota kode pos telp fax -->
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6">
+              <!-- left column -->
+              <div class="mb-3 row">
+                <label class="col-sm-4 col-form-label">{{
+                  "Tanggal S.O" | translate
+                  }}</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" formControlName="tanggalSo"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <!-- right column -->
+              <div class="mb-3 row">
+                <label class="col-sm-4 col-form-label">{{
+                  "No Form S.O" | translate
+                  }}</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" formControlName="noSo"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="divider"></div>
+
+        <div class="d-grid gap-3 d-md-flex justify-content-end">
+          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+            {{ "Kembali" | translate }}
+          </button>
+          <button class="btn btn-info text-white btn-150" type="submit" [disabled]="adding">
+            <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
+            <span *ngIf="!adding">{{ "Tambah" | translate }}</span>
+          </button>
+        </div>
+      </form>
+    </c-card-body>
+  </c-card>
+</div>

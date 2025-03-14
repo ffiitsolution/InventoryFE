@@ -3,7 +3,7 @@
     <c-card-body>
       <div class="row">
         <div class="col">
-          <h5>{{ "Display Data Dari Gudang" | translate }}</h5>
+          <h5>{{ "Pemakaian Barang Sendiri" | translate }}</h5>
         </div>
         <div class="col text-end">
           <button
@@ -14,6 +14,16 @@
             <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
             {{ "Filter" | translate }}
           </button>
+          <button
+            type="button"
+            class="btn btn-success text-white me-2 btn-240"
+            data-toggle="modal"
+            (click)="onAddPressed()"
+          >
+            <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
+            {{ "Tambah Data" | translate }}
+          </button>
+          <!-- <button class="btn btn-primary" (click)="cetakJesper()">Cetak</button> -->
         </div>
       </div>
       <div [visible]="showFilterSection" cCollapse>
@@ -23,7 +33,7 @@
             <c-row>
               <c-col>
                 <label class="col-form-label">{{
-                  "Tanggal Terima" | translate
+                  "Tanggal Pemakaian" | translate
                 }}</label>
                 <input
                   type="text"
@@ -34,7 +44,7 @@
                   aria-describedby="dateFilter"
                   [(ngModel)]="dateRangeFilter"
                   #dp="bsDaterangepicker"
-                  placeholder="{{ 'Tanggal Terima' | translate }}"
+                  placeholder="{{ 'Tanggal Pesan' | translate }}"
                 />
               </c-col>
               <c-col
@@ -60,8 +70,14 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="table-responsive">
-        <table datatable [dtOptions]="dtOptions" (page.dt)="dtPageChange($event)" class="row-border hover stripe"></table>
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          (page.dt)="dtPageChange($event)"
+          class="datatable row-border hover stripe"
+          ></table>
       </div>
     </c-card-body>
   </c-card>
 </div>
+

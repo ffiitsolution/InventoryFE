@@ -37,6 +37,9 @@ export class GlobalService {
   paramType: any;
   navbarVisibility: boolean = true;
 
+
+  selectedReportCategory: any = null;
+
   constructor(
     private titleService: Title,
     @Inject(DOCUMENT) private document: Document,

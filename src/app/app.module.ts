@@ -3,7 +3,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import {FormsModule} from '@angular/forms';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 
 // Import routing module
@@ -97,6 +97,7 @@ export function initializeApp(appConfig: AppConfig) {
     UtilitiesModule,
     ButtonGroupModule,
     ReactiveFormsModule,
+    FormsModule,
     SidebarModule,
     SharedModule,
     TabsModule,
@@ -121,7 +122,7 @@ export function initializeApp(appConfig: AppConfig) {
     BsDatepickerModule.forRoot(),
     NgxDaterangepickerMd.forRoot(),
     SelectDropDownModule,
-    NgxPaginationModule
+    NgxPaginationModule,
   ],
   providers: [
     {

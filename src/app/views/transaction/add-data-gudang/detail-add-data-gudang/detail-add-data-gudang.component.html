@@ -1,4 +1,4 @@
-<div class="fade-in">
+<!-- <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
       <c-row>
@@ -103,7 +103,51 @@
       </div>
     </c-card-body>
   </c-card>
-</div>
+</div> -->
+
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <!-- Tombol Simpan & Cetak -->
+      <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
+        <button
+          class="btn btn-info text-white btn-150 pe-3"
+          (click)="onSubmit()"
+        >
+          <i class="fa fa-print" *ngIf="!adding"></i>
+          {{ "Simpan" | translate }}
+        </button>
+
+        <div class="btn-group">
+          <button
+            class="btn btn-danger text-white btn-150 dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            (click)="onCetakAtauPrintReport(false, this.selectedOrder.nomorPesanan)"
+          >
+            <i class="fa fa-file-pdf-o"></i> Cetak / Download Report
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <button
+                class="dropdown-item"
+                (click)="handleCetakAtauPrint(false)"
+              >
+                <i class="fa fa-print"></i> Print Report
+              </button>
+            </li>
+            <li>
+              <button
+                class="dropdown-item"
+                (click)="handleCetakAtauPrint(true)"
+              >
+                <i class="fa fa-download"></i> Download PDF
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
@@ -124,74 +168,47 @@
               <tr>
                 <th
                   scope="col"
-                  style="vertical-align: middle"
-                  class="text-center align-items-start"
-                  rowspan="2"
-                >
+                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   No.
                 </th>
                 <th
                   scope="col"
-                  style="vertical-align: middle"
-                  class="text-center align-items-start"
-                  rowspan="2"
-                >
+                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Kode Barang
                 </th>
                 <th
                   scope="col"
-                  style="vertical-align: middle"
-                  class="text-center align-items-start"
-                  rowspan="2"
-                >
+                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Nama Barang
                 </th>
                 <th
                   scope="col"
-                  style="vertical-align: middle"
-                  class="text-center align-items-start"
-                  rowspan="2"
-                >
+                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Konversi
                 </th>
                 <th
                   scope="col"
-                  style="vertical-align: middle"
-                  class="text-center align-items-start"
-                  rowspan="2"
-                >
+                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Qty Pesan Besar
                 </th>
                 <th
                   scope="col"
-                  style="vertical-align: middle"
-                  class="text-center align-items-start"
-                  rowspan="2"
-                >
+                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Qty Pesan Kecil
                 </th>
                 <th
                   scope="col"
-                  style="vertical-align: middle"
-                  class="text-center align-items-start"
-                  rowspan="2"
-                >
+                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Total Qty Pesan
                 </th>
                 <th
                   scope="col"
-                  style="vertical-align: middle"
-                  class="text-center align-items-start"
-                  rowspan="2"
-                >
+                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Total Qty Terima
                 </th>
                 <th
                   scope="col"
-                  style="vertical-align: middle"
-                  class="text-center align-items-start"
-                  rowspan="2"
-                >
+                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Total Qty Expired
                 </th>
               </tr>

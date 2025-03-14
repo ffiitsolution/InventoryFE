@@ -1,0 +1,126 @@
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .btn-120 {
+    width: 120px;
+  }
+  
+  .btn-240 {
+    width: 240px;
+  }
+  
+  .icon-12 {
+    font-size: 12px;
+  }
+  
+  .icon-gap {
+    margin-right: 8px;
+  }
+  
+  .divider {
+    border-top: 1px solid #dee2e6;
+    margin: 16px 0;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+  }
+  
+  .row-border {
+    border: 1px solid #dee2e6;
+  }
+  
+  .hover {
+    cursor: pointer;
+  }
+
+  .fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .btn-120 {
+    width: 120px;
+  }
+  
+  .btn-240 {
+    width: 240px;
+  }
+  
+  .icon-12 {
+    font-size: 12px;
+  }
+  
+  .icon-gap {
+    margin-right: 8px;
+  }
+  
+  .divider {
+    border-top: 1px solid #dee2e6;
+    margin: 16px 0;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+  }
+  
+  .row-border {
+    border: 1px solid #dee2e6;
+  }
+  
+  .hover {
+    cursor: pointer;
+  }
+  
+  .c-card {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  }
+  
+  .c-card.ng-star-inserted {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  // .table-header {
+  //   background-color: #aab2bd;
+  //   color: #ffffff;
+  // }
+  table.dataTable {
+    font-size: 12px !important;
+  }
+  
+  table.dataTable thead th {
+    font-size: 13px !important;
+    padding: 8px !important;
+  }
+  
+  table.dataTable tbody td {
+    font-size: 12px !important;
+    padding: 6px !important;
+  }
+  
+  table.dataTable tbody tr:hover {
+    background-color: #d9d9d9 !important;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
