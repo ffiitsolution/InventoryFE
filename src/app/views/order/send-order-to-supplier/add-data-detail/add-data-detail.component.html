@@ -106,10 +106,9 @@
                   </span>
                 </td>
 
-                <td class="text-center">{{ data.konversi }}.00</td>
-                <td class="text-center">{{(helper.sanitizedNumber(data.qtyPesanBesar) *
-                  data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil) }}.00 {{data.satuanKecil}}
-                  
+                <td class="text-center">{{ data.konversi.toFixed(2) }}</td>
+                <td class="text-center">{{((helper.sanitizedNumber(data.qtyPesanBesar) *
+                  data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil)).toFixed(2) }} {{data.satuanKecil}}
                   <!-- Validation message area -->
                    <br>
                   <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageQtyPesanList [i]">
