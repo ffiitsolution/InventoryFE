@@ -119,6 +119,17 @@ export class AppService {
     );
   }
 
+  reporReceivingPoSupplierJasper(params: any, url: string): Observable<any> {
+    const httpOptions = {
+      responseType: 'blob' as 'json',
+    };
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/receiving-po-supplier/report`,
+      params,
+      true
+    );
+  }
+
   getUomList() {
     return this.dataService.getData(`${this.config.BASE_URL}/api/uom/list`);
   }
