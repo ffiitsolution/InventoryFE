@@ -85,7 +85,6 @@ export class ReceivingOrderAddFormComponent
               const mappedData = resp.data.map((item: any, index: number) => {
                 // hapus rn
                 const { rn, ...rest } = item;
-                console.log('rest: ', rest);
                 const finalData = {
                   ...rest,
                   dtIndex: this.page.start + index + 1,

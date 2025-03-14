@@ -121,15 +121,6 @@ pageSize: number = 10; // Define the pageSize property
       },
       columns: [
         { data: 'dtIndex', title: 'No.'},
-        {
-          data: null,
-          title: 'Pilih',
-          orderable: false,
-          searchable: false,
-          render: (data, type, row) => {
-            return `<input type="checkbox" class="row-checkbox" value="${row.NOMOR_TRANSAKSI}">`;
-          },
-        },
         { data: 'TGL_TRANSAKSI', title: 'Tanggal Transaksi' },
         { data: 'NOMOR_TRANSAKSI', title: 'No. Transaksi' },
         { data: 'KETERANGAN', title: 'Keterangan Pemakaian', searchable: true },
@@ -138,7 +129,7 @@ pageSize: number = 10; // Define the pageSize property
         {
           data: 'TIME_CREATE',
           title: 'Jam Proses',
-          orderable: true,
+          orderable: true, 
           searchable: true,
         },
         {
@@ -178,7 +169,7 @@ pageSize: number = 10; // Define the pageSize property
   }
 
   onAddPressed(): void {
-    const route = this.router.createUrlTree(['/transaction/wastage/add-data']);
+    const route = this.router.createUrlTree(['/transaction/barang-untuk-pemakaian-sendiri/tambah-data-pemakaian-barang-sendiri']);
     this.router.navigateByUrl(route);
   }
 

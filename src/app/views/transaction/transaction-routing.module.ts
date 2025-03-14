@@ -21,6 +21,7 @@ import { ListBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakai
 import { AddDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian-sendiri/tambah-data-pemakaian-barang-sendiri/add-data-pemakaian-barang-sendiri.component';
 import { DisplayDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian-sendiri/display-data-pemakaian-barang-sendiri/display-data-pemakaian-barang-sendiri-detail.component';
 import { DetailBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakaian-sendiri/detail-pemakaian-barang/detail-barang-untuk-pemakaian-sendiri.component';
+import { AddDataDetailBarangComponent } from './barang-untuk-pemakaian-sendiri/add-data-detail/add-data-detail-barang.component';
 const routes: Routes = [
   {
     path: '',
@@ -102,7 +103,8 @@ const routes: Routes = [
       {
         path: 'detail',
         component: DetailWastageComponent,
-      }
+      },
+      
     ],
   },
   {
@@ -123,7 +125,11 @@ const routes: Routes = [
       {
         path: 'detail-barang-untuk-pemakaian-sendiri',
         component: DetailBarangUntukPemakaianSendiriComponent,
-      }
+      },
+      {
+        path: 'add-data-detail',
+        component: AddDataDetailBarangComponent,
+      },
     ],
   }
 ];

@@ -19,7 +19,7 @@
           <ng-container *ngFor="let category of getObjectKeys(this.reports)" class="card mb-3">
             <li cListGroupItem class="fw-bold">
               <div (click)="onCategoryClick(category)"
-                class="p-1 ps-3 text-capitalize pointer-only rounded {{category === selectedCategory ? 'text-bg-secondary text-white' : ''}}">
+                class="p-1 ps-3 text-capitalize pointer-only rounded {{category === g.selectedReportCategory ? 'text-bg-secondary text-white' : ''}}">
                 {{ category | translate }}
               </div>
             </li>
@@ -37,12 +37,12 @@
               <c-card-body>
                 <div class="row">
                   <div class="col-12 d-grid"
-                    [style.gridTemplateColumns]="'repeat(' + getGroupedReports().length + ', 1fr)'">
-                    <ng-container *ngFor="let reportChunk of getGroupedReports(); let columnIndex = index">
+                    [style.gridTemplateColumns]="'repeat(' + reportCategoryData.length + ', 1fr)'">
+                    <ng-container *ngFor="let reportChunk of reportCategoryData; let columnIndex = index">
                       <div class="row">
                         <div *ngFor="let report of reportChunk; let i = index" class="mb-3">
-                          <div class="col pointer-only" (click)="onClickReport(reports[selectedCategory][report])" *ngIf="report !== null">
-                            {{ (columnIndex * verticalItemCount) + (i + 1) }}. {{ reports[selectedCategory][report].name }}
+                          <div class="col pointer-only" (click)="onClickReport(reports[g.selectedReportCategory][report])" *ngIf="report !== null">
+                            {{ (columnIndex * verticalItemCount) + (i + 1) }}. {{ reports[g.selectedReportCategory][report].name }}
                           </div>
                           <!-- Render an empty placeholder for null/empty items -->
                           <div class="col empty-placeholder" *ngIf="report === null"></div>

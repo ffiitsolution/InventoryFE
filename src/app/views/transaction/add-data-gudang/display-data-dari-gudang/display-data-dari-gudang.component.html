@@ -60,14 +60,7 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="table-responsive">
-        <table
-          datatable
-          [dtOptions]="dtOptions"
-          (page.dt)="dtPageChange($event)"
-          class="datatable row-border hover stripe"
-        >
-          <!-- <thead class="table-header"> </thead> -->
-        </table>
+        <table datatable [dtOptions]="dtOptions" (page.dt)="dtPageChange($event)" class="row-border hover stripe"></table>
       </div>
     </c-card-body>
   </c-card>

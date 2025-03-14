@@ -45,6 +45,7 @@ import { ListBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakai
 import { AddDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian-sendiri/tambah-data-pemakaian-barang-sendiri/add-data-pemakaian-barang-sendiri.component';
 import { DisplayDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian-sendiri/display-data-pemakaian-barang-sendiri/display-data-pemakaian-barang-sendiri-detail.component';
 import { DetailBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakaian-sendiri/detail-pemakaian-barang/detail-barang-untuk-pemakaian-sendiri.component'
+import { AddDataDetailBarangComponent } from './barang-untuk-pemakaian-sendiri/add-data-detail/add-data-detail-barang.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -95,6 +96,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     AddDataPemakaianBarangSendiriComponent,
     DisplayDataPemakaianBarangSendiriComponent,
     DetailBarangUntukPemakaianSendiriComponent,
+    AddDataDetailBarangComponent,
+    
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

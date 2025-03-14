@@ -30,6 +30,12 @@ import {
   ReceivingOrderAddDetailFormComponent,
 } from './receiving-order';
 import {
+  ReceivingPoSupplierComponent,
+  ReceivingPoSupplierDetailComponent,
+  ReceivingPoSupplierAddFormComponent,
+  ReceivingPoSupplierAddDetailFormComponent,
+} from './receiving-po-supplier';
+import {
   SendOrderToWarehouseComponent,
   SendOrderToWarehouseAddComponent,
   AddDataDetailSendOrderToWarehouseComponent,
@@ -82,7 +88,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     SendOrderToSupplierViaRSCComponent,
     AddDataSendOrderToSupplierComponent,
     AddDataDetailSendOrderToSupplierComponent,
-    DetailSendOrderToSupplierComponent
+    DetailSendOrderToSupplierComponent,
+    ReceivingPoSupplierComponent,
+    ReceivingPoSupplierDetailComponent,
+    ReceivingPoSupplierAddFormComponent,
+    ReceivingPoSupplierAddDetailFormComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

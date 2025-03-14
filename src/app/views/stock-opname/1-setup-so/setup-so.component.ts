@@ -18,6 +18,7 @@ import { Page } from '../../../model/page';
 import { DataService } from '../../../service/data.service';
 import { GlobalService } from '../../../service/global.service';
 import { TranslationService } from '../../../service/translation.service';
+import { AppService } from '../../../service/app.service';
 
 @Component({
   selector: 'app-setup-so',
@@ -40,13 +41,16 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
   buttonCaptionEdit: String = 'Ubah';
   CONST_ACTION_ADD: string = ACTION_ADD;
   adding: boolean = false;
+  userData: any;
 
   constructor(
+    private service: AppService,
     private dataService: DataService,
     private g: GlobalService,
     private translation: TranslationService,
     private router: Router
   ) {
+    this.userData = this.service.getUserData();
     this.dtOptions = {
       language:
         translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
@@ -60,8 +64,13 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
+        dataTablesParameters['kodeGudang'] =
+          this.userData.defaultLocation.kodeLocation;
         this.dataService
-          .postData(this.g.urlServer + '/api/uom/dt', dataTablesParameters)
+          .postData(
+            this.g.urlServer + '/api/stock-opname/dt',
+            dataTablesParameters
+          )
           .subscribe((resp: any) => {
             const mappedData = resp.data.map((item: any, index: number) => {
               // hapus rn
@@ -69,14 +78,8 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
               const finalData = {
                 ...rest,
                 dtIndex: this.page.start + index + 1,
-                dateCreate: this.g.transformDateTime(
-                  item.dateCreate,
-                  item.timeCreate
-                ),
-                dateUpdate: this.g.transformDateTime(
-                  item.dateUpdate,
-                  item.timeUpdate
-                ),
+                dateCreate: this.g.transformDate(item.dateCreate),
+                dateProses: this.g.transformDate(item.dateProses),
               };
               return finalData;
             });
@@ -92,21 +95,24 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
       columns: [
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
         {
-          data: 'kodeUom',
-          title: 'Kode Satuan',
+          data: 'tanggalSo',
+          title: 'Tanggal S.O',
           orderable: true,
           searchable: true,
         },
         {
-          data: 'keteranganUom',
-          title: 'Nama Satuan',
+          data: 'nomorSo',
+          title: 'Nomor Form S.O',
           orderable: true,
           searchable: true,
         },
-        { data: 'userCreate', title: 'Dibuat Oleh', searchable: false },
-        { data: 'dateCreate', title: 'Tanggal Dibuat', searchable: false },
-        { data: 'userUpdate', title: 'Diperbarui Oleh', searchable: false },
-        { data: 'dateUpdate', title: 'Tanggal Diperbarui', searchable: false },
+        { data: 'statusProses', title: 'Status Proses', searchable: false },
+        { data: 'userCreate', title: 'User Create', searchable: false },
+        { data: 'dateCreate', title: 'Tanggal Create', searchable: false },
+        { data: 'timeCreate', title: 'Jam Create', searchable: false },
+        { data: 'userProses', title: 'User Proses', searchable: false },
+        { data: 'dateProses', title: 'Tanggal Proses', searchable: false },
+        { data: 'timeProses', title: 'Jam Proses', searchable: false },
         {
           title: 'Action',
           render: () => {
@@ -141,9 +147,9 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     this.g.changeTitle(
-      this.translation.instant('Tabel') +
+      this.translation.instant('Stock') +
         ' ' +
-        this.translation.instant('Satuan') +
+        this.translation.instant('Opname') +
         ' - ' +
         this.g.tabTitle
     );
@@ -161,14 +167,15 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   actionBtnClick(action: string, data: any = null) {
+    console.log(action);
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage(LS_INV_SELECTED_UOM, JSON.stringify(data));
-      this.router.navigate(['/master/master-uom/detail']);
+      this.router.navigate(['/stock-opname/detail']);
     } else if (action === ACTION_EDIT) {
       this.g.saveLocalstorage(LS_INV_SELECTED_UOM, JSON.stringify(data));
-      this.router.navigate(['/master/master-uom/edit']);
+      this.router.navigate(['/stock-opname/edit']);
     } else if (action === ACTION_ADD) {
-      this.router.navigate(['/master/master-uom/add']);
+      this.router.navigate(['/stock-opname/add']);
     }
   }
   dtPageChange(event: any) {

@@ -13,6 +13,7 @@ import { Page } from '../../../../model/page';
 import { DataService } from '../../../../service/data.service';
 import { GlobalService } from '../../../../service/global.service';
 import { Router } from '@angular/router';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 // import { AppConfig } from 'src/app/config/app.config.ts';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
@@ -56,6 +57,8 @@ export class DetailBarangUntukPemakaianSendiriComponent
   buttonCaptionView: String = 'Lihat';
   paramGenerateReport = {};
   paramUpdatePrintStatus = {};
+  cekPrint: any;
+  printData: any;
 
   protected config = AppConfig.settings.apiServer;
 
@@ -64,7 +67,8 @@ export class DetailBarangUntukPemakaianSendiriComponent
     public g: GlobalService,
     private translation: TranslationService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private http: HttpClient
   ) {
     this.g.navbarVisibility = true;
     this.selectedOrder = JSON.parse(this.selectedOrder);
@@ -83,6 +87,10 @@ export class DetailBarangUntukPemakaianSendiriComponent
         serverSide: true,
         autoWidth: true,
         info: true,
+        paging: true, 
+  ordering: true,
+  pageLength: 10, 
+  lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
         drawCallback: () => {},
         ajax: (dataTablesParameters: any, callback) => {
           this.page.start = dataTablesParameters.start;
@@ -91,7 +99,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
             KODE_GUDANG: kodeGudang,
             TIPE_TRANSAKSI: tipeTransaksi,
             NOMOR_TRANSAKSI: nomorTransaksi,
-          } = this.selectedOrder ?? {};
+          } = this.selectedOrder ?? {}; 
           const params = {
             ...dataTablesParameters,
             kodeGudang: kodeGudang ?? '',
@@ -155,7 +163,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
           }, DEFAULT_DELAY_TABLE);
         },
         columns: [
-          { data: 'KODE_BARANG', title: 'Kode Barang' },
+          { data: 'KODE_BARANG_WH', title: 'Kode Barang' },
           { data: 'NAMA_BARANG', title: 'Nama Barang' },
           {
             data: 'KONVERSI',
@@ -179,12 +187,11 @@ export class DetailBarangUntukPemakaianSendiriComponent
             }
           },
           {
-            title: 'Cek Qty. Expired',
-            render: () => {
-              return `<div class="d-flex justify-content-start">
-            <button class="btn btn-sm action-view btn-outline-success w-50"><i class="fa fa-check pe-1"></i> Cek</button>
-            </div>`;
-            },
+            data: 'TOTAL_QTY_WH',
+            title: 'Qty Total',
+            render: function (data, type, row) {
+              return data + ' ' + row.SATUAN_KECIL;
+            }
           },
         ],
         searchDelay: 1000,
@@ -299,6 +306,60 @@ export class DetailBarangUntukPemakaianSendiriComponent
       U: 'Unposted',
       D: 'Draft',
     };
-    return legends[status] || 'Unknown'; 
+    return legends[status] || 'Unknown'; // Jika status tidak dikenali, tampilkan "Unknown"
   }
+
+  handleCetakAtauPrint(data: any) {
+      this.cekPrint = data;
+      this.printData = data;
+    }
+  
+    onCetakAtauPrintReport(isDownload: boolean, nomorTransaksi?: string) {
+      nomorTransaksi = nomorTransaksi?.trim() ?? this.selectedOrder?.NOMOR_TRANSAKSI?.trim() ?? '';
+    
+      if (!nomorTransaksi) {
+        alert("Nomor Transaksi tidak ditemukan. Silakan coba lagi.");
+        console.error("Error: NOMOR_TRANSAKSI kosong atau tidak ditemukan!");
+        return;
+      }
+    
+      const requestBody = { nomorTransaksi, isDownload };
+    
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': 'application/pdf',
+      });
+    
+      this.http.post(
+          `${this.config.BASE_URL}/api/delivery-order/report-pemakaian-barang-sendiri`,
+          requestBody,
+          { headers, responseType: 'blob' }
+        )
+        .subscribe(
+          (response) => {
+            const blob = new Blob([response as any], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+    
+            if (isDownload) {
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'report-pemakaian-barang-sendiri.pdf';
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+            } else {
+              const printWindow = window.open(url, '_blank');
+              if (printWindow) {
+                printWindow.onload = () => {
+                  printWindow.print();
+                };
+              }
+            }
+          },
+          (error) => {
+            console.error('Gagal mengambil laporan:', error);
+            alert('Gagal mengambil laporan. Silakan coba lagi.');
+          }
+        );
+    }
 }

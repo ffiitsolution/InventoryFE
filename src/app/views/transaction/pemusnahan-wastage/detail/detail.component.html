@@ -21,8 +21,9 @@
           <app-print-button
           [alreadyPrint]="alreadyPrint"
           [disabledPrintButton]="disabledPrintButton"
-          [generatePdfUrl]="'/api/report-wastage-jasper'"
-          [updatePrintStatusParam]="paramUpdatePrintStatus"
+          [generatePdfUrl]="'/report-wastage-jasper'"
+          [updateStatusUrl]="''"
+          [updatePrintStatusParam]="''"
           [generateReportParam]="paramGenerateReport"
           (reloadTable)="reloadTable()"
         ></app-print-button>

@@ -142,7 +142,7 @@ export class DisplayDataPemakaianBarangSendiriComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/order/send-order-to-warehouse/add']);
+    this.router.navigate(['/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri']);
   }
 
   onPageChange(event: number) {

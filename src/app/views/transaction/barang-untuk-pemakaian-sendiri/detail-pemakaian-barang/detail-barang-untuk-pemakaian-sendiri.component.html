@@ -17,7 +17,7 @@
     <c-card-body>
       <div class="row">
         <div class="col text-end">
-          <app-print-button
+          <!-- <app-print-button
             [alreadyPrint]="alreadyPrint"
             [disabledPrintButton]="disabledPrintButton"
             [updateStatusUrl]="'/api/delivery-order/update-print-status'"
@@ -25,7 +25,35 @@
             [updatePrintStatusParam]="paramUpdatePrintStatus"
             [generateReportParam]="paramGenerateReport"
             (reloadTable)="reloadTable()"
-          ></app-print-button>
+          ></app-print-button> -->
+          <div class="btn-group">
+            <button
+              class="btn btn-danger text-white btn-150 dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              (click)="onCetakAtauPrintReport(false, this.selectedOrder.nomorTransaksi)"
+            >
+              <i class="fa fa-file-pdf-o"></i> Cetak / Download Report
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <button
+                  class="dropdown-item"
+                  (click)="handleCetakAtauPrint(false)"
+                >
+                  <i class="fa fa-print"></i> Print Report
+                </button>
+              </li>
+              <li>
+                <button
+                  class="dropdown-item"
+                  (click)="handleCetakAtauPrint(true)"
+                >
+                  <i class="fa fa-download"></i> Download PDF
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 

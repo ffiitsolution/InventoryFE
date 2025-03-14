@@ -204,17 +204,32 @@ export class AddDataDetailSendOrderToSupplierComponent
 
   onSubmit() {
     if(!this.isDataInvalid()){
-      // param for order Header
-      const paramHeader = this.newOrhdk;
-        
-      this.service.insert('/api/send-order-to-supplier/insert-header', paramHeader).subscribe({
+      const paramHeaderDetail = this.newOrhdk;
+
+      const paramDetail = this.listOrderData.map(item => ({
+        kodeGudang: this.newOrhdk.kodeGudang,
+        kodeTujuan: this.newOrhdk.supplier,
+        nomorPesanan: this.newOrhdk.nomorPesanan,
+        kodeBarang: item.kodeBarang,
+        konversi: item.konversi,
+        satuanKecil: item.satuanKecil,
+        satuanBesar: item.satuanBesar,
+        qtyPesanBesar: item.qtyPesanBesar,
+        qtyPesanKecil: item.qtyPesanKecil,
+        totalQtyPesan: (this.helper.sanitizedNumber(item.qtyPesanBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyPesanKecil),
+        hargaUnit: item.unitPrice
+      }));
+
+      paramHeaderDetail.listBarang = paramDetail;
+
+      console.log("paramHeader",paramHeaderDetail)
+          
+      this.service.insert('/api/send-order-to-supplier/insert-header-detail', paramHeaderDetail).subscribe({
         next: (res) => {
           if (!res.success) {
             alert(res.message);
           } else {
-            this.newOrhdk.nomorPesanan =  res.item?.[0]?.nomorPesanan ;
-
-            this.insertDetail()
+            this.toastr.success('Berhasil!');
             setTimeout(() => {
               this.onPreviousPressed();
             }, DEFAULT_DELAY_TIME);
@@ -223,6 +238,7 @@ export class AddDataDetailSendOrderToSupplierComponent
           this.adding = false;
         },
       });
+
 
     }
 
@@ -438,42 +454,6 @@ export class AddDataDetailSendOrderToSupplierComponent
     this.isShowModalDelete = false;
   }
 
-  insertDetail(){
-    // param for order header detail
-    const paramDetail = this.listOrderData.map(item => ({
-      kodeGudang: this.newOrhdk.kodeGudang,
-      kodeTujuan: this.newOrhdk.supplier,
-      nomorPesanan: this.newOrhdk.nomorPesanan,
-      kodeBarang: item.kodeBarang,
-      konversi: item.konversi,
-      satuanKecil: item.satuanKecil,
-      satuanBesar: item.satuanBesar,
-      qtyPesanBesar: item.qtyPesanBesar,
-      qtyPesanKecil: item.qtyPesanKecil,
-      totalQtyPesan: (this.helper.sanitizedNumber(item.qtyPesanBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyPesanKecil),
-      hargaUnit: item.unitPrice
-  }));
-
-
-  this.service.insert('/api/send-order-to-supplier/insert-detail', paramDetail).subscribe({
-    next: (res) => {
-      if (!res.success) {
-        alert(res.message);
-      } else {
-        
-        this.toastr.success('Berhasil!');
-        // setTimeout(() => {
-        //   this.onPreviousPressed();
-        // }, DEFAULT_DELAY_TIME);
-        
-      }
-      this.adding = false;
-    },
-  });
-  
-
-
-  }
 
   onPreviousPressed(): void {
     this.router.navigate(['order/send-order-to-supplier-via-rsc']);
