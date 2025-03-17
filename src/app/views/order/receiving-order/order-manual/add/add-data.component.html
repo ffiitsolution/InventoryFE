@@ -114,36 +114,138 @@
                 <div class="divider"></div>
                 <div class="mb-3 row">
                   <label class="col-sm-4 col-form-label">{{
-                    "Tujuan (Admin RSC)" | translate
+                    "Pemesan (Tujuan)" | translate
                   }}
                     <span class="stamp-required show">&nbsp;*</span>
                   </label>
                   <div class="col-sm-8">
                     <ngx-select-dropdown
                       [multiple]="false"
-                      [config]="configSelectRSC"
-                      [options]="listRSC"
-                      formControlName="RSCTujuan"
-                      id="RSCTujuan"
-                      (change)="onRSCTujuanChange($event)"
+                      [config]="configSelectGudang"
+                      [options]="listGudang"
+                      formControlName="gudangTujuan"
+                      id="gudangTujuan"
+                      (change)="onGudangTujuanChange($event)"
                       style="width: 250px !important; max-width: 250px !important;">
                       >
                     </ngx-select-dropdown>
-                    <span *ngIf="isFieldValid('RSCTujuan')" class="text-danger">{{
+                    <span *ngIf="isFieldValid('gudangTujuan')" class="text-danger">{{
                       "Wajib diisi" | translate
                     }}</span>
                     <span 
-                    *ngIf="currentUser?.defaultLocation?.kodeLocation === myForm.value?.RSCTujuan?.id" 
+                    *ngIf="currentUser?.defaultLocation?.kodeLocation === myForm.value?.gudangTujuan?.id" 
                     class="text-danger">{{
                       "Tidak boleh order ke gudang sendiri" | translate
                     }}</span>
                   </div>
                 </div>
-                <div class="divider"></div>
 
                 <div class="mb-3 row">
                   <label class="col-sm-4 col-form-label">{{
-                    "Catatan 1" | translate
+                    "Nama Pemesan" | translate
+                  }}
+                </label>
+                  <div class="col-sm-8">
+                    <input
+                      type="text"
+                      class="form-control small-font"
+                      formControlName="namaGudang"
+                      [readOnly]="adding"
+                      (keypress)="conditionInput($event, 'alphanumeric')"
+                      maxlength="50"
+                    />
+                    <span *ngIf="isFieldValid('namaGudang')" class="text-danger">{{
+                      "Wajib diisi" | translate
+                    }}</span>
+                  </div>
+                </div>
+                <div class="mb-3 row">
+                  <label class="col-sm-4 col-form-label">{{
+                    "Alamat Tujuan Kirim Barang" | translate 
+                    }} 
+                  </label>
+                  <div class="col-sm-8">
+                    <textarea 
+                      type="text"
+                      class="form-control medium-font"
+                      formControlName="alamatGudang"
+                      [readOnly]="adding"
+                      (keypress)="conditionInput($event, 'alphabet')"
+                      maxlength="100"
+                    > </textarea>
+                    <span *ngIf="isFieldValid('alamatGudang')" class="text-danger">{{
+                      "Wajib diisi" | translate
+                    }}</span>
+                  </div>
+                </div>
+              
+                
+                <div class="mb-3 row">
+                  <label class="col-sm-4 col-form-label">{{
+                    "Status Gudang" | translate
+                  }}</label>
+                  <div class="col-sm-8">
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="statusGudang"
+                      [readOnly]="adding"
+                      maxlength="20"
+                    />
+                  </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="mb-3 row">
+                  <label class="col-sm-4 col-form-label"
+                    >{{ "Status" | translate }}
+                    <span class="stamp-required show">&nbsp;*</span></label
+                  >
+                  <c-col xs="8">
+                    <c-row class="mt-2">
+                      <c-col xs="6">
+                        <c-form-check class="flex align-items-center">
+                          <input
+                            cFormCheckInput
+                            checked
+                            id="active"
+                            type="radio"
+                            value="A"
+                            name="status"
+                            formControlName="statusAktif"
+                            (change)="onChangeSelect($event, 'status')"
+                          />
+                          <label cFormCheckLabel for="active" style="margin-left: 4px"
+                            >Order Manual Gudang</label
+                          >
+                        </c-form-check>
+                      </c-col>
+                      <c-col xs="6">
+                        <c-form-check class="flex align-items-center">
+                          <input
+                            cFormCheckInput
+                            id="inactive"
+                            type="radio"
+                            value="I"
+                            name="status"
+                            formControlName="statusAktif"
+                            (change)="onChangeSelect($event, 'status')"
+                          />
+                          <label cFormCheckLabel for="inactive" style="margin-left: 4px"
+                            >Alokasi Barang</label
+                          >
+                        </c-form-check>
+                      </c-col>
+                      <span *ngIf="isFieldValid('statusAktif')" class="text-danger">{{
+                        "Wajib diisi" | translate
+                      }}</span>
+                    </c-row>
+                  </c-col>
+                </div>
+                <div class="mb-3 row">
+                  <label class="col-sm-4 col-form-label">{{
+                    "Keterangan / No. Order Pemesan" | translate
                   }}</label>
                   <div class="col-sm-8">
                     <textarea
@@ -167,31 +269,7 @@
                   </div>
                 </div>
 
-                <div class="mb-3 row">
-                  <label class="col-sm-4 col-form-label">{{
-                    "Catatan 2" | translate
-                  }}</label>
-                  <div class="col-sm-8">
-                    <textarea
-                      type="text"
-                      class="form-control"
-                      formControlName="catatan2"
-                      [readOnly]="adding"
-                      (keypress)="conditionInput($event, 'excludedSensitive')"
-                      maxlength="50"
-                    ></textarea>
-                    <span
-                      *ngIf="
-                        myForm.controls['catatan2'].hasError('excludedSensitive')
-                      "
-                      class="text-danger"
-                      >{{
-                        "Catatan2 hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), dan tanda kurung ()."
-                          | translate
-                      }}
-                    </span>
-                  </div>
-                </div>
+                
                 <div class="divider"></div>
                 <div class="d-grid gap-3 d-md-flex justify-content-end" *ngIf="!isShowDetail">
                   <button

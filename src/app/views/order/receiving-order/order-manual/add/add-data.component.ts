@@ -45,8 +45,8 @@ export class AddDataOrderManualComponent implements OnInit {
   public dpConfigTglBatalPesanan: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
 
   bsConfig: Partial<BsDatepickerConfig>;
-  listRSC: any[] = [];
-  configSelectRSC: any ;
+  listGudang: any[] = [];
+  configSelectGudang: any ;
   gudangDetail: any[] = [];
   currentUser : any;
   isShowDetail = false;
@@ -93,24 +93,24 @@ export class AddDataOrderManualComponent implements OnInit {
       searchPlaceholder: 'Cari Role',
       limitTo: this.listRole.length
     };
-    this.configSelectRSC = {
+    this.configSelectGudang = {
       ...this.baseConfig,
-      placeholder: 'Pilih RSC',
-      searchPlaceholder: 'Cari RSC',
-      limitTo: this.listRSC.length
+      placeholder: 'Pilih Gudang',
+      searchPlaceholder: 'Cari Gudag',
+      limitTo: this.listGudang.length
     };
 
     this.dataService
-    .postData(this.g.urlServer + '/api/rsc/dropdown-rsc',{})
+    .postData(this.g.urlServer + '/api/branch/dropdown-gudang',{})
     .subscribe((resp: any) => {
-      this.listRSC = resp.map((item: any) => ({
-        id: item.KODE_RSC,
-        name: item.KODE_RSC+' - '+item.KETERANGAN_RSC,
+      this.listGudang = resp.map((item: any) => ({
+        id: item.KODE_CABANG,
+        name: item.KODE_CABANG+' - '+item.NAMA_CABANG,
       }));     
     });
 
     this.dataService
-    .postData(this.g.urlServer + '/api/send-order-to-supplier/get-nopesanan',
+    .postData(this.g.urlServer + '/api/send-order-to-warehouse/get-nopesanan',
       {"kodeGudang":  this.currentUser?.defaultLocation?.kodeLocation}
     )
     .subscribe((resp: any) => {
@@ -236,7 +236,30 @@ export class AddDataOrderManualComponent implements OnInit {
 
 
 
-  onRSCTujuanChange(selectedValue: any) {
+
+  onDateChangeTglKirimBarang(event: Date): void {
+    this.dpConfigTglBatalPesanan.minDate = event; //update the batal pesanan mindate to tanggal kirim barang
+  }
+
+  compareDates(date1: any, date2: any): boolean {
+    if (!date1 || !date2) return false; // Ensure both dates exist
+
+    const d1 = new Date(date1).setHours(0, 0, 0, 0); // Remove time
+    const d2 = new Date(date2).setHours(0, 0, 0, 0); // Remove time
+
+    return d1 > d2; // Compare only the date part
+  }
+
+  onShowModalBack() {
+    this.isShowModalBack= true;
+  }
+
+  onShowModalBuatPesanan() {
+    this.isShowModalBuatPesanan= true;
+  }
+
+  
+  onGudangTujuanChange(selectedValue: any) {
     this.getGudangDetail(selectedValue?.value?.id);
   }
 
@@ -259,27 +282,6 @@ export class AddDataOrderManualComponent implements OnInit {
         );    
         this.myForm.get('kodeSingkat')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].KODE_SINGKAT : null);  
       }); 
-  }
-
-  onDateChangeTglKirimBarang(event: Date): void {
-    this.dpConfigTglBatalPesanan.minDate = event; //update the batal pesanan mindate to tanggal kirim barang
-  }
-
-  compareDates(date1: any, date2: any): boolean {
-    if (!date1 || !date2) return false; // Ensure both dates exist
-
-    const d1 = new Date(date1).setHours(0, 0, 0, 0); // Remove time
-    const d2 = new Date(date2).setHours(0, 0, 0, 0); // Remove time
-
-    return d1 > d2; // Compare only the date part
-  }
-
-  onShowModalBack() {
-    this.isShowModalBack= true;
-  }
-
-  onShowModalBuatPesanan() {
-    this.isShowModalBuatPesanan= true;
   }
 
 }
