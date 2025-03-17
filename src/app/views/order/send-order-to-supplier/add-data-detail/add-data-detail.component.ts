@@ -98,7 +98,7 @@ export class AddDataDetailSendOrderToSupplierComponent
   ) {
     this.g.navbarVisibility = true;
     this.newOrhdk = JSON.parse(this.newOrhdk);
-    this.getDeliveryItemDetails()
+    this.getSendSuppliertemDetails()
   }
 
   ngOnInit(): void {
@@ -120,9 +120,9 @@ export class AddDataDetailSendOrderToSupplierComponent
   }
   
 
-  getDeliveryItemDetails() {
+  getSendSuppliertemDetails() {
     this.loading = true;
-    this.listOrderData = [];
+    this.listOrderData = [{kodeBarang:"",namaBarang:""}];
 
     const params = {
       nomorPesanan: this.newOrhdk.nomorPesanan
@@ -203,6 +203,9 @@ export class AddDataDetailSendOrderToSupplierComponent
   }
 
   onSubmit() {
+    if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() === "") {
+      this.listOrderData.splice(this.listOrderData.length - 1, 1);
+    }
     if(!this.isDataInvalid()){
       const paramHeaderDetail = this.newOrhdk;
 
@@ -221,11 +224,10 @@ export class AddDataDetailSendOrderToSupplierComponent
       }));
 
       paramHeaderDetail.listBarang = paramDetail;
-
-      console.log("paramHeader",paramHeaderDetail)
           
       this.service.insert('/api/send-order-to-supplier/insert-header-detail', paramHeaderDetail).subscribe({
         next: (res) => {
+          this.listOrderData .push({kodeBarang:"",namaBarang:""});
           if (!res.success) {
             alert(res.message);
           } else {
@@ -243,9 +245,11 @@ export class AddDataDetailSendOrderToSupplierComponent
     }
 
     else{
+      this.listOrderData .push({kodeBarang:"",namaBarang:""});
       this.toastr.error("Data tidak valid")
     }
-   
+    this.listOrderData .push({kodeBarang:"",namaBarang:""});
+
   }
   
   onShowModal() {
@@ -283,6 +287,11 @@ export class AddDataDetailSendOrderToSupplierComponent
   onAddListDataBarang(){
     let errorMessage
     this.isShowModal = false;
+
+    if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() === "") {
+      // If the name is empty or contains only whitespace, remove the last item
+      this.listOrderData.splice(this.listOrderData.length - 1, 1);
+    }
     
     for (let barang of this.barangTemp) {
 
@@ -492,7 +501,73 @@ export class AddDataDetailSendOrderToSupplierComponent
     return !/^\d+(\.\d+)?$/.test(value)
   }
 
-  
+
+
+   handleEnter(event: any, index: number) {
+    event.preventDefault();
+
+    let kodeBarang = this.listOrderData[index].kodeBarang?.trim();
+    if (kodeBarang !== '') {
+      this.getProductRow(kodeBarang, index);
+    }
+  }
+
+  getProductRow(kodeBarang: string, index: number) {
+    let errorMessage
+    let param = { kodeBarang: kodeBarang };
+
+    if (kodeBarang !== '') {
+      const isDuplicate = this.listOrderData.some(
+        (item, i) => item.kodeBarang === kodeBarang && i !== index
+      );
+
+      if (isDuplicate) {
+        this.toastr.error("Barang sudah ditambahkan")
+        return;
+      }
+
+      this.appService.getProductById(param).subscribe({
+        next: (res) => {
+          if (res) {
+            this.listOrderData[index].namaBarang = res.namaBarang;
+            this.listOrderData[index].satuanKecil = res.satuanKecil;
+            this.listOrderData[index].satuanBesar = res.satuanBesar;
+            this.listOrderData[index].konversi = res.konversi;
+
+            this.listOrderData[index].isConfirmed = true;
+            this.listOrderData[index].isLoading = false;
+            
+            this.listOrderData[index].totalQtyPesan = 0;
+            this.listOrderData[index].qtyPesanKecil = 0;
+            this.listOrderData[index].qtyPesanBesar = 0;
+
+            // Add new properties to the object
+            this.listOrderData[index] = {
+              ...this.listOrderData[index],
+              ...res  
+            };
+
+
+            if (index === this.listOrderData.length - 1) {
+              this.listOrderData.push({
+                kodeBarang: '',
+                namaBarang: '',
+              });
+            }
+            this.validationMessageListSatuanKecil.push("")
+            this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
+            this.validationMessageListSatuanBesar.push("")
+            console.log("listOrderData",this.listOrderData)
+              // this.mapOrderData(data);
+              // this.onSaveData();
+
+       
+          }
+        },
+      });
+    }
+  }
+
 
 
 }

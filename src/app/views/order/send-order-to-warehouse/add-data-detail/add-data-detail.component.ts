@@ -187,6 +187,9 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
 
   onSubmit() {
+    if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() === "") {
+      this.listOrderData.splice(this.listOrderData.length - 1, 1);
+    }
     if(!this.isDataInvalid()){
       // param for order Header
       const paramHeaderDetail = this.newOrhdk;
@@ -229,7 +232,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
     else{
       this.toastr.error("Data tidak valid")
     }
-   
+    this.listOrderData .push({kodeBarang:"",namaBarang:""});
   }
   
   onShowModal() {
@@ -290,7 +293,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
         this.validationMessageListSatuanKecil.push("")
         this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
         this.validationMessageListSatuanBesar.push("")
-        console.log("listOrderData",this.listOrderData)
           // this.mapOrderData(data);
           // this.onSaveData();
       }
@@ -507,7 +509,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
       this.appService.getProductById(param).subscribe({
         next: (res) => {
           if (res) {
-            console.log("if1")
             this.listOrderData[index].namaBarang = res.namaBarang;
             this.listOrderData[index].satuanKecil = res.satuanKecil;
             this.listOrderData[index].satuanBesar = res.satuanBesar;
@@ -536,7 +537,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
             this.validationMessageListSatuanKecil.push("")
             this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
             this.validationMessageListSatuanBesar.push("")
-            console.log("listOrderData",this.listOrderData)
               // this.mapOrderData(data);
               // this.onSaveData();
 
