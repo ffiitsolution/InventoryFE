@@ -49,12 +49,12 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="['Master Department'].includes(currentReport)">
+    <ng-container *ngIf="['Master Department','Master Gudang'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Kode RSC
           <span class="float-end">:</span>
-        </div>
+        </div>                                       
         <div class="col">
           <ng-container *ngIf="loadingState['selectedRsc']">
             <div class="loading-input">
@@ -76,7 +76,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="['Master Cabang','Master Department'].includes(currentReport)">
+    <ng-container *ngIf="['Master Cabang','Master Department','Master Gudang'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Status Aktif
@@ -100,7 +100,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="['Master Cabang','Master Department'].includes(currentReport)">
+    <ng-container *ngIf="['Master Cabang','Master Department','Master Gudang'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Tipe Listing

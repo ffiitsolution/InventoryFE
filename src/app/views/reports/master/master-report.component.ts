@@ -71,13 +71,13 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.configRegion = this.g.dropdownConfig('description');
-    this.configRsc = this.g.dropdownConfig('description',5);
+    this.configRsc = this.g.dropdownConfig('description');
 
     this.userData = this.service.getUserData();
 
     if (['Master Cabang'].includes(this.currentReport)) {
       this.getListParam('listRegion');
-    }else if(['Master Department'].includes(this.currentReport)) {
+    }else if(['Master Department','Master Gudang'].includes(this.currentReport)) {
       this.getListParam('listRsc');
     }
   }
@@ -156,7 +156,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
         status: this.paramStatusAktif,
         tipeListing: this.paramTipeListing,
       };
-    } else if (this.currentReport === 'Master Department') {
+    } else if (['Master Department','Master Gudang'].includes(this.currentReport)) {
       param = {
         kodeRsc: this.selectedRsc['code'],
         status: this.paramStatusAktif,
