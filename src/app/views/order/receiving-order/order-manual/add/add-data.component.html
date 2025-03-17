@@ -1,0 +1,262 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <h5>{{ "Tambah" | translate }} {{ "Pesanan" | translate }} {{ "Manual" | translate }}</h5>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body >
+      <div class="row">
+        <div [ngClass]="isShowDetail ? 'col-3' : 'col-4'" class="pe-0 d-flex red-line">
+          <div class="w-100">
+            <div class="p-2">
+              <h5 class="mb-2 p-2 pl-0" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5>
+
+              <form [formGroup]="myForm">
+                <div class="mb-3 row">
+                  <label class="col-sm-4 col-form-label">{{
+                    "Nomor Pesanan" | translate
+                  }}
+                </label>
+                  <div class="col-sm-8">
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="newNomorPesanan"
+                      [readOnly]="adding"
+                      (keypress)="conditionInput($event, 'alphanumeric')"
+                      maxlength="50"
+                    />
+                 
+                  </div>
+                </div>
+
+                <div class="mb-3 row">
+                  <label class="col-sm-4 col-form-label">{{
+                      "Tgl. Pesanan" | translate
+                    }}
+                    <span class="stamp-required show">&nbsp;*</span>
+                  </label>
+                  <div class="col-sm-8">
+                    <input
+                      type="text"
+                      id="tanggalPesanan"
+                      class="form-control"
+                      bsDatepicker
+                      [bsConfig]="dpConfig"
+                      aria-describedby="tanggalPesanan"
+                      formControlName="tanggalPesanan"
+                      #dp="bsDatepicker"
+                      placeholder="{{ 'Tanggal Pesanan' | translate }}"
+                    />
+                    <span *ngIf="isFieldValid('tanggalPesanan')" class="text-danger">{{
+                      "Wajib diisi" | translate
+                    }}</span>
+                  </div>
+                </div>
+                <div class="mb-3 row">
+                  <label class="col-sm-4 col-form-label">{{
+                      "Tgl. Kirim Barang" | translate
+                    }}
+                    <span class="stamp-required show">&nbsp;*</span>
+                  </label>
+                  <div class="col-sm-8">
+                    <input
+                      type="text"
+                      id="tanggalKirimBarang"
+                      class="form-control"
+                      bsDatepicker
+                      [bsConfig]="dpConfigTglKirimBarang"
+                      aria-describedby="tanggalKirimBarang"
+                      formControlName="tanggalKirimBarang"
+                      #dp="bsDatepicker"
+                      placeholder="{{ 'Tanggal Kirim Barang' | translate }}"
+                      (bsValueChange)="onDateChangeTglKirimBarang($event)"
+                      (keypress)="conditionInput($event, 'tanggal')"
+                    />
+                    <span *ngIf="isFieldValid('tanggalKirimBarang')" class="text-danger">{{
+                      "Wajib diisi" | translate
+                    }}</span>
+                    <span class="text-danger" *ngIf="compareDates(myForm?.controls?.['tanggalPesanan']?.value, myForm.value.tanggalKirimBarang)">
+                      {{"Tanggal kirim barang tidak boleh kurang dari tanggal pesanan" | translate}}
+                    </span>
+                  </div>
+                </div>
+                <div class="mb-3 row">
+                  <label class="col-sm-4 col-form-label">{{
+                    "Tgl. Batal Pesanan" | translate
+                  }}
+                  <span class="stamp-required show">&nbsp;*</span>
+                  </label>
+                  <div class="col-sm-8">
+                    <input
+                      type="text"
+                      id="tanggalBatalPesanan"
+                      class="form-control"
+                      bsDatepicker
+                      [bsConfig]="dpConfigTglBatalPesanan"
+                      aria-describedby="tanggalBatalPesanan"
+                      formControlName="tanggalBatalPesanan"
+                      #dp="bsDatepicker"
+                      placeholder="{{ 'Tanggal Batal Pesanan' | translate }}"
+                      (keypress)="conditionInput($event, 'tanggal')"
+                    />
+                    <span *ngIf="isFieldValid('tanggalBatalPesanan')" class="text-danger">{{
+                      "Wajib diisi" | translate
+                    }}</span>
+                    <span class="text-danger" *ngIf="compareDates(myForm.value.tanggalKirimBarang, myForm.value.tanggalBatalPesanan)">
+                      {{"Tanggal batal pesanan tidak boleh kurang dari tanggal kirim barang" | translate}}
+                    </span>
+                  </div>
+                </div>
+                <div class="divider"></div>
+                <div class="mb-3 row">
+                  <label class="col-sm-4 col-form-label">{{
+                    "Tujuan (Admin RSC)" | translate
+                  }}
+                    <span class="stamp-required show">&nbsp;*</span>
+                  </label>
+                  <div class="col-sm-8">
+                    <ngx-select-dropdown
+                      [multiple]="false"
+                      [config]="configSelectRSC"
+                      [options]="listRSC"
+                      formControlName="RSCTujuan"
+                      id="RSCTujuan"
+                      (change)="onRSCTujuanChange($event)"
+                      style="width: 250px !important; max-width: 250px !important;">
+                      >
+                    </ngx-select-dropdown>
+                    <span *ngIf="isFieldValid('RSCTujuan')" class="text-danger">{{
+                      "Wajib diisi" | translate
+                    }}</span>
+                    <span 
+                    *ngIf="currentUser?.defaultLocation?.kodeLocation === myForm.value?.RSCTujuan?.id" 
+                    class="text-danger">{{
+                      "Tidak boleh order ke gudang sendiri" | translate
+                    }}</span>
+                  </div>
+                </div>
+                <div class="divider"></div>
+
+                <div class="mb-3 row">
+                  <label class="col-sm-4 col-form-label">{{
+                    "Catatan 1" | translate
+                  }}</label>
+                  <div class="col-sm-8">
+                    <textarea
+                      type="text"
+                      class="form-control"
+                      formControlName="catatan1"
+                      [readOnly]="adding"
+                      (keypress)="conditionInput($event, 'excludedSensitive')"
+                      maxlength="100"
+                    ></textarea>
+                    <span
+                      *ngIf="
+                        myForm.controls['catatan1'].hasError('excludedSensitive')
+                      "
+                      class="text-danger"
+                      >{{
+                        "Catatan1 hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), dan tanda kurung ()."
+                          | translate
+                      }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="mb-3 row">
+                  <label class="col-sm-4 col-form-label">{{
+                    "Catatan 2" | translate
+                  }}</label>
+                  <div class="col-sm-8">
+                    <textarea
+                      type="text"
+                      class="form-control"
+                      formControlName="catatan2"
+                      [readOnly]="adding"
+                      (keypress)="conditionInput($event, 'excludedSensitive')"
+                      maxlength="50"
+                    ></textarea>
+                    <span
+                      *ngIf="
+                        myForm.controls['catatan2'].hasError('excludedSensitive')
+                      "
+                      class="text-danger"
+                      >{{
+                        "Catatan2 hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), dan tanda kurung ()."
+                          | translate
+                      }}
+                    </span>
+                  </div>
+                </div>
+                <div class="divider"></div>
+                <div class="d-grid gap-3 d-md-flex justify-content-end" *ngIf="!isShowDetail">
+                  <button
+                    class="btn btn-light btn-120"
+                    (click)="onShowModalBack()"
+                    [disabled]="adding"
+                  >
+                    {{ "Kembali" | translate }}
+                  </button>
+                  <button
+                    class="btn btn-info text-white btn-150"
+                    type="submit"
+                    [disabled]="adding"
+                    (click)="onShowModalBuatPesanan()"                    
+                  >
+                    <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
+                    <span *ngIf="!adding"
+                      >{{ "Buat" | translate }} {{ "Pesanan" | translate }}</span
+                    >
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div [ngClass]="isShowDetail ? 'col-9' : 'col-8'" >
+            <div  class="p-2" *ngIf="isShowDetail">
+              <app-add-data-detail-send-order-to-supplier></app-add-data-detail-send-order-to-supplier>
+            </div>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+  <c-modal #formModalBack [fullscreen]="false" [visible]="isShowModalBack" backdrop="static" #modalLg 
+    id="formModalBack"    [attr.aria-hidden]="!isShowModalBack">
+      <c-modal-header>
+        <h5 cModalTitle>Konfirmasi Kembali </h5>
+        <button (click)="isShowModalBack = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalBack.id"
+          cButtonClose><i class="fa fa-times"></i></button>
+      </c-modal-header>
+      <c-modal-body>
+        <p class="text-center">Apakah anda ingin kembali ke halaman sebelumnya?</p>
+        <div class="d-flex justify-center py-2">
+          <button class="btn btn-light"  (click)="isShowModalBack = false">Tidak</button>
+          &nbsp;
+          <button class="btn btn-primary text-white" (click)="onPreviousPressed()">Iya</button>
+
+        </div>
+      </c-modal-body>
+  </c-modal>
+  <c-modal #formModalBuatPesanan [fullscreen]="false" [visible]="isShowModalBuatPesanan" backdrop="static" #modalLg 
+  id="formModalBuatPesanan"    [attr.aria-hidden]="!isShowModalBuatPesanan">
+    <c-modal-header>
+      <h5 cModalTitle>Konfirmasi Buat Pesanan </h5>
+      <button (click)="isShowModalBuatPesanan = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalBack.id"
+        cButtonClose><i class="fa fa-times"></i></button>
+    </c-modal-header>
+    <c-modal-body>
+      <p class="text-center">Apakah anda ingin membuat pesanan?</p>
+      <div class="d-flex justify-center py-2">
+        <button class="btn btn-light"  (click)="isShowModalBuatPesanan = false">Tidak</button>
+        &nbsp;
+        <button class="btn btn-primary text-white" (click)="onSubmit()">Iya</button>
+
+      </div>
+    </c-modal-body>
+</c-modal>
+</div>

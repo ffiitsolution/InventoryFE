@@ -28,6 +28,8 @@ import {
   ReceivingOrderDetailComponent,
   ReceivingOrderAddFormComponent,
   ReceivingOrderAddDetailFormComponent,
+  AddDataDetailOrderManualComponent,
+  AddDataOrderManualComponent
 } from './receiving-order';
 import {
   ReceivingPoSupplierComponent,
@@ -47,6 +49,7 @@ import {
   AddDataDetailSendOrderToSupplierComponent,
   DetailSendOrderToSupplierComponent
 } from './send-order-to-supplier'
+
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
 
@@ -93,6 +96,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReceivingPoSupplierDetailComponent,
     ReceivingPoSupplierAddFormComponent,
     ReceivingPoSupplierAddDetailFormComponent,
+    AddDataDetailOrderManualComponent,
+    AddDataOrderManualComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })
