@@ -1,0 +1,74 @@
+<!-- <div class="fade-in">
+  <c-card class="mb-2">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>{{ "Release Note" | translate }}</h5>
+        </div>
+        <div class="col text-end">
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div> -->
+<div class="fade-in">
+  <div class="left-container">
+    <div class="version-list">
+      <ul>
+        <li *ngFor="let release of releaseNotes; let i = index" (click)="selectVersion(i)"
+          [class.active]="i === selectedVersionIndex">
+          {{ release.version }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="right-container" *ngIf="selectedRelease">
+      <h4>
+        <svg cIcon class="icon icon-lg me-2" name="cilHistory"></svg>Version:
+        {{ selectedRelease.version }}
+      </h4>
+      <c-badge color="primary" shape="rounded-pill" style="font-size: small">{{
+        selectedRelease.date
+        }}</c-badge>
+
+      <div class="mt-4">
+        <div *ngIf="selectedRelease?.changelog?.features?.length">
+          <h5>Features:</h5>
+          <ul>
+            <li *ngFor="let feature of selectedRelease.changelog.features">
+              {{ feature }}
+            </li>
+          </ul>
+        </div>
+
+        <div *ngIf="selectedRelease?.changelog?.bug_fixs?.length">
+          <h5>Bug Fixes:</h5>
+          <ul>
+            <li *ngFor="let bugFix of selectedRelease.changelog.bug_fixs">
+              {{ bugFix }}
+            </li>
+          </ul>
+        </div>
+
+        <div *ngIf="selectedRelease?.changelog?.improvements?.length">
+          <h5>Improvements:</h5>
+          <ul>
+            <li *ngFor="let improvement of selectedRelease.changelog.improvements">
+              {{ improvement }}
+            </li>
+          </ul>
+        </div>
+
+        <div *ngIf="selectedRelease?.changelog?.security_updates?.length">
+          <h5>Security Updates:</h5>
+          <ul>
+            <li *ngFor="let securityUpdate of selectedRelease.changelog.security_updates">
+              {{ securityUpdate }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

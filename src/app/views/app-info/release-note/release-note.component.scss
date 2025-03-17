@@ -1,0 +1,45 @@
+.left-container {
+  display: flex;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 64vh;
+}
+
+.version-list {
+  width: 30%;
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+.version-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.version-list li {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+}
+
+.version-list li.active {
+  background-color: #d9e6f2;
+  font-weight: bold;
+}
+
+.right-container {
+  width: 70%;
+  padding: 20px;
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+h5, h4 {
+  margin-top: 0;
+}

@@ -357,7 +357,7 @@ export const menu_id: any = [
   },
   {
     name: 'Kirim Terima Data',
-    url: '/sync-data',
+    url: '/sync-data/all',
     iconComponent: {
       name: 'cil-swap-vertical',
     },

@@ -65,6 +65,9 @@ export class AppService {
   getFile(url: String, params: any): Observable<any> {
     return this.dataService.postData(this.config.BASE_URL + url, params, true);
   }
+  getExternal(url: string): Observable<any> {
+    return this.dataService.getFileExternal(url);
+  }
 
   getReceivingOrderItem(nomorPesanan: String) {
     return this.dataService.postData(

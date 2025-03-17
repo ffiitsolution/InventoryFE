@@ -107,6 +107,16 @@ const routes: Routes = [
           import('./views/reports/report.module').then((m) => m.ReportModule),
       },
       {
+        path: 'sync-data',
+        loadChildren: () =>
+          import('./views/sync-data/sync-data.module').then((m) => m.SyncDataModule),
+      },
+      {
+        path: 'app-info',
+        loadChildren: () =>
+          import('./views/app-info/app-info.module').then((m) => m.AppInfoModule),
+      },
+      {
         path: 'account-setting',
         component: AccountSettingComponent,
       },

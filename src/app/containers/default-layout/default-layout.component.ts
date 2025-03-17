@@ -66,48 +66,48 @@ export class DefaultLayoutComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // this.navGroups = Array.from(document.querySelectorAll('.nav-group-toggle'));
+    this.navGroups = Array.from(document.querySelectorAll('.nav-group-toggle'));
     // this.navGroups.forEach((navGroup) => {
     //   navGroup.addEventListener('click', () => {
     //     this.toggleNavGroup(navGroup);
     //   });
     // });
     // Ketika menklik menu yang sedang dibuka, maka halaman refresh -- Permintaan UAT --
-    // const navLink = Array.from(document.getElementsByClassName('nav-link'));
-    // const htmlClass: any = [];
-    // const path: any[] = [];
-    // navLink.forEach((nav, index) => {
-    //   const href: any = (nav as HTMLAnchorElement).getAttribute('href');
-    //   let hClass: any = (nav as HTMLAnchorElement).getAttribute('class');
-    //   if (href == '#' + this.router.url) {
-    //     hClass += ' active';
-    //     nav.setAttribute('class', hClass);
-    //   }
-    //   htmlClass[index] = hClass;
-    //   path[index] = href ? href.replace('#', '') : '';
-    //   nav.addEventListener('click', (event) => {
-    //     this.g.saveLocalstorage('lastActU', path[index]);
-    //     this.g.saveLocalstorage('lastActA', 'VIEW');
-    //     if (!htmlClass[index].includes('nav-group-toggle')) {
-    //       if (htmlClass[index].includes('active')) {
-    //         this.router
-    //           .navigateByUrl('/', { skipLocationChange: true })
-    //           .then(() => {
-    //             this.router.navigateByUrl(path[index]);
-    //           });
-    //       } else {
-    //         for (let j = 0; j < htmlClass.length; j++) {
-    //           const element = htmlClass[j];
-    //           if (element.includes('active')) {
-    //             htmlClass[j] = htmlClass[j].replace(' active', '');
-    //             break;
-    //           }
-    //         }
-    //         htmlClass[index] += ' active';
-    //       }
-    //     }
-    //   });
-    // });
+    const navLink = Array.from(document.getElementsByClassName('nav-link'));
+    const htmlClass: any = [];
+    const path: any[] = [];
+    navLink.forEach((nav, index) => {
+      const href: any = (nav as HTMLAnchorElement).getAttribute('href');
+      let hClass: any = (nav as HTMLAnchorElement).getAttribute('class');
+      if (href == '#' + this.router.url) {
+        hClass += ' active';
+        nav.setAttribute('class', hClass);
+      }
+      htmlClass[index] = hClass;
+      path[index] = href ? href.replace('#', '') : '';
+      nav.addEventListener('click', (event) => {
+        this.g.saveLocalstorage('lastActU', path[index]);
+        this.g.saveLocalstorage('lastActA', 'VIEW');
+        if (!htmlClass[index].includes('nav-group-toggle')) {
+          if (htmlClass[index].includes('active')) {
+            this.router
+              .navigateByUrl('/', { skipLocationChange: true })
+              .then(() => {
+                this.router.navigateByUrl(path[index]);
+              });
+          } else {
+            for (let j = 0; j < htmlClass.length; j++) {
+              const element = htmlClass[j];
+              if (element.includes('active')) {
+                htmlClass[j] = htmlClass[j].replace(' active', '');
+                break;
+              }
+            }
+            htmlClass[index] += ' active';
+          }
+        }
+      });
+    });
   }
 
   toggleNavGroup(clickedNavGroup: HTMLElement) {

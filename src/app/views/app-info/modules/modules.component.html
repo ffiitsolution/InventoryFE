@@ -1,0 +1,57 @@
+<div class="fade-in">
+    <c-card class="mb-4">
+      <c-card-body><div class="left-container">
+        <div class="version-list">
+          <ul>
+            <li *ngFor="let f of arr; let i = index;" (click)="onModulSelect(f.name, f.ext)" class="list-modul"
+              [class.active]="selectedUrl.includes(f.name)">
+              {{i+1}}. {{ (f.name ? f.name.replaceAll('_', ' ') : '') | titlecase }} <c-badge color="secondary" *ngIf="f.size">{{ f.size }}</c-badge>
+              <br> <span class="text-muted">{{ f.lastUpdate }}</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="right-container" *ngIf="selectedUrl">
+          <div class="my-2" *ngIf="selectedUrl.length > 1">
+            <p class="text-center" *ngIf="!!textLoading">{{ textLoading }}</p>
+            <div *ngIf="selectedExtention == 'pdf' && !textLoading">
+              <c-button-toolbar aria-label="Tools" role="group">
+                <c-button-group aria-label="Page" class="mt-2 me-2" role="group">
+                  <button cButton color="danger" variant="outline" (click)="onPrevPage()">
+                    <i class="fa fa-chevron-left"></i>
+                  </button>
+                  <c-input-group>
+                    <input aria-describedby="btnGroupAddon" aria-label="Jump to page" cFormControl placeholder="Jump to page"
+                      type="number" [(ngModel)]="pageNum" min="1" [max]="totalPages" class="text-center" />
+                    <span cInputGroupText> / {{ totalPages }}</span>
+                  </c-input-group>
+                  <button cButton color="danger" variant="outline" (click)="onNextPage()">
+                    <i class="fa fa-chevron-right"></i>
+                  </button>
+                </c-button-group>
+                <c-button-group aria-label="File" class="mt-2" role="group">
+                  <button cButton color="danger" variant="outline" (click)="printPdf()" title="Print">
+                    <i class="fa fa-print me-2"></i>
+                  </button>
+                  <button cButton color="danger" variant="outline" (click)="download()" title="Download">
+                    <i class="fa fa-download me-2"></i>
+                  </button>
+                  <button cButton color="danger" variant="outline" (click)="enterFullscreen()" title="View Fullscreen">
+                    <i class="fa fa-arrows-alt me-2"></i>
+                  </button>
+                </c-button-group>
+              </c-button-toolbar>
+            </div>
+            <pdf-viewer id="pdfViewer" [src]="selectedUrl" [show-borders]="true" [render-text]="true" [original-size]="false"
+              [(page)]="pageNum" style="width: 100%; height: 70vh" (after-load-complete)="afterLoadComplete($event)"
+              (on-progress)="onProgress($event)" (error)="handlePdfError($event)"
+              *ngIf="selectedExtention == 'pdf'"></pdf-viewer>
+            <iframe [src]="fileUrl" width="100%" height="600px" frameborder="0" *ngIf="selectedExtention != 'pdf'">
+            </iframe>
+          </div>
+        </div>
+      </div>
+
+      </c-card-body>
+    </c-card>
+</div>
