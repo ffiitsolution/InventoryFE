@@ -89,6 +89,13 @@ export const menu_id: any = [
           name: 'cil-window',
         },
       },
+      {
+        name: 'Jabatan',
+        url: '/master/master-position',
+        iconComponent: {
+          name: 'cil-contact',
+        },
+      },
     ],
   },
   {
