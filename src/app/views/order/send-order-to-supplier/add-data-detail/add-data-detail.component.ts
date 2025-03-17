@@ -227,7 +227,6 @@ export class AddDataDetailSendOrderToSupplierComponent
           
       this.service.insert('/api/send-order-to-supplier/insert-header-detail', paramHeaderDetail).subscribe({
         next: (res) => {
-          this.listOrderData .push({kodeBarang:"",namaBarang:""});
           if (!res.success) {
             alert(res.message);
           } else {
@@ -245,11 +244,15 @@ export class AddDataDetailSendOrderToSupplierComponent
     }
 
     else{
-      this.listOrderData .push({kodeBarang:"",namaBarang:""});
       this.toastr.error("Data tidak valid")
     }
-    this.listOrderData .push({kodeBarang:"",namaBarang:""});
 
+    if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() !== "") { 
+      this.listOrderData.push({
+        kodeBarang: '',
+        namaBarang: '',
+      });    
+    }
   }
   
   onShowModal() {
@@ -321,6 +324,13 @@ export class AddDataDetailSendOrderToSupplierComponent
     if(errorMessage)
       this.toastr.error(errorMessage);
 
+    
+    if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() !== "") { 
+      this.listOrderData.push({
+        kodeBarang: '',
+        namaBarang: '',
+      });    
+    }
   }
 
   

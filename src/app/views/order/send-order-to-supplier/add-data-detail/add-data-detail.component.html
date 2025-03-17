@@ -148,13 +148,6 @@
           </c-pagination>
         </ng-container>
       </div>
-      <div class="d-grid gap-3 d-md-flex justify-content-end mb-3 mt-3">
-
-        <button type="button" class="btn btn-success text-white me-2"  (click)="onShowModal()">
-          {{ 'Tambah' | translate }}           {{ 'Barang' | translate }}
-        </button>
-  
-      </div>
     </c-card-body>
 
     <c-modal #formModal [fullscreen]="false" [visible]="isShowModal" backdrop="static" #modalLg size="xl"

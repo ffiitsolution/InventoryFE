@@ -232,7 +232,13 @@ export class AddDataDetailSendOrderToWarehouseComponent
     else{
       this.toastr.error("Data tidak valid")
     }
-    this.listOrderData .push({kodeBarang:"",namaBarang:""});
+    
+    if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() !== "") { 
+      this.listOrderData.push({
+        kodeBarang: '',
+        namaBarang: '',
+      });    
+    }
   }
   
   onShowModal() {
@@ -303,6 +309,13 @@ export class AddDataDetailSendOrderToWarehouseComponent
     if(errorMessage)
       this.toastr.error(errorMessage);
 
+
+    if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() !== "") { 
+      this.listOrderData.push({
+        kodeBarang: '',
+        namaBarang: '',
+      });    
+    }
   }
 
 
