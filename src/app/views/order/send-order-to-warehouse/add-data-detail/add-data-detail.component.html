@@ -19,7 +19,7 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
+        <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
         <button class="btn btn-light  btn-150" (click)="onShowModalCancel()">
           <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
         </button> 
@@ -36,26 +36,35 @@
           <table bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
             <thead>
               <tr>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">No.
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                class="text-center align-items-start" rowspan="2">
+                  No.
                 </th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">Kode
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                class="text-center align-items-start" rowspan="2">
+                 Barang</th>
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                class="text-center align-items-start" rowspan="2">
                   Barang</th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">Nama
-                  Barang</th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" colspan="2">Qty
-                  Kirim</th> <!-- Masih sejajar -->
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle;"
+                  class="text-center align-items-start btn-danger" colspan="2">Qty Pesan</th> <!-- Masih sejajar --> 
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                class="text-center align-items-start" rowspan="2">
                   Konversi Gudang</th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                class="text-center align-items-start" rowspan="2">
                   Total Quantity Pesan
                 </th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Action
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                class="text-center align-items-start" rowspan="2">
+                   Action
                 </th>
               </tr>
               <tr>
-                <th scope="col" class="text-center" style="width:160px;">Besar</th>
-                <th scope="col" class="text-center" style="width:160px;">Kecil</th>
+                <th scope="col" class="text-center"
+                  style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle; ">Besar</th>
+                <th scope="col" class="text-center"
+                  style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle;">Kecil</th>
               </tr>
             </thead>
             <tbody *ngIf="!listOrderData || listOrderData.length === 0">
