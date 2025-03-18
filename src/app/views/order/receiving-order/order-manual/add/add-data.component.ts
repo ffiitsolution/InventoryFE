@@ -55,13 +55,13 @@ export class AddDataOrderManualComponent implements OnInit {
   isShowDetail = false;
   newNomorPesanan :any;
   isShowModalBack: boolean = false;
-  isShowModalBuatPesanan: boolean = false;
-  isshowmodalPemesan: boolean = false;
+  isShowModalBranch: boolean = false;
 
   dtOptionsPemesan: DataTables.Settings = {};
   selectedRowData: any;
   page = new Page();
 
+  selectedRow: any = {};
 
   constructor(
     private toastr: ToastrService,
@@ -82,7 +82,7 @@ export class AddDataOrderManualComponent implements OnInit {
       tanggalPesanan: [{ value: new Date(new Date().setDate(new Date().getDate())), disabled: true }, Validators.required],
       tanggalKirimBarang: [ new Date(new Date().setDate(new Date().getDate()  + 3)), Validators.required], // Default: Today
       tanggalBatalPesanan: [{ value: new Date(new Date().setDate(new Date().getDate()  + 7)), disabled: false }, Validators.required],
-      RSCTujuan: ['', Validators.required],
+      gudangTujuan: ['', Validators.required],
       namaGudang:  [{value: '', disabled: true}],
       alamatGudang:  [{value: '', disabled: true}],
       statusGudang:  [{value: '', disabled: true}],
@@ -149,7 +149,7 @@ export class AddDataOrderManualComponent implements OnInit {
   
 
   onSubmit(): void {
-    this.isShowModalBuatPesanan = false;
+    this.isShowModalBranch = false;
     const currentUser = this.g.getLocalstorage('inv_currentUser');
     
     const { controls, invalid } = this.myForm;
@@ -268,8 +268,8 @@ export class AddDataOrderManualComponent implements OnInit {
     this.isShowModalBack= true;
   }
 
-  onShowModalBuatPesanan() {
-    this.isShowModalBuatPesanan= true;
+  onShowModalBranch() {
+    this.isShowModalBranch= true;
   }
 
   
@@ -298,9 +298,6 @@ export class AddDataOrderManualComponent implements OnInit {
       }); 
   }
 
-  onShowModalTujuan(){
-
-  }
 
   handleEnter(event: any) {
   
@@ -331,7 +328,7 @@ export class AddDataOrderManualComponent implements OnInit {
                 const { rn, ...rest } = item;
                 const finalData = {
                   ...rest,
-                  keteranganRsc: `${rest.kodeRsc} - ${rest.keteranganRsc}`,
+                  kodeKeteranganRsc: `${rest.kodeRsc} - ${rest.keteranganRsc}`,
                   dtIndex: this.page.start + index + 1,
                 };
                 return finalData;
@@ -368,7 +365,7 @@ export class AddDataOrderManualComponent implements OnInit {
             render: () => {
               return `
               <div class="btn-group" role="group" aria-label="Action">
-                <button class="btn btn-sm action-view btn-outline-info btn-60">Pilih</button>
+                <button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>
               </div>
             `;
             },
@@ -378,37 +375,43 @@ export class AddDataOrderManualComponent implements OnInit {
         order: [
           [1, 'asc'],
         ],
-      rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        $('.action-select', row).on('click', () =>
-          this.actionBtnClick(ACTION_SELECT, data)
-        );
-        if (index === 0 && !this.selectedRowData) {
-          setTimeout(() => {
-            $(row).trigger('td'); 
-          }, 0);
-        }
-        $('td', row).on('click', () => {
-          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
-          if (this.selectedRowData !== data) {
-            this.selectedRowData = data;
-            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
-          } else {
-            this.selectedRowData = undefined;
-          }
-        });
-      
-    
-        return row;
-
-      },
+  rowCallback: (row: Node, data: any[] | Object, index: number) => {
+         $('.action-select', row).on('click', () =>
+           this.actionBtnClick(ACTION_SELECT, data)
+         );
+         if (index === 0 && !this.selectedRowData) {
+           setTimeout(() => {
+             $(row).trigger('td'); 
+           }, 0);
+         }
+         $('td', row).on('click', () => {
+           $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+           if (this.selectedRowData !== data) {
+             this.selectedRowData = data;
+             $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+           } else {
+             this.selectedRowData = undefined;
+           }
+         });
+       
+     
+         return row;
+ 
+       },
       };
     }
 
     actionBtnClick(action: string, data: any = null) {
-      // this.selectedRo = JSON.stringify(data);
-      // this.renderDataTables();
-      // this.isShowModal = false;
-      // this.mapOrderData(data);
-      // this.onSaveData();
+      this.selectedRow = (data);
+      console.log("this.selectedrow",this.selectedRow)
+      this.isShowModalBranch = false;
+      console.log("end actionbtnclick",this.isShowModalBranch)
+      this.mappingDataPemesan()
+    }
+    mappingDataPemesan() {
+      this.myForm.controls['gudangTujuan'].setValue(this.selectedRow.kodeCabang);
+      this.myForm.controls['namaGudang'].setValue(this.selectedRow.namaCabang);
+      this.myForm.controls['statusGudang'].setValue(this.selectedRow.statusAktif);
+      this.myForm.controls['alamatGudang'].setValue(this.selectedRow.alamat1);      
     }
 }
