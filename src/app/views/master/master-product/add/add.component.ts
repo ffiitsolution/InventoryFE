@@ -293,7 +293,7 @@ export class MasterProductAddComponent implements OnInit {
             if (data === 'A') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
-            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:grey; width: 60px">Inactive</span> </div>`;
+            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
           },
         },
         {

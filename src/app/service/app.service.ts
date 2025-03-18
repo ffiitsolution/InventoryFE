@@ -65,6 +65,9 @@ export class AppService {
   getFile(url: String, params: any): Observable<any> {
     return this.dataService.postData(this.config.BASE_URL + url, params, true);
   }
+  getExternal(url: string): Observable<any> {
+    return this.dataService.getFileExternal(url);
+  }
 
   getReceivingOrderItem(nomorPesanan: String) {
     return this.dataService.postData(
@@ -114,6 +117,17 @@ export class AppService {
     };
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/receiving-order/report`,
+      params,
+      true
+    );
+  }
+
+  reporReceivingPoSupplierJasper(params: any, url: string): Observable<any> {
+    const httpOptions = {
+      responseType: 'blob' as 'json',
+    };
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/receiving-po-supplier/report`,
       params,
       true
     );

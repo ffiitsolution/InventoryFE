@@ -74,6 +74,7 @@
                       #dp="bsDatepicker"
                       placeholder="{{ 'Tanggal Kirim Barang' | translate }}"
                       (bsValueChange)="onDateChangeTglKirimBarang($event)"
+                      (keypress)="conditionInput($event, 'tanggal')"
                     />
                     <span *ngIf="isFieldValid('tanggalKirimBarang')" class="text-danger">{{
                       "Wajib diisi" | translate
@@ -100,6 +101,7 @@
                       formControlName="tanggalBatalPesanan"
                       #dp="bsDatepicker"
                       placeholder="{{ 'Tanggal Batal Pesanan' | translate }}"
+                      (keypress)="conditionInput($event, 'tanggal')"
                     />
                     <span *ngIf="isFieldValid('tanggalBatalPesanan')" class="text-danger">{{
                       "Wajib diisi" | translate

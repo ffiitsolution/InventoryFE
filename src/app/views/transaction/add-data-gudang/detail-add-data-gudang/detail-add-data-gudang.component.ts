@@ -29,14 +29,16 @@ import { HelperService } from '../../../../service/helper.service';
 import { AppService } from '../../../../service/app.service';
 import * as moment from 'moment';
 import { data } from 'jquery';
-import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-detail-add-data-gudang',
   templateUrl: './detail-add-data-gudang.component.html',
   styleUrls: ['./detail-add-data-gudang.component.scss'],
 })
-export class AddDataDetailGudangComponent {
+export class AddDataDetailGudangComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   columns: any;
   orders: any[] = [];
   selectedOrder: any = JSON.parse(localStorage[LS_INV_SELECTED_DELIVERY_ORDER]);
@@ -53,6 +55,8 @@ export class AddDataDetailGudangComponent {
   buttonCaptionView: String = 'Lihat';
   public loading: boolean = false;
   page: number = 1;
+  cekPrint: any;
+  printData: any;
 
   protected config = AppConfig.settings.apiServer;
 
@@ -63,10 +67,9 @@ export class AddDataDetailGudangComponent {
     public helper: HelperService,
     private appService: AppService,
     private toastr: ToastrService,
-    private http: HttpClient,
     private dataService: DataService
   ) {
-    this.g.navbarVisibility = true;
+    this.g.navbarVisibility = false;
     this.selectedOrder = JSON.parse(this.selectedOrder);
     this.getDeliveryItemDetails();
   }
@@ -87,6 +90,8 @@ export class AddDataDetailGudangComponent {
     this.loading = true;
     this.listOrderData = [];
 
+    console.log(this.selectedOrder);
+
     const params = {
       nomorPesanan: this.selectedOrder.nomorPesanan,
     };
@@ -96,6 +101,7 @@ export class AddDataDetailGudangComponent {
         this.listOrderData = res.detailPesanan.map((data: any) => ({
           ...data,
         }));
+        console.log('listorderdata1', this.listOrderData);
         this.totalLength = res?.data?.length;
         this.page = 1;
         setTimeout(() => {
@@ -104,64 +110,9 @@ export class AddDataDetailGudangComponent {
       },
       () => {
         this.loading = false;
+        // this.toastr.error(this.errorShowMessage, 'Maaf, Terjadi Kesalahan!');
       }
     );
-  }
-
-  // onInputValueItemDetail(event: any, index: number) {
-  //   const target = event.target;
-  //   const value = target.value;
-
-  //   if (target.type === 'number') {
-  //     this.listOrderData[index][target.name] = Number(value);
-  //   } else {
-  //     this.listOrderData[index][target.name] = value;
-  //   }
-  // }
-
-  // onFilterSearch(
-  //   listData: any[],
-  //   filterText: string,
-  //   startAfter: number = 1
-  // ): any[] {
-  //   return this.helper.applyFilterList(listData, filterText, startAfter);
-  // }
-
-  // ngAfterViewInit(): void {}
-
-  // ngOnDestroy(): void {
-  //   this.g.navbarVisibility = true;
-  // }
-
-  onBackPressed() {
-    this.router.navigate(['/transaction/receipt-from-warehouse/tambah-data']);
-  }
-
-  onPageChange(event: number) {
-    this.page = event;
-  }
-
-  formatStrDate(date: any) {
-    return moment(date, 'YYYY-MM-DD').format('DD-MM-YYYY');
-  }
-
-  onSubmit() {
-    Swal.fire({
-      title: 'Apa Anda Sudah Yakin?',
-      text: 'Pastikan data yang dimasukkan sudah benar!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Ya, Simpan!',
-      cancelButtonText: 'Batal',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.prosesSimpan(); // Jalankan fungsi simpan
-      } else {
-        this.toastr.info('Penyimpanan dibatalkan');
-      }
-    });
   }
 
   onInputValueItemDetail(event: any, index: number) {
@@ -175,73 +126,35 @@ export class AddDataDetailGudangComponent {
     }
   }
 
-  prosesSimpan() {
-    this.adding = true;
-    let hasInvalidData = false;
-
-    const param: any[] = this.listOrderData
-      .map((data: any) => {
-        if (!data) return null;
-        let totalQtyPesan = data?.TOTAL_QTY_PESAN ?? 0;
-        let totalQtyExpired = data?.TOTAL_QTY_EXPIRED ?? 0;
-        let qtyDiterima = data?.TOTAL_QTY_TERIMA ?? 0;
-        let total_qty_expired = data.TOTAL_QTY_EXPIRED - data.TOTAL_QTY_PESAN;
-
-        if (data.TOTAL_QTY_EXPIRED > data.TOTAL_QTY_PESAN) {
-          this.toastr.error(
-            `Total Qty Expired (${totalQtyExpired}) tidak boleh lebih besar dari Total Qty Pesan (${totalQtyPesan})`
-          );
-          hasInvalidData = true;
-          return null;
-        }
-
-        return {
-          kodeGudang: data.KODE_GUDANG ?? '',
-          nomorPesanan: data.NOMOR_PESANAN ?? '',
-          nomorSuratJalan: this.selectedOrder.nomorSuratJan ?? '',
-          kodeBarang: (data.KODE_BARANG ?? '').substring(0, 10),
-          qtyDiterima: data.TOTAL_QTY_TERIMA.toString(),
-          totalQtyPesan: data.TOTAL_QTY_PESAN,
-          totalQtyExp: data.TOTAL_QTY_EXPIRED,
-          timeCounter: new Date().toISOString(),
-        };
-      })
-      .filter((item) => item !== null);
-    if (hasInvalidData) {
-      this.adding = false;
-      return;
-    }
-
-    fetch(
-      'http://localhost:8093/inventory/api/delivery-order/simpan-data-penerimaan-dari-gudang',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(param),
-      }
-    )
-      .then((response) => {
-        if (!response.ok)
-          throw new Error(`HTTP error! status: ${response.status}`);
-        return response.json();
-      })
-      .then((data) => {
-        if (data.some((item: any) => item.message)) {
-          this.toastr.success('Data penerimaan berhasil disimpan!');
-        } else if (data.some((item: any) => item.error)) {
-          this.toastr.error('Gagal menyimpan: ' + data[0].error);
-        }
-      })
-      .catch((error) => {
-        this.toastr.error('Terjadi kesalahan: ' + error.message);
-      })
-      .finally(() => {
-        this.adding = false;
-      });
+  onFilterSearch(
+    listData: any[],
+    filterText: string,
+    startAfter: number = 1
+  ): any[] {
+    return this.helper.applyFilterList(listData, filterText, startAfter);
   }
 
-  handleCetakAtauPrint(isDownload: boolean) {
-    this.onCetakAtauPrintReport(isDownload, this.selectedOrder.nomorPesanan);
+  ngAfterViewInit(): void {}
+
+  ngOnDestroy(): void {
+    this.g.navbarVisibility = true;
+  }
+
+  onBackPressed() {
+    this.router.navigate(['/transaction/receipt-from-warehouse/tambah-data']);
+  }
+
+  onPageChange(event: number) {
+    this.page = event;
+  }
+
+  formatStrDate(date: any) {
+    return moment(date, 'YYYY-MM-DD').format('DD-MM-YYYY');
+  }
+
+  handleCetakAtauPrint(data: any) {
+    this.cekPrint = data;
+    this.printData = data;
   }
 
   onCetakAtauPrintReport(isDownload: boolean, nomorPesanan: string) {
@@ -290,4 +203,90 @@ export class AddDataDetailGudangComponent {
         }
       );
   }
+  
+  onSubmit() {
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Pastikan data sudah benar sebelum menyimpan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Simpan!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            this.prosesSimpanData(); // Panggil fungsi untuk menyimpan data
+        }
+    });
+}
+
+// Fungsi untuk memproses penyimpanan data
+prosesSimpanData() {
+    this.adding = true;
+    let hasInvalidData = false;
+
+    const param: any[] = this.listOrderData
+      .map((data: any) => {
+        if (!data) return null;
+        let totalQtyPesan = data?.TOTAL_QTY_PESAN ?? 0;
+        let totalQtyExpired = data?.TOTAL_QTY_EXPIRED ?? 0;
+        let qtyDiterima = data?.TOTAL_QTY_TERIMA ?? 0;
+
+        if (totalQtyExpired > totalQtyPesan) {
+          this.toastr.error(
+            `Total Qty Expired (${totalQtyExpired}) tidak boleh lebih besar dari Total Qty Pesan (${totalQtyPesan})`
+          );
+          hasInvalidData = true;
+          return null;
+        }
+
+        return {
+          kodeGudang: data.KODE_GUDANG ?? '',
+          nomorPesanan: data.NOMOR_PESANAN ?? '',
+          nomorSuratJalan: this.selectedOrder.nomorSuratJan ?? '',
+          kodeBarang: (data.KODE_BARANG ?? '').substring(0, 10),
+          qtyDiterima: data.TOTAL_QTY_TERIMA.toString(),
+          totalQtyPesan: data.TOTAL_QTY_PESAN,
+          totalQtyExp: data.TOTAL_QTY_EXPIRED,
+          timeCounter: new Date().toISOString(),
+        };
+      })
+      .filter((item) => item !== null);
+
+    if (hasInvalidData) {
+      this.adding = false;
+      return;
+    }
+
+    fetch(
+      'http://localhost:8093/inventory/api/delivery-order/simpan-data-penerimaan-dari-gudang',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(param),
+      }
+    ) 
+      .then((response) => {
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        if (data.some((item: any) => item.message)) {
+          this.toastr.success('Data penerimaan berhasil disimpan!');
+          setTimeout(() => {
+            this.router.navigate(['/transaction/receipt-from-warehouse/display-data-dari-gudang']);
+          }, 1500); // Beri delay untuk user melihat pesan sukses sebelum pindah halaman
+        } else if (data.some((item: any) => item.error)) {
+          this.toastr.error('Gagal menyimpan: ' + data[0].error);
+        }
+      })
+      .catch((error) => {
+        this.toastr.error('Terjadi kesalahan: ' + error.message);
+      })
+      .finally(() => {
+        this.adding = false;
+      });
+}
 }

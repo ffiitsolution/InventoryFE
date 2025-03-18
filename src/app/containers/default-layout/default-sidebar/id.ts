@@ -89,6 +89,13 @@ export const menu_id: any = [
           name: 'cil-window',
         },
       },
+      {
+        name: 'Jabatan',
+        url: '/master/master-position',
+        iconComponent: {
+          name: 'cil-contact',
+        },
+      },
     ],
   },
   {
@@ -100,6 +107,13 @@ export const menu_id: any = [
       {
         name: 'Terima Pesanan',
         url: '/order/receiving-order',
+        iconComponent: {
+          name: 'cil-envelope-open',
+        },
+      },
+      {
+        name: 'Terima P.O Supplier Dari RSC',
+        url: '/order/receiving-po-supplier',
         iconComponent: {
           name: 'cil-envelope-open',
         },
@@ -240,26 +254,26 @@ export const menu_id: any = [
       },
       {
         name: 'Pemakaian Barang Sendiri',
-        url: '/transaction/transaksi-pemakaian-barang-sendiri',
+        url: '/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri',
         iconComponent: {
           name: 'cil-hand-point-right',
         },
-        children: [
-          {
-            name: 'Tambah Data',
-            url: '/transaction/pemakaian-barang-sendiri/tambah-data-pemakaian-barang-sendiri',
-            iconComponent: {
-              name: 'cil-circle',
-            },
-          },
-          {
-            name: 'Display Data',
-            url: '/transaction/transaksi-pemakaian-barang-sendiri/display-data-pemakaian-barang-sendiri',
-            iconComponent: {
-              name: 'cil-circle',
-            },
-          },
-        ],
+        // children: [
+        //   {
+        //     name: 'Tambah Data',
+        //     url: '/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri',
+        //     iconComponent: {
+        //       name: 'cil-circle',
+        //     },
+        //   },
+        //   {
+        //     name: 'Display Data',
+        //     url: '/transaction/transaksi-pemakaian-barang-sendiri/display-data-pemakaian-barang-sendiri',
+        //     iconComponent: {
+        //       name: 'cil-circle',
+        //     },
+        //   },
+        // ],
       },
       {
         name: 'Pemusnahan Barang',
@@ -350,7 +364,7 @@ export const menu_id: any = [
   },
   {
     name: 'Kirim Terima Data',
-    url: '/sync-data',
+    url: '/sync-data/all',
     iconComponent: {
       name: 'cil-swap-vertical',
     },

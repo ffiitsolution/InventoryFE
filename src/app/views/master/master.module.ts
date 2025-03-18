@@ -70,6 +70,13 @@ import {
   TableRscEditComponent,
   TableRscDetailComponent,
 } from './table-rsc';
+
+import {
+  TablePositionComponent,
+  TablePositionAddComponent,
+  TablePositionEditComponent,
+  TablePositionDetailComponent,
+} from './table-position';
 import {
   TableUomAddComponent,
   TableUomComponent,
@@ -173,6 +180,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     TableSetNumberAddComponent,
     TableSetNumberEditComponent,
     TableSetNumberDetailComponent,
+
+    TablePositionComponent,
+    TablePositionAddComponent,
+    TablePositionDetailComponent,
+    TablePositionEditComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

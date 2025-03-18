@@ -98,7 +98,6 @@ export class SendOrderToWarehouseComponent
           this.dataService
             .postData(this.config.BASE_URL + '/api/send-order-to-warehouse/dt', params)
             .subscribe((resp: any) => {
-              console.log("resp",resp)
               const mappedData = resp.data.map((item: any, index: number) => {
                 // hapus rn
                 const { rn, ...rest } = item;
