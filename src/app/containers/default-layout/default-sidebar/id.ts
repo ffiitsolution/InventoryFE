@@ -126,6 +126,13 @@ export const menu_id: any = [
     icon: 'fa fa-exchange',
     children: [
       {
+        name: 'Pembelian',
+        url: '/transaction/pembelian/list-dt',
+        iconComponent: {
+          name: 'cil-cart',
+        }
+      },
+      {
         name: 'Pengiriman',
         url: '/transaction/delivery-item',
         iconComponent: {

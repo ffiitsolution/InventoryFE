@@ -12,6 +12,7 @@ import {
   FormModule,
   GridModule,
   ModalModule,
+  PaginationModule,
   TableModule,
   TextColorDirective,
   UtilitiesModule,
@@ -41,6 +42,9 @@ import { AddDataDetailWastageComponent } from './pemusnahan-wastage/add-data-det
 import { DetailWastageComponent } from './pemusnahan-wastage/detail/detail.component';
 import { AddDataDetailGudangComponent } from './add-data-gudang/detail-add-data-gudang/detail-add-data-gudang.component';
 import { DisplayDataGudangComponent } from './add-data-gudang/display-data-dari-gudang/display-data-dari-gudang.component';
+import { PembelianListComponent } from './pembelian/dt/pembelian-list.component';
+import { AddPembelianComponent } from './pembelian/add-data/add-data.component';
+import { AddDataDetailPembelianComponent } from './pembelian/add-data-detail/add-data-detail.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
@@ -66,6 +70,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ModalModule,
     TableModule,
     SharedComponentModule,
+    PaginationModule,
     
   ],
   declarations: [
@@ -86,6 +91,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     DetailWastageComponent,
     AddDataDetailGudangComponent,
     DisplayDataGudangComponent,
+    PembelianListComponent,
+    AddPembelianComponent,
+    AddDataDetailPembelianComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

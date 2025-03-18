@@ -153,7 +153,7 @@ export class ReceivingOrderComponent
       ],
       searchDelay: 1000,
       order: [
-        [4, 'asc'],
+        [1, 'desc'],
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>

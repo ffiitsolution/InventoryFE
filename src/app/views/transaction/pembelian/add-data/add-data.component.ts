@@ -6,27 +6,27 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataService } from '../../../service/data.service';
-import { GlobalService } from '../../../service/global.service';
-import { TranslationService } from '../../../service/translation.service';
+import { DataService } from '../../../../service/data.service';
+import { GlobalService } from '../../../../service/global.service';
+import { TranslationService } from '../../../../service/translation.service';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Page } from '../../../model/page';
-import { AppService } from '../../../service/app.service';
-import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../constants';
+import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
 import moment from 'moment';
+import { Page } from '../../../../model/page';
+import { AppService } from '../../../../service/app.service';
 
 @Component({
-  selector: 'app-add-data',
+  selector: 'app-add-data-pembelian',
   templateUrl: './add-data.component.html',
   styleUrls: ['./add-data.component.scss'],
 
 })
-export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
   nomorPesanan: any;
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
@@ -43,18 +43,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedRowData: any;
   @ViewChild('formModal') formModal: any;
   // Form data object
-  formData = {
-    nomorPesanan: '',
-    deliveryStatus: '',
-    namaCabang: '',
-    alamat1: '',
-    tglPesan: '',
-    tglBrgDikirim: '',
-    tglKadaluarsa: '',
-    validatedDeliveryDate: '',
-    keterangan: '',
-    codeDestination: '',
-    kodeGudang: ''
+  formData: any = {
   };
 
   constructor(
@@ -97,7 +86,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
   onAddDetail() {
     this.isShowDetail = true;
     this.globalService.saveLocalstorage(
-      LS_INV_SELECTED_DELIVERY_ORDER,
+      'headerPembelian',
       JSON.stringify(this.formData)
     );
   }
@@ -148,10 +137,11 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.globalService.getUserLocationCode(),
+          tipePesanan: 'S',
           // startDate: this.g.transformDate(this.dateRangeFilter[0]),
           // endDate: this.g.transformDate(this.dateRangeFilter[1]),
         };
-        this.appService.getNewReceivingOrder(params)
+        this.appService.getPOPembelian(params)
           .subscribe((resp: any) => {
             const mappedData = resp.data.map((item: any, index: number) => {
               // hapus rn dari data
@@ -172,15 +162,16 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
           });
       },
       columns: [
-        { data: 'kodeGudang', title: 'Kode Gudang' },
-        { data: 'kodePemesan', title: 'Kode Pemesan' },
-        { data: 'nomorPesanan', title: 'Nomor Pesanan' },
-        { data: 'tglPesan', title: 'Tanggal Pesan' },
-        { data: 'tglBrgDikirim', title: 'Tanggal Dikirim', },
-        { data: 'keterangan1', title: 'Keterangan', },
+        { data: 'nomorPesanan', title: 'No. Pesanan' },
+        { data: 'tglPesanan', title: 'Tgl. Pesan' },
+        { data: 'tglKirimBrg', title: 'Tgl. Kirim' },
+        { data: 'tglBatalExp', title: 'Tgl. Expired' },
+        { data: 'supplier', title: 'Supplier', },
+        { data: 'namaSupplier', title: 'Nama Supplier', },
+        { data: 'alamatSupplier', title: 'Alamat', },
         {
-          data: 'statusRecieve',
-          title: 'Status Penerimaan',
+          data: 'statusPesanan',
+          title: 'Status Pesanan',
           render: (data) => {
             const isCancel = data == CANCEL_STATUS;
             const label = this.globalService.getsatusDeliveryOrderLabel(data);
@@ -210,7 +201,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
         );
         if (index === 0 && !this.selectedRowData) {
           setTimeout(() => {
-            $(row).trigger('td'); 
+            $(row).trigger('td');
           }, 0);
         }
         $('td', row).on('click', () => {
@@ -222,8 +213,8 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
             this.selectedRowData = undefined;
           }
         });
-      
-    
+
+
         return row;
 
       },
@@ -231,22 +222,16 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private mapOrderData(orderData: any): void {
-    this.formData.deliveryStatus = 'Aktif';
-    this.formData.codeDestination = orderData.kodePemesan
-    this.formData.namaCabang = orderData.namaCabang || '';
-    this.formData.alamat1 = orderData.alamat1 || '';
-    this.formData.tglPesan = moment(orderData.tglPesan, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.tglBrgDikirim = moment(orderData.tglBrgDikirim, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.tglKadaluarsa = moment(orderData.tglKadaluarsa, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.nomorPesanan = orderData.nomorPesanan || '';
-    this.formData.validatedDeliveryDate = this.formData.tglBrgDikirim || '';
-    this.formData.kodeGudang = orderData.kodeGudang || '';
-    this.maxDate = new Date(this.formData.tglKadaluarsa);
-    this.minDate = new Date(this.formData.tglBrgDikirim);
+    this.formData.nomorPesanan = orderData.nomorPesanan;
+    this.formData.supplier = orderData.supplier
+    this.formData.namaSupplier = orderData.namaSupplier || '';
+    this.formData.alamatSupplier = orderData.alamatSupplier || '';
+    this.formData.tglDokumen = moment().format('DD-MM-YYYY');
+    this.formData.tglTerimaBrg = moment().format('DD-MM-YYYY');
   }
 
   handleEnter(event: any) {
-  
+
   }
 }
 

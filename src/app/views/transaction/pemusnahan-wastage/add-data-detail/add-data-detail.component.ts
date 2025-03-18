@@ -71,11 +71,13 @@ export class AddDataDetailWastageComponent
   isShowModalDelete: boolean = false;
   indexDataDelete: any;
   selectedExpProduct: any = {};
+  listCurrentPage: number = 1;
+  totalLengthList: number = 1;
 
   @ViewChild('formModal') formModal: any;
   public dpConfig: Partial<BsDatepickerConfig> = {
     dateInputFormat: 'DD/MM/YYYY',
-    containerClass: 'theme-dark-blue',
+    containerClass: 'theme-red',
   };
   protected config = AppConfig.settings.apiServer;
 
@@ -210,7 +212,7 @@ export class AddDataDetailWastageComponent
             cancelButtonText: 'Batal',
           }).then((result) => {
             if (result.isConfirmed) {
-              this.service.insert('/api/wastage/insert', param).subscribe({
+              this.service.insert('/api/pembelian/insert', param).subscribe({
                 next: (res) => {
                   if (!res.success) {
                     this.toastr.error(res.message);

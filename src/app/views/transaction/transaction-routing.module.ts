@@ -17,6 +17,8 @@ import { AddDataDetailWastageComponent } from './pemusnahan-wastage/add-data-det
 import { DetailWastageComponent } from './pemusnahan-wastage/detail/detail.component';
 import { AddDataDetailGudangComponent } from './add-data-gudang/detail-add-data-gudang/detail-add-data-gudang.component';
 import { DisplayDataGudangComponent } from './add-data-gudang/display-data-dari-gudang/display-data-dari-gudang.component';
+import { PembelianListComponent } from './pembelian/dt/pembelian-list.component';
+import { AddPembelianComponent } from './pembelian/add-data/add-data.component';
 const routes: Routes = [
   {
     path: '',
@@ -94,6 +96,23 @@ const routes: Routes = [
       {
         path: 'add-data-detail',
         component: AddDataDetailWastageComponent,
+      },
+      {
+        path: 'detail',
+        component: DetailWastageComponent,
+      }
+    ],
+  },
+  {
+    path: 'pembelian',
+    children: [
+      {
+        path: 'list-dt',
+        component: PembelianListComponent,
+      },
+      {
+        path: 'add-data',
+        component: AddPembelianComponent,
       },
       {
         path: 'detail',

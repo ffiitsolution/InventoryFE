@@ -108,7 +108,7 @@ export class AppService {
     );
   }
 
-  reporReceivingOrderJasper(params: any, url: string): Observable<any> {
+  reporReceivingOrderJasper(params: any): Observable<any> {
     const httpOptions = {
       responseType: 'blob' as 'json',
     };
@@ -215,6 +215,20 @@ export class AppService {
   getProductById(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/product/get-by-id`,
+      payload
+    );
+  }
+
+  getPOPembelian(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/pembelian/get-purchase-order`,
+      payload
+    );
+  }
+
+  getDetailAddPembelian(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/pembelian/get-detail-pembelian`,
       payload
     );
   }
