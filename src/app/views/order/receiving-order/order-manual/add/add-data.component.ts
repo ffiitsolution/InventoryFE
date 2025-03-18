@@ -4,10 +4,13 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/service/app.service';
 import { GlobalService } from 'src/app/service/global.service';
-import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_SET_NUMBER } from 'src/constants';
+import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_SET_NUMBER, ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER  } from 'src/constants';
+
 import { DataService } from 'src/app/service/data.service';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import moment from 'moment';
+import { TranslationService } from '../../../../../service/translation.service';
+import { Page } from '../../../../../model/page';
 
 function excludedSensitive(control: AbstractControl): ValidationErrors | null {
   const specialCharRegex = /[^a-zA-Z0-9\s.,#\-()\/]/;
@@ -53,14 +56,22 @@ export class AddDataOrderManualComponent implements OnInit {
   newNomorPesanan :any;
   isShowModalBack: boolean = false;
   isShowModalBuatPesanan: boolean = false;
+  isshowmodalPemesan: boolean = false;
+
+  dtOptionsPemesan: DataTables.Settings = {};
+  selectedRowData: any;
+  page = new Page();
+
 
   constructor(
     private toastr: ToastrService,
     private form: FormBuilder,
     private router: Router,
     private g: GlobalService,
-    private service: AppService,
     private dataService: DataService,
+    private translationService: TranslationService,
+    private globalService: GlobalService,
+    private appService: AppService
   ) {}
 
   ngOnInit(): void {
@@ -130,6 +141,9 @@ export class AddDataOrderManualComponent implements OnInit {
     this.dpConfigTglBatalPesanan.minDate = new Date(new Date().setHours(0, 0, 0, 0));
     
     this.g.removeLocalstorage('TEMP_ORDHDK');
+
+    this.renderDataTables();
+
   }
 
   
@@ -284,4 +298,117 @@ export class AddDataOrderManualComponent implements OnInit {
       }); 
   }
 
+  onShowModalTujuan(){
+
+  }
+
+  handleEnter(event: any) {
+  
+  }
+
+    renderDataTables(): void {
+      this.dtOptionsPemesan = {
+        language:
+          this.translationService.getCurrentLanguage() == 'id' ? this.translationService.idDatatable : {},
+        processing: true,
+        serverSide: true,
+        autoWidth: true,
+        info: true,
+        drawCallback: (drawCallback) => {
+          this.selectedRowData = undefined;
+        },
+        ajax: (dataTablesParameters: any, callback) => {
+          this.page.start = dataTablesParameters.start;
+          this.page.length = dataTablesParameters.length;
+          const requestData = {
+            ...dataTablesParameters,
+          };
+          this.dataService
+            .postData(this.g.urlServer + '/api/branch/dt', requestData)
+            .subscribe((resp: any) => {
+              const mappedData = resp.data.map((item: any, index: number) => {
+                // hapus rn
+                const { rn, ...rest } = item;
+                const finalData = {
+                  ...rest,
+                  keteranganRsc: `${rest.kodeRsc} - ${rest.keteranganRsc}`,
+                  dtIndex: this.page.start + index + 1,
+                };
+                return finalData;
+              });
+              this.page.recordsTotal = resp.recordsTotal;
+              this.page.recordsFiltered = resp.recordsFiltered;
+              callback({
+                recordsTotal: resp.recordsTotal,
+                recordsFiltered: resp.recordsFiltered,
+                data: mappedData,
+              });
+            });
+        },
+        columns: [
+          { data: 'dtIndex', title: '#', orderable: false, searchable: false },
+          { data: 'kodeCabang', title: 'Kode', searchable: true },
+          { data: 'namaCabang', title: 'Nama', searchable: true },
+          { data: 'keteranganRsc', title: 'RSC', searchable: true },
+          { data: 'kota', title: 'Kota', searchable: true },
+          { data: 'deskripsiGroup', title: 'Group', searchable: true },
+          {
+            data: 'statusAktif',
+            title: 'Status',
+            searchable: false,
+            render: (data) => {
+              if (data === 'A') {
+                return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+              }
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:grey; width: 60px">Inactive</span> </div>`;
+            },
+          },
+          {
+            title: 'Action',
+            render: () => {
+              return `
+              <div class="btn-group" role="group" aria-label="Action">
+                <button class="btn btn-sm action-view btn-outline-info btn-60">Pilih</button>
+              </div>
+            `;
+            },
+          },
+        ],
+        searchDelay: 1500,
+        order: [
+          [1, 'asc'],
+        ],
+      rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        $('.action-select', row).on('click', () =>
+          this.actionBtnClick(ACTION_SELECT, data)
+        );
+        if (index === 0 && !this.selectedRowData) {
+          setTimeout(() => {
+            $(row).trigger('td'); 
+          }, 0);
+        }
+        $('td', row).on('click', () => {
+          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
+      
+    
+        return row;
+
+      },
+      };
+    }
+
+    actionBtnClick(action: string, data: any = null) {
+      // this.selectedRo = JSON.stringify(data);
+      // this.renderDataTables();
+      // this.isShowModal = false;
+      // this.mapOrderData(data);
+      // this.onSaveData();
+    }
 }

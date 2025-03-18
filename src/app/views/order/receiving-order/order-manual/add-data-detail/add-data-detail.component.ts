@@ -567,7 +567,6 @@ export class AddDataDetailOrderManualComponent
             this.validationMessageListSatuanKecil.push("")
             this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
             this.validationMessageListSatuanBesar.push("")
-            console.log("listOrderData",this.listOrderData)
               // this.mapOrderData(data);
               // this.onSaveData();
 
