@@ -95,7 +95,7 @@ export class MasterResepComponent
           LOKASI_BARANG_DI_GUDANG: this.selectedLokasiBarangDiGudangFilter,
         };
         this.dataService
-          .postData(this.g.urlServer + '/api/product/dt', requestData)
+          .postData(this.g.urlServer + '/api/resep/dt', requestData)
           .subscribe((resp: any) => {
             const mappedData = resp.data.map((item: any, index: number) => {
               // hapus rn
@@ -147,6 +147,7 @@ export class MasterResepComponent
           },
         },
         { data: 'satuanBesar', title: 'Satuan Besar', searchable: false },
+        { data: 'jumlahBahanBaku', title: 'Bahan Baku', searchable: false },
         {
           data: 'statusAktif',
           title: 'Status',

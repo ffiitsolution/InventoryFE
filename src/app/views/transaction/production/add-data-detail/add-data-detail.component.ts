@@ -143,7 +143,7 @@ export class AddDataDetailProductionComponent
         statusPosting: 'P',
         keterangan: this.headerProduction.keterangan,
         kodeResep: this.headerProduction.kodeBarang,
-        tglExp: this.headerProduction.tglExp,
+        tglExp:moment(this.headerProduction.tglExp, "DD-MM-YYYY").format("D MMM YYYY"),
         jumlahResep:this.headerProduction.jumlahHasilProduksi,
         userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
         details: this.listProductData

@@ -18,11 +18,13 @@ import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELI
 import moment from 'moment';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HelperService } from '../../../../service/helper.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-add-production',
   templateUrl: './add-data.component.html',
   styleUrls: ['./add-data.component.scss'],
+  providers: [DatePipe]
 
 })
 export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -53,7 +55,8 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
     private globalService: GlobalService,
     private translationService: TranslationService,
     private form: FormBuilder,
-    private appService: AppService
+    private appService: AppService,
+    private datePipe: DatePipe
   ) {
     this.dpConfig.containerClass = 'theme-red';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
@@ -279,7 +282,10 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
         this.myForm.patchValue({
           totalBahanBaku: $event  
         });
+    }
 
+    formatDate(date: string | Date): string {
+      return this.datePipe.transform(date, 'dd/MM/yyyy') || '';
     }
 
 }

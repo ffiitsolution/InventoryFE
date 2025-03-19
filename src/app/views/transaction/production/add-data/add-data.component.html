@@ -48,9 +48,9 @@
                     class="form-control"
                      aria-describedby="tglTransaksi"
                      autocomplete="off"
-                     formControlName="tglTransaksi"
                      placeholder="{{ 'Tanggal transaksi' | translate }}"
                      [readOnly]="true"
+                     [value]="formatDate(myForm.get('tglTransaksi')?.value)"
                     />
                 </div>
                
@@ -219,9 +219,8 @@
                       aria-describedby="tglExp"
                       [bsConfig]="dpConfig" 
                     [readonly]="true"
-                      
+                    [value]="formatDate(myForm.get('tglExp')?.value)"
                       autocomplete="off"
-                      formControlName="tglExp"
                       placeholder="{{ 'Tgl. Expired Hasil Produksi' | translate }}" />
                 </div>
               </div>
