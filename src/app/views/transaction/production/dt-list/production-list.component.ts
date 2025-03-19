@@ -161,11 +161,7 @@ export class ProductionListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.dtOptions = {
-    //   pagingType: 'full_numbers',
-    //   pageLength: 10,
-    //   processing: true,
-    // };
+  
   }
 
   toggleFilter(): void {
@@ -173,7 +169,6 @@ export class ProductionListComponent implements OnInit {
   }
 
   onAddPressed(): void {
-    // Logic for adding a new order
     const route = this.router.createUrlTree(['/transaction/production/add-data']);
     this.router.navigateByUrl(route);
   }
@@ -238,21 +233,5 @@ export class ProductionListComponent implements OnInit {
   }
   dtPageChange(event: any): void {
     console.log('Page changed', event);
-    // Logic for handling page change
-    // You can fetch new data based on the page number or perform other actions
-  }
-
-  validateDeliveryDate(): void {
-    const today = new Date();
-    this.orders.forEach((order) => {
-      const deliveryDate = new Date(order.deliveryDate);
-      const timeDiff = Math.abs(today.getTime() - deliveryDate.getTime());
-      const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-      if (diffDays > 7) {
-        console.warn(
-          `Order ${order.orderNo} has a delivery date older than 7 days.`
-        );
-      }
-    });
   }
 }

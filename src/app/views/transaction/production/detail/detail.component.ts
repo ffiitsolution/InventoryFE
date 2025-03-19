@@ -150,14 +150,6 @@ export class DetailProductionComponent
             data: 'totalQty', title: 'Total Qty',
             render: (data, type, row) => `${data} ${row.satuanKecil}`
           },
-          // {
-          //   title: 'Cek Qty. Expired',
-          //   render: () => {
-          //     return `<div class="d-flex justify-content-start">
-          //   <button class="btn btn-sm action-view btn-outline-success w-50"><i class="fa fa-check pe-1"></i> Cek</button>
-          //   </div>`;
-          //   },
-          // },
         ],
         searchDelay: 1000,
         order: [[1, 'asc']],

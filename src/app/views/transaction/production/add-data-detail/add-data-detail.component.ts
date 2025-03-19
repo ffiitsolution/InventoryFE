@@ -2,33 +2,20 @@ import {
   AfterViewInit,
   Component,
   EventEmitter,
-  Input,
-  OnChanges,
   OnDestroy,
   OnInit,
   Output,
-  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import {
-  ACTION_VIEW,
   CANCEL_STATUS,
-  DEFAULT_DELAY_TABLE,
   DEFAULT_DELAY_TIME,
-  LS_INV_SELECTED_DELIVERY_ORDER,
-  OUTLET_BRAND_KFC,
   SEND_PRINT_STATUS_SUDAH,
-  STATUS_SAME_CONVERSION,
-  ACTION_SELECT
 } from '../../../../../constants';
-import { DataTableDirective } from 'angular-datatables';
-import { lastValueFrom, Subject } from 'rxjs';
 import { Router } from '@angular/router';
-// import { AppConfig } from 'src/app/config/app.config.ts';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { AppConfig } from '../../../../config/app.config';
-
 import { HelperService } from '../../../../service/helper.service';
 import { AppService } from '../../../../service/app.service';
 import moment from 'moment';
@@ -103,7 +90,6 @@ export class AddDataDetailProductionComponent
   }
 
   ngOnInit(): void {
-    console.log(this.headerProduction)
     this.g.changeTitle(
       this.translation.instant('Detail Production') + ' - ' + this.g.tabTitle
     );
@@ -138,7 +124,6 @@ export class AddDataDetailProductionComponent
 
   onBackPressed() {
     this.onBatalPressed.emit('');
-    // this.router.navigate(['/transaction/production/add-data']);
   }
 
   onPageChange(event: number) {
@@ -299,7 +284,7 @@ export class AddDataDetailProductionComponent
 
 
     if (totalQtyExpired > totalQtyPemakaian) {
-      this.toastr.error("Total Qty Expired harus sama dengan Qty Waste");
+      this.toastr.error("Total Qty Expired harus sama dengan Qty Pemakaian");
     } else {
       this.isShowModalExpired = false;
     }
@@ -319,9 +304,6 @@ export class AddDataDetailProductionComponent
 
   isDataInvalid() {
     let dataInvalid = false;
-    // dataInvalid =
-    //   this.validationMessageList.some(msg => msg.trim() !== "") ||
-    //   this.validationMessageQtyPesanList.some(msg => msg.trim() !== "");
 
     const invalidItems = this.listProductData.filter(
       item => item.totalQtyPemakaian !== 
@@ -330,7 +312,6 @@ export class AddDataDetailProductionComponent
       item.isConfirmed === true
      )
 
-     console.log(invalidItems,'invalid')
     if (invalidItems.length > 0) dataInvalid = true;
      
     return dataInvalid

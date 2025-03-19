@@ -9,7 +9,7 @@ import {
 import { Router } from '@angular/router';
 import { GlobalService } from '../../../../service/global.service';
 import { TranslationService } from '../../../../service/translation.service';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { Page } from '../../../../model/page';
@@ -41,6 +41,7 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
   isShowDetail: boolean = false;
   selectedRowData: any;
   defaultDate: any ;
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   @ViewChild('formModal') formModal: any;
   // Form data object
@@ -70,8 +71,6 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
         rangeInputFormat: 'dd/MMm/yyyy',
       }
     );
-    const today = new Date().toISOString().split('T')[0];
-    this.minDate = new Date(today);
 
     const todayDate = new Date();
     this.defaultDate = this.helperService.formatDate(todayDate);
@@ -89,11 +88,15 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
           totalBahanBaku: [0],
     });
 
-    this.myForm.get('jumlahHasilProduksi')?.valueChanges.subscribe(() => {
+    this.myForm.get('jumlahHasilProduksi')?.valueChanges
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(() => {
       this.calculateTotalHasilProduksi();
     });
 
-    this.myForm.get('satuanHasilProduksi')?.valueChanges.subscribe(() => {
+    this.myForm.get('satuanHasilProduksi')?.valueChanges
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(() => {
       this.calculateTotalHasilProduksi();
     });
 
@@ -102,13 +105,10 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   onAddDetail() {
-    // this.formData.tglTransaksi = moment(this.formData.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-
     this.globalService.saveLocalstorage(
       'headerProduction',
       JSON.stringify(this.myForm.value)
     );
-
 
     this.isShowDetail = true;
   }
@@ -127,6 +127,10 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
     this.globalService.removeLocalstorage(
       'headerProduction',
     );
+    // clean subsribe rxjs
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();  
+    
   }
 
 
@@ -143,7 +147,6 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
     this.renderDataTables();
     this.isShowModal = false;
     this.mapOrderData(data);
-    // this.onSaveData();
   }
 
   renderDataTables(): void {
