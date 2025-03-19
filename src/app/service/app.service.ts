@@ -23,6 +23,13 @@ export class AppService {
     );
   }
 
+  defaultGudang(param: any): Observable<any> {
+    return this.dataService.postData(
+      this.config.BASE_URL + '/api/auth/default-gudang',
+      param
+    );
+  }
+
   getToken() {
     // if (!localStorage.getItem('inv_listMenu')) {
     //   return null;
@@ -37,7 +44,7 @@ export class AppService {
     }
   }
 
-  getUserData(){
+  getUserData() {
     const userString = this.getToken() ?? '';
     return JSON.parse(userString);
   }

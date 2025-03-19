@@ -163,6 +163,12 @@ export class MasterSupplierComponent
           searchable: true,
         },
         { data: 'kota', title: 'Kota', orderable: true, searchable: true },
+        {
+          data: 'defaultGudang',
+          title: 'Tipe Gudang',
+          orderable: true,
+          searchable: false,
+        },
         { data: 'telpon1', title: 'Telpon', orderable: true, searchable: true },
         {
           data: 'statusAktif',
