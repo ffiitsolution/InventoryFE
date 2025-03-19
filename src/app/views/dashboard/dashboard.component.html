@@ -26,7 +26,7 @@
       <c-card-body>
         <div class="border-start border-start-4 border-start-info py-1 px-3 mb-3">
           <div class="text-medium-emphasis small">Pesanan Belum Diterima</div>
-          <div class="fs-5 fw-semibold">123</div>
+          <div class="fs-5 fw-semibold">__</div>
         </div>
       </c-card-body>
     </c-card>
@@ -37,7 +37,18 @@
       <c-card-body>
         <div class="border-start border-start-4 border-start-warning py-1 px-3 mb-3">
           <div class="text-medium-emphasis small">Pesanan Baru</div>
-          <div class="fs-5 fw-semibold">123</div>
+          <div class="fs-5 fw-semibold">{{ dashboardData?.count?.pesananBaru ?? '-' }}</div>
+        </div>
+      </c-card-body>
+    </c-card>
+  </c-col>
+
+  <c-col md="4" xl="3" xs="6">
+    <c-card class="mb-4">
+      <c-card-body>
+        <div class="border-start border-start-4 border-start-danger py-1 px-3 mb-3">
+          <div class="text-medium-emphasis small">Pesanan Belum Cetak</div>
+          <div class="fs-5 fw-semibold">{{ dashboardData?.count?.pesananBelumCetak ?? '-' }}</div>
         </div>
       </c-card-body>
     </c-card>
@@ -53,7 +64,7 @@
       <c-card-body>
         <div class="border-start border-start-4 border-start-info py-1 px-3 mb-3">
           <div class="text-medium-emphasis small">Pesanan Belum Dikirim</div>
-          <div class="fs-5 fw-semibold">123</div>
+          <div class="fs-5 fw-semibold">{{ dashboardData?.count?.countPesananBelumDikirim ?? '-' }}</div>
         </div>
       </c-card-body>
     </c-card>
@@ -64,7 +75,7 @@
       <c-card-body>
         <div class="border-start border-start-4 border-start-warning py-1 px-3 mb-3">
           <div class="text-medium-emphasis small">Pengiriman In Transit</div>
-          <div class="fs-5 fw-semibold">123</div>
+          <div class="fs-5 fw-semibold">{{ dashboardData?.count?.countPengirimanBaru ?? '-' }}</div>
         </div>
       </c-card-body>
     </c-card>
@@ -75,7 +86,7 @@
       <c-card-body>
         <div class="border-start border-start-4 border-start-danger py-1 px-3 mb-3">
           <div class="text-medium-emphasis small">D.O Balik In Transit</div>
-          <div class="fs-5 fw-semibold">123</div>
+          <div class="fs-5 fw-semibold">{{ dashboardData?.count?.doBelumBalik ?? '-' }}</div>
         </div>
       </c-card-body>
     </c-card>
