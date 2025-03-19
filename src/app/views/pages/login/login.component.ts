@@ -7,6 +7,7 @@ import { isEmpty } from 'lodash-es';
 import { GlobalService } from 'src/app/service/global.service';
 import { TranslationService } from 'src/app/service/translation.service';
 import { environment } from '../../../../environments/environment';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -25,9 +26,11 @@ export class LoginComponent implements OnInit {
   logingIn: boolean = false;
   searchingUsername: boolean = false;
   errorMessage: string = '';
+  defaultGudang: any;
   user: any = UserShape;
   subscription$: any;
   version: string = environment.VERSION;
+  private usernameSubject = new Subject<string>(); // Subject untuk debounce
 
   constructor(
     translate: TranslateService,
@@ -45,6 +48,9 @@ export class LoginComponent implements OnInit {
     if (!this.service.isLoggednIn()) {
       this.g.clearLocalstorage();
     }
+    this.usernameSubject.pipe(debounceTime(500)).subscribe((username) => {
+      this.searchUser(username);
+    });
   }
 
   onLoginPressed() {
@@ -71,7 +77,6 @@ export class LoginComponent implements OnInit {
             this.errorMessage = res.message;
           } else {
             const { locations, user, token } = res.data;
-            console.log('user.defaultLocation', user.defaultLocation);
             const transformedUser = {
               ...user,
               defaultLocation: user.defaultLocation
@@ -113,8 +118,25 @@ export class LoginComponent implements OnInit {
   }
   onUsernameChange() {
     this.errorMessage = '';
+    const username = this.usernameInput?.nativeElement?.value;
+    this.usernameSubject.next(username);
   }
   onPasswordChange() {
     this.errorMessage = '';
+  }
+
+  searchUser(username: string) {
+    const loginParam = { kodeUser: username };
+    if (username != '') {
+      this.service.defaultGudang(loginParam).subscribe({
+        next: (response) => {
+          // this.g.saveLocalstorage(
+          //   'inv_default_locations',
+          //   response?.data?.user?.namaCabang
+          // );
+          this.defaultGudang = response?.data?.user?.namaCabang;
+        },
+      });
+    }
   }
 }

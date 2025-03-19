@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FooterComponent } from '@coreui/angular';
-import { GlobalService } from 'src/app/service/global.service';
 import { environment } from '../../../../environments/environment';
+import { GlobalService } from '../../../service/global.service';
 
 @Component({
   selector: 'app-default-footer',
@@ -9,7 +9,7 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['./default-footer.component.scss'],
 })
 export class DefaultFooterComponent extends FooterComponent {
-  
+
   version: string = environment.VERSION;
 
   constructor(

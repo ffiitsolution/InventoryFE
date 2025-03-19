@@ -122,7 +122,10 @@
                       [(ngModel)]="data.nomorColli" (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
                       (keypress)="g.conditionInput($event, 'numeric')" />
 
-                  </div>
+                    </div>
+                    <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessages[i]">
+                      {{ validationMessages[i] }}
+                    </span>
                 </td>
 
                 <td class="text-center input-column">
@@ -151,7 +154,7 @@
 
 <c-modal #formModal [fullscreen]="false" [visible]="isShowModal" backdrop="static" #modalLg size="xl" id="formModal">
   <c-modal-header>
-    <h5 cModalTitle>Daftar Pesanan Ke Gudang</h5>
+    <h5 cModalTitle>Pilih Tabel Site</h5>
     <button (click)="isShowModal = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModal.id"
       cButtonClose>
       <i class="fa fa-times"></i>

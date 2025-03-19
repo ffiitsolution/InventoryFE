@@ -7,10 +7,10 @@ import {
 } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
-import { Page } from 'src/app/model/page';
-import { DataService } from 'src/app/service/data.service';
-import { GlobalService } from 'src/app/service/global.service';
-import { TranslationService } from 'src/app/service/translation.service';
+import { Page } from '../../../model/page';
+import { DataService } from '../../../service/data.service';
+import { GlobalService } from '../../../service/global.service';
+import { TranslationService } from '../../../service/translation.service';
 import {
   ACTION_ADD,
   ACTION_EDIT,
@@ -19,7 +19,7 @@ import {
   BUTTON_CAPTION_EDIT,
   BUTTON_CAPTION_VIEW,
   LS_INV_SELECTED_BRANCH,
-} from 'src/constants';
+} from '../../../../constants';
 import { Router } from '@angular/router';
 
 @Component({
@@ -164,7 +164,7 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
             if (data === 'A') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
-            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:grey; width: 60px">Inactive</span> </div>`;
+            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
           },
         },
         {

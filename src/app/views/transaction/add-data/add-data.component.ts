@@ -52,7 +52,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
     tglBrgDikirim: '',
     tglKadaluarsa: '',
     validatedDeliveryDate: '',
-    notes: '',
+    keterangan: '',
     codeDestination: '',
     kodeGudang: ''
   };
@@ -240,7 +240,6 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
     this.formData.tglPesan = moment(orderData.tglPesan, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
     this.formData.tglBrgDikirim = moment(orderData.tglBrgDikirim, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
     this.formData.tglKadaluarsa = moment(orderData.tglKadaluarsa, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.notes = '';
     this.formData.nomorPesanan = orderData.nomorPesanan || '';
     this.formData.validatedDeliveryDate = this.formData.tglBrgDikirim || '';
     this.formData.kodeGudang = orderData.kodeGudang || '';

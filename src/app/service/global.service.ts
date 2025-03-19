@@ -334,7 +334,7 @@ export class GlobalService {
     var result = {
       displayKey: name,
       search: search,
-      height: 'auto',
+      height: '400px',
       placeholder: placeholder,
       customComparator: () => { },
       limitTo: limit,

@@ -59,6 +59,7 @@ export class EntryPackingListComponent
   selectedData: any;
   printing: boolean = false;
   protected config = AppConfig.settings.apiServer;
+  validationMessages: { [key: number]: string } = {};
 
   constructor(
     private dataService: DataService,
@@ -74,7 +75,7 @@ export class EntryPackingListComponent
       lengthMenu: [5],
       processing: true,
       serverSide: true,
-   
+
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
@@ -94,7 +95,7 @@ export class EntryPackingListComponent
           title: 'Kode Cabang',
           className: 'text-center',
           orderable: true,
-          searchable:true
+          searchable: true
         },
         {
           data: 'namaCabang',
@@ -168,8 +169,16 @@ export class EntryPackingListComponent
   }
 
   onShowModal() {
-    this.isShowModal = true;
+    this.filteredEntryPL.forEach((item: any, index: number) => {
+      if (item.nomorColli === "") {
+        this.validationMessages[index] = "Mohon isi data!";
+      }
+    });
+
+    this.isShowModal = !this.filteredEntryPL.some((item: any) => item.nomorColli === "");
   }
+
+
   actionBtnClickInModal(action: string, data: any = null) {
     this.selectedRo = JSON.stringify(data);
     // this.renderDataTables();
@@ -344,42 +353,42 @@ export class EntryPackingListComponent
       const konversi = data.konversi || 1;
       const beratMaster = data.berat || 0;
       const volumeMaster = data.volume || 0;
-  
+
       if (!acc[key]) {
         acc[key] = { ...data, totalBerat: 0, totalVolume: 0 };
       }
-  
+
       // Hitung total berat & volume
       acc[key].totalBerat += (jumlahQty / konversi) * beratMaster;
       acc[key].totalVolume += (jumlahQty / konversi) * volumeMaster;
-  
+
       // Akumulasi total colli
       totalColli += jumlahColli;
-  
+
       // Simpan tanggal kirim dari entri pertama
-        tglKirim = moment(data.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY');
-  
+      tglKirim = moment(data.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY');
+
       return acc;
     }, {} as { [key: string]: any });
-  
+
     const listDataPL = Object.values(groupedData).map((item: any) => {
       const totalBeratFix = parseFloat(item.totalBerat.toFixed(2));
       const totalVolumeFix = parseFloat(item.totalVolume.toFixed(2));
-  
+
       totalBerat += totalBeratFix;
       totalVolume += totalVolumeFix;
-  
+
       return {
         ...item,
         berat: totalBeratFix, // Perbarui berat dengan hasil pembulatan
         totalVolume: totalVolumeFix, // Pastikan volume juga dibulatkan
       };
     });
-  
+
     // 3. **Bulatkan total keseluruhan ke 2 desimal**
     totalBerat = parseFloat(totalBerat.toFixed(2));
     totalVolume = parseFloat(totalVolume.toFixed(2));
-  
+
     // 4. **Membentuk parameter untuk API**
     const params = {
       outletBrand: 'KFC',
@@ -395,10 +404,10 @@ export class EntryPackingListComponent
       tanggalKirim: tglKirim,
       kodeGudang: kodeGudang
     };
-  
+
     try {
       const base64Response = await lastValueFrom(
-        this.dataService.postData(this.config.BASE_URL + '/delivery-order/entry-packing-list-report', params, true)
+        this.dataService.postData(this.config.BASE_URL + '/api/delivery-order/entry-packing-list-report', params, true)
       );
       const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);

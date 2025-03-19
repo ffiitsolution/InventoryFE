@@ -350,6 +350,7 @@ export class ReceivingPoSupplierDetailComponent
           alert(res.message);
         } else {
           console.log("finish statuscetak");
+          console.log("finish statuscetak");
           this.toastr.success(this.translation.instant('Berhasil!'));
           this.refreshDetail();
     
@@ -390,8 +391,7 @@ export class ReceivingPoSupplierDetailComponent
       },    
     });
   }
-
-
+  
 
   downloadPDF() {
     var link = document.createElement('a');

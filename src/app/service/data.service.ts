@@ -59,6 +59,10 @@ export class DataService {
     return this.http.get(url, { headers: headers });
   }
 
+  getFileExternal(url: string): Observable<any> {
+    return this.http.get(url);
+  }
+
   postDummyData(url: string): Observable<any> {
     return this.http.post(
       url,
