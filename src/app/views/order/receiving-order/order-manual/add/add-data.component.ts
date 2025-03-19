@@ -83,12 +83,12 @@ export class AddDataOrderManualComponent implements OnInit {
       tanggalPesanan: [{ value: new Date(new Date().setDate(new Date().getDate())), disabled: true }, Validators.required],
       tanggalKirimBarang: [ new Date(new Date().setDate(new Date().getDate()  + 3)), Validators.required], // Default: Today
       tanggalBatalPesanan: [{ value: new Date(new Date().setDate(new Date().getDate()  + 7)), disabled: false }, Validators.required],
-      gudangTujuan: ['', Validators.required],
-      namaGudang:  [{value: '', disabled: true}],
+      gudangTujuan: ['', [excludedSensitive,Validators.required]],
+      namaPemesan:  [{value: '', disabled: true}    ],
       alamatGudang:  [{value: '', disabled: true}],
       statusGudang:  [{value: '', disabled: true}],
       kodeSingkat:  [{value: '', disabled: true}],
-      catatan1: ['',[excludedSensitive]],
+      catatan1: ['',[excludedSensitive,Validators.required]],
       catatan2: ['',[excludedSensitive]],
       newNomorPesanan: [{value: '', disabled: true}],
       tipeOrder:['']
@@ -143,6 +143,7 @@ export class AddDataOrderManualComponent implements OnInit {
   
 
   onSubmit(): void {
+    if(this.myForm.controls['namaPemesan'].value === 'Buat Pesanan')
     this.isShowModalBuatPesanan = false;
     const currentUser = this.g.getLocalstorage('inv_currentUser');
     
@@ -285,7 +286,7 @@ export class AddDataOrderManualComponent implements OnInit {
       .subscribe((resp: any) => {
         this.gudangDetail = resp;
 
-        this.myForm.get('namaGudang')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].NAMA_CABANG : null);
+        this.myForm.get('namaPemesan')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].NAMA_CABANG : null);
         this.myForm.get('alamatGudang')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].ALAMAT1 : null);
         this.myForm.get('statusGudang')?.setValue(
           this.gudangDetail?.length
@@ -408,7 +409,15 @@ export class AddDataOrderManualComponent implements OnInit {
     }
     mappingDataPemesan() {
       this.myForm.controls['gudangTujuan'].setValue(this.selectedRow.kodeCabang);
-      this.myForm.controls['namaGudang'].setValue(this.selectedRow.namaCabang);
+      this.myForm.controls['namaPemesan'].setValue(this.selectedRow.namaCabang);
+
+      if(this.selectedRow.statusAktif === 'A')
+        this.myForm.controls['statusGudang'].setValue("Aktif");
+      else if(this.selectedRow.statusAktif === 'T')
+        this.myForm.controls['statusGudang'].setValue("Tidak Aktif");
+      else  
+      this.myForm.controls['statusGudang'].setValue(this.selectedRow.statusAktif);
+
       this.myForm.controls['statusGudang'].setValue(this.selectedRow.statusAktif);
       this.myForm.controls['alamatGudang'].setValue(this.selectedRow.alamat1);      
     }

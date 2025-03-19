@@ -117,14 +117,22 @@
                   <div class="col-4 d-flex align-items-center">
                     <label for="nomorPesanan">{{ "Pemesan (Tujuan)" | translate }}</label>
                   </div>
-  
-                  <div class="col-8 pe-0 d-flex">
-                    <input type="text" placeholder="Pemesan (Tujuan)" class="form-control" id="Pemesan"
-                    formControlName="gudangTujuan"  name="pemesan" (keydown.enter)="handleEnter($event)"/>
-                    <button *ngIf="isShowDetail === false" type="button" class="btn btn-info ms-2"
-                      [cModalToggle]="staticBackdropModal.id" (click)="onShowModalBranch()" readOnly><i
-                        class="fa fa-search text-white"></i></button>
+                  
+                  <div class="col-8 pe-0 d-flex flex-column">
+                    <div class="d-flex">
+                      <input type="text" placeholder="Pemesan (Tujuan)" class="form-control" id="Pemesan"
+                        formControlName="gudangTujuan" name="pemesan" (keydown.enter)="handleEnter($event)" />
+                      <button *ngIf="isShowDetail === false" type="button" class="btn btn-info ms-2"
+                        [cModalToggle]="staticBackdropModal.id" (click)="onShowModalBranch()" readOnly>
+                        <i class="fa fa-search text-white"></i>
+                      </button>
+                    </div>
+                  
+                    <div *ngIf="isFieldValid('gudangTujuan')" class="text-danger mt-1">
+                      {{"Wajib diisi" | translate}}
+                    </div>
                   </div>
+                  
                 </div>
 
                 <div class="mb-3 row">
@@ -136,12 +144,12 @@
                     <input
                       type="text"
                       class="form-control small-font"
-                      formControlName="namaGudang"
+                      formControlName="namaPemesan"
                       [readOnly]="adding"
                       (keypress)="conditionInput($event, 'alphanumeric')"
                       maxlength="50"
                     />
-                    <span *ngIf="isFieldValid('namaGudang')" class="text-danger">{{
+                    <span *ngIf="isFieldValid('namaPemesan')" class="text-danger">{{
                       "Wajib diisi" | translate
                     }}</span>
                   </div>
@@ -226,7 +234,7 @@
                           >
                         </c-form-check>
                       </c-col>
-                      <span *ngIf="isFieldValid('statusAktif')" class="text-danger">{{
+                      <span *ngIf="isFieldValid('catatan1')" class="text-danger">{{
                         "Wajib diisi" | translate
                       }}</span>
                     </c-row>
