@@ -16,7 +16,7 @@ import Swal from 'sweetalert2';
 import * as moment from 'moment';
 import { AppService } from '../../../service/app.service';
 import {
-  DEFAULT_DELAY_TABLE,
+  DEFAULT_DELAY_TABLE,   
   LS_INV_SELECTED_DELIVERY_ORDER,
 } from '../../../../constants';
 import { TranslationService } from '../../../service/translation.service';
@@ -139,21 +139,6 @@ export class DetailReportDoBalikComponent
         { data: 'qtyKKirim', title: 'Qty Kirim Kecil' },
         { data: 'konversi', title: 'Konversi' },
         { data: 'totalQtyKirim', title: 'Total Qty Kirim' },
-        {
-          data: 'keterangan',
-          title: 'Keterangan',
-          render: (data) => {
-            if (data.toUpperCase() == STATUS_SAME_CONVERSION) {
-              return `
-                <span class="text-center text-success">${data}</span>
-              `;
-            } else {
-              return `
-                <span class="text-center text-danger">${data}</span>
-              `;
-            }
-          },
-        },
       ],
       order: [[1, 'asc']],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {

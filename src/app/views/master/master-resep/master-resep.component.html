@@ -1,0 +1,142 @@
+<div class="fade-in">
+  <c-card class="mb-2">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>{{ "Master" | translate }} {{ "Barang" | translate }}</h5>
+        </div>
+        <div class="col text-end">
+          <button
+            type="button"
+            class="btn btn-secondary text-white me-2"
+            (click)="toggleFilter()"
+          >
+            {{ "Filter" | translate }}
+          </button>
+          <button
+            *ngIf="this.roleId === '3' || this.roleId === '2'"
+            type="button"
+            class="btn btn-success text-white me-2 btn-120"
+            (click)="actionBtnClick(CONST_ACTION_ADD)"
+          >
+            <i class="fa fa-plus pe-1 icon-12" aria-hidden="true"></i>
+            {{ "Tambah" | translate }}
+          </button>
+        </div>
+      </div>
+      <div [visible]="isFilterShown" cCollapse>
+        <c-card class="mt-3 shadow">
+          <c-card-body class="gap-2">
+            <div class="row mb-1">
+              <div class="col-md-3">
+                <label cLabel for="selectStatusFilter"
+                  >{{ "Status" | translate }}:
+                </label>
+                <select
+                  aria-label="Status"
+                  cSelect
+                  [(ngModel)]="selectedStatusFilter"
+                  (ngModelChange)="onStatusFilterChange()"
+                >
+                  <option value="">{{ "Semua" | translate }}</option>
+                  <option value="A">{{ "Aktif" | translate }}</option>
+                  <option value="T">{{ "Tidak aktif" | translate }}</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label cLabel for="selectStatusFilter"
+                  >{{ "Default Order" | translate }}:
+                </label>
+                <div>
+                  <ngx-select-dropdown
+                    [config]="configSelectDefaultOrder"
+                    [multiple]="false"
+                    [options]="defaultOrderOptions"
+                    [(ngModel)]="selectedGudangFilter"
+                    (ngModelChange)="onStatusFilterChange()"
+                  >
+                  </ngx-select-dropdown>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <label cLabel for="selectStatusFilter"
+                  >{{ "Satuan Minimum Order" | translate }}:
+                </label>
+                <div>
+                  <ngx-select-dropdown
+                    [config]="configSelectSatuanMinOrder"
+                    [multiple]="false"
+                    [options]="satuanMinOrderOptions"
+                    [(ngModel)]="selectedSatuanMinOrderFilter"
+                    (ngModelChange)="onStatusFilterChange()"
+                    id="Kota"
+                  ></ngx-select-dropdown>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <label cLabel for="selectStatusFilter"
+                  >{{ "Lokasi Barang Digudang" | translate }}:
+                </label>
+                <select
+                  aria-label="Status"
+                  cSelect
+                  [(ngModel)]="selectedLokasiBarangDiGudangFilter"
+                  (ngModelChange)="onStatusFilterChange()"
+                >
+                  <option value="">{{ "Semua" | translate }}</option>
+                  <option value="FLAG_COM">
+                    {{ "COMMISARY" | translate }}
+                  </option>
+                  <option value="FLAG_DRY">{{ "DRYGOOD" | translate }}</option>
+                  <option value="FLAG_PRD">
+                    {{ "PRODUCTION" | translate }}
+                  </option>
+                  <option value="FLAG_MKT">
+                    {{ "MARKETING" | translate }}
+                  </option>
+                  <option value="FLAG_CTR">{{ "CATERING" | translate }}</option>
+                  <option value="FLAG_HRA">{{ "HRA" | translate }}</option>
+                </select>
+              </div>
+            </div>
+          </c-card-body>
+        </c-card>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-2">
+    <c-card-body>
+      <div class="row">
+        <div class="col-sm-12">
+          <i
+            class="fa fa-exclamation-circle text-center"
+            style="font-size: large; color: #3c4b64"
+          ></i>
+          &nbsp;
+          <span class="fw-bold"
+            >Master Barang digunakan untuk mengelola barang, termasuk detail
+            ukuran, konversi, satuan besar, satuan kecil dan termasuk tipe
+            gudang.</span
+          >
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="table-responsive">
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          [dtTrigger]="dtTrigger"
+          (page.dt)="dtPageChange($event)"
+          class="row-border hover stripe"
+        ></table>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>

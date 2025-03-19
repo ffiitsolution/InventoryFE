@@ -140,6 +140,13 @@ export const menu_id: any = [
     icon: 'fa fa-exchange',
     children: [
       {
+        name: 'Pembelian',
+        url: '/transaction/pembelian/list-dt',
+        iconComponent: {
+          name: 'cil-cart',
+        }
+      },
+      {
         name: 'Pengiriman',
         url: '/transaction/delivery-item',
         iconComponent: {
@@ -275,6 +282,13 @@ export const menu_id: any = [
           name: 'cil-trash',
         },
       },
+      {
+        name: 'Produksi',
+        url: '/transaction/production/list-dt',
+        iconComponent: {
+          name: 'cil-industry',
+        },
+      },
     ],
   },
   {
@@ -357,7 +371,7 @@ export const menu_id: any = [
   },
   {
     name: 'Kirim Terima Data',
-    url: '/sync-data',
+    url: '/sync-data/all',
     iconComponent: {
       name: 'cil-swap-vertical',
     },

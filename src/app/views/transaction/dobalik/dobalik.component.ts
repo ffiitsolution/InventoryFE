@@ -56,6 +56,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
   dateRangeFilter: any = [this.startDateFilter, new Date()];
   dataUser: any;
   protected config = AppConfig.settings.apiServer;
+  selectedRowData: any;
 
 
   constructor(
@@ -84,14 +85,18 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
       autoWidth: true,
       columns: [
         { data: 'KODE_GUDANG', title: 'Kode Gudang' },
-        { data: 'STATUS_POSTING', title: 'Status Posting' },
+        { data: 'STATUS_POSTING', title: 'Status Posting' ,
+          render: (data) => this.g.getsatusDeliveryOrderLabel(data, false),
+        },
         { data: 'TGL_TRANSAKSI', title: 'Tanggal Transaksi', render: (data) => this.g.transformDate(data) },
         { data: 'TIPE_TRANSAKSI', title: 'Tipe Transaksi' },
         { data: 'TGL_PESANAN', title: 'Tanggal Pesanan', render: (data) => this.g.transformDate(data) },
         { data: 'NOMOR_PESANAN', title: 'Nomor Pesanan' },
         { data: 'NO_SURAT_JALAN', title: 'No Surat Jalan' },
         { data: 'KODE_TUJUAN', title: 'Kode Tujuan' },
-        { data: 'STATUS_DO_BALIK', title: 'Status DO Balik' },
+        { data: 'STATUS_DO_BALIK', title: 'Status DO Balik',
+          render: (data) => this.g.getsatusDeliveryOrderLabel(data, true),
+         },
         {
           title: 'Opsi',
           className: 'text-center',
@@ -112,6 +117,15 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
         $('.action-posting', row).on('click', () =>
           this.actionBtnClick('POSTING', data)
         );
+        $('td', row).on('click', () => {
+          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
         return row;
       },
       order: [[2, 'desc']],

@@ -27,10 +27,10 @@
 
                 <div class="col-8 pe-0 d-flex">
                   <input type="text" placeholder="Nomor pesanan" class="form-control" id="nomorPesanan"
-                    [(ngModel)]="formData.nomorPesanan" name="nomorPesanan" (keydown.enter)="handleEnter($event)"/>
+                    [(ngModel)]="formData.nomorPesanan" name="nomorPesanan" (keydown.enter)="handleEnter($event)" />
                   <button *ngIf="isShowDetail === false" type="button" class="btn btn-info ms-2"
-                    [cModalToggle]="staticBackdropModal.id" (click)="onShowModal()" readOnly><i
-                      class="fa fa-search text-white"></i></button>
+                    [cModalToggle]="staticBackdropModal.id" (click)="onShowModal()"><i
+                      class="fa fa-search text-white" [disabled]="isShowDetail"></i></button>
                 </div>
 
               </div>
@@ -43,7 +43,7 @@
                 <div class="col-8 pe-0 d-flex">
                   <input placeholder="Kode - nama tujuan" type="text" class="form-control" id="codeDestination"
                     [ngModel]="formData.nomorPesanan ? formData.codeDestination + ' - ' + formData.namaCabang : '' "
-                    name="codeDestination" readonly />
+                    name="codeDestination" disabled />
                 </div>
               </div>
 
@@ -53,8 +53,8 @@
                   <label for="notes">{{ "Catatan" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <input placeholder="Catatan" type="text" class="form-control" id="notes" [(ngModel)]="formData.notes"
-                    name="notes" />
+                  <input maxlength="50" placeholder="Catatan" type="text" class="form-control" id="keterangan"
+                    [(ngModel)]="formData.keterangan" name="keterangan" [disabled]="isShowDetail"/>
                 </div>
               </div>
 
@@ -65,11 +65,14 @@
                     <span class="text-danger">*</span></label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <input type="text" id="validatedDeliveryDate" class="form-control"
-                    aria-describedby="validatedDeliveryDate" #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker
-                    autocomplete="off" [(ngModel)]="formData.validatedDeliveryDate"
-                    placeholder="{{ 'Tanggal kirim barang' | translate }}" [minDate]="minDate" [maxDate]="maxDate"
-                    [readOnly]="formData.nomorPesanan === ''" />
+                  <div class="input-group">
+                    <input type="text" id="validatedDeliveryDate" class="form-control"
+                      aria-describedby="validatedDeliveryDate" #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker
+                      autocomplete="off" [(ngModel)]="formData.validatedDeliveryDate"
+                      placeholder="{{ 'Tanggal kirim barang' | translate }}" [minDate]="minDate" [maxDate]="maxDate"
+                      [disabled]="isShowDetail" />
+                    <button class="btn btn-outline-info fa fa-calendar" type="button" (click)="dp.toggle()"></button>
+                  </div>
                 </div>
               </div>
 
@@ -79,9 +82,9 @@
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <input type="text" id="tglPesan" class="form-control" aria-describedby="tglPesan" #dp="bsDatepicker"
-                    [bsConfig]="dpConfig" [isDisabled]="true" bsDatepicker autocomplete="off"
-                    [(ngModel)]="formData.tglPesan" placeholder="{{ 'Tanggal Pesanan' | translate }}"
-                    [minDate]="minDate" [maxDate]="maxDate" style="pointer-events: none; " />
+                    [bsConfig]="dpConfig" disabled bsDatepicker autocomplete="off" [(ngModel)]="formData.tglPesan"
+                    placeholder="{{ 'Tanggal Pesanan' | translate }}" [minDate]="minDate" [maxDate]="maxDate"
+                    style="pointer-events: none; " />
                 </div>
               </div>
 
@@ -91,7 +94,7 @@
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <input type="text" id="tglBrgDikirim" class="form-control" aria-describedby="tglBrgDikirim"
-                    #dp="bsDatepicker" [bsConfig]="dpConfig" [isDisabled]="true" bsDatepicker autocomplete="off"
+                    #dp="bsDatepicker" [bsConfig]="dpConfig" disabled bsDatepicker autocomplete="off"
                     [(ngModel)]="formData.tglBrgDikirim" placeholder="{{ 'Tanggal permintaan kirim' | translate }}"
                     [minDate]="minDate" [maxDate]="maxDate" style="pointer-events: none; " />
                 </div>
@@ -103,7 +106,7 @@
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <input type="text" id="tglKadaluarsa" class="form-control" aria-describedby="tglK adaluarsa"
-                    #dp="bsDatepicker" [bsConfig]="dpConfig" [isDisabled]="true" bsDatepicker autocomplete="off"
+                    #dp="bsDatepicker" [bsConfig]="dpConfig" disabled bsDatepicker autocomplete="off"
                     [(ngModel)]="formData.tglKadaluarsa" placeholder="{{ 'Tanggal kadaluarsa' | translate }}"
                     [minDate]="minDate" [maxDate]="maxDate" style="pointer-events: none; " />
                 </div>
@@ -115,7 +118,7 @@
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <textarea placeholder="Alamat tujuan" class="form-control w-100" [(ngModel)]="formData.alamat1"
-                    id="exampleFormControlTextarea1" rows="2" name="alamat1" readonly></textarea>
+                    id="exampleFormControlTextarea1" rows="2" name="alamat1" disabled></textarea>
                 </div>
               </div>
 
@@ -126,7 +129,7 @@
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <input placeholder="Status pengiriman" type="text" class="form-control" id="deliveryStatus"
-                    [(ngModel)]="formData.deliveryStatus" name="deliveryStatus" readonly />
+                    [(ngModel)]="formData.deliveryStatus" name="deliveryStatus" disabled />
                 </div>
               </div>
 
@@ -162,7 +165,8 @@
         <div class="fade-in">
           <c-card class="mb-4 ">
             <c-card-body>
-              <div class="table-responsive">
+              <span class="text-danger mb-3">*Data pesanan ditampilkan jika pesanan sudah DICETAK</span>
+              <div class="table-responsive mt-2">
                 <table datatable [dtOptions]="dtOptions" class="row-border hover stripe w-100"></table>
               </div>
             </c-card-body>
@@ -175,19 +179,19 @@
               <div class="row p-2">
                 <div class="col">
                   <label for="alamat1" class="form-label">{{ "Alamat" | translate }}</label>
-                  <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                  <input type="text" disabled placeholder="Alamat 1" class="form-control" id="nomorPesanan"
                     [(ngModel)]="selectedRowData.alamat1" name="alamat1" />
                 </div>
               </div>
               <div class="row p-2">
                 <div class="col-6">
                   <label for="alamat1" class="form-label">{{ "Keterangan 1" | translate }}</label>
-                  <input type="text" readonly placeholder="Keterangan 1" class="form-control" id="nomorPesanan"
+                  <input type="text" disabled placeholder="Keterangan 1" class="form-control" id="nomorPesanan"
                     [(ngModel)]="selectedRowData.keterangan1" name="keterangan1" />
                 </div>
                 <div class="col-6">
                   <label for="alamat1" class="form-label">{{ "Keterangan 1" | translate }}</label>
-                  <input type="text" readonly placeholder="Keterangan 2" class="form-control" id="nomorPesanan"
+                  <input type="text" disabled placeholder="Keterangan 2" class="form-control" id="nomorPesanan"
                     [(ngModel)]="selectedRowData.keterangan2" name="keterangan2" />
                 </div>
               </div>

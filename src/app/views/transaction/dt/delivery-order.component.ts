@@ -127,7 +127,7 @@ export class DeliveryOrderComponent
         },
         {
           data: 'statusPesanan',
-          title: 'Status Pengiriman',
+          title: 'Status Transaksi',
           render: (data) => {
             const isCancel = data == CANCEL_STATUS;
             const label = this.g.getStatusOrderLabel(data);

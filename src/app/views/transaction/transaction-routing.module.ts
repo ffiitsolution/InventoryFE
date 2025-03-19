@@ -17,11 +17,19 @@ import { AddDataDetailWastageComponent } from './pemusnahan-wastage/add-data-det
 import { DetailWastageComponent } from './pemusnahan-wastage/detail/detail.component';
 import { AddDataDetailGudangComponent } from './add-data-gudang/detail-add-data-gudang/detail-add-data-gudang.component';
 import { DisplayDataGudangComponent } from './add-data-gudang/display-data-dari-gudang/display-data-dari-gudang.component';
+import { PembelianListComponent } from './pembelian/dt/pembelian-list.component';
+import { AddPembelianComponent } from './pembelian/add-data/add-data.component';
 import { ListBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri.component';
 import { AddDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian-sendiri/tambah-data-pemakaian-barang-sendiri/add-data-pemakaian-barang-sendiri.component';
 import { DisplayDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian-sendiri/display-data-pemakaian-barang-sendiri/display-data-pemakaian-barang-sendiri-detail.component';
 import { DetailBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakaian-sendiri/detail-pemakaian-barang/detail-barang-untuk-pemakaian-sendiri.component';
 import { AddDataDetailBarangComponent } from './barang-untuk-pemakaian-sendiri/add-data-detail/add-data-detail-barang.component';
+import { ProductionListComponent } from './production/dt-list/production-list.component';
+import { AddProductionComponent } from './production/add-data/add-data.component';
+import { AddDataDetailProductionComponent } from './production/add-data-detail/add-data-detail.component';
+import { DetailProductionComponent } from './production/detail/detail.component';
+
+
 const routes: Routes = [
   {
     path: '',
@@ -75,7 +83,7 @@ const routes: Routes = [
         path: 'receipt-from-warehouse/tambah-data',
         component: AddDataGudangComponent,
       },
-      { 
+      {
         path: 'receipt-from-warehouse/tambah-data/detail-add-data-gudang',
         component: AddDataDetailGudangComponent,
       },
@@ -104,7 +112,24 @@ const routes: Routes = [
         path: 'detail',
         component: DetailWastageComponent,
       },
-      
+
+    ],
+  },
+  {
+    path: 'pembelian',
+    children: [
+      {
+        path: 'list-dt',
+        component: PembelianListComponent,
+      },
+      {
+        path: 'add-data',
+        component: AddPembelianComponent,
+      },
+      {
+        path: 'detail',
+        component: DetailWastageComponent,
+      }
     ],
   },
   {
@@ -131,11 +156,33 @@ const routes: Routes = [
         component: AddDataDetailBarangComponent,
       },
     ],
-  }
+  },
+  {
+    path: 'production',
+    children: [
+      {
+        path: 'list-dt',
+        component:ProductionListComponent,
+      },
+      {
+        path: 'add-data',
+        component: AddProductionComponent,
+      },
+      {
+        path: 'add-data-detail',
+        component: AddDataDetailProductionComponent,
+      },
+      {
+        path: 'detail',
+        component: DetailProductionComponent,
+      },
+      
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class TransactionRoutingModule {}
+export class TransactionRoutingModule { }

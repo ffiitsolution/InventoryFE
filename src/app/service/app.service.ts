@@ -72,6 +72,9 @@ export class AppService {
   getFile(url: String, params: any): Observable<any> {
     return this.dataService.postData(this.config.BASE_URL + url, params, true);
   }
+  getExternal(url: string): Observable<any> {
+    return this.dataService.getFileExternal(url);
+  }
 
   getReceivingOrderItem(nomorPesanan: String) {
     return this.dataService.postData(
@@ -115,7 +118,7 @@ export class AppService {
     );
   }
 
-  reporReceivingOrderJasper(params: any, url: string): Observable<any> {
+  reporReceivingOrderJasper(params: any): Observable<any> {
     const httpOptions = {
       responseType: 'blob' as 'json',
     };
@@ -233,6 +236,33 @@ export class AppService {
   getProductById(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/product/get-by-id`,
+      payload
+    );
+  }
+
+  getProductionProductList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/list-product/dt`,
+      payload
+    );
+  }
+  
+  getPOPembelian(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/pembelian/get-purchase-order`,
+      payload
+    );
+  }
+
+  getBahanBakuByResep(param: any) {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/production/bahanbaku?kode_product=${param}`
+    );
+  }
+  
+  getDetailAddPembelian(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/pembelian/get-detail-pembelian`,
       payload
     );
   }

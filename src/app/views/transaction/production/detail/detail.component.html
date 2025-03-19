@@ -1,0 +1,98 @@
+
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
+          <button class="btn btn-light btn-120" (click)="onBackPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button>
+          <h5>{{ "Detail Produksi Barang" | translate }}</h5>
+        </div>       
+      </c-row>
+    </c-card-body>
+  </c-card>
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="row">
+        <div class="col"></div>
+        <div class="col text-end">
+          <app-print-button
+          [alreadyPrint]="alreadyPrint"
+          [disabledPrintButton]="disabledPrintButton"
+          [generatePdfUrl]="'/cetak-production-jasper'"
+          [updateStatusUrl]="''"
+          [updatePrintStatusParam]="''"
+          [generateReportParam]="paramGenerateReport"
+          (reloadTable)="reloadTable()"
+        ></app-print-button>
+        </div>
+        <div class="divider mt-4"></div>
+        <div class="col">
+          <div class="row order-details">
+            <div class="detail-item">
+              <span class="label">{{ "Nomor Transaksi" | translate }}</span>
+              <span class="value">: {{ selectedProduction.nomorTransaksi }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Tgl. Transaksi" | translate }}</span>
+              <span class="value">: {{ selectedProduction.tglTransaksi }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Status Transaksi" | translate }}</span>
+              <span class="value">: {{ selectedProduction.statusPosting }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Keterangan" | translate }}</span>
+              <span class="value">: {{ selectedProduction.keterangan }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Tanggal Expired" | translate }}</span>
+              <span class="value">: {{ selectedProduction.tglExp }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row order-details">
+            <div class="detail-item">
+              <span class="label">{{ "Kode Resep" | translate }}</span>
+              <span class="value">: {{ selectedProduction.kodeProduksi }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Satuan Resep" | translate }}</span>
+              <span class="value">: {{ selectedProduction.konversi }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Jumlah Produksi" | translate }}</span>
+              <span class="value">: {{ selectedProduction.jumlahResep }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Jumlah Hasil Produksi" | translate }}</span>
+              <span class="value">: {{ selectedProduction.totalProduksi }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Jumlah Item Bahan Baku" | translate }}</span>
+              <span class="value">: {{ selectedProduction.detailCount }} </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="table-responsive">
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          (page.dt)="dtPageChange($event)"
+          class="row-border hover stripe"
+        ></table>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>

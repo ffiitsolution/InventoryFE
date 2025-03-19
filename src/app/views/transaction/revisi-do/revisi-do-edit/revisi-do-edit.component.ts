@@ -45,7 +45,8 @@ export class RevisiDoEditComponent
   buttonCaptionView: String = 'Lihat';
   public loading: boolean = false;
   page: number = 1;
-
+  listCurrentPage: number = 1;
+  totalLengthList: number = 1;
   protected config = AppConfig.settings.apiServer;
 
   constructor(
@@ -129,7 +130,7 @@ export class RevisiDoEditComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/transaction/delivery-item/add-data']);
+    this.router.navigate(['/transaction/delivery-item']);
   }
 
   onPageChange(event: number) {

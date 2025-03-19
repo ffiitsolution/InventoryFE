@@ -35,6 +35,16 @@
   margin-right: -11px !important;
 }
 
-:host ::ng-deep .sidebar-nav .nav-link {
-  color: rgba(255, 255, 255, 0.788) !important;
+:host ::ng-deep .sidebar-nav .nav-link:not(.active) {
+  color: rgba(255, 255, 255, 1);
+}
+
+:host ::ng-deep c-sidebar-nav-group, :host ::ng-deep c-sidebar-nav-link {
+  border-bottom: 1px solid white !important;
+}
+
+:host ::ng-deep .show .nav-group-toggle, :host ::ng-deep .sidebar-nav .nav-link.active {
+  background: rgba(181, 24, 35, .8);
+  font-weight: 700;
+  color: #fff !important;
 }

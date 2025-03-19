@@ -64,7 +64,7 @@
             </div>
             <div class="detail-item">
               <span class="label">{{ "Status Pengiriman" | translate }}</span>
-              <span class="value">{{ selectedOrder.statusPosting === 'i' ? '(I) Intransit' : '(P) Posting' }}
+              <span class="value">{{ selectedOrder.statusPosting === 'I' ? '(I) Intransit' : '(P) Posted' }}
               </span>
             </div>
 
@@ -116,7 +116,12 @@
               </tr>
             </tbody>
             <tbody>
-              <tr *ngFor="let data of listOrderData; let i = index">
+              <tr *ngFor="let data of listOrderData  | paginate: {
+                itemsPerPage: 5,
+                currentPage: listCurrentPage,
+                totalItems:totalLengthList,
+                id:'dataTableDetail'
+            };  let i = index">
                 <td class="text-center">{{ i + 1 }}</td>
                 <td class="text-center">{{ data.kodeBarang }}</td>
                 <td class="text-center">{{ data.namaBarang }}</td>
@@ -125,8 +130,9 @@
 
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
-                    <input type="number" max="{{data.qtyBKirim}}" min="0" class="form-control text-center inputQty inputNumberSpace"
-                      [(ngModel)]="data.qtyBKirim" (input)="onInputValueItemDetail($event, i)" />
+                    <input type="number" max="{{data.qtyBKirim}}" min="0"
+                      class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyBKirim"
+                      (input)="onInputValueItemDetail($event, i)" />
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanBesar}}
                     </span>
@@ -135,7 +141,7 @@
 
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
-                    <input type="number" min="0"  class="form-control text-center inputQty inputNumberSpace"
+                    <input type="number" min="0" class="form-control text-center inputQty inputNumberSpace"
                       [(ngModel)]="data.qtyKKirim" (input)="onInputValueItemDetail($event, i)" />
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanKecil}}
@@ -155,9 +161,11 @@
             </tbody>
           </table>
 
-          <c-pagination class="text-right">
-            <pagination-controls (pageChange)="onPageChange(1)" id="dataTable"></pagination-controls>
-          </c-pagination>
+          <div class="mt-2 text-start">
+            <c-pagination>
+              <pagination-controls (pageChange)="listCurrentPage = $event" id="dataTableDetail"></pagination-controls>
+            </c-pagination>
+          </div>
         </ng-container>
       </div>
     </c-card-body>

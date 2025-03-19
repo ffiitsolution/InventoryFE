@@ -1,0 +1,142 @@
+<div class="fade-in">
+  <c-card class="mb-2">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>{{ "Kirim" | translate }} {{ "Terima" | translate }} Data</h5>
+        </div>
+        <div class="col text-end">
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in row">
+  <div class="col-4">
+    <c-card class="mb-4">
+      <c-card-body>
+        <ul cListGroup flush>
+          <div class="card mb-3">
+            <li cListGroupItem class="fw-bold">
+              <div (click)="onClickMenu('Kirim Data Transaksi')"
+                class="p-1 ps-3 text-capitalize pointer-only rounded {{'Kirim Data Transaksi' === selectedMenu ? 'text-bg-secondary text-white' : ''}}">
+                Kirim Data Transaksi
+              </div>
+              <ul cListGroup flush>
+                <li cListGroupItem class="fw-bold">
+                  <div class="ms-2" (click)="onClickMenu('Cek Data Stock Minus')"
+                    class="p-1 ps-3 text-capitalize pointer-only rounded {{'Cek Data Stock Minus' === selectedMenu ? 'text-bg-secondary text-white' : ''}}">
+                    Cek Data Stock Minus
+                  </div>
+                </li>
+                <li cListGroupItem class="fw-bold">
+                  <div class="ms-2" (click)="onClickMenu('Cek Data Pengiriman (D.O)')"
+                    class="p-1 ps-3 text-capitalize pointer-only rounded {{'Cek Data Pengiriman (D.O)' === selectedMenu ? 'text-bg-secondary text-white' : ''}}">
+                    Cek Data Pengiriman (D.O)
+                  </div>
+                </li>
+                <li cListGroupItem class="fw-bold">
+                  <div class="ms-2" (click)="onClickMenu('Proses Kirim Data Ke Pusat (Harian)')"
+                    class="p-1 ps-3 text-capitalize pointer-only rounded {{'Proses Kirim Data Ke Pusat (Harian)' === selectedMenu ? 'text-bg-secondary text-white' : ''}}">
+                    Proses Kirim Data Ke Pusat (Harian)
+                  </div>
+                </li>
+                <li cListGroupItem class="fw-bold">
+                  <div class="ms-2" (click)="onClickMenu('Cek Hasil Kirim Data Ke HQ')"
+                    class="p-1 ps-3 text-capitalize pointer-only rounded {{'Cek Hasil Kirim Data Ke HQ' === selectedMenu ? 'text-bg-secondary text-white' : ''}}">
+                    Cek Hasil Kirim Data Ke HQ
+                  </div>
+                </li>
+              </ul>
+            </li>
+            <li cListGroupItem class="fw-bold">
+              <div (click)="onClickMenu('Terima Data Master')"
+                class="p-1 ps-3 text-capitalize pointer-only rounded {{'Terima Data Master' === selectedMenu ? 'text-bg-secondary text-white' : ''}}">
+                Terima Data Master
+              </div>
+            </li>
+            <li cListGroupItem class="fw-bold">
+              <div (click)="onClickMenu('Backup Data')"
+                class="p-1 ps-3 text-capitalize pointer-only rounded {{'Backup Data' === selectedMenu ? 'text-bg-secondary text-white' : ''}}">
+                Backup Data
+              </div>
+            </li>
+          </div>
+        </ul>
+      </c-card-body>
+    </c-card>
+  </div>
+  <div class="col">
+    <c-card class="mb-4">
+      <c-card-body>
+        <div class="fade-in row">
+          <div class="col">
+            <h5>{{selectedMenu}}</h5>
+            <c-card class="mb-4">
+              <c-card-body>
+                <!-- buat content sesuai menu -->
+                <ng-container *ngIf="selectedMenu === 'Kirim Data Transaksi'">
+                  Tes Kirim Data Transaksi
+                </ng-container>
+
+                <!-- Terima Data Master -->
+                <ng-container *ngIf="selectedMenu === 'Terima Data Master'">
+                  <div class="text-center">
+                    <div class="my-2 text-xl p-2">
+                      Tanggal Proses
+                      <span class="ms-4 p-2 border rounded">
+                        {{g.currentDate}}
+                      </span>
+                    </div>
+                    <div class="my-4">
+                      <button class="btn btn-outline-primary me-4">
+                        <i class="fa fa-refresh me-2"></i>
+                        History Proses
+                      </button>
+                      <button class="btn btn-primary">
+                        <i class="fa fa-check me-2"></i>
+                        Proses Terima Data
+                      </button>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <!-- Backup Data -->
+                <ng-container *ngIf="selectedMenu === 'Backup Data'">
+                  <div class="text-center">
+                    <p class="fw-bold">
+                      Pastikan Program Tersebut Dilakukan Setiap Hari ...!!
+                    </p>
+                    <p class="text-danger">
+                      Semua User tidak boleh ada yang melakukan transaksi Mutasi Stock ..!!
+                    </p>
+                    <div class="my-2 text-xl p-2">
+                      Tanggal Backup
+                      <span class="ms-4 p-2 border rounded">
+                        {{g.currentDate}}
+                      </span>
+                    </div>
+                    <div class="my-2 text-info">
+                      LOKASI DATA BACKUP D:\BCKKFCIV\BACKUP{{(g.currentDate).substring(0, 2)}}.DMP
+                    </div>
+                    <div class="my-4">
+                      <button class="btn btn-outline-primary me-4">
+                        <i class="fa fa-refresh me-2"></i>
+                        History Proses
+                      </button>
+                      <button class="btn btn-primary">
+                        <i class="fa fa-check me-2"></i>
+                        Proses Backup
+                      </button>
+                    </div>
+                  </div>
+                </ng-container>
+
+              </c-card-body>
+            </c-card>
+          </div>
+        </div>
+      </c-card-body>
+    </c-card>
+  </div>
+</div>

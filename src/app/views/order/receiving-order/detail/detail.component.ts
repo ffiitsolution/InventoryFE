@@ -317,7 +317,6 @@ export class ReceivingOrderDetailComponent
   downloadURL: any = [];
 
   onPrint() {
-    const urlReport = 'report-propose-order-jesper';
     const params = {
       outletBrand: 'Kfc',
       isDownloadCsv: false,
@@ -327,7 +326,7 @@ export class ReceivingOrderDetailComponent
       tglPesan: this.selectedOrder.tglPesan
     }
 
-    this.appService.reporReceivingOrderJasper(params, urlReport).subscribe((res) => {
+    this.appService.reporReceivingOrderJasper(params).subscribe((res) => {
       var blob = new Blob([res], { type: 'application/pdf' });
       this.downloadURL = window.URL.createObjectURL(blob);
       this.downloadPDF();
