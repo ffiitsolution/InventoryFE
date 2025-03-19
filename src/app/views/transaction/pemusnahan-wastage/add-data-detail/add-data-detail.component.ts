@@ -129,6 +129,7 @@ export class AddDataDetailWastageComponent
       this.validationMessageQtyPesanList[index] = "Quantity Pesan tidak Boleh 0"
     }
   }
+  
   onFilterSearch(
     listData: any[],
     filterText: string,

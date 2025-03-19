@@ -1,0 +1,359 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
+          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button>
+          <h5>{{ "Tambah Produksi" | translate }}</h5>
+        </div>
+      </c-row>
+    </c-card-body>
+  </c-card>
+
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <div [ngClass]="isShowDetail ? 'col-4' : 'col-5'" class="pe-0 d-flex red-line">
+          <div class="w-100">
+            <div class="p-2">
+              <h5 class="mb-2 p-2" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5>
+              <form [formGroup]="myForm" >
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="tglTransaksi">{{ "Tgl. Transaksi" | translate }} <span
+                      class="text-danger">*</span></label>
+                </div>
+
+                <div class="col-8 pe-0 d-flex">
+                  <input type="text"
+                  *ngIf="!isShowDetail"
+                   id="tglTransaksi" 
+                   class="form-control"
+                    aria-describedby="tglTransaksi"
+                    #dp="bsDatepicker"
+                    [bsConfig]="dpConfig" 
+                    bsDatepicker
+                    autocomplete="off"
+                    formControlName="tglTransaksi"
+                    placeholder="{{ 'Tanggal transaksi' | translate }}"
+                    [readOnly]="isShowDetail"
+                   />
+                   <input type="text"
+                   *ngIf="isShowDetail"
+                    id="tglTransaksi" 
+                    [bsConfig]="dpConfig" 
+                    class="form-control"
+                     aria-describedby="tglTransaksi"
+                     autocomplete="off"
+                     formControlName="tglTransaksi"
+                     placeholder="{{ 'Tanggal transaksi' | translate }}"
+                     [readOnly]="true"
+                    />
+                </div>
+               
+              </div>
+              <div class="divider mt-4"></div>
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="kodeBarang">{{
+                    "Kode Barang" | translate
+                  }}<span
+                      class="text-danger">*
+                    </span>
+                  </label>
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <input
+                    type="text"
+                    placeholder="Kode Barang Produksi"
+                    class="form-control"
+                    id="kodeBarang"
+                    formControlName="kodeBarang"
+                    name="kodeBarang"
+                    [readOnly]="true"
+                  />
+                  <button
+                    *ngIf="!isShowModal"
+                    type="button"
+                    class="btn btn-info ms-2"
+                    [cModalToggle]="staticBackdropModal.id"
+                    (click)="onShowModal()"
+                    [disabled]="isShowDetail"
+                  >
+                    <i class="fa fa-search text-white"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="kodeBarang">{{
+                    "Nama Barang" | translate
+                  }}
+                </label>
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <input
+                    type="text"
+                    placeholder="Nama Barang"
+                    class="form-control"
+                    id="kodeBarang"
+                    formControlName="namaBarang"
+                    name="kodeBarang"
+                    [readOnly]="true"
+                  />
+                </div>
+              </div>
+              
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="satuanHasilProduksi">{{
+                    "Satuan Hasil Produksi" | translate
+                  }}
+              
+                </label>
+                </div>
+                <div class="col-3 pe-0 d-flex">
+                  <input
+                    type="text"
+                    placeholder="Satuan Hasil"
+                    class="form-control"
+                    id="satuanHasilProduksi"
+                    formControlName="satuanHasilProduksi"
+                    name="satuanHasilProduksi"
+                    [readOnly]="true"
+                  />
+                </div>
+                <div class="col-5 d-flex align-items-center">
+                  <label for="labelSatuanHasilProduksi">{{ myForm.get('labelSatuanHasilProduksi')?.value }}</label>
+                </div>
+              </div>
+              <div class="w-100 row" *ngIf="myForm.get('kodeBarang')?.invalid && myForm.get('kodeBarang')?.touched">
+                <div class="col-4 d-flex align-items-center">
+
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <small class="text-danger" *ngIf="myForm.get('kodeBarang')?.hasError('required')">Data Barang is required</small>
+                </div>
+              </div>
+
+              <div class="divider mt-4"></div>
+             
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="jumlahHasilProduksi">{{
+                    "Jumlah Produksi" | translate
+                  }}
+                <span
+                class="text-danger">*
+               </span>  
+                </label>
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <input
+                    type="number"
+                    placeholder="Jumlah Produksi"
+                    class="form-control"
+                    id="jumlahHasilProduksi"
+                    formControlName="jumlahHasilProduksi"
+                    name="jumlahHasilProduksi"
+                    [readonly]="isShowDetail"
+                  />
+                </div>
+              </div>
+
+              <div class="w-100 row" *ngIf="myForm.get('jumlahHasilProduksi')?.invalid && myForm.get('jumlahHasilProduksi')?.touched">
+                <div class="col-4 d-flex align-items-center">
+
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <small class="text-danger" *ngIf="myForm.get('jumlahHasilProduksi')?.hasError('min')">Jumlah Hasil Produksi must be greater than or equal to 1</small>
+                  <small class="text-danger" *ngIf="myForm.get('jumlahHasilProduksi')?.hasError('required')">Jumlah Hasil Produksi is required</small>
+                </div>
+              </div>
+
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="totalHasilProduksi">{{
+                    "Total Hasil Produksi" | translate
+                  }}</label>
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <input
+                    type="number"
+                    placeholder="Jumlah Produksi"
+                    class="form-control"
+                    id="totalHasilProduksi"
+                    formControlName="totalHasilProduksi"
+                    name="totalHasilProduksi"
+                    [readOnly]="true"
+                  />
+                </div>
+              </div>
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="tglExp">{{ "Tgl. Expired Hasil Produksi" | translate }} <span
+                      class="text-danger">*</span></label>
+                </div>
+
+                <div class="col-8 pe-0 d-flex">
+                  <input type="text"
+                  *ngIf="!isShowDetail"
+                   id="tglExp" 
+                   class="form-control"
+                    aria-describedby="tglExp"
+                    #dp="bsDatepicker"
+                    [bsConfig]="dpConfig" 
+                  
+                    bsDatepicker
+                    autocomplete="off"
+                    formControlName="tglExp"
+                    placeholder="{{ 'Tgl. Expired Hasil Produksi' | translate }}" />
+                    <input type="text"
+                    *ngIf="isShowDetail"
+                     id="tglExp" 
+                     class="form-control"
+                      aria-describedby="tglExp"
+                      [bsConfig]="dpConfig" 
+                    [readonly]="true"
+                      
+                      autocomplete="off"
+                      formControlName="tglExp"
+                      placeholder="{{ 'Tgl. Expired Hasil Produksi' | translate }}" />
+                </div>
+              </div>
+
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="keterangan">{{ "Catatan(keterangan lain)" | translate }}</label>
+                </div>
+
+                <div class="col-8 pe-0 d-flex">
+                  <textarea placeholder="Catatan"
+                   type="text"
+                   class="form-control" id="keterangan"
+                   [readonly]="isShowDetail"
+                   formControlName="keterangan"
+                    name="keterangan">
+                  </textarea>
+                </div>
+              </div>
+
+              <div class="w-100 px-2 py-1 row" *ngIf="isShowDetail">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="totalHasilProduksi">{{
+                    "Jumlah Bahan Baku" | translate
+                  }}</label>
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <input
+                    type="number"
+                    placeholder="Jumlah Bahan Baku"
+                    class="form-control"
+                    id="totalBahanBaku"
+                    formControlName="totalBahanBaku"
+                    name="totalBahanBaku"
+                    [readOnly]="true"
+                  />
+                </div>
+              </div>
+
+              <div style="width: 96%;" class="p-2">
+                <button class="shadow-sm btn w-100 btn-info text-white" *ngIf="!isShowDetail" [disabled]="myForm.invalid"
+                  (click)="onAddDetail()">
+                  <i class="fa fa-check pe-2"></i>
+                  {{ "Detail Transaksi" | translate }}
+                </button>
+              </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class=" ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
+          <div class="p-2" *ngIf="isShowDetail">
+            <app-add-data-detail-production (onBatalPressed)="onBatalPressed($event)" (jumlahBahanbaku)="addJumlahBahanBaku($event)"></app-add-data-detail-production>
+          </div>
+        </div>
+
+      </c-row>
+    </c-card-body>
+  </c-card>
+
+  <!-- <c-modal
+      #formModal
+      [fullscreen]="false"
+      [visible]="isShowModal"
+      [backdrop]="true"
+      #modalLg
+      size="xl"
+      id="formModal"
+    >
+      <c-modal-header>
+        <h5 cModalTitle>Daftar Pesanan Ke Gudang</h5>
+        <button
+          (click)="isShowModal = false"
+          type="button"
+          class="btn btn-primary ms-2"
+          [cModalToggle]="formModal.id"
+          cButtonClose
+        >
+          <i class="fa fa-times"></i>
+        </button>
+      </c-modal-header>
+      <c-modal-body>
+        <div class="table-responsive">
+          <table
+            datatable
+            [dtOptions]="dtOptions"
+            class="row-border hover stripe w-100"
+          ></table>
+        </div>
+      </c-modal-body>
+    </c-modal> -->
+
+
+  <!-- Modal Pilih Barang -->
+  <c-modal
+    #staticBackdropModal
+    [visible]="isShowModal"
+    backdrop="static"
+    id="staticBackdropModal"
+    size="xl"
+  >
+    <c-modal-header>
+      <h5 cModalTitle>Daftar Barang</h5>
+      <button
+        (click)="isShowModal = false"
+        type="button"
+        class="btn btn-info ms-2"
+        [cModalToggle]="staticBackdropModal.id"
+        cButtonClose
+      >
+        <i class="fa fa-times text-white"></i>
+      </button>
+    </c-modal-header>
+
+    <c-modal-body>
+      <c-card class="mb-4">
+        <c-card-body>
+          <div class="table-responsive">
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              class="datatable row-border hover stripe w-100 h-65"
+              >
+            <!-- <thead class="table-header"> </thead> -->
+            </table>
+          </div>
+        </c-card-body>
+      </c-card>
+    </c-modal-body>
+  </c-modal>
+
+  <!-- Modal Backdrop -->
+  <div class="modal-bg-backdrop" *ngIf="isShowModal"></div>
+</div>

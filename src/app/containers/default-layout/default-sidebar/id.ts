@@ -268,6 +268,13 @@ export const menu_id: any = [
           name: 'cil-trash',
         },
       },
+      {
+        name: 'Produksi',
+        url: '/transaction/production/list-dt',
+        iconComponent: {
+          name: 'cil-industry',
+        },
+      },
     ],
   },
   {

@@ -229,4 +229,17 @@ export class AppService {
       payload
     );
   }
+
+  getProductionProductList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/list-product/dt`,
+      payload
+    );
+  }
+
+  getBahanBakuByResep(param: any) {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/production/bahanbaku?kode_product=${param}`
+    );
+  }
 }

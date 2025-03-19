@@ -46,6 +46,10 @@ import { AddDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian
 import { DisplayDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian-sendiri/display-data-pemakaian-barang-sendiri/display-data-pemakaian-barang-sendiri-detail.component';
 import { DetailBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakaian-sendiri/detail-pemakaian-barang/detail-barang-untuk-pemakaian-sendiri.component'
 import { AddDataDetailBarangComponent } from './barang-untuk-pemakaian-sendiri/add-data-detail/add-data-detail-barang.component';
+import { ProductionListComponent } from './production/dt-list/production-list.component';
+import { AddProductionComponent } from './production/add-data/add-data.component';
+import { AddDataDetailProductionComponent } from './production/add-data-detail/add-data-detail.component';
+import { DetailProductionComponent } from './production/detail/detail.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -97,6 +101,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     DisplayDataPemakaianBarangSendiriComponent,
     DetailBarangUntukPemakaianSendiriComponent,
     AddDataDetailBarangComponent,
+    ProductionListComponent,
+    AddProductionComponent,
+    AddDataDetailProductionComponent,
+    DetailProductionComponent,
     
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
