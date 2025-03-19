@@ -193,13 +193,13 @@ export class AddDataOrderManualComponent implements OnInit {
 
     }
    
-    onNextPressed() {
-      this.router.navigate(['/order/send-order-to-supplier-via-rsc/add-data-detail']);
-    }
+    // onNextPressed() {
+    //   this.router.navigate(['/order/send-order-to-supplier-via-rsc/add-data-detail']);
+    // }
   
     onPreviousPressed() {
       localStorage.removeItem(LS_INV_SELECTED_SET_NUMBER);
-      this.router.navigate(['/order/send-order-to-supplier-via-rsc/']);
+      this.router.navigate(['/order/receiving-order']);
     }
   
 

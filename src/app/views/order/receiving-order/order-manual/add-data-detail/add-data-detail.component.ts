@@ -190,7 +190,7 @@ export class AddDataDetailOrderManualComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/order/send-order-to-supplier-via-rsc/add']);
+    this.router.navigate(['/order/receiving-order']);
   }
 
 
@@ -474,7 +474,7 @@ export class AddDataDetailOrderManualComponent
 
 
   onPreviousPressed(): void {
-    this.router.navigate(['order/send-order-to-supplier-via-rsc']);
+    this.router.navigate(['order/receiving-order']);
   }
 
   isDataInvalid() {
