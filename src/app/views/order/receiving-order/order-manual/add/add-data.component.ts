@@ -56,6 +56,7 @@ export class AddDataOrderManualComponent implements OnInit {
   newNomorPesanan :any;
   isShowModalBack: boolean = false;
   isShowModalBranch: boolean = false;
+  isShowModalBuatPesanan: boolean = false;
 
   dtOptionsPemesan: DataTables.Settings = {};
   selectedRowData: any;
@@ -89,7 +90,8 @@ export class AddDataOrderManualComponent implements OnInit {
       kodeSingkat:  [{value: '', disabled: true}],
       catatan1: ['',[excludedSensitive]],
       catatan2: ['',[excludedSensitive]],
-      newNomorPesanan: [{value: '', disabled: true}]
+      newNomorPesanan: [{value: '', disabled: true}],
+      tipeOrder:['']
     });
 
     this.configSelectDefaultLokasi = {
@@ -149,7 +151,7 @@ export class AddDataOrderManualComponent implements OnInit {
   
 
   onSubmit(): void {
-    this.isShowModalBranch = false;
+    this.isShowModalBuatPesanan = false;
     const currentUser = this.g.getLocalstorage('inv_currentUser');
     
     const { controls, invalid } = this.myForm;
@@ -219,8 +221,8 @@ export class AddDataOrderManualComponent implements OnInit {
   }
 
   onChangeSelect(data: any, field: string) {
-    const dataStatus = data?.target?.value;
-    this.myForm.get('statusAktif')?.setValue(dataStatus);
+    const tipeOrder = data?.target?.value;
+    console.log("tipeOrder",tipeOrder)
   }
 
   conditionInput(event: any, type: string): boolean {
@@ -270,6 +272,10 @@ export class AddDataOrderManualComponent implements OnInit {
 
   onShowModalBranch() {
     this.isShowModalBranch= true;
+  }
+
+  onShowModalBuatPesanan() {
+    this.isShowModalBuatPesanan= true;
   }
 
   

@@ -125,35 +125,6 @@
                       [cModalToggle]="staticBackdropModal.id" (click)="onShowModalBranch()" readOnly><i
                         class="fa fa-search text-white"></i></button>
                   </div>
-  
-                </div>
-
-                <div class="mb-3 row">
-                  <label class="col-sm-4 col-form-label">{{
-                    "Pemesan (Tujuan)" | translate
-                  }}
-                    <span class="stamp-required show">&nbsp;*</span>
-                  </label>
-                  <div class="col-sm-8">
-                    <ngx-select-dropdown
-                      [multiple]="false"
-                      [config]="configSelectGudang"
-                      [options]="listGudang"
-                      formControlName="gudangTujuan"
-                      id="gudangTujuan"
-                      (change)="onGudangTujuanChange($event)"
-                      style="width: 250px !important; max-width: 250px !important;">
-                      >
-                    </ngx-select-dropdown>
-                    <span *ngIf="isFieldValid('gudangTujuan')" class="text-danger">{{
-                      "Wajib diisi" | translate
-                    }}</span>
-                    <span 
-                    *ngIf="currentUser?.defaultLocation?.kodeLocation === myForm.value?.gudangTujuan?.id" 
-                    class="text-danger">{{
-                      "Tidak boleh order ke gudang sendiri" | translate
-                    }}</span>
-                  </div>
                 </div>
 
                 <div class="mb-3 row">
@@ -227,9 +198,9 @@
                             checked
                             id="active"
                             type="radio"
-                            value="A"
+                            value="OM"
                             name="status"
-                            formControlName="statusAktif"
+                            formControlName="tipeOrder"
                             (change)="onChangeSelect($event, 'status')"
                           />
                           <label cFormCheckLabel for="active" style="margin-left: 4px"
@@ -243,9 +214,9 @@
                             cFormCheckInput
                             id="inactive"
                             type="radio"
-                            value="I"
+                            value="AB"
                             name="status"
-                            formControlName="statusAktif"
+                            formControlName="tipeOrder"
                             (change)="onChangeSelect($event, 'status')"
                           />
                           <label cFormCheckLabel for="inactive" style="margin-left: 4px"
@@ -299,7 +270,7 @@
                     class="btn btn-info text-white btn-150"
                     type="submit"
                     [disabled]="adding"
-                    (click)="onShowModalBranch()"                    
+                    (click)="onShowModalBuatPesanan()"                    
                   >
                     <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
                     <span *ngIf="!adding"
@@ -346,7 +317,7 @@
     <c-modal-body>
       <p class="text-center">Apakah anda ingin membuat pesanan?</p>
       <div class="d-flex justify-center py-2">
-        <button class="btn btn-light"  (click)="isShowModalBranch = false">Tidak</button>
+        <button class="btn btn-light"  (click)="isShowModalBack = false">Tidak</button>
         &nbsp;
         <button class="btn btn-primary text-white" (click)="onSubmit()">Iya</button>
 
@@ -455,4 +426,22 @@
 
 </c-modal>
 <div class="modal-bg-backdrop" *ngIf="isShowModalBranch"></div>
+
+<c-modal #formModalBuatPesanan [fullscreen]="false" [visible]="isShowModalBuatPesanan" backdrop="static" #modalLg 
+id="formModalBuatPesanan"    [attr.aria-hidden]="!isShowModalBuatPesanan">
+  <c-modal-header>
+    <h5 cModalTitle>Konfirmasi Buat Pesanan </h5>
+    <button (click)="isShowModalBuatPesanan = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalBuatPesanan.id"
+      cButtonClose><i class="fa fa-times"></i></button>
+  </c-modal-header>
+  <c-modal-body>
+    <p class="text-center">Apakah anda ingin membuat pesanan?</p>
+    <div class="d-flex justify-center py-2">
+      <button class="btn btn-light"  (click)="isShowModalBuatPesanan = false">Tidak</button>
+      &nbsp;
+      <button class="btn btn-primary text-white" (click)="onSubmit()">Iya</button>
+
+    </div>
+  </c-modal-body>
+</c-modal>
 </div>
