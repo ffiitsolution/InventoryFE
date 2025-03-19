@@ -198,10 +198,11 @@
                             checked
                             id="active"
                             type="radio"
-                            value="OM"
-                            name="status"
-                            formControlName="tipeOrder"
+                            value="Order Manual Gudang"
+                            name="catatan1"
+                            formControlName="catatan1"
                             (change)="onChangeSelect($event, 'status')"
+                            [disabled]="true" 
                           />
                           <label cFormCheckLabel for="active" style="margin-left: 4px"
                             >Order Manual Gudang</label
@@ -214,10 +215,11 @@
                             cFormCheckInput
                             id="inactive"
                             type="radio"
-                            value="AB"
-                            name="status"
-                            formControlName="tipeOrder"
+                            value="Alokasi Barang Gudang"
+                            name="catatan1"
+                            formControlName="catatan1"
                             (change)="onChangeSelect($event, 'status')"
+                            [disabled]="true" 
                           />
                           <label cFormCheckLabel for="inactive" style="margin-left: 4px"
                             >Alokasi Barang</label
@@ -238,18 +240,18 @@
                     <textarea
                       type="text"
                       class="form-control"
-                      formControlName="catatan1"
+                      formControlName="catatan2"
                       [readOnly]="adding"
                       (keypress)="conditionInput($event, 'excludedSensitive')"
                       maxlength="100"
                     ></textarea>
                     <span
                       *ngIf="
-                        myForm.controls['catatan1'].hasError('excludedSensitive')
+                        myForm.controls['catatan2'].hasError('excludedSensitive')
                       "
                       class="text-danger"
                       >{{
-                        "Catatan1 hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), dan tanda kurung ()."
+                        "keterangan hanya boleh mengandung huruf, angka, spasi, titik (.), koma (,),hash (#), strip (-), slash (/), dan tanda kurung ()."
                           | translate
                       }}
                     </span>
@@ -284,7 +286,7 @@
         </div>
         <div [ngClass]="isShowDetail ? 'col-9' : 'col-8'" >
             <div  class="p-2" *ngIf="isShowDetail">
-              <app-add-data-detail-send-order-to-supplier></app-add-data-detail-send-order-to-supplier>
+              <app-add-data-detail-order-manual></app-add-data-detail-order-manual>
             </div>
         </div>
       </div>

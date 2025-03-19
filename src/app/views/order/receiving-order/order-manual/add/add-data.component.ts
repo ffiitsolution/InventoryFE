@@ -113,14 +113,6 @@ export class AddDataOrderManualComponent implements OnInit {
       limitTo: this.listGudang.length
     };
 
-    this.dataService
-    .postData(this.g.urlServer + '/api/branch/dropdown-gudang',{})
-    .subscribe((resp: any) => {
-      this.listGudang = resp.map((item: any) => ({
-        id: item.KODE_CABANG,
-        name: item.KODE_CABANG+' - '+item.NAMA_CABANG,
-      }));     
-    });
 
     this.dataService
     .postData(this.g.urlServer + '/api/send-order-to-warehouse/get-nopesanan',
@@ -165,14 +157,12 @@ export class AddDataOrderManualComponent implements OnInit {
       this.adding = true;
       const param = {
         kodeGudang:   currentUser?.defaultLocation?.kodeLocation,
-        kodeSingkat:   controls?.['kodeSingkat']?.value,
-        supplier:  controls?.['RSCTujuan']?.value?.id,
-        namaSupplier:  controls?.['RSCTujuan']?.value?.name,
-        tanggalPesanan:  moment(  controls?.['tanggalPesanan']?.value).format("DD-MM-YYYY"),
-        tanggalKirimBarang:  moment(  controls?.['tanggalKirimBarang']?.value).format("DD-MM-YYYY"),
-        tanggalBatalEXP: moment(  controls?.['tanggalBatalPesanan']?.value).format("DD-MM-YYYY"),
-        keteranganSatu: controls?.['catatan1']?.value,
-        keteranganDua: controls?.['catatan2']?.value,
+        kodePemesan:  controls?.['gudangTujuan']?.value,
+        tglPesan: moment(controls?.['tanggalPesanan']?.value).format("DD MMM YYYY"),
+        tglBrgDikirim:  moment(  controls?.['tanggalKirimBarang']?.value).format("DD MMM YYYY"),
+        tglKadaluarsa: moment(  controls?.['tanggalBatalPesanan']?.value).format("DD MMM YYYY"),
+        keterangan1: controls?.['catatan1']?.value,
+        keterangan2: controls?.['catatan2']?.value,
 
       };
 
@@ -193,7 +183,9 @@ export class AddDataOrderManualComponent implements OnInit {
         this.myForm.get('RSCTujuan')?.disable();
         this.myForm.get('tanggalKirimBarang')?.disable();
         this.myForm.get('tanggalBatalPesanan')?.disable();
-        
+        this.myForm.get('gudangTujuan')?.disable();       
+        this.myForm.get('tipeOrder')?.disable();        
+ 
           // this.onNextPressed();
         }, DEFAULT_DELAY_TIME);
       }
@@ -222,7 +214,7 @@ export class AddDataOrderManualComponent implements OnInit {
 
   onChangeSelect(data: any, field: string) {
     const tipeOrder = data?.target?.value;
-    console.log("tipeOrder",tipeOrder)
+    this.myForm.get('catatan1')?.setValue(tipeOrder);
   }
 
   conditionInput(event: any, type: string): boolean {

@@ -211,8 +211,7 @@ export class AddDataDetailOrderManualComponent
 
       const paramDetail = this.listOrderData.map(item => ({
         kodeGudang: this.newOrhdk.kodeGudang,
-        kodeTujuan: this.newOrhdk.supplier,
-        nomorPesanan: this.newOrhdk.nomorPesanan,
+        kodePemesan: this.newOrhdk.kodePemesan,
         kodeBarang: item.kodeBarang,
         konversi: item.konversi,
         satuanKecil: item.satuanKecil,
@@ -225,7 +224,7 @@ export class AddDataDetailOrderManualComponent
 
       paramHeaderDetail.listBarang = paramDetail;
           
-      this.service.insert('/api/send-order-to-supplier/insert-header-detail', paramHeaderDetail).subscribe({
+      this.service.insert('/api/receiving-order/insert-header-detail-order-manual', paramHeaderDetail).subscribe({
         next: (res) => {
           if (!res.success) {
             alert(res.message);
