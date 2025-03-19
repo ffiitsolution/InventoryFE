@@ -121,9 +121,9 @@
                   <div class="col-8 pe-0 d-flex flex-column">
                     <div class="d-flex">
                       <input type="text" placeholder="Pemesan (Tujuan)" class="form-control" id="Pemesan"
-                        formControlName="gudangTujuan" name="pemesan" (keydown.enter)="handleEnter($event)" />
+                        formControlName="gudangTujuan" name="pemesan" (keydown.enter)="handleEnterPemesan($event)" />
                       <button *ngIf="isShowDetail === false" type="button" class="btn btn-info ms-2"
-                        [cModalToggle]="staticBackdropModal.id" (click)="onShowModalBranch()" readOnly>
+                      (click)="onShowModalBranch()" readOnly>
                         <i class="fa fa-search text-white"></i>
                       </button>
                     </div>
@@ -253,6 +253,7 @@
                       (keypress)="conditionInput($event, 'excludedSensitive')"
                       maxlength="50"
                     ></textarea>
+                    
                     <span
                       *ngIf="
                         myForm.controls['catatan2'].hasError('excludedSensitive')
@@ -263,6 +264,9 @@
                           | translate
                       }}
                     </span>
+                    <span *ngIf="isFieldValid('catatan2')" class="text-danger">{{
+                      "Wajib diisi" | translate
+                    }}</span>
                   </div>
                 </div>
 
@@ -327,7 +331,7 @@
     <c-modal-body>
       <p class="text-center">Apakah anda ingin membuat pesanan?</p>
       <div class="d-flex justify-center py-2">
-        <button class="btn btn-light"  (click)="isShowModalBack = false">Tidak</button>
+        <button class="btn btn-light"  (click)="isShowModalBuatPesanan = false">Tidak</button>
         &nbsp;
         <button class="btn btn-primary text-white" (click)="onSubmit()">Iya</button>
 

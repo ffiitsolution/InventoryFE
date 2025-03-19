@@ -376,7 +376,7 @@ export class ReceivingPoSupplierDetailComponent
             console.log("res",res[0])
             this.g.saveLocalstorage(
               LS_INV_SELECTED_RECEIVING_ORDER,
-              JSON.stringify(this.convertKeysToCamelCase(res[0]))
+              JSON.stringify(this.g.convertKeysToCamelCase(res[0]))
             );
             setTimeout(() => {
               window.location.reload();
@@ -392,21 +392,6 @@ export class ReceivingPoSupplierDetailComponent
   }
 
 
-  convertKeysToCamelCase(obj: any): any {
-    const newObj: any = {};
-  
-    Object.keys(obj).forEach(key => {
-      // Convert UPPERCASE_UNDERSCORE to camelCase
-      const camelCaseKey = key
-        .toLowerCase()
-        .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
-  
-      newObj[camelCaseKey] = obj[key]; // Assign value to new key
-    });
-  
-    return newObj;
-  }
-  
 
   downloadPDF() {
     var link = document.createElement('a');

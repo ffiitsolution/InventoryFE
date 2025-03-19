@@ -89,7 +89,7 @@ export class AddDataOrderManualComponent implements OnInit {
       statusGudang:  [{value: '', disabled: true}],
       kodeSingkat:  [{value: '', disabled: true}],
       catatan1: ['',[excludedSensitive,Validators.required]],
-      catatan2: ['',[excludedSensitive]],
+      catatan2: ['',[excludedSensitive,Validators.required]],
       newNomorPesanan: [{value: '', disabled: true}],
       tipeOrder:['']
     });
@@ -143,7 +143,6 @@ export class AddDataOrderManualComponent implements OnInit {
   
 
   onSubmit(): void {
-    if(this.myForm.controls['namaPemesan'].value === 'Buat Pesanan')
     this.isShowModalBuatPesanan = false;
     const currentUser = this.g.getLocalstorage('inv_currentUser');
     
@@ -298,8 +297,22 @@ export class AddDataOrderManualComponent implements OnInit {
   }
 
 
-  handleEnter(event: any) {
-  
+  handleEnterPemesan(event: any) {
+    event.preventDefault(); // Prevents the form from submitting
+
+    console.log("handleEnterPemesan",event.target.value)
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/branch/branch-detail',
+      {"kodeCabang":  event.target.value}
+    )
+    .subscribe((resp: any) => {
+      if(resp.length > 0) {
+        this.mappingDataPemesan(this.g.convertKeysToCamelCase(resp[0]))
+      }
+      else
+        this.resetDataPemesan();
+    });
   }
 
     renderDataTables(): void {
@@ -402,23 +415,34 @@ export class AddDataOrderManualComponent implements OnInit {
 
     actionBtnClick(action: string, data: any = null) {
       this.selectedRow = (data);
-      console.log("this.selectedrow",this.selectedRow)
       this.isShowModalBranch = false;
       console.log("end actionbtnclick",this.isShowModalBranch)
-      this.mappingDataPemesan()
+      this.mappingDataPemesan(this.selectedRow)
     }
-    mappingDataPemesan() {
-      this.myForm.controls['gudangTujuan'].setValue(this.selectedRow.kodeCabang);
-      this.myForm.controls['namaPemesan'].setValue(this.selectedRow.namaCabang);
 
-      if(this.selectedRow.statusAktif === 'A')
+    mappingDataPemesan(data : any) {
+      this.myForm.controls['gudangTujuan'].setValue(data.kodeCabang);
+      this.myForm.controls['namaPemesan'].setValue(data.namaCabang);
+
+      if(data.statusAktif === 'A')
         this.myForm.controls['statusGudang'].setValue("Aktif");
-      else if(this.selectedRow.statusAktif === 'T')
+      else if(data.statusAktif === 'T')
         this.myForm.controls['statusGudang'].setValue("Tidak Aktif");
       else  
-      this.myForm.controls['statusGudang'].setValue(this.selectedRow.statusAktif);
+      this.myForm.controls['statusGudang'].setValue(data.statusAktif);
 
-      this.myForm.controls['statusGudang'].setValue(this.selectedRow.statusAktif);
-      this.myForm.controls['alamatGudang'].setValue(this.selectedRow.alamat1);      
+      this.myForm.controls['statusGudang'].setValue(data.statusAktif);
+      this.myForm.controls['alamatGudang'].setValue(data.alamat1);      
+    }
+
+    resetDataPemesan() {
+      this.myForm.controls['gudangTujuan'].setValue("");
+      this.myForm.controls['namaPemesan'].setValue("");
+
+
+
+      this.myForm.controls['statusGudang'].setValue("");
+      this.myForm.controls['alamatGudang'].setValue("");   
+    
     }
 }
