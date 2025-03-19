@@ -23,8 +23,8 @@ import { DataTablesModule } from 'angular-datatables';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
-import { ReportRoutingModule } from './report-routing.module';
-import { AllReportComponent } from './all-report/all-report.component';
+import { AllSyncDataComponent } from './index/index.component';
+import { SyncDataRoutingModule } from './sync-data-routing.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -32,7 +32,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 
 @NgModule({
   imports: [
-    ReportRoutingModule,
+    SyncDataRoutingModule,
     CommonModule,
     CardModule,
     GridModule,
@@ -52,8 +52,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ListGroupModule,
   ],
   declarations: [
-    AllReportComponent,
+    AllSyncDataComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })
-export class ReportModule {}
+export class SyncDataModule {}

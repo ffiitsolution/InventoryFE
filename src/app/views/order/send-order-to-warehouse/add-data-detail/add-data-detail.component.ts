@@ -359,6 +359,19 @@ export class AddDataDetailSendOrderToWarehouseComponent
           data: 'dtIndex',
           title: 'Pilih Barang  ',
           className: 'text-center',
+/*************  ✨ Codeium Command ⭐  *************/
+/**
+ * Generates the HTML for a checkbox input element for a data table row.
+ * The checkbox is checked if the item's `kodeBarang` is present in `barangTemp`.
+ * The checkbox is disabled if the item's `statusAktif` is 'T'.
+ *
+ * @param data - Data associated with the row.
+ * @param type - The type of data (not used in this function).
+ * @param row - The data object for the current row, which contains `kodeBarang` and `statusAktif`.
+ * @returns A string representing the HTML of the checkbox input element.
+ */
+
+/******  a1b4e543-9620-4dcc-a7df-c90362bb4476  *******/
           render: (data, type, row) => {
             let isChecked = this.barangTemp.some(item => item.kodeBarang === row.kodeBarang) ? 'checked' : '';
             if(row.statusAktif === 'T'){

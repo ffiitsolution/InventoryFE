@@ -12,6 +12,7 @@ import {
   FormModule,
   GridModule,
   ModalModule,
+  PaginationModule,
   TableModule,
   TextColorDirective,
   UtilitiesModule,
@@ -41,6 +42,9 @@ import { AddDataDetailWastageComponent } from './pemusnahan-wastage/add-data-det
 import { DetailWastageComponent } from './pemusnahan-wastage/detail/detail.component';
 import { AddDataDetailGudangComponent } from './add-data-gudang/detail-add-data-gudang/detail-add-data-gudang.component';
 import { DisplayDataGudangComponent } from './add-data-gudang/display-data-dari-gudang/display-data-dari-gudang.component';
+import { PembelianListComponent } from './pembelian/dt/pembelian-list.component';
+import { AddPembelianComponent } from './pembelian/add-data/add-data.component';
+import { AddDataDetailPembelianComponent } from './pembelian/add-data-detail/add-data-detail.component';
 import { ListBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri.component';
 import { AddDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian-sendiri/tambah-data-pemakaian-barang-sendiri/add-data-pemakaian-barang-sendiri.component';
 import { DisplayDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian-sendiri/display-data-pemakaian-barang-sendiri/display-data-pemakaian-barang-sendiri-detail.component';
@@ -76,6 +80,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ModalModule,
     TableModule,
     SharedComponentModule,
+    PaginationModule,
     
   ],
   declarations: [
@@ -96,6 +101,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     DetailWastageComponent,
     AddDataDetailGudangComponent,
     DisplayDataGudangComponent,
+    PembelianListComponent,
+    AddPembelianComponent,
+    AddDataDetailPembelianComponent,
     ListBarangUntukPemakaianSendiriComponent,
     AddDataPemakaianBarangSendiriComponent,
     DisplayDataPemakaianBarangSendiriComponent,

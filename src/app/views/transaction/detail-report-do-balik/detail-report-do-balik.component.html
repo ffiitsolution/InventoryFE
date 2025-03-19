@@ -48,11 +48,11 @@
             </div>
             <div class="detail-item">
               <span class="label">{{ "Catatan" | translate }}</span>
-              <span class="value">{{ selectedOrder.notes }} </span>
+              <span class="value">{{ selectedOrder.KETERANGAN }} </span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Status Transaksi" | translate }}</span>
-              <span class="value">{{ selectedOrder.STATUS_TRANSAKSI === 'I' ? 'Intransit' : 'Posting' }} </span>
+              <span class="value">{{ selectedOrder.STATUS_POSTING === 'I' ? 'Intransit' : 'Posting' }} </span>
             </div>
 
           </div>

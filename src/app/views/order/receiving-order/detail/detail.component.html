@@ -43,13 +43,12 @@
           </button> -->
           <button
             type="button"
-            class="btn btn-outline-danger me-2 btn-120"
+            class="btn btn-outline-danger me-2"
             (click)="onButtonActionPressed('4')"
             [disabled]="updatingStatus || disabledCancelButton"
           >
-            <i class="fa fa-times icon-gap" *ngIf="!RejectingOrder"></i>
-            <i class="fa fa-spinner fa-spin" *ngIf="RejectingOrder"></i>
-            {{ "Batal" | translate }}
+            <i class="fa fa-times icon-gap"></i>
+            {{ "Batalkan Pesanan" | translate }}
           </button>
         </div>
       </div>
@@ -73,35 +72,27 @@
               <span class="label">{{ "Tanggal Kedaluwarsa" | translate }}</span>
               <span class="value">{{ selectedOrder.tglKadaluarsa }}</span>
             </div>
-            <div class="detail-item">
-              <span class="label">{{ "Status Pesanan" | translate }}</span>
-              <span class="value">{{
-                this.g.getStatusOrderLabel(selectedOrder.statusPesanan)
-              }}</span>
-            </div>
           </div>
         </div>
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">
-              <span class="label">{{ "Tujuan" | translate }}</span>
+              <span class="label">{{ "Pemesan(Tujuan)" | translate }}</span>
               <span class="value"> {{ selectedOrder.kodePemesan }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tipe Pesanan" | translate }}</span>
-              <span class="value"> {{ selectedOrder.keterangan1 }}</span>
+              <span class="label">{{ "Catatan 1" | translate }}</span>
+              <span class="value">{{ selectedOrder.keterangan1 }} </span>
             </div>
+
             <div class="detail-item">
-              <span class="label">{{ "Catatan" | translate }}</span>
+              <span class="label">{{ "Catatan 2" | translate }}</span>
               <span class="value">{{ selectedOrder.keterangan2 }} </span>
             </div>
+
             <div class="detail-item">
-              <span class="label">{{ "Nomor SJ" | translate }}</span>
-              <span class="value">{{ selectedOrder.noSjPengirim || "-" }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Status Cetak" | translate }}</span>
-              <span class="value">{{ getPrintStatus() }}</span>
+              <span class="label">{{ "Status Pesanan" | translate }}</span>
+              <span class="value">{{  g.getStatusOrderLabel(selectedOrder.statusPesanan) }} </span>
             </div>
           </div>
         </div>
