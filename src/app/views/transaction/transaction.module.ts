@@ -54,6 +54,11 @@ import { ProductionListComponent } from './production/dt-list/production-list.co
 import { AddProductionComponent } from './production/add-data/add-data.component';
 import { AddDataDetailProductionComponent } from './production/add-data-detail/add-data-detail.component';
 import { DetailProductionComponent } from './production/detail/detail.component';
+import { KirimBarangReturnKeSiteListComponent } from './kirim-barang-return-ke-site/dt-list/kirim-barang-return-ke-site-list.component';
+import { AddKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/add-data/add-data.component';
+import { AddDataDetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/add-data-detail/add-data-detail.component';
+import { DetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/detail/detail.component';
+
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -113,6 +118,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     AddProductionComponent,
     AddDataDetailProductionComponent,
     DetailProductionComponent,
+    KirimBarangReturnKeSiteListComponent,
+    AddKirimBarangReturnKeSiteComponent,
+    AddDataDetailKirimBarangReturnKeSiteComponent,
+    DetailKirimBarangReturnKeSiteComponent,
     
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
