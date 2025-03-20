@@ -25,6 +25,11 @@ import { DisplayDataPemakaianBarangSendiriComponent } from './barang-untuk-pemak
 import { DetailBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakaian-sendiri/detail-pemakaian-barang/detail-barang-untuk-pemakaian-sendiri.component';
 import { AddDataDetailBarangComponent } from './barang-untuk-pemakaian-sendiri/add-data-detail/add-data-detail-barang.component';
 import { DetailPembelianComponent } from './pembelian/detail/detail.component';
+import { ProductionListComponent } from './production/dt-list/production-list.component';
+import { AddProductionComponent } from './production/add-data/add-data.component';
+import { AddDataDetailProductionComponent } from './production/add-data-detail/add-data-detail.component';
+import { DetailProductionComponent } from './production/detail/detail.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -151,7 +156,29 @@ const routes: Routes = [
         component: AddDataDetailBarangComponent,
       },
     ],
-  }
+  },
+  {
+    path: 'production',
+    children: [
+      {
+        path: 'list-dt',
+        component:ProductionListComponent,
+      },
+      {
+        path: 'add-data',
+        component: AddProductionComponent,
+      },
+      {
+        path: 'add-data-detail',
+        component: AddDataDetailProductionComponent,
+      },
+      {
+        path: 'detail',
+        component: DetailProductionComponent,
+      },
+      
+    ],
+  },
 ];
 
 @NgModule({

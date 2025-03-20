@@ -1,0 +1,121 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>{{ "Produksi" | translate }}</h5>
+        </div>
+        <div class="col text-end">
+          <button
+            type="button"
+            class="btn btn-outline-dark me-2 btn-120"
+            (click)="toggleFilter()"
+          >
+            <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
+            {{ "Filter" | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-success text-white me-2 btn-240"
+            data-toggle="modal"
+            (click)="onAddPressed()"
+          >
+            <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
+            {{ "Tambah Produksi" | translate }}
+          </button>
+        </div>
+        
+      </div>
+      <div [visible]="showFilterSection" cCollapse>
+        <div class="divider"></div>
+        <div class="row" style="margin-top: -16px">
+          <c-card-body>
+            <c-row>
+              <c-col>
+                <label class="col-form-label">{{
+                  "Tanggal Pesan" | translate
+                }}</label>
+                <input
+                  type="text"
+                  id="dateFilter"
+                  class="form-control"
+                  bsDaterangepicker
+                  [bsConfig]="dpConfig"
+                  aria-describedby="dateFilter"
+                  [(ngModel)]="dateRangeFilter"
+                  #dp="bsDaterangepicker"
+                  placeholder="{{ 'Tanggal Pesan' | translate }}"
+                />
+              </c-col>
+              <c-col
+                xs="3"
+                class="text-right d-flex align-items-end justify-content-end"
+              >
+                <button
+                  type="button"
+                  class="btn btn-outline-success me-2 btn-160"
+                  (click)="onFilterPressed()"
+                >
+                  {{ "Terapkan Filter" | translate }}
+                </button>
+              </c-col>
+            </c-row>
+          </c-card-body>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="table-responsive">
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          (page.dt)="dtPageChange($event)"
+          class="row-border hover stripe w-100"
+        ></table>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+
+  <c-card class="c-card" *ngIf="selectedRowData">
+    <c-card-body>
+      <div class="row p-2 justify-content-end">
+        <div class="col-6">
+          <div class="w-100 mb-2">
+            <label for="keterangan" class="form-label">{{ "Keterangan" | translate }}</label>
+            <input type="text" disabled placeholder="Keterangan" class="form-control" 
+              [(ngModel)]="selectedRowData.keterangan" name="keterangan" />
+          </div>
+        
+        </div>
+        <div class="col-2">
+         
+            <div class="w-100 mb-2 ">
+              <label for="userCreate" class="form-label">{{ "User Create" | translate }}</label>
+              <input type="text" disabled placeholder="User Create" class="form-control"
+                [(ngModel)]="selectedRowData.userCreate" name="userCreate" />
+            </div>
+        </div>
+        <div class="col-2">
+          <div class="w-100 mb-2 ">
+            <label for="dateCreate" class="form-label">{{ "Date Create" | translate }}</label>
+            <input type="text" disabled placeholder="Alamat 1" class="form-control" 
+              [(ngModel)]="selectedRowData.dateCreateFormat" name="dateCreate" />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="w-100 mb-2 ">
+            <label for="timeCreate" class="form-label">{{ "Time Create" | translate }}</label>
+            <input type="text" disabled placeholder="Time Create" class="form-control"
+              [(ngModel)]="selectedRowData.timeCreate" name="timeCreate" />
+          </div> 
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>

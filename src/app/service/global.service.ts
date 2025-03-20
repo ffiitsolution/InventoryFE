@@ -371,5 +371,19 @@ export class GlobalService {
     }
     return range;
   }
+
+  convertKeysToCamelCase(obj: any): any {
+    const newObj: any = {};
   
+    Object.keys(obj).forEach(key => {
+      // Convert UPPERCASE_UNDERSCORE to camelCase
+      const camelCaseKey = key
+        .toLowerCase()
+        .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
+  
+      newObj[camelCaseKey] = obj[key]; // Assign value to new key
+    });
+  
+    return newObj;
+  }
 }

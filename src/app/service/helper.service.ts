@@ -102,4 +102,11 @@ export class HelperService {
     let formattedValue = this.decimalPipe.transform(numericValue, '1.0-4');
     input.value = formattedValue;
   }
+
+  formatDate(date: Date): string {
+    const day = ("0" + date.getDate()).slice(-2);  // Ensure two digits for day
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);  // Ensure two digits for month
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;  // Return in DD/MM/YYYY format
+  }
 }

@@ -96,6 +96,13 @@ export const menu_id: any = [
           name: 'cil-contact',
         },
       },
+      {
+        name: 'Resep',
+        url: '/master/master-resep',
+        iconComponent: {
+          name: 'cil-dinner',
+        },
+      },
     ],
   },
   {
@@ -280,6 +287,13 @@ export const menu_id: any = [
         url: '/transaction/wastage/list-dt',
         iconComponent: {
           name: 'cil-trash',
+        },
+      },
+      {
+        name: 'Produksi',
+        url: '/transaction/production/list-dt',
+        iconComponent: {
+          name: 'cil-industry',
         },
       },
     ],

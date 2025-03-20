@@ -7,11 +7,15 @@ import { AlertComponent } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
 import { isEmpty } from 'lodash-es';
 import { GlobalService } from 'src/app/service/global.service';
+import { ToastrService } from 'ngx-toastr';
+import { AppService } from 'src/app/service/app.service';
+import { DEFAULT_DELAY_TIME } from 'src/constants';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-account-setting',
   templateUrl: './account-setting.component.html',
-  styleUrl: './account-setting.component.scss'
+  styleUrl: './account-setting.component.scss',
 })
 export default class AccountSettingComponent implements OnInit {
   locations: any;
@@ -23,25 +27,27 @@ export default class AccountSettingComponent implements OnInit {
 
   constructor(
     private g: GlobalService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService,
+    private translation: TranslateService,
+    private service: AppService
   ) {
     this.currentUser = g.getLocalstorage('inv_currentUser');
     this.locations = g.getLocalstorage('inv_locations');
     this.selectedLanguage = g.getLocalstorage('inv_language') ?? 'id';
-    if(!isEmpty(this.currentUser?.defaultLocation)) {
-      this.defaultLocationCode = this.currentUser?.defaultLocation?.kodeLocation;
+    if (!isEmpty(this.currentUser?.defaultLocation)) {
+      this.defaultLocationCode =
+        this.currentUser?.defaultLocation?.kodeLocation;
       this.isDefaultWarehouseExist = false;
     } else {
-      this.defaultLocationCode = ''
+      this.defaultLocationCode = '';
       this.isDefaultWarehouseExist = true;
     }
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
 
-  }
-
-  onSelectLanguagePressed(lang: string) { 
+  onSelectLanguagePressed(lang: string) {
     this.g.saveLocalstorage('inv_language', lang, 'text');
     window.location.reload();
   }
@@ -50,17 +56,50 @@ export default class AccountSettingComponent implements OnInit {
     const currentUser = this.g.getLocalstorage('inv_currentUser');
     const transformedCurrentUser = {
       ...currentUser,
-      defaultLocation: item
-    }
-    this.g.saveLocalstorage('inv_currentUser', transformedCurrentUser);
+      defaultLocation: item,
+    };
     Swal.fire({
-      title: 'Berhasil',
-      icon: 'success',
-      html: `Berhasil memilih ${item.keteranganLokasi}`,
-      confirmButtonText: 'OK, Navigasi ke Dashboard',
-      showCancelButton: false,
-    }).then((v) => {
-      this.router.navigate(['dashboard']).then(() => window.location.reload());
+      title: `Peringatan !`,
+      icon: 'warning',
+      html: `Apakah anda yakin untuk berpindah ke ${item.keteranganLokasi}?`,
+      showCancelButton: true,
+      confirmButtonText: 'Iya, Berpindah Gudang',
+      cancelButtonText: 'Tidak',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const param = {
+          kodeUser: this.currentUser?.kodeUser,
+          // kodePassword: controls?.['kodePassword']?.value,
+          // namaUser: controls?.['namaUser']?.value,
+          // statusAktif: controls?.['statusAktif']?.value,
+          // jabatan: controls?.['jabatan']?.value,
+          defaultLocation:
+            transformedCurrentUser?.defaultLocation?.kodeLocation,
+          // roleID: controls?.['roleID']?.value?.id ?? ' ',
+        };
+        console.log();
+        this.service.patch('/api/users/current', param).subscribe({
+          next: (res: any) => {
+            if (!res.success) {
+              alert(res.message);
+            } else {
+              this.toastr.success(this.translation.instant('Berhasil!'));
+              setTimeout(() => {
+                this.g.clearLocalstorage();
+                this.router.navigate(['/login']);
+              }, DEFAULT_DELAY_TIME);
+            }
+          },
+          error: (err: any) => {
+            console.error('Error updating user:', err);
+            alert('An error occurred while updating the user.');
+          },
+        });
+        // this.g.saveLocalstorage('inv_currentUser', transformedCurrentUser);
+        // this.router
+        //   .navigate(['dashboard'])
+        //   .then(() => window.location.reload());
+      }
     });
   }
 }

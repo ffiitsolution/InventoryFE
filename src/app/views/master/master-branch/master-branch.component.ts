@@ -7,10 +7,10 @@ import {
 } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
-import { Page } from 'src/app/model/page';
-import { DataService } from 'src/app/service/data.service';
-import { GlobalService } from 'src/app/service/global.service';
-import { TranslationService } from 'src/app/service/translation.service';
+import { Page } from '../../../model/page';
+import { DataService } from '../../../service/data.service';
+import { GlobalService } from '../../../service/global.service';
+import { TranslationService } from '../../../service/translation.service';
 import {
   ACTION_ADD,
   ACTION_EDIT,
@@ -19,7 +19,7 @@ import {
   BUTTON_CAPTION_EDIT,
   BUTTON_CAPTION_VIEW,
   LS_INV_SELECTED_BRANCH,
-} from 'src/constants';
+} from '../../../../constants';
 import { Router } from '@angular/router';
 
 @Component({

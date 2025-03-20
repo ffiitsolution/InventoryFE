@@ -221,4 +221,7 @@ export class ReceivingOrderComponent
   onAddPressed() {
     this.router.navigate(['/order/receiving-order/add']);
   }
+  onOrderManualPressed() {
+    this.router.navigate(['/order/receiving-order/order-manual']);
+  }
 }

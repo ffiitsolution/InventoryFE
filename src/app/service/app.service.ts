@@ -23,6 +23,13 @@ export class AppService {
     );
   }
 
+  defaultGudang(param: any): Observable<any> {
+    return this.dataService.postData(
+      this.config.BASE_URL + '/api/auth/default-gudang',
+      param
+    );
+  }
+
   getToken() {
     // if (!localStorage.getItem('inv_listMenu')) {
     //   return null;
@@ -37,7 +44,7 @@ export class AppService {
     }
   }
 
-  getUserData(){
+  getUserData() {
     const userString = this.getToken() ?? '';
     return JSON.parse(userString);
   }
@@ -233,6 +240,13 @@ export class AppService {
     );
   }
 
+  getProductionProductList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/list-product/dt`,
+      payload
+    );
+  }
+  
   getPOPembelian(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/pembelian/get-purchase-order`,
@@ -240,9 +254,40 @@ export class AppService {
     );
   }
 
+  getBahanBakuByResep(param: any) {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/production/bahanbaku?kode_product=${param}`
+    );
+  }
+
   getDetailAddPembelian(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/pembelian/get-detail-pembelian`,
+      payload
+    );
+  }
+
+  getProductResep(param: any) {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/resep/product/get-by-id?kode_barang=${param}`
+    );
+  }
+  getResepByProduct(param: any) {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/resep/get-by-id?kode_barang=${param}`
+    );
+  }
+
+  getBahanBakuList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/resep/bahan-baku/dt`,
+      payload
+    );
+  }
+
+  deleteResepRow(payload: any){
+    return this.dataService.deleteData(
+      `${this.config.BASE_URL}/api/resep/`,
       payload
     );
   }

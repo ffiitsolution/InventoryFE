@@ -11,6 +11,11 @@
             {{ "Filter" | translate }}
           </button>
           <button type="button" class="btn btn-success text-white me-2 btn-240" data-toggle="modal"
+          (click)="onOrderManualPressed()">
+          <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
+          {{ "Order Manuall" | translate }}
+        </button>
+          <button type="button" class="btn btn-success text-white me-2 btn-240" data-toggle="modal"
             (click)="onAddPressed()">
             <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
             {{ "Tambah Penerimaan" | translate }}
