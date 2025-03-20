@@ -24,6 +24,12 @@ import { AddDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian
 import { DisplayDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian-sendiri/display-data-pemakaian-barang-sendiri/display-data-pemakaian-barang-sendiri-detail.component';
 import { DetailBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakaian-sendiri/detail-pemakaian-barang/detail-barang-untuk-pemakaian-sendiri.component';
 import { AddDataDetailBarangComponent } from './barang-untuk-pemakaian-sendiri/add-data-detail/add-data-detail-barang.component';
+import { ListBarangReturComponent } from './retur-barang-to-supllier/list-barang-retur/list-barang.component';
+import { AddDataBarangReturComponent } from './retur-barang-to-supllier/tambah-data-barang-retur/add-data-retur.component';
+import { DisplayDataBarangReturComponent } from './retur-barang-to-supllier/display-data-barang-retur/display-data.component';
+import { DetailBarangReturComponent } from './retur-barang-to-supllier/detail-pemakaian-barang/detail-barang.component';
+import { AddDataDetailBarangReturComponent } from './retur-barang-to-supllier/add-data-detail-barang-retur/add-detail.component';
+import { DetailPembelianComponent } from './pembelian/detail/detail.component';
 import { ProductionListComponent } from './production/dt-list/production-list.component';
 import { AddProductionComponent } from './production/add-data/add-data.component';
 import { AddDataDetailProductionComponent } from './production/add-data-detail/add-data-detail.component';
@@ -32,7 +38,6 @@ import { KirimBarangReturnKeSiteListComponent } from './kirim-barang-return-ke-s
 import { AddKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/add-data/add-data.component';
 import { AddDataDetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/add-data-detail/add-data-detail.component';
 import { DetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/detail/detail.component';
-
 
 const routes: Routes = [
   {
@@ -94,7 +99,7 @@ const routes: Routes = [
       {
         path: 'receipt-from-warehouse/display-data-dari-gudang',
         component: DisplayDataGudangComponent,
-      }
+      },
     ],
   },
   {
@@ -138,7 +143,6 @@ const routes: Routes = [
         path: 'detail',
         component: DetailWastageComponent,
       },
-
     ],
   },
   {
@@ -154,8 +158,8 @@ const routes: Routes = [
       },
       {
         path: 'detail',
-        component: DetailWastageComponent,
-      }
+        component: DetailPembelianComponent,
+      },
     ],
   },
   {
@@ -184,11 +188,36 @@ const routes: Routes = [
     ],
   },
   {
+    path: 'retur-ke-supplier',
+    children: [
+      {
+        path: 'list-barang-retur',
+        component: ListBarangReturComponent,
+      },
+      {
+        path: 'tambah-data-barang-retur',
+        component: AddDataBarangReturComponent,
+      },
+      {
+        path: 'display-data-barang-retur',
+        component: DisplayDataBarangReturComponent,
+      },
+      {
+        path: 'detail-pemakaian-barang',
+        component: DetailBarangReturComponent,
+      },
+      {
+        path: 'add-data-detail-barang-retur',
+        component: AddDataDetailBarangReturComponent,
+      },
+    ],
+  },
+  {
     path: 'production',
     children: [
       {
         path: 'list-dt',
-        component:ProductionListComponent,
+        component: ProductionListComponent,
       },
       {
         path: 'add-data',
@@ -202,7 +231,6 @@ const routes: Routes = [
         path: 'detail',
         component: DetailProductionComponent,
       },
-      
     ],
   },
 ];
@@ -211,4 +239,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class TransactionRoutingModule { }
+export class TransactionRoutingModule {}

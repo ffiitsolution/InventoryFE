@@ -20,7 +20,7 @@
                   Konversi</th>
                 <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle;"
                   class="text-center align-items-start btn-danger" colspan="2">Qty
-                  Waste</th> <!-- Masih sejajar -->
+                  Waste</th> <!-- Masih sejajar --> 
                 <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
                   class="text-center align-items-start" rowspan="2">
                   Total Qty Waste</th>
@@ -56,7 +56,7 @@
                 <td class="text-center">
                   <div class="input-group">
                     <input type="text" autofocus class="form-control text-center" [(ngModel)]="data.kodeBarang"
-                      (keydown.enter)="handleEnter($event, i)" (keyup.enter)="nextInput.focus()" />
+                      (keydown.enter)="handleEnter($event, i)"  (keyup.enter)="nextInput.focus()" [disabled]="!!data?.namaBarang"/>
                     <button class="btn btn-outline-secondary" type="button" (click)="onShowModal()">
                       <i class="fa fa-search"></i>
                     </button>

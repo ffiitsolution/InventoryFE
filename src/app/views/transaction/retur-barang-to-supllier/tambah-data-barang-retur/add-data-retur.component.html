@@ -1,0 +1,223 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <div
+          class="d-grid gap-3 d-md-flex justify-content-start align-items-center"
+        >
+          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button>
+          <h5>{{ "Tambah Data Barang Retur Ke Supplier" | translate }}</h5>
+        </div>
+      </c-row>
+    </c-card-body>
+  </c-card>
+
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <div
+          [ngClass]="isShowDetail ? 'col-4' : 'col-5'"
+          class="pe-0 d-flex red-line"
+        >
+          <div class="w-100">
+            <div class="p-2">
+              <h5 class="mb-2 p-2" style="color: #3c4b64">
+                {{ "Isi Format" | translate }}
+              </h5>
+
+              <!-- Input Tanggal Transaksi -->
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="tglTransaksi"
+                    >{{ "Tgl. Transaksi" | translate }}
+                    <span class="text-danger">*</span></label
+                  >
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <input
+                    type="text"
+                    id="tglTransaksi"
+                    class="form-control"
+                    aria-describedby="tglTransaksi"
+                    #dp="bsDatepicker"
+                    [bsConfig]="dpConfig"
+                    bsDatepicker
+                    autocomplete="off"
+                    [(ngModel)]="formData.tglTransaksi"
+                    placeholder="{{ 'Tanggal transaksi' | translate }}"
+                  />
+                </div>
+              </div>
+
+              <div class="divider mt-4"></div>
+
+              <!-- Input Kode Supplier + Modal Pencarian -->
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="kodeSupplier">{{
+                    "Kode Supplier" | translate
+                  }}</label>
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <input
+                    type="text"
+                    placeholder="Kode Supplier"
+                    class="form-control"
+                    id="kodeSupplier"
+                    [(ngModel)]="formData.kodeSupplier"
+                    name="kodeSupplier"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-info ms-2"
+                    (click)="onShowModal()"
+                  >
+                    <i class="fa fa-search text-white"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Input NAMA Supplier -->
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="namaSupplier">{{
+                    "Nama Supplier" | translate
+                  }}</label>
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <input
+                    type="text"
+                    placeholder="Nama Supplier"
+                    class="form-control"
+                    id="namaSupplier"
+                    [(ngModel)]="formData.namaSupplier"
+                    name="namaSupplier"
+                  />
+                </div>
+              </div>
+
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="alamatSupplier">{{
+                    "Alamat Supplier" | translate
+                  }}</label>
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <textarea
+                    placeholder="Alamat Supplier"
+                    type="text"
+                    class="form-control"
+                    id="alamatSupplier"
+                    [(ngModel)]="formData.alamatSupplier"
+                    name="alamatSupplier"
+                  ></textarea>
+                </div>
+              </div>
+
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="statusAktif">{{
+                    "Status Aktif" | translate
+                  }}</label>
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <input
+                    placeholder=""
+                    type="text"
+                    class="form-control"
+                    id="statusAktif"
+                    [(ngModel)]="formData.statusAktif"
+                    name="statusAktif"
+                  />
+                </div>
+              </div>
+
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="keterangan">{{ "Catatan" | translate }}</label>
+                </div>
+                <div class="col-8 pe-0 d-flex flex-column">
+                  <textarea
+                    placeholder="Catatan"
+                    type="text"
+                    class="form-control"
+                    id="keterangan"
+                    [(ngModel)]="formData.keterangan"
+                    name="keterangan"
+                    (input)="onKeteranganChange()"
+                    [class.is-invalid]="isKeteranganInvalid"
+                    maxlength="50"
+                  ></textarea>
+              
+                  <div class="text-end text-muted mt-1">
+                    <small>{{ charCount }}/50 karakter</small>
+                  </div>
+                </div>
+              </div>
+              
+
+              <div class="p-2">
+                <button
+                  class="shadow-sm btn w-100 btn-info text-white"
+                  *ngIf="!isShowDetail"
+                  [disabled]="formData.kodeSupplier === ''"
+                  (click)="onAddDetail()"
+                >
+                  <i class="fa fa-check pe-2"></i>
+                  {{ "Detail Transaksi" | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
+          <div class="p-2" *ngIf="isShowDetail">
+            <app-add-data-detail-barang-retur></app-add-data-detail-barang-retur>
+          </div>
+        </div>
+      </c-row>
+    </c-card-body>
+  </c-card>
+
+  <!-- Modal CModal untuk Pencarian Supplier -->
+  <c-modal
+    #formModal
+    [fullscreen]="false"
+    [visible]="isShowModal"
+    [backdrop]="true"
+    #modalLg
+    size="xl"
+    id="formModal"
+  >
+    <c-modal-header>
+      <h5 cModalTitle>Daftar Supplier</h5>
+      <button
+        (click)="isShowModal = false"
+        type="button"
+        class="btn btn-info ms-2"
+        [cModalToggle]="formModal.id"
+        cButtonClose
+      >
+        <i class="fa fa-times"></i>
+      </button>
+    </c-modal-header>
+
+    <c-modal-body>
+      <c-card class="mb-4">
+        <c-card-body>
+          <div class="table-responsive">
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              class="row-border hover stripe w-100"
+            ></table>
+          </div>
+        </c-card-body>
+      </c-card>
+    </c-modal-body>
+  </c-modal>
+</div>

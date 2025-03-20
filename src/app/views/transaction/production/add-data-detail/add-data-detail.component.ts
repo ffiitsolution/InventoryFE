@@ -24,6 +24,7 @@ import { TranslationService } from '../../../../service/translation.service';
 import { DataService } from '../../../../service/data.service';
 import { Page } from '../../../../model/page';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-add-data-detail-production',
@@ -62,9 +63,10 @@ export class AddDataDetailProductionComponent
   isShowModalDelete: boolean = false;
   indexDataDelete: any;
   selectedExpProduct: any = {};
+  loadingSimpan: boolean = false;
   @Output() onBatalPressed = new EventEmitter<string>();
   @Output() jumlahBahanbaku  = new EventEmitter<number>();
-  
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
   @ViewChild('formModal') formModal: any;
   public dpConfig: Partial<BsDatepickerConfig> = {
     dateInputFormat: 'DD/MM/YYYY',
@@ -120,6 +122,8 @@ export class AddDataDetailProductionComponent
   }
   ngOnDestroy(): void {
     this.g.navbarVisibility = true;
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();  
   }
 
   onBackPressed() {
@@ -136,6 +140,7 @@ export class AddDataDetailProductionComponent
 
   onSubmit() {
     if (!this.isDataInvalid()) {
+      this.loadingSimpan= true;
       // param for order Header
       const param = {
         kodeGudang: this.g.getUserLocationCode(),
@@ -190,7 +195,9 @@ export class AddDataDetailProductionComponent
             cancelButtonText: 'Batal Posting',
           }).then((result) => {
             if (result.isConfirmed) {
-              this.service.insert('/api/production/insert', param).subscribe({
+              this.service.insert('/api/production/insert', param)
+              .pipe(takeUntil(this.ngUnsubscribe))
+              .subscribe({
                 next: (res) => {
                   if (!res.success) {
                     this.toastr.error(res.message);
@@ -202,10 +209,15 @@ export class AddDataDetailProductionComponent
         
                   }
                   this.adding = false;
+                  this.loadingSimpan =false;
                 },
+                error:()=>{
+                  this.loadingSimpan =false;
+                }
               });
             } else {
               this.toastr.info('Posting dibatalkan');
+              this.loadingSimpan =false;
             }
           });
 

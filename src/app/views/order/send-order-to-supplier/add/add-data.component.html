@@ -152,7 +152,7 @@
                       formControlName="catatan1"
                       [readOnly]="adding"
                       (keypress)="conditionInput($event, 'excludedSensitive')"
-                      maxlength="100"
+                      maxlength="50"
                     ></textarea>
                     <span
                       *ngIf="
@@ -246,7 +246,7 @@
   id="formModalBuatPesanan"    [attr.aria-hidden]="!isShowModalBuatPesanan">
     <c-modal-header>
       <h5 cModalTitle>Konfirmasi Buat Pesanan </h5>
-      <button (click)="isShowModalBuatPesanan = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalBack.id"
+      <button (click)="isShowModalBuatPesanan = false" type="button" class="btn btn-primary ms-2" 
         cButtonClose><i class="fa fa-times"></i></button>
     </c-modal-header>
     <c-modal-body>

@@ -4,6 +4,7 @@ import { AppConfig } from '../config/app.config';
 import { DataService } from './data.service';
 import { TranslationService } from './translation.service';
 import { ToastrService } from 'ngx-toastr';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +12,9 @@ import { ToastrService } from 'ngx-toastr';
 export class AppService {
   constructor(
     private dataService: DataService,
-    private translation: TranslationService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private http: HttpClient,
+    private translation: TranslationService
   ) {}
   protected config = AppConfig.settings.apiServer;
 
@@ -219,6 +221,13 @@ export class AppService {
     );
   }
 
+  getCariDataSupplier(payload: any): Observable<any> {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/cari-data-supplier`,
+      payload
+    );
+  }
+
   getItemRevisiDO(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/delivery-order/list-item-revisi-do`,
@@ -259,10 +268,35 @@ export class AppService {
       `${this.config.BASE_URL}/api/production/bahanbaku?kode_product=${param}`
     );
   }
-  
+
   getDetailAddPembelian(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/pembelian/get-detail-pembelian`,
+      payload
+    );
+  }
+
+  getProductResep(param: any) {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/resep/product/get-by-id?kode_barang=${param}`
+    );
+  }
+  getResepByProduct(param: any) {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/resep/get-by-id?kode_barang=${param}`
+    );
+  }
+
+  getBahanBakuList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/resep/bahan-baku/dt`,
+      payload
+    );
+  }
+
+  deleteResepRow(payload: any){
+    return this.dataService.deleteData(
+      `${this.config.BASE_URL}/api/resep/`,
       payload
     );
   }

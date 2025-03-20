@@ -19,7 +19,7 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
+        <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
         <button class="btn btn-light  btn-150" (click)="onShowModalCancel()">
           <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
         </button> 
@@ -36,26 +36,35 @@
           <table bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
             <thead>
               <tr>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">No.
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                class="text-center align-items-start" rowspan="2">
+                  No.
                 </th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">Kode
-                  Barang</th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">Nama
-                  Barang</th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" colspan="2">Qty
-                  Kirim</th> <!-- Masih sejajar -->
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 15%;"
+                class="text-center align-items-start" rowspan="2">
+                 Kode Barang</th>
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                class="text-center align-items-start" rowspan="2">
+                  Nama Barang</th>
+                <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle; width: 10%;"
+                  class="text-center align-items-start btn-danger" colspan="2">Qty Pesan</th> <!-- Masih sejajar --> 
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                class="text-center align-items-start" rowspan="2">
                   Konversi Gudang</th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                class="text-center align-items-start" rowspan="2">
                   Total Quantity Pesan
                 </th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Action
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                class="text-center align-items-start" rowspan="2">
+                   Action
                 </th>
               </tr>
               <tr>
-                <th scope="col" class="text-center" style="width:160px;">Besar</th>
-                <th scope="col" class="text-center" style="width:160px;">Kecil</th>
+                <th scope="col" class="text-center"
+                  style="background-color: #3c4b64; color:white; vertical-align: middle; ">Besar</th>
+                <th scope="col" class="text-center"
+                  style="background-color: #3c4b64; color:white; vertical-align: middle;">Kecil</th>
               </tr>
             </thead>
             <tbody *ngIf="!listOrderData || listOrderData.length === 0">
@@ -68,18 +77,27 @@
             <tbody>
               <tr *ngFor="let data of listOrderData; let i = index">
                 <td class="text-center">{{ i + 1 }}</td>
-                <td class="text-center">{{ data.kodeBarang }}</td>
-                <td class="text-center">{{ data.namaBarang }}</td>
-                  <!-- <td class="text-center">{{ data.qtyPesanBesar }} {{ data.satuanBesar }}</td> -->
+                <!-- <td class="text-center">{{ data?.kodeBarang }}</td> -->
+                <td class="text-center">
+                  <div class="input-group">
+                    <input type="text" autofocus class="form-control text-center" [(ngModel)]="data.kodeBarang"
+                      (keydown.enter)="handleEnter($event, i)" (keyup.enter)="nextInput.focus()"  [disabled]="!!data?.namaBarang"  />
+                    <button class="btn btn-outline-secondary" type="button" (click)="onShowModal()">
+                      <i class="fa fa-search"></i>
+                    </button>
+                  </div>
+
+                </td>
+                <td class="text-center">{{ data?.namaBarang }}</td>
 
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
-                    <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
+                    <input #nextInput type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
                       [(ngModel)]="data.qtyPesanBesar"  (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
                       (keypress)="g.conditionInput($event, 'numeric')" [ngClass]="{'form-invalid': validationMessageListSatuanBesar[i]}"
                       />
                     <span class="d-flex align-items-center justify-content-center">
-                      / {{data.satuanBesar}}
+                      / {{data?.satuanBesar}}
                     </span>
                   </div>
                     <!-- Validation message area -->
@@ -97,7 +115,7 @@
                       (keypress)="g.conditionInput($event, 'numeric')" />
                 
                     <span class="d-flex align-items-center justify-content-center">
-                      / {{data.satuanKecil}}
+                      / {{data?.satuanKecil}}
                     </span>
                   </div>
                   <!-- Validation message area -->
@@ -106,9 +124,9 @@
                   </span>
                 </td>
 
-                <td class="text-center">{{ data.konversi }}.00</td>
-                <td class="text-center">{{(helper.sanitizedNumber(data.qtyPesanBesar) *
-                  data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil) }}.00 {{data.satuanKecil}}
+                <td class="text-center">{{ data?.konversi?.toFixed(2) }}</td>
+                <td class="text-center">{{((helper.sanitizedNumber(data.qtyPesanBesar) *
+                  data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil))?.toFixed(2) }} {{data.satuanKecil}}
                   
                   <!-- Validation message area -->
                    <br>
@@ -129,13 +147,6 @@
             <pagination-controls (pageChange)="onPageChange(1)" id="dataTable"></pagination-controls>
           </c-pagination>
         </ng-container>
-      </div>
-      <div class="d-grid gap-3 d-md-flex justify-content-end mb-3 mt-3">
-
-        <button type="button" class="btn btn-success text-white me-2"  (click)="onShowModal()">
-          {{ 'Tambah' | translate }}           {{ 'Barang' | translate }}
-        </button>
-  
       </div>
     </c-card-body>
 
