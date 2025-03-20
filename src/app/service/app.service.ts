@@ -4,6 +4,7 @@ import { AppConfig } from '../config/app.config';
 import { DataService } from './data.service';
 import { TranslationService } from './translation.service';
 import { ToastrService } from 'ngx-toastr';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +12,9 @@ import { ToastrService } from 'ngx-toastr';
 export class AppService {
   constructor(
     private dataService: DataService,
-    private translation: TranslationService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private http: HttpClient,
+    private translation: TranslationService
   ) {}
   protected config = AppConfig.settings.apiServer;
 
@@ -194,6 +196,13 @@ export class AppService {
   getNewReceivingOrderGudang(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/delivery-order/search-penerimaan-gudang`,
+      payload
+    );
+  }
+
+  getCariDataSupplier(payload: any): Observable<any> {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/cari-data-supplier`,
       payload
     );
   }

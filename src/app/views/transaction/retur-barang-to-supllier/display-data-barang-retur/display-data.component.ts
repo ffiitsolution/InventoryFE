@@ -35,11 +35,11 @@ import { Page } from '../../../../model/page';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 
 @Component({
-  selector: 'app-display-data-pemakaian-barang-sendiri',
-  templateUrl: './display-data-pemakaian-barang-sendiri-detail.component.html',
-  styleUrl: './display-data-pemakaian-barang-sendiri-detail.component.scss',
+  selector: 'app-display-data-barang-retur',
+  templateUrl: './display-data.component.html',
+  styleUrl: './display-data.component.scss',
 })
-export class DisplayDataPemakaianBarangSendiriComponent
+export class DisplayDataBarangReturComponent
   implements OnInit, OnDestroy, AfterViewInit {
   columns: any;
   orders: any[] = [];
@@ -283,7 +283,7 @@ export class DisplayDataPemakaianBarangSendiriComponent
           
         };
         this.dataService
-          .postData(this.config.BASE_URL+'/api/delivery-order/display-data-pemakaian-barang-sendiri', params)
+          .postData(this.g.urlServer + '/api/delivery-order/display-data-retur-supplier', params)
           .subscribe((resp: any) => {
             const mappedData = resp.data.map((item: any, index: number) => {
               // hapus rn dari data

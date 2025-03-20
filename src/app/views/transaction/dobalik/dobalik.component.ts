@@ -14,6 +14,7 @@ import { AppConfig } from '../../../config/app.config';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { ToastrService } from 'ngx-toastr';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 import {
   ACTION_VIEW,
   DEFAULT_DATE_RANGE_RECEIVING_ORDER,
@@ -57,7 +58,6 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
   dataUser: any;
   protected config = AppConfig.settings.apiServer;
 
-
   constructor(
     private dataService: DataService,
     private g: GlobalService,
@@ -68,30 +68,75 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
     this.minDate.setDate(this.minDate.getDate() - 7);
   }
 
+  getStatusPostingLegend(status: string): string {
+    if (status === 'I') {
+      return 'INTRANSIT';
+    } else if (status === 'P') {
+      return 'POSTED';
+    } else {
+      return 'UNKNOWN';
+    }
+  }
+
+  getStatusDoBalikLegend(status: string): string {
+    if (status === 'B') {
+      return 'BARU';
+    } else {
+      return 'UNKNOWN';
+    }
+  }
+
+  gettIipeTransaksiLabel(tipe: string): string {
+    if (status === '3') {
+      return 'SELESAI';
+    } else {
+      return 'SELESAI';
+    }
+  }
+
   ngOnInit(): void {
     this.dtOptions = {
       paging: true,
       pageLength: 5,
       lengthMenu: [5],
       processing: true,
-      ajax:
-        (dataTablesParameters: any, callback) => {
-          this.getProsesDoBalik(callback);
-          this.page.start = dataTablesParameters.start;
-          this.page.length = dataTablesParameters.length;
-        },
+      ajax: (dataTablesParameters: any, callback) => {
+        this.getProsesDoBalik(callback);
+        this.page.start = dataTablesParameters.start;
+        this.page.length = dataTablesParameters.length;
+      },
       scrollX: true,
       autoWidth: true,
       columns: [
         { data: 'KODE_GUDANG', title: 'Kode Gudang' },
-        { data: 'STATUS_POSTING', title: 'Status Posting' },
-        { data: 'TGL_TRANSAKSI', title: 'Tanggal Transaksi', render: (data) => this.g.transformDate(data) },
-        { data: 'TIPE_TRANSAKSI', title: 'Tipe Transaksi' },
-        { data: 'TGL_PESANAN', title: 'Tanggal Pesanan', render: (data) => this.g.transformDate(data) },
+        {
+          data: 'STATUS_POSTING',
+          title: 'Status Posting',
+          render: (data: string) => this.getStatusPostingLegend(data),
+        },
+        {
+          data: 'TGL_TRANSAKSI',
+          title: 'Tanggal Transaksi',
+          render: (data) => this.g.transformDate(data),
+        },
+        {
+          data: 'TIPE_TRANSAKSI',
+          title: 'Tipe Transaksi',
+          render: (data: string) => this.gettIipeTransaksiLabel(data),
+        },
+        {
+          data: 'TGL_PESANAN',
+          title: 'Tanggal Pesanan',
+          render: (data) => this.g.transformDate(data),
+        },
         { data: 'NOMOR_PESANAN', title: 'Nomor Pesanan' },
         { data: 'NO_SURAT_JALAN', title: 'No Surat Jalan' },
         { data: 'KODE_TUJUAN', title: 'Kode Tujuan' },
-        { data: 'STATUS_DO_BALIK', title: 'Status DO Balik' },
+        {
+          data: 'STATUS_DO_BALIK',
+          title: 'Status DO Balik',
+          render: (data: string) => this.getStatusDoBalikLegend(data),
+        },
         {
           title: 'Opsi',
           className: 'text-center',
@@ -101,7 +146,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
                 <button style="width: 100px" class="btn btn-sm action-posting btn-outline-success btn-60 pe-1">Posting</button>
                 <button style="width: 100px" class="btn btn-sm action-view btn-outline-info btn-60">Lihat</button>
               </div>
-             `;
+            `;
           },
         },
       ],
@@ -109,13 +154,43 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
         );
-        $('.action-posting', row).on('click', () =>
-          this.actionBtnClick('POSTING', data)
-        );
+
+        $('.action-posting', row).on('click', () => {
+          this.showPostingConfirmation(data);
+        });
+
         return row;
       },
       order: [[2, 'desc']],
     };
+  }
+
+  showPostingConfirmation(data: any) {
+    // Menggunakan SweetAlert2 jika tersedia
+    if (typeof Swal !== 'undefined') {
+      Swal.fire({
+        title: 'Pastikan Data Tersebut Yang Akan Di POSTING...!!!',
+        text: 'Akan merubah status Intransit menjadi POSTED, dan mengurangi Stock Intransit...!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Posting',
+        cancelButtonText: 'Tidak',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.actionBtnClick('POSTING', data);
+        }
+      });
+    } else {
+      // Alternatif jika SweetAlert tidak tersedia
+      const confirmPost = window.confirm(
+        'Pastikan Data Tersebut Yang Akan Di POSTING...!!!\n\nAkan merubah status Intransit menjadi POSTED, dan mengurangi Stock Intransit...!\n\nLanjutkan?'
+      );
+      if (confirmPost) {
+        this.actionBtnClick('POSTING', data);
+      }
+    }
   }
 
   actionBtnClick(action: string, data: any): void {
@@ -138,8 +213,8 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
         kodeGudang: data.KODE_GUDANG,
         noSuratJalan: data.NO_SURAT_JALAN,
         userPosted: JSON.parse(localStorage.getItem('inv_currentUser') || '')
-        .namaUser,
-        datePosted: this.g.getLocalDateTime(new Date),
+          .namaUser,
+        datePosted: this.g.getLocalDateTime(new Date()),
       };
       this.appService.updateDeliveryOrderPostingStatus(param).subscribe({
         next: (response) => {
@@ -161,7 +236,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dtTrigger.unsubscribe();
   }
 
-  dtPageChange(event: any): void { }
+  dtPageChange(event: any): void {}
 
   search(): void {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -223,7 +298,6 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
   onAddPressed() {
     this.router.navigate(['/transaction/delivery-item/proses-do-balik']);
   }
-
 
   onFilterPressed() {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
