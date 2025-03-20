@@ -176,7 +176,7 @@
 
         <div class="ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
           <div class="p-2" *ngIf="isShowDetail">
-            <app-add-data-detail-kirim-barang-return-ke-site></app-add-data-detail-kirim-barang-return-ke-site>
+            <app-add-data-detail-kirim-barang-return-ke-site [isShowDetail]="isShowDetail" (showDetailChange)="updateShowDetail($event)"></app-add-data-detail-kirim-barang-return-ke-site>
           </div>
         </div>
       </c-row>

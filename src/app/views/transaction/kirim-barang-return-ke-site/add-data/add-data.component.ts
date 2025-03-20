@@ -208,9 +208,14 @@ export class AddKirimBarangReturnKeSiteComponent
     this.isShowModal = true;
   }
 
+  updateShowDetail(data: any) {
+    console.log(data);
+    this.isShowDetail = !this.isShowDetail;
+  }
+
   actionBtnClick(data: any = null) {
     // this.selectedRo = JSON.stringify(data);
-    // console.log(data); 
+    // console.log(data);
     this.formData.kodeTujuan = data?.kodeCabang;
     this.formData.namaTujuan = data?.namaCabang;
     this.formData.alamatTujuan = data?.alamat1;

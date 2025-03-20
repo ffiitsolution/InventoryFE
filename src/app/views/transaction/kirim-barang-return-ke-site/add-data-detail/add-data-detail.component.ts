@@ -1,8 +1,11 @@
 import {
   AfterViewInit,
   Component,
+  EventEmitter,
+  Input,
   OnDestroy,
   OnInit,
+  Output,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -42,6 +45,8 @@ import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 export class AddDataDetailKirimBarangReturnKeSiteComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
+  @Input() isShowDetail!: boolean;
+  @Output() showDetailChange = new EventEmitter<boolean>();
   columns: any;
   orders: any[] = [];
   headerWastage: any = JSON.parse(
@@ -111,7 +116,6 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
       this.headerWastage.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.renderDataTables();
-    console.log(this.listProductData);
   }
 
   onInputValueItemDetail(
@@ -154,6 +158,7 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
   }
 
   onBackPressed() {
+    this.showDetailChange.emit(!this.isShowDetail);
     // this.router.navigate(['/transaction/kirim-barang-return-ke-site/ada-data']);
   }
 
@@ -418,7 +423,6 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
           data: 'konversi',
           title: 'Konversi',
           render: (data) => {
-            console.log(data);
             return data; // Return as is if not a number
           },
         },
@@ -464,7 +468,6 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
 
   handleCheckboxChange(event: JQuery.ChangeEvent<HTMLElement>, data: any) {
     const isChecked = (event.target as HTMLInputElement).checked;
-    console.log('isChecked', isChecked);
     if (isChecked) {
       // Add kodeBarang if checked
       if (
@@ -509,7 +512,6 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
 
   onAddListDataBarang() {
     let errorMessage;
-    console.log('test');
     this.isShowModal = false;
 
     for (let barang of this.selectedRow) {
@@ -518,7 +520,6 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
           (order) => order.kodeBarang === barang.kodeBarang
         )
       ) {
-        console.log(barang?.konversi?.toFixed(2));
         const productData = {
           totalQtyPesan: 0,
           qtyWasteBesar: null,
@@ -589,7 +590,9 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
   }
 
   onPreviousPressed(): void {
-    this.router.navigate(['/transaction/wastage/list-dt']);
+    // this.router.navigate(['/transaction/wastage/list-dt']);
+    this.showDetailChange.emit(!this.isShowDetail);
+    console.log(1);
   }
 
   isDataInvalid() {
