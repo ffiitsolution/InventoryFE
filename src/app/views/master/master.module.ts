@@ -49,6 +49,7 @@ import {
   FormModule,
   GridModule,
   ModalModule,
+  TableModule,
   TextColorDirective,
   UtilitiesModule,
 } from '@coreui/angular';
@@ -98,6 +99,8 @@ import {
   TableSetNumberDetailComponent,
 } from './table-set-number';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
+import { AddDataDetailResepComponent, AddResepComponent, MasterResepComponent } from './master-resep';
+import { AddDataDetailProductionComponent } from '../transaction/production/add-data-detail/add-data-detail.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -123,6 +126,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     BsDatepickerModule.forRoot(),
     ModalModule,
     SelectDropDownModule,
+    TableModule
   ],
   declarations: [
     MasterUserComponent,
@@ -185,6 +189,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     TablePositionAddComponent,
     TablePositionDetailComponent,
     TablePositionEditComponent,
+
+    MasterResepComponent,
+    AddResepComponent,
+    AddDataDetailResepComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

@@ -71,6 +71,7 @@ import { MasterUserComponent } from './master-user/master-user.component';
 import { MasterUserEditComponent } from './master-user/edit/edit.component';
 import { MasterUserDetailComponent } from './master-user/detail/detail.component';
 import { MasterUserAddComponent } from './master-user/add/add.component';
+import { AddResepComponent, MasterResepComponent } from './master-resep';
 
 const routes: Routes = [
   {
@@ -275,6 +276,14 @@ const routes: Routes = [
       {
         path: 'master-position/detail',
         component: TablePositionDetailComponent,
+      },
+      {
+        path: 'master-resep',
+        component: MasterResepComponent,
+      },
+      {
+        path: 'master-resep/detail',
+        component: AddResepComponent,
       },
     ],
   },

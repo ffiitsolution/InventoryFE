@@ -117,7 +117,7 @@ export class DetailProductionComponent
 
               });
             this.paramGenerateReport = {
-              nomorTransaksi: this.selectedProduction.nomorTransaksi,
+              noTransaksi: this.selectedProduction.nomorTransaksi,
               userEntry: this.selectedProduction.userCreate,
               jamEntry: this.g.transformTime(this.selectedProduction.timeCreate),
               tglEntry: this.g.transformDate(this.selectedProduction.dateCreate),

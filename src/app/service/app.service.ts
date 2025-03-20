@@ -259,10 +259,35 @@ export class AppService {
       `${this.config.BASE_URL}/api/production/bahanbaku?kode_product=${param}`
     );
   }
-  
+
   getDetailAddPembelian(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/pembelian/get-detail-pembelian`,
+      payload
+    );
+  }
+
+  getProductResep(param: any) {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/resep/product/get-by-id?kode_barang=${param}`
+    );
+  }
+  getResepByProduct(param: any) {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/resep/get-by-id?kode_barang=${param}`
+    );
+  }
+
+  getBahanBakuList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/resep/bahan-baku/dt`,
+      payload
+    );
+  }
+
+  deleteResepRow(payload: any){
+    return this.dataService.deleteData(
+      `${this.config.BASE_URL}/api/resep/`,
       payload
     );
   }

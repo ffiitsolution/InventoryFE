@@ -94,4 +94,16 @@ export class DataService {
     return throwError(
       'Something bad happened; please try again later.');
   }
+
+  deleteData(url: string, params: any): Observable<any> {
+    let token = localStorage.getItem('inv_token') ?? '';
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'X-API-TOKEN': token.replaceAll('"', ''),
+    });
+
+    return this.http.delete(url, { headers, body: params }).pipe(
+      catchError(this.handleError)
+    );
+  }
 }

@@ -96,6 +96,13 @@ export const menu_id: any = [
           name: 'cil-contact',
         },
       },
+      {
+        name: 'Resep',
+        url: '/master/master-resep',
+        iconComponent: {
+          name: 'cil-dinner',
+        },
+      },
     ],
   },
   {
