@@ -24,6 +24,7 @@ import { AddDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian
 import { DisplayDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian-sendiri/display-data-pemakaian-barang-sendiri/display-data-pemakaian-barang-sendiri-detail.component';
 import { DetailBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakaian-sendiri/detail-pemakaian-barang/detail-barang-untuk-pemakaian-sendiri.component';
 import { AddDataDetailBarangComponent } from './barang-untuk-pemakaian-sendiri/add-data-detail/add-data-detail-barang.component';
+import { DetailPembelianComponent } from './pembelian/detail/detail.component';
 const routes: Routes = [
   {
     path: '',
@@ -122,7 +123,7 @@ const routes: Routes = [
       },
       {
         path: 'detail',
-        component: DetailWastageComponent,
+        component: DetailPembelianComponent,
       }
     ],
   },

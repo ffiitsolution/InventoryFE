@@ -115,7 +115,7 @@
 
               <div style="width: 96%;" class="p-2">
                 <button class="shadow-sm btn w-100 btn-info text-white" *ngIf="!isShowDetail"
-                  [disabled]="formData.nomorPesanan === ''" (click)="onAddDetail()">
+                  [disabled]="isFormInvalid" (click)="onAddDetail()">
                   <i class="fa fa-check pe-2"></i>
                   {{ "Detail Transaksi" | translate }}
                 </button>
