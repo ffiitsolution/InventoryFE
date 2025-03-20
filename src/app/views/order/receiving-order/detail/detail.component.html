@@ -44,7 +44,7 @@
           <button
             type="button"
             class="btn btn-outline-danger me-2"
-            (click)="onButtonActionPressed('4')"
+            (click)="onShowModalBatal()"
             [disabled]="updatingStatus || disabledCancelButton"
           >
             <i class="fa fa-times icon-gap"></i>
@@ -114,3 +114,106 @@
     </c-card-body>
   </c-card>
 </div>
+
+<c-modal #formModalBatal [fullscreen]="false" [visible]="isShowModalBatal" backdrop="static" #modalLg  size="lg"
+id="formModalBatal"    [attr.aria-hidden]="!isShowModalBatal">
+  <c-modal-header>
+    <h5 cModalTitle>Konfirmasi Batal Pesanan</h5>
+    <button (click)="isShowModalBatal = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalBatal.id"
+      cButtonClose><i class="fa fa-times"></i></button>
+  </c-modal-header>
+  <c-modal-body>
+    <div >
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Pemesan" | translate
+          }}</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              [value]="(selectedOrder.kodePemesan|| '')"
+              readonly
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Nomor Pesanan" | translate
+          }}</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              [value]="(selectedOrder?.nomorPesanan || '')"              
+              readonly
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Tgl. Pesan" | translate
+          }}</label>
+          <div class="col-sm-3">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              [value]="(selectedOrder.tglPesan || '')"              
+            />
+          </div>
+
+          <label class="col-sm-3 col-form-label">{{
+            "Tgl. Brg. Dikirim" | translate
+          }}</label>
+          <div class="col-sm-3 ">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              [value]="(selectedOrder?.tglBrgDikirim || '')"              
+
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Tgl. Batal Pesanan" | translate
+          }}</label>
+          <div class="col-sm-3">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              [value]="(selectedOrder?.tglKadaluarsa || '')"              
+            />
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Alasan dibatalkan" | translate
+          }}</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="alasanDiBatalkan" 
+              (keypress)="g.conditionInput($event, 'excludedSensitive')"
+              maxlength="50"
+            />
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center align-items-center flex-column">
+          <span class="fw-bold text-center text-red">Pastikan Semua Data Sudah Benar ...!!</span>
+          <span class="fw-bold text-center text-red">Data yang sudah dikirim tidak dapat dirubah kembali...!!</span>
+        </div>
+        
+      </div>
+    </c-modal-body>
+    <c-modal-footer class="justify-center">
+      <button type="button" class="btn btn-light" data-bs-dismiss="modal" (click)="isShowModalBatal = false">Close</button>
+      <button type="button" class="btn btn-primary text-white" (click)="updateStatus()">Proses Batal Pesanan</button>
+    </c-modal-footer>
+</c-modal>
