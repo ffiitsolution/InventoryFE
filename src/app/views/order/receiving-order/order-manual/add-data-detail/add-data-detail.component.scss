@@ -1,0 +1,68 @@
+.order-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.label {
+  font-weight: bold;
+  width: 30%;
+  /* Adjust width as needed */
+  text-align: left;
+  padding-right: 10px;
+}
+
+.value {
+  width: 70%;
+  /* Adjust width as needed */
+  text-align: left;
+  padding-left: 10px;
+}
+
+.label2 {
+  font-weight: bold;
+  /* Adjust width as needed */
+  text-align: left;
+  padding-right: 10px;
+}
+
+.value2 {
+  /* Adjust width as needed */
+  text-align: left;
+  padding-left: 10px;
+}
+
+.input-column {
+  width: 160px;
+
+  .inputQty {
+    width: 85px;
+  }
+
+  .inputNumberSpace input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    margin-left: 0.5em;
+  }
+
+  .inputNumberSpace input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  .inputNumberSpace input[type='number'] {
+    width: 6em;
+    text-align: right;
+  }
+
+  .validation-message {
+    min-height: 18px;  /* Ensures space is always reserved for error text */
+    font-size: 14px;
+    display: block;  /* Keeps space even if no message */
+  }
+  
+}

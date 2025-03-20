@@ -1,0 +1,52 @@
+.table {
+    th, td {
+      text-align: center;
+      vertical-align: middle;
+    }
+  
+    input, select {
+      width: 100%;
+    }
+  
+    .btn {
+      width: 100%;
+    }
+  }
+
+  .top-right-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 240px;
+    min-width: 240px;
+  }
+
+
+.pd-0{
+  padding: 0px;
+}
+
+.fixed-width-select {
+  width: 200px !important;
+}
+
+.fixed-width-select .dropdown-display {
+  width: 200px !important;
+  max-width: 200px !important;
+}
+
+.fixed-width-select .dropdown-list {
+  width: 200px !important;
+  max-width: 200px !important;
+}
+
+ngx-select-dropdown .ngxdropdown-container div{
+  width: 10px !important;
+}
+
+.ngx-dropdown-container{
+  color: red;
+}
+.pl-0{
+  padding-left: 0px !important;
+}

@@ -8,7 +8,7 @@
             <i class="fa fa-chevron-left icon-12 icon-gap"></i>
             {{ "Kembali" | translate }}
           </button>
-          <h5>{{ "Detail Pemakaian Barang " | translate }}</h5>
+          <h5>{{ "Detail Pengiriman Barang " | translate }}</h5>
         </div>
 
        
@@ -38,12 +38,12 @@
               <span class="value">{{ selectedOrder.nomorPesanan }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tgl. Pesanan" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglPesanan }}</span>
+              <span class="label">{{ "Nomor Surat Jalan" | translate }}</span>
+              <span class="value">{{ selectedOrder.noSuratJalan }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tgl. Permintaan Kirim" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglTransaksi }}</span>
+              <span class="label">{{ "Tgl. Pesanan" | translate }}</span>
+              <span class="value">{{ selectedOrder.tglPesanan }}</span>
             </div>
             <div class="detail-item">
               <span class="label ">{{ "Tgl. Kirim Gudang" | translate }}</span>
@@ -67,7 +67,7 @@
             </div>
             <div class="detail-item">
               <span class="label">{{ "Status Transaksi" | translate }}</span>
-              <span class="value">{{ selectedOrder.statusPosting === 'i' ? '(I) Intransit' : '(P) Posting' }}</span>
+              <span class="value">{{ selectedOrder.statusPosting === 'I' ? '(I) Intransit' : '(P) Posted' }}</span>
             </div>
 
           </div>

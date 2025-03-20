@@ -14,6 +14,7 @@ import {
   OUTLET_BRAND_KFC,
   SEND_PRINT_STATUS_SUDAH,
   STATUS_SAME_CONVERSION,
+  DEFAULT_DELAY_TIME
 } from '../../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
 import { lastValueFrom, Subject } from 'rxjs';
@@ -25,9 +26,10 @@ import { AppConfig } from 'src/app/config/app.config';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { AppService } from '../../../../service/app.service';
+import moment from 'moment';
 
 @Component({
-  selector: 'app-detail-receiving-order',
+  selector: 'app-detail-receiving-po-supplier',
   templateUrl: './detail.component.html',
   styleUrl: './detail.component.scss',
 })
@@ -86,7 +88,7 @@ export class ReceivingPoSupplierDetailComponent
         setTimeout(() => {
           this.dataService
             .postData(
-              this.config.BASE_URL + '/api/receiving-order/detail/dt',
+              this.config.BASE_URL + '/api/receiving-po-supplier/detail/dt',
               params
             )
             .subscribe((resp: any) => {
@@ -202,7 +204,7 @@ export class ReceivingPoSupplierDetailComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/order/receiving-order']);
+    this.router.navigate(['/order/receiving-po-supplier']);
   }
 
   onDelete() {
@@ -284,7 +286,7 @@ export class ReceivingPoSupplierDetailComponent
           };
           const base64Response = await lastValueFrom(
             this.dataService.postData(
-              `${this.config.BASE_URL}/api/receiving-order/report`,
+              `${this.config.BASE_URL}/api/receiving-po-supplier/report`,
               generatePdfParams,
               true
             )
@@ -317,23 +319,79 @@ export class ReceivingPoSupplierDetailComponent
   downloadURL: any = [];
 
   onPrint() {
-    const urlReport = 'report-propose-order-jesper';
     const params = {
       outletBrand: 'Kfc',
       isDownloadCsv: false,
       staffName: JSON.parse(localStorage.getItem('inv_currentUser') || '{}').namaUser || 'Guest',
       nomorPesanan: this.selectedOrder.nomorPesanan,
-      tglBrgDikirim: this.selectedOrder.tglBrgDikirim,
-      tglPesan: this.selectedOrder.tglPesan
+      tglBrgDikirim: this.selectedOrder.tglKirimBrg,
+      tglPesan: this.selectedOrder.tglPesanan
     }
 
-    this.appService.reporReceivingOrderJasper(params, urlReport).subscribe((res) => {
+    this.appService.reporReceivingPoSupplierJasper(params, "").subscribe((res) => {
       var blob = new Blob([res], { type: 'application/pdf' });
       this.downloadURL = window.URL.createObjectURL(blob);
       this.downloadPDF();
-    })
+    });
+
+    const param = {
+      statusKirim : "S",
+      userKirim : params.staffName,
+      dateKirim :  moment().format("DD-MM-YYYY"),
+      timeKirim :  moment().format("HHmmss"),
+      nomorPesanan : params.nomorPesanan
+    }
+
+    this.dataService
+    .postData(this.g.urlServer + '/api/send-order-to-supplier/update-status-cetak',param)
+    .subscribe({
+      next: (res: any) => {
+        if (!res.success) {
+          alert(res.message);
+        } else {
+          console.log("finish statuscetak");
+          console.log("finish statuscetak");
+          this.toastr.success(this.translation.instant('Berhasil!'));
+          this.refreshDetail();
+    
+        }
+      },
+      error: (err: any) => {
+        console.error('Error updating user:', err);
+        alert('An error occurred while updating the user.');
+      },    
+    });
+
 
   }
+
+  refreshDetail(){
+    this.dataService
+    .postData(this.g.urlServer + '/api/receiving-po-supplier/detail-header',{"nomorPesanan": this.selectedOrder.nomorPesanan})
+    .subscribe({
+      next: (res: any) => {
+        console.log("res0",res)
+        if (!(res && res.length > 0)){
+          alert(res.message);
+        } else {
+            console.log("res",res[0])
+            this.g.saveLocalstorage(
+              LS_INV_SELECTED_RECEIVING_ORDER,
+              JSON.stringify(this.g.convertKeysToCamelCase(res[0]))
+            );
+            setTimeout(() => {
+              window.location.reload();
+            }, DEFAULT_DELAY_TIME);
+      
+          }  
+      },
+      error: (err: any) => {
+        console.error('Error updating user:', err);
+        alert('An error occurred while updating the user.');
+      },    
+    });
+  }
+  
 
   downloadPDF() {
     var link = document.createElement('a');

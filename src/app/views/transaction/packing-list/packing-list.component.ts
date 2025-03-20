@@ -103,15 +103,6 @@ export class PackagingListComponent
         { data: 'KOTA_TUJUAN', title: 'Kota' },
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        $('.action-view', row).on('click', () =>
-          this.actionBtnClick(ACTION_VIEW, data)
-        );
-        $('.action-posting', row).on('click', () =>
-          this.actionBtnClick('POSTING', data)
-        );
-        $('.action-select-data', row).on('click', () =>
-          this.actionBtnClick('SELECT_DATA', data)
-        );
         $(row).find('.select-row').off('change').on('change', (event: JQuery.ChangeEvent<HTMLElement>) => {
           this.handleCheckboxChange(event, data);
         });
@@ -145,52 +136,15 @@ export class PackagingListComponent
     console.log("isChecked",isChecked)
     if (isChecked) {
         // Add kodeBarang if checked
-        if (! this.selectedRows.some(item => item.kodeBarang === data.kodeBarang)) {
+        if (! this.selectedRows.some(item => item.NO_SURAT_JALAN === data.NO_SURAT_JALAN)) {
             this.selectedRows.push(data);
         }
     } else {
-        // Remove kodeBarang if unchecked
-        this.selectedRows = this.selectedRows.filter(item => item.kodeBarang !== data.kodeBarang);
+        // Remove NO_SURAT_JALAN if unchecked
+        this.selectedRows = this.selectedRows.filter(item => item.NO_SURAT_JALAN !== data.kodeBarang);
         console.log("this.selectedRows else",this.selectedRows)
     }
     console.log("selectedRows",this.selectedRows)
-  }
-
-  actionBtnClick(action: string, data: any): void {
-    if (action === ACTION_VIEW) {
-      this.g.saveLocalstorage(
-        LS_INV_SELECTED_DELIVERY_ORDER,
-        JSON.stringify(data)
-      );
-      this.router.navigate([
-        '/transaction/delivery-item/dobalik/detail-report-do-balik',
-      ]);
-      this;
-    }
-    if (action === 'POSTING') {
-      this.g.saveLocalstorage(
-        LS_INV_SELECTED_DELIVERY_ORDER,
-        JSON.stringify(data)
-      );
-      const param = {
-        kodeGudang: data.KODE_GUDANG,
-        noSuratJalan: data.NO_SURAT_JALAN,
-        userPosted: JSON.parse(localStorage.getItem('inv_currentUser') || '')
-          .namaUser,
-      };
-      this.appService.updateDeliveryOrderPostingStatus(param).subscribe({
-        next: (response) => {
-          this.toastr.success('Berhasil Posting DO Balik');
-          this.search();
-        },
-        error: (error) => {
-          this.toastr.error('Gagal Posting DO Balik');
-        },
-      });
-    }
-    if (action === 'SELECT_DATA') {
-      this.selectedRows.push(data);
-    }
   }
 
   ngAfterViewInit(): void {

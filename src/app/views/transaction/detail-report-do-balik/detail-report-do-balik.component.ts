@@ -16,7 +16,7 @@ import Swal from 'sweetalert2';
 import * as moment from 'moment';
 import { AppService } from '../../../service/app.service';
 import {
-  DEFAULT_DELAY_TABLE,
+  DEFAULT_DELAY_TABLE,   
   LS_INV_SELECTED_DELIVERY_ORDER,
 } from '../../../../constants';
 import { TranslationService } from '../../../service/translation.service';

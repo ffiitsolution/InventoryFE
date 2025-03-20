@@ -1,0 +1,38 @@
+.d-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-rows: auto;
+}
+
+.empty-placeholder {
+  height: 1.8rem;
+  visibility: hidden;
+}
+
+.pointer-only {
+  cursor: pointer;
+  padding: 2px;
+}
+
+.pointer-only:hover {
+  background-color: gray;
+  color: white;
+  padding-left: 6px;
+}
+
+.btn-order-item {
+  padding: 8px 24px;
+  margin: 0px 16px;
+  width: 225px;
+  height: 44px;
+  border: 2px solid gray;
+  border-radius: 16px;
+  color: gray;
+  font-weight: bold;
+
+  &.active,
+  &:hover {
+    color: #B51823;
+    border: 2px solid #B51823;
+  }
+}

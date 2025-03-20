@@ -5,14 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import {
-  ACTION_ADD,
-  ACTION_EDIT,
-  ACTION_VIEW,
-  LS_INV_SELECTED_UOM,
-} from '../../../../constants';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Page } from '../../../model/page';
 import { GlobalService } from '../../../service/global.service';
 import { TranslationService } from '../../../service/translation.service';
 import {
@@ -20,7 +13,7 @@ import {
   UntypedFormControl,
   UntypedFormGroup,
 } from '@angular/forms';
-import { AppService } from 'src/app/service/app.service';
+import { AppService } from '../../../service/app.service';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -35,6 +28,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     selectedRegion: false,
     statusAktif: false,
     tipeListing: false,
+    selectedRsc:false
   };
   userData: any;
   currentReport: string = '';
@@ -46,6 +40,11 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
   listRegion: any = [];
 
   selectedRegion: any;
+
+  
+  configRsc: any;
+  listRsc: any = [];
+  selectedRsc: any;
 
   paramStatusAktif: string = '';
   paramTipeListing: string = 'header';
@@ -72,11 +71,14 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.configRegion = this.g.dropdownConfig('description');
+    this.configRsc = this.g.dropdownConfig('description');
 
     this.userData = this.service.getUserData();
 
     if (['Master Cabang'].includes(this.currentReport)) {
       this.getListParam('listRegion');
+    }else if(['Master Department','Master Gudang'].includes(this.currentReport)) {
+      this.getListParam('listRsc');
     }
   }
 
@@ -93,7 +95,12 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getListParam(type: string, report: string = '') {
-    this.loadingState['selectedRegion'] = true;
+    if(type == 'listRegion'){
+      this.loadingState['selectedRegion'] = true;
+    }else if(type == 'listRsc'){
+      this.loadingState['selectedRsc'] = true;
+    }
+   
     this.service
       .insert('/api/report/list-report-param', { type: type, report: report })
       .subscribe({
@@ -103,13 +110,21 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
             code: '',
             description: 'Semua',
           };
-          this.listRegion = [allVal, ...data];
-          this.selectedRegion = allVal;
-          this.loadingState['selectedRegion'] = false;
+          if(type == 'listRegion'){
+            this.listRegion = [allVal, ...data];
+            this.selectedRegion = allVal;
+            this.loadingState['selectedRegion'] = false;
+          }else if(type == 'listRsc'){
+            this.listRsc = [allVal, ...data];
+            this.selectedRsc = allVal;
+            this.loadingState['selectedRsc'] = false;
+          }
+         
         },
         error: (error) => {
           console.log(error);
           this.loadingState['selectedRegion'] = false;
+          this.loadingState['selectedRsc'] = false;
         },
       });
   }
@@ -121,16 +136,6 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     targetProperty: any
   ) {
     this[targetProperty] = selected;
-    // if (this[targetProperty].length < 1) {
-    //   this[targetProperty] = {
-    //     [paramCode]: paramName == 'outletName' ? 'ALL' : 'Semua',
-    //     [paramName]: paramName == 'outletName' ? 'All' : 'Semua',
-    //   };
-    // } else if (selected instanceof Array) {
-    //   this[targetProperty] = selected?.filter(
-    //     (item: any) => item[paramName] != 'Semua'
-    //   );
-    // }
   }
 
   doSubmit(type: string) {
@@ -151,9 +156,9 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
         status: this.paramStatusAktif,
         tipeListing: this.paramTipeListing,
       };
-    } else if (this.currentReport === 'Master Department') {
+    } else if (['Master Department','Master Gudang'].includes(this.currentReport)) {
       param = {
-        kodeRegion: this.selectedRegion['code'],
+        kodeRsc: this.selectedRsc['code'],
         status: this.paramStatusAktif,
         tipeListing: this.paramTipeListing,
       };

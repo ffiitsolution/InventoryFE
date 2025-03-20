@@ -89,6 +89,20 @@ export const menu_id: any = [
           name: 'cil-window',
         },
       },
+      {
+        name: 'Jabatan',
+        url: '/master/master-position',
+        iconComponent: {
+          name: 'cil-contact',
+        },
+      },
+      {
+        name: 'Resep',
+        url: '/master/master-resep',
+        iconComponent: {
+          name: 'cil-dinner',
+        },
+      },
     ],
   },
   {
@@ -132,6 +146,13 @@ export const menu_id: any = [
     url: '/transaksi',
     icon: 'fa fa-exchange',
     children: [
+      {
+        name: 'Pembelian',
+        url: '/transaction/pembelian/list-dt',
+        iconComponent: {
+          name: 'cil-cart',
+        }
+      },
       {
         name: 'Pengiriman',
         url: '/transaction/delivery-item',
@@ -253,6 +274,13 @@ export const menu_id: any = [
           name: 'cil-trash',
         },
       },
+      {
+        name: 'Produksi',
+        url: '/transaction/production/list-dt',
+        iconComponent: {
+          name: 'cil-industry',
+        },
+      },
     ],
   },
   {
@@ -335,7 +363,7 @@ export const menu_id: any = [
   },
   {
     name: 'Kirim Terima Data',
-    url: '/sync-data',
+    url: '/sync-data/all',
     iconComponent: {
       name: 'cil-swap-vertical',
     },

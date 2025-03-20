@@ -5,6 +5,8 @@ import {
   ReceivingOrderDetailComponent,
   ReceivingOrderAddFormComponent,
   ReceivingOrderAddDetailFormComponent,
+  AddDataDetailOrderManualComponent,
+  AddDataOrderManualComponent
 } from './receiving-order';
 import {
   ReceivingPoSupplierComponent,
@@ -81,14 +83,16 @@ const routes: Routes = [
       },
       {
         path: 'receiving-po-supplierr/add/detail',
-        component: ReceivingPoSupplierAddFormComponent,
+        component: ReceivingPoSupplierAddDetailFormComponent,
       },
       {
         path: 'receiving-po-supplier/detail',
         component: ReceivingPoSupplierDetailComponent,
       },
-
-
+      {
+        path: 'receiving-order/order-manual',
+        component: AddDataOrderManualComponent,
+      },
     ],
   },
 ];

@@ -25,6 +25,13 @@ export class AppService {
     );
   }
 
+  defaultGudang(param: any): Observable<any> {
+    return this.dataService.postData(
+      this.config.BASE_URL + '/api/auth/default-gudang',
+      param
+    );
+  }
+
   getToken() {
     // if (!localStorage.getItem('inv_listMenu')) {
     //   return null;
@@ -39,7 +46,7 @@ export class AppService {
     }
   }
 
-  getUserData(){
+  getUserData() {
     const userString = this.getToken() ?? '';
     return JSON.parse(userString);
   }
@@ -66,6 +73,9 @@ export class AppService {
   }
   getFile(url: String, params: any): Observable<any> {
     return this.dataService.postData(this.config.BASE_URL + url, params, true);
+  }
+  getExternal(url: string): Observable<any> {
+    return this.dataService.getFileExternal(url);
   }
 
   getReceivingOrderItem(nomorPesanan: String) {
@@ -110,12 +120,23 @@ export class AppService {
     );
   }
 
-  reporReceivingOrderJasper(params: any, url: string): Observable<any> {
+  reporReceivingOrderJasper(params: any): Observable<any> {
     const httpOptions = {
       responseType: 'blob' as 'json',
     };
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/receiving-order/report`,
+      params,
+      true
+    );
+  }
+
+  reporReceivingPoSupplierJasper(params: any, url: string): Observable<any> {
+    const httpOptions = {
+      responseType: 'blob' as 'json',
+    };
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/receiving-po-supplier/report`,
       params,
       true
     );
@@ -224,6 +245,58 @@ export class AppService {
   getProductById(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/product/get-by-id`,
+      payload
+    );
+  }
+
+  getProductionProductList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/list-product/dt`,
+      payload
+    );
+  }
+  
+  getPOPembelian(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/pembelian/get-purchase-order`,
+      payload
+    );
+  }
+
+  getBahanBakuByResep(param: any) {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/production/bahanbaku?kode_product=${param}`
+    );
+  }
+
+  getDetailAddPembelian(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/pembelian/get-detail-pembelian`,
+      payload
+    );
+  }
+
+  getProductResep(param: any) {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/resep/product/get-by-id?kode_barang=${param}`
+    );
+  }
+  getResepByProduct(param: any) {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/resep/get-by-id?kode_barang=${param}`
+    );
+  }
+
+  getBahanBakuList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/resep/bahan-baku/dt`,
+      payload
+    );
+  }
+
+  deleteResepRow(payload: any){
+    return this.dataService.deleteData(
+      `${this.config.BASE_URL}/api/resep/`,
       payload
     );
   }

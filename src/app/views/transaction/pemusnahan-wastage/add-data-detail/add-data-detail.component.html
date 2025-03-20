@@ -20,7 +20,7 @@
                   Konversi</th>
                 <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle;"
                   class="text-center align-items-start btn-danger" colspan="2">Qty
-                  Waste</th> <!-- Masih sejajar -->
+                  Waste</th> <!-- Masih sejajar --> 
                 <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
                   class="text-center align-items-start" rowspan="2">
                   Total Qty Waste</th>
@@ -47,11 +47,16 @@
               </tr>
             </tbody>
             <tbody>
-              <tr *ngFor="let data of listProductData; let i = index">
+              <tr *ngFor="let data of listProductData| paginate: {
+                itemsPerPage: 5,
+                currentPage: listCurrentPage,
+                totalItems:totalLengthList,
+                id:'dataTableDetail'
+            }; ; let i = index">
                 <td class="text-center">
                   <div class="input-group">
                     <input type="text" autofocus class="form-control text-center" [(ngModel)]="data.kodeBarang"
-                      (keydown.enter)="handleEnter($event, i)" (keyup.enter)="nextInput.focus()" />
+                      (keydown.enter)="handleEnter($event, i)"  (keyup.enter)="nextInput.focus()" [disabled]="!!data?.namaBarang"/>
                     <button class="btn btn-outline-secondary" type="button" (click)="onShowModal()">
                       <i class="fa fa-search"></i>
                     </button>
@@ -120,10 +125,11 @@
               </tr>
             </tbody>
           </table>
-<!-- 
-          <c-pagination class="text-right">
-            <pagination-controls (pageChange)="onPageChange(1)" id="dataTable"></pagination-controls>
-          </c-pagination> -->
+          <div class="mt-2 text-start">
+            <c-pagination>
+              <pagination-controls (pageChange)="listCurrentPage = $event" id="dataTableDetail"></pagination-controls>
+            </c-pagination>
+          </div>
         </ng-container>
       </div>
 

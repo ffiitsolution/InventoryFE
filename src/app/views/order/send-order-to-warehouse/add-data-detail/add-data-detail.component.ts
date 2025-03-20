@@ -59,7 +59,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
   RejectingOrder: boolean = false;
   alreadyPrint: Boolean = false;
   totalLength: number = 0;
-  listOrderData: any[] = [];
+  listOrderData: any[] =[];
   buttonCaptionView: String = 'Lihat';
   public loading: boolean = false;
   page: number = 1;
@@ -98,7 +98,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
   ) {
     this.g.navbarVisibility = true;
     this.newOrhdk = JSON.parse(this.newOrhdk);
-    this.getDeliveryItemDetails()
+    this.getSendWarehousetemDetails()
   }
 
   ngOnInit(): void {
@@ -120,26 +120,10 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
   
 
-  getDeliveryItemDetails() {
+  getSendWarehousetemDetails() {
     this.loading = true;
-    this.listOrderData = [];
+    this.listOrderData = [{kodeBarang:"",namaBarang:""}];
 
-    const params = {
-      nomorPesanan: this.newOrhdk.nomorPesanan
-    };
-
-  //   this.listOrderData = [
-  //     {
-  //       totalQtyPesan: 0,
-  //       qtyPesanBesar: 5,
-  //       namaBarang: "DAGING SAPI SLICE",
-  //       satuanKecil: "PCS",
-  //       kodeBarang: "02-2001",
-  //       satuanBesar: "KG",
-  //       konversi: 5,
-  //       qtyPesanKecil: 10
-  //     }
-  // ];
   }
 
   onInputValueItemDetail(event: any, index: number, type: string, qtyType: string) {
@@ -203,6 +187,9 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
 
   onSubmit() {
+    if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() === "") {
+      this.listOrderData.splice(this.listOrderData.length - 1, 1);
+    }
     if(!this.isDataInvalid()){
       // param for order Header
       const paramHeaderDetail = this.newOrhdk;
@@ -245,7 +232,13 @@ export class AddDataDetailSendOrderToWarehouseComponent
     else{
       this.toastr.error("Data tidak valid")
     }
-   
+    
+    if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() !== "") { 
+      this.listOrderData.push({
+        kodeBarang: '',
+        namaBarang: '',
+      });    
+    }
   }
   
   onShowModal() {
@@ -283,7 +276,12 @@ export class AddDataDetailSendOrderToWarehouseComponent
   onAddListDataBarang(){
     let errorMessage
     this.isShowModal = false;
-    
+
+    if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() === "") {
+      // If the name is empty or contains only whitespace, remove the last item
+      this.listOrderData.splice(this.listOrderData.length - 1, 1);
+    }
+      
     for (let barang of this.barangTemp) {
 
       if(!this.listOrderData.some(order => order.kodeBarang === barang.kodeBarang)){
@@ -301,7 +299,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
         this.validationMessageListSatuanKecil.push("")
         this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
         this.validationMessageListSatuanBesar.push("")
-
           // this.mapOrderData(data);
           // this.onSaveData();
       }
@@ -312,7 +309,15 @@ export class AddDataDetailSendOrderToWarehouseComponent
     if(errorMessage)
       this.toastr.error(errorMessage);
 
+
+    if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() !== "") { 
+      this.listOrderData.push({
+        kodeBarang: '',
+        namaBarang: '',
+      });    
+    }
   }
+
 
   
   renderDataTables(): void {
@@ -359,6 +364,19 @@ export class AddDataDetailSendOrderToWarehouseComponent
           data: 'dtIndex',
           title: 'Pilih Barang  ',
           className: 'text-center',
+/*************  ✨ Codeium Command ⭐  *************/
+/**
+ * Generates the HTML for a checkbox input element for a data table row.
+ * The checkbox is checked if the item's `kodeBarang` is present in `barangTemp`.
+ * The checkbox is disabled if the item's `statusAktif` is 'T'.
+ *
+ * @param data - Data associated with the row.
+ * @param type - The type of data (not used in this function).
+ * @param row - The data object for the current row, which contains `kodeBarang` and `statusAktif`.
+ * @returns A string representing the HTML of the checkbox input element.
+ */
+
+/******  a1b4e543-9620-4dcc-a7df-c90362bb4476  *******/
           render: (data, type, row) => {
             let isChecked = this.barangTemp.some(item => item.kodeBarang === row.kodeBarang) ? 'checked' : '';
             if(row.statusAktif === 'T'){
@@ -490,6 +508,71 @@ export class AddDataDetailSendOrderToWarehouseComponent
   isNotNumber(value: any){
     return !/^\d+(\.\d+)?$/.test(value)
   }
+
+  handleEnter(event: any, index: number) {
+    event.preventDefault();
+
+    let kodeBarang = this.listOrderData[index].kodeBarang?.trim();
+    if (kodeBarang !== '') {
+      this.getProductRow(kodeBarang, index);
+    }
+  }
+
+  getProductRow(kodeBarang: string, index: number) {
+    let errorMessage
+    let param = { kodeBarang: kodeBarang };
+
+    if (kodeBarang !== '') {
+      const isDuplicate = this.listOrderData.some(
+        (item, i) => item.kodeBarang === kodeBarang && i !== index
+      );
+
+      if (isDuplicate) {
+        this.toastr.error("Barang sudah ditambahkan")
+        return;
+      }
+
+      this.appService.getProductById(param).subscribe({
+        next: (res) => {
+          if (res) {
+            this.listOrderData[index].namaBarang = res.namaBarang;
+            this.listOrderData[index].satuanKecil = res.satuanKecil;
+            this.listOrderData[index].satuanBesar = res.satuanBesar;
+            this.listOrderData[index].konversi = res.konversi;
+
+            this.listOrderData[index].isConfirmed = true;
+            this.listOrderData[index].isLoading = false;
+            
+            this.listOrderData[index].totalQtyPesan = 0;
+            this.listOrderData[index].qtyPesanKecil = 0;
+            this.listOrderData[index].qtyPesanBesar = 0;
+
+            // Add new properties to the object
+            this.listOrderData[index] = {
+              ...this.listOrderData[index],
+              ...res  
+            };
+
+
+            if (index === this.listOrderData.length - 1) {
+              this.listOrderData.push({
+                kodeBarang: '',
+                namaBarang: '',
+              });
+            }
+            this.validationMessageListSatuanKecil.push("")
+            this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
+            this.validationMessageListSatuanBesar.push("")
+              // this.mapOrderData(data);
+              // this.onSaveData();
+
+       
+          }
+        },
+      });
+    }
+  }
+
 
   
 

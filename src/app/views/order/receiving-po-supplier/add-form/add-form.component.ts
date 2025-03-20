@@ -22,7 +22,7 @@ import { DataTableDirective } from 'angular-datatables';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 
 @Component({
-  selector: 'receving-order-add-form',
+  selector: 'receving-po-supplier-add-form',
   templateUrl: './add-form.component.html',
   styleUrl: './add-form.component.scss',
 })

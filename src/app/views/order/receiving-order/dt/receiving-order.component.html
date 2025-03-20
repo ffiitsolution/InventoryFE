@@ -11,6 +11,11 @@
             {{ "Filter" | translate }}
           </button>
           <button type="button" class="btn btn-success text-white me-2 btn-240" data-toggle="modal"
+          (click)="onOrderManualPressed()">
+          <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
+          {{ "Order Manuall" | translate }}
+        </button>
+          <button type="button" class="btn btn-success text-white me-2 btn-240" data-toggle="modal"
             (click)="onAddPressed()">
             <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
             {{ "Tambah Penerimaan" | translate }}
@@ -24,19 +29,16 @@
             <c-row>
               <c-col>
                 <label class="col-form-label">{{
-                  "Dummy Filter" | translate
-                  }}</label>
-                <input type="text" id="anotherFilter" class="form-control" />
-              </c-col>
-              <c-col>
-                <label class="col-form-label">{{
                   "Tanggal Pesan" | translate
                   }}</label>
                 <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
                   aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
                   placeholder="{{ 'Tanggal Pesan' | translate }}" />
               </c-col>
-              <c-col xs="3" class="text-right d-flex align-items-end justify-content-end">
+              <c-col
+                xs="6"
+                class="text-right d-flex align-items-end justify-content-end"
+              >             
                 <button type="button" class="btn btn-outline-success me-2 btn-160" (click)="onFilterPressed()">
                   {{ "Terapkan Filter" | translate }}
                 </button>

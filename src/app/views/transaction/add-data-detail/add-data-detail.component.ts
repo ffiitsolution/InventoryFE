@@ -65,6 +65,7 @@ export class AddDataDetailDeliveryComponent
   validationMessages: { [key: number]: string } = {};
 
 
+
   constructor(
     public g: GlobalService,
     private translation: TranslationService,
@@ -164,6 +165,7 @@ export class AddDataDetailDeliveryComponent
   ngAfterViewInit(): void {
   }
   ngOnDestroy(): void {
+    this.g.navbarVisibility = true;
   }
 
   onBackPressed() {
@@ -220,6 +222,7 @@ export class AddDataDetailDeliveryComponent
           satuanKecil: data.satuanKecil,
           satuanBesar: data.satuanBesar,
           totalQtyPesanOld: data.totalQtyPesanOld,
+          keterangan: this.selectedOrder.keterangan || '',
           tglKirimGudang: moment(this.selectedOrder.validatedDeliveryDate, 'DD-MM-YYYY').set({
             hours: 0,
             minutes: 0,

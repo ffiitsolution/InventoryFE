@@ -37,6 +37,9 @@ export class GlobalService {
   paramType: any;
   navbarVisibility: boolean = true;
 
+
+  selectedReportCategory: any = null;
+
   constructor(
     private titleService: Title,
     @Inject(DOCUMENT) private document: Document,
@@ -331,7 +334,7 @@ export class GlobalService {
     var result = {
       displayKey: name,
       search: search,
-      height: 'auto',
+      height: '400px',
       placeholder: placeholder,
       customComparator: () => { },
       limitTo: limit,
@@ -367,5 +370,20 @@ export class GlobalService {
       range.push(i);
     }
     return range;
+  }
+
+  convertKeysToCamelCase(obj: any): any {
+    const newObj: any = {};
+  
+    Object.keys(obj).forEach(key => {
+      // Convert UPPERCASE_UNDERSCORE to camelCase
+      const camelCaseKey = key
+        .toLowerCase()
+        .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
+  
+      newObj[camelCaseKey] = obj[key]; // Assign value to new key
+    });
+  
+    return newObj;
   }
 }
