@@ -159,7 +159,7 @@ export class AddDataDetailResepComponent
               bahanBaku: item.kodeBarang,
               namaBarang: item.namaBarang,
               konversi: item.konversi,
-              qtyPemakaian: item.qtyPemakaian,
+              qtyPemakaian: parseFloat(item.qtyPemakaian).toFixed(2),
               satuanKecil: item.satuanKecil,
               satuanBesar: item.satuanBesar,
               userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
@@ -256,7 +256,7 @@ export class AddDataDetailResepComponent
             kodeBarang: item.bahanBaku,
             namaBarang: item.namaBarang,
             konversi: item.konversi,
-            qtyPemakaian: item.qtyPemakaian,
+            qtyPemakaian: parseFloat(item.qtyPemakaian).toFixed(2) ,
             satuanKecil: item.satuanKecil,
             satuanBesar: item.satuanBesar,
             kodeResep: item.kodeResep
@@ -272,7 +272,7 @@ export class AddDataDetailResepComponent
               konversi: '', 
               satuanKecil: '',
               satuanBesar: '', 
-              qtyPemakaian: '' }
+              qtyPemakaian: '1.00' }
           ];
          }  
       },
@@ -287,7 +287,7 @@ export class AddDataDetailResepComponent
         konversi: '', 
         satuanKecil: '',
         satuanBesar: '', 
-        qtyPemakaian: '' 
+        qtyPemakaian: '1.00'
       }
     )
   }
@@ -398,7 +398,7 @@ export class AddDataDetailResepComponent
           konversi: data.konversi, 
           satuanKecil: data.satuanKecil,
           satuanBesar: data.satuanBesar, 
-          qtyPemakaian: data.qtyPemakaian 
+          qtyPemakaian: '1.00'
         };
     
       
@@ -420,13 +420,26 @@ export class AddDataDetailResepComponent
       event: any,
       index: number,
     ) {
-        const value = event.target.value;
+
+        let value = event.target.value;
+
+        if (value !== null && value !== undefined) {
+          let numericValue = parseFloat(value.toString().replace(',', '.'));
+          if (isNaN(numericValue)) {
+              numericValue = 0;
+          }
+          value = numericValue.toFixed(2);
+        } else {
+          value = "0.00"; // Default if empty
+        }
 
         if(value <= 0){
           this.validationMessageList[index] = "Quantity tidak boleh < 0"
         }else{
           this.validationMessageList[index] ="";
         }
+
+        this.listResepData[index].qtyPemakaian = value;
     }
 
     onDeleteRow(index: number,data:any) {

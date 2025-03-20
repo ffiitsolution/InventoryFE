@@ -100,7 +100,7 @@ export const menu_id: any = [
         name: 'Resep',
         url: '/master/master-resep',
         iconComponent: {
-          name: 'cil-fastfood',
+          name: 'cil-dinner',
         },
       },
     ],

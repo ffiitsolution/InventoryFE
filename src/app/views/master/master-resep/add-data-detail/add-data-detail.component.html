@@ -1,5 +1,18 @@
 <div class="fade-in">
   <c-card class="mb-4">
+    <c-card-header>
+      <div class="d-grid gap-3 d-md-flex justify-content-end">
+        <button class="btn btn-info text-white btn-150 pe-3" [disabled]="isDataInvalid()" (click)="onSubmit()">
+          <i class="fa fa-check pe-2" *ngIf="!adding"></i>
+          <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
+          {{ "Proses Simpan Data" | translate }}
+        </button>
+    
+        <button class="btn btn-secondary text-white btn-150" (click)="onBackPressed()">
+          <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
+        </button>
+      </div>
+    </c-card-header>
     <c-card-body>
       <div class="table-responsive">
         <ng-container>
@@ -64,7 +77,7 @@
                       (change)="onInputValueItemDetail($event, i)"
                      />
                     <span class="d-flex align-items-center justify-content-center">
-                      / {{data.satuanBesar}}
+                      / {{data.satuanKecil}}
                     </span>
                   </div>
                   <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageList[i]">
@@ -86,31 +99,33 @@
       </div>
 
     </c-card-body>
-
+    <c-card-footer>
+      <div class="d-md-flex justify-content-end">
+        <div class="d-grid gap-3 d-md-flex justify-content-end">
+          <button class="btn btn-success text-white btn-150 pe-3" (click)="onAdd()">
+            <i class="fa fa-plus pe-2" *ngIf="!adding"></i>
+            {{ "Tambah Data" | translate }}
+          </button>
+        </div>
+        <!-- <div class="d-grid gap-3 d-md-flex justify-content-end">
+          <button class="btn btn-info text-white btn-150 pe-3" [disabled]="isDataInvalid()" (click)="onSubmit()">
+            <i class="fa fa-check pe-2" *ngIf="!adding"></i>
+            <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
+            {{ "Proses Simpan Data" | translate }}
+          </button>
+      
+          <button class="btn btn-secondary text-white btn-150" (click)="onBackPressed()">
+            <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
+          </button>
+        </div> -->
+      </div>
+    </c-card-footer>
 
 
   </c-card>
 </div>
 
-<div class="d-md-flex justify-content-between">
-  <div class="d-grid gap-3 d-md-flex justify-content-start">
-    <button class="btn btn-info text-white btn-150 pe-3" (click)="onAdd()">
-      <i class="fa fa-plus pe-2" *ngIf="!adding"></i>
-      {{ "Tambah Data" | translate }}
-    </button>
-  </div>
-  <div class="d-grid gap-3 d-md-flex justify-content-end">
-    <button class="btn btn-info text-white btn-150 pe-3" [disabled]="isDataInvalid()" (click)="onSubmit()">
-      <i class="fa fa-check pe-2" *ngIf="!adding"></i>
-      <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
-      {{ "Proses Simpan Data" | translate }}
-    </button>
 
-    <button class="btn btn-secondary text-white btn-150" (click)="onBackPressed()">
-      <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
-    </button>
-  </div>
-</div>
   <!-- Modal Pilih Barang -->
   <c-modal
     #staticBackdropModal
