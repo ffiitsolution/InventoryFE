@@ -75,7 +75,7 @@ export class AddDataDetailResepComponent
   protected config = AppConfig.settings.apiServer;
   selectedRowData: any;
   currentSelectedForModal: number;
-
+  loadingSimpan: boolean = false;
   constructor(
     public g: GlobalService,
     private translation: TranslationService,
@@ -147,6 +147,7 @@ export class AddDataDetailResepComponent
 
   onSubmit() {
     if (!this.isDataInvalid()) {
+      this.loadingSimpan = true;
       // param for order Header
       const param = {
         kodeGudang: this.g.getUserLocationCode(),
@@ -177,7 +178,9 @@ export class AddDataDetailResepComponent
             cancelButtonText: 'Batal Simpan',
           }).then((result) => {
             if (result.isConfirmed) {
-              this.service.insert('/api/resep/insert', param).subscribe({
+              this.service.insert('/api/resep/insert', param)
+              .pipe(takeUntil(this.ngUnsubscribe))
+              .subscribe({
                 next: (res) => {
                   if (!res.success) {
                     this.toastr.error(res.message);
@@ -189,10 +192,15 @@ export class AddDataDetailResepComponent
         
                   }
                   this.adding = false;
+                  this.loadingSimpan = false;
                 },
+                error:()=>{
+                  this.loadingSimpan = false;
+                }
               });
             } else {
               this.toastr.info('Posting dibatalkan');
+              this.loadingSimpan = false;
             }
           });
 
