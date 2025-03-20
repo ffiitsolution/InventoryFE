@@ -3,7 +3,7 @@
     <c-card-body>
       <div class="row">
         <div class="col">
-          <h5>{{ "Master" | translate }} {{ "Barang" | translate }}</h5>
+          <h5>{{ "Master" | translate }} {{ "Resep" | translate }}</h5>
         </div>
         <div class="col text-end">
           <button
@@ -13,36 +13,14 @@
           >
             {{ "Filter" | translate }}
           </button>
-          <button
-            *ngIf="this.roleId === '3' || this.roleId === '2'"
-            type="button"
-            class="btn btn-success text-white me-2 btn-120"
-            (click)="actionBtnClick(CONST_ACTION_ADD)"
-          >
-            <i class="fa fa-plus pe-1 icon-12" aria-hidden="true"></i>
-            {{ "Tambah" | translate }}
-          </button>
+          
         </div>
       </div>
       <div [visible]="isFilterShown" cCollapse>
         <c-card class="mt-3 shadow">
           <c-card-body class="gap-2">
             <div class="row mb-1">
-              <div class="col-md-3">
-                <label cLabel for="selectStatusFilter"
-                  >{{ "Status" | translate }}:
-                </label>
-                <select
-                  aria-label="Status"
-                  cSelect
-                  [(ngModel)]="selectedStatusFilter"
-                  (ngModelChange)="onStatusFilterChange()"
-                >
-                  <option value="">{{ "Semua" | translate }}</option>
-                  <option value="A">{{ "Aktif" | translate }}</option>
-                  <option value="T">{{ "Tidak aktif" | translate }}</option>
-                </select>
-              </div>
+             
               <div class="col-md-3">
                 <label cLabel for="selectStatusFilter"
                   >{{ "Default Order" | translate }}:
@@ -116,9 +94,7 @@
           ></i>
           &nbsp;
           <span class="fw-bold"
-            >Master Barang digunakan untuk mengelola barang, termasuk detail
-            ukuran, konversi, satuan besar, satuan kecil dan termasuk tipe
-            gudang.</span
+            >Master Resep digunakan untuk membuat resep barang produksi.</span
           >
         </div>
       </div>

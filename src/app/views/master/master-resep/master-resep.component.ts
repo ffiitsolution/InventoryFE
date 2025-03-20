@@ -10,7 +10,7 @@ import {
   ACTION_ADD,
   ACTION_EDIT,
   ACTION_VIEW,
-  LS_INV_SELECTED_PRODUCT,
+  LS_INV_SELECTED_RESEP,
 } from '../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
@@ -43,7 +43,7 @@ export class MasterResepComponent
   selectedSatuanMinOrderFilter: any = '';
   selectedLokasiBarangDiGudangFilter: any = '';
   dtColumns: any = [];
-  buttonCaptionView: String = 'Lihat';
+  buttonCaptionAction: String = 'Resep';
   buttonCaptionEdit: String = 'Ubah';
   CONST_ACTION_ADD: string = ACTION_ADD;
   adding: boolean = false;
@@ -147,7 +147,7 @@ export class MasterResepComponent
           },
         },
         { data: 'satuanBesar', title: 'Satuan Besar', searchable: false },
-        { data: 'jumlahBahanBaku', title: 'Bahan Baku', searchable: false },
+        { data: 'jumlahBahanBaku', title: 'Bahan Baku', orderable: false, searchable: false },
         {
           data: 'statusAktif',
           title: 'Status',
@@ -164,17 +164,26 @@ export class MasterResepComponent
           render: () => {
             if (this.roleId !== '3' && this.roleId !== '2') {
               return `
-                <div class="btn-group" role="group" aria-label="Action">
-                  <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
-                </div>
-              `;
+              <div class="btn-group" role="group" aria-label="Action">
+                <button 
+                  class="btn btn-sm action-resep btn-outline-info btn-60" 
+                 ">
+                  ${this.buttonCaptionAction}
+                </button>
+              </div>
+            `;
+            
             }
             return `
             <div class="btn-group" role="group" aria-label="Action">
-              <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
-              <button class="btn btn-sm action-edit btn-outline-info btn-60">${this.buttonCaptionEdit}</button>
+              <button 
+                class="btn btn-sm action-resep btn-outline-info btn-60" 
+               ">
+                ${this.buttonCaptionAction}
+              </button>
             </div>
-            `;
+          `;
+          
           },
         },
       ],
@@ -184,12 +193,10 @@ export class MasterResepComponent
         [1, 'asc'],
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        $('.action-view', row).on('click', () =>
+        $('.action-resep', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
         );
-        $('.action-edit', row).on('click', () =>
-          this.actionBtnClick(ACTION_EDIT, data)
-        );
+       
         if (this.selectedRowData !== data) {
           this.selectedRowData = data;
         } else {
@@ -223,9 +230,8 @@ export class MasterResepComponent
         ' - ' +
         this.g.tabTitle
     );
-    this.buttonCaptionView = this.translation.instant('Lihat');
-    this.buttonCaptionEdit = this.translation.instant('Ubah');
-    localStorage.removeItem(LS_INV_SELECTED_PRODUCT);
+    this.buttonCaptionAction = this.translation.instant('Resep');
+    localStorage.removeItem(LS_INV_SELECTED_RESEP);
 
     this.dataService
       .getData(this.g.urlServer + '/api/product/default-order-gudang')
@@ -274,13 +280,8 @@ export class MasterResepComponent
 
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
-      this.g.saveLocalstorage(LS_INV_SELECTED_PRODUCT, JSON.stringify(data));
-      this.router.navigate(['/master/master-product/detail']);
-    } else if (action === ACTION_EDIT) {
-      this.g.saveLocalstorage(LS_INV_SELECTED_PRODUCT, JSON.stringify(data));
-      this.router.navigate(['/master/master-product/edit']);
-    } else if (action === ACTION_ADD) {
-      this.router.navigate(['/master/master-product/add']);
+      this.g.saveLocalstorage(LS_INV_SELECTED_RESEP, JSON.stringify(data));
+      this.router.navigate(['/master/master-resep/detail']);
     }
   }
 

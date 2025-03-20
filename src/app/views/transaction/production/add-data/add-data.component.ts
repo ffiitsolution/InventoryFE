@@ -285,7 +285,11 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     formatDate(date: string | Date): string {
-      return this.datePipe.transform(date, 'dd/MM/yyyy') || '';
+      if (typeof date === 'string') {
+        return date;
+      }else{
+        return this.datePipe.transform(date, 'dd/MM/yyyy') || '';
+      }
     }
 
 }
