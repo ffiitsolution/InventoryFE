@@ -260,7 +260,7 @@ export class DetailBarangReturComponent
 
   onBackPressed() {
     this.router.navigate([
-      '/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri',
+      '/transaction/retur-ke-supplier/list-barang-retur',
     ]);
   }
 

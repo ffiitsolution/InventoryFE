@@ -57,7 +57,8 @@ export class ReceivingOrderDetailComponent
   buttonCaptionView: String = 'Lihat';
   isShowModalBatal: boolean = false;
   alasanDiBatalkan: string = '';
-  
+  dataUser: any;
+
   protected config = AppConfig.settings.apiServer;
 
   constructor(
@@ -180,6 +181,8 @@ export class ReceivingOrderDetailComponent
     this.alreadyPrint =
       this.selectedOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
+    this.dataUser = this.g.getLocalstorage('inv_currentUser');
+
   }
   actionBtnClick(action: string, data: any = null) { }
 
@@ -281,7 +284,7 @@ export class ReceivingOrderDetailComponent
         try {
           const generatePdfParams = {
             outletBrand: OUTLET_BRAND_KFC,
-            user: this.g.getUserCode(),
+            user:  this.dataUser.kodeUser,
             nomorPesanan: this.selectedOrder.nomorPesanan,
           };
           const base64Response = await lastValueFrom(
@@ -325,7 +328,8 @@ export class ReceivingOrderDetailComponent
       staffName: JSON.parse(localStorage.getItem('inv_currentUser') || '{}').namaUser || 'Guest',
       nomorPesanan: this.selectedOrder.nomorPesanan,
       tglBrgDikirim: this.selectedOrder.tglBrgDikirim,
-      tglPesan: this.selectedOrder.tglPesan
+      tglPesan: this.selectedOrder.tglPesan,
+      user: this.dataUser.kodeUser,
     }
 
     this.appService.reporReceivingOrderJasper(params).subscribe((res) => {
