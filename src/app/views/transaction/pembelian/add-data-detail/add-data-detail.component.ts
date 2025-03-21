@@ -206,7 +206,7 @@ export class AddDataDetailPembelianComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/transaction/delivery-item']);
+    this.router.navigate(['/transaction/pembelian/list-dt']);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
