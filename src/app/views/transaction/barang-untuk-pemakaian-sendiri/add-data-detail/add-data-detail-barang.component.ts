@@ -412,8 +412,16 @@ export class AddDataDetailBarangComponent
         { data: 'satuanKecil', title: 'Satuan Kecil' },
         { data: 'satuanBesar', title: 'Satuan Besar' },
         { data: 'defaultGudang', title: 'Default Gudang' },
-        { data: 'flagConversion', title: 'Conversion Factor' },
-        { data: 'statusAktif', title: 'Status Aktif' },
+        {
+          data: 'flagConversion',
+          title: 'Conversion Factor',
+          render: (data) => (data === 'Y' ? 'YA' : 'TIDAK'),
+        },
+        {
+          data: 'statusAktif',
+          title: 'Status Aktif',
+          render: (data) => (data === 'A' ? 'AKTIF' : 'TIDAK AKTIF'),
+        },
       ],
       searchDelay: 1000,
       // delivery: [],
@@ -509,13 +517,13 @@ export class AddDataDetailBarangComponent
       ) {
         const productData = {
           totalQtyPesan: 0,
-          qtyBesar: null,
+          qtyWasteBesar: '0.00',
+          qtyWasteKecil: '0.00', 
           namaBarang: barang?.namaBarang,
           satuanKecil: barang?.satuanKecil,
           kodeBarang: barang?.kodeBarang,
           satuanBesar: barang?.satuanBesar,
           konversi: barang?.konversi,
-          qtyKecil: null,
           isConfirmed: true,
           ...barang,
         };
@@ -533,6 +541,24 @@ export class AddDataDetailBarangComponent
       }
     }
     if (errorMessage) this.toastr.error(errorMessage);
+  }
+
+  formatNumber(data: any, type: string) {
+    setTimeout(() => {
+      if (type === 'besar') {
+        data.qtyWasteBesar =
+          data.qtyWasteBesar && !isNaN(data.qtyWasteBesar)
+            ? parseFloat(data.qtyWasteBesar).toFixed(2)
+            : '0.00';
+      }
+
+      if (type === 'kecil') {
+        data.qtyWasteKecil =
+          data.qtyWasteKecil && !isNaN(data.qtyWasteKecil)
+            ? parseFloat(data.qtyWasteKecil).toFixed(2)
+            : '0.00';
+      }
+    }, 50);
   }
 
   deleteBarang() {
