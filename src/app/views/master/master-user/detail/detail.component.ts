@@ -18,6 +18,7 @@ export class MasterUserDetailComponent implements OnInit {
   listLokasi: any[] = [];
   listDefaultLokasi: any[] = [];
   roleId: any;
+  listPosition: any[] = [];
 
   constructor(
     private form: FormBuilder,
@@ -78,6 +79,19 @@ export class MasterUserDetailComponent implements OnInit {
             const locationString = listLocations.join(',   ');
             this.myForm.get('location')?.setValue(locationString);
           });
+      });
+
+    this.dataService
+      .postData(this.g.urlServer + '/api/position/dropdown-position', {})
+      .subscribe((resp: any) => {
+        this.listPosition = resp.map((item: any) => ({
+          id: item.CODE,
+          name: item.DESCRIPTION,
+        }));
+        const getPositionID = this.listPosition.find(
+          (item: any) => Number(item.id) === Number(this.detail.jabatan)
+        );
+        this.myForm.get('jabatan')?.setValue(getPositionID?.name);
       });
   }
 

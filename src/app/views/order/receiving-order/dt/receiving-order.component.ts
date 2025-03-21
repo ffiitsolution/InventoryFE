@@ -112,7 +112,7 @@ export class ReceivingOrderComponent
         { data: 'dtIndex', title: '#' },
         { data: 'tglPesan', title: 'Tanggal Pesan' },
         { data: 'tglBrgDikirim', title: 'Tanggal Kirim' },
-        { data: 'tglKadaluarsa', title: 'Tanggal Kedaluwarsa' },
+        { data: 'tglKadaluarsa', title: 'Tanggal Batal' },
         { data: 'nomorPesanan', title: 'Nomor Pesanan', searchable: true },
         {
           data: 'kodePemesan',

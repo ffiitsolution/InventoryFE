@@ -188,14 +188,15 @@
             "Jabatan" | translate
           }}</label>
           <div class="col-sm-10">
-            <input
-              type="text"
-              class="form-control"
+            <ngx-select-dropdown
+              [multiple]="false"
+              [config]="configSelectPosition"
+              [options]="listPosition"
               formControlName="jabatan"
-              (keypress)="conditionInput($event, 'alphabet')"
-              maxlength="50"
-            />
-            <span *ngIf="isFieldValid('jabatan')" class="text-danger">{{
+              id="jabatan"
+            >
+            </ngx-select-dropdown>
+            <!-- <span *ngIf="isFieldValid('jabatan')" class="text-danger">{{
               "Wajib diisi" | translate
             }}</span>
             <span
@@ -205,7 +206,7 @@
                 " Jabatan hanya boleh mengandung huruf, strip (-), underscore (_) dan spasi."
                   | translate
               }}</span
-            >
+            > -->
           </div>
         </div>
 

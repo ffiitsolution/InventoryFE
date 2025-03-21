@@ -81,7 +81,9 @@ $enable-rtl: true;
   height: 100vh; /* Full screen height */
   overflow: hidden; /* Prevents scrolling */
 }
-
+.text-red{
+  color: red;
+}
 
 /* Importing Bootstrap SCSS file. */
 @import "./node_modules/bootstrap/scss/bootstrap";

@@ -66,6 +66,7 @@ export class MasterUserEditComponent implements OnInit {
   configSelectDefaultLokasi: any;
   configSelectLokasi: any;
   configSelectRole: any;
+  configSelectPosition: any;
 
   selectedLocations: any;
 
@@ -76,6 +77,7 @@ export class MasterUserEditComponent implements OnInit {
   listRole: any[] = [];
 
   listuserLoc: any[] = [];
+  listPosition: any[] = [];
 
   constructor(
     private form: FormBuilder,
@@ -89,7 +91,6 @@ export class MasterUserEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.detail = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_USER));
-    console.log(this.detail);
     this.myForm = this.form.group({
       kodeUser: [
         { value: this.detail.kodeUser, disabled: true },
@@ -103,7 +104,7 @@ export class MasterUserEditComponent implements OnInit {
 
       konfirmasiKodePassword: [this.detail.kodePassword, Validators.required],
       statusAktif: [this.detail.statusAktif],
-      jabatan: [this.detail.jabatan, jabatan],
+      jabatan: [],
       defaultLocation: [{}],
       roleID: [],
       location: [],
@@ -127,6 +128,13 @@ export class MasterUserEditComponent implements OnInit {
       placeholder: 'Pilih Role',
       searchPlaceholder: 'Cari Role',
       limitTo: this.listRole.length,
+    };
+
+    this.configSelectPosition = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Position',
+      searchPlaceholder: 'Cari Position',
+      limitTo: this.listPosition.length,
     };
 
     this.dataService
@@ -172,6 +180,19 @@ export class MasterUserEditComponent implements OnInit {
         );
         this.myForm.get('roleID')?.setValue(getRoleID);
       });
+
+    this.dataService
+      .postData(this.g.urlServer + '/api/position/dropdown-position', {})
+      .subscribe((resp: any) => {
+        this.listPosition = resp.map((item: any) => ({
+          id: item.CODE,
+          name: item.DESCRIPTION,
+        }));
+        const getPositionID = this.listPosition.find(
+          (item: any) => Number(item.id) === Number(this.detail.jabatan)
+        );
+        this.myForm.get('jabatan')?.setValue(getPositionID);
+      });
   }
 
   onSubmit(): void {
@@ -205,7 +226,7 @@ export class MasterUserEditComponent implements OnInit {
         kodePassword: controls?.['kodePassword']?.value,
         namaUser: controls?.['namaUser']?.value,
         statusAktif: controls?.['statusAktif']?.value,
-        jabatan: controls?.['jabatan']?.value,
+        jabatan: controls?.['jabatan']?.value?.id ?? ' ',
         defaultLocation: controls?.['defaultLocation']?.value?.id ?? ' ',
         roleID: controls?.['roleID']?.value?.id ?? ' ',
       };

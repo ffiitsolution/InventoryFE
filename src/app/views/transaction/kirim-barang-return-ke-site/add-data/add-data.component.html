@@ -1,0 +1,276 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <div
+          class="d-grid gap-3 d-md-flex justify-content-start align-items-center"
+        >
+          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button>
+          <h5>{{ "Tambah Kirim Barang Return Ke Site" | translate }}</h5>
+        </div>
+      </c-row>
+    </c-card-body>
+  </c-card>
+
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <div
+          [ngClass]="isShowDetail ? 'col-4' : 'col-5'"
+          class="pe-0 d-flex red-line"
+        >
+          <div class="w-100">
+            <div class="p-2">
+              <h5 class="mb-2 p-2" style="color: #3c4b64">
+                {{ "Isi Format" | translate }}
+              </h5>
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="tglTransaksi"
+                    >{{ "Tgl. Transaksi" | translate }}
+                    <span class="text-danger">*</span></label
+                  >
+                </div>
+
+                <div class="col-8 pe-0 d-flex">
+                  <input
+                    type="text"
+                    id="tglTransaksi"
+                    class="form-control"
+                    aria-describedby="tglTransaksi"
+                    #dp="bsDatepicker"
+                    [bsConfig]="dpConfig"
+                    bsDatepicker
+                    autocomplete="off"
+                    [(ngModel)]="formData.tglTransaksi"
+                    placeholder="{{ 'Tanggal transaksi' | translate }}"
+                  />
+                </div>
+              </div>
+              <div class="divider mt-4"></div>
+
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="kodeTujuan"
+                    >{{ "Kode Tujuan" | translate
+                    }}<span class="text-danger">*</span>
+                  </label>
+                </div>
+
+                <div class="col-8 pe-0 d-flex">
+                  <input
+                    placeholder="Kode Tujuan"
+                    type="text"
+                    class="form-control"
+                    id="kodeTujuan"
+                    [(ngModel)]="formData.kodeTujuan"
+                    name="kodeTujuan"
+                  />
+                  <button
+                    *ngIf="isShowDetail === false"
+                    type="button"
+                    class="btn btn-info ms-2"
+                    (click)="onShowModal()"
+                  >
+                    <i class="fa fa-search text-white"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="namaTujuan">{{
+                    "Nama Tujuan" | translate
+                  }}</label>
+                </div>
+
+                <div class="col-8 pe-0 d-flex">
+                  <input
+                    placeholder="Nama Tujuan"
+                    type="text"
+                    class="form-control"
+                    id="namaTujuan"
+                    [(ngModel)]="formData.namaTujuan"
+                    name="namaTujuan"
+                    disabled
+                  />
+                </div>
+              </div>
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="keterangan">{{
+                    "Alamat Tujuan" | translate
+                  }}</label>
+                </div>
+
+                <div class="col-8 pe-0 d-flex">
+                  <textarea
+                    placeholder="Alamat Tujuan"
+                    type="text"
+                    class="form-control"
+                    id="alamatTujuan"
+                    [(ngModel)]="formData.alamatTujuan"
+                    name="alamatTujuan"
+                    disabled
+                  ></textarea>
+                </div>
+              </div>
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="statusTujuan">{{
+                    "Status Tujuan" | translate
+                  }}</label>
+                </div>
+
+                <div class="col-8 pe-0 d-flex">
+                  <input
+                    placeholder="Status Tujuan"
+                    type="text"
+                    class="form-control"
+                    id="statusTujuan"
+                    [(ngModel)]="formData.statusTujuan"
+                    name="statusTujuan"
+                    disabled
+                  />
+                </div>
+              </div>
+
+              <div class="divider mt-4"></div>
+
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="keterangan"
+                    >{{ "Catatan (Keterangan Lain)" | translate
+                    }}<span class="text-danger">*</span></label
+                  >
+                </div>
+
+                <div class="col-8 pe-0 d-flex">
+                  <textarea
+                    placeholder="Catatan"
+                    type="text"
+                    class="form-control"
+                    id="keterangan"
+                    [(ngModel)]="formData.keterangan"
+                    name="keterangan"
+                  ></textarea>
+                </div>
+              </div>
+              <div style="width: 96%" class="p-2">
+                <button
+                  class="shadow-sm btn w-100 btn-info text-white"
+                  *ngIf="!isShowDetail"
+                  [disabled]="isFormInvalid"
+                  (click)="onAddDetail()"
+                >
+                  <i class="fa fa-check pe-2"></i>
+                  {{ "Detail Transaksi" | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
+          <div class="p-2" *ngIf="isShowDetail">
+            <app-add-data-detail-kirim-barang-return-ke-site [isShowDetail]="isShowDetail" (showDetailChange)="updateShowDetail($event)"></app-add-data-detail-kirim-barang-return-ke-site>
+          </div>
+        </div>
+      </c-row>
+    </c-card-body>
+  </c-card>
+  <c-modal
+    #staticBackdropModal
+    [visible]="isShowModal"
+    backdrop="static"
+    id="staticBackdropModal"
+    #modalLg
+    size="xl"
+  >
+    <c-modal-header>
+      <h5 cModalTitle>Pilih Site</h5>
+      <button
+        (click)="isShowModal = false"
+        type="button"
+        class="btn btn-info ms-2"
+        [cModalToggle]="staticBackdropModal.id"
+        cButtonClose
+      >
+        <i class="fa fa-times text-white"></i>
+      </button>
+    </c-modal-header>
+    <c-card>
+      <c-modal-body>
+        <div class="fade-in">
+          <c-card class="mb-4">
+            <c-card-body>
+              <div class="table-responsive mt-2">
+                <table
+                  datatable
+                  [dtOptions]="dtOptions"
+                  class="row-border hover stripe w-100"
+                ></table>
+              </div>
+            </c-card-body>
+          </c-card>
+        </div>
+        <!-- <div class="fade-in">
+          <c-card *ngIf="selectedRowData">
+            <c-card-body>
+              <div class="row p-2">
+                <div class="col">
+                  <label for="alamat1" class="form-label">{{
+                    "Alamat" | translate
+                  }}</label>
+                  <input
+                    type="text"
+                    disabled
+                    placeholder="Alamat 1"
+                    class="form-control"
+                    id="nomorPesanan"
+                    [(ngModel)]="selectedRowData.alamat1"
+                    name="alamat1"
+                  />
+                </div>
+              </div>
+              <div class="row p-2">
+                <div class="col-6">
+                  <label for="alamat1" class="form-label">{{
+                    "Keterangan 1" | translate
+                  }}</label>
+                  <input
+                    type="text"
+                    disabled
+                    placeholder="Keterangan 1"
+                    class="form-control"
+                    id="nomorPesanan"
+                    [(ngModel)]="selectedRowData.keterangan1"
+                    name="keterangan1"
+                  />
+                </div>
+                <div class="col-6">
+                  <label for="alamat1" class="form-label">{{
+                    "Keterangan 1" | translate
+                  }}</label>
+                  <input
+                    type="text"
+                    disabled
+                    placeholder="Keterangan 2"
+                    class="form-control"
+                    id="nomorPesanan"
+                    [(ngModel)]="selectedRowData.keterangan2"
+                    name="keterangan2"
+                  />
+                </div>
+              </div>
+            </c-card-body>
+          </c-card>
+        </div> -->
+      </c-modal-body>
+    </c-card>
+  </c-modal>
+  <div class="modal-bg-backdrop" *ngIf="isShowModal"></div>
+</div>
