@@ -87,11 +87,11 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   actionBtnClick(action: string, data: any = null) {
-    // this.selectedRo = JSON.stringify(data);
-    // this.renderDataTables();
-    // this.isShowModal = false;
-    // this.mapOrderData(data);
-    // this.onSaveData();
+    this.selectedRo = JSON.stringify(data);
+    this.renderDataTables();
+    this.isShowModal = false;
+    this.mapOrderData(data);
+    this.onSaveData();
     this.isShowModal = false;
 
   }
