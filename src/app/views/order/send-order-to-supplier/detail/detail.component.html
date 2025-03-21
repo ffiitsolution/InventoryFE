@@ -25,15 +25,15 @@
             </div>
             <div class="detail-item">
               <span class="label">{{ "Tgl. Pesanan" | translate }}</span>
-              <span class="value">{{ detailDataSendToWarehouse.tglPesanan }}</span>
+              <span class="value">{{ formatStrDateMMM(detailDataSendToWarehouse.tglPesanan) }}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Tgl. Kirim Barang" | translate }}</span>
-              <span class="value">{{ detailDataSendToWarehouse.tglKirimBrg }}</span>
+              <span class="value">{{ formatStrDateMMM(detailDataSendToWarehouse.tglKirimBrg) }}</span>
             </div>
             <div class="detail-item">
               <span class="label ">{{ "Tgl. Batal Pesanan" | translate }}</span>
-              <span class="value">{{ detailDataSendToWarehouse.tglBatalExp }}</span>
+              <span class="value">{{ formatStrDateMMM(detailDataSendToWarehouse.tglBatalExp) }}</span>
             </div>
           </div>
         </div>
