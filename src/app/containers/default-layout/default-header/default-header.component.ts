@@ -10,7 +10,6 @@ import { HeaderComponent } from '@coreui/angular';
 import { isEmpty } from 'lodash-es';
 import { GlobalService } from '../../../service/global.service';
 import { TranslationService } from '../../../service/translation.service';
-import { TimeService } from '../../../service/time.service';
 import { WebsocketService } from '../../../service/websocket.service';
 import { AppService } from '../../../service/app.service';
 import { menu_id } from '../default-sidebar/id';
@@ -34,7 +33,6 @@ export class DefaultHeaderComponent
   constructor(
     private router: Router,
     public g: GlobalService,
-    private timeService: TimeService,
     private websocketService: WebsocketService,
     private translation: TranslationService,
     private service: AppService
@@ -96,16 +94,6 @@ export class DefaultHeaderComponent
         console.error('Error initializing WebSocket: ', error);
         // Handle error
       });
-
-    this.timeService.currentTime$.subscribe((time) => {
-      this.g.isFullscreen = !!document.fullscreenElement;
-      if (this.g.countdownValue === 0) {
-        // OFFLINE jika dari websocket tidak ada update
-        this.g.serverStatus = 'DOWN';
-      } else {
-        this.g.countdownValue--;
-      }
-    });
   }
 
   ngOnDestroy() {
