@@ -116,7 +116,7 @@ export class ReceivingOrderAddFormComponent
         { data: 'dtIndex', title: '#' },
         { data: 'tglPesan', title: 'Tanggal Pesan' },
         { data: 'tglBrgDikirim', title: 'Tanggal Kirim' },
-        { data: 'tglBatasExp', title: 'Tanggal Kedaluwarsa' },
+        { data: 'tglBatasExp', title: 'Tanggal Batal' },
         { data: 'nomorPesanan', title: 'Nomor Pesanan', searchable: true },
         {
           data: 'kodePemesan',

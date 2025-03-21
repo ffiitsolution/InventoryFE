@@ -34,7 +34,7 @@ function noSpecialCharactersExcept(
 }
 
 function jabatan(control: AbstractControl): ValidationErrors | null {
-  const specialCharRegex = /[^a-zA-Z_-\s.]/;
+  const specialCharRegex = /[^a-zA-Z0-9._-\s.]/;
   if (control.value && specialCharRegex.test(control.value)) {
     return { jabatan: true };
   }
@@ -63,8 +63,10 @@ export class MasterUserAddComponent implements OnInit {
   };
   configSelectDefaultLokasi: any;
   configSelectRole: any;
+  configSelectPosition: any;
   isNotMatchPass: boolean = false;
   listRole: any[] = [];
+  listPosition: any[] = [];
 
   constructor(
     private toastr: ToastrService,
@@ -83,7 +85,7 @@ export class MasterUserAddComponent implements OnInit {
       konfirmasiKodePassword: ['', Validators.required],
       statusAktif: ['', Validators.required],
       defaultLocation: [null],
-      jabatan: ['', jabatan],
+      jabatan: [''],
       roleID: [''],
     });
 
@@ -98,6 +100,12 @@ export class MasterUserAddComponent implements OnInit {
       placeholder: 'Pilih Role',
       searchPlaceholder: 'Cari Role',
       limitTo: this.listRole.length,
+    };
+    this.configSelectPosition = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Jabatan',
+      searchPlaceholder: 'Cari Jabatan',
+      limitTo: this.listPosition.length,
     };
     this.dataService
       .postData(this.g.urlServer + '/api/location/dropdown-lokasi', {})
@@ -114,6 +122,15 @@ export class MasterUserAddComponent implements OnInit {
         this.listRole = resp.map((item: any) => ({
           id: item.ID,
           name: item.NAME,
+        }));
+      });
+
+    this.dataService
+      .postData(this.g.urlServer + '/api/position/dropdown-position', {})
+      .subscribe((resp: any) => {
+        this.listPosition = resp.map((item: any) => ({
+          id: item.CODE,
+          name: item.DESCRIPTION,
         }));
       });
   }
@@ -150,7 +167,7 @@ export class MasterUserAddComponent implements OnInit {
         kodePassword: controls?.['kodePassword']?.value,
         namaUser: controls?.['namaUser']?.value,
         statusAktif: controls?.['statusAktif']?.value,
-        jabatan: controls?.['jabatan']?.value,
+        jabatan: controls?.['defaultLocation']?.value?.id ?? ' ',
         defaultLocation: controls?.['defaultLocation']?.value?.id ?? ' ',
         roleID: controls?.['roleID']?.value?.id,
       };

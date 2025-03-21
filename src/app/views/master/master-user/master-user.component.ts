@@ -156,7 +156,7 @@ export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
         { data: 'kodeUser', title: 'Kode', searchable: false },
         { data: 'namaUser', title: 'Nama', searchable: false },
-        { data: 'jabatan', title: 'Jabatan', searchable: false },
+        { data: 'jabatanDesc', title: 'Jabatan', searchable: false },
         {
           data: 'keteranganLokasi',
           title: 'Default Lokasi',

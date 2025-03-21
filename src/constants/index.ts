@@ -29,6 +29,7 @@ export const LS_INV_SELECTED_DETAIL_ADD_DATA_GUDANG =
 export const DEFAULT_DATE_RANGE_DELIVERY_ORDER = 5;
 export const BUTTON_CAPTION_VIEW = 'Lihat';
 export const BUTTON_CAPTION_EDIT = 'Ubah';
+export const BUTTON_CAPTION_SELECT = 'Pilih';
 
 export const SEND_PRINT_STATUS_SUDAH = 'S';
 export const SEND_PRINT_STATUS_BELUM = 'B';
