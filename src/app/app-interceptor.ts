@@ -33,19 +33,19 @@ export class AppInterceptor implements HttpInterceptor {
             'Error 401'
           );
           this.router.navigateByUrl('/login');
+        } else if (error.status === 400) {
+          this.toastr.warning(`${error?.error?.message}`, 'Warning');
         } else if (error.status === 403) {
           this.toastr.warning(
             'Anda tidak memiliki izin untuk melakukan aksi ini.',
             'Error 403'
           );
-        } 
-        else if (error.status === 404) {
+        } else if (error.status === 404) {
           this.toastr.warning(
             `Data yang anda cari tidak ditemukan`,
             'Error 404'
           );
-        }
-        else if (error.status === 500) {
+        } else if (error.status === 500) {
           this.toastr.error(
             `Terjadi kesalahan : ${error.message}`,
             'Error 500'

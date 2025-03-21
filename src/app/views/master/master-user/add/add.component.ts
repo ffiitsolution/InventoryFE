@@ -12,6 +12,7 @@ import { AppService } from 'src/app/service/app.service';
 import { GlobalService } from 'src/app/service/global.service';
 import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_SET_NUMBER } from 'src/constants';
 import { DataService } from 'src/app/service/data.service';
+import { finalize } from 'rxjs';
 
 function noSpecialCharacters(
   control: AbstractControl
@@ -171,19 +172,29 @@ export class MasterUserAddComponent implements OnInit {
         defaultLocation: controls?.['defaultLocation']?.value?.id ?? ' ',
         roleID: controls?.['roleID']?.value?.id,
       };
-      this.service.insert('/api/users', param).subscribe({
-        next: (res) => {
-          if (!res.success) {
-            alert(res.message);
-          } else {
-            this.toastr.success('Berhasil!');
-            setTimeout(() => {
-              this.onPreviousPressed();
-            }, DEFAULT_DELAY_TIME);
-          }
-          this.adding = false;
-        },
-      });
+      this.service
+        .insert('/api/users', param)
+        .pipe(
+          // Pastikan `adding = false` setelah request selesai
+          finalize(() => {
+            this.adding = false;
+          })
+        )
+        .subscribe({
+          next: (res) => {
+            console.log(res);
+            if (!res.success) {
+              alert(res.message);
+              this.adding = false;
+            } else {
+              this.toastr.success('Berhasil!');
+              setTimeout(() => {
+                this.onPreviousPressed();
+              }, DEFAULT_DELAY_TIME);
+            }
+            this.adding = false;
+          },
+        });
     }
   }
 
