@@ -34,7 +34,10 @@ export class AppInterceptor implements HttpInterceptor {
           );
           this.router.navigateByUrl('/login');
         } else if (error.status === 400) {
-          this.toastr.warning(`${error?.error?.message}`, 'Warning');
+          this.toastr.warning(
+            `${error?.error?.message ? error?.error?.message : error?.message}`,
+            'Warning'
+          );
         } else if (error.status === 403) {
           this.toastr.warning(
             'Anda tidak memiliki izin untuk melakukan aksi ini.',
