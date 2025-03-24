@@ -218,8 +218,8 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
           data: 'konversi', title: 'Konversi',
           render: (data, type, row) => `${Number(data).toFixed(2)} ${row.satuanKecil}`
         },
-        { data: 'satuanKecil', title: 'Satuan Kecil' },
         { data: 'satuanBesar', title: 'Satuan Besar', },
+        { data: 'satuanKecil', title: 'Satuan Kecil' },
         { data: 'defaultGudang', title: 'Default Gudang', },
         { data: 'status', title: 'Status', },
         {
@@ -261,7 +261,7 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
       this.myForm.patchValue({
         kodeBarang: data.kodeBarang,
         namaBarang: data.namaBarang,
-        satuanHasilProduksi: data.konversi,
+        satuanHasilProduksi: parseFloat(data.konversi).toFixed(2),
         labelSatuanHasilProduksi: data.satuanKecil+"/"+data.satuanBesar,
       })
      
