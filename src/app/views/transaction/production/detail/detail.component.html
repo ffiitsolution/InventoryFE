@@ -41,7 +41,7 @@
             </div>
             <div class="detail-item">
               <span class="label">{{ "Status Transaksi" | translate }}</span>
-              <span class="value">: {{ selectedProduction.statusPosting }}</span>
+              <span class="value">: ({{ selectedProduction.statusPosting }}) Posted</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Keterangan" | translate }}</span>
@@ -61,7 +61,7 @@
             </div>
             <div class="detail-item">
               <span class="label">{{ "Satuan Resep" | translate }}</span>
-              <span class="value">: {{ selectedProduction.konversi }}</span>
+              <span class="value">: {{ selectedProduction.konversi }} {{ selectedProduction.satuanKecil}}/{{ selectedProduction.satuanBesar}}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Jumlah Produksi" | translate }}</span>
