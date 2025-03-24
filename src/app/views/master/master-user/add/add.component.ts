@@ -168,7 +168,7 @@ export class MasterUserAddComponent implements OnInit {
         kodePassword: controls?.['kodePassword']?.value,
         namaUser: controls?.['namaUser']?.value,
         statusAktif: controls?.['statusAktif']?.value,
-        jabatan: controls?.['defaultLocation']?.value?.id ?? ' ',
+        jabatan: controls?.['jabatan']?.value?.id ?? ' ',
         defaultLocation: controls?.['defaultLocation']?.value?.id ?? ' ',
         roleID: controls?.['roleID']?.value?.id,
       };
