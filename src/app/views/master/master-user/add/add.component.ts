@@ -12,6 +12,7 @@ import { AppService } from 'src/app/service/app.service';
 import { GlobalService } from 'src/app/service/global.service';
 import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_SET_NUMBER } from 'src/constants';
 import { DataService } from 'src/app/service/data.service';
+import { finalize } from 'rxjs';
 
 function noSpecialCharacters(
   control: AbstractControl
@@ -34,7 +35,7 @@ function noSpecialCharactersExcept(
 }
 
 function jabatan(control: AbstractControl): ValidationErrors | null {
-  const specialCharRegex = /[^a-zA-Z_-\s.]/;
+  const specialCharRegex = /[^a-zA-Z0-9._-\s.]/;
   if (control.value && specialCharRegex.test(control.value)) {
     return { jabatan: true };
   }
@@ -63,8 +64,10 @@ export class MasterUserAddComponent implements OnInit {
   };
   configSelectDefaultLokasi: any;
   configSelectRole: any;
+  configSelectPosition: any;
   isNotMatchPass: boolean = false;
   listRole: any[] = [];
+  listPosition: any[] = [];
 
   constructor(
     private toastr: ToastrService,
@@ -83,7 +86,7 @@ export class MasterUserAddComponent implements OnInit {
       konfirmasiKodePassword: ['', Validators.required],
       statusAktif: ['', Validators.required],
       defaultLocation: [null],
-      jabatan: ['', jabatan],
+      jabatan: [''],
       roleID: [''],
     });
 
@@ -98,6 +101,12 @@ export class MasterUserAddComponent implements OnInit {
       placeholder: 'Pilih Role',
       searchPlaceholder: 'Cari Role',
       limitTo: this.listRole.length,
+    };
+    this.configSelectPosition = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Jabatan',
+      searchPlaceholder: 'Cari Jabatan',
+      limitTo: this.listPosition.length,
     };
     this.dataService
       .postData(this.g.urlServer + '/api/location/dropdown-lokasi', {})
@@ -114,6 +123,15 @@ export class MasterUserAddComponent implements OnInit {
         this.listRole = resp.map((item: any) => ({
           id: item.ID,
           name: item.NAME,
+        }));
+      });
+
+    this.dataService
+      .postData(this.g.urlServer + '/api/position/dropdown-position', {})
+      .subscribe((resp: any) => {
+        this.listPosition = resp.map((item: any) => ({
+          id: item.CODE,
+          name: item.DESCRIPTION,
         }));
       });
   }
@@ -150,23 +168,33 @@ export class MasterUserAddComponent implements OnInit {
         kodePassword: controls?.['kodePassword']?.value,
         namaUser: controls?.['namaUser']?.value,
         statusAktif: controls?.['statusAktif']?.value,
-        jabatan: controls?.['jabatan']?.value,
+        jabatan: controls?.['jabatan']?.value?.id ?? ' ',
         defaultLocation: controls?.['defaultLocation']?.value?.id ?? ' ',
         roleID: controls?.['roleID']?.value?.id,
       };
-      this.service.insert('/api/users', param).subscribe({
-        next: (res) => {
-          if (!res.success) {
-            alert(res.message);
-          } else {
-            this.toastr.success('Berhasil!');
-            setTimeout(() => {
-              this.onPreviousPressed();
-            }, DEFAULT_DELAY_TIME);
-          }
-          this.adding = false;
-        },
-      });
+      this.service
+        .insert('/api/users', param)
+        .pipe(
+          // Pastikan `adding = false` setelah request selesai
+          finalize(() => {
+            this.adding = false;
+          })
+        )
+        .subscribe({
+          next: (res) => {
+            console.log(res);
+            if (!res.success) {
+              alert(res.message);
+              this.adding = false;
+            } else {
+              this.toastr.success('Berhasil!');
+              setTimeout(() => {
+                this.onPreviousPressed();
+              }, DEFAULT_DELAY_TIME);
+            }
+            this.adding = false;
+          },
+        });
     }
   }
 

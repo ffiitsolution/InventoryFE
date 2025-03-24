@@ -88,9 +88,13 @@
                     [(ngModel)]="data.qtyKgs" />
                 </td>
                 <td class="text-center">
-                  <select class="form-control text-center" *ngIf="data.flagJenis === 'Y'" [(ngModel)]="data.jenis">
-                    <option *ngFor="let status of listStatus" [value]="status.name">{{ status.name }}</option>
-                  </select>
+                  <div class="position-relative">
+                    <select class="text-center pe-5" *ngIf="data.flagJenis === 'Y'" [(ngModel)]="data.jenis">
+                      <option *ngFor="let status of listStatus" [value]="status.id" style="font-size: 12px;">{{ status.name }}</option>
+                    </select>
+                    <i class="bi bi-chevron-down position-absolute dropdown-icon" ></i>
+                  </div>
+                  
                 </td>
                 <td>
                   <button [disabled]="data.flagExpired !== 'Y'" (click)="onShowModalExpired($event, i)"
@@ -98,8 +102,7 @@
                     <i class="fa fa-check pe-1"></i> {{ "Exp." | translate }}
                   </button>
                 </td>
-                <td class="text-center">{{(helper.sanitizedNumber(data.qtyTerimaBesar) *
-                  data.konversi) + helper.sanitizedNumber(data.qtyTerimaKecil)}}.00 {{data.satuanKecil}}
+                <td class="text-center" *ngIf="totalQtyExpired[data.kodeBarang]"> {{totalQtyExpired[data.kodeBarang]}}.00 {{data.satuanKecil}}
                 </td>
               </tr>
             </tbody>
@@ -121,7 +124,7 @@
   <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
     <i class="fa fa-check pe-2" *ngIf="!adding"></i>
     <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
-    {{ "Proses Pembelian" | translate }}
+    {{ "Proses Simpan Data" | translate }}
   </button>
 
   <button class="btn btn-secondary text-white btn-150" (click)="onBackPressed()">

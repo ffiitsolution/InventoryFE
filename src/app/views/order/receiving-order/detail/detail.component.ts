@@ -55,6 +55,9 @@ export class ReceivingOrderDetailComponent
   alreadyPrint: Boolean = false;
   totalLength: number = 0;
   buttonCaptionView: String = 'Lihat';
+  isShowModalBatal: boolean = false;
+  alasanDiBatalkan: string = '';
+  dataUser: any;
 
   protected config = AppConfig.settings.apiServer;
 
@@ -178,6 +181,8 @@ export class ReceivingOrderDetailComponent
     this.alreadyPrint =
       this.selectedOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
+    this.dataUser = this.g.getLocalstorage('inv_currentUser');
+
   }
   actionBtnClick(action: string, data: any = null) { }
 
@@ -279,7 +284,7 @@ export class ReceivingOrderDetailComponent
         try {
           const generatePdfParams = {
             outletBrand: OUTLET_BRAND_KFC,
-            user: this.g.getUserCode(),
+            user:  this.dataUser.kodeUser,
             nomorPesanan: this.selectedOrder.nomorPesanan,
           };
           const base64Response = await lastValueFrom(
@@ -323,7 +328,8 @@ export class ReceivingOrderDetailComponent
       staffName: JSON.parse(localStorage.getItem('inv_currentUser') || '{}').namaUser || 'Guest',
       nomorPesanan: this.selectedOrder.nomorPesanan,
       tglBrgDikirim: this.selectedOrder.tglBrgDikirim,
-      tglPesan: this.selectedOrder.tglPesan
+      tglPesan: this.selectedOrder.tglPesan,
+      user: this.dataUser.kodeUser,
     }
 
     this.appService.reporReceivingOrderJasper(params).subscribe((res) => {
@@ -340,5 +346,34 @@ export class ReceivingOrderDetailComponent
     link.download = `Report Receiving Order tanggal ${this.selectedOrder.tglPesan}.pdf`;
     link.click();
     this.toastr.success('File sudah terunduh.', 'Selamat');
+  }
+  async updateStatus(){
+    try {
+      const params = {
+        status: '4',
+        user: this.g.getUserCode(),
+        keterangan2: this.alasanDiBatalkan,
+        nomorPesanan: this.selectedOrder.nomorPesanan,
+      };
+      const url = `${this.config.BASE_URL}/api/receiving-order/update`;
+      const response = await lastValueFrom(
+        this.dataService.postData(url, params)
+      );
+      if (response.success) {
+        this.toastr.success('Berhasil membatalkan penerimaan');
+        setTimeout(() => {
+          this.router.navigate(['/order/receiving-order']);
+        }, DEFAULT_DELAY_TABLE);
+      } else {
+        this.toastr.error(response.message);
+      }
+    } catch (error: any) {
+      this.toastr.error('Error: ', error);
+    } finally {
+      this.RejectingOrder = false;
+    }
+  }
+  onShowModalBatal(){
+    this.isShowModalBatal = true;
   }
 }

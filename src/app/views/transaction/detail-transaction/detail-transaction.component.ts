@@ -140,7 +140,8 @@ export class DetailTransactionComponent
             jamEntry: this.selectedOrder.timePosted.replace(/(\d{2})(?=\d)/g, '$1:'),
             kodeTujuan: this.selectedOrder.kodeTujuan,
             namaTujuan: this.selectedOrder.namaTujuan,
-            keterangan: this.selectedOrder.keterangan
+            keterangan: this.selectedOrder.keterangan,
+            alamatTujuan: this.selectedOrder.alamatTujuan 
           };
           this.paramUpdatePrintStatus = {
             noSuratJalan: this.selectedOrder.noSuratJalan

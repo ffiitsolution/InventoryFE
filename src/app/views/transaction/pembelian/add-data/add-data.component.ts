@@ -83,6 +83,10 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
     this.onSaveData();
   }
 
+  get isFormInvalid(): boolean {
+    return Object.values(this.formData).some(value => value === '');
+  }
+
   onAddDetail() {
     this.isShowDetail = true;
     this.globalService.saveLocalstorage(

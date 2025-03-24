@@ -48,12 +48,23 @@ import { AddDataDetailPembelianComponent } from './pembelian/add-data-detail/add
 import { ListBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri.component';
 import { AddDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian-sendiri/tambah-data-pemakaian-barang-sendiri/add-data-pemakaian-barang-sendiri.component';
 import { DisplayDataPemakaianBarangSendiriComponent } from './barang-untuk-pemakaian-sendiri/display-data-pemakaian-barang-sendiri/display-data-pemakaian-barang-sendiri-detail.component';
-import { DetailBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakaian-sendiri/detail-pemakaian-barang/detail-barang-untuk-pemakaian-sendiri.component'
+import { DetailBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakaian-sendiri/detail-pemakaian-barang/detail-barang-untuk-pemakaian-sendiri.component';
 import { AddDataDetailBarangComponent } from './barang-untuk-pemakaian-sendiri/add-data-detail/add-data-detail-barang.component';
+import { ListBarangReturComponent } from './retur-barang-to-supllier/list-barang-retur/list-barang.component';
+import { AddDataBarangReturComponent } from './retur-barang-to-supllier/tambah-data-barang-retur/add-data-retur.component';
+import { DisplayDataBarangReturComponent } from './retur-barang-to-supllier/display-data-barang-retur/display-data.component';
+import { DetailBarangReturComponent } from './retur-barang-to-supllier/detail-pemakaian-barang/detail-barang.component';
+import { AddDataDetailBarangReturComponent } from './retur-barang-to-supllier/add-data-detail-barang-retur/add-detail.component';
+import { DetailPembelianComponent } from './pembelian/detail/detail.component';
 import { ProductionListComponent } from './production/dt-list/production-list.component';
 import { AddProductionComponent } from './production/add-data/add-data.component';
 import { AddDataDetailProductionComponent } from './production/add-data-detail/add-data-detail.component';
 import { DetailProductionComponent } from './production/detail/detail.component';
+import { KirimBarangReturnKeSiteListComponent } from './kirim-barang-return-ke-site/dt-list/kirim-barang-return-ke-site-list.component';
+import { AddKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/add-data/add-data.component';
+import { AddDataDetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/add-data-detail/add-data-detail.component';
+import { DetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/detail/detail.component';
+
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -81,7 +92,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     TableModule,
     SharedComponentModule,
     PaginationModule,
-    
   ],
   declarations: [
     DeliveryItemComponent,
@@ -109,11 +119,20 @@ export function HttpLoaderFactory(http: HttpClient) {
     DisplayDataPemakaianBarangSendiriComponent,
     DetailBarangUntukPemakaianSendiriComponent,
     AddDataDetailBarangComponent,
+    ListBarangReturComponent,
+    AddDataBarangReturComponent,
+    DisplayDataBarangReturComponent,
+    DetailBarangReturComponent,
+    AddDataDetailBarangReturComponent,
+    DetailPembelianComponent,
     ProductionListComponent,
     AddProductionComponent,
     AddDataDetailProductionComponent,
     DetailProductionComponent,
-    
+    KirimBarangReturnKeSiteListComponent,
+    AddKirimBarangReturnKeSiteComponent,
+    AddDataDetailKirimBarangReturnKeSiteComponent,
+    DetailKirimBarangReturnKeSiteComponent,    
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

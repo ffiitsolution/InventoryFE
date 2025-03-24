@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import moment from 'moment';
 import { GlobalService } from 'src/app/service/global.service';
 import { LS_INV_SELECTED_BRANCH } from 'src/constants';
 @Component({
@@ -50,8 +51,8 @@ export class MasterBranchDetailComponent implements OnInit {
 
       userCreate: [this.detail.userCreate],
       userUpdate: [this.detail.userUpdate],
-      dateCreate: [this.detail.dateCreate],
-      dateUpdate: [this.detail.dateUpdate],
+      dateCreate: [moment(this.detail.dateCreate).format('DD MMM yyyy')],
+      dateUpdate: [moment(this.detail.dateUpdate).format('DD MMM yyyy')],
     });
     this.myForm.disable();
   }

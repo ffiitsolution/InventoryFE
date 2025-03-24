@@ -87,11 +87,11 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   actionBtnClick(action: string, data: any = null) {
-    // this.selectedRo = JSON.stringify(data);
-    // this.renderDataTables();
-    // this.isShowModal = false;
-    // this.mapOrderData(data);
-    // this.onSaveData();
+    this.selectedRo = JSON.stringify(data);
+    this.renderDataTables();
+    this.isShowModal = false;
+    this.mapOrderData(data);
+    this.onSaveData();
     this.isShowModal = false;
 
   }
@@ -174,12 +174,12 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
           });
       },
       columns: [
-        { data: 'kodeGudang', title: 'Kode Gudang' },
-        { data: 'kodePemesan', title: 'Kode Pemesan' },
         { data: 'nomorPesanan', title: 'Nomor Pesanan' },
         { data: 'tglPesan', title: 'Tanggal Pesan' },
         { data: 'tglBrgDikirim', title: 'Tanggal Dikirim', },
-        { data: 'keterangan1', title: 'Keterangan', },
+        { data: 'tglKadaluarsa', title: 'Tanggal Expired', },
+        { data: 'kodePemesan', title: 'Pemesan' },
+        { data: 'namaCabang', title: 'Nama Pemesan' },
         {
           data: 'statusRecieve',
           title: 'Status Penerimaan',

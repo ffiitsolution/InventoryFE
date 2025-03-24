@@ -4,6 +4,8 @@ import { AppConfig } from '../config/app.config';
 import { DataService } from './data.service';
 import { TranslationService } from './translation.service';
 import { ToastrService } from 'ngx-toastr';
+import { HttpClient } from '@angular/common/http';
+import { GlobalService } from './global.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,9 +13,13 @@ import { ToastrService } from 'ngx-toastr';
 export class AppService {
   constructor(
     private dataService: DataService,
+    private toastr: ToastrService,
+    private http: HttpClient,
     private translation: TranslationService,
-    private toastr: ToastrService
-  ) {}
+    private g: GlobalService
+  ) {
+    this.checkServerTime();
+  }
   protected config = AppConfig.settings.apiServer;
 
   login(param: any): Observable<any> {
@@ -51,6 +57,18 @@ export class AppService {
 
   isLoggednIn() {
     return this.getToken();
+  }
+
+  checkServerTime() {
+    setInterval(() => {
+      this.g.isFullscreen = !!document.fullscreenElement;
+      if (this.g.countdownValue === 0) {
+        // OFFLINE jika dari websocket tidak ada update
+        this.g.serverStatus = 'DOWN';
+      } else {
+        this.g.countdownValue--;
+      }
+    }, 1000);
   }
 
   getListMenu(): Observable<any> {
@@ -219,6 +237,13 @@ export class AppService {
     );
   }
 
+  getCariDataSupplier(payload: any): Observable<any> {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/cari-data-supplier`,
+      payload
+    );
+  }
+
   getItemRevisiDO(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/delivery-order/list-item-revisi-do`,
@@ -246,7 +271,7 @@ export class AppService {
       payload
     );
   }
-  
+
   getPOPembelian(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/pembelian/get-purchase-order`,
@@ -285,7 +310,7 @@ export class AppService {
     );
   }
 
-  deleteResepRow(payload: any){
+  deleteResepRow(payload: any) {
     return this.dataService.deleteData(
       `${this.config.BASE_URL}/api/resep/`,
       payload

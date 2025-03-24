@@ -180,4 +180,12 @@ export class DetailReportDoBalikComponent
   onbackPressed(): void {
     this.router.navigate(['/transaction/delivery-item/dobalik']);
   }
+
+  getStatusPosting(status: string): string {
+    if (status === 'I') {
+      return 'INTRANSIT';
+    } else {
+      return 'POSTING';
+    }
+  }
 }

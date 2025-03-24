@@ -88,7 +88,7 @@ export class PembelianListComponent implements OnInit {
                 const finalData = {
                   ...rest,
                   dtIndex: this.page.start + index + 1,
-                  tglPesanan: this.g.transformDate(rest.tglPesanan),
+                  tglDokumen: this.g.transformDate(rest.tglDokumen),
                   tglTransaksi: this.g.transformDate(rest.tglTransaksi)
                 };
                 return finalData;
@@ -106,9 +106,10 @@ export class PembelianListComponent implements OnInit {
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'tglDokumen', title: 'Tanggal Transaksi' },
-        { data: 'tglTransaksi', title: 'Tanggal Transaksi' },
+        { data: 'tglTransaksi', title: 'Tanggal Terima' },
+        { data: 'tglDokumen', title: 'Tanggal Faktur' },
         { data: 'nomorPo', title: 'No. Pesanan' },
+        { data: 'nomorDokumen', title: 'No. Faktur' },
         { data: 'nomorTransaksi', title: 'No. Penerimaan', searchable: true },
         { data: 'kodeSupplier', title: 'Supplier', searchable: true },
         {
@@ -162,10 +163,10 @@ export class PembelianListComponent implements OnInit {
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage(
-        'headerPembelian',
+        'selectedData',
         JSON.stringify(data)
       );
-      this.router.navigate(['/transaction/pembelian/detail']); this
+      this.router.navigate(['/transaction/pembelian/detail']); 
     }
   }
 

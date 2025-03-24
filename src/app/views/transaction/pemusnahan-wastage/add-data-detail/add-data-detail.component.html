@@ -56,7 +56,7 @@
                 <td class="text-center">
                   <div class="input-group">
                     <input type="text" autofocus class="form-control text-center" [(ngModel)]="data.kodeBarang"
-                      (keydown.enter)="handleEnter($event, i)" (keyup.enter)="nextInput.focus()" />
+                      (keydown.enter)="handleEnter($event, i)"  (keyup.enter)="nextInput.focus()" [disabled]="!!data?.namaBarang"/>
                     <button class="btn btn-outline-secondary" type="button" (click)="onShowModal()">
                       <i class="fa fa-search"></i>
                     </button>
@@ -67,7 +67,7 @@
                 <td class="text-center">
                   {{ data.namaBarang }}
                 </td>
-                <td class="text-center">{{ data.konversi }} {{data.satuanKecil}} / {{data.satuanBesar}}</td>
+                <td class="text-center">{{ data.konversi }}.00 {{data.satuanKecil}} / {{data.satuanBesar}}</td>
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
                     <input #nextInput type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
@@ -99,7 +99,7 @@
                 </td>
 
                 <td class="text-center">{{(helper.sanitizedNumber(data.qtyWasteBesar) *
-                  data.konversi) + helper.sanitizedNumber(data.qtyWasteKecil) }} {{data.satuanKecil}}
+                  data.konversi) + helper.sanitizedNumber(data.qtyWasteKecil) }}.00 {{data.satuanKecil}}
 
                   <!-- Validation message area -->
                   <br>
@@ -114,7 +114,7 @@
                   </button>
                 </td>
                 <td class="text-center">{{(helper.sanitizedNumber(data.qtyWasteBesar) *
-                  data.konversi) + helper.sanitizedNumber(data.qtyWasteKecil) }} {{data.satuanKecil}}
+                  data.konversi) + helper.sanitizedNumber(data.qtyWasteKecil) }}.00 {{data.satuanKecil}}
 
                   <!-- Validation message area -->
                   <br>

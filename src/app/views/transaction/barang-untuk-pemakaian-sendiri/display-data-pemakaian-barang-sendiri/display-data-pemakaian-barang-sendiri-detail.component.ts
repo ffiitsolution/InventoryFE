@@ -283,7 +283,7 @@ export class DisplayDataPemakaianBarangSendiriComponent
           
         };
         this.dataService
-          .postData(this.g.urlServer + '/api/delivery-order/display-data-pemakaian-barang-sendiri', params)
+          .postData(this.config.BASE_URL+'/api/delivery-order/display-data-pemakaian-barang-sendiri', params)
           .subscribe((resp: any) => {
             const mappedData = resp.data.map((item: any, index: number) => {
               // hapus rn dari data

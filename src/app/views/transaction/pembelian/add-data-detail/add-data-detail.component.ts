@@ -68,11 +68,13 @@ export class AddDataDetailPembelianComponent
   isShowModalExpired: boolean = false;
   selectedExpProduct: any = {};
   listEntryExpired: any[] = [];
-
+  totalQtyExpired: { [key: number]: number } = {};
   public dpConfig: Partial<BsDatepickerConfig> = {
     dateInputFormat: 'DD/MM/YYYY',
     containerClass: 'theme-red',
   };
+  validationMessageList: any[] = [];
+  validationMessageQtyPesanList: any[] = [];
 
   baseConfig: any = {
     displayKey: 'name', // Key to display in the dropdown
@@ -200,10 +202,11 @@ export class AddDataDetailPembelianComponent
   ngAfterViewInit(): void {
   }
   ngOnDestroy(): void {
+    this.g.navbarVisibility = true;
   }
 
   onBackPressed() {
-    this.router.navigate(['/transaction/delivery-item']);
+    this.router.navigate(['/transaction/pembelian/list-dt']);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -222,89 +225,103 @@ export class AddDataDetailPembelianComponent
     return moment(date, "YYYY-MM-DD").format("DD-MM-YYYY");
   }
 
-  onSubmit() {
-    this.adding = true;
-    let totalKirim = 0;
-    let hasInvalidData = false; // Tambahkan flag untuk mengecek validasi
+  isDataInvalid() {
+    let dataInvalid = false;
+    dataInvalid =
+      this.validationMessageList.some(msg => msg.trim() !== "") ||
+      this.validationMessageQtyPesanList.some(msg => msg.trim() !== "");
 
-    const param = this.listOrderData
-      .map((data: any) => {
+    return dataInvalid
+  }
 
-        totalKirim = this.helper.sanitizedNumber((data.qtyPesanBesar * data.konversi).toString()) + this.helper.sanitizedNumber(data.qtyPesanKecil);
+  onPreviousPressed(): void {
+    this.router.navigate(['/transaction/pembelian/list-dt']);
+  }
 
-        if (totalKirim > data.totalQtyPesanOld) {
-          this.toastr.error(
-            `Kode Barang: ${data.kodeBarang}, Qty Kirim (${totalKirim}) tidak boleh lebih besar dari Qty Pesan (${data.totalQtyPesanOld})`
-          );
-          hasInvalidData = true; // Tandai bahwa ada data tidak valid
-          return null; // Hentikan pemrosesan item ini
-        }
 
-        return {
-          kodeGudang: this.selectedOrder.kodeGudang,
-          kodeTujuan: this.selectedOrder.codeDestination,
-          tipeTransaksi: 3,
-          nomorPesanan: this.selectedOrder.nomorPesanan,
-          kodeBarang: data.kodeBarang,
-          qtyBPesan: data.qtyBPesanOld,
-          qtyKPesan: data.qtyPesanKecil,
-          qtyBKirim: data.qtyPesanBesar,
-          qtyKKirim: data.qtyPesanKecil,
-          hargaSatuan: 0,
-          userCreate: JSON.parse(localStorage.getItem("inv_currentUser") || "{}").namaUser,
-          konversi: data.konversi,
-          satuanKecil: data.satuanKecil,
-          satuanBesar: data.satuanBesar,
-          totalQtyPesanOld: data.totalQtyPesanOld,
-          tglKirimGudang: moment(this.selectedOrder.validatedDeliveryDate, 'DD-MM-YYYY').set({
-            hours: 0,
-            minutes: 0,
-            seconds: 0,
-            milliseconds: 0,
-          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
-        };
-      })
-      .filter((item) => item !== null); // Hapus item yang tidak valid
+ onSubmit() {
+    if (!this.isDataInvalid()) {
+      // param for order Header
+      const param = {
+        kodeGudang: this.g.getUserLocationCode(),
+        tglTransaksi: moment(this.selectedOrder.tglTerimaBrg, "DD-MM-YYYY").format("D MMM YYYY"),
+        tipeTransaksi: 1,
+        nomorDokumen: this.selectedOrder.nomorDokumen,
+        kodeSupplier: this.selectedOrder.supplier,
+        nomorPo: this.selectedOrder.nomorPesanan,
+        tglDokumen: moment(this.selectedOrder.tglDokumen, "DD-MM-YYYY").format("D MMM YYYY"),
+        keterangan: this.selectedOrder.notes,
+        userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+        details: this.filteredListTypeOrder
+          .filter(item => item.kodeBarang && item.kodeBarang.trim() !== '')
+          .map(item => ({
+            kodeGudang: this.g.getUserLocationCode(),
+            tglTransaksi: moment(this.selectedOrder.tglTerimaBrg, "DD-MM-YYYY").format("D MMM YYYY"),
+            tipeTransaksi: 1,
+            kodeBarang: item.kodeBarang,
+            konversi: item.konversi,
+            satuanKecil: item.satuanKecil,
+            satuanBesar: item.satuanBesar,
+            qtyBesar: item.qtyTerimaBesar || 0,
+            qtyKecil: item.qtyTerimaKecil || 0,
+            flagExpired: item.flagExpired,
+            totalQty: (this.helper.sanitizedNumber(item.qtyTerimaBesar) *
+              item.konversi) + this.helper.sanitizedNumber(item.qtyTerimaKecil),
+            totalQtyExpired: this.totalQtyExpired[item.kodeBarang] || 0,
+            hargaSatuan: 0,
+            userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+            statusSync: "T",
+            qtyKgs: item.qtyKgs || 0,
+            jenisItem: item.jenis || "0"
+          })),
+        detailsExpired: this.listEntryExpired?.map(expiredItem => ({
+          kodeGudang: this.g.getUserLocationCode(),
+          tglTransaksi: moment(this.selectedOrder.tglTerimaBrg, "DD-MM-YYYY").format("D MMM YYYY"),
+          tipeTransaksi: 4,
+          kodeBarang: expiredItem.kodeBarang,
+          tglExpired: moment(expiredItem.tglExpired, "DD-MM-YYYY").format("D MMM YYYY"),
+          konversi: expiredItem.konversi,
+          qtyBesar: -Math.abs(parseInt(expiredItem.qtyTerimaBesar)) || 0,
+          qtyKecil: -Math.abs(parseInt(expiredItem.qtyTerimaKecil)) || 0,
+          totalQty: expiredItem.totalQty ? -Math.abs(expiredItem.totalQty) : 0
+        })) || []
+      };
 
-    if (hasInvalidData || param.length === 0) {
-      this.adding = false;
-      return;
+      Swal.fire({
+            title: 'Apa Anda Sudah Yakin?',
+            text: 'Pastikan data yang dimasukkan sudah benar!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Simpan!',
+            cancelButtonText: 'Batal',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.appService.insert('/api/pembelian/insert', param).subscribe({
+                next: (res) => {
+                  if (!res.success) {
+                    this.toastr.error(res.message);
+                  } else {
+                    setTimeout(() => {
+                      this.toastr.success("Data wastage berhasil dibuat");
+                      this.onPreviousPressed();
+                    }, DEFAULT_DELAY_TIME);
+        
+                  }
+                  this.adding = false;
+                },
+              });
+            } else {
+              this.toastr.info('Penyimpanan dibatalkan');
+            }
+          });
+
     }
 
-    Swal.fire({
-      title: 'Apa Anda Sudah Yakin?',
-      text: 'Pastikan data yang dimasukkan sudah benar!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Ya, Simpan!',
-      cancelButtonText: 'Batal',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.appService.saveDeliveryOrder(param).subscribe({
-
-          next: (res) => {
-            if (!res.success) {
-              alert(res.message);
-            } else {
-              this.toastr.success("Berhasil!");
-              setTimeout(() => {
-                this.router.navigate(["/transaction/delivery-item"]);
-              }, DEFAULT_DELAY_TIME);
-            }
-            this.adding = false;
-          },
-          error: (err) => {
-            console.error("Error saat insert:", err);
-            this.adding = false;
-          },
-        });
-      } else {
-        this.toastr.info('Penyimpanan dibatalkan');
-      }
-    });
-    // ✅ Jika semua valid, lanjutkan dengan pemanggilan API
+    else {
+      this.toastr.error("Data tidak valid")
+    }
 
   }
 
@@ -365,8 +382,8 @@ export class AddDataDetailPembelianComponent
     this.listEntryExpired.push({
       tglExpired: '',
       keteranganTanggal: '',
-      qtyWasteBesar: 0,
-      qtyWasteKecil: 0,
+      qtyTerimaBesar: 0,
+      qtyTerimaKecil: 0,
       satuanKecil: this.selectedExpProduct.satuanKecil,
       satuanBesar: this.selectedExpProduct.satuanBesar,
       konversi: this.selectedExpProduct.konversi,
@@ -383,23 +400,27 @@ export class AddDataDetailPembelianComponent
     item.keteranganTanggal = moment(item.tglExpired).locale('id').format('D MMMM YYYY');
   }
 
+
   onSaveEntryExpired() {
-    let totalQtyExpired = 0;
-
-    const totalQtyWaste = (this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteBesar) *
-      this.selectedExpProduct.konversi) + this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteKecil);
-
+    const totalQtyWaste = (this.helper.sanitizedNumber(this.selectedExpProduct.qtyTerimaBesar) *
+      this.selectedExpProduct.konversi) + this.helper.sanitizedNumber(this.selectedExpProduct.qtyTerimaKecil);
+  
+    // Reset totalQtyExpired untuk kodeBarang yang sedang diproses
+    this.totalQtyExpired[this.selectedExpProduct.kodeBarang] = 0;
+  
     this.listEntryExpired.forEach((item: any) => {
       if (item.kodeBarang === this.selectedExpProduct.kodeBarang) {
-        item.totalQty = (this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyWasteKecil);
+        item.totalQty = (this.helper.sanitizedNumber(item.qtyTerimaBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyTerimaKecil);
         item.kodeBarang = this.selectedExpProduct.kodeBarang;
-        totalQtyExpired += item.totalQty;
+  
+        // Pastikan nilai tidak undefined sebelum menambahkan
+        this.totalQtyExpired[this.selectedExpProduct.kodeBarang] += item.totalQty ?? 0;
       }
     });
-
-
-    if (totalQtyExpired > totalQtyWaste) {
-      this.toastr.error("Total Qty Expired harus sama dengan Qty Waste");
+  
+    // Validasi perhitungan total qty expired
+    if (this.totalQtyExpired[this.selectedExpProduct.kodeBarang] > totalQtyWaste) {
+      this.toastr.error("Total Qty Expired harus sama dengan atau kurang dari Qty Waste");
     } else {
       this.isShowModalExpired = false;
     }

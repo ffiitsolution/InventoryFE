@@ -83,7 +83,7 @@ export const menu_id: any = [
         },
       },
       {
-        name: 'Loket',
+        name: 'Counter',
         url: '/master/master-set-number',
         iconComponent: {
           name: 'cil-window',
@@ -151,7 +151,7 @@ export const menu_id: any = [
         url: '/transaction/pembelian/list-dt',
         iconComponent: {
           name: 'cil-cart',
-        }
+        },
       },
       {
         name: 'Pengiriman',
@@ -215,50 +215,19 @@ export const menu_id: any = [
       },
       {
         name: 'Kirim Barang Retur Ke Supplier',
-        url: '/transaction/Kirim-Barang-Retur-Ke-Supplier',
+        url: '/transaction/retur-ke-supplier/list-barang-retur',
         iconComponent: {
           name: 'cib-minutemailer',
         },
-        children: [
-          {
-            name: 'Tambah Data',
-            url: '/transaction/Kirim-Barang-Retur-Ke-Supplier/tambah-data-pengembalian-barang-ke-supplier',
-            iconComponent: {
-              name: 'cil-circle',
-            },
-          },
-          {
-            name: 'Display Data',
-            url: '/transaction/Kirim-Barang-Retur-Ke-Supplier/display-data-pengembalian-barang-ke-supplier',
-            iconComponent: {
-              name: 'cil-circle',
-            },
-          },
-        ],
       },
       {
         name: 'Kirim Barang Retur Ke Site',
-        url: '/transaction/Kirim-Barang-Retur-Ke-Site',
+        url: '/transaction/kirim-barang-return-ke-site/list-dt',
         iconComponent: {
           name: 'cil-factory',
         },
-        children: [
-          {
-            name: 'Tambah Data',
-            url: '/transaction/Kirim-Barang-Retur-Ke-Site/tambah-data-pengembalian-barang-ke-site',
-            iconComponent: {
-              name: 'cil-circle',
-            },
-          },
-          {
-            name: 'Display Data',
-            url: '/transaction/Kirim-Barang-Retur-Ke-Site/display-data-pengembalian-barang-ke-site',
-            iconComponent: {
-              name: 'cil-circle',
-            },
-          },
-        ],
       },
+      
       {
         name: 'Pemakaian Barang Sendiri',
         url: '/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri',

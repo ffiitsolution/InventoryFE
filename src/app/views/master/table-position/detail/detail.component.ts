@@ -37,6 +37,6 @@ export class TablePositionDetailComponent implements OnInit {
   }
 
   onEditPressed() {
-    this.router.navigate(['/master/table-position/edit']);
+    this.router.navigate(['/master/master-position/edit']);
   }
 }

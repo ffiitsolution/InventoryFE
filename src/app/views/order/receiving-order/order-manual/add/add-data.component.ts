@@ -374,14 +374,23 @@ export class AddDataOrderManualComponent implements OnInit {
           },
           {
             title: 'Action',
-            render: () => {
-              return `
-              <div class="btn-group" role="group" aria-label="Action">
-                <button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>
-              </div>
-            `;
-            },
-          },
+            render: (data, type, row) => {
+              if (row.statusAktif === 'T') {
+                return `
+                  <div class="btn-group" role="group" aria-label="Action">
+                    <button class="btn btn-sm action-select btn-outline-info btn-60" disabled>Pilih</button>
+                  </div>
+                `;
+              }
+              else
+                return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>
+                </div>
+              `;            
+            }
+          }
+          
         ],
         searchDelay: 1500,
         order: [

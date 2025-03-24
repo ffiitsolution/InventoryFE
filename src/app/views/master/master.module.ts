@@ -10,8 +10,8 @@ import { MasterUserComponent } from './master-user/master-user.component';
 import { MasterUserEditComponent } from './master-user/edit/edit.component';
 import { MasterUserDetailComponent } from './master-user/detail/detail.component';
 import {  MasterUserAddComponent } from './master-user/add/add.component';
-import { 
-  MasterBranchComponent, 
+import {
+  MasterBranchComponent,
   MasterBranchDetailComponent ,
   MasterBranchAddComponent,
   MasterBranchEditComponent
@@ -49,6 +49,7 @@ import {
   FormModule,
   GridModule,
   ModalModule,
+  PopoverModule,
   TableModule,
   TextColorDirective,
   UtilitiesModule,
@@ -126,7 +127,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     BsDatepickerModule.forRoot(),
     ModalModule,
     SelectDropDownModule,
-    TableModule
+    TableModule,
+    PopoverModule,
   ],
   declarations: [
     MasterUserComponent,
