@@ -54,3 +54,18 @@
 .h-65{
   height: 65%;
 }
+
+.today-highlight {
+  background-color: transparent !important; /* No background */
+  color: red !important; /* Red text */
+  font-weight: bold;
+  border: 2px solid red !important; /* Red border */
+  border-radius: 50% !important; /* Circle shape */
+  padding: 5px; /* Space inside the circle */
+  display: inline-block;
+  width: 32px; /* Adjust to fit your datepicker */
+  height: 32px; /* Adjust to fit your datepicker */
+  line-height: 32px; /* Center the number */
+  text-align: center;
+}
+

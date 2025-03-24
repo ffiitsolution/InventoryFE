@@ -63,11 +63,14 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
     this.dpConfig.minDate = new Date();
+    this.dpConfig.customTodayClass='today-highlight';
+
 
     this.dpConfigtrans.containerClass = 'theme-red';
     this.dpConfigtrans.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfigtrans.adaptivePosition = true;
     this.dpConfigtrans.maxDate = new Date();
+    this.dpConfigtrans.customTodayClass='today-highlight';
 
   
   }
@@ -82,6 +85,7 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
         rangeInputFormat: 'dd/MMm/yyyy',
       }
     );
+
 
     const todayDate = new Date();
     this.defaultDate = this.helperService.formatDate(todayDate);

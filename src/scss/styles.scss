@@ -85,8 +85,28 @@ $enable-rtl: true;
   color: red;
 }
 
+
+
 /* Importing Bootstrap SCSS file. */
 @import "./node_modules/bootstrap/scss/bootstrap";
 
 /* Importing Datepicker SCSS file. */
 @import "node_modules/ngx-bootstrap/datepicker/bs-datepicker";
+
+.today-highlight {
+  background-color: transparent !important; /* Ensure no unwanted background */
+  color: red !important; /* Change text color to red */
+  font-weight: bold;
+  border: 2px solid red !important; /* Create a red border */
+  border-radius: 50% !important; /* Makes it a circle */
+  
+  display: flex !important; /* Use flexbox for centering */
+  justify-content: center !important; /* Horizontally center */
+  align-items: center !important; /* Vertically center */
+  
+  width: 30px; /* Adjust width */
+  height: 30px; /* Adjust height */
+  line-height: 30px;
+  text-align: center;
+}
+
