@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { error } from 'jquery';
+import moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin, Observable } from 'rxjs';
 import { AppService } from 'src/app/service/app.service';
@@ -136,10 +137,10 @@ export class MasterSupplierDetailComponent implements OnInit {
           rscDesc: this.detail.keteranganRsc,
           status: this.detail.statusAktif,
           desc: this.detail.keterangan,
-          dateCreate: this.detail.dateCreate,
+          dateCreate: moment(this.detail.dateCreate).format('DD MMM YYYY'),
           userCreate: this.detail.userCreate,
           userUpdate: this.detail.userUpdate,
-          dateUpdate: this.detail.dateUpdate,
+          dateUpdate: moment(this.detail.dateUpdate).format('DD MMM YYYY'),
         });
       },
       error: (err) => {

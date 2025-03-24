@@ -77,6 +77,7 @@ export class MasterResepComponent
       serverSide: true,
       autoWidth: true,
       info: true,
+      order: [[8,'asc'],[1,'asc']],
       drawCallback: (drawCallback) => {
         this.selectedRowData = undefined;
       },
@@ -131,11 +132,6 @@ export class MasterResepComponent
         },
         { data: 'defaultGudang', title: 'Default Gudang', searchable: false },
         {
-          data: 'satuanKecil',
-          title: 'Satuan Kecil',
-          searchable: false,
-        },
-        {
           data: 'konversi',
           title: 'Konversi',
           searchable: false,
@@ -147,6 +143,11 @@ export class MasterResepComponent
           },
         },
         { data: 'satuanBesar', title: 'Satuan Besar', searchable: false },
+        {
+          data: 'satuanKecil',
+          title: 'Satuan Kecil',
+          searchable: false,
+        },      
         { data: 'jumlahBahanBaku', title: 'Bahan Baku', orderable: false, searchable: false },
         {
           data: 'statusAktif',
@@ -188,10 +189,7 @@ export class MasterResepComponent
         },
       ],
       searchDelay: 1500,
-      order: [
-        [7, 'asc'],
-        [1, 'asc'],
-      ],
+    
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-resep', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)

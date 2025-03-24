@@ -30,6 +30,7 @@ import { DatePipe } from '@angular/common';
 export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy {
   nomorPesanan: any;
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+  public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -62,6 +63,13 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
     this.dpConfig.minDate = new Date();
+
+    this.dpConfigtrans.containerClass = 'theme-red';
+    this.dpConfigtrans.dateInputFormat = 'DD/MM/YYYY';
+    this.dpConfigtrans.adaptivePosition = true;
+    this.dpConfigtrans.maxDate = new Date();
+
+  
   }
 
   myForm: FormGroup;
@@ -108,6 +116,14 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   onAddDetail() {
+    console.log("Before:", this.myForm.value.tglTransaksi); // Lihat apakah sudah 21 atau masih 20
+  console.log("Raw Moment:", moment(this.myForm.value.tglTransaksi)); 
+  console.log("Formatted:", moment(this.myForm.value.tglTransaksi, 'YYYY-MM-DD').format('DD/MM/YYYY'));
+    this.myForm.patchValue({
+      tglTransaksi: moment(this.myForm.value.tglTransaksi,'DD/MM/YYYY',true).format('DD/MM/YYYY'),
+      tglExp: moment(this.myForm.value.tglExp, 'DD/MM/YYYY',true).format('DD/MM/YYYY')
+  });
+  
     this.globalService.saveLocalstorage(
       'headerProduction',
       JSON.stringify(this.myForm.value)
@@ -198,7 +214,10 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
       columns: [
         { data: 'kodeBarang', title: 'Kode' },
         { data: 'namaBarang', title: 'Nama Barang' },
-        { data: 'konversi', title: 'Konversi' },
+        {
+          data: 'konversi', title: 'Konversi',
+          render: (data, type, row) => `${Number(data).toFixed(2)} ${row.satuanKecil}`
+        },
         { data: 'satuanKecil', title: 'Satuan Kecil' },
         { data: 'satuanBesar', title: 'Satuan Besar', },
         { data: 'defaultGudang', title: 'Default Gudang', },
@@ -285,6 +304,7 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     formatDate(date: string | Date): string {
+      console.log(date,'date')
       if (typeof date === 'string') {
         return date;
       }else{
