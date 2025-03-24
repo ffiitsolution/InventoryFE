@@ -67,7 +67,9 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
     this.dpConfigTglKirimBarang.containerClass = 'theme-red';
     this.dpConfig.containerClass = 'theme-red';
 
-
+    this.dpConfig.customTodayClass = 'today-highlight';
+    this.dpConfigTglBatalPesanan.customTodayClass = 'today-highlight';
+    this.dpConfigTglKirimBarang.customTodayClass = 'today-highlight';
 
   }
 

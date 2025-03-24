@@ -133,7 +133,11 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
       this.dpConfigTglBatalPesanan.dateInputFormat = 'DD/MM/YYYY';
       this.dpConfigTglBatalPesanan.adaptivePosition = true;
       this.dpConfigTglBatalPesanan.minDate = new Date(new Date().setHours(0, 0, 0, 0));
-      
+
+      this.dpConfig.customTodayClass = 'today-highlight';
+      this.dpConfigTglBatalPesanan.customTodayClass = 'today-highlight';
+      this.dpConfigTglKirimBarang.customTodayClass = 'today-highlight';
+
       this.g.removeLocalstorage('TEMP_ORDHDK');
     }
 

@@ -290,6 +290,7 @@ export class SendOrderToWarehouseComponent
 
     this.dpConfig.containerClass = 'theme-red';
 
+    this.dpConfig.customTodayClass = 'today-highlight';
   }
 
   actionBtnClick(action: string, data: any = null) {

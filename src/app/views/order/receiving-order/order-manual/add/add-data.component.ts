@@ -133,7 +133,15 @@ export class AddDataOrderManualComponent implements OnInit {
     this.dpConfigTglBatalPesanan.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfigTglBatalPesanan.adaptivePosition = true;
     this.dpConfigTglBatalPesanan.minDate = new Date(new Date().setHours(0, 0, 0, 0));
-    
+
+    this.dpConfigTglKirimBarang.customTodayClass='today-highlight';
+    this.dpConfigTglBatalPesanan.customTodayClass='today-highlight';
+    this.dpConfig.customTodayClass='today-highlight';
+
+    this.dpConfig.containerClass =  'theme-red';
+    this.dpConfigTglBatalPesanan.containerClass =  'theme-red';
+    this.dpConfigTglKirimBarang.containerClass =  'theme-red';
+
     this.g.removeLocalstorage('TEMP_ORDHDK');
 
     this.renderDataTables();
