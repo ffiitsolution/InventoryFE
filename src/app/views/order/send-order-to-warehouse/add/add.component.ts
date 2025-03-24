@@ -61,7 +61,11 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
     private g: GlobalService,
     private service: AppService,
     private dataService: DataService,
-  ) {}
+  ) {
+    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfigTglKirimBarang.containerClass = 'theme-red';
+    this.dpConfigTglBatalPesanan.containerClass = 'theme-red';
+  }
 
   ngOnInit(): void {
     this.currentUser = this.g.getLocalstorage('inv_currentUser');

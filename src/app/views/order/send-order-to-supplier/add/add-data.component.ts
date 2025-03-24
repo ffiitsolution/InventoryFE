@@ -61,7 +61,15 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
     private g: GlobalService,
     private service: AppService,
     private dataService: DataService,
-  ) {}
+  ) {
+
+    this.dpConfigTglBatalPesanan.containerClass = 'theme-red';
+    this.dpConfigTglKirimBarang.containerClass = 'theme-red';
+    this.dpConfig.containerClass = 'theme-red';
+
+
+
+  }
 
   ngOnInit(): void {
     this.currentUser = this.g.getLocalstorage('inv_currentUser');

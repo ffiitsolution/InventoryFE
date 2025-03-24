@@ -149,6 +149,7 @@ export class ReceivingOrderAddFormComponent
       },
     };
     this.dtColumns = this.dtOptions.columns;
+    this.dpConfig.containerClass = 'theme-red';
   }
 
   ngOnInit(): void {
