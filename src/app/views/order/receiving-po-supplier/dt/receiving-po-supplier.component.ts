@@ -110,9 +110,21 @@ export class ReceivingPoSupplierComponent
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'tglPesanan', title: 'Tanggal P.O' },
-        { data: 'tglKirimBrg', title: 'Tanggal Kirim' },
-        { data: 'tglBatalExp', title: 'Tanggal Batal' },
+        { data: 'tglPesanan', title: 'Tanggal P.O', 
+          render: (data, type, row) => {
+            return this.g.formatStrDateMMM(data);
+          }
+        },
+        { data: 'tglKirimBrg', title: 'Tanggal Kirim',
+          render: (data, type, row) => {
+            return this.g.formatStrDateMMM(data);
+          }
+        },
+        { data: 'tglBatalExp', title: 'Tanggal Batal',
+          render: (data, type, row) => {
+            return this.g.formatStrDateMMM(data);
+          }
+        },
         { data: 'nomorPesanan', title: 'Nomor P.O', searchable: true },
         {
           data: 'supplier',
