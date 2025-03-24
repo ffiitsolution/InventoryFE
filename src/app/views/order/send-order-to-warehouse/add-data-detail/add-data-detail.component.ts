@@ -584,6 +584,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
       this.listOrderData[index].qtyPesanKecil = parsed.toFixed(2); // will be a string like "4.00"
     } else {
       this.listOrderData[index].qtyPesanKecil = '0.00'; // fallback if input is not a number
+      this.validationMessageListSatuanKecil[index] = "";
     }
   }
 
@@ -594,6 +595,8 @@ export class AddDataDetailSendOrderToWarehouseComponent
       this.listOrderData[index].qtyPesanBesar = parsed.toFixed(2); // will be a string like "4.00"
     } else {
       this.listOrderData[index].qtyPesanBesar = '0.00'; // fallback if input is not a number
+      this.validationMessageListSatuanBesar[index] = "";
+
     }
   }
   
