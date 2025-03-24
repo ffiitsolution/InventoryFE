@@ -277,23 +277,25 @@ export class AddDataDetailSendOrderToWarehouseComponent
     let errorMessage
     this.isShowModal = false;
 
-    if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() === "") {
-      // If the name is empty or contains only whitespace, remove the last item
-      this.listOrderData.splice(this.listOrderData.length - 1, 1);
+    if(this.listOrderData.length !== 0){
+      if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() === "") {
+        // If the name is empty or contains only whitespace, remove the last item
+        this.listOrderData.splice(this.listOrderData.length - 1, 1);
+      }
     }
       
     for (let barang of this.barangTemp) {
 
       if(!this.listOrderData.some(order => order.kodeBarang === barang.kodeBarang)){
         this.listOrderData.push({
-          totalQtyPesan: 0,
-          qtyPesanBesar: 0,
+          totalQtyPesan:(0).toFixed(2),
+          qtyPesanBesar: (0).toFixed(2),
           namaBarang:  barang?.namaBarang,
           satuanKecil:barang?.satuanKecil,
           kodeBarang:barang?.kodeBarang,
           satuanBesar: barang?.satuanBesar,
           konversi: barang?.konversi,
-          qtyPesanKecil: 0,
+          qtyPesanKecil: (0).toFixed(2),
           ...barang
         });
         this.validationMessageListSatuanKecil.push("")
@@ -543,9 +545,9 @@ export class AddDataDetailSendOrderToWarehouseComponent
             this.listOrderData[index].isConfirmed = true;
             this.listOrderData[index].isLoading = false;
             
-            this.listOrderData[index].totalQtyPesan = 0;
-            this.listOrderData[index].qtyPesanKecil = 0;
-            this.listOrderData[index].qtyPesanBesar = 0;
+            this.listOrderData[index].totalQtyPesan = (0).toFixed(2);
+            this.listOrderData[index].qtyPesanKecil = (0).toFixed(2);
+            this.listOrderData[index].qtyPesanBesar = (0).toFixed(2);
 
             // Add new properties to the object
             this.listOrderData[index] = {
@@ -570,10 +572,30 @@ export class AddDataDetailSendOrderToWarehouseComponent
           }
         },
       });
-    }
+    }    
   }
 
 
+
+  onBlurQtyPesanKecil(index: number) {
+    const value = this.listOrderData[index].qtyPesanKecil;
+    let parsed = Number(value);
+    if (!isNaN(parsed)) {
+      this.listOrderData[index].qtyPesanKecil = parsed.toFixed(2); // will be a string like "4.00"
+    } else {
+      this.listOrderData[index].qtyPesanKecil = '0.00'; // fallback if input is not a number
+    }
+  }
+
+  onBlurQtyPesanBesar(index: number) {
+    const value = this.listOrderData[index].qtyPesanBesar;
+    let parsed = Number(value);
+    if (!isNaN(parsed)) {
+      this.listOrderData[index].qtyPesanBesar = parsed.toFixed(2); // will be a string like "4.00"
+    } else {
+      this.listOrderData[index].qtyPesanBesar = '0.00'; // fallback if input is not a number
+    }
+  }
   
 
 
