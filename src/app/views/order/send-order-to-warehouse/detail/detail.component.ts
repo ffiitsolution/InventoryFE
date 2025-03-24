@@ -117,7 +117,8 @@ export class DetailSendOrderToWarehouseComponent
         satuanBesar: item.SATUAN_BESAR,
         konversi: item.KONVERSI,
         qtyPesanKecil: item.QTY_PESAN_KECIL
-    }));
+      }));
+      this.totalLength = this.listOrderData.length;
     });
 
 
@@ -407,5 +408,8 @@ export class DetailSendOrderToWarehouseComponent
   onPreviousPressed(): void {
     this.router.navigate(['order/send-order-to-warehouse']);
   }
+    formatStrDateMMM(date: any) {
+      return moment(date, "YYYY-MM-DD").format("DD MMM YYYY");
+    }
 
 }

@@ -84,6 +84,9 @@ $enable-rtl: true;
 .text-red{
   color: red;
 }
+.form-invalid {
+  border: 1px solid red;  /* Merahkan border input */
+}
 
 
 
