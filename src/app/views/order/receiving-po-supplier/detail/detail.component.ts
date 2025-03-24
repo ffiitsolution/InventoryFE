@@ -401,7 +401,4 @@ export class ReceivingPoSupplierDetailComponent
     this.toastr.success('File sudah terunduh.', 'Selamat');
   }
 
-  formatStrDate(date: any) {
-    return moment(date, "YYYY-MM-DD").format("DD MMM YYYY");
-  }
 }

@@ -9,6 +9,7 @@ import Swal, { SweetAlertOptions } from 'sweetalert2';
 import { DatePipe } from '@angular/common';
 import { isNull } from 'lodash-es';
 import { PRINT_STATUS, STATUS_RESULT } from '../../constants';
+import moment from 'moment';
 
 @Injectable({
   providedIn: 'root',
@@ -387,5 +388,9 @@ export class GlobalService {
     });
   
     return newObj;
+  }
+
+  formatStrDateMMM(date: any) {
+    return moment(date, "YYYY-MM-DD").format("DD MMM yyyy");
   }
 }
