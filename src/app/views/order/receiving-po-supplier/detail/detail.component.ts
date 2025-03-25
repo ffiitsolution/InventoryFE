@@ -325,45 +325,50 @@ export class ReceivingPoSupplierDetailComponent
       staffName: JSON.parse(localStorage.getItem('inv_currentUser') || '{}').namaUser || 'Guest',
       nomorPesanan: this.selectedOrder.nomorPesanan,
       tglBrgDikirim: this.selectedOrder.tglKirimBrg,
-      tglPesan: this.selectedOrder.tglPesanan
-    }
-
+      tglPesan: this.selectedOrder.tglPesanan,
+      user: this.g.getUserCode(),
+    };
+  
+    // Step 1: Call Jasper report API
     this.appService.reporReceivingPoSupplierJasper(params, "").subscribe((res) => {
-      var blob = new Blob([res], { type: 'application/pdf' });
+      const blob = new Blob([res], { type: 'application/pdf' });
       this.downloadURL = window.URL.createObjectURL(blob);
       this.downloadPDF();
+  
+      // Step 2: Once report is ready, update status
+      const param = {
+        statusKirim: "S",
+        userKirim: params.staffName,
+        dateKirim: moment().format("DD-MM-YYYY"),
+        timeKirim: moment().format("HHmmss"),
+        nomorPesanan: params.nomorPesanan
+      };
+  
+      this.dataService
+        .postData(this.g.urlServer + '/api/send-order-to-supplier/update-status-cetak', param)
+        .subscribe({
+          next: (res: any) => {
+            if (!res.success) {
+              alert(res.message);
+            } else {
+              console.log("finish statuscetak");
+              this.toastr.success(this.translation.instant('Berhasil!'));
+              this.refreshDetail();
+  
+              // ✅ Step 3: Reload the page AFTER all is successful
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000); // give a slight delay if needed
+            }
+          },
+          error: (err: any) => {
+            console.error('Error updating user:', err);
+            alert('An error occurred while updating the user.');
+          },
+        });
     });
-
-    const param = {
-      statusKirim : "S",
-      userKirim : params.staffName,
-      dateKirim :  moment().format("DD-MM-YYYY"),
-      timeKirim :  moment().format("HHmmss"),
-      nomorPesanan : params.nomorPesanan
-    }
-
-    this.dataService
-    .postData(this.g.urlServer + '/api/send-order-to-supplier/update-status-cetak',param)
-    .subscribe({
-      next: (res: any) => {
-        if (!res.success) {
-          alert(res.message);
-        } else {
-          console.log("finish statuscetak");
-          console.log("finish statuscetak");
-          this.toastr.success(this.translation.instant('Berhasil!'));
-          this.refreshDetail();
-    
-        }
-      },
-      error: (err: any) => {
-        console.error('Error updating user:', err);
-        alert('An error occurred while updating the user.');
-      },    
-    });
-
-
   }
+  
 
   refreshDetail(){
     this.dataService
