@@ -48,6 +48,7 @@ export class RevisiDoEditComponent
   listCurrentPage: number = 1;
   totalLengthList: number = 1;
   protected config = AppConfig.settings.apiServer;
+  validationMessages: { [key: number]: string } = {};
 
   constructor(
     public g: GlobalService,
@@ -105,15 +106,36 @@ export class RevisiDoEditComponent
     );
   }
 
-  onInputValueItemDetail(event: any, index: number) {
+  onInputValueItemDetail(event: any, index: number, type: string, qtyType: string) {
     const target = event.target;
-    const value = target.value;
 
-    if (target.type === 'number') {
-      this.listOrderData[index][target.name] = Number(value);
+    const value = target.value;
+    let validationMessage = '';
+
+    if (type === 'numeric') {
+      const numericValue = parseFloat(value) || 0;
+
+      if (this.listOrderData[index]) {
+        this.listOrderData[index][target.name] = numericValue;
+        let newTempTotal = 0;
+        if (qtyType === 'besar') {
+          newTempTotal = numericValue * (this.listOrderData[index].konversi || 1) +
+            (this.listOrderData[index].qtyPesanKecil || 0);
+        } else if (qtyType === 'kecil') {
+          newTempTotal = this.listOrderData[index].qtyPesanBesar * (this.listOrderData[index].konversi || 1) + numericValue;
+        }
+        if (newTempTotal > (this.listOrderData[index].totalQtyPesanOld || 0)) {
+          validationMessage = `qty kirim harus < dari qty pesan`;
+        }
+      }
     } else {
-      this.listOrderData[index][target.name] = value;
+      if (this.listOrderData[index]) {
+        this.listOrderData[index][target.name] = value;
+      }
     }
+
+    // Simpan pesan validasi berdasarkan index
+    this.validationMessages[index] = validationMessage;
   }
   onFilterSearch(
     listData: any[],

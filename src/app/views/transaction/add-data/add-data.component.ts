@@ -87,11 +87,11 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   actionBtnClick(action: string, data: any = null) {
-    // this.selectedRo = JSON.stringify(data);
-    // this.renderDataTables();
-    // this.isShowModal = false;
-    // this.mapOrderData(data);
-    // this.onSaveData();
+    this.selectedRo = JSON.stringify(data);
+    this.renderDataTables();
+    this.isShowModal = false;
+    this.mapOrderData(data);
+    this.onSaveData();
     this.isShowModal = false;
 
   }
@@ -175,9 +175,9 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       columns: [
         { data: 'nomorPesanan', title: 'Nomor Pesanan' },
-        { data: 'tglPesan', title: 'Tanggal Pesan' },
-        { data: 'tglBrgDikirim', title: 'Tanggal Dikirim', },
-        { data: 'tglKadaluarsa', title: 'Tanggal Expired', },
+        { data: 'tglPesan', title: 'Tanggal Pesan', render: (data) => this.globalService.transformDate(data) },
+        { data: 'tglBrgDikirim', title: 'Tanggal Dikirim', render: (data) => this.globalService.transformDate(data)},
+        { data: 'tglKadaluarsa', title: 'Tanggal Expired', render: (data) => this.globalService.transformDate(data)},
         { data: 'kodePemesan', title: 'Pemesan' },
         { data: 'namaCabang', title: 'Nama Pemesan' },
         {
