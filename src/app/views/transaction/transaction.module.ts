@@ -66,6 +66,13 @@ import { AddDataDetailKirimBarangReturnKeSiteComponent } from './kirim-barang-re
 import { DetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/detail/detail.component';
 
 
+//// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 START
+import { TerimaBarangReturDariSiteListComponent } from './terima-barang-retur-dari-site/dt-list/terima-barang-retur-dari-site-list.component';
+import { AddTerimaBarangReturDariSiteComponent } from './terima-barang-retur-dari-site/add-data/add-data.component';
+import { AddDataDetailTerimaBarangReturDariSiteComponent } from './terima-barang-retur-dari-site/add-data-detail/add-data-detail.component';
+import { DetailTerimaBarangReturDariSiteComponent } from './terima-barang-retur-dari-site/detail/detail.component';
+//// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
+
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
@@ -133,6 +140,13 @@ export function HttpLoaderFactory(http: HttpClient) {
     AddKirimBarangReturnKeSiteComponent,
     AddDataDetailKirimBarangReturnKeSiteComponent,
     DetailKirimBarangReturnKeSiteComponent,    
+    //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 START
+    TerimaBarangReturDariSiteListComponent,
+    AddTerimaBarangReturDariSiteComponent,
+    AddDataDetailTerimaBarangReturDariSiteComponent,
+    DetailTerimaBarangReturDariSiteComponent,
+    //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
+    
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

@@ -67,6 +67,7 @@ export class AddDataDetailProductionComponent
   @Output() onBatalPressed = new EventEmitter<string>();
   @Output() jumlahBahanbaku  = new EventEmitter<number>();
   private ngUnsubscribe: Subject<void> = new Subject<void>();
+  validationExpiredMessageList: any[] = [];
   @ViewChild('formModal') formModal: any;
   public dpConfig: Partial<BsDatepickerConfig> = {
     dateInputFormat: 'DD/MM/YYYY',
@@ -142,6 +143,19 @@ export class AddDataDetailProductionComponent
     if (!this.isDataInvalid()) {
       this.loadingSimpan= true;
       // param for order Header
+
+      const extraItem = {
+        kodeGudang:this.g.getUserLocationCode(),
+        tglTransaksi: moment(this.headerProduction.tglTransaksi, "DD-MM-YYYY").format("D MMM YYYY"),
+        tipeTransaksi: 12,
+        kodeBarang:  this.headerProduction.kodeBarang,
+        tglExpired: moment(this.headerProduction.tglExp, "DD-MM-YYYY").format("D MMM YYYY"),
+        konversi: this.headerProduction.satuanHasilProduksi,
+        qtyBesar: this.headerProduction.jumlahHasilProduksi,
+        qtyKecil: "0.00",
+        totalQty:this.headerProduction.totalHasilProduksi
+    };
+
       const param = {
         kodeGudang: this.g.getUserLocationCode(),
         tglTransaksi: moment(this.headerProduction.tglTransaksi, "DD-MM-YYYY").format("D MMM YYYY"),
@@ -171,18 +185,24 @@ export class AddDataDetailProductionComponent
             hargaSatuan: 0,
             userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
           })),
-        detailsExpired: this.listEntryExpired?.map(expiredItem => ({
+        detailsExpired:[
+          ...this.listEntryExpired?.map(expiredItem => ({
           kodeGudang: this.g.getUserLocationCode(),
           tglTransaksi: moment(this.headerProduction.tglTransaksi, "DD-MM-YYYY").format("D MMM YYYY"),
           tipeTransaksi: 12,
           kodeBarang: expiredItem.kodeBarang,
           tglExpired: moment(expiredItem.tglExpired, "DD-MM-YYYY").format("D MMM YYYY"),
-          konversi: expiredItem.konversi,
-          qtyBesar: -Math.abs(parseInt(expiredItem.qtyPemakaianBesar)) || 0,
-          qtyKecil: -Math.abs(parseInt(expiredItem.qtyPemakaianKecil)) || 0,
-          totalQty: expiredItem.totalQty ? -Math.abs(expiredItem.totalQty) : 0
-        })) || []
-      };
+          konversi: Math.abs(expiredItem.konversi).toFixed(2),
+          qtyBesar: -Math.abs(parseFloat(expiredItem.qtyPemakaianBesar)).toFixed(2) || 0,
+          qtyKecil: -Math.abs(parseFloat(expiredItem.qtyPemakaianKecil)).toFixed(2) || 0,
+          totalQty: -parseFloat(
+            (
+                (Number(expiredItem.qtyPemakaianBesar) * Number(expiredItem.konversi)) + 
+                Number(expiredItem.qtyPemakaianKecil)
+            ).toFixed(2)
+        ).toFixed(2)
+        })),extraItem]
+      }
 
       Swal.fire({
             title: 'Pastikan semua data sudah di input dengan benar!',
@@ -223,10 +243,6 @@ export class AddDataDetailProductionComponent
 
     }
 
-    else {
-      this.toastr.error("Data Qty Pemakaian harus sama dengan Qty Expired");
-    }
-
   }
 
   onShowModal() {
@@ -240,21 +256,37 @@ export class AddDataDetailProductionComponent
 
   onShowModalExpired(event: any, index: number) {
     this.selectedExpProduct = this.listProductData[index];
-    let totalQtySum = (this.helper.sanitizedNumber(this.selectedExpProduct.qtyPemakaianBesar) *
-      this.selectedExpProduct.konversi) + this.helper.sanitizedNumber(this.selectedExpProduct.qtyPemakaianKecil);
+    this.selectedExpProduct.totalQtyProduksi=
+    parseFloat(
+        (
+            (Number(this.selectedExpProduct.qtyPemakaianBesar) * Number(this.selectedExpProduct.konversi)) + 
+            Number(this.selectedExpProduct.qtyPemakaianKecil)
+        ).toFixed(2)
+    ).toFixed(2);
+    this.selectedExpProduct.konversi = parseFloat(this.selectedExpProduct.konversi).toFixed(2);
+    this.selectedExpProduct.qtyPemakaianBesar = parseFloat(this.selectedExpProduct.qtyPemakaianBesar).toFixed(2);
+
+    let totalQtySum =  parseFloat(
+          (
+              (Number(this.selectedExpProduct.qtyPemakaianBesar) * Number(this.selectedExpProduct.konversi)) + 
+              Number(this.selectedExpProduct.qtyPemakaianKecil)
+          ).toFixed(2)
+      ).toFixed(2);
 
     if (!this.listEntryExpired.some(item => item.kodeBarang === this.selectedExpProduct.bahanBaku)) {
       this.listEntryExpired.push({
-        tglExpired: new Date(),
-        keteranganTanggal: moment(new Date()).locale('id').format('D MMMM YYYY'),
-        qtyPemakaianBesar: this.selectedExpProduct.qtyPemakaianBesar,
-        qtyPemakaianKecil: this.selectedExpProduct.qtyPemakaianKecil,
+        tglExpired: moment().add(1, 'days').toDate(),
+        keteranganTanggal: moment().add(1, 'days').locale('id').format('D MMMM YYYY'),
+        qtyPemakaianBesar: parseFloat(this.selectedExpProduct.qtyPemakaianBesar).toFixed(2),
+        qtyPemakaianKecil: parseFloat(this.selectedExpProduct.qtyPemakaianKecil).toFixed(2),
         satuanKecil: this.selectedExpProduct.satuanKecil,
         satuanBesar: this.selectedExpProduct.satuanBesar,
-        konversi: this.selectedExpProduct.konversi,
-        totalQty: totalQtySum,
-        kodeBarang: this.selectedExpProduct.bahanBaku
-      })
+        konversi: parseFloat(this.selectedExpProduct.konversi).toFixed(2),
+        totalQty: parseFloat(totalQtySum).toFixed(2),
+        kodeBarang: this.selectedExpProduct.bahanBaku,
+        validationExpiredMessageList:'',
+        validationQty:'',
+      });
     }
 
     this.isShowModalExpired = true;
@@ -264,13 +296,17 @@ export class AddDataDetailProductionComponent
     this.listEntryExpired.push({
       tglExpired: '',
       keteranganTanggal: '',
-      qtyPemakaianBesar: 0,
-      qtyPemakaianKecil: 0,
+      qtyPemakaianBesar: '0.0',
+      qtyPemakaianKecil: '0.0',
       satuanKecil: this.selectedExpProduct.satuanKecil,
       satuanBesar: this.selectedExpProduct.satuanBesar,
-      konversi: this.selectedExpProduct.konversi,
-      totalQty: '',
-      kodeBarang: this.selectedExpProduct.bahanBaku
+      konversi: parseFloat(this.selectedExpProduct.konversi).toFixed(2),
+      totalQty: '0.0',
+      kodeBarang: this.selectedExpProduct.bahanBaku,
+      validationExpiredMessageList:'Tanggal tidak boleh kosong!',
+      validationQty:'',
+
+
     })
   }
 
@@ -324,7 +360,21 @@ export class AddDataDetailProductionComponent
       item.isConfirmed === true
      )
 
-    if (invalidItems.length > 0) dataInvalid = true;
+     console.log(this.listEntryExpired,'expired')
+     const invalidExpired = this.listEntryExpired.filter(
+      item => item.validationExpiredMessageList !== ''
+     )
+     
+    
+    if (invalidItems.length > 0){
+      dataInvalid = true;
+      this.toastr.error("Data Qty Pemakaian harus sama dengan Qty Expired");
+    }
+
+    if(invalidExpired.length > 0){
+      dataInvalid = true;
+      this.toastr.error(`Data tgl expired tidak sesuai di kode barang ${invalidExpired[0].kodeBarang} !`);
+    }
      
     return dataInvalid
   }
@@ -344,11 +394,11 @@ export class AddDataDetailProductionComponent
               jumlahHasilProduksi: this.headerProduction.jumlahHasilProduksi,
               bahanBaku: item.bahanBaku,
               namaBarang: item.namaBarang,
-              konversi: item.konversi,
-              qtyPemakaian: item.qtyPemakaian,
+              konversi: parseFloat(item.konversi).toFixed(2),
+              qtyPemakaian: parseFloat(item.qtyPemakaian).toFixed(2),
               satuanKecil: item.satuanKecil,
               satuanBesar: item.satuanBesar,
-              qtyPemakaianBesar: Math.floor((item.qtyPemakaian*this.headerProduction.jumlahHasilProduksi) / item.konversi).toFixed(0),
+              qtyPemakaianBesar: Math.floor((item.qtyPemakaian*this.headerProduction.jumlahHasilProduksi) / item.konversi).toFixed(2),
               qtyPemakaianKecil: (( item.qtyPemakaian*this.headerProduction.jumlahHasilProduksi)-(Math.floor((item.qtyPemakaian*this.headerProduction.jumlahHasilProduksi) / item.konversi)*item.konversi)).toFixed(2),
               totalQtyPemakaian: (item.qtyPemakaian*this.headerProduction.jumlahHasilProduksi).toFixed(2),
               isConfirmed: item.flagExpired == 'Y' ? true : false
@@ -386,11 +436,146 @@ export class AddDataDetailProductionComponent
     return (totalExpired.qtyPemakaianBesar + totalExpired.qtyPemakaianKecil).toFixed(2);
   }
 
-  onModalDeleteRow(index: number) {
-    // Remove item at the specified index
-    this.listEntryExpired.splice(index, 1);
+  onModalDeleteRow(kodeBarang: string,index: number) {
+    const filteredEntries = this.listEntryExpired.filter(entry => entry.kodeBarang === kodeBarang);
+
+    // Step 2: Find the actual index in the original list
+    const realIndex = this.listEntryExpired.findIndex(entry =>
+        entry.kodeBarang === kodeBarang && entry.tglExpired === filteredEntries[index].tglExpired
+    );
+    
+    // Step 3: Remove the entry only if realIndex is valid
+    if (realIndex !== -1) {
+        this.listEntryExpired.splice(realIndex, 1);
+    }
+   
   }
   
+
+  validateDate(event: any, kodeBarang: string, index: number) {
+    const inputDate = event.target.value; // Get the input date value
+    let validationMessage = '';
+
+    console.log("Input Date:", inputDate);
+    console.log("Kode Barang:", kodeBarang);
+  
+    const expiredDate = moment(inputDate, "DD/MM/YYYY").toDate();
+    const today = new Date();
+
+    if (expiredDate < today) {
+        validationMessage = `Tanggal kadaluarsa tidak boleh lebih <= dari sekarang!`;
+    }
+  
+    // ✅ Get only the filtered list of entries for the same `kodeBarang`
+    const filteredEntries = this.listEntryExpired.filter(entry => entry.kodeBarang === kodeBarang);
+    console.log('tgllist',filteredEntries)
+    // ✅ Validate empty input
+    if (!inputDate) {
+        validationMessage = "Tanggal tidak boleh kosong!";
+    } else {
+        // ✅ Check if the item is expired
+        const expiredData = this.listEntryExpired.find(exp => exp.kodeBarang === kodeBarang);
+        
+
+        // ✅ Check for duplicate expiration dates within the same kodeBarang
+        const isDuplicate = filteredEntries.some((otherEntry, otherIndex) => 
+            otherIndex !== index && 
+            moment(otherEntry.tglExpired).format('YYYY-MM-DD') === moment(expiredDate).format('YYYY-MM-DD')
+        );
+
+        if (isDuplicate) {
+            validationMessage = "Tanggal ini sudah ada dalam daftar!";
+        }
+    }
+
+    const realIndex = this.listEntryExpired.findIndex(entry =>
+      entry.kodeBarang === kodeBarang && entry.tglExpired === filteredEntries[index].tglExpired
+    );
+
+    if (realIndex !== -1) {
+        // ✅ Update the correct entry in the original list
+        this.listEntryExpired[realIndex] = {
+            ...this.listEntryExpired[realIndex],
+            tglExpired: expiredDate,  // Update the date in the list
+            validationExpiredMessageList: validationMessage
+        };
+
+        console.log("Updated Validation:", this.listEntryExpired[realIndex]);
+    }
+  }
+
+  onInputQtyBesarExpired(event: any, kodeBarang: string, index: number) {
+    let value = event.target.value;
+
+    if (value !== null && value !== undefined) {
+        let numericValue = parseFloat(value.toString().replace(',', '.'));
+        if (isNaN(numericValue)) {
+            numericValue = 0;
+        }
+        value = numericValue.toFixed(2);
+    } else {
+        value = "0.00"; // Default if empty
+    }
+
+    // ✅ Find all entries with the same kodeBarang
+    const filteredEntries = this.listEntryExpired.filter(entry => entry.kodeBarang === kodeBarang);
+
+    if (filteredEntries.length > index) {
+        // ✅ Get the real index in listEntryExpired
+        const realIndex = this.listEntryExpired.indexOf(filteredEntries[index]);
+
+        if (realIndex !== -1) {
+            this.listEntryExpired[realIndex] = {
+                ...this.listEntryExpired[realIndex],
+                qtyPemakaianBesar: value,
+                validationQty: parseFloat(value)+parseFloat(this.listEntryExpired[realIndex].qtyPemakaianKecil) <= 0 ? "Quantity tidak boleh < 0" : ""
+            };
+        }
+    }
+}
+
+onInputQtyKecilExpired(event: any, kodeBarang: string, index: number) {
+  let value = event.target.value;
+
+  if (value !== null && value !== undefined) {
+      let numericValue = parseFloat(value.toString().replace(',', '.'));
+      if (isNaN(numericValue)) {
+          numericValue = 0;
+      }
+      value = numericValue.toFixed(2);
+  } else {
+      value = "0.00"; // Default if empty
+  }
+
+  // ✅ Find all entries with the same kodeBarang
+  const filteredEntries = this.listEntryExpired.filter(entry => entry.kodeBarang === kodeBarang);
+
+  if (filteredEntries.length > index) {
+      // ✅ Get the real index in listEntryExpired
+      const realIndex = this.listEntryExpired.indexOf(filteredEntries[index]);
+
+      if (realIndex !== -1) {
+          let messageValidation="";
+
+          console.log(parseFloat(value).toFixed(2),parseFloat(this.listEntryExpired[realIndex].konversi).toFixed(2))
+          if(parseFloat(value)+parseFloat(this.listEntryExpired[realIndex].qtyPemakaianBesar) <= 0){
+            messageValidation="Quantity tidak boleh < 0"
+          }else if( Math.round(value) >= Math.round(this.listEntryExpired[realIndex].konversi)
+          ){
+              console.log("masuk ya")
+              messageValidation="Quantity kecil tidak boleh >= konversi";
+              value="0.0";
+          }
+
+          this.listEntryExpired[realIndex] = {
+              ...this.listEntryExpired[realIndex],
+              qtyPemakaianKecil: value,
+              validationQtyKecil: messageValidation
+          };
+      }
+  }
+}
+
 
 
 

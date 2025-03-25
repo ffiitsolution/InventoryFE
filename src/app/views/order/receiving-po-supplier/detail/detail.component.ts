@@ -400,4 +400,5 @@ export class ReceivingPoSupplierDetailComponent
     link.click();
     this.toastr.success('File sudah terunduh.', 'Selamat');
   }
+
 }

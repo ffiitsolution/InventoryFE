@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import moment from 'moment';
 import { GlobalService } from 'src/app/service/global.service';
 import { LS_INV_SELECTED_LOCATION } from 'src/constants';
 
@@ -28,10 +29,20 @@ export class MasterLocationDetailComponent implements OnInit {
       location: [this.detail.lokasiGudang],
       codeRsc: [this.detail.defaultRsc],
       descRsc: [this.detail.keteranganRsc],
-      dateCreate: [{ value: this.detail.dateCreate, disabled: true }],
+      dateCreate: [
+        {
+          value: moment(this.detail.dateCreate).format('DD MMM yyyy'),
+          disabled: true,
+        },
+      ],
       userCreate: [{ value: this.detail.userCreate, disabled: true }],
       userUpdate: [{ value: this.detail.userUpdate, disabled: true }],
-      dateUpdate: [{ value: this.detail.dateUpdate, disabled: true }],
+      dateUpdate: [
+        {
+          value: moment(this.detail.dateUpdate).format('DD MMM yyyy'),
+          disabled: true,
+        },
+      ],
     });
     this.myForm.disable();
   }

@@ -1,30 +1,50 @@
 <div class="fade-in">
   <c-card class="mb-2">
-    <c-card-body>
+    <c-card-body class="p-2">
       <div class="row">
-        <div class="col">
-          <h5>{{ "Master" | translate }} {{ "User" | translate }}</h5>
+        <div class="d-flex col-md-4 align-items-center">
+          <h3 style="padding-left: 10px">
+            {{ "Master" | translate }} {{ "User" | translate }}
+          </h3>
         </div>
-        <div class="col text-end">
-          <button
-            type="button"
-            class="btn btn-secondary text-white me-2"
-            (click)="toggleFilter()"
+        <div class="col col-md-8 justify-content-right text-end">
+          <div
+            class="menu-purpose col-sm-12 justify-content-end align-items-center"
           >
-            {{ "Filter" | translate }}
-          </button>
-          <button
-            *ngIf="this.roleId === '3' || this.roleId === '2'"
-            type="button"
-            class="btn btn-success text-white me-2"
-            (click)="actionBtnClick('add')"
-          >
-            {{ "Tambah" | translate }}
-          </button>
+            <span
+              >Master User digunakan untuk melihat daftar akun pengguna sistem,
+              termasuk detail peran, status, dan lokasi gudang yang dapat
+              diakses.</span
+            >
+          </div>
         </div>
       </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-2">
+    <c-card-body>
+      <div class="d-flex justify-content-end gap-1" style="margin-bottom: 10px">
+        <button
+          type="button"
+          class="btn btn-secondary text-white me-2"
+          style="height: min-content"
+          (click)="toggleFilter()"
+        >
+          {{ "Filter" | translate }}
+        </button>
+        <button
+          *ngIf="this.roleId === '3' || this.roleId === '2'"
+          type="button"
+          class="btn btn-success text-white me-2"
+          (click)="actionBtnClick('add')"
+        >
+          {{ "Tambah" | translate }}
+        </button>
+      </div>
       <div [visible]="isFilterShown" cCollapse>
-        <c-card class="mt-3 shadow">
+        <c-card class="mb-3">
           <c-card-body>
             <div class="row">
               <div class="col-md-3">
@@ -86,51 +106,24 @@
               </div>
 
               <!-- <div class="col-md-4">
-                <label cLabel for="selectedRoleFilter">{{ 'Role' | translate }}:</label>
-                <select
-                  aria-label="Role"
-                  cSelect
-                  id="selectedRoleFilter"
-                  [(ngModel)]="selectedRoleFilter"
-                  (ngModelChange)="onRoleFilterChange()"
-                >
-                  <option value="">{{ 'Semua' | translate }}</option>
-                  <option *ngFor="let role of roleOptions" [value]="role.value">
-                    {{ role.label | translate }}
-                  </option>
-                </select>
-              </div> -->
+                          <label cLabel for="selectedRoleFilter">{{ 'Role' | translate }}:</label>
+                          <select
+                            aria-label="Role"
+                            cSelect
+                            id="selectedRoleFilter"
+                            [(ngModel)]="selectedRoleFilter"
+                            (ngModelChange)="onRoleFilterChange()"
+                          >
+                            <option value="">{{ 'Semua' | translate }}</option>
+                            <option *ngFor="let role of roleOptions" [value]="role.value">
+                              {{ role.label | translate }}
+                            </option>
+                          </select>
+                        </div> -->
             </div>
           </c-card-body>
         </c-card>
       </div>
-    </c-card-body>
-  </c-card>
-</div>
-<div class="fade-in">
-  <c-card class="mb-2">
-    <c-card-body>
-      <div class="row">
-        <div class="col-sm-12">
-          <i
-            class="fa fa-exclamation-circle text-center"
-            style="font-size: large; color: #3c4b64"
-          ></i>
-          &nbsp;
-          <span class="fw-bold"
-            >Master User digunakan untuk melihat daftar akun pengguna sistem,
-            termasuk detail peran, status, dan lokasi gudang yang dapat
-            diakses.</span
-          >
-        </div>
-      </div>
-    </c-card-body>
-  </c-card>
-</div>
-
-<div class="fade-in">
-  <c-card class="mb-2">
-    <c-card-body>
       <div class="table-responsive">
         <table
           datatable

@@ -9,6 +9,7 @@ import Swal, { SweetAlertOptions } from 'sweetalert2';
 import { DatePipe } from '@angular/common';
 import { isNull } from 'lodash-es';
 import { PRINT_STATUS, STATUS_RESULT } from '../../constants';
+import moment from 'moment';
 
 @Injectable({
   providedIn: 'root',
@@ -308,15 +309,17 @@ export class GlobalService {
         ? /^[a-zA-Z0-9]$/
         : type == 'numeric'
           ? /^[0-9]$/
-          : type == 'phone'
-            ? /^[0-9-]$/
-            : type == 'email'
-              ? /^[a-zA-Z0-9@._-]$/
-              : type == 'excludedSensitive'
-                ? /^[a-zA-Z0-9 .,_@-]*$/
-                : type == 'kodeSingkat'
-                  ? /^[a-zA-Z]+$/
-                  : /^[a-zA-Z.() ,\-]*$/;
+          : type=='numericDot'
+            ? /^[0-9.]$/
+            : type == 'phone'
+              ? /^[0-9-]$/
+              : type == 'email'
+                ? /^[a-zA-Z0-9@._-]$/
+                : type == 'excludedSensitive'
+                  ? /^[a-zA-Z0-9 .,_@-]*$/
+                  : type == 'kodeSingkat'
+                    ? /^[a-zA-Z]+$/
+                    : /^[a-zA-Z.() ,\-]*$/;
 
     if (temp_regex.test(inp)) return true;
     else {
@@ -385,5 +388,9 @@ export class GlobalService {
     });
   
     return newObj;
+  }
+
+  formatStrDateMMM(date: any) {
+    return moment(date, "YYYY-MM-DD").format("DD MMM yyyy");
   }
 }

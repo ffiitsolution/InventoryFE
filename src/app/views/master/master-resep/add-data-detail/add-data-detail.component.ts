@@ -263,7 +263,7 @@ export class AddDataDetailResepComponent
           this.listResepData = res.data.map((item: any) => ({
             kodeBarang: item.bahanBaku,
             namaBarang: item.namaBarang,
-            konversi: item.konversi,
+            konversi: parseFloat(item.konversi).toFixed(2),
             qtyPemakaian: parseFloat(item.qtyPemakaian).toFixed(2) ,
             satuanKecil: item.satuanKecil,
             satuanBesar: item.satuanBesar,
@@ -347,9 +347,15 @@ export class AddDataDetailResepComponent
         columns: [
           { data: 'kodeBarang', title: 'Kode' },
           { data: 'namaBarang', title: 'Nama Barang' },
-          { data: 'konversi', title: 'Konversi' },
-          { data: 'satuanKecil', title: 'Satuan Kecil' },
+          { 
+            data: 'konversi', 
+            title: 'Konversi', 
+            render: function(data, type, row) {
+              return Number(data).toFixed(2); // Ensures two decimal places
+            }
+          },
           { data: 'satuanBesar', title: 'Satuan Besar', },
+          { data: 'satuanKecil', title: 'Satuan Kecil' },
           { data: 'defaultGudang', title: 'Default Gudang', },
           { data: 'status', title: 'Status', },
           {
@@ -403,7 +409,7 @@ export class AddDataDetailResepComponent
         const resepData = { 
           kodeBarang: data.kodeBarang,
           namaBarang: data.namaBarang, 
-          konversi: data.konversi, 
+          konversi: parseFloat(data.konversi).toFixed(2), 
           satuanKecil: data.satuanKecil,
           satuanBesar: data.satuanBesar, 
           qtyPemakaian: '1.00'
@@ -442,7 +448,7 @@ export class AddDataDetailResepComponent
         }
 
         if(value <= 0){
-          this.validationMessageList[index] = "Quantity tidak boleh < 0"
+          this.validationMessageList[index] = "Quantity tidak boleh <= 0"
         }else{
           this.validationMessageList[index] ="";
         }
@@ -477,7 +483,8 @@ export class AddDataDetailResepComponent
                 } else {
                   setTimeout(() => {
                     this.toastr.success("Data resep berhasil dihapus!");
-                    this.onPreviousPressed();
+                    // this.onPreviousPressed();
+                    this.loadResep()
                   }, DEFAULT_DELAY_TIME);
       
                 }
@@ -491,6 +498,8 @@ export class AddDataDetailResepComponent
       }else{
         this.listResepData.splice(index, 1);
       }
+
+      this.validationMessageList.splice(index,1)
      
     }
 

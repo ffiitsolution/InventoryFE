@@ -11,7 +11,7 @@
         </button>
       
         <button class="btn btn-secondary text-white btn-150" (click)="onBackPressed()">
-          <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
+          <i class="fa fa-times pe-1"></i> {{ "Batal Produksi" | translate }}
         </button>
       </div>
     </c-card-header>
@@ -95,9 +95,7 @@
                 </td>
                 <td class="text-center">
                   {{
-                    (helper.sanitizedNumber(getExpiredData(data.bahanBaku).qtyPemakaianBesar) *
-                    data.konversi) + 
-                    helper.sanitizedNumber(getExpiredData(data.bahanBaku).qtyPemakaianKecil) 
+                    getTotalExpiredData(data.bahanBaku,data.konversi) 
                   }} {{data.satuanKecil}}
 
                   
@@ -126,7 +124,7 @@
   </c-modal-header>
   <c-modal-body>
     <div class="row">
-      <div class="col-6">
+      <div class="col-9">
         <div class="w-100 px-2 py-1 row">
 
           <div class="col-4 d-flex align-items-center">
@@ -158,18 +156,18 @@
 
         <div class="w-100 px-2 py-1 row">
           <div class="col-4 d-flex align-items-center">
-            <label class="fw-semibold" for="nomorPesanan">{{ "Total Quantity Waste" | translate }}</label>
+            <label class="fw-semibold" for="nomorPesanan">{{ "Total Pemakaian" | translate }}</label>
           </div>
           <div class="col-8 pe-0">
             <input type="text" placeholder="Nomor pesanan" class="form-control" id="konversi"
-              [value]="(helper.sanitizedNumber(selectedExpProduct.qtyPemakaianBesar) * selectedExpProduct.konversi) + helper.sanitizedNumber(selectedExpProduct.qtyPemakaianKecil) + ' ' + selectedExpProduct.satuanKecil"
+              [value]="this.selectedExpProduct.totalQtyProduksi"
               name="konversi" readonly />
           </div>
 
         </div>
 
       </div>
-      <div class="col-6">
+      <div class="col-3">
         <div class="w-100 px-2 py-1 row">
           <div class="col-4 d-flex align-items-center">
             <label for="nomorPesanan">{{ "Quantity Besar" | translate }}</label>
@@ -235,7 +233,12 @@
               <td class="text-center">
                 <input type="text" id="tglTransaksi" class="form-control" aria-describedby="tglTransaksi"
                   #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker autocomplete="off" [(ngModel)]="data.tglExpired"
-                  (ngModelChange)="updateKeteranganTanggal(data)" placeholder="{{ 'Tanggal transaksi' | translate }}" />
+                  (ngModelChange)="updateKeteranganTanggal(data)"
+                  (change)="validateDate($event,data.kodeBarang,i)"
+                  placeholder="{{ 'Tanggal transaksi' | translate }}" />
+                  <span style="font-size: 14px;" class="text-danger" *ngIf="data.validationExpiredMessageList">
+                    {{ data.validationExpiredMessageList}}
+                  </span>
               </td>
 
               <td class="text-center">
@@ -244,7 +247,9 @@
               <td class="text-center input-column">
                 <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.qtyPemakaianBesar"  />
+                    [(ngModel)]="data.qtyPemakaianBesar" 
+                    (change)="onInputQtyBesarExpired($event,data.kodeBarang, i)"
+                    />
                   <span class="d-flex align-items-center justify-content-center">
                     / {{data.satuanBesar}}
                   </span>
@@ -254,33 +259,35 @@
               <td class="text-center">
                 <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.qtyPemakaianKecil"  />
+                    [(ngModel)]="data.qtyPemakaianKecil"
+                    (change)="onInputQtyKecilExpired($event,data.kodeBarang, i)"
+                    />
                   <span class="d-flex align-items-center justify-content-center">
                     / {{data.satuanKecil}}
                   </span>
                 </div>
 
                 <!-- Validation message area -->
-                <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageList[i]">
-                  {{ validationMessageList[i] }}
+                <span style="font-size: 14px;" class="text-danger" *ngIf="data.validationQtyBesar">
+                  {{ data.validationQtyBesar }}
                 </span>
               </td>
 
               <td class="text-center">
                 {{
-                (helper.sanitizedNumber(data.qtyPemakaianBesar) *
-                data.konversi) + helper.sanitizedNumber(data.qtyPemakaianKecil) 
+                ((helper.sanitizedNumber(data.qtyPemakaianBesar) *
+                data.konversi) + helper.sanitizedNumber(data.qtyPemakaianKecil)).toFixed(2) 
                 }} 
                 {{data.satuanKecil}}
 
                 <!-- Validation message area -->
                 <br>
-                <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageQtyPesanList [i]">
-                  {{ validationMessageQtyPesanList[i] }}
+                <span style="font-size: 14px;" class="text-danger" *ngIf="data.validationQtyKecil">
+                  {{ data.validationQtyKecil }}
                 </span>
               </td>
               <td class="text-center">
-                <button (click)="onModalDeleteRow(i)" type="button" class="btn btn-secondary ms-2">
+                <button (click)="onModalDeleteRow(data.kodeBarang,i)" type="button" class="btn btn-secondary ms-2">
                   <i class="fa fa-trash me-1"></i>
                 </button>
               </td>
