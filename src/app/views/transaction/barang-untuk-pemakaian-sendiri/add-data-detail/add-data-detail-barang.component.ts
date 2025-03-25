@@ -64,12 +64,15 @@ export class AddDataDetailBarangComponent
   selectedRow: any[] = [];
   pageModal = new Page();
   dataUser: any = {};
-  validationMessageList: any[] = [];
+  validationMessageList: string[] = [];
+  isValidToSave: boolean = true;
   validationMessageQtyPesanList: any[] = [];
   isShowModalExpired: boolean = false;
   isShowModalDelete: boolean = false;
   indexDataDelete: any;
   selectedExpProduct: any = {};
+  data: any = {};
+  isQtyKecilError: boolean = false;
 
   @ViewChild('formModal') formModal: any;
   public dpConfig: Partial<BsDatepickerConfig> = {
@@ -559,6 +562,36 @@ export class AddDataDetailBarangComponent
             : '0.00';
       }
     }, 50);
+  }
+
+  allowNumbersOnly(event: any): void {
+    const inputValue = event.target.value;
+    event.target.value = inputValue.replace(/[^0-9]/g, '');
+  }
+
+  addDecimalPlaces(event: any): void {
+    let inputValue = event.target.value;
+
+    if (inputValue && !inputValue.includes('.')) {
+      inputValue = inputValue + '.00';  
+    }
+
+    event.target.value = inputValue;
+    this.data.qtyWasteKecil = event.target.value;
+  }
+
+  checkMaxValue(event: any, i: number): void {
+    const konversiValue = parseFloat(this.selectedExpProduct.konversi);
+    
+    if (parseFloat(this.data.qtyWasteKecil) > parseFloat(this.listProductData[i].konversi)) {
+      console.log("1")
+      this.validationMessageList[i] = "Qty Kecil Tidak Boleh Lebih Besar Dari Konversi, Silahkan Cek Lagi...!!!";
+      this.data.qtyWasteKecil = this.data.qtyWasteBesar; 
+    } else {
+      console.log("2")
+
+      this.validationMessageList[i] = '';
+    }
   }
 
   deleteBarang() {

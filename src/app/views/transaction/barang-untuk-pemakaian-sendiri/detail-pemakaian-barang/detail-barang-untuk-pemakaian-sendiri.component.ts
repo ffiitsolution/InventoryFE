@@ -169,30 +169,30 @@ export class DetailBarangUntukPemakaianSendiriComponent
             data: 'KONVERSI',
             title: 'Konversi',
             render: function (data, type, row) {
-              return data + ' ' + row.SATUAN_KECIL;
+              return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_KECIL;  // Menambahkan .00
             }
           },
           {
             data: 'QTY_BESAR',
             title: 'Qty Besar',
             render: function (data, type, row) {
-              return data + ' ' + row.SATUAN_BESAR;
+              return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_BESAR;  // Menambahkan .00
             }
           },
           {
             data: 'QTY_KECIL',
             title: 'Qty Kecil',
             render: function (data, type, row) {
-              return data + ' ' + row.SATUAN_KECIL;
+              return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_KECIL;  // Menambahkan .00
             }
           },
           {
             data: 'TOTAL_QTY_WH',
             title: 'Qty Total',
             render: function (data, type, row) {
-              return data + ' ' + row.SATUAN_KECIL;
+              return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_KECIL;  // Menambahkan .00
             }
-          },
+          }          
         ],
         searchDelay: 1000,
         order: [[1, 'asc']],

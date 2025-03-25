@@ -131,6 +131,19 @@ pageSize: number = 10; // Define the pageSize property
           title: 'Jam Proses',
           orderable: true, 
           searchable: true,
+          render: function (data, type, row) {
+            if (type === 'display' && data) {
+
+              const date = new Date(data);
+              
+              const hours = date.getHours().toString().padStart(2, '0');
+              const minutes = date.getMinutes().toString().padStart(2, '0');
+              const seconds = date.getSeconds().toString().padStart(2, '0');
+              
+              return `${hours}:${minutes}:${seconds}`;
+            }
+            return data; 
+          }
         },
         {
           data: 'STATUS_POSTING',
@@ -156,6 +169,7 @@ pageSize: number = 10; // Define the pageSize property
         );
         return row;
       },
+      order: [[2, 'desc']]
     };
     this.dtColumns = this.dtOptions.columns;
   }
