@@ -198,8 +198,8 @@ id="formModalKirim"    [attr.aria-hidden]="!isShowModalKirim">
       </div>
     </c-modal-body>
     <c-modal-footer class="justify-center">
-      <button type="button" class="btn btn-light" data-bs-dismiss="modal" (click)="isShowModalKirim = false">Close</button>
-      <button type="button" class="btn btn-success text-white" (click)="updateStatus()">Proses kirim Data</button>
+      <button type="button" class="btn btn-light  me-3 w-180" data-bs-dismiss="modal" (click)="isShowModalKirim = false">Close</button>
+      <button type="button" class="btn btn-success text-white w-180" (click)="updateStatus()">Proses kirim Data</button>
     </c-modal-footer>
 </c-modal>
 
@@ -213,9 +213,9 @@ id="formModalDelete"    [attr.aria-hidden]="!isShowModalCetak">
   <c-modal-body>
     <p class="text-center">Apakah anda ingin mencetak data?</p>
     <div class="d-flex justify-center py-2">
-      <button class="btn btn-light"  (click)="isShowModalCetak = false">Tidak</button>
+      <button class="btn btn-light w-90 me-3"  (click)="isShowModalCetak = false">Tidak</button>
       &nbsp;
-      <button class="btn btn-primary text-white" (click)="onClickPrint()">Iya</button>
+      <button class="btn btn-primary text-white w-90" (click)="onClickPrint()">Iya</button>
     </div>
   </c-modal-body>
 </c-modal>
