@@ -308,15 +308,17 @@ export class GlobalService {
         ? /^[a-zA-Z0-9]$/
         : type == 'numeric'
           ? /^[0-9]$/
-          : type == 'phone'
-            ? /^[0-9-]$/
-            : type == 'email'
-              ? /^[a-zA-Z0-9@._-]$/
-              : type == 'excludedSensitive'
-                ? /^[a-zA-Z0-9 .,_@-]*$/
-                : type == 'kodeSingkat'
-                  ? /^[a-zA-Z]+$/
-                  : /^[a-zA-Z.() ,\-]*$/;
+          : type=='numericDot'
+            ? /^[0-9.]$/
+            : type == 'phone'
+              ? /^[0-9-]$/
+              : type == 'email'
+                ? /^[a-zA-Z0-9@._-]$/
+                : type == 'excludedSensitive'
+                  ? /^[a-zA-Z0-9 .,_@-]*$/
+                  : type == 'kodeSingkat'
+                    ? /^[a-zA-Z]+$/
+                    : /^[a-zA-Z.() ,\-]*$/;
 
     if (temp_regex.test(inp)) return true;
     else {

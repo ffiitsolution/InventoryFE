@@ -95,6 +95,7 @@
                     <input #nextInput type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
                       [(ngModel)]="data.qtyPesanBesar"  (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
                       (keypress)="g.conditionInput($event, 'numeric')" [ngClass]="{'form-invalid': validationMessageListSatuanBesar[i]}"
+                      (blur)="onBlurQtyPesanBesar(i)"
                       />
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data?.satuanBesar}}
@@ -112,7 +113,9 @@
                       class="form-control text-center inputQty inputNumberSpace" 
                       [(ngModel)]="data.qtyPesanKecil"
                       (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')" 
-                      (keypress)="g.conditionInput($event, 'numeric')" />
+                      (keypress)="g.conditionInput($event, 'numeric')" 
+                      (blur)="onBlurQtyPesanKecil(i)"
+                      />
                 
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data?.satuanKecil}}
@@ -147,6 +150,11 @@
             <pagination-controls (pageChange)="onPageChange(1)" id="dataTable"></pagination-controls>
           </c-pagination>
         </ng-container>
+      </div>
+      <div class="d-grid gap-3 d-md-flex justify-content-end mb-3 mt-3" *ngIf="listOrderData.length == 0">
+        <button type="button" class="btn btn-success text-white me-2"  (click)="onShowModal()">
+          {{ 'Tambah' | translate }}           {{ 'Barang' | translate }}
+        </button>   
       </div>
     </c-card-body>
 

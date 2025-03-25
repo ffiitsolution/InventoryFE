@@ -432,15 +432,15 @@ export class AddDataOrderManualComponent implements OnInit {
     mappingDataPemesan(data : any) {
       this.myForm.controls['gudangTujuan'].setValue(data.kodeCabang);
       this.myForm.controls['namaPemesan'].setValue(data.namaCabang);
-
-      if(data.statusAktif === 'A')
+      if (data.statusAktif.trim() === 'A') {
         this.myForm.controls['statusGudang'].setValue("Aktif");
-      else if(data.statusAktif === 'T')
+      }  
+      else if(data.statusAktif.trim() === 'T'){
         this.myForm.controls['statusGudang'].setValue("Tidak Aktif");
-      else  
-      this.myForm.controls['statusGudang'].setValue(data.statusAktif);
-
-      this.myForm.controls['statusGudang'].setValue(data.statusAktif);
+      }
+      else {
+        this.myForm.controls['statusGudang'].setValue(data.statusAktif);
+      }
       this.myForm.controls['alamatGudang'].setValue(data.alamat1);      
     }
 
