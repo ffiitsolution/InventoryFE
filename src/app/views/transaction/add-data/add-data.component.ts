@@ -72,6 +72,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngOnInit(): void {
+    this.dpConfig.customTodayClass = 'today-highlight';
     this.bsConfig = Object.assign(
       {},
       {
@@ -79,6 +80,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
         rangeInputFormat: 'dd/MMm/yyyy',
       }
     );
+
     this.globalService.navbarVisibility = true;
 
     this.renderDataTables();

@@ -111,6 +111,7 @@ export class DeliveryItemComponent implements OnInit {
             });
         }, DEFAULT_DELAY_TABLE);
       },
+      order: [[4, 'desc']],
       columns: [
         { data: 'dtIndex', title: '#' },
         { data: 'tglTransaksi', title: 'Tanggal Kirim' },
