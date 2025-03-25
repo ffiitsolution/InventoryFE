@@ -25,11 +25,14 @@ import {
   BUTTON_CAPTION_SELECT,
 } from '../../../../../constants';
 import moment from 'moment';
+import { DatePipe } from '@angular/common';
+import { HelperService } from 'src/app/service/helper.service';
 
 @Component({
   selector: 'app-add-kirim-barang-return-ke-site',
   templateUrl: './add-data.component.html',
   styleUrls: ['./add-data.component.scss'],
+  providers: [DatePipe],
 })
 export class AddKirimBarangReturnKeSiteComponent
   implements OnInit, AfterViewInit, OnDestroy
@@ -59,7 +62,7 @@ export class AddKirimBarangReturnKeSiteComponent
     alamatTujuan: '',
     statusTujuan: '',
     keterangan: '',
-    tglTransaksi: '',
+    tglTransaksi: this.helperService.formatDate(new Date()),
   };
 
   constructor(
@@ -68,7 +71,9 @@ export class AddKirimBarangReturnKeSiteComponent
     private globalService: GlobalService,
     private translationService: TranslationService,
     private deliveryDataService: DeliveryDataService,
-    private appService: AppService
+    private appService: AppService,
+    private datePipe: DatePipe,
+    private helperService: HelperService
   ) {
     this.dpConfig.containerClass = 'theme-red';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
@@ -151,10 +156,17 @@ export class AddKirimBarangReturnKeSiteComponent
         },
         {
           title: 'Action',
-          render: () => {
-            return `
+          render: (data, type, row) => {
+            if (row.statusAktif === 'A') {
+              return `
                 <div class="btn-group" role="group" aria-label="Action">
                   <button class="btn btn-sm action-select btn-info btn-60 text-white">${this.buttonCaptionSelect}</button>
+                </div>
+              `;
+            }
+            return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-select btn-info btn-60 text-white" disabled>${this.buttonCaptionSelect}</button>
                 </div>
               `;
           },
@@ -209,7 +221,6 @@ export class AddKirimBarangReturnKeSiteComponent
   }
 
   updateShowDetail(data: any) {
-    console.log(data);
     this.isShowDetail = !this.isShowDetail;
   }
 
@@ -224,6 +235,14 @@ export class AddKirimBarangReturnKeSiteComponent
     this.isShowModal = false;
     // this.mapOrderData(data);
     // this.onSaveData();
+  }
+
+  formatDate(date: string | Date): string {
+    if (typeof date === 'string') {
+      return date;
+    } else {
+      return this.datePipe?.transform(date, 'dd/MM/yyyy') || '';
+    }
   }
 }
 @Injectable({
