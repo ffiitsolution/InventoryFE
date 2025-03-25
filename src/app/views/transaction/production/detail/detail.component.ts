@@ -63,7 +63,10 @@ export class DetailProductionComponent
     this.g.navbarVisibility = true;
     this.selectedProduction = JSON.parse(this.selectedProduction);
     this.selectedProduction.tglPesanan = this.g.transformDate(this.selectedProduction.tglPesanan),
-      this.selectedProduction.tglTransaksi = this.g.transformDate(this.selectedProduction.tglTransaksi),
+    this.selectedProduction.tglTransaksi = this.g.transformDate(this.selectedProduction.tglTransaksi),
+    this.selectedProduction.konversi = parseFloat( this.selectedProduction.konversi).toFixed(2),
+    this.selectedProduction.jumlahResep = parseFloat( this.selectedProduction.jumlahResep).toFixed(2),
+    this.selectedProduction.totalProduksi = parseFloat( this.selectedProduction.totalProduksi).toFixed(2),
       this.dtOptions = {
         language:
           translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
@@ -136,19 +139,19 @@ export class DetailProductionComponent
           { data: 'namaBarang', title: 'Nama Barang' },
           {
             data: 'konversi', title: 'Konversi',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
+            render: (data, type, row) => `${Number(data).toFixed(2)} ${row.satuanKecil}`
           },
           {
             data: 'qtyBesar', title: 'Qty Besar',
-            render: (data, type, row) => `${data} ${row.satuanBesar}`
+            render: (data, type, row) => `${Number(data).toFixed(2)} ${row.satuanBesar}`
           },
           {
             data: 'qtyKecil', title: 'Qty Kecil',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
+            render: (data, type, row) => `${Number(data).toFixed(2)} ${row.satuanKecil}`
           },
           {
             data: 'totalQty', title: 'Total Qty',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
+            render: (data, type, row) => `${Number(data).toFixed(2)} ${row.satuanKecil}`
           },
         ],
         searchDelay: 1000,

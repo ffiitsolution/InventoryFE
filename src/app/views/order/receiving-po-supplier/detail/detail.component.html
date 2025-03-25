@@ -58,20 +58,20 @@
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">
-              <span class="label">{{ "Nomor P.onAddPressed" | translate }}</span>
+              <span class="label">{{ "Nomor P.O" | translate }}</span>
               <span class="value">{{ selectedOrder.nomorPesanan }}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Tanggal P.O" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglPesanan }}</span>
+              <span class="value">{{ g.formatStrDateMMM(selectedOrder.tglPesanan) }}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Tanggal Kirim" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglKirimBrg }}</span>
+              <span class="value">{{ g.formatStrDateMMM(selectedOrder.tglKirimBrg) }}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Tanggal Batal P.O" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglBatalExp }}</span>
+              <span class="value">{{ g.formatStrDateMMM(selectedOrder.tglBatalExp) }}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Status Pesanan" | translate }}</span>
@@ -104,6 +104,10 @@
             <div class="detail-item">
               <span class="label">{{ "Status P.O" | translate }}</span>
               <span class="value">{{ g.getStatusOrderLabel(selectedOrder.statusPesanan) }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Jumlah Item" | translate }}</span>
+              <span class="value">{{ totalLength }} </span>
             </div>
           </div>
         </div>

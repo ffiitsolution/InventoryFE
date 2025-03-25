@@ -57,6 +57,7 @@ export class ProductionListComponent implements OnInit {
       serverSide: true,
       autoWidth: true,
       info: true,
+      order: [[1,'desc'],[2,'desc']],
       drawCallback: () => { },
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
@@ -110,9 +111,23 @@ export class ProductionListComponent implements OnInit {
         { data: 'nomorTransaksi', title: 'No. Transaksi' },
         { data: 'kodeProduksi', title: 'Kode Produksi' },
         { data: 'barangProduksi', title: 'Barang Produksi' },
-        { data: 'konversi', title: 'Konversi' },
-        { data: 'jumlahResep', title: 'Jumlah Produksi' },
-        { data: 'totalProduksi', title: 'Total Produksi' },
+        { 
+          data: 'konversi', 
+          title: 'Konversi', 
+          render: function(data, type, row) {
+            return Number(data).toFixed(2); // Ensures two decimal places
+          }
+        },
+        { data: 'jumlahResep', title: 'Jumlah Produksi', 
+          render: function(data, type, row) {
+            return Number(data).toFixed(2); // Ensures two decimal places
+          } 
+        },
+        { data: 'totalProduksi', title: 'Total Produksi',
+          render: function(data, type, row) {
+            return Number(data).toFixed(2); // Ensures two decimal places
+          } 
+        },
         { data: 'tglExp', title: 'Tgl Expired' },
         // { data: 'userCreate', title: 'User Proses', searchable: true },
         // {

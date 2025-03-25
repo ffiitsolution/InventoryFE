@@ -117,7 +117,8 @@ export class DetailSendOrderToWarehouseComponent
         satuanBesar: item.SATUAN_BESAR,
         konversi: item.KONVERSI,
         qtyPesanKecil: item.QTY_PESAN_KECIL
-    }));
+      }));
+      this.totalLength = this.listOrderData.length;
     });
 
 

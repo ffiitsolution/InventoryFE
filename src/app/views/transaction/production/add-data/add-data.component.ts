@@ -30,6 +30,7 @@ import { DatePipe } from '@angular/common';
 export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy {
   nomorPesanan: any;
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+  public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -62,6 +63,16 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
     this.dpConfig.minDate = new Date();
+    this.dpConfig.customTodayClass='today-highlight';
+
+
+    this.dpConfigtrans.containerClass = 'theme-red';
+    this.dpConfigtrans.dateInputFormat = 'DD/MM/YYYY';
+    this.dpConfigtrans.adaptivePosition = true;
+    this.dpConfigtrans.maxDate = new Date();
+    this.dpConfigtrans.customTodayClass='today-highlight';
+
+  
   }
 
   myForm: FormGroup;
@@ -74,6 +85,7 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
         rangeInputFormat: 'dd/MMm/yyyy',
       }
     );
+
 
     const todayDate = new Date();
     this.defaultDate = this.helperService.formatDate(todayDate);
@@ -108,6 +120,14 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   onAddDetail() {
+    console.log("Before:", this.myForm.value.tglTransaksi); // Lihat apakah sudah 21 atau masih 20
+  console.log("Raw Moment:", moment(this.myForm.value.tglTransaksi)); 
+  console.log("Formatted:", moment(this.myForm.value.tglTransaksi, 'YYYY-MM-DD').format('DD/MM/YYYY'));
+    this.myForm.patchValue({
+      tglTransaksi: moment(this.myForm.value.tglTransaksi,'DD/MM/YYYY',true).format('DD/MM/YYYY'),
+      tglExp: moment(this.myForm.value.tglExp, 'DD/MM/YYYY',true).format('DD/MM/YYYY')
+  });
+  
     this.globalService.saveLocalstorage(
       'headerProduction',
       JSON.stringify(this.myForm.value)
@@ -198,9 +218,12 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
       columns: [
         { data: 'kodeBarang', title: 'Kode' },
         { data: 'namaBarang', title: 'Nama Barang' },
-        { data: 'konversi', title: 'Konversi' },
-        { data: 'satuanKecil', title: 'Satuan Kecil' },
+        {
+          data: 'konversi', title: 'Konversi',
+          render: (data, type, row) => `${Number(data).toFixed(2)} ${row.satuanKecil}`
+        },
         { data: 'satuanBesar', title: 'Satuan Besar', },
+        { data: 'satuanKecil', title: 'Satuan Kecil' },
         { data: 'defaultGudang', title: 'Default Gudang', },
         { data: 'status', title: 'Status', },
         {
@@ -242,7 +265,7 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
       this.myForm.patchValue({
         kodeBarang: data.kodeBarang,
         namaBarang: data.namaBarang,
-        satuanHasilProduksi: data.konversi,
+        satuanHasilProduksi: parseFloat(data.konversi).toFixed(2),
         labelSatuanHasilProduksi: data.satuanKecil+"/"+data.satuanBesar,
       })
      
@@ -285,6 +308,7 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     formatDate(date: string | Date): string {
+      console.log(date,'date')
       if (typeof date === 'string') {
         return date;
       }else{

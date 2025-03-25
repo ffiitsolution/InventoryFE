@@ -34,7 +34,7 @@
                    class="form-control"
                     aria-describedby="tglTransaksi"
                     #dp="bsDatepicker"
-                    [bsConfig]="dpConfig" 
+                    [bsConfig]="dpConfigtrans" 
                     bsDatepicker
                     autocomplete="off"
                     formControlName="tglTransaksi"
@@ -44,13 +44,13 @@
                    <input type="text"
                    *ngIf="isShowDetail"
                     id="tglTransaksi" 
-                    [bsConfig]="dpConfig" 
+                    [bsConfig]="dpConfigtrans" 
                     class="form-control"
                      aria-describedby="tglTransaksi"
                      autocomplete="off"
                      placeholder="{{ 'Tanggal transaksi' | translate }}"
                      [readOnly]="true"
-                     [value]="formatDate(myForm.get('tglTransaksi')?.value)"
+                     formControlName="tglTransaksi"
                     />
                 </div>
                
@@ -219,7 +219,7 @@
                       aria-describedby="tglExp"
                       [bsConfig]="dpConfig" 
                     [readonly]="true"
-                    [value]="formatDate(myForm.get('tglExp')?.value)"
+                    formControlName="tglExp"
                       autocomplete="off"
                       placeholder="{{ 'Tgl. Expired Hasil Produksi' | translate }}" />
                 </div>
@@ -233,10 +233,12 @@
                 <div class="col-8 pe-0 d-flex">
                   <textarea placeholder="Catatan"
                    type="text"
+                   maxlength="50"
                    class="form-control" id="keterangan"
                    [readonly]="isShowDetail"
                    formControlName="keterangan"
                     name="keterangan">
+                
                   </textarea>
                 </div>
               </div>

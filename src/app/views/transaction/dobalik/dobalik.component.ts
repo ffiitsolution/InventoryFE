@@ -162,7 +162,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
 
         return row;
       },
-      order: [[2, 'desc']],
+      order: [[7, 'desc']],
     };
   }
 

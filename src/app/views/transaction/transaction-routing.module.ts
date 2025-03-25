@@ -38,6 +38,12 @@ import { KirimBarangReturnKeSiteListComponent } from './kirim-barang-return-ke-s
 import { AddKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/add-data/add-data.component';
 import { AddDataDetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/add-data-detail/add-data-detail.component';
 import { DetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/detail/detail.component';
+//// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 START
+import { TerimaBarangReturDariSiteListComponent } from './terima-barang-retur-dari-site/dt-list/terima-barang-retur-dari-site-list.component';
+import { AddTerimaBarangReturDariSiteComponent } from './terima-barang-retur-dari-site/add-data/add-data.component';
+import { AddDataDetailTerimaBarangReturDariSiteComponent } from './terima-barang-retur-dari-site/add-data-detail/add-data-detail.component';
+import { DetailTerimaBarangReturDariSiteComponent } from './terima-barang-retur-dari-site/detail/detail.component';
+//// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
 
 const routes: Routes = [
   {
@@ -233,6 +239,30 @@ const routes: Routes = [
       },
     ],
   },
+  //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 START
+  {
+    path: 'terima-barang-retur-dari-site',
+    children: [
+      {
+        path: 'list-dt',
+        component:TerimaBarangReturDariSiteListComponent,
+      },
+      {
+        path: 'add-data',
+        component: AddTerimaBarangReturDariSiteComponent,
+      },
+      {
+        path: 'add-data-detail',
+        component: AddDataDetailTerimaBarangReturDariSiteComponent,
+      },
+      {
+        path: 'detail',
+        component: DetailTerimaBarangReturDariSiteComponent,
+      },
+      
+    ],
+  },
+  //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
 ];
 
 @NgModule({

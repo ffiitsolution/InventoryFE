@@ -133,7 +133,15 @@ export class AddDataOrderManualComponent implements OnInit {
     this.dpConfigTglBatalPesanan.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfigTglBatalPesanan.adaptivePosition = true;
     this.dpConfigTglBatalPesanan.minDate = new Date(new Date().setHours(0, 0, 0, 0));
-    
+
+    this.dpConfigTglKirimBarang.customTodayClass='today-highlight';
+    this.dpConfigTglBatalPesanan.customTodayClass='today-highlight';
+    this.dpConfig.customTodayClass='today-highlight';
+
+    this.dpConfig.containerClass =  'theme-red';
+    this.dpConfigTglBatalPesanan.containerClass =  'theme-red';
+    this.dpConfigTglKirimBarang.containerClass =  'theme-red';
+
     this.g.removeLocalstorage('TEMP_ORDHDK');
 
     this.renderDataTables();
@@ -374,14 +382,23 @@ export class AddDataOrderManualComponent implements OnInit {
           },
           {
             title: 'Action',
-            render: () => {
-              return `
-              <div class="btn-group" role="group" aria-label="Action">
-                <button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>
-              </div>
-            `;
-            },
-          },
+            render: (data, type, row) => {
+              if (row.statusAktif === 'T') {
+                return `
+                  <div class="btn-group" role="group" aria-label="Action">
+                    <button class="btn btn-sm action-select btn-outline-info btn-60" disabled>Pilih</button>
+                  </div>
+                `;
+              }
+              else
+                return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>
+                </div>
+              `;            
+            }
+          }
+          
         ],
         searchDelay: 1500,
         order: [
@@ -423,15 +440,15 @@ export class AddDataOrderManualComponent implements OnInit {
     mappingDataPemesan(data : any) {
       this.myForm.controls['gudangTujuan'].setValue(data.kodeCabang);
       this.myForm.controls['namaPemesan'].setValue(data.namaCabang);
-
-      if(data.statusAktif === 'A')
+      if (data.statusAktif.trim() === 'A') {
         this.myForm.controls['statusGudang'].setValue("Aktif");
-      else if(data.statusAktif === 'T')
+      }  
+      else if(data.statusAktif.trim() === 'T'){
         this.myForm.controls['statusGudang'].setValue("Tidak Aktif");
-      else  
-      this.myForm.controls['statusGudang'].setValue(data.statusAktif);
-
-      this.myForm.controls['statusGudang'].setValue(data.statusAktif);
+      }
+      else {
+        this.myForm.controls['statusGudang'].setValue(data.statusAktif);
+      }
       this.myForm.controls['alamatGudang'].setValue(data.alamat1);      
     }
 
