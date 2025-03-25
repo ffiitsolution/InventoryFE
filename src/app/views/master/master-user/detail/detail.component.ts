@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { GlobalService } from 'src/app/service/global.service';
 import { LS_INV_SELECTED_USER } from 'src/constants';
 import { DataService } from 'src/app/service/data.service';
+import moment from 'moment';
 
 @Component({
   selector: 'app-detail',
@@ -41,8 +42,8 @@ export class MasterUserDetailComponent implements OnInit {
       location: '',
       userCreate: [this.detail.userCreate],
       userUpdate: [this.detail.userUpdate],
-      dateCreate: [this.detail.dateCreate],
-      dateUpdate: [this.detail.dateUpdate],
+      dateCreate: [moment(this.detail.dateCreate).format('DD MMM yyyy')],
+      dateUpdate: [moment(this.detail.dateUpdate).format('DD MMM yyyy')],
     });
     this.myForm.disable();
 
