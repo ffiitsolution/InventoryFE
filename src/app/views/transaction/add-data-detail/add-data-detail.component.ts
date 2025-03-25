@@ -107,7 +107,10 @@ export class AddDataDetailDeliveryComponent
           ...data,
           qtyBPesanOld: data.qtyPesanBesar,
           totalQtyPesanOld: data.totalQtyPesan,
+          qtyPesanBesar: Number(data.qtyPesanBesar).toFixed(2),
+          qtyPesanKecil: Number(data.qtyPesanKecil).toFixed(2),
         }));
+        
         this.filteredListTypeOrder = this.listOrderData;
         this.totalLength = res?.data?.length;
         this.page = 1;
@@ -303,6 +306,26 @@ export class AddDataDetailDeliveryComponent
       this.filteredListTypeOrder = JSON.parse(
         JSON.stringify(this.listOrderData)
       );
+    }
+  }
+
+  onBlurQtyPesanBesar(index: number) {
+    const value = this.listOrderData[index].qtyPesanBesar;
+    let parsed = Number(value);
+    if (!isNaN(parsed)) {
+      this.listOrderData[index].qtyPesanBesar = Number(parsed.toFixed(2));
+    } else {
+      this.listOrderData[index].qtyPesanBesar = Number((0).toFixed(2)); 
+    }
+  }
+
+  onBlurQtyPesanKecil(index: number) {
+    const value = this.listOrderData[index].qtyPesanKecil;
+    let parsed = Number(value);
+    if (!isNaN(parsed)) {
+      this.listOrderData[index].qtyPesanKecil = Number(parsed.toFixed(2));
+    } else {
+      this.listOrderData[index].qtyPesanKecil = Number((0).toFixed(2));
     }
   }
 }

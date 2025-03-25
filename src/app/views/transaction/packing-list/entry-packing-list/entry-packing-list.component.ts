@@ -330,6 +330,13 @@ export class EntryPackingListComponent
     if (this.listEntryPl[index]) {
       this.listEntryPl[index][target.name] = value;
     }
+    this.filteredEntryPL.forEach((item: any, index: number) => {
+      if (item.nomorColli === "") {
+        this.validationMessages[index] = "Mohon isi data!";
+      } else{
+        this.validationMessages[index] = "";
+      }
+    });
   }
 
   async onSubmit() {

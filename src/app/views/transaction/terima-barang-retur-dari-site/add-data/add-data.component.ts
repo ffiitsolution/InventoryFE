@@ -5,6 +5,7 @@ import {
   OnInit,
   ViewChild,
   Output,
+  ChangeDetectorRef ,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { GlobalService } from '../../../../service/global.service';
@@ -21,16 +22,15 @@ import { HelperService } from '../../../../service/helper.service';
 import { DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-add-production',
+  selector: 'app-add-terima-barang-retur-dari-site',
   templateUrl: './add-data.component.html',
   styleUrls: ['./add-data.component.scss'],
   providers: [DatePipe]
 
 })
-export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewInit, OnDestroy {
   nomorPesanan: any;
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
-  public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -44,6 +44,7 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
   isShowDetail: boolean = false;
   selectedRowData: any;
   defaultDate: any ;
+  someBoolean: boolean = true; 
   private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   @ViewChild('formModal') formModal: any;
@@ -57,27 +58,19 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
     private translationService: TranslationService,
     private form: FormBuilder,
     private appService: AppService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private cdr: ChangeDetectorRef
   ) {
     this.dpConfig.containerClass = 'theme-red';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
     this.dpConfig.minDate = new Date();
-    this.dpConfig.customTodayClass='today-highlight';
-
-
-    this.dpConfigtrans.containerClass = 'theme-red';
-    this.dpConfigtrans.dateInputFormat = 'DD/MM/YYYY';
-    this.dpConfigtrans.adaptivePosition = true;
-    this.dpConfigtrans.maxDate = new Date();
-    this.dpConfigtrans.customTodayClass='today-highlight';
-
-  
   }
 
   myForm: FormGroup;
 
   ngOnInit(): void {
+
     this.bsConfig = Object.assign(
       {},
       {
@@ -86,15 +79,15 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
       }
     );
 
-
     const todayDate = new Date();
-    this.defaultDate = this.helperService.formatDate(todayDate);
+    const [day, month, year] = this.helperService.formatDate(todayDate).split('/').map(Number);
+    this.defaultDate = new Date(year, month - 1, day);
 
     this.myForm = this.form.group({
           kodeBarang: ['', [Validators.required]],
           namaBarang: ['', [Validators.required]],
           satuanHasilProduksi: ['', [Validators.required]],
-          tglTransaksi: [this.defaultDate, [Validators.required]],
+          tglTransaksi: [this.defaultDate || new Date(), [Validators.required]],
           jumlahHasilProduksi: ['', [Validators.required,Validators.min(1)]],
           keterangan: [''],
           tglExp:[this.defaultDate, [Validators.required]],
@@ -120,14 +113,6 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   onAddDetail() {
-    console.log("Before:", this.myForm.value.tglTransaksi); // Lihat apakah sudah 21 atau masih 20
-  console.log("Raw Moment:", moment(this.myForm.value.tglTransaksi)); 
-  console.log("Formatted:", moment(this.myForm.value.tglTransaksi, 'YYYY-MM-DD').format('DD/MM/YYYY'));
-    this.myForm.patchValue({
-      tglTransaksi: moment(this.myForm.value.tglTransaksi,'DD/MM/YYYY',true).format('DD/MM/YYYY'),
-      tglExp: moment(this.myForm.value.tglExp, 'DD/MM/YYYY',true).format('DD/MM/YYYY')
-  });
-  
     this.globalService.saveLocalstorage(
       'headerProduction',
       JSON.stringify(this.myForm.value)
@@ -143,6 +128,8 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
+    this.someBoolean = false;
+    this.cdr.detectChanges(); 
   }
 
   ngOnDestroy(): void {
@@ -218,12 +205,9 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
       columns: [
         { data: 'kodeBarang', title: 'Kode' },
         { data: 'namaBarang', title: 'Nama Barang' },
-        {
-          data: 'konversi', title: 'Konversi',
-          render: (data, type, row) => `${Number(data).toFixed(2)} ${row.satuanKecil}`
-        },
-        { data: 'satuanBesar', title: 'Satuan Besar', },
+        { data: 'konversi', title: 'Konversi' },
         { data: 'satuanKecil', title: 'Satuan Kecil' },
+        { data: 'satuanBesar', title: 'Satuan Besar', },
         { data: 'defaultGudang', title: 'Default Gudang', },
         { data: 'status', title: 'Status', },
         {
@@ -265,7 +249,7 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
       this.myForm.patchValue({
         kodeBarang: data.kodeBarang,
         namaBarang: data.namaBarang,
-        satuanHasilProduksi: parseFloat(data.konversi).toFixed(2),
+        satuanHasilProduksi: data.konversi,
         labelSatuanHasilProduksi: data.satuanKecil+"/"+data.satuanBesar,
       })
      
@@ -285,7 +269,7 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
 
     onBatalPressed(newItem: any): void {
       const todayDate = new Date();
-      this.defaultDate = this.helperService.formatDate(todayDate);
+      this.defaultDate = this.helperService?.formatDate(todayDate);
       this.myForm.reset({
         kodeBarang: '',
         namaBarang: '',
@@ -308,13 +292,13 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     formatDate(date: string | Date): string {
-      console.log(date,'date')
       if (typeof date === 'string') {
-        return date;
-      }else{
-        return this.datePipe.transform(date, 'dd/MM/yyyy') || '';
+        const [day, month, year] = date.split('/').map(Number);
+        date = new Date(year, month - 1, day); // Bulan dalam JavaScript dimulai dari 0
       }
+      return this.datePipe?.transform(date, 'dd/MM/yyyy') || '';
     }
+    
 
 }
 

@@ -48,6 +48,7 @@ export class RevisiDoEditComponent
   listCurrentPage: number = 1;
   totalLengthList: number = 1;
   protected config = AppConfig.settings.apiServer;
+  validationMessages: { [key: number]: string } = {};
 
   constructor(
     public g: GlobalService,
@@ -91,6 +92,8 @@ export class RevisiDoEditComponent
           ...data,
           qtyBPesanOld: data.qtyBKirim,
           totalQtyPesanOld: data.totalQtyPesan,
+          qtyPesanBesar: (data.qtyPesanBesar).toFixed(2),
+          qtyPesanKecil: (data.qtyPesanKecil).toFixed(2),
         }));
         this.totalLength = res?.data?.length;
         this.page = 1;
@@ -105,15 +108,36 @@ export class RevisiDoEditComponent
     );
   }
 
-  onInputValueItemDetail(event: any, index: number) {
+  onInputValueItemDetail(event: any, index: number, type: string, qtyType: string) {
     const target = event.target;
-    const value = target.value;
 
-    if (target.type === 'number') {
-      this.listOrderData[index][target.name] = Number(value);
+    const value = target.value;
+    let validationMessage = '';
+
+    if (type === 'numeric') {
+      const numericValue = parseFloat(value) || 0;
+
+      if (this.listOrderData[index]) {
+        this.listOrderData[index][target.name] = numericValue;
+        let newTempTotal = 0;
+        if (qtyType === 'besar') {
+          newTempTotal = numericValue * (this.listOrderData[index].konversi || 1) +
+            (this.listOrderData[index].qtyPesanKecil || 0);
+        } else if (qtyType === 'kecil') {
+          newTempTotal = this.listOrderData[index].qtyPesanBesar * (this.listOrderData[index].konversi || 1) + numericValue;
+        }
+        if (newTempTotal > (this.listOrderData[index].totalQtyPesanOld || 0)) {
+          validationMessage = `qty kirim harus < dari qty pesan`;
+        }
+      }
     } else {
-      this.listOrderData[index][target.name] = value;
+      if (this.listOrderData[index]) {
+        this.listOrderData[index][target.name] = value;
+      }
     }
+
+    // Simpan pesan validasi berdasarkan index
+    this.validationMessages[index] = validationMessage;
   }
   onFilterSearch(
     listData: any[],
@@ -146,6 +170,7 @@ export class RevisiDoEditComponent
     let totalKirim = 0;
     let hasInvalidData = false; // Tambahkan flag untuk mengecek validasi
 
+    
     const param = this.listOrderData
       .map((data: any) => {
         totalKirim = (data.qtyBKirim * data.konversi) + data.qtyKKirim;
@@ -205,7 +230,25 @@ export class RevisiDoEditComponent
         this.toastr.info('Penyimpanan dibatalkan');
       }
     });
+  }
 
+  onBlurQtyPesanBesar(index: number) {
+    const value = this.listOrderData[index].qtyPesanBesar;
+    let parsed = Number(value);
+    if (!isNaN(parsed)) {
+      this.listOrderData[index].qtyPesanBesar = parsed.toFixed(2); // will be a string like "4.00"
+    } else {
+      this.listOrderData[index].qtyPesanBesar = '0.00'; // fallback if input is not a number
+    }
+  }
 
+  onBlurQtyPesanKecil(index: number) {
+    const value = this.listOrderData[index].qtyPesanKecil;
+    let parsed = Number(value);
+    if (!isNaN(parsed)) {
+      this.listOrderData[index].qtyPesanKecil = parsed.toFixed(2); // will be a string like "4.00"
+    } else {
+      this.listOrderData[index].qtyPesanKecil = '0.00'; // fallback if input is not a number
+    }
   }
 }

@@ -1,28 +1,29 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataService } from '../../../service/data.service';
-import { GlobalService } from '../../../service/global.service';
-import { TranslationService } from '../../../service/translation.service';
+import { DataService } from '../../../../service/data.service';
+import { GlobalService } from '../../../../service/global.service';
+import { TranslationService } from '../../../../service/translation.service';
 import { Subject } from 'rxjs';
-import { Page } from '../../../model/page';
-import { ACTION_CETAK, ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../constants';
+import { Page } from '../../../../model/page';
+import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { DataTableDirective } from 'angular-datatables';
 import moment from 'moment';
-import { AppConfig } from '../../../config/app.config';
+import { AppConfig } from '../../../../config/app.config';
 
 @Component({
-  selector: 'app-delivery-item',
-  templateUrl: './delivery-item.component.html',
-  styleUrls: ['./delivery-item.component.scss'],
+  selector: 'app-terima-barang-retur-dari-site-list',
+  templateUrl: './terima-barang-retur-dari-site-list.component.html',
+  styleUrls: ['./terima-barang-retur-dari-site-list.component.scss'],
 })
-export class DeliveryItemComponent implements OnInit {
+export class TerimaBarangReturDariSiteListComponent implements OnInit {
   orderNoFilter: string = '';
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
   dtOptions: DataTables.Settings = {};
-  protected config = AppConfig.settings.apiServer;
+    protected config = AppConfig.settings.apiServer;
+  
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
   dtColumns: any = [];
@@ -35,18 +36,13 @@ export class DeliveryItemComponent implements OnInit {
     | DataTableDirective
     | undefined;
   currentDate: Date = new Date();
-
+  selectedRowData: any;
   startDateFilter: Date = new Date(
     this.currentDate.setDate(
       this.currentDate.getDate() - DEFAULT_DATE_RANGE_RECEIVING_ORDER
     )
   );
-  
-  endDateFilter: Date = new Date(
-    new Date().setDate(new Date().getDate() + 1)
-  );
-  dateRangeFilter: any = [this.startDateFilter, this.endDateFilter];
-  selectedRowData: any;
+  dateRangeFilter: any = [this.startDateFilter, new Date()];
 
   constructor(
     private dataService: DataService,
@@ -68,22 +64,12 @@ export class DeliveryItemComponent implements OnInit {
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.g.getUserLocationCode(),
-          startDate: moment(this.dateRangeFilter[0]).set({
-            hours: 0,
-            minutes: 0,
-            seconds: 0,
-            milliseconds: 0,
-          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
-          endDate: moment(this.dateRangeFilter[1]).set({
-            hours: 23,
-            minutes: 59,
-            seconds: 59,
-            milliseconds: 999,
-          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
+          startDate: moment(this.dateRangeFilter[0]).format('DD MMM yyyy' ),
+          endDate: moment(this.dateRangeFilter[1]).format('DD MMM yyyy' ),
         };
         setTimeout(() => {
           this.dataService
-            .postData(this.config.BASE_URL + '/api/delivery-order/dt', params)
+            .postData(this.config.BASE_URL + '/api/return-order-from-site/dt', params)
             .subscribe((resp: any) => {
               const mappedData = resp.data.map((item: any, index: number) => {
                 // hapus rn dari data
@@ -91,12 +77,7 @@ export class DeliveryItemComponent implements OnInit {
                 const finalData = {
                   ...rest,
                   dtIndex: this.page.start + index + 1,
-                  tglPesanan: this.g.transformDate(rest.tglPesanan),
                   tglTransaksi: this.g.transformDate(rest.tglTransaksi),
-                  dateCreate: this.g.transformDate(rest.dateCreate),
-                  timeCreate: this.g.transformTime(rest.timeCreate),
-                  datePosted: this.g.transformDate(rest.datePosted),
-                  timePosted: this.g.transformTime(rest.timePosted)
                 };
                 return finalData;
               });
@@ -111,55 +92,20 @@ export class DeliveryItemComponent implements OnInit {
             });
         }, DEFAULT_DELAY_TABLE);
       },
-      order: [[4, 'desc']],
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'tglTransaksi', title: 'Tanggal Kirim' },
-        { data: 'tglPesanan', title: 'Tanggal Pesan' },
-        { data: 'nomorPesanan', title: 'Nomor Pesanan', searchable: true },
-        { data: 'noSuratJalan', title: 'Nomor Pengiriman', searchable: true },
+        { data: 'tglTransaksi', title: 'Tanggal Transaksi' },
+        { data: 'nomorTransaksi', title: 'No. Transaksi' },
+        { data: 'namaPengirim', title: 'Pengirim' },
+        { data: 'keterangan', title: 'Keterangan' },
+        { data: 'userCreate', title: 'User Proses', searchable: true },
+        { data: 'dateCreate', title: 'Tanggal', searchable: true },
+        { data: 'timeCreate', title: 'Jam', searchable: true },
+        { data: 'namaPosting', title: 'Status Transaksi' },
         {
-          data: 'kodeTujuan',
-          title: 'Kode Tujuan',
-          orderable: true,
-          searchable: true,
-        },
-        {
-          data: 'namaTujuan',
-          title: 'Tujuan',
-          orderable: true,
-          searchable: true,
-        },
-        {
-          data: 'cetakSuratJalan',
-          title: 'Status Cetak Surat Jalan',
-          render: (data) => this.g.getsatusDeliveryOrderLabel(data, true),
-        },
-        {
-          data: 'statusDoBalik',
-          title: 'Status DO Balik',
-          render: (data) => this.g.getsatusDeliveryOrderLabel(data, true),
-        },
-        {
-          data: 'statusPosting',
-          title: 'Status Pengiriman',
-          render: (data) => {
-            const isCancel = data == CANCEL_STATUS;
-            const label = this.g.getStatusOrderLabel(data);
-            if (isCancel) {
-              return `<span class="text-center text-danger">${label}</span>`;
-            }
-            return label;
-          },
-        },
-        {
-          title: 'Opsi',
-          className: 'text-center',
+          title: 'Aksi',
           render: () => {
-            return `<div class="d-flex px-2 gap-1"> 
-              <button style="width: 74px" class="btn btn-sm action-view btn-outline-info btn-60 pe-2">
-              <i class="fa fa-eye pe-2"></i>${this.buttonCaptionView}</button>
-            </div>`;
+            return `<button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>`;
           },
         },
       ],
@@ -168,9 +114,6 @@ export class DeliveryItemComponent implements OnInit {
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
-        );
-        $('.action-cetak', row).on('click', () =>
-          this.actionBtnClick(ACTION_CETAK, data)
         );
         $('td', row).on('click', () => {
           $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
@@ -188,11 +131,7 @@ export class DeliveryItemComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.dtOptions = {
-    //   pagingType: 'full_numbers',
-    //   pageLength: 10,
-    //   processing: true,
-    // };
+  
   }
 
   toggleFilter(): void {
@@ -200,20 +139,17 @@ export class DeliveryItemComponent implements OnInit {
   }
 
   onAddPressed(): void {
-    // Logic for adding a new order
-    const route = this.router.createUrlTree(['/transaction/delivery-item/add-data']);
+    const route = this.router.createUrlTree(['/transaction/terima-barang-retur-dari-site/add-data']);
     this.router.navigateByUrl(route);
   }
 
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage(
-        LS_INV_SELECTED_DELIVERY_ORDER,
+        'selectedProduction',
         JSON.stringify(data)
       );
-      this.router.navigate(['/transaction/delivery-item/detail-transaction']); this
-    }
-    if (action === ACTION_CETAK) {
+      this.router.navigate(['/transaction/terima-barang-retur-dari-site/detail']); this
     }
   }
 
@@ -226,7 +162,7 @@ export class DeliveryItemComponent implements OnInit {
   }
 
   refreshData(): void {
-    const route = this.router.createUrlTree(['/transaction/delivery-item/detail-transaction']);
+    const route = this.router.createUrlTree(['/transaction/terima-barang-retur-dari-site/detail']);
     this.router.navigateByUrl(route);
   }
   onFilterStatusChange(event: Event): void {
@@ -267,21 +203,5 @@ export class DeliveryItemComponent implements OnInit {
   }
   dtPageChange(event: any): void {
     console.log('Page changed', event);
-    // Logic for handling page change
-    // You can fetch new data based on the page number or perform other actions
-  }
-
-  validateDeliveryDate(): void {
-    const today = new Date();
-    this.orders.forEach((order) => {
-      const deliveryDate = new Date(order.deliveryDate);
-      const timeDiff = Math.abs(today.getTime() - deliveryDate.getTime());
-      const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-      if (diffDays > 7) {
-        console.warn(
-          `Order ${order.orderNo} has a delivery date older than 7 days.`
-        );
-      }
-    });
   }
 }

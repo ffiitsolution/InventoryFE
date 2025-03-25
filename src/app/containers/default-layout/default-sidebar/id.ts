@@ -228,6 +228,15 @@ export const menu_id: any = [
         },
       },
       
+      //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 START
+      {
+        name: 'Terima Barang Retur dari Site',
+        url: '/transaction/terima-barang-retur-dari-site/list-dt',
+        iconComponent: {
+          name: 'cil-factory',
+        },
+      },
+      //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
       {
         name: 'Pemakaian Barang Sendiri',
         url: '/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri',

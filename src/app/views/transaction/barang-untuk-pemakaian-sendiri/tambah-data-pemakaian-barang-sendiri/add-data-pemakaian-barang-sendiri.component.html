@@ -1,5 +1,6 @@
 <div class="fade-in">
   <c-card class="mb-4">
+    
     <c-card-body>
       <c-row>
         <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
@@ -7,7 +8,13 @@
             <i class="fa fa-chevron-left icon-12 icon-gap"></i>
             {{ "Kembali" | translate }}
           </button>
-          <h5>{{ "Tambah Pemakaian Barang Sendiri" | translate }}</h5>
+          <h8>{{ "Tambah Pemakaian Barang Sendiri" | translate }}</h8>
+
+          <div class="alert alert-info" role="alert" id="alert">
+            <i class="fa fa-info-circle"></i>
+            Tentukan Qty Setelah Selesai, Klik Proses Simpan Data Untuk Melihat List Barang Yang Ditambahkan.
+          </div>
+            
         </div>
       </c-row>
     </c-card-body>
@@ -22,16 +29,24 @@
               <h5 class="mb-2 p-2" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5>
               <div class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
-                  <label for="tglTransaksi">{{ "Tgl. Transaksi" | translate }} <span
-                      class="text-danger">*</span></label>
+                  <label for="tglTransaksi">{{ "Tgl. Transaksi" | translate }} <span class="text-danger">*</span></label>
                 </div>
-
                 <div class="col-8 pe-0 d-flex">
-                  <input type="text" id="tglTransaksi" class="form-control" aria-describedby="tglTransaksi"
-                    #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker autocomplete="off"
-                    [(ngModel)]="formData.tglTransaksi" placeholder="{{ 'Tanggal transaksi' | translate }}" />
+                  <input
+                    type="text"
+                    id="tglTransaksi"
+                    class="form-control"
+                    aria-describedby="tglTransaksi"
+                    #dp="bsDatepicker"
+                    [bsConfig]="dpConfig"
+                    bsDatepicker
+                    autocomplete="off"
+                    [(ngModel)]="formData.tglTransaksi"
+                    placeholder="{{ 'Tanggal transaksi' | translate }}"
+                  />
                 </div>
               </div>
+              
               <div class="divider mt-4"></div>
 
               <!-- <div class="w-100 px-2 py-1 row">
@@ -61,9 +76,26 @@
                   <label for="keterangan">{{ "Catatan" | translate }}</label>
                 </div>
 
-                <div class="col-8 pe-0 d-flex">
-                  <textarea placeholder="Catatan" type="text" class="form-control" id="keterangan"
-                    [(ngModel)]="formData.keterangan" name="keterangan"></textarea>
+                <div class="col-8 pe-0 d-flex flex-column">
+                  <textarea
+                    placeholder="Catatan"
+                    type="text"
+                    class="form-control"
+                    id="keterangan"
+                    name="keterangan"
+                    [(ngModel)]="formData.keterangan"
+                    (input)="onKeteranganInput()"
+                    [class.is-invalid]="isKeteranganInvalid"
+                    maxlength="50"
+                  ></textarea>
+              
+                  <div class="text-end text-muted mt-1">
+                    <small>{{ charCount }}/50 karakter</small>
+                  </div>
+              
+                  <div *ngIf="isKeteranganInvalid" class="text-danger mt-1 fw-bold">
+                   HARAP MASUKAN KARAKTER YANG VALID..!!!!
+                  </div>
                 </div>
               </div>
               <div style="width: 96%;" class="p-2">

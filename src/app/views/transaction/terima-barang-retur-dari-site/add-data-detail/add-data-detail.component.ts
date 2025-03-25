@@ -15,7 +15,7 @@ import {
   OUTLET_BRAND_KFC,
   SEND_PRINT_STATUS_SUDAH,
   STATUS_SAME_CONVERSION,
-  ACTION_SELECT,
+  ACTION_SELECT
 } from '../../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
 import { lastValueFrom, Subject } from 'rxjs';
@@ -35,16 +35,17 @@ import { Page } from '../../../../model/page';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 
 @Component({
-  selector: 'app-add-data-detail-barang-pemakaian',
-  templateUrl: './add-data-detail-barang.component.html',
-  styleUrl: './add-data-detail-barang.component.scss',
+  selector: 'app-add-data-detail-terima-barang-retur-dari-site',
+  templateUrl: './add-data-detail.component.html',
+  styleUrl: './add-data-detail.component.scss',
 })
-export class AddDataDetailBarangComponent
-  implements OnInit, OnDestroy, AfterViewInit
-{
+export class AddDataDetailTerimaBarangReturDariSiteComponent
+  implements OnInit, OnDestroy, AfterViewInit {
   columns: any;
   orders: any[] = [];
-  headerWastage: any = JSON.parse(localStorage['headerWastage']);
+  headerWastage: any = JSON.parse(
+    localStorage['headerProduction']
+  );
   adding: boolean = false;
   loadingIndicator: boolean = false;
   showFilterSection: boolean = false;
@@ -64,20 +65,19 @@ export class AddDataDetailBarangComponent
   selectedRow: any[] = [];
   pageModal = new Page();
   dataUser: any = {};
-  validationMessageList: string[] = [];
-  isValidToSave: boolean = true;
+  validationMessageList: any[] = [];
   validationMessageQtyPesanList: any[] = [];
   isShowModalExpired: boolean = false;
   isShowModalDelete: boolean = false;
   indexDataDelete: any;
   selectedExpProduct: any = {};
-  data: any = {};
-  isQtyKecilError: boolean = false;
+  listCurrentPage: number = 1;
+  totalLengthList: number = 1;
 
   @ViewChild('formModal') formModal: any;
   public dpConfig: Partial<BsDatepickerConfig> = {
     dateInputFormat: 'DD/MM/YYYY',
-    containerClass: 'theme-dark-blue',
+    containerClass: 'theme-red',
   };
   protected config = AppConfig.settings.apiServer;
 
@@ -91,7 +91,8 @@ export class AddDataDetailBarangComponent
     private globalService: GlobalService,
     private translationService: TranslationService,
     private dataService: DataService,
-    private service: AppService
+    private service: AppService,
+
   ) {
     this.g.navbarVisibility = false;
     this.headerWastage = JSON.parse(this.headerWastage);
@@ -110,33 +111,27 @@ export class AddDataDetailBarangComponent
       this.headerWastage.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.renderDataTables();
+
   }
 
-  onInputValueItemDetail(
-    event: any,
-    index: number,
-    type: string,
-    qtyType: string
-  ) {
-    if (
-      this.listProductData[index].qtyPesanKecil >
-      this.listProductData[index].konversi
-    ) {
-      this.validationMessageList[index] = 'QTY kecil harus < Konversi';
-    } else {
-      this.validationMessageList[index] = '';
+
+
+  onInputValueItemDetail(event: any, index: number, type: string, qtyType: string) {
+    if (this.listProductData[index].qtyPesanKecil > this.listProductData[index].konversi) {
+      this.validationMessageList[index] = "QTY kecil harus < Konversi";
+    }
+    else {
+      this.validationMessageList[index] = "";
     }
 
-    if (
-      this.listProductData[index].qtyPesanKecil != 0 ||
-      this.listProductData[index].qtyPesanBesar != 0
-    ) {
-      this.validationMessageQtyPesanList[index] = '';
-    } else {
-      this.validationMessageQtyPesanList[index] =
-        'Quantity Pesan tidak Boleh 0';
+    if (this.listProductData[index].qtyPesanKecil != 0 || this.listProductData[index].qtyPesanBesar != 0) {
+      this.validationMessageQtyPesanList[index] = ""
+    }
+    else {
+      this.validationMessageQtyPesanList[index] = "Quantity Pesan tidak Boleh 0"
     }
   }
+  
   onFilterSearch(
     listData: any[],
     filterText: string,
@@ -145,13 +140,14 @@ export class AddDataDetailBarangComponent
     return this.helper.applyFilterList(listData, filterText, startAfter);
   }
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+  }
   ngOnDestroy(): void {
     this.g.navbarVisibility = true;
   }
 
   onBackPressed() {
-    this.router.navigate(['/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri']);
+    this.router.navigate(['/order/send-order-to-warehouse/add']);
   }
 
   onPageChange(event: number) {
@@ -159,7 +155,7 @@ export class AddDataDetailBarangComponent
   }
 
   formatStrDate(date: any) {
-    return moment(date, 'YYYY-MM-DD').format('DD-MM-YYYY');
+    return moment(date, "YYYY-MM-DD").format("DD-MM-YYYY");
   }
 
   onSubmit() {
@@ -167,24 +163,18 @@ export class AddDataDetailBarangComponent
       // param for order Header
       const param = {
         kodeGudang: this.g.getUserLocationCode(),
-        tglTransaksi: moment(
-          this.headerWastage.tglTransaksi,
-          'DD-MM-YYYY'
-        ).format('D MMM YYYY'),
+        tglTransaksi: moment(this.headerWastage.tglTransaksi, "DD-MM-YYYY").format("D MMM YYYY"),
         statusPosting: 'P',
         keterangan: this.headerWastage.keterangan,
         namaSaksi: this.headerWastage.namaSaksi,
         jabatanSaksi: this.headerWastage.jabatanSaksi,
         userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
-        barangList: this.listProductData
-          .filter((item) => item.kodeBarang && item.kodeBarang.trim() !== '')
-          .map((item) => ({
+        details: this.listProductData
+          .filter(item => item.kodeBarang && item.kodeBarang.trim() !== '')
+          .map(item => ({
             kodeGudang: this.g.getUserLocationCode(),
-            tglTransaksi: moment(
-              this.headerWastage.tglTransaksi,
-              'DD-MM-YYYY'
-            ).format('D MMM YYYY'),
-            tipeTransaksi: 8,
+            tglTransaksi: moment(this.headerWastage.tglTransaksi, "DD-MM-YYYY").format("D MMM YYYY"),
+            tipeTransaksi: 4,
             kodeBarang: item.kodeBarang,
             konversi: item.konversi,
             satuanKecil: item.satuanKecil,
@@ -192,67 +182,62 @@ export class AddDataDetailBarangComponent
             qtyBesar: item.qtyWasteBesar || 0,
             qtyKecil: item.qtyWasteKecil || 0,
             flagExpired: 'Y',
-            totalQty:
-              this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi +
-              this.helper.sanitizedNumber(item.qtyWasteKecil),
-            totalQtyExpired:
-              this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi +
-              this.helper.sanitizedNumber(item.qtyWasteKecil),
+            totalQty: (this.helper.sanitizedNumber(item.qtyWasteBesar) *
+              item.konversi) + this.helper.sanitizedNumber(item.qtyWasteKecil),
+            totalQtyExpired: (this.helper.sanitizedNumber(item.qtyWasteBesar) *
+              item.konversi) + this.helper.sanitizedNumber(item.qtyWasteKecil),
             hargaSatuan: 0,
             userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
           })),
-        detailsExpired:
-          this.listEntryExpired?.map((expiredItem) => ({
-            kodeGudang: this.g.getUserLocationCode(),
-            tglTransaksi: moment(
-              this.headerWastage.tglTransaksi,
-              'DD-MM-YYYY'
-            ).format('D MMM YYYY'),
-            tipeTransaksi: 8,
-            kodeBarang: expiredItem.kodeBarang,
-            tglExpired: moment(expiredItem.tglExpired, 'DD-MM-YYYY').format(
-              'D MMM YYYY'
-            ),
-            konversi: expiredItem.konversi,
-            qtyBesar: -Math.abs(parseInt(expiredItem.qtyWasteBesar)) || 0,
-            qtyKecil: -Math.abs(parseInt(expiredItem.qtyWasteKecil)) || 0,
-            totalQty: expiredItem.totalQty
-              ? -Math.abs(expiredItem.totalQty)
-              : 0,
-          })) || [],
+        detailsExpired: this.listEntryExpired?.map(expiredItem => ({
+          kodeGudang: this.g.getUserLocationCode(),
+          tglTransaksi: moment(this.headerWastage.tglTransaksi, "DD-MM-YYYY").format("D MMM YYYY"),
+          tipeTransaksi: 4,
+          kodeBarang: expiredItem.kodeBarang,
+          tglExpired: moment(expiredItem.tglExpired, "DD-MM-YYYY").format("D MMM YYYY"),
+          konversi: expiredItem.konversi,
+          qtyBesar: -Math.abs(parseInt(expiredItem.qtyWasteBesar)) || 0,
+          qtyKecil: -Math.abs(parseInt(expiredItem.qtyWasteKecil)) || 0,
+          totalQty: expiredItem.totalQty ? -Math.abs(expiredItem.totalQty) : 0
+        })) || []
       };
 
       Swal.fire({
-        title: 'Apa Anda Sudah Yakin?',
-        text: 'Pastikan data yang dimasukkan sudah benar!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ya, Simpan!',
-        cancelButtonText: 'Batal',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.service.insert('/api/delivery-order/simpan-data-pemakaian-barang', param).subscribe({
-            next: (res) => {
-              if (!res) {
-                this.toastr.error(res.message);
-              } else {
-                setTimeout(() => {
-                  this.toastr.success(res.message);
-                  this.onPreviousPressed();
-                }, DEFAULT_DELAY_TIME);
-              }
-              this.adding = false;
-            },
+            title: 'Apa Anda Sudah Yakin?',
+            text: 'Pastikan data yang dimasukkan sudah benar!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Simpan!',
+            cancelButtonText: 'Batal',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.service.insert('/api/pembelian/insert', param).subscribe({
+                next: (res) => {
+                  if (!res.success) {
+                    this.toastr.error(res.message);
+                  } else {
+                    setTimeout(() => {
+                      this.toastr.success("Data wastage berhasil dibuat");
+                      this.onPreviousPressed();
+                    }, DEFAULT_DELAY_TIME);
+        
+                  }
+                  this.adding = false;
+                },
+              });
+            } else {
+              this.toastr.info('Penyimpanan dibatalkan');
+            }
           });
-        } else {
-          this.toastr.info('Penyimpanan dibatalkan');
-        }
-      });
-    } else {
-      this.toastr.error('Data tidak valid');
+
     }
+
+    else {
+      this.toastr.error("Data tidak valid")
+    }
+
   }
 
   onShowModal() {
@@ -266,29 +251,21 @@ export class AddDataDetailBarangComponent
 
   onShowModalExpired(event: any, index: number) {
     this.selectedExpProduct = this.listProductData[index];
-    let totalQtySum =
-      this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteBesar) *
-        this.selectedExpProduct.konversi +
-      this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteKecil);
+    let totalQtySum = (this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteBesar) *
+      this.selectedExpProduct.konversi) + this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteKecil);
 
-    if (
-      !this.listEntryExpired.some(
-        (item) => item.kodeBarang === this.selectedExpProduct.kodeBarang
-      )
-    ) {
+    if (!this.listEntryExpired.some(item => item.kodeBarang === this.selectedExpProduct.kodeBarang)) {
       this.listEntryExpired.push({
         tglExpired: new Date(),
-        keteranganTanggal: moment(new Date())
-          .locale('id')
-          .format('D MMMM YYYY'),
+        keteranganTanggal: moment(new Date()).locale('id').format('D MMMM YYYY'),
         qtyWasteBesar: this.selectedExpProduct.qtyWasteBesar,
         qtyWasteKecil: this.selectedExpProduct.qtyWasteKecil,
         satuanKecil: this.selectedExpProduct.satuanKecil,
         satuanBesar: this.selectedExpProduct.satuanBesar,
         konversi: this.selectedExpProduct.konversi,
         totalQty: totalQtySum,
-        kodeBarang: this.selectedExpProduct.kodeBarang,
-      });
+        kodeBarang: this.selectedExpProduct.kodeBarang
+      })
     }
 
     this.isShowModalExpired = true;
@@ -304,14 +281,12 @@ export class AddDataDetailBarangComponent
       satuanBesar: this.selectedExpProduct.satuanBesar,
       konversi: this.selectedExpProduct.konversi,
       totalQty: '',
-      kodeBarang: this.selectedExpProduct.kodeBarang,
-    });
+      kodeBarang: this.selectedExpProduct.kodeBarang
+    })
   }
 
   updateKeteranganTanggal(item: any) {
-    item.keteranganTanggal = moment(item.tglExpired)
-      .locale('id')
-      .format('D MMMM YYYY');
+    item.keteranganTanggal = moment(item.tglExpired).locale('id').format('D MMMM YYYY');
   }
 
   isValidQtyExpired: boolean = true;
@@ -319,53 +294,49 @@ export class AddDataDetailBarangComponent
   onSaveEntryExpired() {
     let totalQtyExpired = 0;
 
-    const totalQtyWaste =
-      this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteBesar) *
-        this.selectedExpProduct.konversi +
-      this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteKecil);
+    const totalQtyWaste = (this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteBesar) *
+      this.selectedExpProduct.konversi) + this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteKecil);
 
     this.listEntryExpired.forEach((item: any) => {
       if (item.kodeBarang === this.selectedExpProduct.kodeBarang) {
-        item.totalQty =
-          this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi +
-          this.helper.sanitizedNumber(item.qtyWasteKecil);
+        item.totalQty = (this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyWasteKecil);
         item.kodeBarang = this.selectedExpProduct.kodeBarang;
         totalQtyExpired += item.totalQty;
       }
     });
 
+
     if (totalQtyExpired > totalQtyWaste) {
-      this.toastr.error('Total Qty Expired harus sama dengan Qty Waste');
+      this.toastr.error("Total Qty Expired harus sama dengan Qty Waste");
     } else {
       this.isShowModalExpired = false;
     }
   }
 
+
   get filteredList() {
-    return this.listEntryExpired.filter(
-      (item) => item.kodeBarang === this.selectedExpProduct.kodeBarang
-    );
+    return this.listEntryExpired.filter(item => item.kodeBarang === this.selectedExpProduct.kodeBarang);
   }
+
 
   renderDataTables(): void {
     this.dtOptions = {
       language:
-        this.translationService.getCurrentLanguage() == 'id'
-          ? this.translationService.idDatatable
-          : {},
+        this.translationService.getCurrentLanguage() == 'id' ? this.translationService.idDatatable : {},
       processing: true,
       serverSide: true,
       autoWidth: true,
       info: true,
       lengthMenu: [5, 10, 25, 50, 100],
       pageLength: 5,
-      drawCallback: () => {},
+      drawCallback: () => { },
       ajax: (dataTablesParameters: any, callback) => {
+
         this.pageModal.start = dataTablesParameters.start;
         this.pageModal.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
-          // defaultGudang: this.headerWastage?.kodeSingkat,
+          defaultGudang: this.headerWastage?.kodeSingkat,
           // startDate: this.g.transformDate(this.dateRangeFilter[0]),
           // endDate: this.g.transformDate(this.dateRangeFilter[1]),
         };
@@ -401,13 +372,9 @@ export class AddDataDetailBarangComponent
           title: 'Pilih Barang  ',
           className: 'text-center',
           render: (data, type, row) => {
-            let isChecked = this.selectedRow.some(
-              (item) => item.kodeBarang === row.kodeBarang
-            )
-              ? 'checked'
-              : '';
+            let isChecked = this.selectedRow.some(item => item.kodeBarang === row.kodeBarang) ? 'checked' : '';
             return `<input type="checkbox" class="row-checkbox" data-id="${row.kodeBarang}" ${isChecked}>`;
-          },
+          }
         },
         { data: 'kodeBarang', title: 'Kode Barang' },
         { data: 'namaBarang', title: 'Nama Barang' },
@@ -415,46 +382,33 @@ export class AddDataDetailBarangComponent
         { data: 'satuanKecil', title: 'Satuan Kecil' },
         { data: 'satuanBesar', title: 'Satuan Besar' },
         { data: 'defaultGudang', title: 'Default Gudang' },
-        {
-          data: 'flagConversion',
-          title: 'Conversion Factor',
-          render: (data) => (data === 'Y' ? 'YA' : 'TIDAK'),
-        },
-        {
-          data: 'statusAktif',
-          title: 'Status Aktif',
-          render: (data) => (data === 'A' ? 'AKTIF' : 'TIDAK AKTIF'),
-        },
+        { data: 'flagConversion', title: 'Conversion Factor' },
+        { data: 'statusAktif', title: 'Status Aktif' },
       ],
       searchDelay: 1000,
       // delivery: [],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        $(row)
-          .find('.row-checkbox')
-          .off('change')
-          .on('change', (event: JQuery.ChangeEvent<HTMLElement>) => {
-            this.handleCheckboxChange(event, data);
-          });
+        $(row).find('.row-checkbox').off('change').on('change', (event: JQuery.ChangeEvent<HTMLElement>) => {
+          this.handleCheckboxChange(event , data);
+      });
 
-        $('td', row).on('click', (event) => {
-          const checkbox = $(row).find('.row-checkbox');
-          const index = this.selectedRow.findIndex((item) => item === data);
+      $('td', row).on('click', (event) => {
+        const checkbox = $(row).find('.row-checkbox'); 
+        const index = this.selectedRow.findIndex(item => item === data);
 
-          if (index === -1) {
-            this.selectedRow.push(data);
-            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
-            checkbox.prop('checked', true);
-          } else {
-            this.selectedRow.splice(index, 1);
-            $('td', row)
-              .css({ 'background-color': '' })
-              .removeClass('bg-secondary bg-opacity-25 fw-semibold');
-            checkbox.prop('checked', false);
-          }
-          if ($(event.target).is('.select-row')) {
-            event.stopPropagation();
-          }
-        });
+        if (index === -1) {
+          this.selectedRow.push(data);
+          $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+          checkbox.prop('checked', true);
+        } else {
+          this.selectedRow.splice(index, 1);
+          $('td', row).css({ 'background-color': '' }).removeClass('bg-secondary bg-opacity-25 fw-semibold');
+          checkbox.prop('checked', false);
+        }
+        if ($(event.target).is('.select-row')) {
+          event.stopPropagation();
+        }
+      });
         return row;
       },
     };
@@ -462,24 +416,20 @@ export class AddDataDetailBarangComponent
 
   handleCheckboxChange(event: JQuery.ChangeEvent<HTMLElement>, data: any) {
     const isChecked = (event.target as HTMLInputElement).checked;
-    console.log('isChecked', isChecked);
+    console.log("isChecked",isChecked)
     if (isChecked) {
-      // Add kodeBarang if checked
-      if (
-        !this.selectedRow.some((item) => item.kodeBarang === data.kodeBarang)
-      ) {
-        this.selectedRow.push(data);
-      }
+        // Add kodeBarang if checked
+        if (! this.selectedRow.some(item => item.kodeBarang === data.kodeBarang)) {
+            this.selectedRow.push(data);
+        }
     } else {
-      // Remove kodeBarang if unchecked
-      this.selectedRow = this.selectedRow.filter(
-        (item) => item.kodeBarang !== data.kodeBarang
-      );
-      console.log('this.selectedRow else', this.selectedRow);
+        // Remove kodeBarang if unchecked
+        this.selectedRow = this.selectedRow.filter(item => item.kodeBarang !== data.kodeBarang);
+        console.log("this.selectedRow else",this.selectedRow)
     }
-    console.log('selectedRow', this.selectedRow);
+    console.log("selectedRow",this.selectedRow)
   }
-
+  
   // actionBtnClick(action: string, data: any = null) {
   //   this.selectedRow = (data);
   //   this.renderDataTables();
@@ -506,92 +456,39 @@ export class AddDataDetailBarangComponent
   // }
 
   onAddListDataBarang() {
-    let errorMessage;
-    console.log('test');
+    let errorMessage
+    console.log("test")
     this.isShowModal = false;
 
     for (let barang of this.selectedRow) {
-      console.log('barang', barang);
+      console.log("barang", barang);
 
-      if (
-        !this.listProductData.some(
-          (order) => order.kodeBarang === barang.kodeBarang
-        )
-      ) {
+      if (!this.listProductData.some(order => order.kodeBarang === barang.kodeBarang)) {
         const productData = {
           totalQtyPesan: 0,
-          qtyWasteBesar: '0.00',
-          qtyWasteKecil: '0.00', 
+          qtyWasteBesar: null,
           namaBarang: barang?.namaBarang,
           satuanKecil: barang?.satuanKecil,
           kodeBarang: barang?.kodeBarang,
           satuanBesar: barang?.satuanBesar,
           konversi: barang?.konversi,
+          qtyWasteKecil: null,
           isConfirmed: true,
-          ...barang,
-        };
-        this.listProductData.splice(
-          this.listProductData.length - 1,
-          0,
-          productData
-        );
-        this.validationMessageList.push('');
-        this.validationMessageQtyPesanList.push('Quantity Pesan tidak Boleh 0');
+          ...barang
+        }
+        this.listProductData.splice(this.listProductData.length - 1, 0, productData);
+        this.validationMessageList.push("")
+        this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
         // this.mapOrderData(data);
         // this.onSaveData();
-      } else {
-        errorMessage = 'Beberapa barang sudah ditambahkan';
+      }
+      else {
+        errorMessage = "Beberapa barang sudah ditambahkan"
       }
     }
-    if (errorMessage) this.toastr.error(errorMessage);
-  }
+    if (errorMessage)
+      this.toastr.error(errorMessage);
 
-  formatNumber(data: any, type: string) {
-    setTimeout(() => {
-      if (type === 'besar') {
-        data.qtyWasteBesar =
-          data.qtyWasteBesar && !isNaN(data.qtyWasteBesar)
-            ? parseFloat(data.qtyWasteBesar).toFixed(2)
-            : '0.00';
-      }
-
-      if (type === 'kecil') {
-        data.qtyWasteKecil =
-          data.qtyWasteKecil && !isNaN(data.qtyWasteKecil)
-            ? parseFloat(data.qtyWasteKecil).toFixed(2)
-            : '0.00';
-      }
-    }, 50);
-  }
-
-  allowNumbersOnly(event: any): void {
-    const inputValue = event.target.value;
-    event.target.value = inputValue.replace(/[^0-9]/g, '');
-  }
-
-  addDecimalPlaces(event: any): void {
-    let inputValue = event.target.value;
-
-    if (inputValue && !inputValue.includes('.')) {
-      inputValue = inputValue + '.00';  
-    }
-
-    event.target.value = inputValue;
-    this.data.qtyWasteKecil = event.target.value;
-  }
-
-  checkMaxValue(event: any, i: number): void {
-    const konversiValue = parseFloat(this.selectedExpProduct.konversi);
-    
-    if (parseFloat(this.data.qtyWasteKecil) > parseFloat(this.listProductData[i].konversi)) {
-      console.log("1")
-      this.validationMessageList[i] = "Qty Kecil Tidak Boleh Lebih Besar Dari Konversi, Silahkan Cek Lagi...!!!";
-      this.data.qtyWasteKecil = this.data.qtyWasteBesar; 
-    } else {
-      console.log("2")
-
-      this.validationMessageList[i] = '';
-    }
   }
 
   deleteBarang() {
@@ -601,7 +498,7 @@ export class AddDataDetailBarangComponent
 
   insertDetail() {
     // param for order header detail
-    const paramDetail = this.listProductData.map((item) => ({
+    const paramDetail = this.listProductData.map(item => ({
       kodeGudang: this.headerWastage.kodeGudang,
       kodeTujuan: this.headerWastage.supplier,
       nomorPesanan: this.headerWastage.nomorPesanan,
@@ -611,53 +508,46 @@ export class AddDataDetailBarangComponent
       satuanBesar: item.satuanBesar,
       qtyPesanBesar: item.qtyPesanBesar,
       qtyPesanKecil: item.qtyPesanKecil,
-      totalQtyPesan:
-        this.helper.sanitizedNumber(item.qtyPesanBesar) * item.konversi +
-        this.helper.sanitizedNumber(item.qtyPesanKecil),
-      hargaUnit: item.unitPrice,
+      totalQtyPesan: (this.helper.sanitizedNumber(item.qtyPesanBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyPesanKecil),
+      hargaUnit: item.unitPrice
     }));
 
-    this.service
-      .insert('/api/send-order-to-warehouse/insert-detail', paramDetail)
-      .subscribe({
-        next: (res) => {
-          if (!res.success) {
-            alert(res.message);
-          } else {
-            this.toastr.success('Berhasil!');
-            // setTimeout(() => {
-            //   this.onPreviousPressed();
-            // }, DEFAULT_DELAY_TIME);
-          }
-          this.adding = false;
-        },
-      });
+
+    this.service.insert('/api/send-order-to-warehouse/insert-detail', paramDetail).subscribe({
+      next: (res) => {
+        if (!res.success) {
+          alert(res.message);
+        } else {
+
+          this.toastr.success('Berhasil!');
+          // setTimeout(() => {
+          //   this.onPreviousPressed();
+          // }, DEFAULT_DELAY_TIME);
+
+        }
+        this.adding = false;
+      },
+    });
+
+
+
   }
 
   onPreviousPressed(): void {
-    this.router.navigate(['/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri']);
+    this.router.navigate(['/transaction/wastage/list-dt']);
   }
 
   isDataInvalid() {
     let dataInvalid = false;
     dataInvalid =
-      this.validationMessageList.some((msg) => msg.trim() !== '') ||
-      this.validationMessageQtyPesanList.some((msg) => msg.trim() !== '');
+      this.validationMessageList.some(msg => msg.trim() !== "") ||
+      this.validationMessageQtyPesanList.some(msg => msg.trim() !== "");
 
-    return dataInvalid;
+    return dataInvalid
   }
 
   listProductData: any[] = [
-    {
-      kodeBarang: '',
-      namaBarang: '',
-      konversi: '',
-      satuanKecil: '',
-      satuanBesar: '',
-      qtyWasteBesar: '',
-      qtyWasteKecil: '',
-      isConfirmed: false,
-    },
+    { kodeBarang: '', namaBarang: '', konversi: '', satuanKecil: '', satuanBesar: '', qtyWasteBesar: '', qtyWasteKecil: '', isConfirmed: false }
   ];
   tempKodeBarang: string = '';
 
@@ -679,7 +569,7 @@ export class AddDataDetailBarangComponent
       );
 
       if (isDuplicate) {
-        this.toastr.error('Barang sudah ditambahkan');
+        this.toastr.error("Barang sudah ditambahkan")
         return;
       }
 
@@ -696,13 +586,9 @@ export class AddDataDetailBarangComponent
 
             if (index === this.listProductData.length - 1) {
               this.listProductData.push({
-                kodeBarang: '',
-                namaBarang: '',
-                konversi: '',
-                satuanKecil: '',
-                satuanBesar: '',
-                isConfirmed: false,
-                isLoading: false,
+                kodeBarang: '', namaBarang: '', konversi: '',
+                satuanKecil: '', satuanBesar: '', isConfirmed: false,
+                isLoading: false
               });
             }
           }
@@ -710,4 +596,5 @@ export class AddDataDetailBarangComponent
       });
     }
   }
-}
+
+}    

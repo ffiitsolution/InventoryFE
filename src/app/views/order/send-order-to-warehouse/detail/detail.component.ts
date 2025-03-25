@@ -408,8 +408,5 @@ export class DetailSendOrderToWarehouseComponent
   onPreviousPressed(): void {
     this.router.navigate(['order/send-order-to-warehouse']);
   }
-    formatStrDateMMM(date: any) {
-      return moment(date, "YYYY-MM-DD").format("DD MMM YYYY");
-    }
 
 }
