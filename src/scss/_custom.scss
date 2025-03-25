@@ -49,6 +49,14 @@ $theme-colors: map-merge(
   width: 120px !important;
 }
 
+.w-180 {
+  width: 180px !important;
+}
+
+.w-240 {
+  width: 240px !important;
+}
+
 .loading-input {
   width: 100%;
   height: 40px;
@@ -70,4 +78,8 @@ $theme-colors: map-merge(
 
 .loading-input span {
   font-size: 1rem;
+}
+
+c-modal[backdrop="static"] {
+  background: rgba(0, 0, 0, 0.7) !important;
 }

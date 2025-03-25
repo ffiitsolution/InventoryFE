@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import {
   AvatarModule,
@@ -9,15 +9,13 @@ import {
   CardModule,
   FormModule,
   GridModule,
+  ModalModule,
   NavModule,
   ProgressModule,
   TableModule,
   TabsModule,
 } from '@coreui/angular';
 import { IconModule } from '@coreui/icons-angular';
-import { ChartjsModule } from '@coreui/angular-chartjs';
-
-import { WidgetsModule } from '../widgets/widgets.module';
 import { EndOfMonthRoutingModule } from './end-of-month-routing.module';
 import { EndOfMonthComponent } from './end-of-month.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -36,12 +34,12 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     ButtonModule,
     FormModule,
+    FormsModule,
     ButtonModule,
     ButtonGroupModule,
-    ChartjsModule,
     AvatarModule,
     TableModule,
-    WidgetsModule,
+    ModalModule,
   ],
   declarations: [EndOfMonthComponent],
 })
