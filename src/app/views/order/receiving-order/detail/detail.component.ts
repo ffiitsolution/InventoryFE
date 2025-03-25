@@ -107,13 +107,14 @@ export class ReceivingOrderDetailComponent
                 const finalData = {
                   ...rest,
                   dtIndex: this.page.start + index + 1,
-                  konversi: `${rest.konversi}.00 ${rest.satuanBesar}/${rest.satuanKecil}`,
-                  konversiProduct: `${rest.konversiProduct || 0} ${rest.satuanBesarProduct || '-'
+                  konversi: `${this.g.formatToDecimal(rest.konversi)} ${rest.satuanBesar}/${rest.satuanKecil}`,
+                  konversiProduct: `${this.g.formatToDecimal(rest.konversiProduct)} ${rest.satuanBesarProduct || '-'
                     }/${rest.satuanKecilProduct || '-'}`,
                   qtyPesanBesar: this.g.formatToDecimal(rest.qtyPesanBesar),
                   totalQtyPesan: this.g.formatToDecimal(rest.totalQtyPesan),
                   qtyPesanKecil: this.g.formatToDecimal(rest.qtyPesanKecil),
                 };
+                console.log("finalData",finalData)
                 return finalData;
               });
               this.page.recordsTotal = resp.recordsTotal;
@@ -131,7 +132,9 @@ export class ReceivingOrderDetailComponent
         { data: 'dtIndex', title: '#' },
         { data: 'kodeBarang', title: 'Kode Barang', searchable: true },
         { data: 'namaBarang', title: 'Nama Barang', searchable: true },
-        { data: 'konversi', title: 'Konversi Pesan' },
+        { data: 'konversi', title: 'Konversi Pesan',
+          
+        },
         { data: 'qtyPesanBesar', title: 'Qty Pesan Besar' },
         { data: 'qtyPesanKecil', title: 'Qty Pesan Kecil' },
         { data: 'totalQtyPesan', title: 'Total Pesanan' },
