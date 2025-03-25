@@ -230,13 +230,16 @@ export class GlobalService {
     }
   }
 
-  transformTime(time: string) {
+  transformTime(time: string, showSecond:boolean = false) {
     if (isNull(time)) {
       return '00:00';
     } else {
       const hours = time.substring(0, 2);
       const minutes = time.substring(2, 4);
       const seconds = time.substring(4, 6);
+      if(showSecond){
+        return `${hours}:${minutes}:${seconds}`;
+      }
       return `${hours}:${minutes}`;
     }
   }
@@ -377,16 +380,16 @@ export class GlobalService {
 
   convertKeysToCamelCase(obj: any): any {
     const newObj: any = {};
-  
+
     Object.keys(obj).forEach(key => {
       // Convert UPPERCASE_UNDERSCORE to camelCase
       const camelCaseKey = key
         .toLowerCase()
         .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
-  
+
       newObj[camelCaseKey] = obj[key]; // Assign value to new key
     });
-  
+
     return newObj;
   }
 
