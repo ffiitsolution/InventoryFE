@@ -64,17 +64,22 @@ export class AddDataPemakaianBarangSendiriComponent implements OnInit, AfterView
         this.dpConfig.containerClass = 'theme-red';
         this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
         this.dpConfig.adaptivePosition = true;
+        this.dpConfig.customTodayClass = 'today-highlight';
       }
     
     
     ngOnInit(): void {
       this.dpConfig = {
-        dateInputFormat: 'DD-MM-YYYY',
+        dateInputFormat: 'DD/MM/YYYY',
         containerClass: 'theme-red',
         customTodayClass: 'today-red',
         minDate: this.today,
         maxDate: this.today
       };
+    const today = new Date().toISOString().split('T')[0];
+    this.minDate = new Date(today);
+    this.dpConfig.customTodayClass = 'today-highlight';
+
   }
 
   onKeteranganInput(): void {

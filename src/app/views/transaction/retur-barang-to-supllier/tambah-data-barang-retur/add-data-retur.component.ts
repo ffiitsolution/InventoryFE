@@ -57,6 +57,8 @@ export class AddDataBarangReturComponent
   charCount: number = 0;
 
   @ViewChild('formModal') formModal: any;
+  today: Date = new Date();
+
 
   formData = {
     tglTransaksi: '',
@@ -84,19 +86,31 @@ export class AddDataBarangReturComponent
     this.dpConfig.containerClass = 'theme-red';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
+    this.dpConfig.customTodayClass = 'today-highlight';
   }
 
   ngOnInit(): void {
-    this.bsConfig = Object.assign(
-      {},
-      {
-        containerClass: 'theme-default',
-        rangeInputFormat: 'dd/MM/yyyy',
-      }
-    );
+    this.dpConfig = {
+      dateInputFormat: 'DD/MM/YYYY',
+      containerClass: 'theme-red',
+      customTodayClass: 'today-red',
+      minDate: this.today,
+      maxDate: this.today
+    };
     this.renderDataTables();
     const today = new Date().toISOString().split('T')[0];
     this.minDate = new Date(today);
+    this.dpConfig.customTodayClass = 'today-highlight';
+  }
+
+  onKeteranganInput(): void {
+    const allowedRegex = /^[A-Za-z0-9\s-]*$/;
+    const currentValue = this.formData.keterangan || '';
+  
+    this.charCount = currentValue.length;
+  
+    // Cek apakah ada karakter tidak valid
+    this.isKeteranganInvalid = !allowedRegex.test(currentValue);
   }
 
   actionBtnClick(action: string, data: any = null) {
@@ -258,17 +272,25 @@ export class AddDataBarangReturComponent
   onAddDetail(): void {
     const keterangan = this.formData.keterangan || '';
   
-    if (!keterangan.trim()) {
-      this.isKeteranganInvalid = true;
-      Swal.fire({
-        icon: 'error',
-        title: '❌ Peringatan!',
-        text: 'CATATAN/KETERANGAN PENGEMBALIAN BARANG, TIDAK BOLEH DIKOSONGKAN, PERIKSA KEMBALI....!!!!',
-        confirmButtonColor: '#d33'
-      });
+    if (!this.formData.tglTransaksi || !keterangan.trim()) {
+      if (!this.formData.tglTransaksi) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Tanggal Belum Dipilih',
+          text: 'Silakan pilih Tanggal Transaksi terlebih dahulu.',
+        });
+      } else if (!keterangan.trim()) {
+        this.isKeteranganInvalid = true;
+        Swal.fire({
+          icon: 'error',
+          title: '❌ Peringatan!',
+          text: 'CATATAN/KETERANGAN PENGEMBALIAN BARANG, TIDAK BOLEH DIKOSONGKAN, PERIKSA KEMBALI....!!!!',
+          confirmButtonColor: '#d33'
+        });
+      }
       return;
     }
-  
+    
     this.formData.tglTransaksi =
       moment(this.formData.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
   
@@ -280,7 +302,12 @@ export class AddDataBarangReturComponent
   }
 
   get isFormInvalid(): boolean {
-    return Object.values(this.formData).some((value) => value === '');
+    return (
+      !this.formData.tglTransaksi || 
+      !this.formData.keterangan.trim() || 
+      this.formData.keterangan.length > 50 || 
+      this.isKeteranganInvalid 
+    );  
   }
 
   ngOnDestroy(): void {
