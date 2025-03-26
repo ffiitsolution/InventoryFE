@@ -94,7 +94,7 @@
                   <div class="d-flex" style="gap: 5px;">
                     <input #nextInput type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
                       [(ngModel)]="data.qtyPesanBesar"  (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
-                      (keypress)="g.conditionInput($event, 'numeric')" [ngClass]="{'form-invalid': validationMessageListSatuanBesar[i]}"
+                      (keypress)="g.conditionInput($event, 'numericDot')" [ngClass]="{'form-invalid': validationMessageListSatuanBesar[i]}"
                       (blur)="onBlurQtyPesanBesar(i)"
                       />
                     <span class="d-flex align-items-center justify-content-center">
@@ -113,7 +113,7 @@
                       class="form-control text-center inputQty inputNumberSpace" 
                       [(ngModel)]="data.qtyPesanKecil"
                       (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')" 
-                      (keypress)="g.conditionInput($event, 'numeric')" 
+                      (keypress)="g.conditionInput($event, 'numericDot')" 
                       (blur)="onBlurQtyPesanKecil(i)"
                       />
                 

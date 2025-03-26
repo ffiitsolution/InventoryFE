@@ -92,6 +92,7 @@ export class ReceivingOrderComponent
                   tglPesan: this.g.transformDate(rest.tglPesan),
                   tglBrgDikirim: this.g.transformDate(rest.tglBrgDikirim),
                   tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
+                  dateCancel: this.g.transformDate(rest.dateCancel),
                   dateCreate: this.g.transformDate(rest.dateCreate),
                   timeCreate: this.g.transformTime(rest.timeCreate),
                 };
