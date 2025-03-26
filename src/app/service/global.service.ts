@@ -40,6 +40,7 @@ export class GlobalService {
 
 
   selectedReportCategory: any = null;
+  statusEndOfMonth: any = '';
 
   constructor(
     private titleService: Title,
@@ -85,11 +86,12 @@ export class GlobalService {
   }
 
   clearLocalstorage() {
-    localStorage.removeItem('inv_locations');
-    localStorage.removeItem('inv_currentUser');
-    localStorage.removeItem('inv_token');
-    localStorage.removeItem('inv_listMenu');
-    // return localStorage.clear();
+    // localStorage.removeItem('inv_locations');
+    // localStorage.removeItem('inv_currentUser');
+    // localStorage.removeItem('inv_token');
+    // localStorage.removeItem('inv_listMenu');
+    sessionStorage.clear();
+    return localStorage.clear();
   }
 
   getLocalDateTime(date: Date) {

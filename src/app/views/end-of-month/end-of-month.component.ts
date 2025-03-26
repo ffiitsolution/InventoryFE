@@ -93,7 +93,7 @@ export class EndOfMonthComponent implements OnInit, OnDestroy, AfterViewInit {
                 ...rest,
                 dtIndex: this.page.start + index + 1,
                 dateProses: this.g.transformDate(item.dateProses),
-                timeProses: this.g.transformTime(item.timeProses),
+                timeProses: this.g.transformTime(item.timeProses, true),
               };
               return finalData;
             });
@@ -113,7 +113,7 @@ export class EndOfMonthComponent implements OnInit, OnDestroy, AfterViewInit {
         { data: 'monthEom', title: 'BULAN', searchable: true },
         {
           data: 'statusProses',
-          title: 'Status',
+          title: 'STATUS',
           searchable: false,
           render: (data) => {
             if (data === 'Y') {
@@ -122,15 +122,15 @@ export class EndOfMonthComponent implements OnInit, OnDestroy, AfterViewInit {
             return `<div class=""> <span class="badge badge-secondary py-2" style="background-color:#b51823;">BELUM DIPROSES</span> </div>`;
           },
         },
-        { data: 'userProses', title: 'USER PROSES', searchable: true },
+        { data: 'userProses', title: 'USER', searchable: true },
         { data: 'dateProses', title: 'TGL. PROSES', searchable: true },
         { data: 'timeProses', title: 'JAM PROSES', searchable: true },
       ],
       searchDelay: 1500,
       order: [
-        [2, 'asc'],
-        [0, 'desc'],
+        [3, 'asc'],
         [1, 'desc'],
+        [2, 'desc'],
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
@@ -252,6 +252,7 @@ export class EndOfMonthComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   processEndOfMonth() {
+    this.isShowModalProcess = false;
     this.loadingProcess = true;
     this.service
       .insert('/api/end-of-month/process', {
@@ -266,11 +267,22 @@ export class EndOfMonthComponent implements OnInit, OnDestroy, AfterViewInit {
         next: (res) => {
           this.loadingProcess = false;
           const data = res.data ?? {};
-          console.log(data);
+          if(data.success){
+            this.errorInModal = 'Proses Tutup Bulan selesai.';
+            this.rerenderDatatable();
+          } else {
+            const err = data.error;
+            if(err.includes('unique constraint')){
+              this.errorInModal = 'Gagal proses. Terjadi kesalahan: unique constraint.';
+            } else {
+              this.errorInModal = 'Gagal proses. Mohon cek kembali koneksi ke server.';
+            }
+          }
         },
         error: (err) => {
           this.loadingProcess = false;
           console.log('err: ' + err);
+          this.errorInModal = 'Gagal proses. Mohon cek kembali koneksi ke server.';
         },
       });
   }
