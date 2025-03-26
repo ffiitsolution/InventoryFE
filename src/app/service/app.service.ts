@@ -316,4 +316,10 @@ export class AppService {
       payload
     );
   }
+
+  getProfileCompany() {
+    return this.dataService.getData(
+      `${this.config.BASE_URL}/api/profile/company`
+    );
+  }
 }

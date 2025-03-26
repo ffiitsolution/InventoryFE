@@ -83,6 +83,10 @@ export class DefaultHeaderComponent
     this.router.navigate(['account-setting']);
   }
 
+  onProfileCompanyPressed() {
+    this.router.navigate(['master/profile-company']);
+  }
+
   initWs(): void {
     this.websocketService
       .initializeWebSocketConnection()

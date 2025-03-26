@@ -72,6 +72,7 @@ import { MasterUserEditComponent } from './master-user/edit/edit.component';
 import { MasterUserDetailComponent } from './master-user/detail/detail.component';
 import { MasterUserAddComponent } from './master-user/add/add.component';
 import { AddResepComponent, MasterResepComponent } from './master-resep';
+import { ProfileCompanyComponent } from './profile-company/profile-company.component';
 
 const routes: Routes = [
   {
@@ -284,6 +285,10 @@ const routes: Routes = [
       {
         path: 'master-resep/detail',
         component: AddResepComponent,
+      },
+      {
+        path: 'profile-company',
+        component: ProfileCompanyComponent,
       },
     ],
   },

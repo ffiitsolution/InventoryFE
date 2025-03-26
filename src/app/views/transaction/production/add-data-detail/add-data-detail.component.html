@@ -158,12 +158,14 @@
           <div class="col-4 d-flex align-items-center">
             <label class="fw-semibold" for="nomorPesanan">{{ "Total Pemakaian" | translate }}</label>
           </div>
-          <div class="col-8 pe-0">
-            <input type="text" placeholder="Nomor pesanan" class="form-control" id="konversi"
+          <div class="col-5 pe-0">
+            <input type="text" placeholder="Nomor pesanan" class="form-control" id="totalQtyProduksi"
               [value]="this.selectedExpProduct.totalQtyProduksi"
-              name="konversi" readonly />
+              name="totalQtyProduksi" readonly />
           </div>
-
+          <div class="col-3 d-flex align-items-start">
+            <label for="totalQtyProduksi">{{ selectedExpProduct.satuanKecil }}</label>
+          </div>
         </div>
 
       </div>
@@ -172,20 +174,25 @@
           <div class="col-4 d-flex align-items-center">
             <label for="nomorPesanan">{{ "Quantity Besar" | translate }}</label>
           </div>
-          <div class="col-8 pe-0">
-            <input type="text" class="form-control" id="konversi" [value]="selectedExpProduct.qtyPemakaianBesar"
-              name="konversi" readonly />
+          <div class="col-5 pe-0">
+            <input type="text" class="form-control" id="qtyPemakaianBesar" [value]="selectedExpProduct.qtyPemakaianBesar"
+              name="qtyPemakaianBesar" readonly />
           </div>
-
+          <div class="col-3 d-flex align-items-start">
+            <label for="qtyPemakaianBesar">{{ selectedExpProduct.satuanBesar }}</label>
+          </div>
         </div>
 
         <div class="w-100 px-2 py-1 row">
           <div class="col-4 d-flex align-items-center">
             <label for="nomorPesanan">{{ "Quantity Kecil" | translate }}</label>
           </div>
-          <div class="col-8 pe-0">
-            <input type="text" class="form-control" id="konversi" [value]="selectedExpProduct.qtyPemakaianKecil || 0"
-              name="konversi" readonly />
+          <div class="col-5 pe-0">
+            <input type="text" class="form-control" id="qtyPemakaianKecil" [value]="selectedExpProduct.qtyPemakaianKecil || 0"
+              name="qtyPemakaianKecil" readonly />
+          </div>
+          <div class="col-3 d-flex align-items-start">
+            <label for="qtyPemakaianKecil">{{ selectedExpProduct.satuanKecil }}</label>
           </div>
         </div>
       </div>

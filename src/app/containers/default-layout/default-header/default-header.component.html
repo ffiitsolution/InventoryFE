@@ -59,19 +59,33 @@
         </div>
       </li>
       <hr />
+      <li class="wrapper-user" (click)="onProfileCompanyPressed()">
+        <div class="wrapper-user__profile pointer">
+          <i class="fa fa-home" aria-hidden="true" style="font-size: 20px;margin-right: 1rem;"></i>
+          <p class="wrapper-user__info">{{'Profile Perusahaan' | translate}}</p>
+        </div>
+      </li>
       <li class="wrapper-user" (click)="onAccountSettingPressed()">
         <div class="wrapper-user__profile pointer">
           <i class="fa fa-building" aria-hidden="true" style="font-size: 20px;margin-right: 1rem;"></i>
           <p class="wrapper-user__info">{{'Ubah lokasi' | translate}}</p>
         </div>
       </li>
-      <li class="wrapper-user" (click)="switchLanguage()">
+      <!-- <li class="wrapper-user" (click)="switchLanguage()">
         <div class="wrapper-user__profile pointer">
           <i class="fa fa-flag" aria-hidden="true" style="font-size: 20px;margin-right: 1rem;"></i>
           <p class="wrapper-user__info">{{'Ubah Bahasa' | translate}}</p>
         </div>
-      </li>
+      </li> -->
       <hr />
+      <li class="wrapper-user logout">
+        <button
+        class="btn  btn-success text-white btn-150"
+        type="submit"
+      >
+        <span>{{ "HQ" | translate }} {{ "Active" | translate }}</span>
+      </button>
+      </li>
       <li class="wrapper-user logout">
         <div class="wrapper-user__profile" (click)="onLogoutPressed()">
           <i class="fa fa-sign-out" aria-hidden="true" style="font-size: 20px;margin-right: 1rem;"></i>
