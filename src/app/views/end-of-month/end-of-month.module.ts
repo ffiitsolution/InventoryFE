@@ -6,6 +6,7 @@ import {
   AccordionButtonDirective,
   AccordionComponent,
   AccordionItemComponent,
+  AlertComponent,
   AvatarModule,
   ButtonGroupModule,
   ButtonModule,
@@ -49,7 +50,8 @@ import { DataTablesModule } from 'angular-datatables';
     AccordionComponent,
     AccordionItemComponent,
     TemplateIdDirective,
-    AccordionButtonDirective
+    AccordionButtonDirective,
+    AlertComponent
   ],
   declarations: [EndOfMonthComponent],
 })

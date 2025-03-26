@@ -29,10 +29,10 @@
   <c-card class="mb-2" *ngIf="lastDate">
     <c-card-body>
       <div class="text-center">
-        <div class="mx-auto card" style="width: fit-content;">
+        <div class="mx-auto card" style="width: 650px;">
           <div class="card-body">
 
-            <div class="text-center mb-3">
+            <div class="text-center mb-3 fs-5">
               Pastikan semua transaksi pada periode tersebut sudah di 'Entry'
               <br>(Tidak ada transaksi yang tertunda/pending)
             </div>
@@ -82,10 +82,15 @@
             </p>
             <hr>
             <div class="text-end">
-              <button class="btn btn-primary" (click)="confirmProcess()" [disabled]="errorInModal">
+              <button class="btn btn-primary" (click)="confirmProcess()" [disabled]="errorInModal || loadingProcess || lastDate === selectedLastDate">
                 <i class="fa fa-check me-2"></i>
                 Proses Closing
               </button>
+            </div>
+            <div class="text-start mt-2">
+              <c-alert color="warning" *ngIf="g.statusEndOfMonth">
+                {{'Progress: ' + g.statusEndOfMonth}}
+              </c-alert>
             </div>
           </div>
         </div>
@@ -134,14 +139,14 @@
       <p class="text-center fw-bold text-danger">
         Tanggal server tidak sama dengan tanggal akhir periode.
         <br>Server&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{getServerDate()}}
-        <br>Akhir periode : {{lastDate}}
+        <br>Akhir periode : {{selectedLastDate}}
         <br>
         <br>Yakin proses beda tanggal?
       </p>
     </div>
     <hr>
     <div class="d-flex justify-center py-2">
-      <button class="btn btn-primary text-white me-3 w-180" (click)="processEndOfMonth()">
+      <button class="btn btn-primary text-white me-3 w-180" (click)="processEndOfMonth()" [disabled]="loadingProcess">
         Proses Dilanjutkan
       </button>
       <button class="btn btn-light w-180" (click)="isShowModalProcess = false">

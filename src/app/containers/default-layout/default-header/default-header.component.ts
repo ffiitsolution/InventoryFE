@@ -83,6 +83,10 @@ export class DefaultHeaderComponent
     this.router.navigate(['account-setting']);
   }
 
+  onProfileCompanyPressed() {
+    this.router.navigate(['master/profile-company']);
+  }
+
   initWs(): void {
     this.websocketService
       .initializeWebSocketConnection()
@@ -117,6 +121,7 @@ export class DefaultHeaderComponent
         this.g.currentDate = this.g.transformDate(date) || '';
         this.g.serverStatus = health;
         this.g.countdownValue = 2;
+        this.g.statusEndOfMonth = data.statusEndOfMonth;
         this.checkTitleIfOffline(time.substring(time.length - 1, 1));
       } else {
         this.g.serverStatus = 'DOWN';
