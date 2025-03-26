@@ -28,6 +28,9 @@ export class HelperService {
     source = '' + source;
     const sanitize = source.replace(/[^0-9.]/g, '');
     if (/\d/.test(sanitize)) {
+      if(sanitize.length == 0){
+        return 0;
+      }
       return Number(sanitize);
     } else {
       return 0;
