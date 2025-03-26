@@ -121,8 +121,8 @@ export class AddDataDetailProductionComponent
 
   ngAfterViewInit(): void {
   }
+
   ngOnDestroy(): void {
-    this.g.navbarVisibility = true;
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();  
   }
@@ -276,7 +276,7 @@ export class AddDataDetailProductionComponent
     if (!this.listEntryExpired.some(item => item.kodeBarang === this.selectedExpProduct.bahanBaku)) {
       this.listEntryExpired.push({
         tglExpired: moment().add(1, 'days').toDate(),
-        keteranganTanggal: moment().add(1, 'days').locale('id').format('D MMMM YYYY'),
+        keteranganTanggal: moment().add(1, 'days').locale('id').format('DD MMM YYYY'),
         qtyPemakaianBesar: parseFloat(this.selectedExpProduct.qtyPemakaianBesar).toFixed(2),
         qtyPemakaianKecil: parseFloat(this.selectedExpProduct.qtyPemakaianKecil).toFixed(2),
         satuanKecil: this.selectedExpProduct.satuanKecil,

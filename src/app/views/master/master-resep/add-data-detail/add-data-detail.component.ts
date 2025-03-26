@@ -465,7 +465,7 @@ export class AddDataDetailResepComponent
         };
         Swal.fire({
           title: 'Apakah anda yakin ingin menghapus data ini?',
-          text: 'DATA YANG DIHAPUS TIDAK BISA DIKEMBALIKAN',
+          text: '',
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
