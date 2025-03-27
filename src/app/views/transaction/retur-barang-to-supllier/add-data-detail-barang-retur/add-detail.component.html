@@ -1,4 +1,8 @@
 <div class="fade-in">
+  <div class="alert alert-info" role="alert" id="alert">
+    <i class="fa fa-info-circle"></i>
+    Tentukan Qty Setelah Selesai, Klik Proses Simpan Data Untuk Melihat List Barang Yang Ditambahkan.
+  </div>
   <c-card class="mb-4">
     <c-card-body>
       <div class="table-responsive">
@@ -63,33 +67,56 @@
                 </td>
                 <td class="text-center">{{ data.konversi }} {{data.satuanKecil}} / {{data.satuanBesar}}</td>
                 <td class="text-center input-column">
-                  <div class="d-flex" style="gap: 5px;">
-                    <input #nextInput type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                      [(ngModel)]="data.qtyWasteBesar" (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
-                      [readonly]="!data.isConfirmed" />
+                  <div class="d-flex" style="gap: 5px">
+                    <input
+                      #nextInput
+                      type="text"
+                      min="0"
+                      class="form-control text-center inputQty inputNumberSpace"
+                      [(ngModel)]="data.qtyWasteBesar"
+                      (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
+                      (input)="checkMaxValue($event, i)"
+                      [readonly]="!data.isConfirmed"
+                      (keypress)="g.conditionInput($event, 'numericDot')"
+                      (blur)="onBlurQtyPesanBesar(i)"
+                    />
                     <span class="d-flex align-items-center justify-content-center">
-                      / {{data.satuanBesar}}
+                      / {{ data.satuanBesar }}
                     </span>
                   </div>
                 </td>
 
                 <td class="text-center input-column">
-                  <div class="d-flex" style="gap: 5px;">
-                    <input type="text" numberOnly max="{{data.qtyWasteKecil}}" min="0"
-                      [class.form-invalid]="validationMessageList[i]"
-                      class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyWasteKecil"
+                  <div class="d-flex" style="gap: 5px">
+                    <input
+                      type="text"
+                      numberOnly
+                      max="{{ data.qtyWasteBesar }}"
+                      min="0"
+                      [ngClass]="{ 'form-invalid': validationMessageList[i] }"
+                      class="form-control text-center inputQty inputNumberSpace"
+                      [(ngModel)]="data.qtyWasteKecil"
                       (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')"
-                      (keypress)="g.conditionInput($event, 'numeric')" [readonly]="!data.isConfirmed" />
-
+                      (input)="checkMaxValue($event, i)"
+                      [readonly]="!data.isConfirmed"
+                      (keypress)="g.conditionInput($event, 'numericDot')"
+                      (blur)="onBlurQtyPesanKecil(i)"
+                    />
                     <span class="d-flex align-items-center justify-content-center">
-                      / {{data.satuanKecil}}
+                      / {{ data.satuanKecil }}
                     </span>
                   </div>
 
                   <!-- Validation message area -->
-                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageList[i]">
-                    {{ validationMessageList[i] }}
-                  </span>
+                <span
+                  style="font-size: 14px"
+                  class="text-danger"
+                  *ngIf="validationMessageList[i]"
+                >
+                  {{ validationMessageList[i] }}
+                </span>
+
+                
                 </td>
 
                 <td class="text-center">{{(helper.sanitizedNumber(data.qtyWasteBesar) *
@@ -97,7 +124,11 @@
 
                   <!-- Validation message area -->
                   <br>
-                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageQtyPesanList [i]">
+                  <span
+                    style="font-size: 14px"
+                    class="text-danger"
+                    *ngIf="validationMessageQtyPesanList[i]"
+                  >
                     {{ validationMessageQtyPesanList[i] }}
                   </span>
                 </td>
@@ -111,8 +142,12 @@
                   data.konversi) + helper.sanitizedNumber(data.qtyWasteKecil) }} {{data.satuanKecil}}
 
                   <!-- Validation message area -->
-                  <br>
-                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageQtyPesanList [i]">
+                  <br />
+                  <span
+                    style="font-size: 14px"
+                    class="text-danger"
+                    *ngIf="validationMessageQtyPesanList[i]"
+                  >
                     {{ validationMessageQtyPesanList[i] }}
                   </span>
                 </td>
@@ -136,15 +171,16 @@
             class="fa fa-times"></i></button>
       </c-modal-header>
       <c-modal-body>
+         
+        <div class="table-responsive">
+          <table datatable [dtOptions]=" dtOptions" class="row-border hover stripe w-100"></table>
+        </div>
         <div class="d-grid gap-3 d-md-flex justify-content-end mt-3">
           <button class="btn btn-info text-white btn-150 pe-3" (click)="onAddListDataBarang()">
             <i class="fa fa-check pe-2"></i> {{ "Tambah" | translate }} {{ "Data" | translate }}
           </button>
   
-        </div>     
-        <div class="table-responsive">
-          <table datatable [dtOptions]=" dtOptions" class="row-border hover stripe w-100"></table>
-        </div>
+        </div>    
       </c-modal-body>
     </c-modal>
 

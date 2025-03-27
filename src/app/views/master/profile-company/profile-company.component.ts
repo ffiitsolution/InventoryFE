@@ -99,7 +99,7 @@ export class ProfileCompanyComponent implements OnInit,OnDestroy {
   }
 
   onSubmit(): void {
-   
+
     if(this.myForm.valid){
       this.isSubmitting =true;
       this.editing = true;
@@ -130,7 +130,7 @@ export class ProfileCompanyComponent implements OnInit,OnDestroy {
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe({
       next: (res:any) => {
-         
+
             if (res) {
               this.myForm.patchValue({
                 kodePerusahaan: res.kodePerusahaan || '',
@@ -156,13 +156,13 @@ export class ProfileCompanyComponent implements OnInit,OnDestroy {
                 lokasiDataBackup: res.lokasiDataBackup || '',
               });
             }
-          
+
       },
     });
   }
 
   onPreviousPressed() {
-    localStorage.removeItem(LS_INV_SELECTED_USER);
+    localStorage.removeItem(LS_INV_SELECTED_USER)
     this.router.navigate(['/master/master-user']);
   }
 
@@ -200,7 +200,7 @@ export class ProfileCompanyComponent implements OnInit,OnDestroy {
     }
   }
 
- 
+
 
   isFieldValid(fieldName: String) {
     return this.g.isFieldValid(this.myForm, fieldName);
@@ -265,4 +265,5 @@ export class ProfileCompanyComponent implements OnInit,OnDestroy {
   }
 
   
+
 }

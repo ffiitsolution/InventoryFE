@@ -522,7 +522,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
 
   getProductRow(kodeBarang: string, index: number) {
     let errorMessage
-    let param = { kodeBarang: kodeBarang };
+    let param = { kodeBarang: kodeBarang, defaultGudang:  this.newOrhdk?.kodeSingkat };
 
     if (kodeBarang !== '') {
       const isDuplicate = this.listOrderData.some(

@@ -118,6 +118,12 @@ export class AddDataDetailBarangComponent
     type: string,
     qtyType: string
   ) {
+    if (qtyType === 'besar') {
+      const qtyBesar = this.listProductData[index].qtyWasteBesar;
+      if (!qtyBesar || qtyBesar === '0.00') {
+        this.listProductData[index].qtyWasteKecil = '0.00';
+      }
+    }
     if (
       this.listProductData[index].qtyPesanKecil >
       this.listProductData[index].konversi
@@ -223,8 +229,9 @@ export class AddDataDetailBarangComponent
       };
 
       Swal.fire({
-        title: 'Apa Anda Sudah Yakin?',
-        text: 'Pastikan data yang dimasukkan sudah benar!',
+        title: 
+        'Pastikan Semua Data Yang Sudah Di Input Benar, PERIKSA SEKALI LAGI...!!!!',
+        text: 'DATA YANG SUDAH DI POSTING TIDAK DAPAT DI PERBAIKI...!!!!',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -365,11 +372,8 @@ export class AddDataDetailBarangComponent
         this.pageModal.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
-          // defaultGudang: this.headerWastage?.kodeSingkat,
-          // startDate: this.g.transformDate(this.dateRangeFilter[0]),
-          // endDate: this.g.transformDate(this.dateRangeFilter[1]),
+       
         };
-        // this.appService.getNewReceivingOrder(params)
         this.dataService
           .postData(this.g.urlServer + '/api/product/dt-pesanan', params)
           .subscribe((resp: any) => {
@@ -379,16 +383,11 @@ export class AddDataDetailBarangComponent
               const finalData = {
                 ...rest,
                 dtIndex: this.pageModal.start + index + 1,
-                // kodePemesan: `(${rest.kodeGudang}) ${rest.namaGudang}`,
-                // tglPesan: this.g.transformDate(rest.tglPesan),
-                // tglKirim: this.g.transformDate(rest.tglKirim),
-                // tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
               };
               return finalData;
             });
             this.pageModal.recordsTotal = resp.recordsTotal;
             this.pageModal.recordsFiltered = resp.recordsFiltered;
-            // this.showFilterSection = false;
             callback({
               recordsTotal: resp.recordsTotal,
               recordsFiltered: resp.recordsFiltered,
@@ -480,31 +479,6 @@ export class AddDataDetailBarangComponent
     console.log('selectedRow', this.selectedRow);
   }
 
-  // actionBtnClick(action: string, data: any = null) {
-  //   this.selectedRow = (data);
-  //   this.renderDataTables();
-  //   this.isShowModal = false;
-
-  //   if (!this.listProductData.some(order => order.kodeBarang === this.selectedRow.kodeBarang)) {
-  //     const productData = {
-  //       totalQtyPesan: 0,
-  //       qtyWasteBesar: null,
-  //       namaBarang: this.selectedRow?.namaBarang,
-  //       satuanKecil: this.selectedRow?.satuanKecil,
-  //       kodeBarang: this.selectedRow?.kodeBarang,
-  //       satuanBesar: this.selectedRow?.satuanBesar,
-  //       konversi: this.selectedRow?.konversi,
-  //       qtyWasteKecil: null,
-  //       isConfirmed: true,
-  //       ...this.selectedRow
-  //     }
-  //     this.listProductData.splice(this.listProductData.length - 1, 0, productData);
-  //   }
-  //   else {
-  //     this.toastr.error("Barang sudah ditambahkan");
-  //   }
-  // }
-
   onAddListDataBarang() {
     let errorMessage;
     console.log('test');
@@ -537,8 +511,6 @@ export class AddDataDetailBarangComponent
         );
         this.validationMessageList.push('');
         this.validationMessageQtyPesanList.push('Quantity Pesan tidak Boleh 0');
-        // this.mapOrderData(data);
-        // this.onSaveData();
       } else {
         errorMessage = 'Beberapa barang sudah ditambahkan';
       }
@@ -581,12 +553,15 @@ export class AddDataDetailBarangComponent
   }
 
   checkMaxValue(event: any, i: number): void {
+    console.log("checkmaxvalue")
+    console.log("this.data.qtyWasteKeci",this.data.qtyWasteKeci)
+    console.log("this.listProductData[i].konversi",this.listProductData[i].konversi)
+
     const konversiValue = parseFloat(this.selectedExpProduct.konversi);
     
-    if (parseFloat(this.data.qtyWasteKecil) > parseFloat(this.listProductData[i].konversi)) {
+    if (parseFloat(this.listProductData[i].qtyWasteKecil) > parseFloat(this.listProductData[i].konversi)) {
       console.log("1")
       this.validationMessageList[i] = "Qty Kecil Tidak Boleh Lebih Besar Dari Konversi, Silahkan Cek Lagi...!!!";
-      this.data.qtyWasteKecil = this.data.qtyWasteBesar; 
     } else {
       console.log("2")
 
@@ -625,9 +600,6 @@ export class AddDataDetailBarangComponent
             alert(res.message);
           } else {
             this.toastr.success('Berhasil!');
-            // setTimeout(() => {
-            //   this.onPreviousPressed();
-            // }, DEFAULT_DELAY_TIME);
           }
           this.adding = false;
         },
@@ -708,6 +680,25 @@ export class AddDataDetailBarangComponent
           }
         },
       });
+    }
+  }
+  onBlurQtyPesanKecil(index: number) {
+    const value = this.listProductData[index].qtyWasteKecil;
+    let parsed = Number(value);
+    if (!isNaN(parsed)) {
+      this.listProductData[index].qtyWasteKecil = parsed.toFixed(2);
+    } else {
+      this.listProductData[index].qtyWasteKecil = '0.00';
+    }
+  }
+
+  onBlurQtyPesanBesar(index: number) {
+    const value = this.listProductData[index].qtyWasteBesar;
+    let parsed = Number(value);
+    if (!isNaN(parsed)) {
+      this.listProductData[index].qtyWasteBesar = parsed.toFixed(2);
+    } else {
+      this.listProductData[index].qtyWasteBesar = '0.00'; 
     }
   }
 }

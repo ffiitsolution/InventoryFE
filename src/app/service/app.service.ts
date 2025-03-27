@@ -318,8 +318,9 @@ export class AppService {
   }
 
   getProfileCompany() {
-    return this.dataService.getData(
-      `${this.config.BASE_URL}/api/profile/company`
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/profile/company`,
+      {}
     );
   }
 

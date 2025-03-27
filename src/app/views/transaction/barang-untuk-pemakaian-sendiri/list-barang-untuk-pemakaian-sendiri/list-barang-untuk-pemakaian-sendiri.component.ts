@@ -121,11 +121,15 @@ pageSize: number = 10; // Define the pageSize property
       },
       columns: [
         { data: 'dtIndex', title: 'No.'},
-        { data: 'TGL_TRANSAKSI', title: 'Tanggal Transaksi' },
+        { data: 'TGL_TRANSAKSI', title: 'Tanggal Transaksi', 
+          render: (data) => this.g.transformDate(data),
+        },
         { data: 'NOMOR_TRANSAKSI', title: 'No. Transaksi' },
         { data: 'KETERANGAN', title: 'Keterangan Pemakaian', searchable: true },
         { data: 'USER_CREATE', title: 'User Proses', searchable: true },
-        { data: 'TGL_TRANSAKSI', title: 'Tanggal Proses' },
+        { data: 'TGL_TRANSAKSI', title: 'Tanggal Proses',
+          render: (data) => this.g.transformDate(data),
+        },
         {
           data: 'TIME_CREATE',
           title: 'Jam Proses',
@@ -169,7 +173,7 @@ pageSize: number = 10; // Define the pageSize property
         );
         return row;
       },
-      order: [[2, 'desc']]
+      order: [[1, 'desc']]
     };
     this.dtColumns = this.dtOptions.columns;
   }
@@ -365,4 +369,6 @@ pageSize: number = 10; // Define the pageSize property
   //       },
   //     };
   //   }
+
+  
 }

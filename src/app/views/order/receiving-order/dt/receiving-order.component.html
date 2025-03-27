@@ -27,16 +27,15 @@
         <button type="button" class="btn btn-success text-white me-2 btn-240" data-toggle="modal"
         (click)="onOrderManualPressed()">
         <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
-        {{ "Order Manuall" | translate }}
+        {{ "Order Manual" | translate }}
       </button>
         <button type="button" class="btn btn-success text-white me-2 btn-240" data-toggle="modal"
           (click)="onAddPressed()">
           <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
           {{ "Tambah Penerimaan" | translate }}
         </button>
-      </div>
+      </div>  
       <div [visible]="showFilterSection" cCollapse>
-        <div class="divider"></div>
         <div class="row" style="margin-top: -16px">
           <c-card-body>
             <c-row>
@@ -60,6 +59,7 @@
           </c-card-body>
         </div>
       </div>
+      <div class="divider"></div>
       <div class="table-responsive">
         <table datatable [dtOptions]="dtOptions" (page.dt)="dtPageChange($event)" class="row-border hover stripe"></table>
       </div>

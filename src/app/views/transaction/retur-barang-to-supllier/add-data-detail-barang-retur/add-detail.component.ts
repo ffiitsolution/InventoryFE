@@ -65,6 +65,7 @@ export class AddDataDetailBarangReturComponent
   pageModal = new Page();
   dataUser: any = {};
   validationMessageList: any[] = [];
+  isValidToSave: boolean = true;
   dateRangeFilter: [Date, Date] = [new Date(), new Date()];
   validationMessageQtyPesanList: any[] = [];
   isShowModalExpired: boolean = false;
@@ -72,6 +73,9 @@ export class AddDataDetailBarangReturComponent
   indexDataDelete: any;
   selectedExpProduct: any = {};
   fromData: any = {};
+  data: any = {};
+  isQtyKecilError: boolean = false;
+
 
   @ViewChild('formModal') formModal: any;
   public dpConfig: Partial<BsDatepickerConfig> = {
@@ -117,6 +121,12 @@ export class AddDataDetailBarangReturComponent
     type: string,
     qtyType: string
   ) {
+    if (qtyType === 'besar') {
+      const qtyBesar = this.listProductData[index].qtyWasteBesar;
+      if (!qtyBesar || qtyBesar === '0.00') {
+        this.listProductData[index].qtyWasteKecil = '0.00';
+      }
+    }
     if (
       this.listProductData[index].qtyPesanKecil >
       this.listProductData[index].konversi
@@ -224,6 +234,7 @@ export class AddDataDetailBarangReturComponent
             totalQty: expiredItem.totalQty
               ? -Math.abs(expiredItem.totalQty)
               : 0,
+            flagExpired: 'Y',
           })) || [],
       };
 
@@ -621,6 +632,39 @@ export class AddDataDetailBarangReturComponent
     }, 50);
   }
 
+  allowNumbersOnly(event: any): void {
+    const inputValue = event.target.value;
+    event.target.value = inputValue.replace(/[^0-9]/g, '');
+  }
+
+  addDecimalPlaces(event: any): void {
+    let inputValue = event.target.value;
+
+    if (inputValue && !inputValue.includes('.')) {
+      inputValue = inputValue + '.00';  
+    }
+
+    event.target.value = inputValue;
+    this.data.qtyWasteKecil = event.target.value;
+  }
+
+  checkMaxValue(event: any, i: number): void {
+    console.log("checkmaxvalue")
+    console.log("this.data.qtyWasteKeci",this.data.qtyWasteKeci)
+    console.log("this.listProductData[i].konversi",this.listProductData[i].konversi)
+
+    const konversiValue = parseFloat(this.selectedExpProduct.konversi);
+    
+    if (parseFloat(this.listProductData[i].qtyWasteKecil) > parseFloat(this.listProductData[i].konversi)) {
+      console.log("1")
+      this.validationMessageList[i] = "Qty Kecil Tidak Boleh Lebih Besar Dari Konversi, Silahkan Cek Lagi...!!!";
+    } else {
+      console.log("2")
+
+      this.validationMessageList[i] = '';
+    }
+  }
+
   deleteBarang() {
     this.listProductData.splice(this.indexDataDelete, 1);
     this.isShowModalDelete = false;
@@ -695,8 +739,6 @@ export class AddDataDetailBarangReturComponent
 
     let kodeBarang = this.listProductData[index].kodeBarang?.trim();
     if (kodeBarang !== '') {
-      this.listProductData[index].qtyWasteBesar = '0';
-      this.listProductData[index].qtyWasteKecil = '0';
       this.getProductRow(kodeBarang, index);
     }
   }
@@ -739,6 +781,25 @@ export class AddDataDetailBarangReturComponent
           }
         },
       });
+    }
+  }
+  onBlurQtyPesanKecil(index: number) {
+    const value = this.listProductData[index].qtyWasteKecil;
+    let parsed = Number(value);
+    if (!isNaN(parsed)) {
+      this.listProductData[index].qtyWasteKecil = parsed.toFixed(2);
+    } else {
+      this.listProductData[index].qtyWasteKecil = '0.00';
+    }
+  }
+
+  onBlurQtyPesanBesar(index: number) {
+    const value = this.listProductData[index].qtyWasteBesar;
+    let parsed = Number(value);
+    if (!isNaN(parsed)) {
+      this.listProductData[index].qtyWasteBesar = parsed.toFixed(2);
+    } else {
+      this.listProductData[index].qtyWasteBesar = '0.00'; 
     }
   }
 }

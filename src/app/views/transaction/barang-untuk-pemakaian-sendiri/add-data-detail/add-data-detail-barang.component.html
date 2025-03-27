@@ -1,4 +1,8 @@
 <div class="fade-in">
+  <div class="alert alert-info" role="alert" id="alert">
+    <i class="fa fa-info-circle"></i>
+    Tentukan Qty Setelah Selesai, Klik Proses Simpan Data Untuk Melihat List Barang Yang Ditambahkan.
+  </div>
   <c-card class="mb-4">
     <c-card-body>
       <div class="table-responsive">
@@ -179,20 +183,18 @@
                       min="0"
                       class="form-control text-center inputQty inputNumberSpace"
                       [(ngModel)]="data.qtyWasteBesar"
-                      (input)="
-                        onInputValueItemDetail($event, i, 'numeric', 'besar')
-                      "
-                      (input)="addDecimalPlaces($event)"
+                      (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
+                      (input)="checkMaxValue($event, i)"
                       [readonly]="!data.isConfirmed"
+                      (keypress)="g.conditionInput($event, 'numericDot')"
+                      (blur)="onBlurQtyPesanBesar(i)"
                     />
-                    <span
-                      class="d-flex align-items-center justify-content-center"
-                    >
+                    <span class="d-flex align-items-center justify-content-center">
                       / {{ data.satuanBesar }}
                     </span>
                   </div>
                 </td>
-
+                
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px">
                     <input
@@ -203,21 +205,17 @@
                       [ngClass]="{ 'form-invalid': validationMessageList[i] }"
                       class="form-control text-center inputQty inputNumberSpace"
                       [(ngModel)]="data.qtyWasteKecil"
-                      (input)="
-                        onInputValueItemDetail($event, i, 'numeric', 'kecil')
-                      "
-                      (input)="addDecimalPlaces($event)"
+                      (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')"
                       (input)="checkMaxValue($event, i)"
-                      (keypress)="g.conditionInput($event, 'numeric')"
                       [readonly]="!data.isConfirmed"
+                      (keypress)="g.conditionInput($event, 'numericDot')"
+                      (blur)="onBlurQtyPesanKecil(i)"
                     />
-                    <span
-                      class="d-flex align-items-center justify-content-center"
-                    >
+                    <span class="d-flex align-items-center justify-content-center">
                       / {{ data.satuanKecil }}
                     </span>
                   </div>
-
+                  
                   <!-- Validation message area -->
                   <span
                     style="font-size: 14px"

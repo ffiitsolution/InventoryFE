@@ -16,6 +16,7 @@ import { Page } from '../../../model/page';
 import { DataService } from '../../../service/data.service';
 import { GlobalService } from '../../../service/global.service';
 import { TranslationService } from '../../../service/translation.service';
+import { AppService } from 'src/app/service/app.service';
 
 @Component({
   selector: 'app-index-sync-data',
@@ -31,8 +32,10 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
   verticalItemCount: number = 6;
   reportCategoryData: any;
   selectedMenu: string = 'Kirim Data Transaksi';
+  companyProfile: any = {};
 
   constructor(
+    private service: AppService,
     private dataService: DataService,
     public g: GlobalService,
     private translation: TranslationService,
@@ -47,10 +50,10 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
         ' Data - ' +
         this.g.tabTitle
     );
+    this.getCompanyProfile();
   }
 
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 
   capitalizeWords(str: string) {
     return str
@@ -77,4 +80,15 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
     // });
   }
 
+  getCompanyProfile() {
+    this.service.insert('/api/profile/company', {}).subscribe({
+      next: (res) => {
+        const data = res ?? {};
+        this.companyProfile = data;
+      },
+      error: (err) => {
+        console.log('err: ' + err);
+      },
+    });
+  }
 }
