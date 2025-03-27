@@ -61,6 +61,7 @@ export class PackagingListComponent
     private appService: AppService,
   ) {
     this.minDate.setDate(this.minDate.getDate() - 7);
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
   }
 
   ngOnInit(): void {
@@ -129,6 +130,7 @@ export class PackagingListComponent
       },
       order: [[2, 'desc']],
     };
+
   }
 
   handleCheckboxChange(event: JQuery.ChangeEvent<HTMLElement>, data: any) {

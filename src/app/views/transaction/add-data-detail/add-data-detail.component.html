@@ -66,13 +66,10 @@
                     [ngClass]="{'form-invalid': validationMessages[i]}"
                     class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyPesanBesar"
                     (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')" 
-                     autofocus (blur)="onBlurQtyPesanBesar(i)"
+                    (keypress)="g.conditionInput($event, 'numericDot')" autofocus (blur)="onBlurQtyPesanBesar(i)"
                      />
                   <span class="d-flex align-items-center justify-content-center">{{data.satuanBesar}}</span>
                 </div>
-                <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessages[i]">
-                  {{ validationMessages[i] }}
-                </span>
               </td>
 
               <td class="text-center input-column">
@@ -81,19 +78,23 @@
                     [ngClass]="{'form-invalid': validationMessages[i]}"
                     class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyPesanKecil"
                     (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')"
-                     (blur)="onBlurQtyPesanKecil(i)"
+                    (keypress)="g.conditionInput($event, 'numericDot')" (blur)="onBlurQtyPesanKecil(i)"
                     />
                   <span class="d-flex align-items-center justify-content-center">{{data.satuanKecil}}
                   </span>
                 </div>
-                <!-- <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessages[i]">
-                  {{ validationMessages[i] }}
-                </span> -->
+                
               </td>
 
               <td class="text-center">{{ data.konversi }}.00</td>
-              <td class="text-center">{{(helper.sanitizedNumber(data.qtyPesanBesar) *
+              <td class="text-center">
+                <div>
+                  {{(helper.sanitizedNumber(data.qtyPesanBesar) *
                 data.konversi) + helper.sanitizedNumber(data.qtyPesanKecil)}}.00 {{data.satuanKecil}}
+                </div>
+                <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessages[i]">
+                  {{ validationMessages[i] }}
+                </span>
               </td>
               <td class="text-center">{{(helper.sanitizedNumber(data.totalQtyPesan) -
                 (helper.sanitizedNumber(data.qtyPesanBesar) *

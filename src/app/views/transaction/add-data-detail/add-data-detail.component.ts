@@ -133,15 +133,17 @@ export class AddDataDetailDeliveryComponent
 
     if (type === 'numeric') {
       const numericValue = parseFloat(value) || 0;
+      const numericQtyKecil = parseFloat(this.listOrderData[index].qtyPesanKecil);
+      const numericQtyBesar = parseFloat(this.listOrderData[index].qtyPesanBesar);
 
       if (this.listOrderData[index]) {
         this.listOrderData[index][target.name] = numericValue;
         let newTempTotal = 0;
         if (qtyType === 'besar') {
           newTempTotal = numericValue * (this.listOrderData[index].konversi || 1) +
-            (this.listOrderData[index].qtyPesanKecil || 0);
+            (numericQtyKecil || 0);
         } else if (qtyType === 'kecil') {
-          newTempTotal = this.listOrderData[index].qtyPesanBesar * (this.listOrderData[index].konversi || 1) + numericValue;
+          newTempTotal = numericQtyBesar * (this.listOrderData[index].konversi || 1) + numericValue;
         }
         if (newTempTotal > (this.listOrderData[index].totalQtyPesanOld || 0)) {
           validationMessage = `qty kirim harus < dari qty pesan`;
@@ -313,9 +315,9 @@ export class AddDataDetailDeliveryComponent
     const value = this.listOrderData[index].qtyPesanBesar;
     let parsed = Number(value);
     if (!isNaN(parsed)) {
-      this.listOrderData[index].qtyPesanBesar = Number(parsed.toFixed(2));
+      this.listOrderData[index].qtyPesanBesar = parsed.toFixed(2);
     } else {
-      this.listOrderData[index].qtyPesanBesar = Number((0).toFixed(2)); 
+      this.listOrderData[index].qtyPesanBesar = '0.00'; 
     }
   }
 
@@ -323,9 +325,9 @@ export class AddDataDetailDeliveryComponent
     const value = this.listOrderData[index].qtyPesanKecil;
     let parsed = Number(value);
     if (!isNaN(parsed)) {
-      this.listOrderData[index].qtyPesanKecil = Number(parsed.toFixed(2));
+      this.listOrderData[index].qtyPesanKecil = parsed.toFixed(2); // will be a string like "4.00"
     } else {
-      this.listOrderData[index].qtyPesanKecil = Number((0).toFixed(2));
+      this.listOrderData[index].qtyPesanKecil = '0.00'; // fallback if input is not a number
     }
   }
 }

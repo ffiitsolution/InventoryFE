@@ -92,8 +92,8 @@ export class RevisiDoEditComponent
           ...data,
           qtyBPesanOld: data.qtyBKirim,
           totalQtyPesanOld: data.totalQtyPesan,
-          qtyPesanBesar: (data.qtyPesanBesar).toFixed(2),
-          qtyPesanKecil: (data.qtyPesanKecil).toFixed(2),
+          qtyBKirim: Number(data.qtyBKirim).toFixed(2),
+          qtyKKirim: Number(data.qtyKKirim).toFixed(2),
         }));
         this.totalLength = res?.data?.length;
         this.page = 1;
@@ -116,15 +116,17 @@ export class RevisiDoEditComponent
 
     if (type === 'numeric') {
       const numericValue = parseFloat(value) || 0;
+      const numericQtyKecil = parseFloat(this.listOrderData[index].qtyKKirim);
+      const numericQtyBesar = parseFloat(this.listOrderData[index].qtyBKirim);
 
       if (this.listOrderData[index]) {
         this.listOrderData[index][target.name] = numericValue;
         let newTempTotal = 0;
         if (qtyType === 'besar') {
           newTempTotal = numericValue * (this.listOrderData[index].konversi || 1) +
-            (this.listOrderData[index].qtyPesanKecil || 0);
+            (numericQtyKecil || 0);
         } else if (qtyType === 'kecil') {
-          newTempTotal = this.listOrderData[index].qtyPesanBesar * (this.listOrderData[index].konversi || 1) + numericValue;
+          newTempTotal = numericQtyBesar * (this.listOrderData[index].konversi || 1) + numericValue;
         }
         if (newTempTotal > (this.listOrderData[index].totalQtyPesanOld || 0)) {
           validationMessage = `qty kirim harus < dari qty pesan`;
@@ -170,10 +172,9 @@ export class RevisiDoEditComponent
     let totalKirim = 0;
     let hasInvalidData = false; // Tambahkan flag untuk mengecek validasi
 
-    
     const param = this.listOrderData
       .map((data: any) => {
-        totalKirim = (data.qtyBKirim * data.konversi) + data.qtyKKirim;
+        totalKirim = (parseFloat(data.qtyBKirim) * data.konversi) + (parseFloat(data.qtyKKirim));
 
         if (totalKirim > data.totalQtyPesanOld) {
           this.toastr.error(
@@ -233,22 +234,22 @@ export class RevisiDoEditComponent
   }
 
   onBlurQtyPesanBesar(index: number) {
-    const value = this.listOrderData[index].qtyPesanBesar;
+    const value = this.listOrderData[index].qtyBKirim;
     let parsed = Number(value);
     if (!isNaN(parsed)) {
-      this.listOrderData[index].qtyPesanBesar = parsed.toFixed(2); // will be a string like "4.00"
+      this.listOrderData[index].qtyBKirim = parsed.toFixed(2); // will be a string like "4.00"
     } else {
-      this.listOrderData[index].qtyPesanBesar = '0.00'; // fallback if input is not a number
+      this.listOrderData[index].qtyBKirim = '0.00'; // fallback if input is not a number
     }
   }
 
   onBlurQtyPesanKecil(index: number) {
-    const value = this.listOrderData[index].qtyPesanKecil;
+    const value = this.listOrderData[index].qtyKKirim;
     let parsed = Number(value);
     if (!isNaN(parsed)) {
-      this.listOrderData[index].qtyPesanKecil = parsed.toFixed(2); // will be a string like "4.00"
+      this.listOrderData[index].qtyKKirim = parsed.toFixed(2); // will be a string like "4.00"
     } else {
-      this.listOrderData[index].qtyPesanKecil = '0.00'; // fallback if input is not a number
+      this.listOrderData[index].qtyKKirim = '0.00'; // fallback if input is not a number
     }
   }
 }

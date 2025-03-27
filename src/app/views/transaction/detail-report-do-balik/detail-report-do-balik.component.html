@@ -20,19 +20,19 @@
           <div class="row order-details">
             <div class="detail-item">
               <span class="label">{{ "Nomor Pesanan" | translate }}</span>
-              <span class="value">{{ selectedOrder.NOMOR_PESANAN }}</span>
+              <span class="value">{{ selectedOrder.nomorPesanan }}</span>
             </div>
             <div class="detail-item">
               <span class="label ">{{ "Nomor Surat Jalan" | translate }}</span>
-              <span class="value">{{ selectedOrder.NO_SURAT_JALAN}}</span>
+              <span class="value">{{ selectedOrder.noSuratJalan }}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Tgl. Pesanan" | translate }}</span>
-              <span class="value">{{ selectedOrder.TGL_PESANAN }}</span>
+              <span class="value">{{ selectedOrder.tglPesanan }}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Tgl. Kirim Barang" | translate }}</span>
-              <span class="value">{{ selectedOrder.TGL_TRANSAKSI}}</span>
+              <span class="value">{{ selectedOrder.tglTransaksi}}</span>
             </div>
           </div>
         </div>
@@ -40,19 +40,19 @@
           <div class="row order-details">
             <div class="detail-item">
               <span class="label">{{ "Kode Tujuan" | translate }}</span>
-              <span class="value"> {{ selectedOrder.KODE_TUJUAN }}</span>
+              <span class="value"> {{ selectedOrder.kodeTujuan }}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Outlet Tujuan" | translate }}</span>
-              <span class="value"> {{ selectedOrder.NAMA_CABANG }}</span>
+              <span class="value"> {{ selectedOrder.namaCabang }}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Catatan" | translate }}</span>
-              <span class="value">{{ selectedOrder.KETERANGAN }} </span>
+              <span class="value">{{ selectedOrder.keterangan }} </span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Status Transaksi" | translate }}</span>
-              <span class="value">{{ selectedOrder.STATUS_POSTING === 'I' ? 'Intransit' : 'Posting' }} </span>
+              <span class="value">{{ selectedOrder.statusPosting === 'I' ? 'Intransit' : 'Posting' }} </span>
             </div>
 
           </div>

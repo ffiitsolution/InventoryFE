@@ -24,6 +24,7 @@ import { AppService } from '../../../../service/app.service';
 import { Page } from '../../../../model/page';
 import { data } from 'jquery';
 import { forEach } from 'lodash-es';
+import { TranslationService } from '../../../../service/translation.service';
 
 @Component({
   selector: 'app-entry-packing-list',
@@ -66,7 +67,9 @@ export class EntryPackingListComponent
     public g: GlobalService,
     public router: Router,
     private toastr: ToastrService,
-    private appService: AppService
+    private appService: AppService,
+    private translation: TranslationService,
+
   ) {
     this.minDate.setDate(this.minDate.getDate() - 7);
     this.dtOptions_2 = {
@@ -75,7 +78,8 @@ export class EntryPackingListComponent
       lengthMenu: [5],
       processing: true,
       serverSide: true,
-
+      language:
+        translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
@@ -88,7 +92,7 @@ export class EntryPackingListComponent
         this.page.length = dataTablesParameters.length;
       },
       autoWidth: true,
-
+      info: true,
       columns: [
         {
           data: 'kodeCabang',
@@ -136,6 +140,7 @@ export class EntryPackingListComponent
       },
       order: [[2, 'desc']],
     };
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
   }
 
   ngOnInit(): void {
@@ -197,11 +202,6 @@ export class EntryPackingListComponent
 
   getProsesDoBalik(): void {
     this.loading = true;
-
-    // Format tanggal menjadi 'dd MM yyyy' sebelum dikirim ke backend
-    const formattedStartDate = moment(this.startDate).format('DD MMM yyyy');
-    const formattedEndDate = moment(this.endDate).format('DD MMM yyyy');
-
     const parsedDoList = JSON.parse(this.nomorDoList);
     const params = parsedDoList.map((item: any) => {
       return {
@@ -227,8 +227,8 @@ export class EntryPackingListComponent
         (response: any) => {
           this.listEntryPl = response.packingList;
           this.listEntryPl.forEach((item: any) => {
-            item.nomorColli = '';
-            item.jumlahColli = '';
+            item.nomorColli = '0';
+            item.jumlahColli = '0';
           });
 
 
@@ -255,12 +255,13 @@ export class EntryPackingListComponent
           dtIndex: this.page.start + index + 1;
           this.reportProposeData = response.data;
           this.totalLength = response?.length;
-          this.page.recordsTotal = response.data.recordsTotal;
-          this.page.recordsFiltered = response.data.recordsFiltered;
+          this.page.recordsTotal = response.recordsTotal;
+          this.page.recordsFiltered = response.recordsFiltered;
+          this.showFilterSection = false;
 
           callback({
             recordsTotal: response?.length,
-            recordsFiltered: response.data.recordsFiltered,
+            recordsFiltered: response.recordsFiltered,
             data: this.reportProposeData,
           });
           this.loading = false;
@@ -333,7 +334,7 @@ export class EntryPackingListComponent
     this.filteredEntryPL.forEach((item: any, index: number) => {
       if (item.nomorColli === "") {
         this.validationMessages[index] = "Mohon isi data!";
-      } else{
+      } else {
         this.validationMessages[index] = "";
       }
     });
@@ -341,17 +342,17 @@ export class EntryPackingListComponent
 
   async onSubmit() {
     this.printing = true;
-    const tanggalCetak = new Date().toDateString();
+    const tanggalCetak = this.g.transformDate(new Date().toISOString());
     const nomorPl = this.selectedData.packingListNumber;
     const tujuan = `${this.selectedData.data.kodeCabang} - ${this.selectedData.data.namaCabang}`;
     const alamatTujuan = `${this.selectedData.data.alamat1}, ${this.selectedData.data.alamat2}, ${this.selectedData.data.kota} ${this.selectedData.data.kodePos}`;
     const namaGudang = this.g.getLocalstorage('inv_currentUser')?.namaCabang;
     const kodeGudang = this.g.getLocalstorage('inv_currentUser')?.defaultLocation.kodeLocation;
+    const tglKirim = this.g.transformDate(new Date().toISOString());
 
     let totalColli = 0;
     let totalBerat = 0;
     let totalVolume = 0;
-    let tglKirim = '';
 
     const groupedData = this.listEntryPl.reduce((acc, data, index) => {
       const key = `${data.noSuratJalan}-${data.kodeBarang}`;
@@ -373,7 +374,6 @@ export class EntryPackingListComponent
       totalColli += jumlahColli;
 
       // Simpan tanggal kirim dari entri pertama
-      tglKirim = moment(data.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY');
 
       return acc;
     }, {} as { [key: string]: any });
@@ -419,7 +419,6 @@ export class EntryPackingListComponent
       const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       this.toastr.success('Sukses mencetak Packing List');
-      this.router.navigate(['/transaction/delivery-item/packing-list'])
       window.open(url);
       this.printing = false;
     } catch (error: any) {

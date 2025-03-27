@@ -108,7 +108,7 @@ export class DefaultHeaderComponent
   }
 
   sendWs() {
-    this.websocketService.sendMessage('/app/outlet', 'tes hehe');
+    // this.websocketService.sendMessage('/app/outlet', 'tes hehe');
   }
 
   doSubscribe() {
@@ -148,6 +148,9 @@ export class DefaultHeaderComponent
     }
   }
 
+  onToggleSidebar(): void{
+    this.g.navbarVisibility  = !this.g.navbarVisibility;
+  }
   checkConnection() {
     this.g.serverHQStatus ='CHECKING';
     this.service.getProfileCompany()

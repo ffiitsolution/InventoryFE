@@ -1,26 +1,26 @@
 <ng-container>
   <c-container [fluid]="true">
-    <button toggle="visible" cHeaderToggler [cSidebarToggle]="sidebarId" class="ps-1">
+    <button toggle="visible" (click)="onToggleSidebar()" cHeaderToggler [cSidebarToggle]="sidebarId" class="ps-1">
       <svg cIcon name="cilMenu" size="lg"></svg>
     </button>
     <c-header-nav class="d-none d-lg-flex me-auto">
       <c-nav-item>
-        <a cNavLink><strong>{{'labelAppName' | translate}}</strong></a>
+        <a ><strong>{{'labelAppName' | translate}}</strong></a>
       </c-nav-item>
     </c-header-nav>
     <c-header-nav class="d-none d-lg-flex items-center">
       <c-nav-item (click)="sendWs()">
-        <a cNavLink>
+        <a >
           {{'Selamat Datang' | translate}}&nbsp; <strong>{{currentUser.namaUser}}</strong> - {{currentUser.jabatan}}
         </a>
       </c-nav-item>
       <c-nav-item>
-        <a cNavLink>
+        <a >
           <p style="margin: 0;">|</p>
         </a>
       </c-nav-item>
       <c-nav-item *ngIf="isDefaultWarehouseExist">
-        <a cNavLink>
+        <a >
           {{currentUser.defaultLocation.kodeLocation}} - {{currentUser.defaultLocation.keteranganLokasi}}
         </a>
       </c-nav-item>

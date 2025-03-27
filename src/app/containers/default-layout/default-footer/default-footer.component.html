@@ -1,12 +1,13 @@
 <!--<c-footer>-->
 <div class="row w-100">
-  <div class="col">
-    <!-- <span *ngIf="g.serverStatus === 'UP'">
+  <div class="col" *ngIf="g.navbarVisibility === false">
+    
+    <span *ngIf="g.serverStatus === 'UP'">
       {{ g.currentDate }} {{ g.currentTime }}
     </span>
     <c-badge color="danger" shape="rounded-pill" *ngIf="g.serverStatus !== 'UP'">
       OFFLINE
-    </c-badge> -->
+    </c-badge>
   </div>
   <div class="col text-end">
     <a>{{'labelCompany' | translate}} Version {{version}}</a>

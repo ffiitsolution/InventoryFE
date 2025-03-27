@@ -201,11 +201,15 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
         },
         {
           title: 'Action',
-          render: () => {
-            return `<button class="btn btn-sm action-select btn-info btn-80 text-white">Pilih</button>`;
+          render: (data: any, type: any, row: any) => {
+            const expiryDate = new Date(row.tglKadaluarsa); // Pastikan ini valid
+            const today = new Date();
+            
+            return expiryDate > today
+              ? `<button class="btn btn-sm action-select btn-info btn-80 text-white">Pilih</button>`
+              : '<span class="text-center text-danger">Data kadaluarsa</span>';
           },
-        },
-
+        }
       ],
       searchDelay: 1000,
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
