@@ -90,7 +90,7 @@ export class DetailReportDoBalikComponent
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
-          noSuratJalan: this.selectedOrder.NO_SURAT_JALAN,
+          noSuratJalan: this.selectedOrder.noSuratJalan,
         };
         setTimeout(() => {
           this.dataService
@@ -153,7 +153,6 @@ export class DetailReportDoBalikComponent
   reloadTable() {}
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
   }
 
   actionBtnClick(action: string, data: any = null): void {}
@@ -175,6 +174,7 @@ export class DetailReportDoBalikComponent
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
     $.fn['dataTable'].ext.search.pop();
+    this.g.navbarVisibility = true;
   }
 
   onbackPressed(): void {

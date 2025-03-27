@@ -111,7 +111,7 @@ export class DeliveryItemComponent implements OnInit {
             });
         }, DEFAULT_DELAY_TABLE);
       },
-      order: [[4, 'desc']],
+      order: [[9, 'asc'], [4, 'desc']],
       columns: [
         { data: 'dtIndex', title: '#' },
         { data: 'tglTransaksi', title: 'Tanggal Kirim' },
@@ -185,6 +185,9 @@ export class DeliveryItemComponent implements OnInit {
       },
     };
     this.dtColumns = this.dtOptions.columns;
+    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
+    this.dpConfig.adaptivePosition = true;
   }
 
   ngOnInit(): void {

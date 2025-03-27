@@ -102,7 +102,7 @@ export class DefaultHeaderComponent
   }
 
   sendWs() {
-    this.websocketService.sendMessage('/app/outlet', 'tes hehe');
+    // this.websocketService.sendMessage('/app/outlet', 'tes hehe');
   }
 
   doSubscribe() {
@@ -139,5 +139,9 @@ export class DefaultHeaderComponent
     } else if (this.g.serverStatus === 'UP' && !title.startsWith(offlineText)) {
       this.g.changeTitle(title.replaceAll(offlineText, ''));
     }
+  }
+
+  onToggleSidebar(): void{
+    this.g.navbarVisibility  = !this.g.navbarVisibility;
   }
 }

@@ -85,27 +85,25 @@
           <table bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
             <thead>
               <tr>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">No.
-                </th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">Kode
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">Kode
                   Barang</th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">Nama
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="3">Nama
                   Barang</th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Total Pesanan</th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" colspan="2">Qty
+                <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle;" class="text-center align-items-start btn-danger" colspan="2">Qty
                   Kirim</th> <!-- Masih sejajar -->
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Konversi Gudang</th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Total Kirim Gudang
                 </th>
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Selisih Pesanan</th>
               </tr>
               <tr>
-                <th scope="col" class="text-center" style="width:160px;">Besar</th>
-                <th scope="col" class="text-center" style="width:160px;">Kecil</th>
+                <th scope="col" class="text-center" style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle; ">Besar</th>
+                <th scope="col" class="text-center" style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle;">Kecil</th>
               </tr>
             </thead>
             <tbody *ngIf="!listOrderData || listOrderData.length === 0">
@@ -122,7 +120,6 @@
                 totalItems:totalLengthList,
                 id:'dataTableDetail'
             };  let i = index">
-                <td class="text-center">{{ i + 1 }}</td>
                 <td class="text-center">{{ data.kodeBarang }}</td>
                 <td class="text-center">{{ data.namaBarang }}</td>
                 <td class="text-center">{{ data.totalQtyPesan }}.00</td>
@@ -132,32 +129,30 @@
                   <div class="d-flex" style="gap: 5px;">
                     <input [ngClass]="{'form-invalid': validationMessages[i]}"type="number" max="{{data.qtyBKirim}}" min="0"
                       class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyBKirim"
-                      (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')" />
+                      (input)="onInputValueItemDetail($event, i, 'numericDot', 'besar')" (blur)="onBlurQtyPesanBesar(i)"/>
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanBesar}}
                     </span>
                   </div>
-                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessages[i]">
-                    {{ validationMessages[i] }}
-                  </span>
                 </td>
 
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
                     <input [ngClass]="{'form-invalid': validationMessages[i]}" type="number" min="0" class="form-control text-center inputQty inputNumberSpace"
-                      [(ngModel)]="data.qtyKKirim" (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')" />
+                      [(ngModel)]="data.qtyKKirim" (input)="onInputValueItemDetail($event, i, 'numericDot', 'kecil')"(blur)="onBlurQtyPesanKecil(i)" />
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanKecil}}
                     </span>
                   </div>
-                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessages[i]">
-                    {{ validationMessages[i] }}
-                  </span>
                 </td>
 
-                <td class="text-center">{{ data.konversi }}.00</td>
-                <td class="text-center">{{(helper.sanitizedNumber(data.qtyBKirim) *
-                  data.konversi + data.qtyKKirim)}}.00 {{data.satuanKecil}}
+                <td class="text-center">{{ data.konversi }}.00 {{data.satuanKecil}}/{{data.satuanBesar}}</td>
+                <td class="text-center">
+                  {{(helper.sanitizedNumber(data.qtyBKirim) *
+                  data.konversi + data.qtyKKirim)}} {{data.satuanKecil}}
+                   <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessages[i]">
+                    {{ validationMessages[i] }}
+                  </span>
                 </td>
                 <td class="text-center">{{(helper.sanitizedNumber(data.totalQtyPesan) -
                   (helper.sanitizedNumber(data.qtyBKirim) *

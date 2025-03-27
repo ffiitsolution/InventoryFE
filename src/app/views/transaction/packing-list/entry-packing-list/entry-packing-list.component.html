@@ -9,38 +9,6 @@
           </button>
           <h5 class="mb-0 ms-3">{{ "Entry Packing List" | translate }}</h5>
         </div>
-        <div class="col text-end">
-          <button class="btn btn-outline-success btn-150 me-2" (click)="onShowModal()">
-            <i class="fa fa-print"></i> {{ "Cetak Packing List" | translate }}
-          </button>
-          <button type="button" class="btn btn-outline-dark me-2 btn-120" (click)="toggleFilter()">
-            <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
-            {{ "Filter" | translate }}
-          </button>
-        </div>
-      </div>
-      <div [visible]="showFilterSection" cCollapse>
-        <div class="divider"></div>
-        <div class="row" style="margin-top: -16px">
-          <c-card-body>
-            <c-row>
-              <c-col xs="3">
-                <label class="col-form-label">{{
-                  "Tanggal Pesan" | translate
-                  }}</label>
-                <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
-                  aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
-                  placeholder="{{ 'Tanggal Pesan' | translate }}" />
-              </c-col>
-              <c-col xs="6"></c-col>
-              <c-col xs="3" class="text-right d-flex align-items-end justify-content-end">
-                <button type="button" class="btn btn-outline-success me-2 btn-160" (click)="onFilterPressed()">
-                  {{ "Terapkan Filter" | translate }}
-                </button>
-              </c-col>
-            </c-row>
-          </c-card-body>
-        </div>
       </div>
     </c-card-body>
   </c-card>
@@ -206,11 +174,11 @@
           <i class="fa fa-spinner fa-spin" *ngIf="printing"></i>
           PDF
         </button>
-        <button class="btn btn-primary me-2">
+        <!-- <button class="btn btn-primary me-2">
           <i class="fa fa-print pe-2" (click)="onSubmit()" *ngIf="!printing"></i>
           <i class="fa fa-spinner fa-spin" *ngIf="printing"></i>
           Printer
-        </button>
+        </button> -->
         <button class="btn btn-danger" (click)="isShowPrintModal = false">
           <i class="fa fa-times pe-2" [cModalToggle]="printModal.id" cButtonClose></i> Batal
         </button>

@@ -18,6 +18,7 @@ import Swal from 'sweetalert2';
 import {
   ACTION_VIEW,
   DEFAULT_DATE_RANGE_RECEIVING_ORDER,
+  DEFAULT_DELAY_TABLE,
   LS_INV_SELECTED_DELIVERY_ORDER,
 } from '../../../../constants';
 import { AppService } from '../../../service/app.service';
@@ -67,6 +68,80 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
     private appService: AppService
   ) {
     this.minDate.setDate(this.minDate.getDate() - 7);
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
+
+    this.dtOptions = {
+      paging: true,
+      pageLength: 5,
+      lengthMenu: [5],
+      processing: true,
+      serverSide: true,
+      ajax: (dataTablesParameters: any, callback) => {
+        setTimeout(() => this.getProsesDoBalik(dataTablesParameters, callback), DEFAULT_DELAY_TABLE);
+        
+        
+        this.page.start = dataTablesParameters.start;
+        this.page.length = dataTablesParameters.length;
+      },
+      scrollX: true,
+      autoWidth: true,
+      columns: [
+        { data: 'dtIndex', title: '#' },
+        { data: 'kodeGudang', title: 'Kode Gudang' },
+        {
+          data: 'statusPosting',
+          title: 'Status Posting',
+          render: (data: string) => this.getStatusPostingLegend(data),
+        },
+        {
+          data: 'tglTransaksi',
+          title: 'Tanggal Transaksi',
+          render: (data) => this.g.transformDate(data),
+        },
+        {
+          data: 'tipeTransaksi',
+          title: 'Tipe Transaksi',
+          render: (data: string) => this.gettIipeTransaksiLabel(data),
+        },
+        {
+          data: 'tglPesanan',
+          title: 'Tanggal Pesanan',
+          render: (data) => this.g.transformDate(data),
+        },
+        { data: 'nomorPesanan', title: 'Nomor Pesanan' },
+        { data: 'noSuratJalan', title: 'No Surat Jalan' },
+        { data: 'kodeTujuan', title: 'Kode Tujuan' },
+        {
+          data: 'statusDoBalik',
+          title: 'Status DO Balik',
+          render: (data: string) => this.getStatusDoBalikLegend(data),
+        },
+        {
+          title: 'Opsi',
+          className: 'text-center',
+          render: () => {
+            return `
+              <div class="d-flex px-2 gap-2">
+                <button style="width: 100px" class="btn btn-sm action-posting btn-outline-success btn-60 pe-1">Posting</button>
+                <button style="width: 100px" class="btn btn-sm action-view btn-outline-info btn-60">Lihat</button>
+              </div>
+            `;
+          },
+        },
+      ],
+      rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        $('.action-view', row).on('click', () =>
+          this.actionBtnClick(ACTION_VIEW, data)
+        );
+
+        $('.action-posting', row).on('click', () => {
+          this.showPostingConfirmation(data);
+        });
+
+        return row;
+      },
+      order: [[6, 'desc']],
+    };
   }
 
   getStatusPostingLegend(status: string): string {
@@ -96,74 +171,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.dtOptions = {
-      paging: true,
-      pageLength: 5,
-      lengthMenu: [5],
-      processing: true,
-      ajax: (dataTablesParameters: any, callback) => {
-        this.getProsesDoBalik(callback);
-        this.page.start = dataTablesParameters.start;
-        this.page.length = dataTablesParameters.length;
-      },
-      scrollX: true,
-      autoWidth: true,
-      columns: [
-        { data: 'KODE_GUDANG', title: 'Kode Gudang' },
-        {
-          data: 'STATUS_POSTING',
-          title: 'Status Posting',
-          render: (data: string) => this.getStatusPostingLegend(data),
-        },
-        {
-          data: 'TGL_TRANSAKSI',
-          title: 'Tanggal Transaksi',
-          render: (data) => this.g.transformDate(data),
-        },
-        {
-          data: 'TIPE_TRANSAKSI',
-          title: 'Tipe Transaksi',
-          render: (data: string) => this.gettIipeTransaksiLabel(data),
-        },
-        {
-          data: 'TGL_PESANAN',
-          title: 'Tanggal Pesanan',
-          render: (data) => this.g.transformDate(data),
-        },
-        { data: 'NOMOR_PESANAN', title: 'Nomor Pesanan' },
-        { data: 'NO_SURAT_JALAN', title: 'No Surat Jalan' },
-        { data: 'KODE_TUJUAN', title: 'Kode Tujuan' },
-        {
-          data: 'STATUS_DO_BALIK',
-          title: 'Status DO Balik',
-          render: (data: string) => this.getStatusDoBalikLegend(data),
-        },
-        {
-          title: 'Opsi',
-          className: 'text-center',
-          render: () => {
-            return `
-              <div class="d-flex px-2 gap-2">
-                <button style="width: 100px" class="btn btn-sm action-posting btn-outline-success btn-60 pe-1">Posting</button>
-                <button style="width: 100px" class="btn btn-sm action-view btn-outline-info btn-60">Lihat</button>
-              </div>
-            `;
-          },
-        },
-      ],
-      rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        $('.action-view', row).on('click', () =>
-          this.actionBtnClick(ACTION_VIEW, data)
-        );
-
-        $('.action-posting', row).on('click', () => {
-          this.showPostingConfirmation(data);
-        });
-
-        return row;
-      },
-      order: [[7, 'desc']],
-    };
+  
   }
 
   showPostingConfirmation(data: any) {
@@ -211,8 +219,8 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
         JSON.stringify(data)
       );
       const param = {
-        kodeGudang: data.KODE_GUDANG,
-        noSuratJalan: data.NO_SURAT_JALAN,
+        kodeGudang: data.kodeGudang,
+        noSuratJalan: data.noSuratJalan,
         userPosted: JSON.parse(localStorage.getItem('inv_currentUser') || '')
           .namaUser,
         datePosted: this.g.getLocalDateTime(new Date()),
@@ -245,7 +253,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  getProsesDoBalik(callback: any): void {
+  getProsesDoBalik(dataTablesParameters: any, callback: any): void {
     this.loading = true;
 
     // Format tanggal menjadi 'dd MM yyyy' sebelum dikirim ke backend
@@ -253,13 +261,14 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
     const formattedEndDate = moment(this.endDate).format('DD MMM yyyy');
 
     const params = {
+      ...dataTablesParameters,
       kodeGudang: this.g.getUserLocationCode(),
       statusPosting: 'I',
-      fromDate: moment(
+      startDate: moment(
         this.dateRangeFilter[0],
         'ddd MMM DD YYYY HH:mm:ss [GMT]Z'
       ).format('DD-MM-YYYY'), // Kirim dengan format 'dd MM yyyy'
-      toDate: moment(
+      endDate: moment(
         this.dateRangeFilter[1],
         'ddd MMM DD YYYY HH:mm:ss [GMT]Z'
       ).format('DD-MM-YYYY'), // Jika perlu, bisa dikirim juga
@@ -274,14 +283,21 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
       )
       .subscribe(
         (response: any) => {
-          let index = 0;
-          dtIndex: this.page.start + index + 1;
-          this.reportProposeData = response.item;
+          const mappedData = response.data.map((item: any, index: number) => {
+            const { rn, ...rest } = item;
+            return {
+              ...item,
+              dtIndex: this.page.start + index + 1,
+             tglTransaksi: this.g.transformDate(item.tglTransaksi),
+              tglPesanan: this.g.transformDate(item.tglPesanan),
+            };
+          });
+          this.reportProposeData = response.data;
           this.totalLength = response.recordsTotal;
           callback({
             recordsTotal: response.recordsTotal,
             recordsFiltered: response.recordsFiltered,
-            data: this.reportProposeData,
+            data: mappedData,
           });
           this.loading = false;
         },
