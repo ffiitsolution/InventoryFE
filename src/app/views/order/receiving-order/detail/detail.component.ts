@@ -179,7 +179,7 @@ export class ReceivingOrderDetailComponent
       this.translation.instant('Detail Pesanan') + ' - ' + this.g.tabTitle
     );
     const isCanceled = this.selectedOrder.statusPesanan == CANCEL_STATUS;
-    this.disabledPrintButton = isCanceled;
+    this.disabledPrintButton = false;
     this.disabledCancelButton = isCanceled;
     this.alreadyPrint =
       this.selectedOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
@@ -289,6 +289,8 @@ export class ReceivingOrderDetailComponent
             outletBrand: OUTLET_BRAND_KFC,
             user:  this.dataUser.kodeUser,
             nomorPesanan: this.selectedOrder.nomorPesanan,
+            statusPesanan: this.selectedOrder.statusPesanan,
+            statusCetak: this.selectedOrder.statusCetak 
           };
           const base64Response = await lastValueFrom(
             this.dataService.postData(
@@ -333,12 +335,15 @@ export class ReceivingOrderDetailComponent
       tglBrgDikirim: this.selectedOrder.tglBrgDikirim,
       tglPesan: this.selectedOrder.tglPesan,
       user: this.dataUser.kodeUser,
+      statusPesanan: this.selectedOrder.statusPesanan,
+      statusCetak: this.selectedOrder.statusCetak
     }
 
     this.appService.reporReceivingOrderJasper(params).subscribe((res) => {
       var blob = new Blob([res], { type: 'application/pdf' });
       this.downloadURL = window.URL.createObjectURL(blob);
       this.downloadPDF();
+      this.onBackPressed();
     })
 
   }

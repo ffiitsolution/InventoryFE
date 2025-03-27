@@ -22,7 +22,7 @@
           type="button"
           class="btn btn-outline-success me-2 btn-120"
           (click)="onPrint()"
-          [disabled]="updatingStatus || disabledCancelButton"
+          [disabled]="updatingStatus || disabledPrintButton"
         >
           <i class="fa fa-print icon-gap" *ngIf="!RejectingOrder"></i>
           <i class="fa fa-spinner fa-spin" *ngIf="RejectingOrder"></i>
