@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import {
+  AccordionButtonDirective,
+  AccordionComponent,
+  AccordionItemComponent,
+  AlertComponent,
   AvatarModule,
   ButtonGroupModule,
   ButtonModule,
@@ -14,11 +18,13 @@ import {
   ProgressModule,
   TableModule,
   TabsModule,
+  TemplateIdDirective,
 } from '@coreui/angular';
 import { IconModule } from '@coreui/icons-angular';
 import { EndOfMonthRoutingModule } from './end-of-month-routing.module';
 import { EndOfMonthComponent } from './end-of-month.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { DataTablesModule } from 'angular-datatables';
 
 @NgModule({
   imports: [
@@ -40,6 +46,12 @@ import { TranslateModule } from '@ngx-translate/core';
     AvatarModule,
     TableModule,
     ModalModule,
+    DataTablesModule,
+    AccordionComponent,
+    AccordionItemComponent,
+    TemplateIdDirective,
+    AccordionButtonDirective,
+    AlertComponent
   ],
   declarations: [EndOfMonthComponent],
 })

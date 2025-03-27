@@ -279,6 +279,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
     this.dtColumns = this.dtOptions.columns;
     this.dpConfig.containerClass = 'theme-red';
     this.dpConfig.customTodayClass= 'today-highlight';
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
 
   }
 

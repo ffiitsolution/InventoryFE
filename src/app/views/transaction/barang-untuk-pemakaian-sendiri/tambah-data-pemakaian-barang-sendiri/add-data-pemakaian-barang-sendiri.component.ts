@@ -19,6 +19,7 @@ import { Page } from '../../../../model/page';
 import { AppService } from '../../../../service/app.service';
 import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
 import moment from 'moment';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-data-pemakaian-barang-sendiri',
@@ -40,9 +41,13 @@ export class AddDataPemakaianBarangSendiriComponent implements OnInit, AfterView
   minDate: Date;
   maxDate: Date;
   isShowDetail: boolean = false;
+  charCount: number = 0;
+  isKeteranganInvalid: boolean = false;
 
   @ViewChild('formModal') formModal: any;
   // Form data object
+  today: Date = new Date();
+  
   formData = {
     keterangan: '',
     tglTransaksi: ''
@@ -59,35 +64,57 @@ export class AddDataPemakaianBarangSendiriComponent implements OnInit, AfterView
         this.dpConfig.containerClass = 'theme-red';
         this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
         this.dpConfig.adaptivePosition = true;
+        this.dpConfig.customTodayClass = 'today-highlight';
       }
     
     
-      ngOnInit(): void {
-        this.bsConfig = Object.assign(
-          {},
-          {
-            containerClass: 'theme-default',
-            rangeInputFormat: 'dd/MMm/yyyy',
-          }
-        );
-        const today = new Date().toISOString().split('T')[0];
-        this.minDate = new Date(today);
-      }
-    
-      onAddDetail() {
-        this.formData.tglTransaksi = moment(this.formData.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    
-        this.globalService.saveLocalstorage(
-          'headerWastage',
-          JSON.stringify(this.formData)
-    
-        );
-        this.isShowDetail = true;
-      }
-    
-      get isFormInvalid(): boolean {
-        return Object.values(this.formData).some(value => value === '');
-      }
+    ngOnInit(): void {
+      this.dpConfig = {
+        dateInputFormat: 'DD/MM/YYYY',
+        containerClass: 'theme-red',
+        customTodayClass: 'today-red',
+        minDate: this.today,
+        maxDate: this.today
+      };
+    const today = new Date().toISOString().split('T')[0];
+    this.minDate = new Date(today);
+    this.dpConfig.customTodayClass = 'today-highlight';
+
+  }
+
+  onKeteranganInput(): void {
+    const allowedRegex = /^[A-Za-z0-9\s-]*$/;
+    const currentValue = this.formData.keterangan || '';
+  
+    this.charCount = currentValue.length;
+  
+    // Cek apakah ada karakter tidak valid
+    this.isKeteranganInvalid = !allowedRegex.test(currentValue);
+  }
+
+  onAddDetail() {
+    if (!this.formData.tglTransaksi) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Tanggal Belum Dipilih',
+        text: 'Silakan pilih Tanggal Transaksi terlebih dahulu.',
+      });
+      return;
+    }
+
+    this.formData.tglTransaksi = moment(this.formData.tglTransaksi, 'DD-MM-YYYY').format('DD-MM-YYYY');
+    this.globalService.saveLocalstorage('headerWastage', JSON.stringify(this.formData));
+    this.isShowDetail = true;
+  }
+
+  get isFormInvalid(): boolean {
+    return (
+      !this.formData.tglTransaksi || 
+      !this.formData.keterangan.trim() || 
+      this.formData.keterangan.length > 50 || 
+      this.isKeteranganInvalid 
+    );
+  }
     
       ngAfterViewInit(): void {
         this.dtTrigger.next(null);

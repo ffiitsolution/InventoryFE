@@ -33,7 +33,9 @@
 
 <ng-template #userDropdown>
   <c-dropdown alignment="end" variant="nav-item">
-    <button cButton color="" [caret]="false" cDropdownToggle class="py-0" style="background-color: #EEEEEE;
+    <button cButton color="" [caret]="false" cDropdownToggle class="py-0"
+    (click)="checkConnection()"
+     style="background-color: #EEEEEE;
     border-radius: 10px;
     width: 40px;
     height: 40px;
@@ -59,19 +61,49 @@
         </div>
       </li>
       <hr />
+      <li class="wrapper-user" (click)="onProfileCompanyPressed()">
+        <div class="wrapper-user__profile pointer">
+          <i class="fa fa-home" aria-hidden="true" style="font-size: 20px;margin-right: 1rem;"></i>
+          <p class="wrapper-user__info">{{'Profile Perusahaan' | translate}}</p>
+        </div>
+      </li>
       <li class="wrapper-user" (click)="onAccountSettingPressed()">
         <div class="wrapper-user__profile pointer">
           <i class="fa fa-building" aria-hidden="true" style="font-size: 20px;margin-right: 1rem;"></i>
           <p class="wrapper-user__info">{{'Ubah lokasi' | translate}}</p>
         </div>
       </li>
-      <li class="wrapper-user" (click)="switchLanguage()">
+      <!-- <li class="wrapper-user" (click)="switchLanguage()">
         <div class="wrapper-user__profile pointer">
           <i class="fa fa-flag" aria-hidden="true" style="font-size: 20px;margin-right: 1rem;"></i>
           <p class="wrapper-user__info">{{'Ubah Bahasa' | translate}}</p>
         </div>
-      </li>
+      </li> -->
       <hr />
+      <li class="wrapper-user logout">
+        <button
+          class="btn  btn-success text-white btn-150"
+          type="button"
+          *ngIf="g.serverHQStatus === 'UP'"
+        >
+          <span>{{ "HQ" | translate }} {{ "Active" | translate }}</span>
+        </button>
+        <button
+          class="btn btn-info text-white btn-150"
+          type="button"
+          *ngIf="g.serverHQStatus === 'DOWN'"
+        >
+          <span>{{ "HQ" | translate }} {{ "Down" | translate }}</span>
+        </button>
+          <button
+          class="btn btn-info text-white btn-150"
+          type="button"
+          *ngIf="g.serverHQStatus === 'CHECKING'"
+        >
+          <i class="fa fa-spinner fa-spin" ></i>
+          <span>{{ " Checking" | translate }} {{ "Status" | translate }}</span>
+        </button>
+      </li>
       <li class="wrapper-user logout">
         <div class="wrapper-user__profile" (click)="onLogoutPressed()">
           <i class="fa fa-sign-out" aria-hidden="true" style="font-size: 20px;margin-right: 1rem;"></i>

@@ -5,6 +5,21 @@
         <div class="col">
           <h5>{{ "Kirim Pesanan Ke Supplier" | translate }}</h5>
         </div>
+        <div class="col col-md-8">
+          <div class="menu-purpose col-sm-12 d-flex justify-content-end align-items-center">
+            <span>
+              Program ini digunakan untuk mengirim pesanan ke supplier melalui RSC
+            </span>
+          </div>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="d-flex justify-content-end gap-1" style="margin-bottom: 10px">
         <div class="col text-end">
           <button
             type="button"
@@ -26,7 +41,6 @@
         </div>
       </div>
       <div [visible]="showFilterSection" cCollapse>
-        <div class="divider"></div>
         <div class="row" style="margin-top: -16px">
           <c-card-body>
             <c-row>
@@ -62,12 +76,7 @@
           </c-card-body>
         </div>
       </div>
-    </c-card-body>
-  </c-card>
-</div>
-<div class="fade-in">
-  <c-card class="mb-4">
-    <c-card-body>
+      <div class="divider"></div>
       <div class="table-responsive">
         <table
           datatable
@@ -189,8 +198,8 @@ id="formModalKirim"    [attr.aria-hidden]="!isShowModalKirim">
       </div>
     </c-modal-body>
     <c-modal-footer class="justify-center">
-      <button type="button" class="btn btn-light" data-bs-dismiss="modal" (click)="isShowModalKirim = false">Close</button>
-      <button type="button" class="btn btn-success text-white" (click)="updateStatus()">Proses kirim Data</button>
+      <button type="button" class="btn btn-light  me-3 w-180" data-bs-dismiss="modal" (click)="isShowModalKirim = false">Close</button>
+      <button type="button" class="btn btn-success text-white w-180" (click)="updateStatus()">Proses kirim Data</button>
     </c-modal-footer>
 </c-modal>
 
@@ -204,9 +213,9 @@ id="formModalDelete"    [attr.aria-hidden]="!isShowModalCetak">
   <c-modal-body>
     <p class="text-center">Apakah anda ingin mencetak data?</p>
     <div class="d-flex justify-center py-2">
-      <button class="btn btn-light"  (click)="isShowModalCetak = false">Tidak</button>
+      <button class="btn btn-light w-90 me-3"  (click)="isShowModalCetak = false">Tidak</button>
       &nbsp;
-      <button class="btn btn-primary text-white" (click)="onClickPrint()">Iya</button>
+      <button class="btn btn-primary text-white w-90" (click)="onClickPrint()">Iya</button>
     </div>
   </c-modal-body>
 </c-modal>

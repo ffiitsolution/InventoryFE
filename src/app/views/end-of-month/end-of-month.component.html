@@ -3,27 +3,36 @@
     <c-card-body>
       <div class="row">
         <div class="col">
-          <h5>Proses Tutup Bulan (Closing)</h5>
+          <h5 *ngIf="currentView === 'closing'">Proses Tutup Bulan (Closing)</h5>
+          <h5 *ngIf="currentView === 'history'">History Proses Tutup Bulan</h5>
         </div>
         <div class="col text-end">
-          <button class="btn btn-outline-primary" *ngIf="currentView === 'closing'" (click)="setCurrentView('history')">
+          <!-- <button class="btn btn-outline-primary" *ngIf="currentView === 'closing'" (click)="setCurrentView('history')">
             Riwayat Proses
           </button>
           <button class="btn btn-outline-primary" *ngIf="currentView === 'history'" (click)="setCurrentView('closing')">
             Proses Closing
-          </button>
+          </button> -->
         </div>
       </div>
     </c-card-body>
   </c-card>
 
-  <c-card class="mb-2" *ngIf="currentView === 'closing'">
+  <c-card class="mb-2" *ngIf="!lastDate">
+    <c-card-body>
+      <p class="text-center my-4">
+        Gagal ambil data.
+      </p>
+    </c-card-body>
+  </c-card>
+
+  <c-card class="mb-2" *ngIf="lastDate">
     <c-card-body>
       <div class="text-center">
-        <div class="mx-auto card" style="width: fit-content;">
+        <div class="mx-auto card" style="width: 650px;">
           <div class="card-body">
 
-            <div class="text-center mb-3">
+            <div class="text-center mb-3 fs-5">
               Pastikan semua transaksi pada periode tersebut sudah di 'Entry'
               <br>(Tidak ada transaksi yang tertunda/pending)
             </div>
@@ -73,27 +82,38 @@
             </p>
             <hr>
             <div class="text-end">
-              <button class="btn btn-primary" (click)="confirmProcess()" [disabled]="errorInModal">
+              <button class="btn btn-primary" (click)="confirmProcess()" [disabled]="errorInModal || loadingProcess || lastDate === selectedLastDate">
                 <i class="fa fa-check me-2"></i>
                 Proses Closing
               </button>
             </div>
+            <div class="text-start mt-2">
+              <c-alert color="warning" *ngIf="g.statusEndOfMonth">
+                {{'Progress: ' + g.statusEndOfMonth}}
+              </c-alert>
+            </div>
           </div>
         </div>
       </div>
-    </c-card-body>
-  </c-card>
 
-  <c-card class="mb-2" *ngIf="currentView === 'history'">
-    <c-card-body>
-      <div class="row">
-        <div class="col">
-          <h5>History Proses Tutup Bulan</h5>
-        </div>
-        <div class="col text-end">
-        </div>
-      </div>
-      <div class="table"></div>
+      <!-- history -->
+      <c-accordion [flush]="true" class="mt-4">
+        <c-accordion-item #item0="cAccordionItem" [visible]="false">
+          <ng-template cTemplateId="accordionHeaderTemplate">
+            <button (click)="item0.toggleItem()" [collapsed]="!item0.visible" cAccordionButton>
+              <h5>History Proses Tutup Bulan</h5>
+            </button>
+          </ng-template>
+          <ng-template cTemplateId="accordionBodyTemplate">
+            <div class="accordion-body">
+              <div class="">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" (page.dt)="dtPageChange($event)"
+                  class="row-border hover stripe w-100"></table>
+              </div>
+            </div>
+          </ng-template>
+        </c-accordion-item>
+      </c-accordion>
     </c-card-body>
   </c-card>
 </div>
@@ -106,15 +126,27 @@
       [cModalToggle]="formModalProcess.id" cButtonClose></button>
   </c-modal-header>
   <c-modal-body>
-    <p class="text-center fw-bold text-danger">
-      -- PERHATIAN --
-    </p>
-    <p class="text-center fw-bold">
-      DATA YANG TELAH DIPROSES <br>TIDAK DAPAT DIULANG KEMBALI ..!!
-    </p>
+    <div>
+      <p class="text-center fw-bold text-danger">
+        -- PERHATIAN --
+      </p>
+      <p class="text-center fw-bold">
+        DATA YANG TELAH DIPROSES <br>TIDAK DAPAT DIULANG KEMBALI ..!!
+      </p>
+    </div>
+    <div *ngIf="!isDateEqual">
+      <hr>
+      <p class="text-center fw-bold text-danger">
+        Tanggal server tidak sama dengan tanggal akhir periode.
+        <br>Server&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{getServerDate()}}
+        <br>Akhir periode : {{selectedLastDate}}
+        <br>
+        <br>Yakin proses beda tanggal?
+      </p>
+    </div>
     <hr>
     <div class="d-flex justify-center py-2">
-      <button class="btn btn-primary text-white me-3 w-180" (click)="processEndOfMonth()">
+      <button class="btn btn-primary text-white me-3 w-180" (click)="processEndOfMonth()" [disabled]="loadingProcess">
         Proses Dilanjutkan
       </button>
       <button class="btn btn-light w-180" (click)="isShowModalProcess = false">

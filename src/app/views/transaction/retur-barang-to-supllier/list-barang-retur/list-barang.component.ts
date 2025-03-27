@@ -33,7 +33,7 @@ export class ListBarangReturComponent implements OnInit {
   dtOptionsModal: DataTables.Settings = {};
   protected config = AppConfig.settings.apiServer;
   isShowModal: boolean = false;
-  pageSize: number = 10; // Define the pageSize property
+  pageSize: number = 10;
   dtTrigger: Subject<any> = new Subject();
   currentPage: number = 1;
   page = new Page();
@@ -124,7 +124,9 @@ export class ListBarangReturComponent implements OnInit {
       },
       columns: [
         { data: 'dtIndex', title: 'No.' },
-        { data: 'TGL_TRANSAKSI', title: 'Tanggal Transaksi' },
+        { data: 'TGL_TRANSAKSI', title: 'Tanggal Transaksi', 
+          render: (data) => this.g.transformDate(data),
+        },
         { data: 'NOMOR_TRANSAKSI', title: 'No. Transaksi' },
         {
           title: 'Supplier Tujuan',
@@ -137,7 +139,9 @@ export class ListBarangReturComponent implements OnInit {
         },
         { data: 'KETERANGAN', title: 'Keterangan' },
         { data: 'USER_CREATE', title: 'User Proses' },
-        { data: 'TGL_TRANSAKSI', title: 'Tanggal' },
+        { data: 'TGL_TRANSAKSI', title: 'Tanggal', 
+          render: (data) => this.g.transformDate(data),
+        },
         {
           data: 'TIME_CREATE',
           title: 'Jam',
@@ -173,6 +177,7 @@ export class ListBarangReturComponent implements OnInit {
         );
         return row;
       },
+      order: [[1, 'desc']],
     };
     this.dtColumns = this.dtOptions.columns;
   }

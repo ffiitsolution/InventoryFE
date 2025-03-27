@@ -1,0 +1,36 @@
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .password-container .form-control {
+    padding-right: 40px; /* Ensure enough space for the icon */
+  }
+  
+  .eye-icon {
+    position: absolute;
+    right: 30px; /* Position the eye icon at the end */
+    cursor: pointer;
+    z-index: 1;
+    padding: 10px;
+  }
+  
+  .eye-icon i {
+    font-size: 16px; /* Adjust icon size */
+    color: #6c757d; /* Neutral color for the icon */
+    transition: color 0.3s ease;
+  }
+  
+  .eye-icon i:hover {
+    color: #000; /* Darker color on hover */
+  }
+  
+.input-group{
+    width: 83%  !important;
+}
+
+.kfc-logo{
+  height: 160px;
+  // margin-bottom: 20px !important;
+}

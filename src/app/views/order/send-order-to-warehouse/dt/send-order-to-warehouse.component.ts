@@ -291,6 +291,7 @@ export class SendOrderToWarehouseComponent
     this.dpConfig.containerClass = 'theme-red';
 
     this.dpConfig.customTodayClass = 'today-highlight';
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
   }
 
   actionBtnClick(action: string, data: any = null) {

@@ -69,6 +69,8 @@ export class LoginComponent implements OnInit {
       const loginParam = {
         kodeUser: this.usernameInput?.nativeElement?.value,
         kodePassword: this.passwordInput?.nativeElement?.value,
+        feVersion: this.version,
+        isPortable: false,
       };
 
       this.service.login(loginParam).subscribe({
@@ -76,7 +78,7 @@ export class LoginComponent implements OnInit {
           if (!res.success) {
             this.errorMessage = res.message;
           } else {
-            const { locations, user, token } = res.data;
+            const { locations, user, token, expiredAt, period } = res.data;
             const transformedUser = {
               ...user,
               defaultLocation: user.defaultLocation
@@ -88,6 +90,8 @@ export class LoginComponent implements OnInit {
             this.g.saveLocalstorage('inv_locations', locations);
             this.g.saveLocalstorage('inv_currentUser', transformedUser);
             this.g.saveLocalstorage('inv_token', token);
+            this.g.saveLocalstorage('inv_expiredAt', expiredAt);
+            this.g.saveLocalstorage('inv_period', period);
             // this.translation.listMenuSidebar;
             if (isEmpty(user.defaultLocation)) {
               this.router.navigate(['account-setting']);

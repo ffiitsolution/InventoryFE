@@ -72,6 +72,10 @@
               <span class="label">{{ "Tanggal Batal Pesanan" | translate }}</span>
               <span class="value">{{ selectedOrder.tglKadaluarsa }}</span>
             </div>
+            <div class="detail-item" *ngIf="!selectedOrder.dateCancel?.includes('1901')">
+              <span class="label">{{ "Tanggal Pesanan Batalkan" | translate }}</span>
+              <span class="value">{{ selectedOrder.dateCancel }}</span>
+            </div>
           </div>
         </div>
         <div class="col">

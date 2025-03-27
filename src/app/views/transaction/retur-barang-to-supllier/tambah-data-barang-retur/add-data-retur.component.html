@@ -155,6 +155,10 @@
                   <div class="text-end text-muted mt-1">
                     <small>{{ charCount }}/50 karakter</small>
                   </div>
+
+                  <div *ngIf="isKeteranganInvalid" class="text-danger mt-1 fw-bold">
+                    HARAP MASUKAN KARAKTER YANG VALID..!!!!
+                   </div>
                 </div>
               </div>
               

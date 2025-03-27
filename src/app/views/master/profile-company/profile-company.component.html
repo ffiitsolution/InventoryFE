@@ -1,0 +1,366 @@
+<div class="fade-in">
+  <form [formGroup]="myForm">
+    <c-card class="mb-2">
+      <c-card-header>
+        <h5>{{ "Profile" | translate }} {{ "Perusahaan" | translate }}</h5>
+      </c-card-header>
+      <c-card-body>
+        <div class="row">
+          <div class="mb-3 text-center col-sm-2">
+            <img src="../../../assets/img/brand/logo_kfc.png" class=" kfc-logo" />
+          </div>
+
+          <div class="col-sm-10">
+            <div class="row">
+              <div class="col-sm-2">
+                <label class="form-label">Kode Perusahaan</label>
+                <input type="text" class="form-control" formControlName="kodePerusahaan" />
+              </div>
+              <div class="col-sm-10">
+                <label class="form-label">Nama Perusahaan 1</label>
+                <input type="text" class="form-control" formControlName="namaPerusahaan1" />
+              </div>
+            </div>
+  
+            <div class="row mt-3">
+              <div class="col-sm-12">
+                <label class="form-label">Nama Perusahaan 2</label>
+                <input type="text" class="form-control" formControlName="namaPerusahaan2" />
+              </div>
+            </div>
+          </div>
+          </div>
+         
+      </c-card-body>
+    </c-card>
+  </form>
+</div>
+<div class="fade-in">
+    <c-card>
+      <c-card-body>
+        <form [formGroup]="myForm" (ngSubmit)="onSubmit()" >
+          <div class="row">
+            <div class="col-md-6">
+  
+              <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Alamat 1
+                 <span class="text-danger">*
+                 </span>  
+                </label>
+                <div class="col-sm-8">
+                  <textarea class="form-control" 
+                  [readonly]="roleId == 1"
+                  formControlName="alamat1" 
+                  rows="3">
+                  </textarea>
+                  <small class="text-danger" *ngIf="myForm.get('alamat1')?.hasError('required')">Alamat1 is required</small>
+                </div>
+              </div>
+              
+              <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Alamat 2
+                  <span class="text-danger">*
+                  </span>
+                </label>
+                <div class="col-sm-8">
+                  <textarea class="form-control"
+                  [readonly]="roleId == 1" 
+                  formControlName="alamat2" 
+                  rows="3">
+                </textarea>
+                <small class="text-danger" *ngIf="myForm.get('alamat2')?.hasError('required')">Alamat2 is required</small>
+                </div>
+              </div>
+              
+  
+              <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Nama Kota
+                  <span class="text-danger">*
+                  </span>
+                </label>
+                <div class="col-sm-8">
+                  <input type="text" 
+                  [readonly]="roleId == 1"
+                  class="form-control" 
+                  formControlName="namaKota">
+                  <small class="text-danger" *ngIf="myForm.get('namaKota')?.hasError('required')">Nama Kota is required</small>
+                </div>
+              </div>
+  
+              <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Kode Pos
+                  <span class="text-danger">*
+                  </span>
+                </label>
+                <div class="col-sm-8">
+                  <input type="text" 
+                  [readonly]="roleId == 1"
+                  class="form-control" 
+                  formControlName="kodePos">
+                  <small class="text-danger" *ngIf="myForm.get('kodePos')?.hasError('required')">Kode Pos is required</small>
+                </div>
+              </div>
+  
+              <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Negara
+                  <span class="text-danger">*
+                  </span>
+                </label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" formControlName="negara">
+                  <small class="text-danger" *ngIf="myForm.get('negara')?.hasError('required')">Negara is required</small>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Batas Kadaluarsa PO
+                  <span class="text-danger">*
+                  </span>
+                </label>
+                <div class="col-sm-4">
+                  <input type="number" 
+                  [readonly]="roleId == 1"
+                  class="form-control" 
+                  formControlName="batasKadaluarsaPo">
+                  <small class="text-danger" *ngIf="myForm.get('batasKadaluarsaPo')?.hasError('required')">Batas Kadaluarsa PO is required</small>
+                  <small class="text-danger" *ngIf="myForm.get('batasKadaluarsaPo')?.hasError('min')">Value must be greater than 0</small>
+
+                </div>
+                <label class="col-sm-4 col-form-label">hari</label>
+              </div>
+  
+              <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Default Tanggal Kirim PO
+                  <span class="text-danger">*
+                  </span>
+                </label>
+                <div class="col-sm-4">
+                  <input type="number" 
+                  [readonly]="roleId == 1"
+                  class="form-control" 
+                  formControlName="defaultTglKirimPo">
+                  <small class="text-danger" *ngIf="myForm.get('defaultTglKirimPo')?.hasError('required')">Batas Kadaluarsa PO is required</small>
+                  <small class="text-danger" *ngIf="myForm.get('defaultTglKirimPo')?.hasError('min')">Value must be greater than 0 </small>
+
+                </div>
+                <label class="col-sm-4 col-form-label">hari</label>
+              </div>
+  
+
+              <ng-container *ngIf="roleId !=1 ">
+                <div class="row mb-3">
+                  <div class="col-4">
+                    Kode RSC
+                    <span class="text-danger">*
+                    </span>
+                  </div>                                       
+                  <div class="col">
+                    <ng-container *ngIf="loadingRsc">
+                      <div class="loading-input">
+                        <i class="fa fa-spinner fa-spin"></i>
+                        <span>Loading...</span>
+                      </div>
+                    </ng-container>
+                    <ngx-select-dropdown *ngIf="!loadingRsc"
+                     [multiple]="false" 
+                      [config]="configRsc"
+                      [options]="listRsc"
+                      formControlName="defaultRsc"
+                      style="width: 100%" >
+                    </ngx-select-dropdown>
+                    <small class="text-danger" *ngIf="myForm.get('defaultRsc')?.hasError('required')">Default RSC is required</small>
+                  </div>
+                </div>
+              </ng-container>
+
+              <ng-container *ngIf="roleId ==1 ">
+
+              <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Default RSC
+                  <span class="text-danger">*
+                  </span>
+                </label>
+                <div class="col-sm-8">
+                  <input type="text" 
+                  [readonly]="true"
+                  class="form-control" 
+                  [value]="myForm.get('defaultRsc')?.value?.description">
+                </div>
+              </div>
+  
+            </ng-container>
+            </div>
+  
+            <div class="col-md-6">
+              <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">No Telepon 1</label>
+                <div class="col-sm-8">
+                  <input type="text" 
+                  [readonly]="roleId == 1"
+                  class="form-control" 
+                  formControlName="noTelp1">
+                </div>
+              </div>
+  
+              <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">No Telepon 2</label>
+                <div class="col-sm-8">
+                  <input type="text" 
+                  [readonly]="roleId == 1"
+                  class="form-control" 
+                  formControlName="noTelp2">
+                </div>
+              </div>
+  
+              <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">No Fax 1</label>
+                <div class="col-sm-8">
+                  <input type="text" 
+                  [readonly]="roleId == 1"
+                  class="form-control" 
+                  formControlName="noFax1">
+                </div>
+              </div>
+  
+              <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">No Fax 2</label>
+                <div class="col-sm-8">
+                  <input type="text" 
+                  [readonly]="roleId == 1"
+                  class="form-control" 
+                  formControlName="noFax2">
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Website</label>
+                <div class="col-sm-8">
+                  <input type="text" 
+                  [readonly]="roleId == 1"
+                  class="form-control" 
+                  formControlName="website">
+                </div>
+              </div>
+  
+              <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Email</label>
+                <div class="col-sm-8">
+                  <input type="email" 
+                  [readonly]="roleId == 1"
+                  class="form-control" 
+                  formControlName="alamatEmail">
+                </div>
+              </div>
+
+              <ng-container *ngIf="roleId == 3">
+                <div class="row mb-3">
+                  <label class="col-sm-4 col-form-label">Lokasi Data Backup
+                    <span class="text-danger">*
+                    </span>
+                  </label>
+                  <div class="col-sm-8">
+                    <input type="text" 
+                    class="form-control" 
+                    formControlName="lokasiDataBackup">
+                    <small class="text-danger" *ngIf="myForm.get('lokasiDataBackup')?.hasError('required')">Lokasi Data Backup is required</small>
+                  </div>
+                </div>
+  
+                <div class="row mb-3">
+                  <label class="col-sm-4 col-form-label">Database
+                    <span class="text-danger">*
+                    </span>
+                  </label>
+                  <div class="col-sm-8">
+                    <input type="text" 
+                  
+                    class="form-control" 
+                    formControlName="alamatOrcl">
+                    <small class="text-danger" *ngIf="myForm.get('alamatOrcl')?.hasError('required')">Database is required</small>
+                  </div>
+                </div>
+    
+                <div class="row mb-3">
+                  <label class="col-sm-4 col-form-label">Password Database
+                    <span class="text-danger">*
+                    </span>
+                  </label>
+                  <div class="col-sm-7">
+                    <input 
+                    [type]="showPassword ? 'text' : 'password'"
+                    class="form-control" 
+                    formControlName="passwordOrcl">
+                    <small class="text-danger" *ngIf="myForm.get('passwordOrcl')?.hasError('required')">Password Database is required</small>
+                  </div>
+                  <div class="col-sm-1">
+                    <span
+                    *ngIf="roleId == 3"
+                    class="input-group-text eye-icon"
+                    (click)="togglePasswordVisibility()"
+                  >
+                  <i
+                      class="fa"
+                      [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+                    ></i>
+                  </span>
+                  </div>
+                </div>
+    
+                <div class="row mb-4">
+                  <label class="col-sm-4 col-form-label">IP Server HQ
+                    <span class="text-danger">*
+                    </span>
+                  </label>
+                  <div class="col-sm-8">
+                    <input type="text" 
+                    class="form-control" 
+                    formControlName="ipSvrhq">
+                    <small class="text-danger" *ngIf="myForm.get('ipSvrhq')?.hasError('required')">IP Server HQ is required</small>
+                  </div>
+                </div>
+                <div class="row mb-4">
+                  
+                  <div class="col-sm-4 ">
+                    <button
+                      class="btn btn-info text-white btn-150"
+                      type="button"
+                      [disabled]="loadingTest"
+                      (click)="onTestConnection()"
+                    >
+                      <i class="fa fa-spinner fa-spin" *ngIf="loadingTest"></i>
+                      <span>{{ " Test" | translate }} {{ "Connection" | translate }} </span>
+                    </button>
+                  </div>
+                  <div class="col-sm-5">
+                    <input type="text" 
+                    class="form-control" 
+                    readonly="true"
+                    formControlName="statusConnection">
+                  </div>
+                </div>
+              </ng-container>
+            
+  
+             
+            </div>
+          </div>
+  
+          <hr/>
+  
+          <div class="mt-4 text-end d-flex justify-content-end gap-2" *ngIf="roleId != 1">
+            <!-- <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+              {{ "Kembali" | translate }}
+            </button> -->
+            <button
+              class="btn btn-info text-white btn-150"
+              type="submit"
+              [disabled]="myForm.invalid || isSubmitting"
+            >
+              <i class="fa fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+              <span>{{ "Ubah" | translate }} {{ "Profile" | translate }}</span>
+            </button>
+          </div>
+       </form>
+      </c-card-body>
+    </c-card>
+
+  
+</div>

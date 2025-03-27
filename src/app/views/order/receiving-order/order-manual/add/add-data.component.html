@@ -1,26 +1,27 @@
-<div class="fade-in">
+<!-- <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
       <h5>{{ "Tambah" | translate }} {{ "Pesanan" | translate }} {{ "Manual" | translate }}</h5>
     </c-card-body>
   </c-card>
-</div>
+</div> -->
 <div class="fade-in">
-  <c-card class="mb-2">
+  <c-card class="mb-4">
     <c-card-body>
       <div class="row">
-        <div class="col-sm-12">
-          <i
-            class="fa fa-exclamation-circle text-center"
-            style="font-size: large; color: #3c4b64"
-          ></i>
-          &nbsp;
-          <span class="fw-bold"
-            >Tambah Data Pesanan Secara Manual' tersebut, digunakan jika 'PEMESAN' Dan 'GUDANG' tidak 
-            terhubung dengan Jaringan DATA ONLINE (OFFLINE), sehingga PESANAN dibuat oleh Gudang yang 
-            bersangkutan.
-          </span>
+        <div class="col">
+          <h5>{{ "Tambah" | translate }} {{ "Pesanan" | translate }} {{ "Manual" | translate }}</h5>
         </div>
+        <div class="col col-md-8">
+          <div class="menu-purpose col-sm-12 d-flex justify-content-end align-items-center">
+            <span>
+              Program Tambah Data Pesanan Secara 'Manual' tersebut, digunakan jika 'PEMESAN' Dan 'GUDANG' tidak 
+              terhubung dengan Jaringan DATA ONLINE (OFFLINE), sehingga PESANAN dibuat oleh Gudang yang 
+              bersangkutan.            
+            </span>
+          </div>
+        </div>
+        
       </div>
     </c-card-body>
   </c-card>
@@ -334,9 +335,9 @@
       <c-modal-body>
         <p class="text-center">Apakah anda ingin kembali ke halaman sebelumnya?</p>
         <div class="d-flex justify-center py-2">
-          <button class="btn btn-light"  (click)="isShowModalBack = false">Tidak</button>
+          <button class="btn btn-light w-90 me-3"  (click)="isShowModalBack = false">Tidak</button>
           &nbsp;
-          <button class="btn btn-primary text-white" (click)="onPreviousPressed()">Iya</button>
+          <button class="btn btn-primary text-white w-90" (click)="onPreviousPressed()">Iya</button>
 
         </div>
       </c-modal-body>
@@ -351,9 +352,9 @@
     <c-modal-body>
       <p class="text-center">Apakah anda ingin membuat pesanan?</p>
       <div class="d-flex justify-center py-2">
-        <button class="btn btn-light"  (click)="isShowModalBuatPesanan = false">Tidak</button>
+        <button class="btn btn-light w-90 me-3"  (click)="isShowModalBuatPesanan = false">Tidak</button>
         &nbsp;
-        <button class="btn btn-primary text-white" (click)="onSubmit()">Iya</button>
+        <button class="btn btn-primary text-white w-90" (click)="onSubmit()">Iya</button>
 
       </div>
     </c-modal-body>
@@ -471,9 +472,9 @@ id="formModalBuatPesanan"    [attr.aria-hidden]="!isShowModalBuatPesanan">
   <c-modal-body>
     <p class="text-center">Apakah anda ingin membuat pesanan?</p>
     <div class="d-flex justify-center py-2">
-      <button class="btn btn-light"  (click)="isShowModalBuatPesanan = false">Tidak</button>
+      <button class="btn btn-light w-90 me-3"  (click)="isShowModalBuatPesanan = false">Tidak</button>
       &nbsp;
-      <button class="btn btn-primary text-white" (click)="onSubmit()">Iya</button>
+      <button class="btn btn-primary text-white w-90" (click)="onSubmit()">Iya</button>
 
     </div>
   </c-modal-body>

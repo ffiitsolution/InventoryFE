@@ -27,6 +27,7 @@ export class GlobalService {
   appVersion: string = '0.0.3';
   commandInput: string = '';
   serverStatus: string = 'DOWN';
+  serverHQStatus: string = 'DOWN';
   listFryer: any = [];
   listMonitoring: any = [];
   isFullscreen: boolean = false;
@@ -40,6 +41,7 @@ export class GlobalService {
 
 
   selectedReportCategory: any = null;
+  statusEndOfMonth: any = '';
 
   constructor(
     private titleService: Title,
@@ -85,11 +87,12 @@ export class GlobalService {
   }
 
   clearLocalstorage() {
-    localStorage.removeItem('inv_locations');
-    localStorage.removeItem('inv_currentUser');
-    localStorage.removeItem('inv_token');
-    localStorage.removeItem('inv_listMenu');
-    // return localStorage.clear();
+    // localStorage.removeItem('inv_locations');
+    // localStorage.removeItem('inv_currentUser');
+    // localStorage.removeItem('inv_token');
+    // localStorage.removeItem('inv_listMenu');
+    sessionStorage.clear();
+    return localStorage.clear();
   }
 
   getLocalDateTime(date: Date) {
@@ -230,13 +233,16 @@ export class GlobalService {
     }
   }
 
-  transformTime(time: string) {
+  transformTime(time: string, showSecond:boolean = false) {
     if (isNull(time)) {
       return '00:00';
     } else {
       const hours = time.substring(0, 2);
       const minutes = time.substring(2, 4);
       const seconds = time.substring(4, 6);
+      if(showSecond){
+        return `${hours}:${minutes}:${seconds}`;
+      }
       return `${hours}:${minutes}`;
     }
   }
@@ -377,16 +383,16 @@ export class GlobalService {
 
   convertKeysToCamelCase(obj: any): any {
     const newObj: any = {};
-  
+
     Object.keys(obj).forEach(key => {
       // Convert UPPERCASE_UNDERSCORE to camelCase
       const camelCaseKey = key
         .toLowerCase()
         .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
-  
+
       newObj[camelCaseKey] = obj[key]; // Assign value to new key
     });
-  
+
     return newObj;
   }
 

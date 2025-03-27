@@ -171,21 +171,28 @@ export class DetailBarangReturComponent
             data: 'KONVERSI',
             title: 'Konversi',
             render: function (data, type, row) {
-              return data + ' ' + row.SATUAN_BESAR + ' ' + row.SATUAN_KECIL;
+              return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_KECIL;  // Menambahkan .00
             },
           },
           {
             data: 'QTY_BESAR',
             title: 'Qty Besar',
             render: function (data, type, row) {
-              return data + ' ' + row.SATUAN_BESAR;
+              return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_BESAR;  // Menambahkan .00
             },
           },
           {
             data: 'QTY_KECIL',
             title: 'Qty Kecil',
             render: function (data, type, row) {
-              return data + ' ' + row.SATUAN_KECIL;
+              return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_KECIL;  // Menambahkan .00
+            },
+          },
+          {
+            data: 'TOTAL_QTY',
+            title: 'Qty Total',
+            render: function (data, type, row) {
+              return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_KECIL;  // Menambahkan .00
             },
           },
           {
@@ -195,15 +202,12 @@ export class DetailBarangReturComponent
               return data + ' ' + row.SATUAN_BESAR + ' ' + row.SATUAN_KECIL;
             },
           },
-          {
-            data: 'TOTAL_QTY',
-            title: 'Qty Total',
-            render: function (data, type, row) {
-              return data + ' ' + row.SATUAN_BESAR + ' ' + row.SATUAN_KECIL;
-            },
+          // { data: 'TGL_EXPIRED', title: 'Tanggal Expired',
+          //   render: (data) => this.g.transformDate(data),
+          // },
+          { data: 'KETERANGAN_TANGGAL', title: 'Tanggal Expired', 
+            render: (data) => this.g.transformDate(data),
           },
-          { data: 'TGL_EXPIRED', title: 'Tanggal Expired' },
-          { data: 'KETERANGAN_TANGGAL', title: 'Keterangan Tanggal' },
         ],
         searchDelay: 1000,
         order: [[1, 'asc']],
@@ -346,7 +350,7 @@ export class DetailBarangReturComponent
 
     this.http
       .post(
-        `${this.config.BASE_URL}/api/delivery-order/report-pemakaian-barang-sendiri`,
+        `${this.config.BASE_URL}/api/delivery-order/report-barang-supplier`,
         requestBody,
         { headers, responseType: 'blob' }
       )

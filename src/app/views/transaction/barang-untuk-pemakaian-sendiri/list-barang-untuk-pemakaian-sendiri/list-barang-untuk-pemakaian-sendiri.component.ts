@@ -121,16 +121,33 @@ pageSize: number = 10; // Define the pageSize property
       },
       columns: [
         { data: 'dtIndex', title: 'No.'},
-        { data: 'TGL_TRANSAKSI', title: 'Tanggal Transaksi' },
+        { data: 'TGL_TRANSAKSI', title: 'Tanggal Transaksi', 
+          render: (data) => this.g.transformDate(data),
+        },
         { data: 'NOMOR_TRANSAKSI', title: 'No. Transaksi' },
         { data: 'KETERANGAN', title: 'Keterangan Pemakaian', searchable: true },
         { data: 'USER_CREATE', title: 'User Proses', searchable: true },
-        { data: 'TGL_TRANSAKSI', title: 'Tanggal Proses' },
+        { data: 'TGL_TRANSAKSI', title: 'Tanggal Proses',
+          render: (data) => this.g.transformDate(data),
+        },
         {
           data: 'TIME_CREATE',
           title: 'Jam Proses',
           orderable: true, 
           searchable: true,
+          render: function (data, type, row) {
+            if (type === 'display' && data) {
+
+              const date = new Date(data);
+              
+              const hours = date.getHours().toString().padStart(2, '0');
+              const minutes = date.getMinutes().toString().padStart(2, '0');
+              const seconds = date.getSeconds().toString().padStart(2, '0');
+              
+              return `${hours}:${minutes}:${seconds}`;
+            }
+            return data; 
+          }
         },
         {
           data: 'STATUS_POSTING',
@@ -156,6 +173,7 @@ pageSize: number = 10; // Define the pageSize property
         );
         return row;
       },
+      order: [[1, 'desc']]
     };
     this.dtColumns = this.dtOptions.columns;
   }
@@ -351,4 +369,6 @@ pageSize: number = 10; // Define the pageSize property
   //       },
   //     };
   //   }
+
+  
 }

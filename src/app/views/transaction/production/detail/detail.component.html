@@ -57,7 +57,7 @@
           <div class="row order-details">
             <div class="detail-item">
               <span class="label">{{ "Kode Resep" | translate }}</span>
-              <span class="value">: {{ selectedProduction.kodeProduksi }}</span>
+              <span class="value">: {{ selectedProduction.kodeProduksi }} ({{ selectedProduction.barangProduksi}})</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Satuan Resep" | translate }}</span>
@@ -65,11 +65,11 @@
             </div>
             <div class="detail-item">
               <span class="label">{{ "Jumlah Produksi" | translate }}</span>
-              <span class="value">: {{ selectedProduction.jumlahResep }}</span>
+              <span class="value">: {{ selectedProduction.jumlahResep }} {{ selectedProduction.satuanBesar}}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Jumlah Hasil Produksi" | translate }}</span>
-              <span class="value">: {{ selectedProduction.totalProduksi }}</span>
+              <span class="value">: {{ selectedProduction.totalProduksi }} {{ selectedProduction.satuanKecil}}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Jumlah Item Bahan Baku" | translate }}</span>

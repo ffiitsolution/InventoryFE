@@ -45,6 +45,10 @@ $theme-colors: map-merge(
   background-color: $primary;
 }
 
+.w-90 {
+  width: 90px !important;
+}
+
 .w-120 {
   width: 120px !important;
 }

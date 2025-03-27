@@ -316,4 +316,18 @@ export class AppService {
       payload
     );
   }
+
+  getProfileCompany() {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/profile/company`,
+      {}
+    );
+  }
+
+  checkEndpointHqWh(payload: any){
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/check-endpoint`,
+      payload
+    )
+  }
 }

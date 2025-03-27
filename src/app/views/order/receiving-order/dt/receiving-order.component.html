@@ -5,25 +5,37 @@
         <div class="col">
           <h5>{{ "Terima pesanan dari Cabang atau Gudang" | translate }}</h5>
         </div>
-        <div class="col text-end">
-          <button type="button" class="btn btn-outline-dark me-2 btn-120" (click)="toggleFilter()">
-            <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
-            {{ "Filter" | translate }}
-          </button>
-          <button type="button" class="btn btn-success text-white me-2 btn-240" data-toggle="modal"
-          (click)="onOrderManualPressed()">
-          <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
-          {{ "Order Manuall" | translate }}
-        </button>
-          <button type="button" class="btn btn-success text-white me-2 btn-240" data-toggle="modal"
-            (click)="onAddPressed()">
-            <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
-            {{ "Tambah Penerimaan" | translate }}
-          </button>
+        <div class="col col-md-8">
+          <div class="menu-purpose col-sm-12 d-flex justify-content-end align-items-center">
+            <span>
+              Program ini digunakan untuk melihat dan menerima DATA PESANAN dari Cabang dan Gudang Lain secara Online (Synchronize Database). Dan untuk mencetak 'SURAT PESANAN BARANG'
+            </span>
+          </div>
         </div>
       </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="d-flex justify-content-end gap-1" style="margin-bottom: 10px">
+        <button type="button" class="btn btn-outline-dark me-2 btn-120" (click)="toggleFilter()">
+          <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
+          {{ "Filter" | translate }}
+        </button>
+        <button type="button" class="btn btn-success text-white me-2 btn-240" data-toggle="modal"
+        (click)="onOrderManualPressed()">
+        <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
+        {{ "Order Manual" | translate }}
+      </button>
+        <button type="button" class="btn btn-success text-white me-2 btn-240" data-toggle="modal"
+          (click)="onAddPressed()">
+          <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
+          {{ "Tambah Penerimaan" | translate }}
+        </button>
+      </div>  
       <div [visible]="showFilterSection" cCollapse>
-        <div class="divider"></div>
         <div class="row" style="margin-top: -16px">
           <c-card-body>
             <c-row>
@@ -47,12 +59,7 @@
           </c-card-body>
         </div>
       </div>
-    </c-card-body>
-  </c-card>
-</div>
-<div class="fade-in">
-  <c-card class="mb-4">
-    <c-card-body>
+      <div class="divider"></div>
       <div class="table-responsive">
         <table datatable [dtOptions]="dtOptions" (page.dt)="dtPageChange($event)" class="row-border hover stripe"></table>
       </div>
