@@ -240,8 +240,7 @@
               <td class="text-center">
                 <input type="text" id="tglTransaksi" class="form-control" aria-describedby="tglTransaksi"
                   #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker autocomplete="off" [(ngModel)]="data.tglExpired"
-                  (ngModelChange)="updateKeteranganTanggal(data)"
-                  (change)="validateDate($event,data.kodeBarang,i)"
+                  (ngModelChange)="updateKeteranganTanggal(data,$event,i)"
                   placeholder="{{ 'Tanggal transaksi' | translate }}" />
                   <span style="font-size: 14px;" class="text-danger" *ngIf="data.validationExpiredMessageList">
                     {{ data.validationExpiredMessageList}}
@@ -309,24 +308,16 @@
         <button (click)="onAddExpiredRow()" type="button" class="btn btn-primary"><i class="fa fa-plus ms-1"></i> Tambah
         </button>
       </div>
-      <div class="col-6 d-flex justify-content-end">
+      <div class="col-6 d-flex justify-content-end align-items-center gap-3">
+       <p class="mb-0"> Total: {{
+          totalFilteredExpired
+        }} {{ selectedExpProduct.satuanKecil }}
+        </p>
         <button (click)="onSaveEntryExpired()" type="button" class="btn btn-primary ms-2">
-          <i class="fa fa-check me-1"></i>Simpan Data
+          <i class="fa fa-check me-1"></i>Simpan
         </button>
       </div>
     </div>
 
   </c-modal-body>
 </c-modal>
-
-<!-- <div class="d-grid gap-3 d-md-flex justify-content-end">
-  <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
-    <i class="fa fa-check pe-2" *ngIf="!adding"></i>
-    <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
-    {{ "Proses Simpan Data" | translate }}
-  </button>
-
-  <button class="btn btn-secondary text-white btn-150" (click)="onBackPressed()">
-    <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
-  </button>
-</div> -->

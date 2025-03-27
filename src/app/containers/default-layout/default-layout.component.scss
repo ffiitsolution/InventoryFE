@@ -25,6 +25,10 @@
 :host ::ng-deep .sidebar-nav .nav-group-items .nav-link {
   padding-left: 75px !important;
   font-size: 15px;
+  white-space: normal !important;
+  word-wrap: break-word !important; /* For older browsers */
+  overflow-wrap: break-word !important; /* Modern alternative */
+  max-width: 100%; /* Ensures it doesn't extend past the container */
 }
 
 :host ::ng-deep .sidebar-nav .nav-group-items .nav-link .nav-icon {

@@ -14,6 +14,7 @@ import { WebsocketService } from '../../../service/websocket.service';
 import { AppService } from '../../../service/app.service';
 import { menu_id } from '../default-sidebar/id';
 import { menu_en } from '../default-sidebar/en';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-default-header',
@@ -29,7 +30,7 @@ export class DefaultHeaderComponent
 
   currentUser: any;
   isDefaultWarehouseExist: boolean = false;
-
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
   constructor(
     private router: Router,
     public g: GlobalService,
@@ -41,6 +42,7 @@ export class DefaultHeaderComponent
   }
 
   ngOnInit(): void {
+    this.checkConnection()
     this.currentUser = this.g.getLocalstorage('inv_currentUser');
     this.g.currentUser = this.currentUser;
     if (!isEmpty(this.currentUser?.defaultLocation)) {
@@ -144,4 +146,35 @@ export class DefaultHeaderComponent
       this.g.changeTitle(title.replaceAll(offlineText, ''));
     }
   }
+
+  checkConnection() {
+    this.g.serverHQStatus ='CHECKING';
+    this.service.getProfileCompany()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (res: any) => {
+          const ip = res?.ipSvrhq || '192.168.10.28'; // Fallback to default IP if undefined
+          const urls = `http://${ip}:7009/warehouse/halo`;
+  
+          const payload = { url: urls };
+          this.service.checkEndpointHqWh(payload)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe({
+              next: (response) => {
+                this.g.serverHQStatus = response?.success === false ? "DOWN" : "UP";
+                console.log(response);
+              },
+              error: (error) => {
+                this.g.serverHQStatus = "DOWN";
+                console.log(error);
+              },
+            });
+        },
+        error: (error) => {
+          console.error("Failed to fetch company profile:", error);
+          this.g.serverHQStatus = "DOWN"; // Handle failure in getting IP
+        }
+      });
+  }
+  
 }

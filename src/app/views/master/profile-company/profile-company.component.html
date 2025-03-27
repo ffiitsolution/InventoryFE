@@ -283,11 +283,24 @@
                     <span class="text-danger">*
                     </span>
                   </label>
-                  <div class="col-sm-8">
-                    <input type="password" 
+                  <div class="col-sm-7">
+                    <input 
+                    [type]="showPassword ? 'text' : 'password'"
                     class="form-control" 
                     formControlName="passwordOrcl">
                     <small class="text-danger" *ngIf="myForm.get('passwordOrcl')?.hasError('required')">Password Database is required</small>
+                  </div>
+                  <div class="col-sm-1">
+                    <span
+                    *ngIf="roleId == 3"
+                    class="input-group-text eye-icon"
+                    (click)="togglePasswordVisibility()"
+                  >
+                  <i
+                      class="fa"
+                      [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+                    ></i>
+                  </span>
                   </div>
                 </div>
     
@@ -309,17 +322,18 @@
                     <button
                       class="btn btn-info text-white btn-150"
                       type="button"
-                      [disabled]="false"
+                      [disabled]="loadingTest"
+                      (click)="onTestConnection()"
                     >
-                      <!-- <i class="fa fa-spinner fa-spin" ></i> -->
-                      <span>{{ "Test" | translate }} {{ "Connection" | translate }} </span>
+                      <i class="fa fa-spinner fa-spin" *ngIf="loadingTest"></i>
+                      <span>{{ " Test" | translate }} {{ "Connection" | translate }} </span>
                     </button>
                   </div>
                   <div class="col-sm-5">
                     <input type="text" 
                     class="form-control" 
                     readonly="true"
-                    [(ngModel)]="statusConnection">
+                    formControlName="statusConnection">
                   </div>
                 </div>
               </ng-container>

@@ -10,9 +10,10 @@
   
   .eye-icon {
     position: absolute;
-    right: 15px; /* Position the eye icon at the end */
+    right: 30px; /* Position the eye icon at the end */
     cursor: pointer;
     z-index: 1;
+    padding: 10px;
   }
   
   .eye-icon i {

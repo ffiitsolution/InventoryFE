@@ -33,7 +33,9 @@
 
 <ng-template #userDropdown>
   <c-dropdown alignment="end" variant="nav-item">
-    <button cButton color="" [caret]="false" cDropdownToggle class="py-0" style="background-color: #EEEEEE;
+    <button cButton color="" [caret]="false" cDropdownToggle class="py-0"
+    (click)="checkConnection()"
+     style="background-color: #EEEEEE;
     border-radius: 10px;
     width: 40px;
     height: 40px;
@@ -80,11 +82,27 @@
       <hr />
       <li class="wrapper-user logout">
         <button
-        class="btn  btn-success text-white btn-150"
-        type="submit"
-      >
-        <span>{{ "HQ" | translate }} {{ "Active" | translate }}</span>
-      </button>
+          class="btn  btn-success text-white btn-150"
+          type="button"
+          *ngIf="g.serverHQStatus === 'UP'"
+        >
+          <span>{{ "HQ" | translate }} {{ "Active" | translate }}</span>
+        </button>
+        <button
+          class="btn btn-info text-white btn-150"
+          type="button"
+          *ngIf="g.serverHQStatus === 'DOWN'"
+        >
+          <span>{{ "HQ" | translate }} {{ "Down" | translate }}</span>
+        </button>
+          <button
+          class="btn btn-info text-white btn-150"
+          type="button"
+          *ngIf="g.serverHQStatus === 'CHECKING'"
+        >
+          <i class="fa fa-spinner fa-spin" ></i>
+          <span>{{ " Checking" | translate }} {{ "Status" | translate }}</span>
+        </button>
       </li>
       <li class="wrapper-user logout">
         <div class="wrapper-user__profile" (click)="onLogoutPressed()">

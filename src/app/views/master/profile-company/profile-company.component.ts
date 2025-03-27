@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -21,7 +21,7 @@ import { Subject, takeUntil } from 'rxjs';
   templateUrl: './profile-company.component.html',
   styleUrl: './profile-company.component.scss',
 })
-export class ProfileCompanyComponent implements OnInit {
+export class ProfileCompanyComponent implements OnInit,OnDestroy {
   myForm: FormGroup;
   editing: boolean = false;
   detail: any;
@@ -45,7 +45,7 @@ export class ProfileCompanyComponent implements OnInit {
   roleId: number;
   showPassword: boolean;
   loadingRsc: boolean=false;
-  statusConnection: string='';
+  loadingTest: boolean=false;
   constructor(
     private form: FormBuilder,
     private router: Router,
@@ -59,7 +59,6 @@ export class ProfileCompanyComponent implements OnInit {
   ngOnInit(): void {
     this.roleId = this.g.getLocalstorage('inv_currentUser')?.roleId;
     this.configRsc = this.g.dropdownConfig('description');
-    console.log(this.roleId,'role')
     this.detail = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_USER));
     this.myForm = this.form.group({
       kodePerusahaan: [
@@ -91,17 +90,12 @@ export class ProfileCompanyComponent implements OnInit {
       batasKadaluarsaPo:['',[Validators.required,Validators.min(1)]],
       defaultTglKirimPo:['',[Validators.required,Validators.min(1)]],
       defaultRsc:['',Validators.required],
-      lokasiDataBackup:['',Validators.required]
+      lokasiDataBackup:['',Validators.required],
+      statusConnection:['']
     });
 
     this.loadData();
     this.getListRsc();
-
-    this.myForm.get('defaultRsc')?.valueChanges
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(() => {
-      console.log(this.myForm.get('defaultRsc')?.value);
-    });
   }
 
   onSubmit(): void {
@@ -123,7 +117,6 @@ export class ProfileCompanyComponent implements OnInit {
           this.isSubmitting =false;
         },
         error: (err: any) => {
-          console.error('Error updating profile:', err);
           alert('An error occurred while updating the profile.');
           this.editing = false;
           this.isSubmitting =false;
@@ -213,10 +206,8 @@ export class ProfileCompanyComponent implements OnInit {
     return this.g.isFieldValid(this.myForm, fieldName);
   }
 
-  togglePasswordVisibility(field: any): void {
-    if (field == 'password') {
+  togglePasswordVisibility(): void {
       this.showPassword = !this.showPassword;
-    } 
   }
 
   onChangeLocation(selected: any) {
@@ -230,6 +221,47 @@ export class ProfileCompanyComponent implements OnInit {
       this.myForm.get('defaultLocation')?.setValue('');
     }
     // You can perform further actions here
+  }
+
+  onTestConnection(){
+    this.loadingTest =true;
+    const ip=this.myForm.get('ipSvrhq')?.value;
+    let urls=`http://${ip}:7009/warehouse/halo`
+
+    const payload={url:urls}
+    this.service.checkEndpointHqWh(payload)
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(
+      {
+        next: (res) => {
+          let status="Connected";
+          if(res?.success == false){
+            status ="Disconnected"
+            this.g.serverHQStatus = "DOWN";
+          } 
+
+          this.g.serverHQStatus = "UP";
+          this.myForm.patchValue({
+            statusConnection:status
+          });
+          this.loadingTest =false;
+          console.log(res)
+        },
+        error: (error) => {
+          this.myForm.patchValue({
+            statusConnection:"Disconnected"
+          });
+          this.g.serverHQStatus = "DOWN";
+          this.loadingTest =false;
+            console.log(error)
+        },
+      }
+    )
+  }
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   

@@ -27,6 +27,7 @@ export class GlobalService {
   appVersion: string = '0.0.3';
   commandInput: string = '';
   serverStatus: string = 'DOWN';
+  serverHQStatus: string = 'DOWN';
   listFryer: any = [];
   listMonitoring: any = [];
   isFullscreen: boolean = false;

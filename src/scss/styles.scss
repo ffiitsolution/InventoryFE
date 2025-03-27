@@ -134,3 +134,15 @@ $enable-rtl: true;
   max-width: 850px;
   text-align: right;
 }
+
+.my-datepicker-top .bs-datepicker-container {
+  position: absolute !important;
+  bottom: 100% !important; /* Move above the input */
+  top: auto !important;
+  transform: translateY(-5px); /* Adjust spacing */
+  z-index: 1050; /* Ensure it's above other elements */
+  background-color: white !important; /* Force white background */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1) !important; /* Add a slight shadow */
+  border-radius: 5px; /* Optional: rounded corners */
+  padding: 5px; /* Add spacing */
+}
