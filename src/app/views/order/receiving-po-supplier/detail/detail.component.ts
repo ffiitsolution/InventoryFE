@@ -175,7 +175,7 @@ export class ReceivingPoSupplierDetailComponent
       this.translation.instant('Detail Pesanan') + ' - ' + this.g.tabTitle
     );
     const isCanceled = this.selectedOrder.statusPesanan == CANCEL_STATUS;
-    this.disabledPrintButton = isCanceled;
+    this.disabledPrintButton = false;
     this.disabledCancelButton = isCanceled;
     this.alreadyPrint =
       this.selectedOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
@@ -327,6 +327,8 @@ export class ReceivingPoSupplierDetailComponent
       tglBrgDikirim: this.selectedOrder.tglKirimBrg,
       tglPesan: this.selectedOrder.tglPesanan,
       user: this.g.getUserCode(),
+      statusPesanan: this.selectedOrder.statusPesanan,
+      statusCetak: this.selectedOrder.statusCetak
     };
   
     // Step 1: Call Jasper report API
