@@ -57,7 +57,10 @@ export class ReceivingPoSupplierDetailComponent
   alreadyPrint: Boolean = false;
   totalLength: number = 0;
   buttonCaptionView: String = 'Lihat';
-
+  isShowModalBatal: boolean = false;
+  alasanDiBatalkan: string = '';
+  dataUser: any;
+  
   protected config = AppConfig.settings.apiServer;
 
   constructor(
@@ -407,5 +410,33 @@ export class ReceivingPoSupplierDetailComponent
     link.click();
     this.toastr.success('File sudah terunduh.', 'Selamat');
   }
-
+  onShowModalBatal(){
+    this.isShowModalBatal = true;
+  }
+  async updateStatus(){
+    try {
+      const params = {
+        status: '4',
+        user: this.g.getUserCode(),
+        keterangan2: this.alasanDiBatalkan,
+        nomorPesanan: this.selectedOrder.nomorPesanan,
+      };
+      const url = `${this.config.BASE_URL}/api/receiving-po-supplier/update-pesasan-batal`;
+      const response = await lastValueFrom(
+        this.dataService.postData(url, params)
+      );
+      if (response.success) {
+        this.toastr.success('Berhasil membatalkan penerimaan');
+        setTimeout(() => {
+          this.onBackPressed()
+        }, DEFAULT_DELAY_TABLE);
+      } else {
+        this.toastr.error(response.message);
+      }
+    } catch (error: any) {
+      this.toastr.error('Error: ', error);
+    } finally {
+      this.RejectingOrder = false;
+    }
+  }
 }
