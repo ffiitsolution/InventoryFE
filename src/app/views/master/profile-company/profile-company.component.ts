@@ -59,7 +59,6 @@ export class ProfileCompanyComponent implements OnInit {
   ngOnInit(): void {
     this.roleId = this.g.getLocalstorage('inv_currentUser')?.roleId;
     this.configRsc = this.g.dropdownConfig('description');
-    console.log(this.roleId,'role')
     this.detail = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_USER));
     this.myForm = this.form.group({
       kodePerusahaan: [
@@ -105,7 +104,7 @@ export class ProfileCompanyComponent implements OnInit {
   }
 
   onSubmit(): void {
-   
+
     if(this.myForm.valid){
       this.isSubmitting =true;
       this.editing = true;
@@ -137,7 +136,7 @@ export class ProfileCompanyComponent implements OnInit {
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe({
       next: (res:any) => {
-         
+
             if (res) {
               this.myForm.patchValue({
                 kodePerusahaan: res.kodePerusahaan || '',
@@ -163,13 +162,13 @@ export class ProfileCompanyComponent implements OnInit {
                 lokasiDataBackup: res.lokasiDataBackup || '',
               });
             }
-          
+
       },
     });
   }
 
   onPreviousPressed() {
-    localStorage.removeItem(LS_INV_SELECTED_USER);
+    localStorage.removeItem(LS_INV_SELECTED_USER)
     this.router.navigate(['/master/master-user']);
   }
 
@@ -207,7 +206,7 @@ export class ProfileCompanyComponent implements OnInit {
     }
   }
 
- 
+
 
   isFieldValid(fieldName: String) {
     return this.g.isFieldValid(this.myForm, fieldName);
@@ -216,7 +215,7 @@ export class ProfileCompanyComponent implements OnInit {
   togglePasswordVisibility(field: any): void {
     if (field == 'password') {
       this.showPassword = !this.showPassword;
-    } 
+    }
   }
 
   onChangeLocation(selected: any) {
@@ -232,5 +231,5 @@ export class ProfileCompanyComponent implements OnInit {
     // You can perform further actions here
   }
 
-  
+
 }
