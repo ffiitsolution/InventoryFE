@@ -109,7 +109,6 @@ export class AddDataBarangReturComponent
   
     this.charCount = currentValue.length;
   
-    // Cek apakah ada karakter tidak valid
     this.isKeteranganInvalid = !allowedRegex.test(currentValue);
   }
 
@@ -315,12 +314,12 @@ export class AddDataBarangReturComponent
     this.globalService.removeLocalstorage('headerWastage');
   }
 
-  onKeteranganChange(): void {
-    setTimeout(() => {
-      this.charCount = (this.formData.keterangan || '').length;
-      this.isKeteranganInvalid = !(this.formData.keterangan || '').trim();
-    });
-  }  
+  // onKeteranganChange(): void {
+  //   setTimeout(() => {
+  //     this.charCount = (this.formData.keterangan || '').length;
+  //     this.isKeteranganInvalid = !(this.formData.keterangan || '').trim();
+  //   });
+  // }  
 }
 
 @Injectable({
