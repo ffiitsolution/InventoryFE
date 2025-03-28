@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators,AbstractControl,ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { AppService } from 'src/app/service/app.service';
-import { GlobalService } from 'src/app/service/global.service';
+import { AppService } from '../../../../service/app.service';
+import { GlobalService } from '../../../../service/global.service';
 import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_SET_NUMBER } from 'src/constants';
-import { DataService } from 'src/app/service/data.service';
+import { DataService } from '../../../../service/data.service';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import moment from 'moment';
 
@@ -28,9 +28,9 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   showPassword: boolean = false;
   listLokasi: any[] = [];
   baseConfig: any = {
-    displayKey: 'name', // Key to display in the dropdown
-    search: true, // Enable search functionality
-    height: '200px', // Dropdown height
+    displayKey: 'name', 
+    search: true, 
+    height: '200px', 
     customComparator: () => {}, // Custom sorting comparator
     moreText: 'lebih banyak', // Text for "more" options
     noResultsFound: 'Tidak ada hasil', // Text when no results are found
