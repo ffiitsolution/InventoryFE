@@ -44,6 +44,7 @@ import { AddTerimaBarangReturDariSiteComponent } from './terima-barang-retur-dar
 import { AddDataDetailTerimaBarangReturDariSiteComponent } from './terima-barang-retur-dari-site/add-data-detail/add-data-detail.component';
 import { DetailTerimaBarangReturDariSiteComponent } from './terima-barang-retur-dari-site/detail/detail.component';
 //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
+import { ReturnOrderComponent } from './return-order/return-order.component';
 
 const routes: Routes = [
   {
@@ -105,6 +106,10 @@ const routes: Routes = [
       {
         path: 'receipt-from-warehouse/display-data-dari-gudang',
         component: DisplayDataGudangComponent,
+      },
+      {
+        path: 'return-order',
+        component: ReturnOrderComponent,
       },
     ],
   },
