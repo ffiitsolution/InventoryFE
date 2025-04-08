@@ -110,36 +110,7 @@ export const menu_id: any = [
     iconComponent: {
       name: 'cil-inbox',
     },
-    children: [
-      {
-        name: 'Terima Pesanan',
-        url: '/order/receiving-order',
-        iconComponent: {
-          name: 'cil-envelope-open',
-        },
-      },
-      {
-        name: 'Terima P.O Supplier Dari RSC',
-        url: '/order/receiving-po-supplier',
-        iconComponent: {
-          name: 'cil-envelope-open',
-        },
-      },
-      {
-        name: 'Kirim Pesanan Ke Supplier',
-        url: '/order/send-order-to-supplier-via-rsc',
-        iconComponent: {
-          name: 'cil-envelope-closed',
-        },
-      },
-      {
-        name: 'Kirim Pesanan Ke Gudang',
-        url: '/order/send-order-to-warehouse',
-        iconComponent: {
-          name: 'cil-envelope-closed',
-        },
-      },
-    ],
+    url: '/order/order',
   },
   {
     name: 'Transaksi',
