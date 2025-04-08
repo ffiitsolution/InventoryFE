@@ -282,7 +282,7 @@ export class AddDataDetailGudangComponent
     }
 
     fetch(
-      '${baseURL}inventory/api/delivery-order/simpan-data-penerimaan-dari-gudang',
+      `${this.config.BASE_URL}inventory/api/delivery-order/simpan-data-penerimaan-dari-gudang`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
