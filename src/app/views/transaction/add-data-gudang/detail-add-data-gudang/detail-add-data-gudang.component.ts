@@ -282,7 +282,7 @@ export class AddDataDetailGudangComponent
     }
 
     fetch(
-      'http://localhost:8093/inventory/api/delivery-order/simpan-data-penerimaan-dari-gudang',
+      '${baseURL}inventory/api/delivery-order/simpan-data-penerimaan-dari-gudang',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
