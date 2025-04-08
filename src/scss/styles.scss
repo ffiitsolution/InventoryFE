@@ -149,3 +149,9 @@ $enable-rtl: true;
   border-radius: 5px; /* Optional: rounded corners */
   padding: 5px; /* Add spacing */
 }
+
+.input-disabled {
+  background-color: #d8dbe0;
+  border-color: #b1b7c1;
+  opacity: 1;
+}

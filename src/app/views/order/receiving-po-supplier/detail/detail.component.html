@@ -145,7 +145,7 @@ id="formModalBatal"    [attr.aria-hidden]="!isShowModalBatal">
           <div class="col-sm-9">
             <input
               type="text"
-              class="form-control"
+              class="form-control input-disabled"
               [value]="(selectedOrder.supplier || '') + ' - ' + (selectedOrder.namaSupplier || '')"
               readonly
             />
@@ -158,7 +158,7 @@ id="formModalBatal"    [attr.aria-hidden]="!isShowModalBatal">
           <div class="col-sm-9">
             <input
               type="text"
-              class="form-control"
+              class="form-control input-disabled"
               [value]="(selectedOrder?.nomorPesanan || '')"              
               readonly
             />
@@ -171,9 +171,9 @@ id="formModalBatal"    [attr.aria-hidden]="!isShowModalBatal">
           <div class="col-sm-3">
             <input
               type="text"
-              class="form-control"
+              class="form-control input-disabled"
               readonly
-              [value]="(selectedOrder.tglPesanan || '')"              
+              [value]="g.formatStrDateMMM(selectedOrder?.tglPesanan) || ''"          
             />
           </div>
 
@@ -183,10 +183,9 @@ id="formModalBatal"    [attr.aria-hidden]="!isShowModalBatal">
           <div class="col-sm-3 ">
             <input
               type="text"
-              class="form-control"
+              class="form-control input-disabled"
               readonly
-              [value]="(selectedOrder?.tglKirimBrg || '')"              
-
+              [value]="g.formatStrDateMMM(selectedOrder?.tglKirimBrg) || ''"
             />
           </div>
         </div>
@@ -197,9 +196,9 @@ id="formModalBatal"    [attr.aria-hidden]="!isShowModalBatal">
           <div class="col-sm-3">
             <input
               type="text"
-              class="form-control"
+              class="form-control input-disabled"
               readonly
-              [value]="(selectedOrder?.tglBatalExp || '')"              
+              [value]="g.formatStrDateMMM(selectedOrder?.tglBatalExp) || ''"
             />
           </div>
         </div>
@@ -227,7 +226,7 @@ id="formModalBatal"    [attr.aria-hidden]="!isShowModalBatal">
       </div>
     </c-modal-body>
     <c-modal-footer class="justify-center">
-      <button type="button" class="btn btn-light" data-bs-dismiss="modal" (click)="isShowModalBatal = false">Close</button>
-      <button type="button" class="btn btn-primary text-white" (click)="updateStatus()">Proses Batal Pesanan</button>
+      <button type="button" class="btn btn-light  w-180 me-3" data-bs-dismiss="modal" (click)="isShowModalBatal = false">Close</button>
+      <button type="button" class="btn btn-primary text-white  w-180" (click)="updateStatus()">Proses Batal Pesanan</button>
     </c-modal-footer>
 </c-modal>
