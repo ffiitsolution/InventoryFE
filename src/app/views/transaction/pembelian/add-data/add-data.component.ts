@@ -108,7 +108,7 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   onPreviousPressed(): void {
-    this.router.navigate(['/transaction/delivery-item']);
+    this.router.navigate(['/transaction/pembelian/list-dt']);
   }
 
   onSaveData(): void {
@@ -167,9 +167,9 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       columns: [
         { data: 'nomorPesanan', title: 'No. Pesanan' },
-        { data: 'tglPesanan', title: 'Tgl. Pesan' },
-        { data: 'tglKirimBrg', title: 'Tgl. Kirim' },
-        { data: 'tglBatalExp', title: 'Tgl. Expired' },
+        { data: 'tglPesanan', title: 'Tgl. Pesan', render: (data) => this.globalService.transformDate(data) },
+        { data: 'tglKirimBrg', title: 'Tgl. Kirim', render: (data) => this.globalService.transformDate(data)  },
+        { data: 'tglBatalExp', title: 'Tgl. Expired', render: (data) => this.globalService.transformDate(data)  },
         { data: 'supplier', title: 'Supplier', },
         { data: 'namaSupplier', title: 'Nama Supplier', },
         { data: 'alamatSupplier', title: 'Alamat', },

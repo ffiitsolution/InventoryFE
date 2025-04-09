@@ -64,7 +64,7 @@ import { KirimBarangReturnKeSiteListComponent } from './kirim-barang-return-ke-s
 import { AddKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/add-data/add-data.component';
 import { AddDataDetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/add-data-detail/add-data-detail.component';
 import { DetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/detail/detail.component';
-
+import { SelectDropDownModule } from 'ngx-select-dropdown';
 
 //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 START
 import { TerimaBarangReturDariSiteListComponent } from './terima-barang-retur-dari-site/dt-list/terima-barang-retur-dari-site-list.component';
@@ -99,6 +99,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     TableModule,
     SharedComponentModule,
     PaginationModule,
+    SelectDropDownModule
   ],
   declarations: [
     DeliveryItemComponent,

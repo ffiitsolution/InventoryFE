@@ -102,7 +102,11 @@ export class DetailWastageComponent
                     ...rest,
                     dtIndex: this.page.start + index + 1,
                     tglPesanan: this.g.transformDate(rest.tglPesanan),
-                    tglTransaksi: this.g.transformDate(rest.tglTransaksi)
+                    tglTransaksi: this.g.transformDate(rest.tglTransaksi),
+                  konversi: this.g.formatToDecimal(rest.konversi),
+                  qtyBesar: this.g.formatToDecimal(rest.qtyBesar),
+                  qtyKecil: this.g.formatToDecimal(rest.qtyKecil),
+                  totalQty: this.g.formatToDecimal(rest.totalQty),
                   }
                   return finalData;
                 });
@@ -124,7 +128,8 @@ export class DetailWastageComponent
               outletBrand: 'KFC',
               namaSaksi: this.selectedOrder.namaSaksi,
               jabatanSaksi: this.selectedOrder.jabatanSaksi,
-              keterangan: this.selectedOrder.keterangan
+              keterangan: this.selectedOrder.keterangan,
+              tglTransaksi: this.selectedOrder.tglTransaksi
             };
             this.paramUpdatePrintStatus = {
               noSuratJalan: this.selectedOrder.noSuratJalan
@@ -136,7 +141,7 @@ export class DetailWastageComponent
           { data: 'namaBarang', title: 'Nama Barang' },
           {
             data: 'konversi', title: 'Konversi',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
+            render: (data, type, row) => `${data}  ${row.satuanKecil}/${row.satuanBesar}`
           },
           {
             data: 'qtyBesar', title: 'Qty Besar',

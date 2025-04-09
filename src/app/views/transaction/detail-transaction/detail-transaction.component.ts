@@ -164,7 +164,9 @@ export class DetailTransactionComponent
           data: 'qtyKKirim', title: 'Qty Kirim Kecil',
           render: (data, type, row) => `${data} ${row.satuanKecil}`
         },
-        { data: 'konversi', title: 'Konversi' },
+        { data: 'konversi', title: 'Konversi',
+          render: (data, type, row) => `${data}  ${row.satuanKecil}/${row.satuanBesar}`
+         },
         {
           data: 'totalQtyKirim', title: 'Total Kirim',
           render: (data, type, row) => `${data} ${row.satuanKecil}`

@@ -50,3 +50,12 @@
   transform: translate(-50%, -50%);
   width: 80%;
 }
+
+::ng-deep ngx-select-dropdown .ngx-dropdown-container .ngx-dropdown-list-container .selected-items .selected-item {
+  background-color: rgb(133, 0, 0) !important;
+  color: white !important;
+  border: 1px solid #b51823 !important;
+  font-weight: 500 !important;
+  padding: 5px 10px !important;
+  border-radius: 8px !important;
+}
