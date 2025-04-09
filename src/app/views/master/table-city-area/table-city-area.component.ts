@@ -73,14 +73,8 @@ export class TableCityAreaComponent
               const finalData = {
                 ...rest,
                 dtIndex: this.page.start + index + 1,
-                dateCreate: this.g.transformDateTime(
-                  item.dateCreate,
-                  item.timeCreate
-                ),
-                dateUpdate: this.g.transformDateTime(
-                  item.dateUpdate,
-                  item.timeUpdate
-                ),
+                dateCreate: this.g.transformDate(item.dateCreate),
+                dateUpdate: this.g.transformDate(item.dateUpdate),
               };
               return finalData;
             });
