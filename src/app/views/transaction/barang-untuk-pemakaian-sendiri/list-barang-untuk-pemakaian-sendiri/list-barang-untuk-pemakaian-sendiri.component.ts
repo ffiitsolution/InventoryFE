@@ -141,7 +141,7 @@ pageSize: number = 10; // Define the pageSize property
               const time = data.toString();
               const hours = time.slice(0, 2).padStart(2, '0');
               const minutes = time.slice(2, 4).padStart(2, '0');
-              const seconds = '00'; // Detik di-set menjadi 00
+              const seconds = '00';
         
               return `${hours}:${minutes}:${seconds}`;
             }
@@ -164,6 +164,7 @@ pageSize: number = 10; // Define the pageSize property
           },
         },
       ],
+      order: [[1, 'desc']],
       searchDelay: 1000,
       // delivery: [],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
@@ -172,7 +173,6 @@ pageSize: number = 10; // Define the pageSize property
         );
         return row;
       },
-      order: [[1, 'desc']]
     };
     this.dtColumns = this.dtOptions.columns;
   }
