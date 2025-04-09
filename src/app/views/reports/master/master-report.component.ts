@@ -48,6 +48,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
 
   paramStatusAktif: string = '';
   paramTipeListing: string = 'header';
+  paramInisial: string ;
 
   constructor(
     private service: AppService,
@@ -56,7 +57,9 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     private datePipe: DatePipe,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) {
+    this.paramInisial = this.service.getUserData().defaultLocation.kodeSingkat;
+  }
 
   ngOnInit(): void {
     this.g.changeTitle(
@@ -74,6 +77,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     this.configRsc = this.g.dropdownConfig('description');
 
     this.userData = this.service.getUserData();
+    console.log("paraminisial",this.paramInisial);
 
     if (['Master Cabang'].includes(this.currentReport)) {
       this.getListParam('listRegion');
@@ -166,6 +170,10 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
       param = {
         statusAktif: this.paramStatusAktif,
         tipeListing: this.paramTipeListing,
+      }
+    }else if (['Master Barang'].includes(this.currentReport)) {
+      param = {
+        statusAktif: this.paramStatusAktif
       }
     }
 

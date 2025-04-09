@@ -76,7 +76,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="['Master Cabang','Master Department','Master Gudang', 'Master Supplier'].includes(currentReport)">
+    <ng-container *ngIf="['Master Cabang','Master Department','Master Gudang', 'Master Supplier','Master Barang'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Status Aktif
@@ -115,6 +115,25 @@
             <input class="btn-check" type="radio" [(ngModel)]="paramTipeListing" name="tipeListing"
               id="tipeListingDetail" value="detail" />
             <label cButton cFormCheckLabel class="w-120" variant="outline" for="tipeListingDetail">Detail</label>
+          </c-button-group>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Inisial Gudang -->
+    <ng-container *ngIf="['Master Barang'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Inisial
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <c-button-group role="group">
+            <input class="btn-check" type="radio" [(ngModel)]="paramInisial" name="tipeListing"
+              id="tipeListingHeader" [value]="userData.defaultLocation.kodeSingkat" />
+            <label cButton cFormCheckLabel class="w-120" variant="outline" for="tipeListingHeader">{{userData.defaultLocation.kodeSingkat}}</label>
+
+           
           </c-button-group>
         </div>
       </div>
