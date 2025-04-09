@@ -156,12 +156,17 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
         status: this.paramStatusAktif,
         tipeListing: this.paramTipeListing,
       };
-    } else if (['Master Department','Master Gudang'].includes(this.currentReport)) {
+    } else if (['Master Department','Master Gudang',].includes(this.currentReport)) {
       param = {
         kodeRsc: this.selectedRsc['code'],
         status: this.paramStatusAktif,
         tipeListing: this.paramTipeListing,
-      };
+      }
+    }else if (['Master Supplier'].includes(this.currentReport)) {
+      param = {
+        statusAktif: this.paramStatusAktif,
+        tipeListing: this.paramTipeListing,
+      }
     }
 
     param = {
@@ -170,7 +175,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
       isDownloadCsv: type === 'csv',
       reportName: this.currentReport,
       reportSlug: this.g.formatUrlSafeString(this.currentReport),
-    };
+    };  
     this.service.getFile('/api/report/report-jasper', param).subscribe({
       next: (res) => {
         this.loadingState['submit'] = false;
