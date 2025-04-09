@@ -114,12 +114,15 @@ export class WastageListComponent implements OnInit {
           title: 'Tgl. Proses',
           orderable: true,
           searchable: true,
+          render: (data) => this.g.transformDate(data),
+
         },
         {
           data: 'timeCreate',
           title: 'Jam Proses',
           orderable: true,
           searchable: true,
+          render: (data) => this.g.transformTime(data),
         },
         {
           data: 'statusPosting',

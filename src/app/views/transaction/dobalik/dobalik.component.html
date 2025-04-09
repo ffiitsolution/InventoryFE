@@ -3,8 +3,24 @@
     <c-card-body>
       <div class="row">
         <div class="col">
-          <h5>{{ "Proses Do Balik" | translate }}</h5>
+          <h5>{{ "Proses DO Balik" | translate }}</h5>
         </div>
+        <div class="col col-md-8">
+          <div class="menu-purpose col-sm-12 d-flex justify-content-end align-items-center">
+            <span>
+              Program ini digunakan untuk memproses do balik pengiriman            
+            </span>
+          </div>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="d-flex justify-content-end gap-1" style="margin-bottom: 10px">
         <div class="col text-end">
           <button
             type="button"
@@ -17,11 +33,10 @@
         </div>
       </div>
       <div [visible]="showFilterSection" cCollapse>
-        <div class="divider"></div>
         <div class="row" style="margin-top: -16px">
           <c-card-body>
             <c-row>
-              <c-col xs="3">
+              <c-col cols="12" md="6">
                 <label class="col-form-label">{{
                   "Tanggal Pengiriman" | translate
                 }}</label>
@@ -34,12 +49,11 @@
                   aria-describedby="dateFilter"
                   [(ngModel)]="dateRangeFilter"
                   #dp="bsDaterangepicker"
-                  placeholder="{{ 'Tanggal Pesan' | translate }}"
+                  placeholder="{{ 'Tanggal Pengiriman' | translate }}"
                 />
               </c-col>
-              <c-col xs="6"></c-col>
               <c-col
-                xs="3"
+                xs="6"
                 class="text-right d-flex align-items-end justify-content-end"
               >
                 <button
@@ -54,13 +68,7 @@
           </c-card-body>
         </div>
       </div>
-    </c-card-body>
-  </c-card>
-</div>
-
-<div class="fade-in">
-  <c-card class="mb-4">
-    <c-card-body>
+      <div class="divider"></div>
       <div class="table-responsive">
         <table datatable [dtOptions]="dtOptions" (page.dt)="dtPageChange($event)" class="row-border hover stripe"></table>
       </div>

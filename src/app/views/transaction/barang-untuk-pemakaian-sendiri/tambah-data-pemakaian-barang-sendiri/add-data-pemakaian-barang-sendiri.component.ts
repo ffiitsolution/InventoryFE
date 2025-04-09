@@ -80,6 +80,9 @@ export class AddDataPemakaianBarangSendiriComponent implements OnInit, AfterView
     this.minDate = new Date(today);
     this.dpConfig.customTodayClass = 'today-highlight';
 
+    if (!this.formData.tglTransaksi) {
+      this.formData.tglTransaksi = moment().format('DD/MM/YYYY'); 
+    }
   }
 
   onKeteranganInput(): void {

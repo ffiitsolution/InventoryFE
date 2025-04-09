@@ -198,6 +198,13 @@ export const menu_id: any = [
           name: 'cil-factory',
         },
       },
+      {
+        name: 'Return Order',
+        url: '/transaction/return-order',
+        iconComponent: {
+          name: 'cil-factory',
+        },
+      },
       
       //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 START
       {
