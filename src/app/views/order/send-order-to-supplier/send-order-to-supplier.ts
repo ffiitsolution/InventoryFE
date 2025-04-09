@@ -57,7 +57,6 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
   dataUser: any;
-  generatePdfUrl: string = "/api/send-order-to-supplier/report";
   generateReportParam : string;
 
   isShowModalKirim: boolean = false;
@@ -70,7 +69,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
 
   constructor(
     private dataService: DataService,
-    private g: GlobalService,
+    public g: GlobalService,
     private translation: TranslationService,
     private router: Router,
     private toastr: ToastrService
@@ -376,10 +375,11 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
           nomorPesanan : this.selectedRowCetak.nomorPesanan,
           userCetak:  this.dataUser.kodeUser,
           kodeCabang:  this.dataUser.defaultLocation.kodeLocation,
+          statusCetak: this.selectedRowCetak.statusCetak
         }
 
         const base64Response = await lastValueFrom(
-          this.dataService.postData(this.config.BASE_URL + this.generatePdfUrl, param, true)
+          this.dataService.postData(this.config.BASE_URL + "/api/send-order-to-supplier/report", param, true)
         );
         const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(blob);

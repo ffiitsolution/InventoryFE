@@ -73,6 +73,9 @@ import { AddDataDetailTerimaBarangReturDariSiteComponent } from './terima-barang
 import { DetailTerimaBarangReturDariSiteComponent } from './terima-barang-retur-dari-site/detail/detail.component';
 //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
 
+import { ReturnOrderComponent } from './return-order/return-order.component';
+
+
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
@@ -147,7 +150,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AddDataDetailTerimaBarangReturDariSiteComponent,
     DetailTerimaBarangReturDariSiteComponent,
     //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
-    
+    ReturnOrderComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

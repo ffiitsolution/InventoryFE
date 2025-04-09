@@ -115,17 +115,17 @@ export class ProductionListComponent implements OnInit {
           data: 'konversi', 
           title: 'Konversi', 
           render: function(data, type, row) {
-            return Number(data).toFixed(2); // Ensures two decimal places
+            return Number(data).toFixed(2)+" "+row.satuanKecil+"/"+row.satuanBesar; // Ensures two decimal places
           }
         },
         { data: 'jumlahResep', title: 'Jumlah Produksi', 
           render: function(data, type, row) {
-            return Number(data).toFixed(2); // Ensures two decimal places
+            return Number(data).toFixed(2) +" "+row.satuanBesar; // Ensures two decimal places
           } 
         },
         { data: 'totalProduksi', title: 'Total Produksi',
           render: function(data, type, row) {
-            return Number(data).toFixed(2); // Ensures two decimal places
+            return Number(data).toFixed(2)+" "+row.satuanKecil; // Ensures two decimal places
           } 
         },
         { data: 'tglExp', title: 'Tgl Expired' },

@@ -22,7 +22,7 @@
           type="button"
           class="btn btn-outline-success me-2 btn-120"
           (click)="onPrint()"
-          [disabled]="updatingStatus || disabledCancelButton"
+          [disabled]="updatingStatus || disabledPrintButton"
         >
           <i class="fa fa-print icon-gap" *ngIf="!RejectingOrder"></i>
           <i class="fa fa-spinner fa-spin" *ngIf="RejectingOrder"></i>
@@ -139,7 +139,7 @@ id="formModalBatal"    [attr.aria-hidden]="!isShowModalBatal">
           <div class="col-sm-9">
             <input
               type="text"
-              class="form-control"
+              class="form-control input-disabled"
               [value]="(selectedOrder.kodePemesan|| '')"
               readonly
             />
@@ -152,7 +152,7 @@ id="formModalBatal"    [attr.aria-hidden]="!isShowModalBatal">
           <div class="col-sm-9">
             <input
               type="text"
-              class="form-control"
+              class="form-control input-disabled"
               [value]="(selectedOrder?.nomorPesanan || '')"              
               readonly
             />
@@ -165,7 +165,7 @@ id="formModalBatal"    [attr.aria-hidden]="!isShowModalBatal">
           <div class="col-sm-3">
             <input
               type="text"
-              class="form-control"
+              class="form-control input-disabled"
               readonly
               [value]="(selectedOrder.tglPesan || '')"              
             />
@@ -177,7 +177,7 @@ id="formModalBatal"    [attr.aria-hidden]="!isShowModalBatal">
           <div class="col-sm-3 ">
             <input
               type="text"
-              class="form-control"
+              class="form-control input-disabled"
               readonly
               [value]="(selectedOrder?.tglBrgDikirim || '')"              
 
@@ -191,7 +191,7 @@ id="formModalBatal"    [attr.aria-hidden]="!isShowModalBatal">
           <div class="col-sm-3">
             <input
               type="text"
-              class="form-control"
+              class="form-control input-disabled"
               readonly
               [value]="(selectedOrder?.tglKadaluarsa || '')"              
             />
@@ -221,7 +221,7 @@ id="formModalBatal"    [attr.aria-hidden]="!isShowModalBatal">
       </div>
     </c-modal-body>
     <c-modal-footer class="justify-center">
-      <button type="button" class="btn btn-light" data-bs-dismiss="modal" (click)="isShowModalBatal = false">Close</button>
-      <button type="button" class="btn btn-primary text-white" (click)="updateStatus()">Proses Batal Pesanan</button>
+      <button type="button" class="btn btn-light  w-180 me-3" data-bs-dismiss="modal" (click)="isShowModalBatal = false">Close</button>
+      <button type="button" class="btn btn-primary text-white  w-180" (click)="updateStatus()">Proses Batal Pesanan</button>
     </c-modal-footer>
 </c-modal>

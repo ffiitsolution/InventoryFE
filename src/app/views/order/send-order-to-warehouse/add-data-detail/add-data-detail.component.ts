@@ -339,7 +339,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
           defaultGudang: this.newOrhdk?.kodeSingkat,
         };
         this.dataService
-        .postData(this.g.urlServer + '/api/product/dt', params)
+        .postData(this.g.urlServer + '/api/product/dt-pesanan', params)
           .subscribe((resp: any) => {
             const mappedData = resp.data.map((item: any, index: number) => {
               // hapus rn dari data

@@ -57,6 +57,7 @@ export class AddDataDetailGudangComponent
   page: number = 1;
   cekPrint: any;
   printData: any;
+  data: { qtyWasteKecil?: any } = {};
 
   protected config = AppConfig.settings.apiServer;
 
@@ -100,6 +101,12 @@ export class AddDataDetailGudangComponent
       (res) => {
         this.listOrderData = res.detailPesanan.map((data: any) => ({
           ...data,
+          KONVERSI: this.addDecimalPlaces(data.KONVERSI),
+          QTY_PESAN_BESAR: this.addDecimalPlaces(data.QTY_PESAN_BESAR),
+          QTY_PESAN_KECIL: this.addDecimalPlaces(data.QTY_PESAN_KECIL),
+          TOTAL_QTY_PESAN: this.addDecimalPlaces(data.TOTAL_QTY_PESAN),
+          TOTAL_QTY_TERIMA: this.addDecimalPlaces(data.TOTAL_QTY_TERIMA),
+          TOTAL_QTY_EXPIRED: this.addDecimalPlaces(data.TOTAL_QTY_EXPIRED),
         }));
         console.log('listorderdata1', this.listOrderData);
         this.totalLength = res?.data?.length;
@@ -110,20 +117,38 @@ export class AddDataDetailGudangComponent
       },
       () => {
         this.loading = false;
-        // this.toastr.error(this.errorShowMessage, 'Maaf, Terjadi Kesalahan!');
       }
     );
   }
 
-  onInputValueItemDetail(event: any, index: number) {
-    const target = event.target;
-    const value = target.value;
-
-    if (target.type === 'number') {
-      this.listOrderData[index][target.name] = Number(value);
-    } else {
-      this.listOrderData[index][target.name] = value;
+  addDecimalPlaces(value: any): string {
+    if (value !== undefined && value !== null) {
+      return parseFloat(value).toFixed(2);
     }
+    return '0';
+  }
+
+  onInputValueItemDetail(event: any, index: number): void {
+    let inputValue = event.target.value;
+
+    if (!inputValue || isNaN(inputValue)) {
+      inputValue = '0.00';
+    } else {
+      if (!inputValue.includes('.')) {
+        inputValue = inputValue + '.00';
+      } else {
+        let [integerPart, decimalPart] = inputValue.split('.');
+        decimalPart =
+          decimalPart.length > 2
+            ? decimalPart.slice(0, 2)
+            : decimalPart.padEnd(2, '0');
+        inputValue = `${integerPart}.${decimalPart}`;
+      }
+    }
+
+    event.target.value = inputValue;
+
+    this.listOrderData[index].TOTAL_QTY_EXPIRED = parseFloat(inputValue);
   }
 
   onFilterSearch(
@@ -160,7 +185,7 @@ export class AddDataDetailGudangComponent
   onCetakAtauPrintReport(isDownload: boolean, nomorPesanan: string) {
     const requestBody = {
       nomorPesanan: nomorPesanan,
-      isDownload: isDownload, // true untuk download, false untuk print
+      isDownload: isDownload,
     };
 
     const headers = new HttpHeaders({
@@ -180,7 +205,6 @@ export class AddDataDetailGudangComponent
           const url = window.URL.createObjectURL(blob);
 
           if (isDownload) {
-            // Download PDF
             const a = document.createElement('a');
             a.href = url;
             a.download = 'report-penerimaan-dari-gudang.pdf';
@@ -188,7 +212,6 @@ export class AddDataDetailGudangComponent
             a.click();
             document.body.removeChild(a);
           } else {
-            // Print PDF (Buka di tab baru)
             const printWindow = window.open(url, '_blank');
             if (printWindow) {
               printWindow.onload = () => {
@@ -203,26 +226,25 @@ export class AddDataDetailGudangComponent
         }
       );
   }
-  
+
   onSubmit() {
     Swal.fire({
-        title: 'Apakah Anda yakin?',
-        text: "Pastikan data sudah benar sebelum menyimpan!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ya, Simpan!',
-        cancelButtonText: 'Batal'
+      title: 'Apakah Anda yakin?',
+      text: 'Pastikan data sudah benar sebelum menyimpan!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Simpan!',
+      cancelButtonText: 'Batal',
     }).then((result) => {
-        if (result.isConfirmed) {
-            this.prosesSimpanData(); // Panggil fungsi untuk menyimpan data
-        }
+      if (result.isConfirmed) {
+        this.prosesSimpanData();
+      }
     });
-}
+  }
 
-// Fungsi untuk memproses penyimpanan data
-prosesSimpanData() {
+  prosesSimpanData() {
     this.adding = true;
     let hasInvalidData = false;
 
@@ -246,9 +268,9 @@ prosesSimpanData() {
           nomorPesanan: data.NOMOR_PESANAN ?? '',
           nomorSuratJalan: this.selectedOrder.nomorSuratJan ?? '',
           kodeBarang: (data.KODE_BARANG ?? '').substring(0, 10),
-          qtyDiterima: data.TOTAL_QTY_TERIMA.toString(),
-          totalQtyPesan: data.TOTAL_QTY_PESAN,
-          totalQtyExp: data.TOTAL_QTY_EXPIRED,
+          qtyDiterima: Number(data.TOTAL_QTY_TERIMA),
+          totalQtyPesan: Number(data.TOTAL_QTY_PESAN),
+          totalQtyExp: Number(data.TOTAL_QTY_EXPIRED),
           timeCounter: new Date().toISOString(),
         };
       })
@@ -260,13 +282,13 @@ prosesSimpanData() {
     }
 
     fetch(
-      'http://localhost:8093/inventory/api/delivery-order/simpan-data-penerimaan-dari-gudang',
+      `${this.config.BASE_URL}inventory/api/delivery-order/simpan-data-penerimaan-dari-gudang`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(param),
       }
-    ) 
+    )
       .then((response) => {
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -276,8 +298,10 @@ prosesSimpanData() {
         if (data.some((item: any) => item.message)) {
           this.toastr.success('Data penerimaan berhasil disimpan!');
           setTimeout(() => {
-            this.router.navigate(['/transaction/receipt-from-warehouse/display-data-dari-gudang']);
-          }, 1500); // Beri delay untuk user melihat pesan sukses sebelum pindah halaman
+            this.router.navigate([
+              '/transaction/receipt-from-warehouse/display-data-dari-gudang',
+            ]);
+          }, 1500);
         } else if (data.some((item: any) => item.error)) {
           this.toastr.error('Gagal menyimpan: ' + data[0].error);
         }
@@ -288,5 +312,5 @@ prosesSimpanData() {
       .finally(() => {
         this.adding = false;
       });
-}
+  }
 }

@@ -25,10 +25,16 @@ import {
   AddDataSendOrderToSupplierComponent,
   DetailSendOrderToSupplierComponent
 } from './send-order-to-supplier';
+
+import { OrderComponent } from './order/order';
 const routes: Routes = [
   {
     path: '',
     children: [
+      {
+        path: 'order',
+        component: OrderComponent,
+      },
       {
         path: 'receiving-order',
         component: ReceivingOrderComponent,

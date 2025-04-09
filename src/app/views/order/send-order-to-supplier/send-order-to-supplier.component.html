@@ -133,7 +133,8 @@ id="formModalKirim"    [attr.aria-hidden]="!isShowModalKirim">
               type="text"
               class="form-control"
               readonly
-              [value]="(selectedRowKirim?.tglPesanan || '')"              
+              [value]="g.formatStrDateMMM(selectedRowKirim?.tglPesanan) || ''"
+    
             />
           </div>
         </div>
@@ -146,8 +147,7 @@ id="formModalKirim"    [attr.aria-hidden]="!isShowModalKirim">
               type="text"
               class="form-control"
               readonly
-              [value]="(selectedRowKirim?.tglKirimBrg || '')"              
-
+              [value]="g.formatStrDateMMM(selectedRowKirim?.tglKirimBrg) || ''"
             />
           </div>
         </div>
@@ -160,7 +160,7 @@ id="formModalKirim"    [attr.aria-hidden]="!isShowModalKirim">
               type="text"
               class="form-control"
               readonly
-              [value]="(selectedRowKirim?.tglBatalExp || '')"              
+              [value]="g.formatStrDateMMM(selectedRowKirim?.tglBatalExp) || ''"
             />
           </div>
         </div>

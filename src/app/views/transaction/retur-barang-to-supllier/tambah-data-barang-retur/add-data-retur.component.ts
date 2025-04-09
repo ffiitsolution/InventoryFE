@@ -20,6 +20,7 @@ import { AppService } from '../../../../service/app.service';
 import moment from 'moment';
 import { data } from 'jquery';
 import Swal from 'sweetalert2';
+import { HelperService } from '../../../../service/helper.service';
 
 const ACTION_SELECT = 'select';
 
@@ -59,20 +60,9 @@ export class AddDataBarangReturComponent
   @ViewChild('formModal') formModal: any;
   today: Date = new Date();
 
-
-  formData = {
-    tglTransaksi: '',
-    kodeSupplier: '',
-    namaSupplier: '',
-    alamatSupplier: '',
-    alamat1: '',
-    kodeKota: '',
-    deliveryStatus: '',
-    statusAktif: '',
-    keterangan: '',
-  };
-
   supplierList: any[] = [];
+
+  formData: any;
 
   constructor(
     private router: Router,
@@ -81,12 +71,25 @@ export class AddDataBarangReturComponent
     private translationService: TranslationService,
     private deliveryDataService: DeliveryDataService,
     private appService: AppService,
-    private http: HttpClient
+    private http: HttpClient,
+    private helperService: HelperService
   ) {
     this.dpConfig.containerClass = 'theme-red';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
     this.dpConfig.customTodayClass = 'today-highlight';
+
+    this.formData = {
+      tglTransaksi: '',
+      kodeSupplier: '',
+      namaSupplier: '',
+      alamatSupplier: '',
+      alamat1: '',
+      kodeKota: '',
+      deliveryStatus: '',
+      statusAktif: '',
+      keterangan: '',
+    };
   }
 
   ngOnInit(): void {
@@ -95,7 +98,7 @@ export class AddDataBarangReturComponent
       containerClass: 'theme-red',
       customTodayClass: 'today-red',
       minDate: this.today,
-      maxDate: this.today
+      maxDate: this.today,
     };
     this.renderDataTables();
     const today = new Date().toISOString().split('T')[0];
@@ -106,10 +109,9 @@ export class AddDataBarangReturComponent
   onKeteranganInput(): void {
     const allowedRegex = /^[A-Za-z0-9\s-]*$/;
     const currentValue = this.formData.keterangan || '';
-  
+
     this.charCount = currentValue.length;
-  
-    // Cek apakah ada karakter tidak valid
+
     this.isKeteranganInvalid = !allowedRegex.test(currentValue);
   }
 
@@ -118,6 +120,7 @@ export class AddDataBarangReturComponent
     this.renderDataTables();
     this.isShowModal = false;
     this.mapOrderData(data);
+    this.formData.tglTransaksi = this.helperService.formatDate(new Date());
     this.onSaveData();
   }
 
@@ -240,7 +243,6 @@ export class AddDataBarangReturComponent
   }
 
   public mapOrderData(orderData: any): void {
-    console.log('Order data: ', orderData);
     this.formData.tglTransaksi = orderData.TGL_TRANSAKSI;
     this.formData.kodeSupplier = orderData.KODE_SUPPLIER;
     this.formData.namaSupplier = orderData.NAMA_SUPPLIER;
@@ -251,9 +253,7 @@ export class AddDataBarangReturComponent
   }
 
   onPreviousPressed(): void {
-    this.router.navigate([
-      '/transaction/retur-ke-supplier/list-barang-retur',
-    ]);
+    this.router.navigate(['/transaction/retur-ke-supplier/list-barang-retur']);
   }
 
   loadSuppliers() {
@@ -271,7 +271,7 @@ export class AddDataBarangReturComponent
 
   onAddDetail(): void {
     const keterangan = this.formData.keterangan || '';
-  
+
     if (!this.formData.tglTransaksi || !keterangan.trim()) {
       if (!this.formData.tglTransaksi) {
         Swal.fire({
@@ -285,15 +285,17 @@ export class AddDataBarangReturComponent
           icon: 'error',
           title: '❌ Peringatan!',
           text: 'CATATAN/KETERANGAN PENGEMBALIAN BARANG, TIDAK BOLEH DIKOSONGKAN, PERIKSA KEMBALI....!!!!',
-          confirmButtonColor: '#d33'
+          confirmButtonColor: '#d33',
         });
       }
       return;
     }
-    
+
+    console.log(this.formData.tglTransaksi);
     this.formData.tglTransaksi =
-      moment(this.formData.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-  
+      moment(this.formData.tglTransaksi, 'DD/MM/YYYY').format('DD-MM-YYYY') ||
+      '';
+
     this.globalService.saveLocalstorage(
       'headerWastage',
       JSON.stringify(this.formData)
@@ -303,11 +305,11 @@ export class AddDataBarangReturComponent
 
   get isFormInvalid(): boolean {
     return (
-      !this.formData.tglTransaksi || 
-      !this.formData.keterangan.trim() || 
-      this.formData.keterangan.length > 50 || 
-      this.isKeteranganInvalid 
-    );  
+      !this.formData.tglTransaksi ||
+      !this.formData.keterangan.trim() ||
+      this.formData.keterangan.length > 50 ||
+      this.isKeteranganInvalid
+    );
   }
 
   ngOnDestroy(): void {
@@ -315,12 +317,12 @@ export class AddDataBarangReturComponent
     this.globalService.removeLocalstorage('headerWastage');
   }
 
-  onKeteranganChange(): void {
-    setTimeout(() => {
-      this.charCount = (this.formData.keterangan || '').length;
-      this.isKeteranganInvalid = !(this.formData.keterangan || '').trim();
-    });
-  }  
+  // onKeteranganChange(): void {
+  //   setTimeout(() => {
+  //     this.charCount = (this.formData.keterangan || '').length;
+  //     this.isKeteranganInvalid = !(this.formData.keterangan || '').trim();
+  //   });
+  // }
 }
 
 @Injectable({

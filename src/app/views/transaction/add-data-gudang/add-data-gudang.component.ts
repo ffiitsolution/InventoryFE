@@ -210,7 +210,9 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
         { data: 'SUPPLIER', title: 'Kode Gudang' },
         { data: 'NAMA_CABANG', title: 'Alamat Gudang' },
         { data: 'ALAMAT1', title: 'Alamat Pengirim' },
-        { data: 'TGL_KIRIM_BRG', title: 'Tanggal Surat Jalan', render: (data) => data ? data : '-'},
+        { data: 'TGL_KIRIM_BRG', title: 'Tanggal Surat Jalan',
+          render: (data) => this.globalService.transformDate(data),
+        },
         { data: 'KETERANGAN1', title: 'Keterangan', render: (data) => data ? data : '-' },
         { data: 'NO_SURAT_JALAN', title: 'Nomor Surat Jalan', render: (data) => data ? data : '-'},
         {
