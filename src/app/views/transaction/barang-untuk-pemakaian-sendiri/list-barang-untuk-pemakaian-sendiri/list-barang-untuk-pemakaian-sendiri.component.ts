@@ -137,13 +137,12 @@ pageSize: number = 10; // Define the pageSize property
           searchable: true,
           render: function (data, type, row) {
             if (type === 'display' && data) {
-
-              const date = new Date(data);
-              
-              const hours = date.getHours().toString().padStart(2, '0');
-              const minutes = date.getMinutes().toString().padStart(2, '0');
-              const seconds = date.getSeconds().toString().padStart(2, '0');
-              
+        
+              const time = data.toString();
+              const hours = time.slice(0, 2).padStart(2, '0');
+              const minutes = time.slice(2, 4).padStart(2, '0');
+              const seconds = '00'; // Detik di-set menjadi 00
+        
               return `${hours}:${minutes}:${seconds}`;
             }
             return data; 

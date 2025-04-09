@@ -81,7 +81,7 @@ export class AddDataDetailBarangReturComponent
   today: Date = new Date();
   public dpConfig: Partial<BsDatepickerConfig> = {
     dateInputFormat: 'DD/MM/YYYY',
-    containerClass: 'theme-dark-blue',
+    containerClass: 'theme-red',
     minDate: this.today,
     adaptivePosition: true,
   };
