@@ -78,9 +78,12 @@ export class AddDataDetailBarangReturComponent
 
 
   @ViewChild('formModal') formModal: any;
+  today: Date = new Date();
   public dpConfig: Partial<BsDatepickerConfig> = {
     dateInputFormat: 'DD/MM/YYYY',
     containerClass: 'theme-dark-blue',
+    minDate: this.today,
+    adaptivePosition: true,
   };
   protected config = AppConfig.settings.apiServer;
 
