@@ -92,7 +92,7 @@ export const reports: Reports = {
       path: '/reports/transaction',
     },
     3: {
-      name: 'Pengiriman',
+      name: 'Transaksi Pengiriman',
       path: '/reports/transaction',
     },
     4: {
