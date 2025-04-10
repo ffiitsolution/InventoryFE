@@ -3,41 +3,14 @@
     <c-card-body>
       <div class="row">
         <div class="col">
-          <h5>{{ "Kirim pesanan ke Cabang atau Gudang" | translate }}</h5>
+          <h5>{{ "Pengiriman ke Cabang atau Gudang" | translate }}</h5>
         </div>
-        <div class="col text-end">
-          <button type="button" class="btn btn-outline-dark me-2 btn-120" (click)="toggleFilter()">
-            <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
-            {{ "Filter" | translate }}
-          </button>
-          <button type="button" class="btn btn-success text-white me-2 btn-240" data-toggle="modal"
-            (click)="onAddPressed()">
-            <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
-            {{ "Tambah Pengiriman" | translate }}
-          </button>
-        </div>
-
-      </div>
-      <div [visible]="showFilterSection" cCollapse>
-        <div class="divider"></div>
-        <div class="row" style="margin-top: -16px">
-          <c-card-body>
-            <c-row>
-              <c-col>
-                <label class="col-form-label">{{
-                  "Tanggal Pengiriman" | translate
-                  }}</label>
-                <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
-                  aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
-                  placeholder="{{ 'Tanggal Pesan' | translate }}" />
-              </c-col>
-              <c-col xs="3" class="text-right d-flex align-items-end justify-content-end">
-                <button type="button" class="btn btn-outline-success me-2 btn-160" (click)="onFilterPressed()">
-                  {{ "Terapkan Filter" | translate }}
-                </button>
-              </c-col>
-            </c-row>
-          </c-card-body>
+        <div class="col col-md-8">
+          <div class="menu-purpose col-sm-12 d-flex justify-content-end align-items-center">
+            <span>
+              Program ini digunakan untuk pengiriman pesanan ke cabang atau gudang lain            
+            </span>
+          </div>
         </div>
       </div>
     </c-card-body>
@@ -46,6 +19,64 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
+      <div class="d-flex justify-content-end gap-1" style="margin-bottom: 10px">
+        <div class="col text-end">
+          <button
+            type="button"
+            class="btn btn-outline-dark me-2 btn-120"
+            (click)="toggleFilter()"
+          >
+            <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
+            {{ "Filter" | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-success text-white me-2 btn-240"
+            data-toggle="modal"
+            (click)="onAddPressed()"
+          >
+            <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
+            {{ "Tambah Pengiriman" | translate }}
+          </button>
+        </div>
+      </div>
+      <div [visible]="showFilterSection" cCollapse>
+        <div class="row" style="margin-top: -16px">
+          <c-card-body>
+            <c-row>
+              <c-col cols="12" md="6">
+                <label class="col-form-label">{{
+                  "Tanggal Pengiriman" | translate
+                }}</label>
+                <input
+                  type="text"
+                  id="dateFilter"
+                  class="form-control"
+                  bsDaterangepicker
+                  [bsConfig]="dpConfig"
+                  aria-describedby="dateFilter"
+                  [(ngModel)]="dateRangeFilter"
+                  #dp="bsDaterangepicker"
+                  placeholder="{{ 'Tanggal Pengiriman' | translate }}"
+                />
+              </c-col>
+              <c-col
+                xs="6"
+                class="text-right d-flex align-items-end justify-content-end"
+              >
+                <button
+                  type="button"
+                  class="btn btn-outline-success me-2 btn-160"
+                  (click)="onFilterPressed()"
+                >
+                  {{ "Terapkan Filter" | translate }}
+                </button>
+              </c-col>
+            </c-row>
+          </c-card-body>
+        </div>
+      </div>
+      <div class="divider"></div>
       <div class="table-responsive">
         <table datatable [dtOptions]="dtOptions" (page.dt)="dtPageChange($event)" class="row-border hover stripe"></table>
       </div>

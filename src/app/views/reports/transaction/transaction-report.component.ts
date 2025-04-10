@@ -13,8 +13,16 @@ import {
   UntypedFormControl,
   UntypedFormGroup,
 } from '@angular/forms';
+import {
+  ACTION_VIEW,
+  CANCEL_STATUS,
+  DEFAULT_DATE_RANGE_RECEIVING_ORDER,
+  DEFAULT_DELAY_TABLE,
+  LS_INV_SELECTED_RECEIVING_ORDER,
+} from '../../../../constants';
 import { AppService } from '../../../service/app.service';
 import { DatePipe } from '@angular/common';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 
 @Component({
   selector: 'app-transaction-report',
@@ -22,6 +30,15 @@ import { DatePipe } from '@angular/common';
   styleUrl: './transaction-report.component.scss',
 })
 export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewInit {
+  public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+  currentDate: Date = new Date();
+  startDateFilter: Date = new Date(
+    this.currentDate.setDate(
+      this.currentDate.getDate() - DEFAULT_DATE_RANGE_RECEIVING_ORDER
+    )
+  );
+  dateRangeFilter: any = [this.startDateFilter, new Date()];
+
   [key: string]: any;
   loadingState: { [key: string]: boolean } = {
     submit: false,
@@ -41,7 +58,7 @@ export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewI
   selectedRegion: any;
 
   paramStatusAktif: string = '';
-  paramTipeListing: string = 'header';
+  paramTipeListing: string = 'rekap';
 
   constructor(
     private service: AppService,
@@ -50,7 +67,11 @@ export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewI
     private datePipe: DatePipe,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) {
+    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.customTodayClass='today-highlight';
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
+  }
 
   ngOnInit(): void {
     this.g.changeTitle(
@@ -127,19 +148,16 @@ export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewI
     this.loadingState['submit'] = true;
 
     let param = {};
-    if (this.currentReport === 'Master Cabang') {
+    if (this.currentReport === 'Transaksi Pengiriman') {
+      console.log("userdata",this.userData)
       param = {
-        kodeGudang: '00072',
-        kodeRegion: this.selectedRegion['code'],
-        status: this.paramStatusAktif,
+        kodeGudang: this.userData.defaultLocation.kodeLocation,
         tipeListing: this.paramTipeListing,
+        startDate: this.g.transformDate(this.dateRangeFilter[0]),
+        endDate: this.g.transformDate(this.dateRangeFilter[1]),
       };
-    } else if (this.currentReport === 'Master Department') {
-      param = {
-        kodeRegion: this.selectedRegion['code'],
-        status: this.paramStatusAktif,
-        tipeListing: this.paramTipeListing,
-      };
+
+
     }
 
     param = {

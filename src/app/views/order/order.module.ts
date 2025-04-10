@@ -52,6 +52,7 @@ import {
 
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
+import { OrderComponent } from './order/order';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -98,6 +99,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReceivingPoSupplierAddDetailFormComponent,
     AddDataDetailOrderManualComponent,
     AddDataOrderManualComponent,
+    OrderComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

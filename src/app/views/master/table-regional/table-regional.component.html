@@ -1,39 +1,21 @@
 <div class="fade-in">
   <c-card class="mb-2">
-    <c-card-body>
+    <c-card-body class="p-2">
       <div class="row">
-        <div class="col">
-          <h5>{{ "Master" | translate }} {{ "Regional" | translate }}</h5>
+        <div class="d-flex col-md-4 align-items-center">
+          <h3 style="padding-left: 10px">
+            {{ "Master" | translate }} {{ "Regional" | translate }}
+          </h3>
         </div>
-        <div class="col text-end">
-          <button
-            *ngIf="this.roleId === '3' || this.roleId === '2'"
-            type="button"
-            class="btn btn-success text-white me-2 btn-120"
-            (click)="actionBtnClick(CONST_ACTION_ADD)"
+        <div class="col col-md-8 justify-content-right text-end">
+          <div
+            class="menu-purpose col-sm-12 justify-content-end align-items-center"
           >
-            <i class="fa fa-plus pe-1 icon-12" aria-hidden="true"></i>
-            {{ "Tambah" | translate }}
-          </button>
-        </div>
-      </div>
-    </c-card-body>
-  </c-card>
-</div>
-<div class="fade-in">
-  <c-card class="mb-2">
-    <c-card-body>
-      <div class="row">
-        <div class="col-sm-12">
-          <i
-            class="fa fa-exclamation-circle text-center"
-            style="font-size: large; color: #3c4b64"
-          ></i>
-          &nbsp;
-          <span class="fw-bold"
-            >Master Regional digunakan untuk melihat daftar Kode Regional, Nama
-            Regional, Tanggal Pembuatan, dan Pembaruan.</span
-          >
+            <span
+              >Master Regional digunakan untuk melihat daftar Kode Regional,
+              Nama Regional, Tanggal Pembuatan, dan Pembaruan.</span
+            >
+          </div>
         </div>
       </div>
     </c-card-body>
@@ -42,6 +24,16 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
+      <div class="d-flex justify-content-end gap-1" style="margin-bottom: 10px">
+        <button
+          *ngIf="this.roleId === '3' || this.roleId === '2'"
+          type="button"
+          class="btn btn-success text-white me-2"
+          (click)="actionBtnClick(CONST_ACTION_ADD)"
+        >
+          {{ "Tambah" | translate }}
+        </button>
+      </div>
       <div>
         <table
           datatable

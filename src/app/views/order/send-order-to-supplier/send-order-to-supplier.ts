@@ -69,7 +69,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
 
   constructor(
     private dataService: DataService,
-    private g: GlobalService,
+    public g: GlobalService,
     private translation: TranslationService,
     private router: Router,
     private toastr: ToastrService

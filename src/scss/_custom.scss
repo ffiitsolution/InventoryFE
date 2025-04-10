@@ -14,7 +14,7 @@
 }
 
 .justify-center {
-  justify-content: center;
+  justify-content: center !important;
 }
 
 $primary: #b51823;
@@ -87,3 +87,4 @@ $theme-colors: map-merge(
 c-modal[backdrop="static"] {
   background: rgba(0, 0, 0, 0.7) !important;
 }
+

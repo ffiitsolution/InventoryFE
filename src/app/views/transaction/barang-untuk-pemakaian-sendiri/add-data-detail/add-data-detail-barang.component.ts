@@ -75,9 +75,12 @@ export class AddDataDetailBarangComponent
   isQtyKecilError: boolean = false;
 
   @ViewChild('formModal') formModal: any;
+  today: Date = new Date();
   public dpConfig: Partial<BsDatepickerConfig> = {
     dateInputFormat: 'DD/MM/YYYY',
-    containerClass: 'theme-dark-blue',
+    containerClass: 'theme-red',
+    minDate: this.today,
+    adaptivePosition: true,
   };
   protected config = AppConfig.settings.apiServer;
 
@@ -313,6 +316,8 @@ export class AddDataDetailBarangComponent
       totalQty: '',
       kodeBarang: this.selectedExpProduct.kodeBarang,
     });
+    const newItem = this.listEntryExpired[this.listEntryExpired.length - 1];
+    this.lastAddedItem = newItem;
   }
 
   updateKeteranganTanggal(item: any) {
@@ -322,6 +327,7 @@ export class AddDataDetailBarangComponent
   }
 
   isValidQtyExpired: boolean = true;
+  lastAddedItem: any = null; 
 
   onSaveEntryExpired() {
     let totalQtyExpired = 0;
@@ -701,4 +707,50 @@ export class AddDataDetailBarangComponent
       this.listProductData[index].qtyWasteBesar = '0.00'; 
     }
   }
+
+  undoLastAddedRow() {
+    if (this.lastAddedItem) {
+      const index = this.listEntryExpired.indexOf(this.lastAddedItem);
+      if (index > -1) {
+        this.listEntryExpired.splice(index, 1); 
+      }
+      this.lastAddedItem = null; 
+    }
+  }
+
+  simpanDataExpired() {
+      const invalidDate = this.listEntryExpired.some(item => !item.tglExpired || item.tglExpired === '');
+    
+      if (invalidDate) {
+        Swal.fire({
+          title: 'TANGGAL SALAH!',
+          text: 'Tanggal harus diisi untuk semua entri.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+        return; 
+      }
+    
+      let totalQtyExpired = 0;
+      this.listEntryExpired.forEach((item: any) => {
+        totalQtyExpired += (this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyWasteKecil);
+      });
+    
+      let totalQtyRetur = 0;
+      this.listProductData.forEach((item: any) => {
+        totalQtyRetur += (this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyWasteKecil);
+      });
+    
+      if (totalQtyExpired !== totalQtyRetur) {
+        Swal.fire({
+          title: 'Total Qty Retur TIDAK SAMA dengan Qty Expired!',
+          text: 'Periksa kembali total quantity!',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+      } else {
+        this.isShowModalExpired = false;
+      }
+    }
+
 }

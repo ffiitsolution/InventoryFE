@@ -136,6 +136,7 @@ $enable-rtl: true;
   text-align: right;
   margin-left: auto;
   width: fit-content;
+  height: 100%;
 }
 
 .my-datepicker-top .bs-datepicker-container {
@@ -148,4 +149,10 @@ $enable-rtl: true;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1) !important; /* Add a slight shadow */
   border-radius: 5px; /* Optional: rounded corners */
   padding: 5px; /* Add spacing */
+}
+
+.input-disabled {
+  background-color: #d8dbe0;
+  border-color: #b1b7c1;
+  opacity: 1;
 }

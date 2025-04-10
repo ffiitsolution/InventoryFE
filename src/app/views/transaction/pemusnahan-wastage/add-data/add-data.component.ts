@@ -40,7 +40,18 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
   minDate: Date;
   maxDate: Date;
   isShowDetail: boolean = false;
+  configSelectUser: any;
+  baseConfig: any = {
+    displayKey: 'name', // Key to display in the dropdown
+    search: true, // Enable search functionality
+    height: '200px', // Dropdown height
+    customComparator: () => {}, // Custom sorting comparator
+    moreText: 'lebih banyak', // Text for "more" options
+    noResultsFound: 'Tidak ada hasil', // Text when no results are found
+    searchOnKey: 'name' // Key to search
+  };
 
+  listUser: any[] = [];
   @ViewChild('formModal') formModal: any;
   // Form data object
   formData = {
@@ -64,6 +75,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
+
   ngOnInit(): void {
     this.bsConfig = Object.assign(
       {},
@@ -72,8 +84,38 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
         rangeInputFormat: 'dd/MMm/yyyy',
       }
     );
+    this.dpConfig.customTodayClass = 'today-highlight';
+
     const today = new Date().toISOString().split('T')[0];
     this.minDate = new Date(today);
+    
+    this.getDropdownUser();
+    this.configSelectUser = {
+      ...this.baseConfig,
+      placeholder: 'Pilih User',
+      searchPlaceholder: 'Cari User',
+      limitTo: this.listUser.length
+    };
+  }
+
+  getDropdownUser(): void{
+    const param = {
+      defaultLocation: this.globalService.getUserLocationCode()
+    };
+    this.dataService
+      .postData(this.globalService.urlServer + '/api/dropdown-user', param)
+      .subscribe((resp: any) => {
+        this.listUser = resp.map((item: any) => ({
+          name: item.namaUser,
+          jabatan: item.jabatan
+        }));
+      });
+  }
+
+  onUserChange(event: any){
+    const value = event.value;
+    this.formData.namaSaksi = value.name;
+    this.formData.jabatanSaksi = value.jabatan;
   }
 
   onAddDetail() {

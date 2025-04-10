@@ -73,6 +73,7 @@ export class AddDataDetailWastageComponent
   selectedExpProduct: any = {};
   listCurrentPage: number = 1;
   totalLengthList: number = 1;
+  totalFilteredExpired: any = '0.0';
 
   @ViewChild('formModal') formModal: any;
   public dpConfig: Partial<BsDatepickerConfig> = {
@@ -114,7 +115,109 @@ export class AddDataDetailWastageComponent
 
   }
 
+  onInputQtyBesarExpired(event: any, kodeBarang: string, index: number) {
+    let value = event.target.value;
 
+    if (value !== null && value !== undefined) {
+      let numericValue = parseFloat(value.toString().replace(',', '.'));
+      if (isNaN(numericValue)) {
+        numericValue = 0;
+      }
+      value = numericValue.toFixed(2);
+    } else {
+      value = '0.00'; // Default if empty
+    }
+
+    // ✅ Find all entries with the same kodeBarang
+    const filteredEntries = this.listEntryExpired.filter(
+      (entry) => entry.kodeBarang === kodeBarang
+    );
+
+    if (filteredEntries.length > index) {
+      // ✅ Get the real index in listEntryExpired
+      const realIndex = this.listEntryExpired.indexOf(filteredEntries[index]);
+
+      if (realIndex !== -1) {
+        this.listEntryExpired[realIndex] = {
+          ...this.listEntryExpired[realIndex],
+          qtyWasteBesar: value,
+          validationQty:
+            parseFloat(value) +
+              parseFloat(this.listEntryExpired[realIndex].qtyWasteKecil) <=
+            0
+              ? 'Quantity tidak boleh < 0'
+              : '',
+        };
+      }
+    }
+
+    this.updateTotalExpired();
+  }
+
+  onInputQtyKecilExpired(event: any, kodeBarang: string, index: number) {
+    let value = event.target.value;
+
+    if (value !== null && value !== undefined) {
+      let numericValue = parseFloat(value.toString().replace(',', '.'));
+      if (isNaN(numericValue)) {
+        numericValue = 0;
+      }
+      value = numericValue.toFixed(2);
+    } else {
+      value = '0.00'; // Default if empty
+    }
+
+    // ✅ Find all entries with the same kodeBarang
+    const filteredEntries = this.listEntryExpired.filter(
+      (entry) => entry.kodeBarang === kodeBarang
+    );
+
+    if (filteredEntries.length > index) {
+      // ✅ Get the real index in listEntryExpired
+      const realIndex = this.listEntryExpired.indexOf(filteredEntries[index]);
+
+      if (realIndex !== -1) {
+        let messageValidation = '';
+
+        if (
+          parseFloat(value) +
+            parseFloat(this.listEntryExpired[realIndex].qtyWasteBesar) <=
+          0
+        ) {
+          messageValidation = 'Quantity tidak boleh < 0';
+        } else if (
+          Math.round(value) >=
+          Math.round(this.listEntryExpired[realIndex].konversi)
+        ) {
+          messageValidation = 'Quantity kecil tidak boleh >= konversi';
+          value = '0.0';
+        }
+
+        this.listEntryExpired[realIndex] = {
+          ...this.listEntryExpired[realIndex],
+          qtyWasteKecil: value,
+          validationQtyKecil: messageValidation,
+        };
+      }
+    }
+    this.updateTotalExpired();
+  }
+
+  updateTotalExpired() {
+    this.totalFilteredExpired = this.filteredList.reduce(
+      (sum, data) =>
+        Number(sum) +
+        Number(
+          Number(data.qtyWasteBesar) * Number(data.konversi) +
+            Number(data.qtyWasteKecil)
+        ),
+      0
+    );
+
+    this.totalFilteredExpired = parseFloat(this.totalFilteredExpired).toFixed(
+      2
+    );
+  }
 
   onInputValueItemDetail(event: any, index: number, type: string, qtyType: string) {
     if (this.listProductData[index].qtyPesanKecil > this.listProductData[index].konversi) {
@@ -131,7 +234,7 @@ export class AddDataDetailWastageComponent
       this.validationMessageQtyPesanList[index] = "Quantity Pesan tidak Boleh 0"
     }
   }
-  
+
   onFilterSearch(
     listData: any[],
     filterText: string,
@@ -203,34 +306,34 @@ export class AddDataDetailWastageComponent
       };
 
       Swal.fire({
-            title: 'Apa Anda Sudah Yakin?',
-            text: 'Pastikan data yang dimasukkan sudah benar!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, Simpan!',
-            cancelButtonText: 'Batal',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              this.service.insert('/api/pembelian/insert', param).subscribe({
-                next: (res) => {
-                  if (!res.success) {
-                    this.toastr.error(res.message);
-                  } else {
-                    setTimeout(() => {
-                      this.toastr.success("Data wastage berhasil dibuat");
-                      this.onPreviousPressed();
-                    }, DEFAULT_DELAY_TIME);
-        
-                  }
-                  this.adding = false;
-                },
-              });
-            } else {
-              this.toastr.info('Penyimpanan dibatalkan');
-            }
+        title: 'Apa Anda Sudah Yakin?',
+        text: 'Pastikan data yang dimasukkan sudah benar!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Simpan!',
+        cancelButtonText: 'Batal',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.service.insert('/api/wastage/insert', param).subscribe({
+            next: (res) => {
+              if (!res.success) {
+                this.toastr.error(res.message);
+              } else {
+                setTimeout(() => {
+                  this.toastr.success("Data wastage berhasil dibuat");
+                  this.onPreviousPressed();
+                }, DEFAULT_DELAY_TIME);
+
+              }
+              this.adding = false;
+            },
           });
+        } else {
+          this.toastr.info('Penyimpanan dibatalkan');
+        }
+      });
 
     }
 
@@ -238,6 +341,27 @@ export class AddDataDetailWastageComponent
       this.toastr.error("Data tidak valid")
     }
 
+  }
+
+
+  getTotalExpiredData(kodeBarang: string, konversi: number) {
+    const filtered = this.listEntryExpired.filter(
+      (item) => item.kodeBarang === kodeBarang
+    );
+
+    const totalExpired = filtered.reduce(
+      (acc, item) => {
+        acc.qtyWasteBesar +=
+          (Number(item.qtyWasteBesar) || 0) * konversi; // Multiply qtyWasteBesar by konversi
+        acc.qtyWasteKecil += Number(item.qtyWasteKecil) || 0;
+        return acc;
+      },
+      { qtyWasteBesar: 0, qtyWasteKecil: 0 }
+    );
+
+    return (
+      totalExpired.qtyWasteBesar + totalExpired.qtyWasteKecil
+    ).toFixed(2);
   }
 
   onShowModal() {
@@ -251,25 +375,80 @@ export class AddDataDetailWastageComponent
 
   onShowModalExpired(event: any, index: number) {
     this.selectedExpProduct = this.listProductData[index];
-    let totalQtySum = (this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteBesar) *
-      this.selectedExpProduct.konversi) + this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteKecil);
+    this.selectedExpProduct.totalQty = parseFloat(
+      (
+        Number(this.selectedExpProduct.qtyWasteBesar) *
+        Number(this.selectedExpProduct.konversi) +
+        Number(this.selectedExpProduct.qtyWasteKecil)
+      ).toFixed(2)
+    ).toFixed(2);
+    this.selectedExpProduct.konversi = parseFloat(
+      this.selectedExpProduct.konversi
+    ).toFixed(2);
+    this.selectedExpProduct.qtyWasteBesar = parseFloat(
+      this.selectedExpProduct.qtyWasteBesar
+    ).toFixed(2);
 
-    if (!this.listEntryExpired.some(item => item.kodeBarang === this.selectedExpProduct.kodeBarang)) {
+    let totalQtySum = parseFloat(
+      (
+        Number(this.selectedExpProduct.qtyWasteBesar) *
+        Number(this.selectedExpProduct.konversi) +
+        Number(this.selectedExpProduct.qtyWasteKecil)
+      ).toFixed(2)
+    ).toFixed(2);
+
+    this.totalFilteredExpired = totalQtySum;
+    if (
+      !this.listEntryExpired.some(
+        (item) => item.kodeBarang === this.selectedExpProduct.bahanBaku
+      )
+    ) {
       this.listEntryExpired.push({
-        tglExpired: new Date(),
-        keteranganTanggal: moment(new Date()).locale('id').format('D MMMM YYYY'),
-        qtyWasteBesar: this.selectedExpProduct.qtyWasteBesar,
-        qtyWasteKecil: this.selectedExpProduct.qtyWasteKecil,
+        tglExpired: moment().add(1, 'days').toDate(),
+        keteranganTanggal: moment()
+          .add(1, 'days')
+          .locale('id')
+          .format('DD MMM YYYY'),
+        qtyWasteBesar: parseFloat(
+          this.selectedExpProduct.qtyWasteBesar
+        ).toFixed(2),
+        qtyWasteKecil: parseFloat(
+          this.selectedExpProduct.qtyWasteKecil
+        ).toFixed(2),
         satuanKecil: this.selectedExpProduct.satuanKecil,
         satuanBesar: this.selectedExpProduct.satuanBesar,
-        konversi: this.selectedExpProduct.konversi,
-        totalQty: totalQtySum,
-        kodeBarang: this.selectedExpProduct.kodeBarang
-      })
+        konversi: parseFloat(this.selectedExpProduct.konversi).toFixed(2),
+        totalQty: parseFloat(totalQtySum).toFixed(2),
+        kodeBarang: this.selectedExpProduct.bahanBaku,
+        validationExpiredMessageList: '',
+        validationQty: '',
+      });
     }
 
     this.isShowModalExpired = true;
   }
+
+  // onShowModalExpired(event: any, index: number) {
+  //   this.selectedExpProduct = this.listProductData[index];
+  //   let totalQtySum = (this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteBesar) *
+  //     this.selectedExpProduct.konversi) + this.helper.sanitizedNumber(this.selectedExpProduct.qtyWasteKecil);
+
+  //   if (!this.listEntryExpired.some(item => item.kodeBarang === this.selectedExpProduct.kodeBarang)) {
+  //     this.listEntryExpired.push({
+  //       tglExpired: new Date(),
+  //       keteranganTanggal: moment(new Date()).locale('id').format('D MMMM YYYY'),
+  //       qtyWasteBesar: this.selectedExpProduct.qtyWasteBesar,
+  //       qtyWasteKecil: this.selectedExpProduct.qtyWasteKecil,
+  //       satuanKecil: this.selectedExpProduct.satuanKecil,
+  //       satuanBesar: this.selectedExpProduct.satuanBesar,
+  //       konversi: this.selectedExpProduct.konversi,
+  //       totalQty: totalQtySum,
+  //       kodeBarang: this.selectedExpProduct.kodeBarang
+  //     })
+  //   }
+
+  //   this.isShowModalExpired = true;
+  // }
 
   onAddExpiredRow() {
     this.listEntryExpired.push({
@@ -285,8 +464,87 @@ export class AddDataDetailWastageComponent
     })
   }
 
-  updateKeteranganTanggal(item: any) {
-    item.keteranganTanggal = moment(item.tglExpired).locale('id').format('D MMMM YYYY');
+  updateKeteranganTanggal(item: any, event: any, index: number) {
+    const dateFormatRegex =
+      /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+    if (event == 'Invalid Date' && !dateFormatRegex.test(item.tglExpired)) {
+      // Reset if invalid format
+      console.log('zzz');
+      item.tglExpired = null; // Reset model value
+      item.validationExpiredMessageList = 'Invalid date format!';
+    } else {
+      // item.validationExpiredMessageList='';
+      item.keteranganTanggal = moment(item.tglExpired)
+        .locale('id')
+        .format('D MMMM YYYY');
+      this.validateDate(event, item.kodeBarang, index);
+    }
+  }
+
+  validateDate(event: any, kodeBarang: string, index: number) {
+    let inputDate: any = '';
+    let source: string;
+    let validationMessage = '';
+
+    if (event?.target?.value) {
+      inputDate = event.target.value;
+      source = 'manual input';
+    } else {
+      inputDate = event;
+      source = 'datepicker';
+    }
+
+    const expiredDate = moment(inputDate, 'DD/MM/YYYY').toDate();
+    const today = new Date();
+
+    if (expiredDate < today) {
+      validationMessage = `Tanggal kadaluarsa tidak boleh lebih <= dari sekarang!`;
+    }
+
+    // ✅ Get only the filtered list of entries for the same `kodeBarang`
+    const filteredEntries = this.listEntryExpired.filter(
+      (entry) => entry.kodeBarang === kodeBarang
+    );
+    console.log('tgllist', filteredEntries);
+
+    // ✅ Validate empty input
+    if (!inputDate) {
+      validationMessage = 'Tanggal tidak boleh kosong!';
+    } else {
+      // ✅ Check if the item is expired
+      const expiredData = this.listEntryExpired.find(
+        (exp) => exp.kodeBarang === kodeBarang
+      );
+
+      // ✅ Check for duplicate expiration dates within the same kodeBarang
+      const isDuplicate = filteredEntries.some(
+        (otherEntry, otherIndex) =>
+          otherIndex !== index &&
+          moment(otherEntry.tglExpired).format('YYYY-MM-DD') ===
+          moment(expiredDate).format('YYYY-MM-DD')
+      );
+
+      if (isDuplicate) {
+        validationMessage = 'Tanggal ini sudah ada dalam daftar!';
+      }
+    }
+
+    const realIndex = this.listEntryExpired.findIndex(
+      (entry) =>
+        entry.kodeBarang === kodeBarang &&
+        entry.tglExpired === filteredEntries[index].tglExpired
+    );
+
+    if (realIndex !== -1) {
+      // ✅ Update the correct entry in the original list
+      this.listEntryExpired[realIndex] = {
+        ...this.listEntryExpired[realIndex],
+        tglExpired: expiredDate, // Update the date in the list
+        validationExpiredMessageList: validationMessage,
+      };
+
+      console.log('Updated Validation:', this.listEntryExpired[realIndex]);
+    }
   }
 
   isValidQtyExpired: boolean = true;
@@ -315,7 +573,9 @@ export class AddDataDetailWastageComponent
 
 
   get filteredList() {
-    return this.listEntryExpired.filter(item => item.kodeBarang === this.selectedExpProduct.kodeBarang);
+    return this.listEntryExpired.filter(
+      (item) => item.kodeBarang === this.selectedExpProduct.kodeBarang
+    );
   }
 
 
@@ -389,26 +649,26 @@ export class AddDataDetailWastageComponent
       // delivery: [],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $(row).find('.row-checkbox').off('change').on('change', (event: JQuery.ChangeEvent<HTMLElement>) => {
-          this.handleCheckboxChange(event , data);
-      });
+          this.handleCheckboxChange(event, data);
+        });
 
-      $('td', row).on('click', (event) => {
-        const checkbox = $(row).find('.row-checkbox'); 
-        const index = this.selectedRow.findIndex(item => item === data);
+        $('td', row).on('click', (event) => {
+          const checkbox = $(row).find('.row-checkbox');
+          const index = this.selectedRow.findIndex(item => item === data);
 
-        if (index === -1) {
-          this.selectedRow.push(data);
-          $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
-          checkbox.prop('checked', true);
-        } else {
-          this.selectedRow.splice(index, 1);
-          $('td', row).css({ 'background-color': '' }).removeClass('bg-secondary bg-opacity-25 fw-semibold');
-          checkbox.prop('checked', false);
-        }
-        if ($(event.target).is('.select-row')) {
-          event.stopPropagation();
-        }
-      });
+          if (index === -1) {
+            this.selectedRow.push(data);
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+            checkbox.prop('checked', true);
+          } else {
+            this.selectedRow.splice(index, 1);
+            $('td', row).css({ 'background-color': '' }).removeClass('bg-secondary bg-opacity-25 fw-semibold');
+            checkbox.prop('checked', false);
+          }
+          if ($(event.target).is('.select-row')) {
+            event.stopPropagation();
+          }
+        });
         return row;
       },
     };
@@ -416,44 +676,19 @@ export class AddDataDetailWastageComponent
 
   handleCheckboxChange(event: JQuery.ChangeEvent<HTMLElement>, data: any) {
     const isChecked = (event.target as HTMLInputElement).checked;
-    console.log("isChecked",isChecked)
+    console.log("isChecked", isChecked)
     if (isChecked) {
-        // Add kodeBarang if checked
-        if (! this.selectedRow.some(item => item.kodeBarang === data.kodeBarang)) {
-            this.selectedRow.push(data);
-        }
+      // Add kodeBarang if checked
+      if (!this.selectedRow.some(item => item.kodeBarang === data.kodeBarang)) {
+        this.selectedRow.push(data);
+      }
     } else {
-        // Remove kodeBarang if unchecked
-        this.selectedRow = this.selectedRow.filter(item => item.kodeBarang !== data.kodeBarang);
-        console.log("this.selectedRow else",this.selectedRow)
+      // Remove kodeBarang if unchecked
+      this.selectedRow = this.selectedRow.filter(item => item.kodeBarang !== data.kodeBarang);
+      console.log("this.selectedRow else", this.selectedRow)
     }
-    console.log("selectedRow",this.selectedRow)
+    console.log("selectedRow", this.selectedRow)
   }
-  
-  // actionBtnClick(action: string, data: any = null) {
-  //   this.selectedRow = (data);
-  //   this.renderDataTables();
-  //   this.isShowModal = false;
-
-  //   if (!this.listProductData.some(order => order.kodeBarang === this.selectedRow.kodeBarang)) {
-  //     const productData = {
-  //       totalQtyPesan: 0,
-  //       qtyWasteBesar: null,
-  //       namaBarang: this.selectedRow?.namaBarang,
-  //       satuanKecil: this.selectedRow?.satuanKecil,
-  //       kodeBarang: this.selectedRow?.kodeBarang,
-  //       satuanBesar: this.selectedRow?.satuanBesar,
-  //       konversi: this.selectedRow?.konversi,
-  //       qtyWasteKecil: null,
-  //       isConfirmed: true,
-  //       ...this.selectedRow
-  //     }
-  //     this.listProductData.splice(this.listProductData.length - 1, 0, productData);
-  //   }
-  //   else {
-  //     this.toastr.error("Barang sudah ditambahkan");
-  //   }
-  // }
 
   onAddListDataBarang() {
     let errorMessage
@@ -580,6 +815,9 @@ export class AddDataDetailWastageComponent
             this.listProductData[index].satuanKecil = res.satuanKecil;
             this.listProductData[index].satuanBesar = res.satuanBesar;
             this.listProductData[index].konversi = res.konversi;
+            this.listProductData[index].konversi = res.konversi;
+            this.listProductData[index].qtyWasteBesar = '0.00';
+            this.listProductData[index].qtyWasteKecil = '0.00';
 
             this.listProductData[index].isConfirmed = true;
             this.listProductData[index].isLoading = false;
@@ -594,6 +832,26 @@ export class AddDataDetailWastageComponent
           }
         },
       });
+    }
+  }
+
+  onBlurQtyWasteBesar(index: number) {
+    const value = this.listProductData[index].qtyWasteBesar;
+    let parsed = Number(value);
+    if (!isNaN(parsed)) {
+      this.listProductData[index].qtyWasteBesar = parsed.toFixed(2); // will be a string like "4.00"
+    } else {
+      this.listProductData[index].qtyWasteBesar = '0.00'; // fallback if input is not a number
+    }
+  }
+
+  onBlurQtyWasteKecil(index: number) {
+    const value = this.listProductData[index].qtyWasteKecil;
+    let parsed = Number(value);
+    if (!isNaN(parsed)) {
+      this.listProductData[index].qtyWasteKecil = parsed.toFixed(2); // will be a string like "4.00"
+    } else {
+      this.listProductData[index].qtyWasteKecil = '0.00'; // fallback if input is not a number
     }
   }
 

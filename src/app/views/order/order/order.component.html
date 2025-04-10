@@ -1,0 +1,44 @@
+<div class="row">
+  <div class="text-center mt-5 col-md-6 border-right">
+      <p class="text-color-title">Terima Pesanan</p>
+      <!-- <div class="d-flex mt-4 justify-content-center">
+      
+          <div class="d-flex">
+              <button class="btn btn-outline-danger btn-order-information" routerLink="/transaction//order-entry">Informasi Pengiriman</button>
+          </div>
+      </div> -->
+      <div class="row mt-4 justify-content-center">
+          <div class="col-lg-3 box-custom-outlet" (click)="listCounter('receivingGudang');" style="cursor: pointer;">
+            <h4 class="mt-3 text-color-outlet">Store / Gudang lain</h4>
+            <img src="./assets/img/outlet/outlet.png" class="img-fluid mx-auto d-block mb-1" alt="...">
+            <button class="btn btn-outline-success btn-order-outlet" (click)="listCounter('receivingGudang')">Terima Pesanan</button>
+        </div>
+          <div class="col-lg-3 box-custom-supplier" (click)="listCounter( 'receivingSupplier');" style="cursor: pointer;">
+              <h4 class="mt-3 text-color-supplier">P.O Supplier Dari RSC</h4>
+              <img src="./assets/img/outlet/supplier.png" class="img-fluid mx-auto d-block" alt="...">
+              <button class="btn btn-outline-warning btn-order-supplier" (click)="listCounter('receivingSupplier')">Terima P.O</button>
+          </div>
+      </div>
+  </div>
+  <div class="text-center mt-5 col-md-6">
+    <p class="text-color-title">Kirim Pesanan</p>
+    <!-- <div class="d-flex mt-4 justify-content-center">
+    
+        <div class="d-flex">
+            <button class="btn btn-outline-danger btn-order-information" routerLink="/transaction//order-entry">Informasi Pengiriman</button>
+        </div>
+    </div> -->
+    <div class="row mt-4 justify-content-center">
+        <div class="col-lg-3 box-custom-gudang" (click)="listCounter( 'sendGudang');" style="cursor: pointer;">
+            <h4 class="mt-3 text-color-gudang">Gudang</h4>
+            <img src="./assets/img/outlet/warehouse.png" class="img-fluid mx-auto d-block" alt="...">
+            <button class="btn btn-outline-danger btn-order-gudang" (click)="listCounter('sendGudang')">Kirim Pesanan</button>
+        </div>
+        <div class="col-lg-3 box-custom-supplier" (click)="listCounter( 'sendSupplier');" style="cursor: pointer;">
+            <h4 class="mt-3 text-color-supplier">Supplier Via RSC</h4>
+            <img src="./assets/img/outlet/supplier.png" class="img-fluid mx-auto d-block" alt="...">
+            <button class="btn btn-outline-warning btn-order-supplier" (click)="listCounter('sendSupplier')">Kirim Pesanan</button>
+        </div>
+    </div>
+</div>
+</div>

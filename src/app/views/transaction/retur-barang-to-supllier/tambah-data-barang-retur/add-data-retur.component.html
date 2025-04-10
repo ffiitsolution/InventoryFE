@@ -125,13 +125,14 @@
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <input
-                    placeholder=""
-                    type="text"
-                    class="form-control"
-                    id="statusAktif"
-                    [(ngModel)]="formData.statusAktif"
-                    name="statusAktif"
-                  />
+                  placeholder=""
+                  type="text"
+                  class="form-control"
+                  id="statusAktif"
+                  [ngModel]="formData.statusAktif === 'A' ? 'Aktif' : ''"
+                  name="statusAktif"
+                  readonly  
+                />
                 </div>
               </div>
 

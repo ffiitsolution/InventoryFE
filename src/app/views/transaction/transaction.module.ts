@@ -64,7 +64,7 @@ import { KirimBarangReturnKeSiteListComponent } from './kirim-barang-return-ke-s
 import { AddKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/add-data/add-data.component';
 import { AddDataDetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/add-data-detail/add-data-detail.component';
 import { DetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/detail/detail.component';
-
+import { SelectDropDownModule } from 'ngx-select-dropdown';
 
 //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 START
 import { TerimaBarangReturDariSiteListComponent } from './terima-barang-retur-dari-site/dt-list/terima-barang-retur-dari-site-list.component';
@@ -72,6 +72,9 @@ import { AddTerimaBarangReturDariSiteComponent } from './terima-barang-retur-dar
 import { AddDataDetailTerimaBarangReturDariSiteComponent } from './terima-barang-retur-dari-site/add-data-detail/add-data-detail.component';
 import { DetailTerimaBarangReturDariSiteComponent } from './terima-barang-retur-dari-site/detail/detail.component';
 //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
+
+import { ReturnOrderComponent } from './return-order/return-order.component';
+
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -99,6 +102,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     TableModule,
     SharedComponentModule,
     PaginationModule,
+    SelectDropDownModule
   ],
   declarations: [
     DeliveryItemComponent,
@@ -146,7 +150,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AddDataDetailTerimaBarangReturDariSiteComponent,
     DetailTerimaBarangReturDariSiteComponent,
     //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
-    
+    ReturnOrderComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

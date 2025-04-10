@@ -1,35 +1,52 @@
 <div class="fade-in">
   <c-card class="mb-2">
-    <c-card-body>
+    <c-card-body class="p-2">
       <div class="row">
-        <div class="col">
-          <h5>{{ "Master" | translate }} {{ "Cabang" | translate }}</h5>
+        <div class="d-flex col-md-4 align-items-center">
+          <h3 style="padding-left: 10px">
+            {{ "Master" | translate }} {{ "Cabang" | translate }}
+          </h3>
         </div>
-        <div class="col text-end btn-160">
-          <button
-            type="button"
-            class="btn btn-secondary text-white me-2"
-            (click)="toggleFilter()"
+        <div class="col col-md-8 justify-content-right text-end">
+          <div
+            class="menu-purpose col-sm-12 justify-content-end align-items-center"
           >
-            {{ "Filter" | translate }}
-          </button>
-          <button
-            *ngIf="this.roleId === '3' || this.roleId === '2'"
-            type="button"
-            class="btn btn-success text-white me-2"
-            (click)="actionBtnClick(CONST_ACTION_ADD)"
-          >
-            <!-- <i class="fa fa-plus pe-1 icon-12" aria-hidden="true"></i> -->
-            {{ "Tambah" | translate }}
-            <!-- {{ "Cabang" | translate }} -->
-          </button>
+            <span
+              >Master Cabang digunakan untuk melihat dan mengelola daftar cabang
+              beserta detail informasi dan statusnya.</span
+            >
+          </div>
         </div>
       </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-2">
+    <c-card-body>
+      <div class="d-flex justify-content-end gap-1" style="margin-bottom: 10px">
+        <button
+          type="button"
+          class="btn btn-secondary text-white me-2"
+          style="height: min-content"
+          (click)="toggleFilter()"
+        >
+          {{ "Filter" | translate }}
+        </button>
+        <button
+          *ngIf="this.roleId === '3' || this.roleId === '2'"
+          type="button"
+          class="btn btn-success text-white me-2"
+          (click)="actionBtnClick(CONST_ACTION_ADD)"
+        >
+          {{ "Tambah" | translate }}
+        </button>
+      </div>
       <div [visible]="isFilterShown" cCollapse>
-        <c-card class="mt-3 shadow">
+        <c-card class="mb-3">
           <c-card-body>
             <div class="row">
-              <div class="col-md-4">
+              <div class="col-md-3">
                 <label>{{ "Status" | translate }}</label>
                 <div>
                   <ngx-select-dropdown
@@ -44,7 +61,7 @@
                 </div>
               </div>
 
-              <div class="col-md-4">
+              <div class="col-md-3">
                 <label>{{ "RSC" | translate }}</label>
                 <div>
                   <ngx-select-dropdown
@@ -59,7 +76,7 @@
                 </div>
               </div>
 
-              <div class="col-md-4">
+              <div class="col-md-3">
                 <label>{{ "Kota" | translate }}</label>
                 <div>
                   <ngx-select-dropdown
@@ -73,7 +90,7 @@
                   </ngx-select-dropdown>
                 </div>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-3">
                 <label>{{ "Group" | translate }}</label>
                 <div>
                   <ngx-select-dropdown
@@ -107,33 +124,6 @@
           </c-card-body>
         </c-card>
       </div>
-    </c-card-body>
-  </c-card>
-</div>
-
-<div class="fade-in">
-  <c-card class="mb-2">
-    <c-card-body>
-      <div class="row">
-        <div class="col-sm-12">
-          <i
-            class="fa fa-exclamation-circle text-center"
-            style="font-size: large; color: #3c4b64"
-          ></i>
-          &nbsp;
-          <span class="fw-bold"
-            >Master Cabang digunakan untuk melihat dan mengelola daftar cabang
-            beserta detail informasi dan statusnya.</span
-          >
-        </div>
-      </div>
-    </c-card-body>
-  </c-card>
-</div>
-
-<div class="fade-in">
-  <c-card class="mb-4">
-    <c-card-body>
       <div class="table-responsive">
         <table
           datatable

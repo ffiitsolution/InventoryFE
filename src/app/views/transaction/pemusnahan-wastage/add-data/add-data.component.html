@@ -40,8 +40,9 @@
                 </div>
 
                 <div class="col-8 pe-0 d-flex">
-                  <input placeholder="Nama saksi" type="text" class="form-control" id="namaSaksi"
-                    [(ngModel)]="formData.namaSaksi" name="namaSaksi" />
+                  <ngx-select-dropdown [(ngModel)]="formData.namaSaksi" [multiple]="false" [config]="configSelectUser"
+                    [options]="listUser" id="namaSaksi" (change)="onUserChange($event)" class="w-100">
+                  </ngx-select-dropdown>
                 </div>
               </div>
 
@@ -51,8 +52,8 @@
                 </div>
 
                 <div class="col-8 pe-0 d-flex">
-                  <input placeholder="Jabatan saksi" type="text" class="form-control" id="namaSaksi"
-                    [(ngModel)]="formData.jabatanSaksi" name="jabatanSaksi" />
+                  <input placeholder="Jabatan saksi" type="text" class="form-control" id="jabatanSaksi"
+                    [(ngModel)]="formData.jabatanSaksi" name="jabatanSaksi"/>
                 </div>
               </div>
 

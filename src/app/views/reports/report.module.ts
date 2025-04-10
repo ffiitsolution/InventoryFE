@@ -4,6 +4,7 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 import {
   ButtonDirective,
@@ -19,6 +20,7 @@ import {
   ProgressComponent,
   TextColorDirective,
   UtilitiesModule,
+
 } from '@coreui/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -61,6 +63,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     FormCheckLabelDirective,
     DropdownModule,
     ProgressComponent,
+    BsDatepickerModule.forRoot(),
+
   ],
   declarations: [
     AllReportComponent,

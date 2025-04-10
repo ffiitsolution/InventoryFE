@@ -72,7 +72,7 @@ export class TablePositionComponent
               const finalData = {
                 ...rest,
                 dtIndex: this.page.start + index + 1,
-                dateUpd: this.g.transformDateTime(item.dateUpd, item.timeUpd),
+                dateUpd: this.g.transformDate(item.dateUpd),
               };
               return finalData;
             });

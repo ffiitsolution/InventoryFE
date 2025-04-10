@@ -189,7 +189,8 @@ export class RevisiDoEditComponent
           qtyBKirim: data.qtyBKirim,
           qtyKKirim: data.qtyKKirim,
           konversi: data.konversi,
-          noSuratJalan: this.selectedOrder.noSuratJalan
+          noSuratJalan: this.selectedOrder.noSuratJalan,
+          noPesanan: this.selectedOrder.nomorPesanan
         };
       })
       .filter((item) => item !== null);

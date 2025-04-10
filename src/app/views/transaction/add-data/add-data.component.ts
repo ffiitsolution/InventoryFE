@@ -146,6 +146,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
       drawCallback: (drawCallback) => {
         this.selectedRowData = undefined;
       },
+      order: [[2, 'desc']],
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
