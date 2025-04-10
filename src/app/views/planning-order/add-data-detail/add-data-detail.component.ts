@@ -354,7 +354,7 @@ export class AddDataDetailPlanningOrderComponent
         if (isNaN(numericValue)) {
             numericValue = 0;
         }
-        value = numericValue.toFixed(2);
+        value = Math.abs(numericValue).toFixed(2);
       } else {
         value = "0.00"; // Default if empty
       }
