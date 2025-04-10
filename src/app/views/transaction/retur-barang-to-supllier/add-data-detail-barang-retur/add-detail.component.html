@@ -248,7 +248,7 @@
 
         <div class="w-100 px-2 py-1 row">
           <div class="col-4 d-flex align-items-center">
-            <label class="fw-semibold" for="nomorPesanan">{{ "Total Quantity Waste" | translate }}</label>
+            <label class="fw-semibold" for="nomorPesanan">{{ "Total Quantity" | translate }}</label>
           </div>
           <div class="col-8 pe-0">
             <input type="text" placeholder="Nomor pesanan" class="form-control" id="konversi"
@@ -378,12 +378,14 @@
         <button (click)="onAddExpiredRow()" type="button" class="btn btn-primary"><i class="fa fa-plus ms-1"></i> Tambah
         </button>
 
-        <button (click)="isShowModal = false" type="button" class="btn btn-secondary ms-2"><i
-            class="fa fa-times me-1"></i>Hapus</button>
+        <button (click)="undoLastAddedRow()" type="button" class="btn btn-secondary ms-2">
+          <i class="fa fa-times me-1"></i> Hapus
+        </button>
       </div>
-      <div class="col-6 d-flex justify-content-end">
-        <button (click)="onSaveEntryExpired()" type="button" class="btn btn-primary ms-2"><i
-          class="fa fa-check me-1"></i>Simpan Data</button>
+      <div class="col-6 d-flex justify-content-end mt-3">
+        <button (click)="simpanDataExpired()" type="button" class="btn btn-primary ms-2">
+          <i class="fa fa-check me-1"></i>Simpan Data
+        </button>
       </div>
     </div>
 
