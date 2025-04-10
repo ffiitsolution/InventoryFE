@@ -124,6 +124,7 @@ export class DefaultHeaderComponent
         this.g.serverStatus = health;
         this.g.countdownValue = 2;
         this.g.statusEndOfMonth = data.statusEndOfMonth;
+        this.g.statusPlanningOrder = data.statusPlanningOrder;
         this.checkTitleIfOffline(time.substring(time.length - 1, 1));
       } else {
         this.g.serverStatus = 'DOWN';

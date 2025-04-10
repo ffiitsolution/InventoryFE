@@ -1,0 +1,312 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-header>
+      
+      <div class="d-flex align-items-center justify-content-start text-start" style="width: 300px;height: 100%;">
+        <c-alert color="warning" *ngIf="g.statusPlanningOrder">
+          {{'Progress: ' + g.statusPlanningOrder}}
+        </c-alert>
+      </div>
+      <div class="row d-flex justify-content-between" *ngIf="!g.statusPlanningOrder">
+        
+        <div class="col-6 d-flex align-items-center gap-2">
+          <div class=" border rounded  d-flex align-items-center p-2 gap-2">
+            <div class="d-flex align-items-center">
+              <h6 class="mb-0 me-2">Periode:</h6>
+              <span>{{ headerPlanningOrder.selectedMonth }} - {{ headerPlanningOrder.selectedYear }}</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <h6 class="mb-0 me-2">Buffer Stock:</h6>
+              <span>{{ headerPlanningOrder.bufferStock}}</span>
+            </div>
+          </div>
+          <div class="d-flex align-items-center p-1 gap-2">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Search..."
+              [(ngModel)]="searchText"
+            />
+          </div>        
+        </div>
+        <div class="col-6 d-flex gap-3 d-md-flex justify-content-end ">
+          <button class="btn btn-info text-white btn-150 pe-3"
+          [disabled]="loadingSimpan"
+          (click)="onSubmit()">
+            <i class="fa fa-check pe-2" *ngIf="!loadingSimpan"></i>
+            <i class="fa fa-spinner fa-spin" *ngIf="loadingSimpan"></i>
+            {{ "Proses Simpan Data" | translate }}
+          </button>
+        
+          <button class="btn btn-secondary text-white btn-150" (click)="onBackPressed()">
+            <i class="fa fa-times pe-1"></i> {{ "Batal Planning" | translate }}
+          </button>
+      
+          <button
+            type="button"
+            class="btn btn-success  text-white py-2 pe-3 btn-150 "
+            (click)="isShowModalReport = true"
+          >
+            <i class="fa fa-print icon-gap" *ngIf="!isShowModalReport"></i>
+            <i class="fa fa-spinner fa-spin" *ngIf="isShowModalReport"></i>
+              Cetak
+          </button>
+       
+        </div>
+    
+        
+      
+      </div>
+    </c-card-header>
+    <c-card-body>
+      <div class="table-responsive">
+        <ng-container>
+          <div *ngIf="loading">
+            <div class="header-wrapper-loading">
+              <div class="wrapper-loading">
+                <div class="spinner">
+                  <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><br/>
+                  <span style="font-weight: bold">Loading...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <table *ngIf="!loading" bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
+            <thead>
+              <tr>
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
+                class="text-center align-items-start btn-danger" rowspan="2">
+                    Kode
+                </th>
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 18%"
+                  class="text-center align-items-start" rowspan="2">Keterangan</th>
+             
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; padding-right: 2px;"
+                  class="text-center align-items-start" rowspan="2">
+                  Konversi
+                </th>
+                <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle;"
+                  class="text-center align-items-start" rowspan="2">
+                  Rata2 Kirim(3 bulan)
+                </th>
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
+                  class="text-center align-items-start btn-danger" rowspan="2">
+                  Saldo awal</th> <!-- Masih sejajar -->
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 5%;"
+                  class="text-center align-items-start" rowspan="2">
+                 Minimum Stock</th>
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 5%;"
+                  class="text-center align-items-start" rowspan="2">
+                  Maximum Stock
+                </th>
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 5%;"
+                  class="text-center align-items-start" rowspan="2">
+                  Minimum Order
+                </th>
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 5%;"
+                class="text-center align-items-start" rowspan="2">
+                  Order by System
+                </th>
+                <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle; width: 20%;"
+                class="text-center align-items-start" colspan="4">
+                  PLANNING - WEEKLY
+                </th>
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 7%;"
+                class="text-center align-items-start" rowspan="2">
+                 TOTAL ORDER
+                </th>
+              </tr>
+              <tr>
+                <th scope="col" class="text-center"
+                  style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle; ">Week - 1</th>
+                <th scope="col" class="text-center"
+                  style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle;">Week - 2</th>
+                <th scope="col" class="text-center"
+                  style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle; ">Week - 3</th>
+                <th scope="col" class="text-center"
+                  style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle;">Week - 4</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="!listProductData || listProductData.length === 0">
+              <tr>
+                <td colspan="14" scope="col" class="text-center">
+                  No Data Found
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr *ngFor="let data of filteredData  
+              | paginate: {
+                itemsPerPage: 5,
+                currentPage:listCurrentPage ,
+                totalItems: filteredData.length > 0 ? filteredData.length : 1,
+                id:'dataTableDetail'
+              }; let i = index
+             "
+              (click)="onRowClicked(data)"
+             >
+                <td class="text-center">
+                  {{ data.kodeBarang   }}
+                </td>
+                <td class="text-center">
+                  {{ data.namaBarang   }}
+                </td>
+                <td class="text-center">{{ data.konversi }} 
+                  {{data.satuanKecil}} / {{data.satuanBesar}}
+                </td>
+                <td class="text-center input-column">
+                 {{ data.rataRataQty }} {{ data.satuanBesar}}
+                </td>
+
+                <td class="text-center input-column">
+                  {{ data.saldoAwal}} {{ data.satuanBesar}}
+                </td>
+
+                <td class="text-center">
+                  {{ data.minimumStock}}
+                </td>
+                <td class="text-center">
+                  {{ data.maximumStock}}
+                </td>
+                <td class="text-center">
+                  {{ data.minimumOrder}}
+                </td>
+                <td class="text-center">
+                  {{ data.orderBySystem}} {{ data.satuanBesar}}
+                </td>
+                <td class="text-center">
+                  <div class="d-flex" style="gap: 5px;">
+                    <input #nextInput type="text" min="0" 
+                      class="form-control text-center inputQty inputNumberSpace"
+                     
+                      [(ngModel)]="data.week1" 
+                      (change)="onInputValueItemDetail($event, i)"
+                     />
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="d-flex" style="gap: 5px;">
+                    <input #nextInput type="text" min="0" 
+                      class="form-control text-center inputQty inputNumberSpace"
+                     
+                      [(ngModel)]="data.week2" 
+                      (change)="onInputValueItemDetail($event, i,2)"
+                     />
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="d-flex" style="gap: 5px;">
+                    <input #nextInput type="text" min="0" 
+                      class="form-control text-center inputQty inputNumberSpace"
+                     
+                      [(ngModel)]="data.week3" 
+                      (change)="onInputValueItemDetail($event, i,3)"
+                     />
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="d-flex" style="gap: 5px;">
+                    <input #nextInput type="text" min="0" 
+                      class="form-control text-center inputQty inputNumberSpace"
+                     
+                      [(ngModel)]="data.week4" 
+                      (change)="onInputValueItemDetail($event, i,4)"
+                     />
+                  </div>
+                </td>
+                <td class="text-center">
+                  {{ data.totalOrder}} {{ data.satuanBesar}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="mt-2 text-start">
+            <c-pagination>
+              <pagination-controls (pageChange)="listCurrentPage = $event" id="dataTableDetail"></pagination-controls>
+            </c-pagination>
+          </div>
+        </ng-container>
+      </div>
+
+    </c-card-body>
+
+
+
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="c-card" *ngIf="selectedRowData">
+    <c-card-body>
+      <div class="row justify-content-start">
+        <div class="col-6 d-flex justify-content-center align-items-center">
+          <div class="menu-purpose col-sm-12 d-flex flex-column justify-content-start align-items-center">
+            <span>
+              Rata-rata = (Qty Periode_bulan 1 + Qty Periode_bulan 2 + Qty Periode_bulan 3) / 3
+            </span>
+            <span>
+              Order By System = (Rata-rata+(Rata-rata x %BufferStock/100)) - Saldo Akhir
+            </span>
+          </div>
+        </div>
+        <div class="col-2">
+            <div class="w-100 mb-2 ">
+              <label for="periode1" class="form-label">{{ "Total pengiriman periode 1" | translate }}</label>
+              <input type="text" disabled placeholder="Total pengiriman periode 1" class="form-control"
+                [(ngModel)]="selectedRowData.periode1" name="periode1" />
+            </div>
+        </div>
+        <div class="col-2">
+          <div class="w-100 mb-2 ">
+            <label for="periode2" class="form-label">{{ "Total pengiriman periode 2" | translate }}</label>
+            <input type="text" disabled placeholder="Total pengiriman periode 2" class="form-control" 
+              [(ngModel)]="selectedRowData.periode2" name="periode2" />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="w-100 mb-2 ">
+            <label for="periode3" class="form-label">{{ "Total pengiriman periode 3" | translate }}</label>
+            <input type="text" disabled placeholder="Total pengiriman periode 3" class="form-control"
+              [(ngModel)]="selectedRowData.periode3" name="periode3" />
+          </div> 
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<c-modal #formModalReport [fullscreen]="false" [visible]="isShowModalReport" backdrop="static" id="formModalReport" [attr.aria-hidden]="!isShowModalReport">
+  <c-modal-header>
+    <h5 cModalTitle>Konfirmasi Cetak Data</h5>
+    <button (click)="isShowModalReport = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalReport.id" cButtonClose>
+      <i class="fa fa-times"></i>
+    </button>
+  </c-modal-header>
+
+  <c-modal-body>
+    <div class="text-center">
+      <p class="fw-bold">Pilihan Cetak</p>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="confirmSend" id="confirmYes" value="semua" [(ngModel)]="confirmSelection">
+        <label class="form-check-label" for="confirmYes">Semua Item Code</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="confirmSend" id="confirmNo" value="tidak" [(ngModel)]="confirmSelection">
+        <label class="form-check-label" for="confirmNo">Hanya Item Yand Di Order</label>
+      </div>
+    </div>
+  </c-modal-body>
+
+  <c-modal-footer class="justify-center">
+    <!-- <button type="button" class="btn btn-light me-3 w-80" (click)="isShowModalReport = false">Close</button> -->
+          <button
+            type="button"
+            class="btn btn-success  text-white py-2 pe-3 btn-150 "
+            (click)="doCetak()"
+          >
+            <i class="fa fa-print icon-gap" *ngIf="!loaderCetak"></i>
+            <i class="fa fa-spinner fa-spin" *ngIf="loaderCetak"></i>
+              Cetak
+          </button>
+  </c-modal-footer>
+</c-modal>
+

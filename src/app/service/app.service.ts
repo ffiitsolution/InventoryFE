@@ -330,4 +330,11 @@ export class AppService {
       payload
     )
   }
+
+  generatePlanningOrder(payload: any){
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/planning-order/generate`,
+      payload
+    )
+  }
 }

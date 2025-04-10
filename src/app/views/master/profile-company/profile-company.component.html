@@ -49,7 +49,7 @@
                 </label>
                 <div class="col-sm-8">
                   <textarea class="form-control" 
-                  [readonly]="roleId == 1"
+                  [readonly]="roleId != 3"
                   formControlName="alamat1" 
                   rows="3">
                   </textarea>
@@ -64,7 +64,7 @@
                 </label>
                 <div class="col-sm-8">
                   <textarea class="form-control"
-                  [readonly]="roleId == 1" 
+                  [readonly]="roleId != 3"
                   formControlName="alamat2" 
                   rows="3">
                 </textarea>
@@ -80,7 +80,7 @@
                 </label>
                 <div class="col-sm-8">
                   <input type="text" 
-                  [readonly]="roleId == 1"
+                  [readonly]="roleId != 3"
                   class="form-control" 
                   formControlName="namaKota">
                   <small class="text-danger" *ngIf="myForm.get('namaKota')?.hasError('required')">Nama Kota is required</small>
@@ -94,7 +94,7 @@
                 </label>
                 <div class="col-sm-8">
                   <input type="text" 
-                  [readonly]="roleId == 1"
+                  [readonly]="roleId != 3"
                   class="form-control" 
                   formControlName="kodePos">
                   <small class="text-danger" *ngIf="myForm.get('kodePos')?.hasError('required')">Kode Pos is required</small>
@@ -107,7 +107,9 @@
                   </span>
                 </label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" formControlName="negara">
+                  <input type="text" class="form-control" 
+                  [readonly]="roleId != 3"
+                  formControlName="negara">
                   <small class="text-danger" *ngIf="myForm.get('negara')?.hasError('required')">Negara is required</small>
                 </div>
               </div>
@@ -118,7 +120,7 @@
                 </label>
                 <div class="col-sm-4">
                   <input type="number" 
-                  [readonly]="roleId == 1"
+                  [readonly]="roleId != 3"
                   class="form-control" 
                   formControlName="batasKadaluarsaPo">
                   <small class="text-danger" *ngIf="myForm.get('batasKadaluarsaPo')?.hasError('required')">Batas Kadaluarsa PO is required</small>
@@ -135,7 +137,7 @@
                 </label>
                 <div class="col-sm-4">
                   <input type="number" 
-                  [readonly]="roleId == 1"
+                  [readonly]="roleId != 3"
                   class="form-control" 
                   formControlName="defaultTglKirimPo">
                   <small class="text-danger" *ngIf="myForm.get('defaultTglKirimPo')?.hasError('required')">Batas Kadaluarsa PO is required</small>
@@ -195,7 +197,7 @@
                 <label class="col-sm-4 col-form-label">No Telepon 1</label>
                 <div class="col-sm-8">
                   <input type="text" 
-                  [readonly]="roleId == 1"
+                  [readonly]="roleId != 3"
                   class="form-control" 
                   formControlName="noTelp1">
                 </div>
@@ -205,7 +207,7 @@
                 <label class="col-sm-4 col-form-label">No Telepon 2</label>
                 <div class="col-sm-8">
                   <input type="text" 
-                  [readonly]="roleId == 1"
+                  [readonly]="roleId != 3"
                   class="form-control" 
                   formControlName="noTelp2">
                 </div>
@@ -215,7 +217,7 @@
                 <label class="col-sm-4 col-form-label">No Fax 1</label>
                 <div class="col-sm-8">
                   <input type="text" 
-                  [readonly]="roleId == 1"
+                  [readonly]="roleId != 3"
                   class="form-control" 
                   formControlName="noFax1">
                 </div>
@@ -225,7 +227,7 @@
                 <label class="col-sm-4 col-form-label">No Fax 2</label>
                 <div class="col-sm-8">
                   <input type="text" 
-                  [readonly]="roleId == 1"
+                  [readonly]="roleId != 3"
                   class="form-control" 
                   formControlName="noFax2">
                 </div>
@@ -234,7 +236,7 @@
                 <label class="col-sm-4 col-form-label">Website</label>
                 <div class="col-sm-8">
                   <input type="text" 
-                  [readonly]="roleId == 1"
+                  [readonly]="roleId != 3"
                   class="form-control" 
                   formControlName="website">
                 </div>
@@ -244,7 +246,8 @@
                 <label class="col-sm-4 col-form-label">Email</label>
                 <div class="col-sm-8">
                   <input type="email" 
-                  [readonly]="roleId == 1"
+                  [readonly]="roleId != 3"
+                  autocomplete="off"
                   class="form-control" 
                   formControlName="alamatEmail">
                 </div>
@@ -287,6 +290,7 @@
                     <input 
                     [type]="showPassword ? 'text' : 'password'"
                     class="form-control" 
+                    autocomplete="new-password"
                     formControlName="passwordOrcl">
                     <small class="text-danger" *ngIf="myForm.get('passwordOrcl')?.hasError('required')">Password Database is required</small>
                   </div>
@@ -345,7 +349,7 @@
   
           <hr/>
   
-          <div class="mt-4 text-end d-flex justify-content-end gap-2" *ngIf="roleId != 1">
+          <div class="mt-4 text-end d-flex justify-content-end gap-2" *ngIf="roleId == 3">
             <!-- <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
               {{ "Kembali" | translate }}
             </button> -->
