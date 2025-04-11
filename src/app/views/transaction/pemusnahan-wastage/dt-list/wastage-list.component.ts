@@ -50,6 +50,9 @@ export class WastageListComponent implements OnInit {
     private translation: TranslationService,
     private router: Router
   ) {
+    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
+    this.dpConfig.adaptivePosition = true;
     this.dtOptions = {
       language:
         translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
@@ -136,6 +139,7 @@ export class WastageListComponent implements OnInit {
           },
         },
       ],
+      order: [1, 'desc'],
       searchDelay: 1000,
       // delivery: [],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {

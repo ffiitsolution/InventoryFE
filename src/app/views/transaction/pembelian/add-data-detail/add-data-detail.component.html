@@ -93,6 +93,10 @@
                       <option *ngFor="let status of listStatus" [value]="status.id" style="font-size: 12px;">{{ status.name }}</option>
                     </select>
                     <i class="bi bi-chevron-down position-absolute dropdown-icon" ></i>
+
+                    <!-- <ngx-select-dropdown [(ngModel)]="data.jenis" [multiple]="false" [config]="configSelectUser"
+                    [options]="listStatus" id="jenis" (change)="onStatusChange($event)" class="w-100">
+                  </ngx-select-dropdown> -->
                   </div>
                   
                 </td>
