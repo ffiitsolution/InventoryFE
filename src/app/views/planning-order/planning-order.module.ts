@@ -6,6 +6,7 @@ import {
 import { CommonModule } from '@angular/common';
 
 import {
+  AlertComponent,
   ButtonDirective,
   ButtonGroupModule,
   CardModule,
@@ -13,6 +14,8 @@ import {
   FormModule,
   GridModule,
   ModalModule,
+  PaginationModule,
+  TableModule,
   TextColorDirective,
   UtilitiesModule,
 } from '@coreui/angular';
@@ -22,9 +25,13 @@ import { DataTablesModule } from 'angular-datatables';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
-import { SetupSoDetailComponent } from './1-setup-so/detail/detail.component';
-import { SetupSoComponent } from './1-setup-so/setup-so.component';
-import { StockOpnameRoutingModule } from './stock-opname-routing.module';
+import { PlanningOrderRoutingModule } from './planning-order-routing.module';
+import { AddPlanningOrderComponent } from './add-data/add-data.component';
+import { AddDataDetailPlanningOrderComponent } from './add-data-detail/add-data-detail.component';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { SharedComponentModule } from '../../component/shared.component.module';
+import { LoadingComponent } from '../../component';
+import { PagesModule } from '../pages/pages.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -32,7 +39,8 @@ export function HttpLoaderFactory(http: HttpClient) {
 
 @NgModule({
   imports: [
-    StockOpnameRoutingModule,
+    PagesModule,
+    PlanningOrderRoutingModule,
     CommonModule,
     CardModule,
     GridModule,
@@ -49,11 +57,15 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReactiveFormsModule,
     ModalModule,
     SelectDropDownModule,
+    BsDatepickerModule.forRoot(),
+    SharedComponentModule,
+    TableModule,
+    AlertComponent
   ],
   declarations: [
-    SetupSoComponent,
-    SetupSoDetailComponent,
+    AddPlanningOrderComponent,
+    AddDataDetailPlanningOrderComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })
-export class StockOpnameModule {}
+export class PlanningOrderModule {}

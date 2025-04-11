@@ -42,7 +42,8 @@ export class GlobalService {
 
   selectedReportCategory: any = null;
   statusEndOfMonth: any = '';
-
+  statusPlanningOrder: any = '';
+  
   constructor(
     private titleService: Title,
     @Inject(DOCUMENT) private document: Document,

@@ -1,0 +1,152 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
+          <!-- <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button> -->
+          <h5>{{ "Planning Order (Monthly)" | translate }}</h5>
+        </div>
+      </c-row>
+    </c-card-body>
+  </c-card>
+
+  <c-card class="mb-4">
+    <c-card-body>
+      <c-row>
+        <div [ngClass]="isShowDetail  ? 'd-none' : 'col-4'" class="pe-0 d-flex red-line">
+          <div class="w-100">
+            <div class="p-2">
+              <h5 class="mb-2 p-2" style="color:#3c4b64;">{{ "Isi Data Planning" | translate }}</h5>
+              <form [formGroup]="myForm" >
+             
+             
+              <div class="w-100 px-2 py-1 row">
+               
+                  <div class="col-4 text-start">
+                    Periode Bulan-Tahun
+                    <span
+                    class="text-danger">*
+                   </span>  
+                  </div>
+                  <div class="col-3">
+                    <select cSelect class="text-center" formControlName="selectedMonth" >
+                      <option *ngFor="let num of rangeBulan" [value]="num">{{num}}</option>
+                    </select>
+                  </div>
+                  <div class="col-4">
+                    <select cSelect class="text-center" formControlName="selectedYear">
+                      <option *ngFor="let num of rangeTahun" [value]="num">{{num}}</option>
+                    </select>
+                  </div>
+               
+               
+              </div>
+              
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="jumlahHasilProduksi">{{
+                    "Estimasi Buffer Stock" | translate
+                  }}
+                <span
+                class="text-danger">*
+               </span>  
+                </label>
+                </div>
+                <div class="col-4 pe-0 d-flex">
+                  <input
+                    type="text"
+                    placeholder="Buffer Stock"
+                    class="form-control"
+                    id="bufferStock"
+                    formControlName="bufferStock"
+                    name="bufferStock"
+                    (change)="onInputValue($event)"
+                    [readonly]="isShowDetail"
+                  />
+                </div>
+                <div class="col-3 d-flex align-items-center">
+                  <label for="bufferStock">
+                    %
+                  </label>
+                </div>
+              </div>
+
+              <div class="divider mt-4"></div>
+              <div class="text-center mb-3 fs-6">
+                Proses tersebut akan menghitung transaksi pengiriman barang 3 bulan kebelakang,
+                  <br>dan menampilkan rata-rata pengiriman yang akan dijadikan rujukan 
+                  <br>'Rencana Order' pada periode di atas...!    
+              </div>
+
+               <div class="text-start mt-2">
+                <c-alert color="warning" *ngIf="globalService.statusPlanningOrder">
+                  {{'Progress: ' + globalService.statusPlanningOrder}}
+                </c-alert>
+              </div>
+       
+              <div style="width: 96%;" class="p-2">
+                <button class="shadow-sm btn w-100 btn-info text-white" *ngIf="!isShowDetail" [disabled]="myForm.invalid"
+                  (click)="onAddDetail()">
+                  <i class="fa fa-check pe-2"></i>
+                  {{ "Proses" | translate }}
+                </button>
+              </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class=" ps-0" [ngClass]="isShowDetail  ? 'col-12' : 'col-8'">
+          <div class="p-2" *ngIf="isShowDetail">
+            <app-add-data-detail-planning-order (onBatalPressed)="onBatalPressed($event)"></app-add-data-detail-planning-order>
+          </div>
+        </div>
+
+      </c-row>
+    </c-card-body>
+  </c-card>
+
+  <!-- Modal Pilih Barang -->
+  <c-modal
+    #staticBackdropModal
+    [visible]="isShowModal"
+    backdrop="static"
+    id="staticBackdropModal"
+    size="xl"
+  >
+    <c-modal-header>
+      <h5 cModalTitle>Daftar Barang</h5>
+      <button
+        (click)="isShowModal = false"
+        type="button"
+        class="btn btn-info ms-2"
+        [cModalToggle]="staticBackdropModal.id"
+        cButtonClose
+      >
+        <i class="fa fa-times text-white"></i>
+      </button>
+    </c-modal-header>
+
+    <c-modal-body>
+      <c-card class="mb-4">
+        <c-card-body>
+          <div class="table-responsive">
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              class="datatable row-border hover stripe w-100 h-65"
+              >
+            <!-- <thead class="table-header"> </thead> -->
+            </table>
+          </div>
+        </c-card-body>
+      </c-card>
+    </c-modal-body>
+  </c-modal>
+
+  <!-- Modal Backdrop -->
+  <div class="modal-bg-backdrop" *ngIf="isShowModal"></div>
+</div>
