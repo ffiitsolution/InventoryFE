@@ -120,6 +120,11 @@ const routes: Routes = [
         path: 'account-setting',
         component: AccountSettingComponent,
       },
+      {
+        path: 'planning-order',
+        loadChildren: () =>
+          import('./views/planning-order/planning-order.module').then((m) => m.PlanningOrderModule),
+      },
     ],
   },
   {
