@@ -6,7 +6,7 @@
           <app-loading></app-loading>
         </div>
 
-        <div class="row justify-content-end py-2">
+        <!-- <div class="row justify-content-end py-2">
           <div class="w-25 pb-2">
             <c-input-group>
               <span cInputGroupText id="basic-addon1"><i class="fa fa-search"></i></span>
@@ -14,7 +14,7 @@
                 type="text" placeholder="Search...">
             </c-input-group>
           </div>
-        </div>
+        </div> -->
 
         <table *ngIf="filteredListTypeOrder as list" bordered [hover]="true" [responsive]="true" [striped]="true"
           align="middle" cTable class="mb-0 border">
@@ -114,7 +114,7 @@
 </c-card>
 
 <div class="d-grid gap-3 d-md-flex justify-content-end">
-  <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
+  <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()" [disabled]="adding">
     <i class="fa fa-check pe-2" *ngIf="!adding"></i>
     <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
     {{ "Proses Pengiriman" | translate }}

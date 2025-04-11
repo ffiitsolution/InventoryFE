@@ -274,6 +274,7 @@ export class AddDataDetailDeliveryComponent
             });
           } else {
             this.toastr.info('Penyimpanan dibatalkan');
+            this.adding = false;
           }
         });
     // ✅ Jika semua valid, lanjutkan dengan pemanggilan API
@@ -330,4 +331,5 @@ export class AddDataDetailDeliveryComponent
       this.listOrderData[index].qtyPesanKecil = '0.00'; // fallback if input is not a number
     }
   }
+  
 }

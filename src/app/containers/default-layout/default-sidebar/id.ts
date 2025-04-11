@@ -216,6 +216,13 @@ export const menu_id: any = [
       },
       //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
       {
+        name: 'Penjualan Barang Bekas',
+        url: '/transaction/penjualan-barang-bekas/list',
+        iconComponent: {
+          name: 'cil-dollar',
+        },
+      },
+      {
         name: 'Pemakaian Barang Sendiri',
         url: '/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri',
         iconComponent: {

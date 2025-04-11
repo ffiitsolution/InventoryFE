@@ -330,4 +330,11 @@ export class AppService {
       payload
     )
   }
+
+  getSupplier(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/list-supplier`,
+      payload
+    );
+  }
 }

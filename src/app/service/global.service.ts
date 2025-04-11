@@ -8,7 +8,7 @@ import { AppConfig } from '../config/app.config';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
 import { DatePipe } from '@angular/common';
 import { isNull } from 'lodash-es';
-import { PRINT_STATUS, STATUS_RESULT } from '../../constants';
+import { PRINT_STATUS, STATUS_AKTIF, STATUS_RESULT, TIPE_PEMBAYARAN } from '../../constants';
 import moment from 'moment';
 
 @Injectable({
@@ -233,14 +233,14 @@ export class GlobalService {
     }
   }
 
-  transformTime(time: string, showSecond:boolean = false) {
+  transformTime(time: string, showSecond: boolean = false) {
     if (isNull(time)) {
       return '00:00';
     } else {
       const hours = time.substring(0, 2);
       const minutes = time.substring(2, 4);
       const seconds = time.substring(4, 6);
-      if(showSecond){
+      if (showSecond) {
         return `${hours}:${minutes}:${seconds}`;
       }
       return `${hours}:${minutes}`;
@@ -299,6 +299,25 @@ export class GlobalService {
     }
     return `(${status}) ${found?.label}` || status;
   }
+
+  getTipePembayaranLabel(status: string) {
+    const data = TIPE_PEMBAYARAN;
+    const found = data.find((item) => item.value == status);
+    if (!found) {
+      return '-';
+    }
+    return `${found?.label}` || status;
+  }
+
+  getStatusAktifLabel(status: string) {
+    const data = STATUS_AKTIF;
+    const found = data.find((item) => item.value == status);
+    if (!found) {
+      return '-';
+    }
+    return `${found?.label}` || status;
+  }
+
   trimOutletCode(label: string) {
     const numberPattern = /\d+/g;
     const result = label.match(numberPattern);
@@ -315,7 +334,7 @@ export class GlobalService {
         ? /^[a-zA-Z0-9]$/
         : type == 'numeric'
           ? /^[0-9]$/
-          : type=='numericDot'
+          : type == 'numericDot'
             ? /^[0-9.]$/
             : type == 'phone'
               ? /^[0-9-]$/
@@ -327,8 +346,13 @@ export class GlobalService {
                     ? /^[a-zA-Z]+$/
                     : /^[a-zA-Z.() ,\-]*$/;
 
-    if (temp_regex.test(inp)) return true;
-    else {
+    if (temp_regex.test(inp)) {
+      // ⭐ Tambahkan ini:
+      if (event.target && (event.target as HTMLInputElement).value == '0.00') {
+        (event.target as HTMLInputElement).value = ''; // kosongkan langsung
+      }
+      return true;
+    } else {
       event.preventDefault();
       return false;
     }
@@ -399,4 +423,13 @@ export class GlobalService {
   formatStrDateMMM(date: any) {
     return moment(date, "YYYY-MM-DD").format("DD MMM yyyy");
   }
+
+  convertToRupiah(amount: number): string {
+    if (isNaN(amount)) {
+      return 'Rp0';
+    }
+    return 'Rp' + amount.toLocaleString('id-ID', { minimumFractionDigits: 2 });
+  }
+
+
 }
