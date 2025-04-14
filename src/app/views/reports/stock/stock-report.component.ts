@@ -15,6 +15,7 @@ import {
 } from '@angular/forms';
 import { AppService } from '../../../service/app.service';
 import { DatePipe } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-stock-report',
@@ -49,7 +50,8 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     private translation: TranslationService,
     private datePipe: DatePipe,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -189,9 +191,10 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
         'dd-MMM-yyyy'
       )}.pdf`;
       link.click();
-      this.g.alertSuccess('Sukses', 'File sudah terunduh.');
+      this.toastr.success('File sudah terunduh');
     } else
-      this.g.alertError('Maaf, Ada kesalahan!', 'File tidak dapat terunduh.');
+      this.toastr.error('File tidak dapat terunduh');
+      
   }
 
   downloadCsv(res: any, reportType: string) {
@@ -209,8 +212,8 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
         'dd-MMM-yyyy'
       )}.csv`;
       link.click();
-      this.g.alertSuccess('Sukses', 'File sudah terunduh.');
+      this.toastr.success('File sudah terunduh');
     } else
-      this.g.alertError('Maaf, Ada kesalahan!', 'File tidak dapat terunduh.');
+      this.toastr.error('File tidak dapat terunduh');
   }
 }

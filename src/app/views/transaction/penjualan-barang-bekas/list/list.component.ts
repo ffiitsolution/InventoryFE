@@ -5,25 +5,24 @@ import { GlobalService } from '../../../../service/global.service';
 import { TranslationService } from '../../../../service/translation.service';
 import { Subject } from 'rxjs';
 import { Page } from '../../../../model/page';
-import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
+import { ACTION_CETAK, ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { DataTableDirective } from 'angular-datatables';
 import moment from 'moment';
 import { AppConfig } from '../../../../config/app.config';
 
 @Component({
-  selector: 'app-pembelian-list',
-  templateUrl: './pembelian-list.component.html',
-  styleUrls: ['./pembelian-list.component.scss'],
+  selector: 'app-list-penjualan-brg-bekas',
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.scss'],
 })
-export class PembelianListComponent implements OnInit {
+export class ListPenjualanBrgBekasComponent implements OnInit {
   orderNoFilter: string = '';
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
   dtOptions: DataTables.Settings = {};
   protected config = AppConfig.settings.apiServer;
-
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
   dtColumns: any = [];
@@ -42,7 +41,12 @@ export class PembelianListComponent implements OnInit {
       this.currentDate.getDate() - DEFAULT_DATE_RANGE_RECEIVING_ORDER
     )
   );
-  dateRangeFilter: any = [this.startDateFilter, new Date()];
+
+  endDateFilter: Date = new Date(
+    new Date().setDate(new Date().getDate() + 1)
+  );
+  dateRangeFilter: any = [this.startDateFilter, this.endDateFilter];
+  selectedRowData: any;
 
   constructor(
     private dataService: DataService,
@@ -50,9 +54,6 @@ export class PembelianListComponent implements OnInit {
     private translation: TranslationService,
     private router: Router
   ) {
-    this.dpConfig.containerClass = 'theme-red';
-    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
-    this.dpConfig.adaptivePosition = true;
     this.dtOptions = {
       language:
         translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
@@ -79,11 +80,10 @@ export class PembelianListComponent implements OnInit {
             seconds: 59,
             milliseconds: 999,
           }).format('YYYY-MM-DD HH:mm:ss.SSS'),
-          tipeTransaksi: 1
         };
         setTimeout(() => {
           this.dataService
-            .postData(this.config.BASE_URL + '/api/pembelian/dt', params)
+            .postData(this.config.BASE_URL + '/api/penjualan-brg-bekas/dt', params)
             .subscribe((resp: any) => {
               const mappedData = resp.data.map((item: any, index: number) => {
                 // hapus rn dari data
@@ -91,8 +91,9 @@ export class PembelianListComponent implements OnInit {
                 const finalData = {
                   ...rest,
                   dtIndex: this.page.start + index + 1,
-                  tglDokumen: this.g.transformDate(rest.tglDokumen),
-                  tglTransaksi: this.g.transformDate(rest.tglTransaksi)
+                  tglTransaksi: this.g.transformDate(rest.tglTransaksi),
+                  dateCreate: this.g.transformDate(rest.dateCreate),
+                  timeCreate: this.g.transformTime(rest.timeCreate),
                 };
                 return finalData;
               });
@@ -107,29 +108,59 @@ export class PembelianListComponent implements OnInit {
             });
         }, DEFAULT_DELAY_TABLE);
       },
+      order: [[1, 'asc']],
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'tglTransaksi', title: 'Tanggal Terima' },
-        { data: 'tglDokumen', title: 'Tanggal Faktur' },
-        { data: 'nomorPo', title: 'No. Pesanan' },
-        { data: 'nomorDokumen', title: 'No. Faktur' },
-        { data: 'nomorTransaksi', title: 'No. Penerimaan', searchable: true },
-        { data: 'kodeSupplier', title: 'Supplier', searchable: true },
+        { data: 'tglTransaksi', title: 'Tanggal Transaksi' },
+        { data: 'nomorTransaksi', title: 'No. Transaksi' },
         {
-          data: 'namaSupplier',
-          title: 'Nama Supplier',
+          data: 'supplier', title: 'Supplier Penerima', searchable: true, render: (data, type, row) => {
+            return `${row.supplier} - ${row.namaSupplier}`
+          }
+        },
+        {
+          data: 'subTotal', title: 'Sub Total', searchable: true,
+          render: (data) => {
+            return this.g.convertToRupiah(data);
+          }
+        },
+        {
+          data: 'nilaiAdjustment',
+          title: 'Adjust Bayar',
           orderable: true,
           searchable: true,
+          render: (data) => {
+            return this.g.convertToRupiah(data);
+          }
+        },
+        {
+          data: 'nilaiPenjualan',
+          title: 'Total Penjualan',
+          orderable: true,
+          searchable: true,
+          render: (data) => {
+            return this.g.convertToRupiah(data);
+          }
         },
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render: (data) => this.g.getStatusOrderLabel(data),
-        },
-        {
-          title: 'Aksi',
+          render: (data) => {
+            const isCancel = data == CANCEL_STATUS;
+            const label = this.g.getStatusOrderLabel(data);
+            if (isCancel) {
+              return `<span class="text-center text-danger">${label}</span>`;
+            }
+            return label;
+          },
+        }, {
+          title: 'Opsi',
+          className: 'text-center',
           render: () => {
-            return `<button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>`;
+            return `<div class="d-flex px-2 gap-1"> 
+              <button style="width: 74px" class="btn btn-sm action-view btn-outline-info btn-60 pe-2">
+              <i class="fa fa-eye pe-2"></i>${this.buttonCaptionView}</button>
+            </div>`;
           },
         },
       ],
@@ -139,10 +170,25 @@ export class PembelianListComponent implements OnInit {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
         );
+        $('.action-cetak', row).on('click', () =>
+          this.actionBtnClick(ACTION_CETAK, data)
+        );
+        $('td', row).on('click', () => {
+          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
         return row;
       },
     };
     this.dtColumns = this.dtOptions.columns;
+    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
+    this.dpConfig.adaptivePosition = true;
   }
 
   ngOnInit(): void {
@@ -159,17 +205,19 @@ export class PembelianListComponent implements OnInit {
 
   onAddPressed(): void {
     // Logic for adding a new order
-    const route = this.router.createUrlTree(['/transaction/pembelian/add-data']);
+    const route = this.router.createUrlTree(['/transaction/penjualan-barang-bekas/add-data']);
     this.router.navigateByUrl(route);
   }
 
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage(
-        'selectedData',
+        LS_INV_SELECTED_DELIVERY_ORDER,
         JSON.stringify(data)
       );
-      this.router.navigate(['/transaction/pembelian/detail']); 
+      this.router.navigate(['/transaction/penjualan-barang-bekas/detail']);
+    }
+    if (action === ACTION_CETAK) {
     }
   }
 
@@ -182,7 +230,7 @@ export class PembelianListComponent implements OnInit {
   }
 
   refreshData(): void {
-    const route = this.router.createUrlTree(['/transaction/pembelian/detail']);
+    const route = this.router.createUrlTree(['/transaction/delivery-item/detail-transaction']);
     this.router.navigateByUrl(route);
   }
   onFilterStatusChange(event: Event): void {

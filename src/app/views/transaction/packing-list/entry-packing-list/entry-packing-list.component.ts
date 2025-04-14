@@ -181,6 +181,8 @@ export class EntryPackingListComponent
     });
 
     this.isShowModal = !this.filteredEntryPL.some((item: any) => item.nomorColli === "");
+    this.isShowPrintModal = false
+
   }
 
 

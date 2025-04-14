@@ -426,7 +426,7 @@ export class AddDataDetailOrderManualComponent
       ],
       searchDelay: 1500,
       order: [
-        [8, 'asc'],
+        [8, 'asc'], [1, 'asc'],
       ],
       // delivery: [],
       rowCallback: (row: Node, data: any, index: number) => {

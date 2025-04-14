@@ -74,6 +74,10 @@ import { DetailTerimaBarangReturDariSiteComponent } from './terima-barang-retur-
 //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
 
 import { ReturnOrderComponent } from './return-order/return-order.component';
+import { AddDataDetailPenjualanBrgBekasComponent } from './penjualan-barang-bekas/add-data-detail/add-data-detail.component';
+import { ListPenjualanBrgBekasComponent } from './penjualan-barang-bekas/list/list.component';
+import { DetailPenjualanBrgBekasComponent } from './penjualan-barang-bekas/detail/detail.component';
+import { AddDataPenjualanBrgBekasComponent } from './penjualan-barang-bekas/add-data/add-data.component';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -150,7 +154,13 @@ export function HttpLoaderFactory(http: HttpClient) {
     AddDataDetailTerimaBarangReturDariSiteComponent,
     DetailTerimaBarangReturDariSiteComponent,
     //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
-    ReturnOrderComponent
+    ReturnOrderComponent,
+    // Tambah modul Penjualan Brg Bekas - Yudha 09/04/2025
+    AddDataDetailPenjualanBrgBekasComponent,
+    AddDataPenjualanBrgBekasComponent,
+    ListPenjualanBrgBekasComponent,
+    DetailPenjualanBrgBekasComponent
+
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

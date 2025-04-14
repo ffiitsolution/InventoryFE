@@ -6,7 +6,15 @@ import {
   ViewChild,
 } from '@angular/core';
 import { TranslationService } from 'src/app/service/translation.service';
-
+import {
+  ACTION_VIEW,
+  CANCEL_STATUS,
+  DEFAULT_DELAY_TABLE,
+  LS_INV_SELECTED_DELIVERY_ORDER,
+  OUTLET_BRAND_KFC,
+  SEND_PRINT_STATUS_SUDAH,
+  STATUS_SAME_CONVERSION,
+} from '../../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
 import { lastValueFrom, Subject } from 'rxjs';
 import { Page } from 'src/app/model/page';
@@ -16,15 +24,14 @@ import { Router } from '@angular/router';
 // import { AppConfig } from 'src/app/config/app.config.ts';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
-import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DELAY_TABLE, SEND_PRINT_STATUS_SUDAH } from 'src/constants';
-import { AppConfig } from 'src/app/config/app.config';
+import { AppConfig } from '../../../../config/app.config';
 
 @Component({
-  selector: 'app-detail-pembelian',
+  selector: 'app-detail-penjualan-brg-bekas',
   templateUrl: './detail.component.html',
   styleUrl: './detail.component.scss',
 })
-export class DetailPembelianComponent
+export class DetailPenjualanBrgBekasComponent
   implements OnInit, OnDestroy, AfterViewInit {
   columns: any;
   page = new Page();
@@ -36,7 +43,7 @@ export class DetailPembelianComponent
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
   selectedOrder: any = JSON.parse(
-    localStorage['selectedData']
+    localStorage[LS_INV_SELECTED_DELIVERY_ORDER]
   );
   adding: boolean = false;
   loadingIndicator: boolean = false;
@@ -60,7 +67,7 @@ export class DetailPembelianComponent
     private router: Router,
     private toastr: ToastrService
   ) {
-    this.g.navbarVisibility = true;
+    this.g.navbarVisibility = false;
     this.selectedOrder = JSON.parse(this.selectedOrder);
     this.selectedOrder.tglPesanan = this.g.transformDate(this.selectedOrder.tglPesanan),
       this.selectedOrder.tglTransaksi = this.g.transformDate(this.selectedOrder.tglTransaksi),
@@ -77,32 +84,25 @@ export class DetailPembelianComponent
           this.page.length = dataTablesParameters.length;
           const params = {
             ...dataTablesParameters,
-            nomorTransaksi: this.selectedOrder.nomorTransaksi,
+            nomorTransaksi: this.selectedOrder?.nomorTransaksi,
             kodeGudang: this.g.getUserLocationCode(),
           };
           setTimeout(() => {
             this.dataService
               .postData(
-                this.config.BASE_URL + '/api/pembelian/detail',
+                this.config.BASE_URL + '/api/penjualan-brg-bekas/detail-list',
                 params
               )
               .subscribe((resp: any) => {
-                const updatedSelectedOrder = {
-                  ...this.selectedOrder,
-                  noSjPengirim: resp.data[0]?.noSjPengirim || ' ',
-                };
-                this.selectedOrder = updatedSelectedOrder;
-                this.g.saveLocalstorage(
-                  'selectedData',
-                  JSON.stringify(updatedSelectedOrder)
-                );
                 const mappedData = resp.data.map((item: any, index: number) => {
                   const { rn, ...rest } = item;
                   const finalData = {
                     ...rest,
                     dtIndex: this.page.start + index + 1,
-                    tglPesanan: this.g.transformDate(rest.tglPesanan),
-                    tglTransaksi: this.g.transformDate(rest.tglTransaksi)
+                    konversi: this.g.formatToDecimal(rest.konversi),
+                    qtyBesar: this.g.formatToDecimal(rest.qtyBesar),
+                    qtyKecil: this.g.formatToDecimal(rest.qtyKecil),
+                    totalQty: this.g.formatToDecimal(rest.totalQty),
                   }
                   return finalData;
                 });
@@ -117,9 +117,19 @@ export class DetailPembelianComponent
 
               });
             this.paramGenerateReport = {
-              nomorTransaksi: this.selectedOrder.nomorTransaksi,
-              kodeGudang: this.g.getUserLocationCode(),
-              isDownloadCsv: false
+              outletBrand: 'KFC',
+              userEntry: this.selectedOrder.userCreate,
+              nomorPesanan: this.selectedOrder?.nomorPesanan,
+              isDownloadCsv: true,
+              noSuratJalan: this.selectedOrder.noSuratJalan,
+              tglBrgDikirim: this.selectedOrder.tglTransaksi,
+              tglPesan: this.selectedOrder.tglPesanan,
+              tglEntry: this.selectedOrder.dateCreate,
+              jamEntry: this.selectedOrder.timePosted.replace(/(\d{2})(?=\d)/g, '$1:'),
+              kodeTujuan: this.selectedOrder.kodeTujuan,
+              namaTujuan: this.selectedOrder.namaTujuan,
+              keterangan: this.selectedOrder.keterangan,
+              alamatTujuan: this.selectedOrder.alamatTujuan
             };
             this.paramUpdatePrintStatus = {
               noSuratJalan: this.selectedOrder.noSuratJalan
@@ -127,41 +137,43 @@ export class DetailPembelianComponent
           }, DEFAULT_DELAY_TABLE);
         },
         columns: [
+          { data: 'dtIndex', title: '#' },
           { data: 'kodeBarang', title: 'Kode Barang' },
           { data: 'namaBarang', title: 'Nama Barang' },
           {
             data: 'konversi', title: 'Konversi',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
+            render: (data, type, row) => `${data}  ${row.satuanKecil}/${row.satuanBesar}`
           },
           {
             data: 'qtyBesar', title: 'Qty Besar',
-            render: (data, type, row) => `${this.g.formatToDecimal(data)} ${row.satuanBesar}`
+            render: (data, type, row) => `${data} ${row.satuanBesar}`
           },
           {
             data: 'qtyKecil', title: 'Qty Kecil',
-            render: (data, type, row) => `${this.g.formatToDecimal(data)} ${row.satuanKecil}`
+            render: (data, type, row) => `${data}  ${row.satuanKecil}/${row.satuanBesar}`
           },
           {
-            data: 'totalQty', title: 'Total Qty',
-            render: (data, type, row) => `${this.g.formatToDecimal(data)} ${row.satuanKecil}`
+            data: 'totalQty', title: 'Total Quantity', searchable: true,
+            render: (data, type, row) => `${data}  ${row.satuanKecil}`
           },
           {
-            data: 'qtyKgs', title: 'Total Berat(KGS)',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
-          },
-          {
-            data: 'jenisItem', title: 'Jenis',
+            data: 'hargaSatuan',
+            title: 'Harga Satuan',
+            orderable: true,
+            searchable: true,
             render: (data) => {
-              if (data === '1') {
-                return 'Fresh';
-              } else if (data === '2') {
-                return 'Frozen';
-              } else {
-                return '-'
-              }
+              return this.g.convertToRupiah(data);
             }
           },
-
+          {
+            data: 'totalHarga',
+            title: 'Total Penjualan',
+            orderable: true,
+            searchable: true,
+            render: (data) => {
+              return this.g.convertToRupiah(data);
+            }
+          }
         ],
         searchDelay: 1000,
         order: [[1, 'asc']],
@@ -210,14 +222,13 @@ export class DetailPembelianComponent
   }
 
   ngOnDestroy(): void {
-    localStorage.removeItem('selectedData');
     this.g.navbarVisibility = true;
     this.dtTrigger.unsubscribe();
     $.fn['dataTable'].ext.search.pop();
   }
 
   onBackPressed() {
-    this.router.navigate(['/transaction/pembelian/list-dt']);
+    this.router.navigate(['/transaction/penjualan-barang-bekas/list']);
   }
 
   onDelete() {

@@ -9,6 +9,15 @@
           </button>
           <h5 class="mb-0 ms-3">{{ "Entry Packing List" | translate }}</h5>
         </div>
+        <div class="col text-end">
+          <button class="btn btn-outline-success btn-150 me-2" (click)="onShowModal()">
+            <i class="fa fa-print"></i> {{ "Cetak Packing List" | translate }}
+          </button>
+          <button type="button" class="btn btn-outline-dark me-2 btn-120" (click)="toggleFilter()">
+            <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
+            {{ "Filter" | translate }}
+          </button>
+        </div>
       </div>
     </c-card-body>
   </c-card>
@@ -152,7 +161,7 @@
           <label>Tujuan Kirim</label>
           <div class="tujuan-kirim d-flex align-items-center">
             <input type="text" [(ngModel)]="selectedData.data.kodeCabang" readonly class="form-control w-25">
-            <button class="btn btn-outline-secondary ms-2" (click)="onChooseDestinaton()"><i
+            <button class="btn btn-outline-secondary ms-2" (click)="onShowModal()"><i
                 class="fa fa-search"></i></button>
             <input type="text" [(ngModel)]="selectedData.data.namaCabang" readonly class="form-control w-50 ms-2">
           </div>

@@ -324,14 +324,20 @@ export class AppService {
     );
   }
 
-  checkEndpointHqWh(payload: any){
+  checkEndpointHqWh(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/check-endpoint`,
       payload
     )
   }
 
-  generatePlanningOrder(payload: any){
+  getSupplier(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/list-supplier`,
+      payload
+    );
+  }
+  generatePlanningOrder(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/planning-order/generate`,
       payload
