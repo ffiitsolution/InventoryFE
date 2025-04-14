@@ -63,35 +63,34 @@ export class ProfileCompanyComponent implements OnInit,OnDestroy {
     this.myForm = this.form.group({
       kodePerusahaan: [
         { value: '', disabled: true },
-        Validators.required,
+       
       ],
       namaPerusahaan1: [
         { value: '', disabled: true },
-        [Validators.required],
+       
       ],
       namaPerusahaan2: [
         { value: '', disabled: true },
-        [Validators.required],
       ],
-      alamat1: ['', Validators.required],
-      alamat2: ['', Validators.required],
-      namaKota: ['', Validators.required],
-      kodePos: ['', Validators.required],
-      negara: ['', Validators.required],
-      noTelp1: [''],
-      noTelp2: [''],
-      noFax1: [''],
-      noFax2: [''],
-      alamatOrcl: ['',Validators.required],
-      passwordOrcl:['',Validators.required],
-      ipSvrhq:['',Validators.required],
-      website:[''],
-      alamatEmail:[''],
-      batasKadaluarsaPo:['',[Validators.required,Validators.min(1)]],
-      defaultTglKirimPo:['',[Validators.required,Validators.min(1)]],
-      defaultRsc:['',Validators.required],
-      lokasiDataBackup:['',Validators.required],
-      statusConnection:['']
+      alamat1: ['', [Validators.required, this.specialCharValidator]],
+      alamat2: ['', [Validators.required, this.specialCharValidator]],
+      namaKota: ['', [Validators.required, this.specialCharValidator]],
+      kodePos: ['', [Validators.required]],
+      negara: ['', [Validators.required, this.specialCharValidator]],
+      noTelp1: ['', [this.numberHyphenValidator]],
+      noTelp2: ['', [this.numberHyphenValidator]],
+      noFax1: ['', [this.numberHyphenValidator]],
+      noFax2: ['', [this.numberHyphenValidator]],
+      alamatOrcl: ['', [Validators.required, this.specialCharValidator]],
+      passwordOrcl: ['', [Validators.required]],
+      ipSvrhq: ['', [Validators.required, this.specialCharValidator]],
+      website: [''], // left as-is; may include symbols like ':' and '/'
+      alamatEmail: ['',Validators.email], // left as-is; may include '@' and '.'
+      batasKadaluarsaPo: ['', [Validators.required, Validators.min(1)]],
+      defaultTglKirimPo: ['', [Validators.required, Validators.min(1)]],
+      defaultRsc: ['', Validators.required],
+      lokasiDataBackup: ['', [Validators.required]],
+      statusConnection: ['']
     });
 
     this.loadData();
@@ -264,6 +263,24 @@ export class ProfileCompanyComponent implements OnInit,OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-  
+
+specialCharValidator(control: AbstractControl): ValidationErrors | null {
+  const specialCharRegex = /[^a-zA-Z0-9&\-().\s]/;
+  const value = control.value;
+  if (value && specialCharRegex.test(value)) {
+    return { specialCharNotAllowed: true };
+  }
+  return null;
+}
+
+ numberHyphenValidator(control: AbstractControl): ValidationErrors | null {
+  const validRegex = /^[0-9\-]*$/;
+  const value = control.value;
+  if (value && !validRegex.test(value)) {
+    return { numberHyphenOnly: true };
+  }
+  return null;
+}
+
 
 }

@@ -60,3 +60,21 @@
   }
 }
 
+.alert-expired{
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-right: 10px;
+    padding-left: 10px;
+    border: 1px solid #b51823;
+    color:#b51823 ;
+    font-size: medium;
+    border-radius: 12px;
+    max-width: 850px;
+    text-align: center;
+    font-weight: bold;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: 100%;
+    margin:auto
+}
+
