@@ -42,7 +42,7 @@ export class DefaultHeaderComponent
   }
 
   ngOnInit(): void {
-    this.checkConnection()
+    this.checkConnection();
     this.currentUser = this.g.getLocalstorage('inv_currentUser');
     this.g.currentUser = this.currentUser;
     if (!isEmpty(this.currentUser?.defaultLocation)) {
@@ -77,6 +77,7 @@ export class DefaultHeaderComponent
   }
 
   onLogoutPressed() {
+    console.log('apakah logout?');
     this.g.clearLocalstorage();
     this.router.navigate(['/login']);
   }
@@ -90,16 +91,18 @@ export class DefaultHeaderComponent
   }
 
   initWs(): void {
-    this.websocketService
-      .initializeWebSocketConnection()
-      .then(() => {
-        this.doSubscribe();
-      })
-      .catch((error) => {
-        this.g.serverStatus = 'DOWN';
-        console.error('Error initializing WebSocket: ', error);
-        // Handle error
-      });
+    if (!this.websocketService.isWebSocketConnected()) {
+      this.websocketService
+        .initializeWebSocketConnection()
+        .then(() => {
+          this.doSubscribe();
+        })
+        .catch((error) => {
+          this.g.serverStatus = 'DOWN';
+          console.error('Error initializing WebSocket: ', error);
+          // Handle error
+        });
+    }
   }
 
   ngOnDestroy() {
@@ -125,6 +128,7 @@ export class DefaultHeaderComponent
         this.g.countdownValue = 2;
         this.g.statusEndOfMonth = data.statusEndOfMonth;
         this.g.statusPlanningOrder = data.statusPlanningOrder;
+        this.g.statusBackupDb = data.statusBackupDb;
         this.checkTitleIfOffline(time.substring(time.length - 1, 1));
       } else {
         this.g.serverStatus = 'DOWN';
@@ -149,37 +153,38 @@ export class DefaultHeaderComponent
     }
   }
 
-  onToggleSidebar(): void{
-    this.g.navbarVisibility  = !this.g.navbarVisibility;
+  onToggleSidebar(): void {
+    this.g.navbarVisibility = !this.g.navbarVisibility;
   }
   checkConnection() {
-    this.g.serverHQStatus ='CHECKING';
-    this.service.getProfileCompany()
+    this.g.serverHQStatus = 'CHECKING';
+    this.service
+      .getProfileCompany()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
         next: (res: any) => {
           const ip = res?.ipSvrhq || '192.168.10.28'; // Fallback to default IP if undefined
           const urls = `http://${ip}:7009/warehouse/halo`;
-  
+
           const payload = { url: urls };
-          this.service.checkEndpointHqWh(payload)
+          this.service
+            .checkEndpointHqWh(payload)
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe({
               next: (response) => {
-                this.g.serverHQStatus = response?.success === false ? "DOWN" : "UP";
-                console.log(response);
+                this.g.serverHQStatus =
+                  response?.success === false ? 'DOWN' : 'UP';
               },
               error: (error) => {
-                this.g.serverHQStatus = "DOWN";
+                this.g.serverHQStatus = 'DOWN';
                 console.log(error);
               },
             });
         },
         error: (error) => {
-          console.error("Failed to fetch company profile:", error);
-          this.g.serverHQStatus = "DOWN"; // Handle failure in getting IP
-        }
+          console.error('Failed to fetch company profile:', error);
+          this.g.serverHQStatus = 'DOWN'; // Handle failure in getting IP
+        },
       });
   }
-  
 }

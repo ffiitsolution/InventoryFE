@@ -60,6 +60,7 @@ import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { DataTablesModule } from 'angular-datatables';
 
 
 const APP_CONTAINERS = [
@@ -80,6 +81,7 @@ export function initializeApp(appConfig: AppConfig) {
 @NgModule({
   declarations: [AppComponent, AccountSettingComponent, ...APP_CONTAINERS],
   imports: [
+    DataTablesModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,

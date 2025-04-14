@@ -205,7 +205,7 @@ export const menu_id: any = [
           name: 'cil-factory',
         },
       },
-      
+
       //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 START
       {
         name: 'Terima Barang Retur dari Site',
@@ -337,6 +337,13 @@ export const menu_id: any = [
     url: '/reports/all',
     iconComponent: {
       name: 'cib-adobe-acrobat-reader',
+    },
+  },
+  {
+    name: 'Query Stock',
+    url: '/reports/query-stock',
+    iconComponent: {
+      name: 'cil-balance-scale',
     },
   },
   {
