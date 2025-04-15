@@ -78,6 +78,10 @@ import { AddDataDetailPenjualanBrgBekasComponent } from './penjualan-barang-beka
 import { ListPenjualanBrgBekasComponent } from './penjualan-barang-bekas/list/list.component';
 import { DetailPenjualanBrgBekasComponent } from './penjualan-barang-bekas/detail/detail.component';
 import { AddDataPenjualanBrgBekasComponent } from './penjualan-barang-bekas/add-data/add-data.component';
+import { AddPenerimaanBrgBksComponent } from './penerimaan-barang-bekas/add-data/add-data.component';
+import { AddDataDetailPenerimaanBrgBksComponent } from './penerimaan-barang-bekas/add-data-detail/add-data-detail.component';
+import { DetailPenerimaanBrgBksComponent } from './penerimaan-barang-bekas/detail/detail.component';
+import { PenerimaanBrgBksListComponent } from './penerimaan-barang-bekas/dt-list/penerimaan-brg-bks-list.component';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -159,7 +163,13 @@ export function HttpLoaderFactory(http: HttpClient) {
     AddDataDetailPenjualanBrgBekasComponent,
     AddDataPenjualanBrgBekasComponent,
     ListPenjualanBrgBekasComponent,
-    DetailPenjualanBrgBekasComponent
+    DetailPenjualanBrgBekasComponent,
+
+    AddPenerimaanBrgBksComponent,
+    DetailPenerimaanBrgBksComponent,
+    AddDataDetailPenerimaanBrgBksComponent,
+    PenerimaanBrgBksListComponent,
+    
 
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],

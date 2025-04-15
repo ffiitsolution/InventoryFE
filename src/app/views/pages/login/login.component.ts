@@ -26,11 +26,13 @@ export class LoginComponent implements OnInit {
   logingIn: boolean = false;
   searchingUsername: boolean = false;
   errorMessage: string = '';
-  defaultGudang: any;
+  defaultGudang: string = '';
   user: any = UserShape;
   subscription$: any;
   version: string = environment.VERSION;
   private usernameSubject = new Subject<string>(); // Subject untuk debounce
+  passwordVisible: boolean = false;
+  loadingUser: boolean = false;
 
   constructor(
     translate: TranslateService,
@@ -51,6 +53,10 @@ export class LoginComponent implements OnInit {
     this.usernameSubject.pipe(debounceTime(500)).subscribe((username) => {
       this.searchUser(username);
     });
+  }
+
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
   }
 
   onLoginPressed() {
@@ -117,6 +123,9 @@ export class LoginComponent implements OnInit {
           }
           this.logingIn = false;
         },
+        error: (er) => {
+          this.logingIn = false;
+        },
       });
     }
   }
@@ -125,11 +134,13 @@ export class LoginComponent implements OnInit {
     const username = this.usernameInput?.nativeElement?.value;
     this.usernameSubject.next(username);
   }
+
   onPasswordChange() {
     this.errorMessage = '';
   }
 
   searchUser(username: string) {
+    this.loadingUser = true;
     const loginParam = { kodeUser: username };
     if (username != '') {
       this.service.defaultGudang(loginParam).subscribe({
@@ -138,7 +149,11 @@ export class LoginComponent implements OnInit {
           //   'inv_default_locations',
           //   response?.data?.user?.namaCabang
           // );
-          this.defaultGudang = response?.data?.user?.namaCabang;
+          this.defaultGudang = response?.data?.user?.namaCabang ?? '';
+          this.loadingUser = false;
+        },
+        error: (error) => {
+          this.loadingUser = false;
         },
       });
     }
