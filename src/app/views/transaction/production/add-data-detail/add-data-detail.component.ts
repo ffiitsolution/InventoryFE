@@ -200,6 +200,7 @@ export class AddDataDetailProductionComponent
             hargaSatuan: 0,
             userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
           })),
+          
         detailsExpired: [
           ...this.listEntryExpired?.map((expiredItem) => ({
             kodeGudang: this.g.getUserLocationCode(),

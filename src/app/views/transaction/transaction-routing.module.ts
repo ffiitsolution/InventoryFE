@@ -49,6 +49,10 @@ import { ListPenjualanBrgBekasComponent } from './penjualan-barang-bekas/list/li
 import { AddDataPenjualanBrgBekasComponent } from './penjualan-barang-bekas/add-data/add-data.component';
 import { AddDataDetailPenjualanBrgBekasComponent } from './penjualan-barang-bekas/add-data-detail/add-data-detail.component';
 import { DetailPenjualanBrgBekasComponent } from './penjualan-barang-bekas/detail/detail.component';
+import { PenerimaanBrgBksListComponent } from './penerimaan-barang-bekas/dt-list/penerimaan-brg-bks-list.component';
+import { AddPenerimaanBrgBksComponent } from './penerimaan-barang-bekas/add-data/add-data.component';
+import { AddDataDetailPenerimaanBrgBksComponent } from './penerimaan-barang-bekas/add-data-detail/add-data-detail.component';
+import { DetailPenerimaanBrgBksComponent } from './penerimaan-barang-bekas/detail/detail.component';
 
 const routes: Routes = [
   {
@@ -296,6 +300,27 @@ const routes: Routes = [
     ],
   },
   //// Tambah Modul Penjualan Barang Bekas - Yudha 09/04/2025 END
+  {
+    path: 'penerimaan-barang-bekas',
+    children: [
+      {
+        path: 'list',
+        component: PenerimaanBrgBksListComponent,
+      },
+      {
+        path: 'add-data',
+        component: AddPenerimaanBrgBksComponent,
+      },
+      {
+        path: 'add-data-detail',
+        component: AddDataDetailPenerimaanBrgBksComponent,
+      },
+      {
+        path: 'detail',
+        component: DetailPenerimaanBrgBksComponent,
+      },
+    ],
+  },
 ];
 
 @NgModule({
