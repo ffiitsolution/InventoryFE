@@ -154,6 +154,11 @@ export class EndOfMonthComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.g.changeTitle(
+      this.translation.instant('Tutup Bulan') +
+        ' - ' +
+        this.g.tabTitle
+    );
     this.userData = this.service.getUserData();
 
     this.lastDate = moment(

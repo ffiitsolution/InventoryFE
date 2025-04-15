@@ -124,10 +124,13 @@
                         <i class="fa fa-refresh me-2"></i>
                         History Proses
                       </button>
-                      <button class="btn btn-primary">
+                      <button class="btn btn-primary" (click)="processBackupDb()">
                         <i class="fa fa-check me-2"></i>
                         Proses Backup
                       </button>
+                    </div>
+                    <div>
+                      {{g.statusBackupDb}}
                     </div>
                   </div>
                 </ng-container>

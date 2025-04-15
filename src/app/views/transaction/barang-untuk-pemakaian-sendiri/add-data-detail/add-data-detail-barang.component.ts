@@ -731,20 +731,42 @@ export class AddDataDetailBarangComponent
         return; 
       }
     
-      let totalQtyExpired = 0;
+      let totalQtyExpiredPerRow: { [key: string]: number } = {};
       this.listEntryExpired.forEach((item: any) => {
-        totalQtyExpired += (this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyWasteKecil);
+        const kodeBarang = item.kodeBarang;  
+        const qtyExpired = (this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyWasteKecil);
+    
+        if (totalQtyExpiredPerRow[kodeBarang]) {
+          totalQtyExpiredPerRow[kodeBarang] += qtyExpired;
+        } else {
+          totalQtyExpiredPerRow[kodeBarang] = qtyExpired;
+        }
       });
     
-      let totalQtyRetur = 0;
+      let totalQtyReturPerRow: { [key: string]: number } = {};
       this.listProductData.forEach((item: any) => {
-        totalQtyRetur += (this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyWasteKecil);
+        const kodeBarang = item.kodeBarang;  
+        const qtyRetur = (this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyWasteKecil);
+    
+        if (totalQtyReturPerRow[kodeBarang]) {
+          totalQtyReturPerRow[kodeBarang] += qtyRetur;
+        } else {
+          totalQtyReturPerRow[kodeBarang] = qtyRetur;
+        }
       });
     
-      if (totalQtyExpired !== totalQtyRetur) {
+      let allMatch = true;
+      for (let kodeBarang in totalQtyExpiredPerRow) {
+        if (totalQtyExpiredPerRow[kodeBarang] !== totalQtyReturPerRow[kodeBarang]) {
+          allMatch = false;
+          break;
+        }
+      }
+    
+      if (!allMatch) {
         Swal.fire({
           title: 'Total Qty Retur TIDAK SAMA dengan Qty Expired!',
-          text: 'Periksa kembali total quantity!',
+          text: 'Periksa kembali total quantity per kode barang!',
           icon: 'error',
           confirmButtonText: 'OK',
         });
@@ -752,5 +774,4 @@ export class AddDataDetailBarangComponent
         this.isShowModalExpired = false;
       }
     }
-
 }
