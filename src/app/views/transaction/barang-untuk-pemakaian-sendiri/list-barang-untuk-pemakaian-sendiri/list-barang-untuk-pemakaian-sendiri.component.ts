@@ -29,11 +29,11 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
-dtOptions: DataTables.Settings = {};
-dtOptionsModal: DataTables.Settings = {};
-protected config = AppConfig.settings.apiServer;
-isShowModal: boolean = false;
-pageSize: number = 10; // Define the pageSize property
+  dtOptions: DataTables.Settings = {};
+  dtOptionsModal: DataTables.Settings = {};
+  protected config = AppConfig.settings.apiServer;
+  isShowModal: boolean = false;
+  pageSize: number = 10; 
   dtTrigger: Subject<any> = new Subject();
   currentPage: number = 1;
   page = new Page();
@@ -63,33 +63,25 @@ pageSize: number = 10; // Define the pageSize property
     private router: Router,
     private globalService: GlobalService,
     private appService: AppService
-    
-
   ) {
     this.dtOptions = {
       language:
-        transaltionService.getCurrentLanguage() == 'id' ? transaltionService.idDatatable : {},
+        transaltionService.getCurrentLanguage() == 'id'
+          ? transaltionService.idDatatable
+          : {},
       processing: true,
       serverSide: true,
       autoWidth: true,
       info: true,
-      paging: true,
-      searching: true,
-      pageLength: this.pageSize,
-      lengthMenu: [[5, 10, 20, 50], [5, 10, 20, 50]],
       drawCallback: () => {},
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
-          search: dataTablesParameters.search.value,
           kodeGudang: this.g.getUserLocationCode(),
           startDate: moment(this.dateRangeFilter[0]).format('YYYY-MM-DD'),
           endDate: moment(this.dateRangeFilter[1]).format('YYYY-MM-DD'),
-          limit: this.pageSize,
-          offset: (this.currentPage - 1) * this.pageSize,
-           
         };
         setTimeout(() => {
           this.dataService
@@ -111,45 +103,50 @@ pageSize: number = 10; // Define the pageSize property
                 return finalData;
               });
               this.totalRecords = resp.totalRecords;
+              this.page.recordsTotal = resp.recordsTotal;
+              this.page.recordsFiltered = resp.recordsFiltered;
               callback({
-                recordsTotal: resp.totalRecords,
-          recordsFiltered: resp.totalRecords,
-          data: mappedData,
+                recordsTotal: resp.recordsTotal,
+                recordsFiltered: resp.recordsFiltered,
+                data: mappedData,
               });
             });
         }, DEFAULT_DELAY_TABLE);
       },
       columns: [
-        { data: 'dtIndex', title: 'No.'},
-        { data: 'TGL_TRANSAKSI', title: 'Tanggal Transaksi', 
+        { data: 'dtIndex', title: 'No.' },
+        {
+          data: 'tglTransaksi',
+          title: 'Tanggal Transaksi',
           render: (data) => this.g.transformDate(data),
         },
-        { data: 'NOMOR_TRANSAKSI', title: 'No. Transaksi' },
-        { data: 'KETERANGAN', title: 'Keterangan Pemakaian', searchable: true },
-        { data: 'USER_CREATE', title: 'User Proses', searchable: true },
-        { data: 'TGL_TRANSAKSI', title: 'Tanggal Proses',
+        { data: 'nomorTransaksi', title: 'No. Transaksi' },
+        { data: 'keterangan', title: 'Keterangan Pemakaian', searchable: true },
+        { data: 'userCreate', title: 'User Proses', searchable: true },
+        {
+          data: 'tglTransaksi',
+          title: 'Tanggal Proses',
           render: (data) => this.g.transformDate(data),
         },
         {
-          data: 'TIME_CREATE',
+          data: 'timeCreate',
           title: 'Jam Proses',
-          orderable: true, 
+          orderable: true,
           searchable: true,
           render: function (data, type, row) {
             if (type === 'display' && data) {
-        
               const time = data.toString();
               const hours = time.slice(0, 2).padStart(2, '0');
               const minutes = time.slice(2, 4).padStart(2, '0');
               const seconds = '00';
-        
+
               return `${hours}:${minutes}:${seconds}`;
             }
-            return data; 
-          }
+            return data;
+          },
         },
         {
-          data: 'STATUS_POSTING',
+          data: 'statusPosting',
           title: 'Status Transaksi',
           render: (data) => this.g.getStatusOrderLabel(data),
         },
@@ -164,7 +161,7 @@ pageSize: number = 10; // Define the pageSize property
           },
         },
       ],
-      order: [[1, 'desc']],
+      order: [[2, 'desc']],
       searchDelay: 1000,
       // delivery: [],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
@@ -177,16 +174,16 @@ pageSize: number = 10; // Define the pageSize property
     this.dtColumns = this.dtOptions.columns;
   }
 
-  ngOnInit(): void {
-    
-  }
+  ngOnInit(): void {}
 
   toggleFilter(): void {
     this.showFilterSection = !this.showFilterSection;
   }
 
   onAddPressed(): void {
-    const route = this.router.createUrlTree(['/transaction/barang-untuk-pemakaian-sendiri/tambah-data-pemakaian-barang-sendiri']);
+    const route = this.router.createUrlTree([
+      '/transaction/barang-untuk-pemakaian-sendiri/tambah-data-pemakaian-barang-sendiri',
+    ]);
     this.router.navigateByUrl(route);
   }
 
@@ -198,18 +195,16 @@ pageSize: number = 10; // Define the pageSize property
   actionBtnClick(action: string, data: any = null) {
     console.log('button clickef');
     if (action === ACTION_VIEW) {
-      this.g.saveLocalstorage(
-        'pemakaianBarangSendiri',
-        JSON.stringify(data)
-      );
-      this.router.navigate(['/transaction/barang-untuk-pemakaian-sendiri/detail-barang-untuk-pemakaian-sendiri']);
+      this.g.saveLocalstorage('pemakaianBarangSendiri', JSON.stringify(data));
+      this.router.navigate([
+        '/transaction/barang-untuk-pemakaian-sendiri/detail-barang-untuk-pemakaian-sendiri',
+      ]);
     }
   }
 
   onShowModal() {
     this.isShowModal = true;
   }
-  
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
@@ -274,7 +269,7 @@ pageSize: number = 10; // Define the pageSize property
 
   cetakJesper() {}
 
-  selectedRows: string[] = []; 
+  selectedRows: string[] = [];
 
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
@@ -368,6 +363,4 @@ pageSize: number = 10; // Define the pageSize property
   //       },
   //     };
   //   }
-
-  
 }
