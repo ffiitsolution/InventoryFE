@@ -16,13 +16,26 @@ import {
 import { AppService } from '../../../service/app.service';
 import { DatePipe } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import {
 
+  DEFAULT_DATE_RANGE_RECEIVING_ORDER
+} from '../../../../constants';
 @Component({
   selector: 'app-order-report',
   templateUrl: './order-report.component.html',
   styleUrl: './order-report.component.scss',
 })
 export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
+  public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+  currentDate: Date = new Date();
+  startDateFilter: Date = new Date(
+    this.currentDate.setDate(
+      this.currentDate.getDate() - DEFAULT_DATE_RANGE_RECEIVING_ORDER
+    )
+  );
+  dateRangeFilter: any = [this.startDateFilter, new Date()];
+
   [key: string]: any;
   loadingState: { [key: string]: boolean } = {
     submit: false,
@@ -52,7 +65,11 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService,
-  ) {}
+  ) {
+      this.dpConfig.containerClass = 'theme-red';
+      this.dpConfig.customTodayClass='today-highlight';
+      this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';    
+  }
 
   ngOnInit(): void {
     this.g.changeTitle(
@@ -119,30 +136,22 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   doSubmit(type: string) {
-    if (
-      this.currentReport === 'Master Cabang' &&
-      !this.selectedRegion['description']
-    ) {
-      this.g.alertWarning('Gagal!', 'Silahkan pilih Kode Region');
-    }
 
     this.loadingState['submit'] = true;
 
     let param = {};
-    if (this.currentReport === 'Master Cabang') {
+    if (this.currentReport === 'Pesanan Ke Gudang') {
+      console.log("userdata",this.userData)
       param = {
-        kodeGudang: '00072',
-        kodeRegion: this.selectedRegion['code'],
-        status: this.paramStatusAktif,
+        kodeGudang: this.userData.defaultLocation.kodeLocation,
         tipeListing: this.paramTipeListing,
+        startDate: this.g.transformDate(this.dateRangeFilter[0]),
+        endDate: this.g.transformDate(this.dateRangeFilter[1]),
       };
-    } else if (this.currentReport === 'Master Department') {
-      param = {
-        kodeRegion: this.selectedRegion['code'],
-        status: this.paramStatusAktif,
-        tipeListing: this.paramTipeListing,
-      };
+
+
     }
+
 
     param = {
       ...param,
