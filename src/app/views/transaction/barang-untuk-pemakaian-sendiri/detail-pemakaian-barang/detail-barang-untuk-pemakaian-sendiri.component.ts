@@ -96,9 +96,9 @@ export class DetailBarangUntukPemakaianSendiriComponent
           this.page.start = dataTablesParameters.start;
           this.page.length = dataTablesParameters.length;
           const {
-            KODE_GUDANG: kodeGudang,
-            TIPE_TRANSAKSI: tipeTransaksi,
-            NOMOR_TRANSAKSI: nomorTransaksi,
+            kodeGudang: kodeGudang,
+            tipeTransaksi: tipeTransaksi,
+            nomorTransaksi: nomorTransaksi,
           } = this.selectedOrder ?? {}; 
           const params = {
             ...dataTablesParameters,
@@ -189,10 +189,18 @@ export class DetailBarangUntukPemakaianSendiriComponent
           {
             data: 'TOTAL_QTY_WH',
             title: 'Qty Total',
-            render: function (data, type, row) {
-              return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_KECIL;  // Menambahkan .00
+            render: function (data, type, row, meta) {
+              const rowsWithSameKodeBarang = meta.settings.data?.filter((item: any) => item.KODE_BARANG === row.KODE_BARANG) || [];
+              
+              if (rowsWithSameKodeBarang.length > 1) {
+                const totalQtyWe = Math.abs(parseFloat(row.TOTAL_QTY_WE)); 
+                return totalQtyWe.toFixed(2) + ' ' + row.SATUAN_KECIL;
+              } else {
+                const totalQtyWh = Math.abs(parseFloat(data)); 
+                return totalQtyWh.toFixed(2) + ' ' + row.SATUAN_KECIL;
+              }
             }
-          }          
+          }                                     
         ],
         searchDelay: 1000,
         order: [[1, 'asc']],
