@@ -324,17 +324,37 @@ export class AppService {
     );
   }
 
-  checkEndpointHqWh(payload: any){
+  checkEndpointHqWh(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/check-endpoint`,
       payload
     )
   }
 
-  generatePlanningOrder(payload: any){
+  getSupplier(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/list-supplier`,
+      payload
+    );
+  }
+  generatePlanningOrder(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/planning-order/generate`,
       payload
     )
+  }
+
+  getBranchList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/branch/dt`,
+      payload
+    );
+  }
+
+  getProductWastedList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/product-wasted/dt`,
+      payload
+    );
   }
 }

@@ -135,15 +135,15 @@ export class DetailPembelianComponent
           },
           {
             data: 'qtyBesar', title: 'Qty Besar',
-            render: (data, type, row) => `${data} ${row.satuanBesar}`
+            render: (data, type, row) => `${this.g.formatToDecimal(data)} ${row.satuanBesar}`
           },
           {
             data: 'qtyKecil', title: 'Qty Kecil',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
+            render: (data, type, row) => `${this.g.formatToDecimal(data)} ${row.satuanKecil}`
           },
           {
             data: 'totalQty', title: 'Total Qty',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
+            render: (data, type, row) => `${this.g.formatToDecimal(data)} ${row.satuanKecil}`
           },
           {
             data: 'qtyKgs', title: 'Total Berat(KGS)',

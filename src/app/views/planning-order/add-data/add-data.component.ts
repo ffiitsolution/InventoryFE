@@ -92,10 +92,10 @@ export class AddPlanningOrderComponent implements OnInit, AfterViewInit, OnDestr
     });
 
     console.log(this.selectedMonth, this.selectedYear, 'selectedMonth selectedYear')
-    this.rangeBulan = this.globalService.generateNumberRange(1, 12);
+    this.rangeBulan = this.globalService.generateNumberRange(this.selectedMonth, 12);
     this.rangeTahun = this.globalService.generateNumberRange(
       this.selectedYear,
-      this.selectedYear + 10
+      this.selectedYear + 2
     );
 
     // this.myForm.get('bufferStock')?.valueChanges

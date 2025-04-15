@@ -45,6 +45,14 @@ import { AddDataDetailTerimaBarangReturDariSiteComponent } from './terima-barang
 import { DetailTerimaBarangReturDariSiteComponent } from './terima-barang-retur-dari-site/detail/detail.component';
 //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
 import { ReturnOrderComponent } from './return-order/return-order.component';
+import { ListPenjualanBrgBekasComponent } from './penjualan-barang-bekas/list/list.component';
+import { AddDataPenjualanBrgBekasComponent } from './penjualan-barang-bekas/add-data/add-data.component';
+import { AddDataDetailPenjualanBrgBekasComponent } from './penjualan-barang-bekas/add-data-detail/add-data-detail.component';
+import { DetailPenjualanBrgBekasComponent } from './penjualan-barang-bekas/detail/detail.component';
+import { PenerimaanBrgBksListComponent } from './penerimaan-barang-bekas/dt-list/penerimaan-brg-bks-list.component';
+import { AddPenerimaanBrgBksComponent } from './penerimaan-barang-bekas/add-data/add-data.component';
+import { AddDataDetailPenerimaanBrgBksComponent } from './penerimaan-barang-bekas/add-data-detail/add-data-detail.component';
+import { DetailPenerimaanBrgBksComponent } from './penerimaan-barang-bekas/detail/detail.component';
 
 const routes: Routes = [
   {
@@ -268,6 +276,51 @@ const routes: Routes = [
     ],
   },
   //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
+   //// Tambah Modul Penjualan Barang Bekas - Yudha 09/04/2025 START
+   {
+    path: 'penjualan-barang-bekas',
+    children: [
+      {
+        path: 'list',
+        component:ListPenjualanBrgBekasComponent,
+      },
+      {
+        path: 'add-data',
+        component: AddDataPenjualanBrgBekasComponent,
+      },
+      {
+        path: 'add-data-detail',
+        component: AddDataDetailPenjualanBrgBekasComponent,
+      },
+      {
+        path: 'detail',
+        component: DetailPenjualanBrgBekasComponent,
+      },
+      
+    ],
+  },
+  //// Tambah Modul Penjualan Barang Bekas - Yudha 09/04/2025 END
+  {
+    path: 'penerimaan-barang-bekas',
+    children: [
+      {
+        path: 'list',
+        component: PenerimaanBrgBksListComponent,
+      },
+      {
+        path: 'add-data',
+        component: AddPenerimaanBrgBksComponent,
+      },
+      {
+        path: 'add-data-detail',
+        component: AddDataDetailPenerimaanBrgBksComponent,
+      },
+      {
+        path: 'detail',
+        component: DetailPenerimaanBrgBksComponent,
+      },
+    ],
+  },
 ];
 
 @NgModule({

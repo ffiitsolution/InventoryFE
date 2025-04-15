@@ -23,6 +23,7 @@ import {
 import { AppService } from '../../../service/app.service';
 import { DatePipe } from '@angular/common';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-transaction-report',
@@ -66,7 +67,8 @@ export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewI
     private translation: TranslationService,
     private datePipe: DatePipe,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService,
   ) {
     this.dpConfig.containerClass = 'theme-red';
     this.dpConfig.customTodayClass='today-highlight';
@@ -207,9 +209,9 @@ export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewI
         'dd-MMM-yyyy'
       )}.pdf`;
       link.click();
-      this.g.alertSuccess('Sukses', 'File sudah terunduh.');
+      this.toastr.success('File sudah terunduh');
     } else
-      this.g.alertError('Maaf, Ada kesalahan!', 'File tidak dapat terunduh.');
+      this.toastr.error('File tidak dapat terunduh');
   }
 
   downloadCsv(res: any, reportType: string) {
@@ -227,8 +229,8 @@ export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewI
         'dd-MMM-yyyy'
       )}.csv`;
       link.click();
-      this.g.alertSuccess('Sukses', 'File sudah terunduh.');
+      this.toastr.success('File sudah terunduh');
     } else
-      this.g.alertError('Maaf, Ada kesalahan!', 'File tidak dapat terunduh.');
+      this.toastr.error('File tidak dapat terunduh');
   }
 }

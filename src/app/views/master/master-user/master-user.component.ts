@@ -252,11 +252,11 @@ export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
       });
 
     this.dataService
-      .postData(this.g.urlServer + '/api/users/dropdown-jabatan', {})
+      .postData(this.g.urlServer + '/api/jabatan/dropdown-jabatan', {})
       .subscribe((resp: any) => {
         this.listJabatan = resp.map((item: any) => ({
-          id: item.JABATAN,
-          name: item.JABATAN,
+          id: item.CODE,
+          name: item.CODE+" - "+ item.DESCRIPTION,
         }));
       });
 
@@ -265,7 +265,7 @@ export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe((resp: any) => {
         this.listRole = resp.map((item: any) => ({
           id: item.ID,
-          name: item.NAME,
+          name: item.ID+" - "+item.NAME,
         }));
       });
 

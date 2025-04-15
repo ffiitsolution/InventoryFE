@@ -54,6 +54,40 @@ export const PRINT_STATUS = [
   },
 ];
 
+export const STATUS_AKTIF = [
+  {
+    label: 'Aktif',
+    value: 'A',
+  },
+  {
+    label: 'Tidak Aktif',
+    value: 'T',
+  },
+];
+
+export const TIPE_PEMBAYARAN = [
+  {
+    label: 'Cash',
+    value: '1'
+  },
+  {
+    label: 'Cek',
+    value: '2'
+  },
+  {
+    label: 'Giro',
+    value: '3'
+  },
+  {
+    label: 'Transfer',
+    value: '4'
+  },
+  {
+    label: 'Others',
+    value: '5'
+  },
+]
+
 export const STATUS_RESULT = [
   {
     label: 'Baru',

@@ -91,4 +91,16 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
       },
     });
   }
+
+  processBackupDb() {
+    this.service.insert('/api/backup-database/process', {}).subscribe({
+      next: (res) => {
+        const data = res.data ?? {};
+        console.log(data);
+      },
+      error: (err) => {
+        console.log('err: ' + err);
+      },
+    });
+  }
 }

@@ -62,7 +62,6 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
     private dataService: DataService,
     private globalService: GlobalService,
     private translationService: TranslationService,
-    private deliveryDataService: DeliveryDataService,
     private appService: AppService
   ) {
     this.dpConfig.containerClass = 'theme-red';
@@ -179,8 +178,8 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
       columns: [
         { data: 'nomorPesanan', title: 'Nomor Pesanan' },
         { data: 'tglPesan', title: 'Tanggal Pesan', render: (data) => this.globalService.transformDate(data) },
-        { data: 'tglBrgDikirim', title: 'Tanggal Dikirim', render: (data) => this.globalService.transformDate(data)},
-        { data: 'tglKadaluarsa', title: 'Tanggal Expired', render: (data) => this.globalService.transformDate(data)},
+        { data: 'tglBrgDikirim', title: 'Tanggal Dikirim', render: (data) => this.globalService.transformDate(data) },
+        { data: 'tglKadaluarsa', title: 'Tanggal Expired', render: (data) => this.globalService.transformDate(data) },
         { data: 'kodePemesan', title: 'Pemesan' },
         { data: 'namaCabang', title: 'Nama Pemesan' },
         {
@@ -205,7 +204,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
           render: (data: any, type: any, row: any) => {
             const expiryDate = new Date(row.tglKadaluarsa); // Pastikan ini valid
             const today = new Date();
-            
+
             return expiryDate > today
               ? `<button class="btn btn-sm action-select btn-info btn-80 text-white">Pilih</button>`
               : '<span class="text-center text-danger">Data kadaluarsa</span>';
@@ -219,7 +218,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
         );
         if (index === 0 && !this.selectedRowData) {
           setTimeout(() => {
-            $(row).trigger('td'); 
+            $(row).trigger('td');
           }, 0);
         }
         $('td', row).on('click', () => {
@@ -231,8 +230,8 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
             this.selectedRowData = undefined;
           }
         });
-      
-    
+
+
         return row;
 
       },
@@ -255,20 +254,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   handleEnter(event: any) {
-  
-  }
-}
 
-
-@Injectable({
-  providedIn: 'root',
-})
-export class DeliveryDataService {
-  constructor(private http: HttpClient) { }
-
-  saveDeliveryData(data: any): Observable<any> {
-    const apiUrl = 'http://localhost:8093/inventory/api/delivery-order/status-descriptions';
-    return this.http.post<any>(apiUrl, data);
   }
 }
 

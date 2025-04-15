@@ -205,7 +205,7 @@ export const menu_id: any = [
           name: 'cil-factory',
         },
       },
-      
+
       //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 START
       {
         name: 'Terima Barang Retur dari Site',
@@ -215,6 +215,20 @@ export const menu_id: any = [
         },
       },
       //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
+      {
+        name: 'Terima Barang Bekas',
+        url: '/transaction/penerimaan-barang-bekas/list',
+        iconComponent: {
+          name: 'cil-trash',
+        },
+      },
+      {
+        name: 'Penjualan Barang Bekas',
+        url: '/transaction/penjualan-barang-bekas/list',
+        iconComponent: {
+          name: 'cil-dollar',
+        },
+      },
       {
         name: 'Pemakaian Barang Sendiri',
         url: '/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri',
@@ -330,6 +344,13 @@ export const menu_id: any = [
     url: '/reports/all',
     iconComponent: {
       name: 'cib-adobe-acrobat-reader',
+    },
+  },
+  {
+    name: 'Query Stock',
+    url: '/reports/query-stock',
+    iconComponent: {
+      name: 'cil-balance-scale',
     },
   },
   {

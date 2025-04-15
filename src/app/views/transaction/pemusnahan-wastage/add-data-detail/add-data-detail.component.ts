@@ -144,7 +144,7 @@ export class AddDataDetailWastageComponent
           validationQty:
             parseFloat(value) +
               parseFloat(this.listEntryExpired[realIndex].qtyWasteKecil) <=
-            0
+              0
               ? 'Quantity tidak boleh < 0'
               : '',
         };
@@ -152,6 +152,23 @@ export class AddDataDetailWastageComponent
     }
 
     this.updateTotalExpired();
+  }
+
+  getExpiredData(kodeBarang: string) {
+    const filtered = this.listEntryExpired.filter(
+      (item) => item.kodeBarang === kodeBarang
+    );
+
+    const totalExpired = filtered.reduce(
+      (acc, item) => {
+        acc.qtyWasteBesar += Number(item.qtyWasteBesar) || 0;
+        acc.qtyWasteKecil += Number(item.qtyWasteKecil) || 0;
+        return acc;
+      },
+      { qtyWasteBesar: 0, qtyWasteKecil: 0 }
+    );
+
+    return totalExpired;
   }
 
   onInputQtyKecilExpired(event: any, kodeBarang: string, index: number) {
@@ -181,7 +198,7 @@ export class AddDataDetailWastageComponent
 
         if (
           parseFloat(value) +
-            parseFloat(this.listEntryExpired[realIndex].qtyWasteBesar) <=
+          parseFloat(this.listEntryExpired[realIndex].qtyWasteBesar) <=
           0
         ) {
           messageValidation = 'Quantity tidak boleh < 0';
@@ -209,7 +226,7 @@ export class AddDataDetailWastageComponent
         Number(sum) +
         Number(
           Number(data.qtyWasteBesar) * Number(data.konversi) +
-            Number(data.qtyWasteKecil)
+          Number(data.qtyWasteKecil)
         ),
       0
     );
@@ -419,7 +436,7 @@ export class AddDataDetailWastageComponent
         satuanBesar: this.selectedExpProduct.satuanBesar,
         konversi: parseFloat(this.selectedExpProduct.konversi).toFixed(2),
         totalQty: parseFloat(totalQtySum).toFixed(2),
-        kodeBarang: this.selectedExpProduct.bahanBaku,
+        kodeBarang: this.selectedExpProduct.kodeBarang,
         validationExpiredMessageList: '',
         validationQty: '',
       });
@@ -731,6 +748,26 @@ export class AddDataDetailWastageComponent
     this.isShowModalDelete = false;
   }
 
+  onModalDeleteRow(kodeBarang: string, index: number) {
+    const filteredEntries = this.listEntryExpired.filter(
+      (entry) => entry.kodeBarang === kodeBarang
+    );
+
+    // Step 2: Find the actual index in the original list
+    const realIndex = this.listEntryExpired.findIndex(
+      (entry) =>
+        entry.kodeBarang === kodeBarang &&
+        entry.tglExpired === filteredEntries[index].tglExpired
+    );
+
+    // Step 3: Remove the entry only if realIndex is valid
+    if (realIndex !== -1) {
+      this.listEntryExpired.splice(realIndex, 1);
+    }
+
+    this.updateTotalExpired();
+  }
+  
   insertDetail() {
     // param for order header detail
     const paramDetail = this.listProductData.map(item => ({

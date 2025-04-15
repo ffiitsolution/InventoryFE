@@ -22,6 +22,11 @@ export class DashboardComponent implements OnInit {
   dashboardData: any;
 
   ngOnInit(): void {
+    this.g.changeTitle(
+      this.translation.instant('Dashboard') +
+        ' - ' +
+        this.g.tabTitle
+    );
     this.getDashboardData();
   }
 
