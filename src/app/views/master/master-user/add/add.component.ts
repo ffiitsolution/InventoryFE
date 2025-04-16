@@ -53,6 +53,7 @@ export class MasterUserAddComponent implements OnInit {
   showPassword: boolean = false;
   showConfirmationPassword: boolean = false;
   listLokasi: any[] = [];
+  listDefaultLokasi: any[] = [];
   baseConfig: any = {
     displayKey: 'name', // Key to display in the dropdown
     search: true, // Enable search functionality
@@ -65,9 +66,14 @@ export class MasterUserAddComponent implements OnInit {
   configSelectDefaultLokasi: any;
   configSelectRole: any;
   configSelectPosition: any;
+  configSelectLokasi: any;
   isNotMatchPass: boolean = false;
   listRole: any[] = [];
   listPosition: any[] = [];
+  listuserLoc: any[] = [];
+  detail: any;
+  selectedLocations: any;
+
 
   constructor(
     private toastr: ToastrService,
@@ -85,9 +91,10 @@ export class MasterUserAddComponent implements OnInit {
       kodePassword: ['', Validators.required],
       konfirmasiKodePassword: ['', Validators.required],
       statusAktif: ['', Validators.required],
-      defaultLocation: [null],
+      defaultLocation: [{}],
       jabatan: [''],
       roleID: [''],
+      location: [],
     });
 
     this.configSelectDefaultLokasi = {
@@ -108,14 +115,23 @@ export class MasterUserAddComponent implements OnInit {
       searchPlaceholder: 'Cari Jabatan',
       limitTo: this.listPosition.length,
     };
+    this.configSelectLokasi = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Lokasi',
+      searchPlaceholder: 'Cari Lokasi',
+      limitTo: this.listLokasi.length,
+    };
+
     this.dataService
-      .postData(this.g.urlServer + '/api/location/dropdown-lokasi', {})
-      .subscribe((resp: any) => {
-        this.listLokasi = resp.map((item: any) => ({
-          id: item.KODE_LOCATION,
-          name: item.KETERANGAN_LOKASI,
-        }));
-      });
+    .postData(this.g.urlServer + '/api/location/dropdown-lokasi', {})
+    .subscribe((resp: any) => {
+      this.listLokasi = resp.map((item: any) => ({
+        id: item.KODE_LOCATION,
+        name: item.KODE_LOCATION + ' - ' + item.KETERANGAN_LOKASI,
+      }));
+  
+
+    });
 
     this.dataService
       .postData(this.g.urlServer + '/api/role/dropdown-role', {})
@@ -195,7 +211,34 @@ export class MasterUserAddComponent implements OnInit {
             this.adding = false;
           },
         });
+
+        if (controls?.['location']?.value) {
+          const paramsUserLoc = {
+            kodeUser: controls?.['kodeUser']?.value,
+            statusSync: 'T',
+            ListKodeLocation: controls?.['location']?.value?.map(
+              (item: any) => item.id
+            ) || [''],
+          };
+  
+          this.service
+            .insert('/api/user-location/updateBatch', paramsUserLoc)
+            .subscribe({
+              next: (res: any) => {
+                if (!res.success) {
+                  alert(res.message);
+                }
+              },
+              error: (err: any) => {
+                console.error('Error updating user location:', err);
+                alert('An error occurred while updating the use locationr.');
+                this.adding = false;
+              },
+            });
+        }
+
     }
+    
   }
 
   onPreviousPressed() {
@@ -250,5 +293,18 @@ export class MasterUserAddComponent implements OnInit {
         this.isNotMatchPass = false;
       }
     }
+  }
+  onChangeLocation(selected: any) {
+    const defaultLocationId = this.myForm.get('defaultLocation')?.value?.id;
+    this.listDefaultLokasi = selected;
+    console.log("selected", selected);
+    if (
+      selected.some(
+        (item: { id: string; name: string }) => item.id === defaultLocationId
+      ) == false
+    ) {
+      this.myForm.get('defaultLocation')?.setValue('');
+    }
+    // You can perform further actions here
   }
 }
