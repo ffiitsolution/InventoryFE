@@ -12,9 +12,9 @@ import { MasterUserDetailComponent } from './master-user/detail/detail.component
 import { MasterUserAddComponent } from './master-user/add/add.component';
 import {
   MasterBranchComponent,
-  MasterBranchDetailComponent ,
+  MasterBranchDetailComponent,
   MasterBranchAddComponent,
-  MasterBranchEditComponent
+  MasterBranchEditComponent,
 } from './master-branch';
 import { MasterDepartmentComponent } from './master-department/master-department.component';
 import {
@@ -48,6 +48,7 @@ import {
   CollapseDirective,
   FormModule,
   GridModule,
+  ListGroupModule,
   ModalModule,
   PopoverModule,
   TableModule,
@@ -59,6 +60,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { DataTablesModule } from 'angular-datatables';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { MasterCompanyComponent } from './master-company/master-company.component';
 import {
   TableRegionalComponent,
@@ -100,10 +102,16 @@ import {
   TableSetNumberDetailComponent,
 } from './table-set-number';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
-import { AddDataDetailResepComponent, AddResepComponent, MasterResepComponent } from './master-resep';
+import {
+  AddDataDetailResepComponent,
+  AddResepComponent,
+  MasterResepComponent,
+} from './master-resep';
 import { AddDataDetailProductionComponent } from '../transaction/production/add-data-detail/add-data-detail.component';
 import { ProfileCompanyComponent } from './profile-company/profile-company.component';
 import { SharedComponentModule } from '../../component/shared.component.module';
+import { AllMasterComponent } from './all-master/all-master.component';
+import { IconDirective } from '@coreui/icons-angular';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -131,9 +139,14 @@ export function HttpLoaderFactory(http: HttpClient) {
     SelectDropDownModule,
     TableModule,
     PopoverModule,
-    SharedComponentModule
+    IconDirective,
+    ListGroupModule,
+    NgxPaginationModule,
+    SharedComponentModule,
   ],
   declarations: [
+    AllMasterComponent,
+
     MasterUserComponent,
     MasterUserDetailComponent,
     MasterUserAddComponent,
@@ -199,7 +212,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AddResepComponent,
     AddDataDetailResepComponent,
 
-    ProfileCompanyComponent
+    ProfileCompanyComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

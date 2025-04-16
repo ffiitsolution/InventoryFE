@@ -29,7 +29,7 @@
       <div class="d-flex justify-content-end gap-1" style="margin-bottom: 10px">
         <button
           type="button"
-          class="btn btn-secondary text-white me-2"
+          class="btn w-120 btn-secondary text-white me-2"
           style="height: min-content"
           (click)="toggleFilter()"
         >
@@ -38,11 +38,18 @@
         <button
           *ngIf="this.roleId === '3' || this.roleId === '2'"
           type="button"
-          class="btn btn-success text-white me-2"
+          class="btn w-120 btn-success text-white me-2"
           (click)="actionBtnClick(CONST_ACTION_ADD)"
         >
           {{ "Tambah" | translate }}
         </button>
+        <a
+          type="button"
+          class="btn w-120 btn-outline-primary me-2"
+          href="#/master"
+        >
+          {{ "Kembali" | translate }}
+        </a>
       </div>
       <div [visible]="isFilterShown" cCollapse>
         <c-card class="mb-3">
@@ -116,7 +123,7 @@
         <ul class="nav nav-tabs">
           <li class="nav-item">
             <button
-              class="nav-link"
+              class="nav-link w-120"
               [ngClass]="{ active: currentTab === 'cabang' }"
               type="button"
               aria-selected="{{ currentTab === 'cabang' }}"
@@ -128,7 +135,7 @@
           </li>
           <li class="nav-item">
             <button
-              class="nav-link"
+              class="nav-link w-120"
               [ngClass]="{ active: currentTab === 'department' }"
               type="button"
               aria-selected="{{ currentTab === 'department' }}"
@@ -140,7 +147,7 @@
           </li>
           <li class="nav-item">
             <button
-              class="nav-link"
+              class="nav-link w-120"
               [ngClass]="{ active: currentTab === 'gudang' }"
               aria-selected="{{ currentTab === 'gudang' }}"
               (click)="onTabChange('gudang')"

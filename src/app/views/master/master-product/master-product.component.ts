@@ -392,6 +392,7 @@ export class MasterProductComponent
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
     $.fn['dataTable'].ext.search.pop();
+    this.g.navbarVisibility = true;
   }
 
   ngAfterViewInit(): void {
