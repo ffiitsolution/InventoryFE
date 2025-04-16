@@ -33,6 +33,7 @@ export class ReceivingOrderAddDetailFormComponent
   );
   protected config = AppConfig.settings.apiServer;
   dtTrigger: Subject<any> = new Subject();
+  dataBarang:any;
 
   constructor(
     private dataService: DataService,
@@ -73,16 +74,16 @@ export class ReceivingOrderAddDetailFormComponent
                 const finalData = {
                   ...rest,
                   dtIndex: this.page.start + index + 1,
-                  konversi: `${rest.konversi} ${rest.satuanBesar}/${rest.satuanKecil}`,
+                  konversi: `${rest.konversi} ${rest.satuanKecil}/${rest.satuanBesar}`,
                   konversiProduct: `${rest.konversiProduct || 0} ${
-                    rest.satuanBesarProduct || '-'
-                  }/${rest.satuanKecilProduct || '-'}`,
+                    rest.satuanKecilProduct || '-'
+                  }/${rest.satuanBesarProduct || '-'}`,
                   qtyPesanBesar: this.g.formatToDecimal(rest.qtyPesanBesar),
                   totalQtyPesan: this.g.formatToDecimal(rest.totalQtyPesan),
                   qtyPesanKecil: this.g.formatToDecimal(rest.qtyPesanKecil),
                 };
                 return finalData;
-              });
+              });            
               this.page.recordsTotal = resp.recordsTotal;
               this.page.recordsFiltered = resp.recordsFiltered;
               this.showFilterSection = false;
@@ -121,8 +122,7 @@ export class ReceivingOrderAddDetailFormComponent
       ],
       searchDelay: 1000,
       order: [
-        [2, 'asc'],
-        [4, 'asc'],
+        [1, 'asc'],
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () => {});
