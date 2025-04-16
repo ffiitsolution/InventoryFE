@@ -47,10 +47,7 @@ export class GlobalService {
   selectedReportCategory: any = null;
   statusEndOfMonth: any = '';
   statusPlanningOrder: any = '';
-<<<<<<< HEAD
-=======
   statusBackupDb: any = '';
->>>>>>> 5589019e32a0055b4bb089ca05393658d746253b
 
   constructor(
     private titleService: Title,
@@ -445,7 +442,6 @@ export class GlobalService {
     }
     return 'Rp. ' + numericValue.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
-<<<<<<< HEAD
 
   parseRupiahToNumber(formatted: string): number {
     if(formatted){
@@ -456,6 +452,4 @@ export class GlobalService {
     }
   }
 
-=======
->>>>>>> 5589019e32a0055b4bb089ca05393658d746253b
 }
