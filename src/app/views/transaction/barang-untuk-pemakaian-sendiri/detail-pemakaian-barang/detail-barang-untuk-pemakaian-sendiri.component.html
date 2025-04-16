@@ -64,11 +64,11 @@
           <div class="row order-details">
             <div class="detail-item">
               <span class="label">{{ "Nomor Transaksi" | translate }}</span>
-              <span class="value">{{ selectedOrder.NOMOR_TRANSAKSI }}</span>
+              <span class="value">{{ selectedOrder.nomorTransaksi }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tgl Transaksi" | translate }}</span>
-              <span class="value">{{ g.transformDate(selectedOrder.TGL_TRANSAKSI) }}</span>
+              <span class="label">{{ "Tanggal Transaksi" | translate }}</span>
+              <span class="value">{{ g.transformDate(selectedOrder.tglTransaksi) }}</span>
             </div>
           </div>
         </div>
@@ -76,11 +76,11 @@
         <div class="col">
           <div class="detail-item">
               <span class="label">{{ "Status Transaksi" | translate }}</span>
-              <span class="value">{{ getStatusPostingLegend(selectedOrder.STATUS_POSTING) }}</span>
+              <span class="value">{{ getStatusPostingLegend(selectedOrder.statusPosting) }}</span>
             </div>
           <div class="detail-item">
-            <span class="label">{{ "Catatan" | translate }}</span>
-            <span class="value">{{ selectedOrder.KETERANGAN }}</span>
+            <span class="label">{{ "Catatan / Keterangan " | translate }}</span>
+            <span class="value">{{ selectedOrder.keterangan }}</span>
           </div>
         </div>
       </div>

@@ -8,7 +8,12 @@ import { AppConfig } from '../config/app.config';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
 import { DatePipe } from '@angular/common';
 import { isNull } from 'lodash-es';
-import { PRINT_STATUS, STATUS_AKTIF, STATUS_RESULT, TIPE_PEMBAYARAN } from '../../constants';
+import {
+  PRINT_STATUS,
+  STATUS_AKTIF,
+  STATUS_RESULT,
+  TIPE_PEMBAYARAN,
+} from '../../constants';
 import moment from 'moment';
 
 @Injectable({
@@ -39,17 +44,20 @@ export class GlobalService {
   paramType: any;
   navbarVisibility: boolean = true;
 
-
   selectedReportCategory: any = null;
   statusEndOfMonth: any = '';
   statusPlanningOrder: any = '';
+<<<<<<< HEAD
+=======
+  statusBackupDb: any = '';
+>>>>>>> 5589019e32a0055b4bb089ca05393658d746253b
 
   constructor(
     private titleService: Title,
     @Inject(DOCUMENT) private document: Document,
     private router: Router,
     private datePipe: DatePipe
-  ) { }
+  ) {}
 
   saveLocalstorage(key: string, value: any, type: string | boolean = 'json') {
     if (type === 'json' || type === true) {
@@ -375,7 +383,7 @@ export class GlobalService {
       search: search,
       height: '400px',
       placeholder: placeholder,
-      customComparator: () => { },
+      customComparator: () => {},
       limitTo: limit,
       moreText: 'lainnya...',
       noResultsFound: 'Tidak ditemukan!',
@@ -414,7 +422,7 @@ export class GlobalService {
   convertKeysToCamelCase(obj: any): any {
     const newObj: any = {};
 
-    Object.keys(obj).forEach(key => {
+    Object.keys(obj).forEach((key) => {
       // Convert UPPERCASE_UNDERSCORE to camelCase
       const camelCaseKey = key
         .toLowerCase()
@@ -427,7 +435,7 @@ export class GlobalService {
   }
 
   formatStrDateMMM(date: any) {
-    return moment(date, "YYYY-MM-DD").format("DD MMM yyyy");
+    return moment(date, 'YYYY-MM-DD').format('DD MMM yyyy');
   }
 
   convertToRupiah(value: number | string): string {
@@ -437,6 +445,7 @@ export class GlobalService {
     }
     return 'Rp. ' + numericValue.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
+<<<<<<< HEAD
 
   parseRupiahToNumber(formatted: string): number {
     if(formatted){
@@ -447,4 +456,6 @@ export class GlobalService {
     }
   }
 
+=======
+>>>>>>> 5589019e32a0055b4bb089ca05393658d746253b
 }

@@ -343,4 +343,18 @@ export class AppService {
       payload
     )
   }
+
+  getBranchList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/branch/dt`,
+      payload
+    );
+  }
+
+  getProductWastedList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/product-wasted/dt`,
+      payload
+    );
+  }
 }

@@ -233,6 +233,40 @@
 
         <div class="mb-3 row">
           <label class="col-sm-2 col-form-label">{{
+            "Lokasi" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <ngx-select-dropdown
+              [multiple]="true"
+              [config]="configSelectLokasi"
+              [options]="listLokasi"
+              formControlName="location"
+              id="location"
+              [(ngModel)]="selectedLocations"
+              (ngModelChange)="onChangeLocation($event)"
+            >
+            </ngx-select-dropdown>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
+            "Default Lokasi" | translate
+          }}</label>
+          <div class="col-sm-10">
+            <ngx-select-dropdown
+              [multiple]="false"
+              [config]="configSelectDefaultLokasi"
+              [options]="listDefaultLokasi"
+              formControlName="defaultLocation"
+              id="default-location"
+            >
+            </ngx-select-dropdown>
+          </div>
+        </div>
+
+
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">{{
             "Role" | translate
           }}</label>
           <div class="col-sm-10">

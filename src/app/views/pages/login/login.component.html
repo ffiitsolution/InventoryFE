@@ -1,21 +1,13 @@
 <div class="bg-white vh100 align-items-center">
   <c-row>
-    <c-col
-      md="6"
-      class="d-flex align-items-center justify-content-center vh100"
-    >
-      <c-container
-        class="d-flex align-items-center justify-content-center vh100"
-      >
+    <c-col md="6" class="d-flex align-items-center justify-content-center vh100">
+      <c-container class="d-flex align-items-center justify-content-center vh100">
         <c-row class="justify-content-center d-flex">
           <c-col md="11">
             <c-card-group>
               <c-card class="p-4">
                 <c-card-body class="text-center">
-                  <img
-                    src="../../../../assets/img/brand/logo_kfc.png"
-                    class="mb-2 kfc-logo"
-                  />
+                  <img src="../../../../assets/img/brand/logo_kfc.png" class="mb-2 kfc-logo" />
 
                   <form cForm>
                     <h2 class="text-center">
@@ -24,10 +16,7 @@
                     <p class="text-medium-emphasis">
                       {{ "Silakan masuk ke akun anda" | translate }}
                     </p>
-                    <div
-                      class="card-body text-danger p-0"
-                      *ngIf="errorMessage.length > 0"
-                    >
+                    <div class="card-body text-danger p-0" *ngIf="errorMessage.length > 0">
                       <p class="card-text text-center mb-2">
                         {{ errorMessage | translate }}
                       </p>
@@ -36,50 +25,35 @@
                       <span cInputGroupText>
                         <svg cIcon name="cilUser"></svg>
                       </span>
-                      <input
-                        cFormControl
-                        #usernameInput
-                        placeholder="{{ 'Nama Akun' | translate }}"
-                        [readOnly]="logingIn"
-                        (input)="onUsernameChange()"
-                        required
-                      />
+                      <input cFormControl #usernameInput placeholder="{{ 'Nama Akun' | translate }}"
+                        [readOnly]="logingIn" (input)="onUsernameChange()" required autofocus/>
                       <span class="input-group-text" *ngIf="searchingUsername">
                         <i class="fa fa-spinner fa-spin"></i>
                       </span>
                     </c-input-group>
                     <c-input-group class="my-3">
-                      <span cInputGroupText>
-                        <svg cIcon name="cilLockLocked"></svg>
+                      <span cInputGroupText (click)="togglePasswordVisibility()">
+                        <svg cIcon name="{{ passwordVisible ? 'cilLockUnlocked' : 'cilLockLocked' }}">
+                        </svg>
                       </span>
-                      <input
-                        #passwordInput
-                        cFormControl
-                        placeholder="{{ 'Kata Sandi' | translate }}"
-                        [readOnly]="logingIn"
-                        type="password"
-                        (input)="onPasswordChange()"
-                        required
-                        (keyup.enter)="onLoginPressed()"
-                      />
+                      <input #passwordInput cFormControl placeholder="{{ 'Kata Sandi' | translate }}"
+                        [readOnly]="logingIn" type="{{passwordVisible ? 'text' : 'password'}}"
+                        (input)="onPasswordChange()" required (keyup.enter)="onLoginPressed()" />
                     </c-input-group>
-                    <c-row class="px-2">
-                      <div class="card-body p-0" *ngIf="defaultGudang">
-                        <p class="card-text text-center mb-3">
-                          {{ defaultGudang | translate }}
-                        </p>
-                      </div>
-                    </c-row>
+                    <!-- <c-input-group class="my-3">
+                      <span cInputGroupText>
+                        <svg cIcon name="cilBank"></svg>
+                      </span>
+                      <input cFormControl readonly [value]="loadingUser ? 'loading ...' : defaultGudang" placeholder="Gudang" />
+                    </c-input-group> -->
+
+                    <p class="text-center">
+                      {{loadingUser ? 'loading ...' : defaultGudang}}
+                    </p>
 
                     <c-row class="px-2">
-                      <button
-                        (click)="onLoginPressed()"
-                        cButton
-                        class="px-4"
-                        color="primary"
-                        [disabled]="logingIn"
-                        style="width: 100%"
-                      >
+                      <button (click)="onLoginPressed()" cButton class="px-4" color="primary" [disabled]="logingIn"
+                        style="width: 100%">
                         <i class="fa fa-spinner fa-spin" *ngIf="logingIn"></i>
                         {{ "Masuk" | translate }}
                       </button>

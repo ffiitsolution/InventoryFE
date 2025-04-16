@@ -39,6 +39,8 @@
     <c-card>
       <c-card-body>
         <form [formGroup]="myForm" (ngSubmit)="onSubmit()" >
+         
+          {{ myForm.invalid }}
           <div class="row">
             <div class="col-md-6">
   
@@ -54,6 +56,8 @@
                   rows="3">
                   </textarea>
                   <small class="text-danger" *ngIf="myForm.get('alamat1')?.hasError('required')">Alamat1 is required</small>
+                  <small class="text-danger" *ngIf="myForm.get('alamat1')?.hasError('specialCharNotAllowed')">Special Char Not Allowed</small>
+
                 </div>
               </div>
               
@@ -69,6 +73,8 @@
                   rows="3">
                 </textarea>
                 <small class="text-danger" *ngIf="myForm.get('alamat2')?.hasError('required')">Alamat2 is required</small>
+                <small class="text-danger" *ngIf="myForm.get('alamat2')?.hasError('specialCharNotAllowed')">Special Char Not Allowed</small>
+
                 </div>
               </div>
               
@@ -84,6 +90,7 @@
                   class="form-control" 
                   formControlName="namaKota">
                   <small class="text-danger" *ngIf="myForm.get('namaKota')?.hasError('required')">Nama Kota is required</small>
+                  <small class="text-danger" *ngIf="myForm.get('namaKota')?.hasError('specialCharNotAllowed')">Special Char Not Allowed</small>
                 </div>
               </div>
   
@@ -93,11 +100,12 @@
                   </span>
                 </label>
                 <div class="col-sm-8">
-                  <input type="text" 
+                  <input type="number" 
                   [readonly]="roleId != 3"
                   class="form-control" 
                   formControlName="kodePos">
                   <small class="text-danger" *ngIf="myForm.get('kodePos')?.hasError('required')">Kode Pos is required</small>
+                  
                 </div>
               </div>
   
@@ -111,6 +119,8 @@
                   [readonly]="roleId != 3"
                   formControlName="negara">
                   <small class="text-danger" *ngIf="myForm.get('negara')?.hasError('required')">Negara is required</small>
+                  <small class="text-danger" *ngIf="myForm.get('negara')?.hasError('specialCharNotAllowed')">Special Char Not Allowed</small>
+
                 </div>
               </div>
               <div class="row mb-3">
@@ -200,6 +210,7 @@
                   [readonly]="roleId != 3"
                   class="form-control" 
                   formControlName="noTelp1">
+                  <small class="text-danger" *ngIf="myForm.get('noTelp1')?.hasError('numberHyphenOnly')">Only Number and - Allowed</small>
                 </div>
               </div>
   
@@ -210,6 +221,7 @@
                   [readonly]="roleId != 3"
                   class="form-control" 
                   formControlName="noTelp2">
+                  <small class="text-danger" *ngIf="myForm.get('noTelp2')?.hasError('numberHyphenOnly')">Only Number and - Allowed</small>
                 </div>
               </div>
   
@@ -220,6 +232,7 @@
                   [readonly]="roleId != 3"
                   class="form-control" 
                   formControlName="noFax1">
+                  <small class="text-danger" *ngIf="myForm.get('noFax1')?.hasError('numberHyphenOnly')">Only Number and - Allowed</small>
                 </div>
               </div>
   
@@ -230,6 +243,7 @@
                   [readonly]="roleId != 3"
                   class="form-control" 
                   formControlName="noFax2">
+                  <small class="text-danger" *ngIf="myForm.get('noFax2')?.hasError('numberHyphenOnly')">Only Number and - Allowed</small>
                 </div>
               </div>
               <div class="row mb-3">
@@ -250,6 +264,8 @@
                   autocomplete="off"
                   class="form-control" 
                   formControlName="alamatEmail">
+                  <small class="text-danger" *ngIf="myForm.get('alamatEmail')?.hasError('email')">Format Email Salah</small>
+
                 </div>
               </div>
 
@@ -264,6 +280,7 @@
                     class="form-control" 
                     formControlName="lokasiDataBackup">
                     <small class="text-danger" *ngIf="myForm.get('lokasiDataBackup')?.hasError('required')">Lokasi Data Backup is required</small>
+
                   </div>
                 </div>
   
@@ -278,6 +295,8 @@
                     class="form-control" 
                     formControlName="alamatOrcl">
                     <small class="text-danger" *ngIf="myForm.get('alamatOrcl')?.hasError('required')">Database is required</small>
+                    <small class="text-danger" *ngIf="myForm.get('alamatOrcl')?.hasError('specialCharNotAllowed')">Special Char Not Allowed</small>
+
                   </div>
                 </div>
     
@@ -318,6 +337,8 @@
                     class="form-control" 
                     formControlName="ipSvrhq">
                     <small class="text-danger" *ngIf="myForm.get('ipSvrhq')?.hasError('required')">IP Server HQ is required</small>
+                    <small class="text-danger" *ngIf="myForm.get('ipSvrhq')?.hasError('specialCharNotAllowed')">Special Char Not Allowed</small>
+
                   </div>
                 </div>
                 <div class="row mb-4">

@@ -38,12 +38,13 @@
                   <div class="col-8 pe-0 d-flex">
                     <input
                       type="text"
-                      placeholder="Kode Barang Produksi"
+                      placeholder="No Dokumen"
                       class="form-control"
-                      id="kodeBarang"
-                      formControlName="kodeBarang"
-                      name="kodeBarang"
-                      [readOnly]="true"
+                      id="noReturnPengirim"
+                      formControlName="noReturnPengirim"
+                      name="noReturnPengirim"
+                      [(ngModel)]="formData.noReturnPengirim"
+                      (keydown.enter)="handleEnterPemesan($event)"
                     />
                     <button
                       *ngIf="!isShowModal"
@@ -59,39 +60,37 @@
                 </div>
                 <div class="w-100 px-2 py-1 row">
                   <div class="col-4 d-flex align-items-center">
-                    <label for="tglTransaksi"
-                      >{{ "Tgl. Transaksi" | translate }}
-                      <span class="text-danger">*</span></label
-                    >
+                    <label for="tglTransaksi">{{ "Tgl. Transaksi" | translate }} <span
+                        class="text-danger">*</span></label>
                   </div>
+  
                   <div class="col-8 pe-0 d-flex">
-                    <input
-                      type="text"
+                    <input type="text"
                       *ngIf="!isShowDetail"
-                      id="tglTransaksi"
+                      id="tglTransaksi" 
                       class="form-control"
                       aria-describedby="tglTransaksi"
                       #dp="bsDatepicker"
-                      [bsConfig]="dpConfig"
+                      [bsConfig]="dpConfigtrans" 
                       bsDatepicker
                       autocomplete="off"
                       formControlName="tglTransaksi"
                       placeholder="{{ 'Tanggal transaksi' | translate }}"
                       [readOnly]="isShowDetail"
                     />
-                    <input
-                      type="text"
-                      *ngIf="isShowDetail"
-                      id="tglTransaksi"
-                      [bsConfig]="dpConfig"
+                    <input type="text"
+                     *ngIf="isShowDetail"
+                      id="tglTransaksi" 
+                      [bsConfig]="dpConfigtrans" 
                       class="form-control"
                       aria-describedby="tglTransaksi"
                       autocomplete="off"
                       placeholder="{{ 'Tanggal transaksi' | translate }}"
                       [readOnly]="true"
-                      [value]="formatDate(myForm.get('tglTransaksi')?.value ?? '')"
-                    />
+                      formControlName="tglTransaksi"
+                      />
                   </div>
+                
                 </div>
                 <div class="divider mt-4"></div>
 
@@ -105,20 +104,22 @@
                   <div class="col-8 pe-0 d-flex">
                     <input
                       type="text"
-                      placeholder="Kode Barang Produksi"
+                      placeholder="Kode Pengirim"
                       class="form-control"
                       id="kodeBarang"
+                      [(ngModel)]="formData.kodeTujuan"
                       formControlName="kodeBarang"
                       name="kodeBarang"
                       [readOnly]="true"
                     />
                     <button
-                      *ngIf="!isShowModal"
+                      *ngIf="!isShowModalBranch"
                       type="button"
                       class="btn btn-info ms-2"
-                      [cModalToggle]="staticBackdropModal.id"
-                      (click)="onShowModal()"
+                      [cModalToggle]="staticBackdropModalBranch.id"
+                      (click)="onShowModalBranch()"
                       [disabled]="isShowDetail"
+                      (keydown.enter)="handleEnterPemesan($event)"
                     >
                       <i class="fa fa-search text-white"></i>
                     </button>
@@ -127,18 +128,19 @@
 
                 <div class="w-100 px-2 py-1 row">
                   <div class="col-4 d-flex align-items-center">
-                    <label for="kodeBarang"
+                    <label for="namaBarang"
                       >{{ "Nama Pengirim" | translate }}
                     </label>
                   </div>
                   <div class="col-8 pe-0 d-flex">
                     <input
                       type="text"
-                      placeholder="Nama Barang"
+                      placeholder="Nama Pengirim"
                       class="form-control"
-                      id="kodeBarang"
+                      id="namaBarang"
                       formControlName="namaBarang"
-                      name="kodeBarang"
+                      [(ngModel)]="formData.namaTujuan"
+                      name="namaBarang"
                       [readOnly]="true"
                     />
                   </div>
@@ -153,12 +155,13 @@
                   <div class="col-8 pe-0 d-flex">
                     <input
                       type="text"
-                      placeholder="Nama Barang"
+                      placeholder="Alamat Pengirim"
                       class="form-control"
-                      id="kodeBarang"
-                      formControlName="namaBarang"
-                      name="kodeBarang"
+                      id="alamatPengirim"
+                      formControlName="alamatPengirim"
+                      name="alamatPengirim"
                       [readOnly]="true"
+                      [(ngModel)]="formData.alamatTujuan"
                     />
                   </div>
                 </div>
@@ -172,11 +175,12 @@
                   <div class="col-3 pe-0 d-flex">
                     <input
                       type="text"
-                      placeholder="Satuan Hasil"
+                      placeholder="Status"
                       class="form-control"
                       id="satuanHasilProduksi"
                       formControlName="satuanHasilProduksi"
                       name="satuanHasilProduksi"
+                      [(ngModel)]="formData.statusTujuan"
                       [readOnly]="true"
                     />
                   </div>
@@ -211,29 +215,12 @@
                   </div>
                 </div>
 
-                <div class="w-100 px-2 py-1 row" *ngIf="isShowDetail">
-                  <div class="col-4 d-flex align-items-center">
-                    <label for="totalHasilProduksi">{{
-                      "Jumlah Bahan Baku" | translate
-                    }}</label>
-                  </div>
-                  <div class="col-8 pe-0 d-flex">
-                    <input
-                      type="number"
-                      placeholder="Jumlah Bahan Baku"
-                      class="form-control"
-                      id="totalBahanBaku"
-                      formControlName="totalBahanBaku"
-                      name="totalBahanBaku"
-                      [readOnly]="true"
-                    />
-                  </div>
-                </div>
-
                 <div style="width: 96%" class="p-2">
                   <button
                     class="shadow-sm btn w-100 btn-info text-white"
                     (click)="onAddDetail()"
+                    *ngIf="!isShowDetail" 
+                    [disabled]="myForm.invalid"
                   >
                     <i class="fa fa-check pe-2"></i>
                     {{ "Detail Transaksi" | translate }}
@@ -265,7 +252,7 @@
     size="xl"
   >
     <c-modal-header>
-      <h5 cModalTitle>Daftar Barang</h5>
+      <h5 cModalTitle>Daftar Retur From Site</h5>
       <button
         (click)="isShowModal = false"
         type="button"
@@ -296,4 +283,31 @@
 
   <!-- Modal Backdrop -->
   <div class="modal-bg-backdrop" *ngIf="isShowModal"></div>
+
+  <c-modal #staticBackdropModalBranch [visible]="isShowModalBranch" backdrop="static" id="staticBackdropModalBranch" #modalLg size="xl">
+    <c-modal-header>
+      <h5 cModalTitle>Pilih Site</h5>
+      <button (click)="isShowModalBranch = false" type="button" class="btn btn-info ms-2"
+        [cModalToggle]="staticBackdropModalBranch.id"><i class="fa fa-times text-white"></i></button>
+    </c-modal-header>
+    <c-modal-body>
+      <c-card class="mb-4">
+        <c-card-body>
+          <div class="table-responsive">
+            <table
+              datatable
+              [dtOptions]="dtOptionsBranch"
+              class="datatable row-border hover stripe w-100 h-65"
+            >
+              <!-- <thead class="table-header"> </thead> -->
+            </table>
+          </div>
+        </c-card-body>
+      </c-card>
+    </c-modal-body>
+      <!-- Modal Backdrop -->
+      <div class="modal-bg-backdrop" *ngIf="isShowModalBranch"></div>
+  </c-modal>
 </div>
+
+

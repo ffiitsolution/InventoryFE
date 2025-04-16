@@ -171,7 +171,7 @@ export class AddDataDetailPlanningOrderComponent
             manual2: (item.week2 * item.konversi).toFixed(2),   
             manual3: (item.week3 * item.konversi).toFixed(2),
             manual4: (item.week4 * item.konversi).toFixed(2),  
-            isChanged: item.isChanged,
+            isChanged: item.isChanged == 1 ? true : false,
             userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
           })),
        
@@ -326,7 +326,7 @@ export class AddDataDetailPlanningOrderComponent
             periode1: (item.periode1/ item.konversi).toFixed(2),
             periode2: (item.periode2/ item.konversi).toFixed(2), 
             periode3: (item.periode3/ item.konversi).toFixed(2),
-            isChanged: false,
+            isChanged: item.isChanged,
           }
         });
         this.loading = false;
@@ -347,7 +347,11 @@ export class AddDataDetailPlanningOrderComponent
     type:number = 1
   ) {
 
+
+      index = index + ((this.listCurrentPage-1) * 5);
       let value = event.target.value;
+      console.log("masuk om",value)
+      console.log("masuk om2",index)
 
       if (value !== null && value !== undefined) {
         let numericValue = parseFloat(value.toString().replace(',', '.'));
@@ -366,23 +370,23 @@ export class AddDataDetailPlanningOrderComponent
       }
 
       if(type == 1){
-        this.listProductData[index].week1 = value;
+        this.filteredData[index].week1 = value;
       }else if(type == 2){    
-        this.listProductData[index].week2 = value;
+        this.filteredData[index].week2 = value;
       }else if(type == 3){        
-        this.listProductData[index].week3 = value;
+        this.filteredData[index].week3 = value;
       }else if(type == 4){      
-        this.listProductData[index].week4 = value;
+        this.filteredData[index].week4 = value;
       }
 
-      this.listProductData[index].totalOrder = parseFloat((
-        (Number(this.listProductData[index].week1) || 0) +
-        (Number(this.listProductData[index].week2) || 0) +
-        (Number(this.listProductData[index].week3) || 0) +
-        (Number(this.listProductData[index].week4) || 0)
+      this.filteredData[index].totalOrder = parseFloat((
+        (Number(this.filteredData[index].week1) || 0) +
+        (Number(this.filteredData[index].week2) || 0) +
+        (Number(this.filteredData[index].week3) || 0) +
+        (Number(this.filteredData[index].week4) || 0)
       ).toFixed(2)).toFixed(2);
 
-      this.listProductData[index].isChanged = true;
+      this.filteredData[index].isChanged = true;
       
   }
 
@@ -435,7 +439,7 @@ export class AddDataDetailPlanningOrderComponent
       link.href = this.downloadURL;
       link.download = `ORDER${this.headerPlanningOrder.selectedYear}${this.headerPlanningOrder.selectedMonth}.csv`;
       link.click();
-      this.g.alertSuccess('Sukses', 'File sudah terunduh.');
+      this.toastr.success('Berhasil Dicetak!');
       this.isShowModalReport =false;
     } else
       this.g.alertError('Maaf, Ada kesalahan!', 'File tidak dapat terunduh.');

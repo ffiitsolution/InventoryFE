@@ -15,6 +15,7 @@ import {
 } from '@angular/forms';
 import { AppService } from '../../../service/app.service';
 import { DatePipe } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-master-report',
@@ -56,7 +57,9 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     private translation: TranslationService,
     private datePipe: DatePipe,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService,
+
   ) {
     this.paramInisial = this.service.getUserData().defaultLocation.kodeSingkat;
   }
@@ -171,7 +174,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
         statusAktif: this.paramStatusAktif,
         tipeListing: this.paramTipeListing, 
       }
-    }else if (['Master Barang','Master Barang Bekas'].includes(this.currentReport)) {
+    }else if (['Master Barang','Master Barang Bekas','Master Barang Produksi'].includes(this.currentReport)) {
       param = {
         statusAktif: this.paramStatusAktif
       }
@@ -224,9 +227,10 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
         'dd-MMM-yyyy'
       )}.pdf`;
       link.click();
-      this.g.alertSuccess('Sukses', 'File sudah terunduh.');
+      this.toastr.success('File sudah terunduh');
     } else
-      this.g.alertError('Maaf, Ada kesalahan!', 'File tidak dapat terunduh.');
+      this.toastr.error('File tidak dapat terunduh');
+
   }
 
   downloadCsv(res: any, reportType: string) {
@@ -244,8 +248,8 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
         'dd-MMM-yyyy'
       )}.csv`;
       link.click();
-      this.g.alertSuccess('Sukses', 'File sudah terunduh.');
+      this.toastr.success('File sudah terunduh');
     } else
-      this.g.alertError('Maaf, Ada kesalahan!', 'File tidak dapat terunduh.');
+      this.toastr.error('File tidak dapat terunduh');
   }
 }

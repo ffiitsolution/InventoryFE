@@ -175,39 +175,32 @@ export class DetailBarangReturComponent
             },
           },
           {
-            data: 'QTY_BESAR',
-            title: 'Qty Besar',
+            data: 'ABS_QTY_BESAR',
+            title: 'Quantity Besar',
             render: function (data, type, row) {
               return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_BESAR;  // Menambahkan .00
             },
           },
           {
             data: 'QTY_KECIL',
-            title: 'Qty Kecil',
+            title: 'Quantity Kecil',
             render: function (data, type, row) {
               return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_KECIL;  // Menambahkan .00
             },
           },
           {
             data: 'TOTAL_QTY',
-            title: 'Qty Total',
+            title: 'Total Quantity',
             render: function (data, type, row) {
               return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_KECIL;  // Menambahkan .00
             },
           },
-          {
-            data: 'TOTAL_QTY',
-            title: 'Qty Total',
-            render: function (data, type, row) {
-              return data + ' ' + row.SATUAN_BESAR + ' ' + row.SATUAN_KECIL;
-            },
-          },
-          // { data: 'TGL_EXPIRED', title: 'Tanggal Expired',
-          //   render: (data) => this.g.transformDate(data),
-          // },
-          { data: 'KETERANGAN_TANGGAL', title: 'Tanggal Expired', 
+          { data: 'TGL_EXPIRED', title: 'Tanggal Expired',
             render: (data) => this.g.transformDate(data),
           },
+          // { data: 'KETERANGAN_TANGGAL', title: 'Tanggal Expired', 
+          //   render: (data) => this.g.transformDate(data),
+          // },
         ],
         searchDelay: 1000,
         order: [[1, 'asc']],

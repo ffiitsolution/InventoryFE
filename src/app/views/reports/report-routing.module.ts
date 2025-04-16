@@ -6,6 +6,7 @@ import { StockReportComponent } from './stock/stock-report.component';
 import { OrderReportComponent } from './order/order-report.component';
 import { MasterReportComponent } from './master/master-report.component';
 import { AnalysisReportComponent } from './analysis/analysis-report.component';
+import { QueryStockReportComponent } from './query-stock/query-stock-report.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,10 @@ const routes: Routes = [
       {
         path: 'transaction',
         component: TransactionReportComponent,
+      },
+      {
+        path: 'query-stock',
+        component: QueryStockReportComponent,
       },
     ],
   },

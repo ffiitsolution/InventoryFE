@@ -1,0 +1,222 @@
+<div class="fade-in">
+  <c-card class="mb-2">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>Query Stock</h5>
+        </div>
+        <div class="col text-end">
+          <!-- <button class="btn btn-outline-primary" *ngIf="currentView === 'closing'" (click)="setCurrentView('history')">
+            Riwayat Proses
+          </button>
+          </button> -->
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<c-card class="fade-in mb-4">
+  <c-card-body>
+    <div class="row">
+      <div class="col">
+
+        <div class="row mb-3">
+          <label for="formMonth" class="col-sm-4 col-form-label">Periode</label>
+          <div class="col-sm-8">
+            <input id="formMonth" type="text" placeholder="Choose month and year" class="form-control" bsDatepicker
+              [bsConfig]="{ dateInputFormat: 'MM/YYYY', minMode: 'month', adaptivePosition: true, containerClass: 'theme-red'}"
+              [(ngModel)]="selectedDate" (ngModelChange)="getStockMovement()">
+          </div>
+        </div>
+
+      </div>
+      <div class="col"></div>
+      <div class="col">
+        <div class="mb-3">
+          <input type="text" class="form-control" placeholder="Cari ..." [(ngModel)]="searchText">
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive mt-3">
+      <table cTable striped bordered hover>
+        <thead class="text-center" cTableColor="secondary">
+          <th>#</th>
+          <th>KODE BARANG</th>
+          <th>NAMA BARANG</th>
+          <th>SALDO AWAL</th>
+          <th>QTY IN</th>
+          <th>QTY OUT</th>
+          <th>SALDO AKHIR</th>
+        </thead>
+        <tbody>
+          <tr *ngIf="isLoading || listData.length == 0">
+            <td colspan="7" class="text-center">
+              {{ isLoading ? 'memuat ...' : 'Tidak ada data'}}
+            </td>
+          </tr>
+          <tr
+            *ngFor="let item of listData | filterData:searchText | paginate: { itemsPerPage: 10, currentPage: currentPage }; let i = index;"
+            class="text-end {{selectedItem?.kodeBarang == item.kodeBarang ? 'table-danger' : ''}}"
+            (click)="getStockDetail(item)">
+            <td>
+              {{i+1}}
+            </td>
+            <td>
+              {{item.kodeBarang}}
+            </td>
+            <td class="text-start">
+              {{item.namaBarang}}
+            </td>
+            <td>
+              {{item.saldoAwal | number}}
+            </td>
+            <td>
+              {{item.qtyIn | number}}
+            </td>
+            <td>
+              {{item.qtyOut | number}}
+            </td>
+            <td>
+              {{item.saldoAkhir | number}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-end">
+        <pagination-controls (pageChange)="currentPage = $event" previousLabel="Sebelumnya" nextLabel="Berikutnya">
+        </pagination-controls>
+      </div>
+    </div>
+
+    <div>
+      <c-modal id="showModalDetail" backdrop="static" [visible]="showModalDetail"
+        (visibleChange)="onChangeModalDetail($event)" size="xl" scrollable>
+        <c-modal-header>
+          <h5 cModalTitle>
+            Detail Stock
+            {{ selectedItem?.kodeBarang ?? '' }} - {{ selectedItem?.namaBarang ?? '' }}
+            | Periode {{ getPeriode() }}
+          </h5>
+          <button class="btn btn-link" (click)="toggleModalDetail()" cButtonClose>
+            <i class="fa fa-times"></i>
+          </button>
+        </c-modal-header>
+        <c-modal-body>
+          <div class="mt-2 row">
+            <div class="col">
+              <table class="table table-bordered table-striped table-hovered align-middle">
+                <thead>
+                  <tr class="text-center table-dark align-middle">
+                    <th>#</th>
+                    <th>TRANSAKSI</th>
+                    <th>SALDO AWAL</th>
+                    <th>QTY IN</th>
+                    <th>QTY OUT</th>
+                    <th>TOTAL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let setnum of listDataSetnum1; let i = index;">
+                    <tr class="text-end {{ selectedSetnum?.keyTransaksi == setnum.keyTransaksi ? 'table-danger' : '' }}"
+                      (click)="getStockSubdetail(setnum, mapDataDetail[setnum.keyTransaksi])">
+                      <td>{{ i + 1 }}</td>
+                      <td class="text-start">{{ setnum.keterangan }}</td>
+                      <td>{{ mapDataDetail[setnum.keyTransaksi]?.saldoAwal ?? 0 | number }}</td>
+                      <td>{{ mapDataDetail[setnum.keyTransaksi]?.totalQtyIn ?? 0 | number }}</td>
+                      <td>{{ mapDataDetail[setnum.keyTransaksi]?.totalQtyOut ?? 0 | number }}</td>
+                      <td>
+                        {{
+                        ((mapDataDetail[setnum.keyTransaksi]?.saldoAwal ?? 0) +
+                        (mapDataDetail[setnum.keyTransaksi]?.totalQtyIn ?? 0) -
+                        (mapDataDetail[setnum.keyTransaksi]?.totalQtyOut ?? 0)) | number
+                        }}
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+                <tfoot>
+                  <tr class="text-end table-dark">
+                    <th colspan="2" class="text-center">Total</th>
+                    <th>{{ totalDetailAwal | number }}</th>
+                    <th>{{ totalDetailIn | number }}</th>
+                    <th>{{ totalDetailOut | number }}</th>
+                    <th>
+                      {{
+                      (totalDetailAwal + totalDetailIn -
+                      totalDetailOut) | number
+                      }}
+                    </th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <div class="col">
+              <h5>
+                Detail Transaksi {{ selectedSetnum?.keterangan }}
+              </h5>
+              <div class="table-responsive">
+                <div style="max-height: calc( 100vh - 300px );">
+                  <table class="table table-bordered table-striped table-hovered align-middle">
+                    <thead>
+                      <tr class="text-center table-dark align-middle">
+                        <th>#</th>
+                        <th>TGL TRANSAKSI</th>
+                        <th>NOMOR</th>
+                        <th>QTY IN</th>
+                        <th>QTY OUT</th>
+                        <th>TOTAL</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngIf="isLoadingSubdetail || listDataSubdetail.length === 0" class="text-center">
+                        <td colspan="6">
+                          {{ isLoadingSubdetail ? 'memuat ...' : 'Tidak ada data'}}
+                        </td>
+                      </tr>
+                      <ng-container *ngFor="let sub of listDataSubdetail; let i = index;">
+                        <tr class="text-end">
+                          <td>{{ i + 1 }}</td>
+                          <td class="text-start">{{ sub.tglTransaksi }}</td>
+                          <td class="text-start">{{ sub.nomorTransaksi }}</td>
+                          <td>{{ sub.qtyIn | number }}</td>
+                          <td>{{ sub.qtyOut | number }}</td>
+                          <td>
+                            {{
+                            (
+                            (sub.qtyIn ?? 0) -
+                            (sub.qtyOut ?? 0)) | number
+                            }}
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                    <tfoot>
+                      <tr class="text-end table-dark">
+                        <th colspan="3" class="text-center">Total</th>
+                        <th>{{ totalSubdetailIn | number }}</th>
+                        <th>{{ totalSubdetailOut | number }}</th>
+                        <th>
+                          {{
+                          ( totalSubdetailIn -
+                          totalSubdetailOut) | number
+                          }}
+                        </th>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </c-modal-body>
+        <c-modal-footer>
+          <button (click)="toggleModalDetail()" cButton color="secondary" class="w-120">
+            Close
+          </button>
+          <!-- <button cButton color="primary">Save changes</button> -->
+        </c-modal-footer>
+      </c-modal>
+    </div>
+  </c-card-body>
+</c-card>
