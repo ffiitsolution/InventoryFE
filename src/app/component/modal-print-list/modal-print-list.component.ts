@@ -6,24 +6,26 @@ import { GlobalService } from '../../service/global.service';
 import { AppConfig } from '../../config/app.config';
 
 @Component({
-  selector: 'app-print-button',
-  templateUrl: './print-button.component.html',
-  styleUrls: ['./print-button.component.scss']
+  selector: 'app-modal-print-list',
+  templateUrl: './modal-print-list.component.html',
+  styleUrls: ['./modal-print-list.component.scss']
 })
-export class PrintButtonSharedComponent {
+export class ModalPrintListComponent {
   @Input() alreadyPrint: boolean = false;
   @Input() rejectingOrder: boolean = false;
   @Input() disabledPrintButton: boolean = false;
   @Input() updateStatusUrl: string = '';
   @Input() generatePdfUrl: string = '';
-  @Input() namePdf: string = '';
   @Input() generateReportParam: any = {};
+  @Input() namePdf: string = '';
   @Input() updatePrintStatusParam: any = {};
-  @Input() isFullWidth: boolean = false;
-  @Input() typePrint: string = 'print'; // default, deliveryOrder, purchaseOrder, etc.
+  @Input() isShowModalReport: boolean = false; 
+  @Input() isShowSelection: boolean = false;// default, deliveryOrder, purchaseOrder, etc.
   @Output() reloadTable = new EventEmitter<void>();
+  @Output() closeModalEvent = new EventEmitter<void>();
 
   protected config = AppConfig.settings.apiServer;
+  confirmSelection: string = 'Ya';
 
   updatingStatus: boolean = false;
 
@@ -43,28 +45,14 @@ export class PrintButtonSharedComponent {
       }
 
       try {
+
+        if(this.isShowSelection) this.generateReportParam.confirmSelection = this.confirmSelection;
         const base64Response = await lastValueFrom(
           this.dataService.postData(this.config.BASE_URL + this.generatePdfUrl, this.generateReportParam, true)
         );
         const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(blob);
-
-        const now = new Date();
-        const timestamp = now.toISOString().replace(/[:.]/g, '-'); // "2025-04-16T12-34-56-789Z"
-        const fileName = `${this.namePdf || 'report'}_${timestamp}.pdf`;
-
-        if (this.typePrint === 'download') {
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = fileName;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          window.URL.revokeObjectURL(url);
-        }else{
-          window.open(url);
-        }
-       
+        window.open(url);
       } catch (error: any) {
         this.toastr.error(error.message ?? 'Unknown error while generating PDF');
       }
@@ -74,5 +62,9 @@ export class PrintButtonSharedComponent {
       this.updatingStatus = false;
       this.reloadTable.emit();
     }
+  }
+
+  closeModal() {
+    this.closeModalEvent.emit();
   }
 }

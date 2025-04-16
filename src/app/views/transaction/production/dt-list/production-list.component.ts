@@ -29,6 +29,9 @@ export class ProductionListComponent implements OnInit {
   dtColumns: any = [];
   showFilterSection: boolean = false;
   buttonCaptionView: String = 'Lihat';
+  buttonCaptionPrint: String = 'Cetak';
+  selectedRowCetak: any = false;
+  isShowModalCetak: boolean;
   selectedStatusFilter: string = '';
   orders: any[] = [];
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
@@ -43,6 +46,10 @@ export class ProductionListComponent implements OnInit {
     )
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
+  paramGenerateReport = {};
+  isShowModalReport: boolean = false;
+  alreadyPrint: boolean = false;
+  disabledPrintButton: boolean = false;
 
   constructor(
     private dataService: DataService,
@@ -150,7 +157,10 @@ export class ProductionListComponent implements OnInit {
         {
           title: 'Aksi',
           render: () => {
-            return `<button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>`;
+            return ` <div class="btn-group" role="group" aria-label="Action">
+                <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
+                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>           
+              </div>`;
           },
         },
       ],
@@ -169,6 +179,23 @@ export class ProductionListComponent implements OnInit {
             this.selectedRowData = undefined;
           }
         });
+        $('.action-print', row).on('click', () =>{
+          // this.onClickPrint(data)
+          this.selectedRowCetak = data;
+          this.isShowModalReport=true;
+
+          this.paramGenerateReport = {
+            noTransaksi: this.selectedRowCetak.nomorTransaksi,
+            userEntry: this.selectedRowCetak.userCreate,
+            jamEntry: this.g.transformTime(this.selectedRowCetak.timeCreate),
+            tglEntry: this.g.transformDate(this.selectedRowCetak.dateCreate),
+            outletBrand: 'KFC',
+            kodeGudang: this.g.getUserLocationCode(),
+            isDownloadCsv: false,
+            reportName: 'cetak_production',
+          };
+        }
+        );
         return row;
       },
     };
@@ -248,5 +275,11 @@ export class ProductionListComponent implements OnInit {
   }
   dtPageChange(event: any): void {
     console.log('Page changed', event);
+  }
+
+  closeModal(){
+    this.isShowModalReport = false;
+    this.selectedRowCetak = null;
+    this.disabledPrintButton = false;
   }
 }

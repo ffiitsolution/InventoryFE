@@ -1,0 +1,58 @@
+<c-modal #formModalPrintList [fullscreen]="false" [visible]="isShowModalReport" backdrop="static" id="formModalReport" [attr.aria-hidden]="!isShowModalReport">
+  <c-modal-header>
+    <div></div>
+    <h5 cModalTitle class="titel-header">Konfirmasi Cetak Data</h5>
+    <button (click)="closeModal()" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalPrintList.id" cButtonClose>
+      <i class="fa fa-times"></i>
+    </button>
+  </c-modal-header>
+
+  <c-modal-body>
+    <div class="text-center">
+      <p class="fw-bold">Siapkan Kertas, jika anda ingin<br> mencetak ke 'PRINTER'</p>
+
+      <div class="d-flex justify-content-center align-items-center mb-3" *ngIf="isShowSelection">
+        <label class="form-check-label me-2" for="confirmSend">Expired Date, Di Cetak ? </label>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="confirmSend" id="confirmYes" value="Ya" [(ngModel)]="confirmSelection">
+          <label class="form-check-label" for="confirmYes">Ya</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="confirmSend" id="confirmNo" value="Tidak" [(ngModel)]="confirmSelection">
+          <label class="form-check-label" for="confirmNo">Tidak</label>
+        </div>
+      </div>
+    </div>
+  </c-modal-body>
+
+  <c-modal-footer class="justify-center">
+  <div class="row">
+    <div class="col-6 text-center">
+        <app-print-button
+        [alreadyPrint]="alreadyPrint"
+        [disabledPrintButton]="disabledPrintButton"
+        [generatePdfUrl]="generatePdfUrl"
+        [updateStatusUrl]="updateStatusUrl"
+        [updatePrintStatusParam]="updatePrintStatusParam"
+        [generateReportParam]="generateReportParam"
+        [namePdf]="namePdf"
+        [typePrint]="'download'"
+       >
+      </app-print-button>
+    </div>
+    <div class="col-6 text-center">
+      <app-print-button
+      [alreadyPrint]="alreadyPrint"
+      [disabledPrintButton]="disabledPrintButton"
+      [generatePdfUrl]="generatePdfUrl"
+      [updateStatusUrl]="updateStatusUrl"
+      [updatePrintStatusParam]="updatePrintStatusParam"
+      [generateReportParam]="generateReportParam"
+     >
+    </app-print-button>
+      </div>
+  </div>
+     
+   
+  </c-modal-footer>
+</c-modal>

@@ -30,7 +30,7 @@
                     </span>
                     </label>
                   </div>
-                  <div class="col-8 pe-0 ">
+                  <div class="col-6 pe-0 ">
                     <input
                       type="text"
                       placeholder="No Documen Retur Dari Site"
@@ -38,10 +38,19 @@
                       id="noDocument"
                       formControlName="noDocument"
                       name="noDocument"
+                      maxlength="15"
                     >
                     <small class="text-danger" *ngIf="myForm.get('noDocument')?.hasError('specialCharNotAllowed')">Special Char Not Allowed</small>
 
                   </div>
+                  <div class="col-2 pe-0 d-flex">
+                  <button 
+                  [disabled]="isShowDetail"
+                  class="shadow-sm btn w-100 btn-info text-white" style="height: 38px;" >
+                    <i class="fa fa-refresh"></i> 
+                      <!-- {{ "Get Data" | translate }} -->
+                  </button>
+                   </div>
                 </div>
 
               <div class="w-100 px-2 py-1 row">
@@ -180,7 +189,7 @@
                    class="form-control" id="keterangan"
                    [readonly]="isShowDetail"
                    formControlName="keterangan"
-                   maxlength="50"
+                   maxlength="35"
                     name="keterangan">
                 
                   </textarea>
@@ -264,10 +273,41 @@
             </table>
           </div>
         </c-card-body>
+       
       </c-card>
     </c-modal-body>
+    <c-modal-footer *ngIf="selectedRowData">
+      <div class="d-flex flex-wrap justify-content-start w-100">
+        <div class="me-3">
+          <label class="form-label">{{ "Rsc" | translate }}</label>
+          <input type="text" [value]="(selectedRowData.kodeRsc || '')  + ' ' + (selectedRowData.keteranganRsc || '')" class="form-control" disabled />       
+        </div>
+        <div class="me-3">
+          <label class="form-label">{{ "Region" | translate }}</label>
+          <input type="text" [value]="(selectedRowData.kodeRegion || '') ?? '' + ' ' + (selectedRowData.keteranganRegion || '') ?? '' " class="form-control" disabled />       
+        </div>
+        <div>
+          <label class="form-label">{{ "Area" | translate }}</label>
+          <input type="text" [value]="(selectedRowData.kodeArea || '') ?? '' + ' ' + (selectedRowData.keteranganArea ?? '') " class="form-control" disabled />       
+
+        </div>
+      </div>
+    </c-modal-footer>
   </c-modal>
 
   <!-- Modal Backdrop -->
   <div class="modal-bg-backdrop" *ngIf="isShowModal"></div>
+</div>
+<div class="fade-in">
+  <app-modal-print-list
+    [alreadyPrint]="alreadyPrint"
+    [disabledPrintButton]="disabledPrintButton"
+    [generatePdfUrl]="'/api/cetak/penerimaan-barang-bekas'"
+    [updateStatusUrl]="''"
+    [updatePrintStatusParam]="''"
+    [generateReportParam]="paramGenerateReport"
+    [isShowModalReport]="isShowModalReport"
+    (closeModalEvent)="closeModal()"
+  >
+  </app-modal-print-list>
 </div>

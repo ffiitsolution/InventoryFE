@@ -1,12 +1,16 @@
 <button
   type="button"
-  class="btn btn-success w-25 text-white me-2 btn-120"
+  [ngClass]="{ 'w-100':isFullWidth,'w-23' :!isFullWidth }"
+  class="btn btn-success  text-white me-2 btn-120"
   (click)="onClick()"
   [disabled]="rejectingOrder || updatingStatus || disabledPrintButton"
 >
-  <i class="fa fa-print icon-gap" *ngIf="!updatingStatus"></i>
+  <i class="fa fa-print icon-gap" *ngIf="!updatingStatus && typePrint=='print'"></i>
+  <i class="fa fa-file" *ngIf="!updatingStatus && typePrint=='download'"></i>
   <i class="fa fa-spinner fa-spin" *ngIf="updatingStatus"></i>
   {{
-    alreadyPrint ? ("Cetak Ulang") : ("Cetak")
+    alreadyPrint ? 
+      typePrint == 'print' ? ("Cetak Ulang") : ("Screen Pdf Ulang") 
+    : typePrint == 'print' ? ("Cetak") : ("Screen Pdf")
   }}
   </button>
