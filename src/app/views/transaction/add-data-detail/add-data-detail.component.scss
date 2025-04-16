@@ -50,3 +50,15 @@
 .form-invalid {
   border: 1px solid red;  /* Merahkan border input */
 }
+
+
+.swal2-popup.custom-popup {
+  border: 1px solid #d33;
+  border-radius: 6px;
+}
+
+.swal-actions-gap {
+  display: flex !important;
+  justify-content: center;
+  gap: 15px; /* Atur sesuai kebutuhan */
+}

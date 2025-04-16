@@ -43,7 +43,7 @@ export class GlobalService {
   selectedReportCategory: any = null;
   statusEndOfMonth: any = '';
   statusPlanningOrder: any = '';
-  
+
   constructor(
     private titleService: Title,
     @Inject(DOCUMENT) private document: Document,
@@ -281,7 +281,8 @@ export class GlobalService {
     if (!found) {
       return '-';
     }
-    return `(${status}) ${found?.label}` || status;
+    // return `(${status}) ${found?.label}` || status;
+    return `${found?.label?.toUpperCase()}` || status;
   }
   getsatusDeliveryOrderLabel(status: string, isPrintStatus: boolean = false) {
     const data = isPrintStatus ? PRINT_STATUS : STATUS_RESULT;
@@ -289,7 +290,8 @@ export class GlobalService {
     if (!found) {
       return '-';
     }
-    return `(${status}) ${found?.label}` || status;
+    // return `(${status}) ${found?.label}` || status;
+    return `${found?.label?.toUpperCase()}` || status;
   }
 
   getStatusPostingLabel(status: string, isPrintStatus: boolean = false) {
@@ -298,7 +300,8 @@ export class GlobalService {
     if (!found) {
       return '-';
     }
-    return `(${status}) ${found?.label}` || status;
+    // return `(${status}) ${found?.label}` || status;
+    return `${found?.label?.toUpperCase()}` || status;
   }
 
   getTipePembayaranLabel(status: string) {
@@ -331,21 +334,23 @@ export class GlobalService {
   conditionInput(event: any, type: string): boolean {
     var inp = String.fromCharCode(event.keyCode);
     let temp_regex =
-      type == 'alphanumeric'
-        ? /^[a-zA-Z0-9]$/
-        : type == 'numeric'
-          ? /^[0-9]$/
-          : type == 'numericDot'
-            ? /^[0-9.]$/
-            : type == 'phone'
-              ? /^[0-9-]$/
-              : type == 'email'
-                ? /^[a-zA-Z0-9@._-]$/
-                : type == 'excludedSensitive'
-                  ? /^[a-zA-Z0-9 .,_@-]*$/
-                  : type == 'kodeSingkat'
-                    ? /^[a-zA-Z]+$/
-                    : /^[a-zA-Z.() ,\-]*$/;
+      type === 'numberPlusMinusDot'
+        ? /^[0-9.+-]$/
+        : type == 'alphanumeric'
+          ? /^[a-zA-Z0-9]$/
+          : type == 'numeric'
+            ? /^[0-9]$/
+            : type == 'numericDot'
+              ? /^[0-9.]$/
+              : type == 'phone'
+                ? /^[0-9-]$/
+                : type == 'email'
+                  ? /^[a-zA-Z0-9@._-]$/
+                  : type == 'excludedSensitive'
+                    ? /^[a-zA-Z0-9 .,_@-]*$/
+                    : type == 'kodeSingkat'
+                      ? /^[a-zA-Z]+$/
+                      : /^[a-zA-Z.() ,\-]*$/;
 
     if (temp_regex.test(inp)) {
       // ⭐ Tambahkan ini:
@@ -425,12 +430,21 @@ export class GlobalService {
     return moment(date, "YYYY-MM-DD").format("DD MMM yyyy");
   }
 
-  convertToRupiah(amount: number): string {
-    if (isNaN(amount)) {
-      return 'Rp0';
+  convertToRupiah(value: number | string): string {
+    const numericValue = typeof value === 'string' ? parseFloat(value) : value;
+    if (isNaN(numericValue)) {
+      return '';
     }
-    return 'Rp' + amount.toLocaleString('id-ID', { minimumFractionDigits: 2 });
+    return 'Rp. ' + numericValue.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
+  parseRupiahToNumber(formatted: string): number {
+    if(formatted){
+      const cleaned = formatted.replace(/[^\d]/g, ''); // hapus semua selain angka
+      return parseInt(cleaned, 10) || 0;
+    } else{
+      return 0
+    }
+  }
 
 }

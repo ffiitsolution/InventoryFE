@@ -29,7 +29,8 @@
                 <div class="col-8 pe-0 d-flex">
                   <input type="text" id="tglTransaksi" class="form-control" aria-describedby="tglTransaksi"
                     #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker autocomplete="off"
-                    [(ngModel)]="formData.tglTransaksi" placeholder="{{ 'Tanggal transaksi' | translate }}" />
+                    [(ngModel)]="formData.tglTransaksi" [maxDate]="minDate"
+                    placeholder="{{ 'Tanggal transaksi' | translate }}" />
                 </div>
               </div>
               <div class="divider mt-4"></div>
@@ -63,8 +64,9 @@
                   <label for="alamat1">{{ "Alamat Supplier" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <textarea placeholder="Alamat supplier" class="form-control w-100" [(ngModel)]="formData.alamatSupplier"
-                    id="exampleFormControlTextarea1" rows="2" name="alamat1" disabled></textarea>
+                  <textarea placeholder="Alamat supplier" class="form-control w-100"
+                    [(ngModel)]="formData.alamatSupplier" id="exampleFormControlTextarea1" rows="2" name="alamat1"
+                    disabled></textarea>
                 </div>
               </div>
 
@@ -134,7 +136,8 @@
     </c-card-body>
   </c-card>
 
-  <c-modal #staticBackdropModal [visible]="isShowModal" backdrop="static" id="staticBackdropModal" #modalLg size="xl">
+  <c-modal #staticBackdropModal [visible]="isShowModal" backdrop="static"
+    id="staticBackdropModal" #modalLg size="xl">
     <c-modal-header>
       <h5 cModalTitle>Pilih supplier</h5>
       <button (click)="isShowModal = false" type="button" class="btn btn-info ms-2"
