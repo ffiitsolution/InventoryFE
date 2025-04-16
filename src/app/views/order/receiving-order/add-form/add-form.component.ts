@@ -138,8 +138,7 @@ export class ReceivingOrderAddFormComponent
       ],
       searchDelay: 1000,
       order: [
-        [2, 'asc'],
-        [4, 'asc'],
+        [4, 'desc'],
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>

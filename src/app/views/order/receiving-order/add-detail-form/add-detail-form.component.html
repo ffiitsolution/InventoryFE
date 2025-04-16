@@ -34,12 +34,12 @@
                 <span class="value">{{ selectedOrder.nomorPesanan }}</span>
               </div>
               <div class="detail-item">
-                <span class="label">{{ "Tanggal Pesan" | translate }}</span>
-                <span class="value">{{ selectedOrder.tglPesan }}</span>
+                <span class="label">{{ "Tanggal Kirim Barang" | translate }}</span>
+                <span class="value">{{ selectedOrder.tglBrgDikirim }}</span>
               </div>
               <div class="detail-item">
-                <span class="label">{{ "Tanggal Kirim" | translate }}</span>
-                <span class="value">{{ selectedOrder.tglBrgDikirim }}</span>
+                <span class="label">{{ "Tanggal Pesanan" | translate }}</span>
+                <span class="value">{{ selectedOrder.tglPesan }}</span>
               </div>
               <div class="detail-item">
                 <span class="label">{{
@@ -47,41 +47,35 @@
                 }}</span>
                 <span class="value">{{ selectedOrder.tglBatasExp }}</span>
               </div>
-              <div class="detail-item">
-                <span class="label">{{ "Status Pesanan" | translate }}</span>
-                <span class="value">{{
-                  this.g.getStatusOrderLabel(selectedOrder.statusPesanan)
-                }}</span>
-              </div>
             </div>
           </div>
           <div class="col">
             <div class="row order-details">
               <div class="detail-item">
-                <span class="label">{{ "Tujuan" | translate }}</span>
+                <span class="label">{{ "Pemesan (Tujuan)" | translate }}</span>
                 <span class="value"> {{ selectedOrder.kodePemesan }}</span>
               </div>
               <div class="detail-item">
-                <span class="label">{{ "Tipe Pesanan" | translate }}</span>
-                <span class="value">-</span>
-              </div>
-              <div class="detail-item">
-                <span class="label">{{ "Catatan" | translate }}</span>
+                <span class="label">{{ "Catatan 1" | translate }}</span>
                 <span class="value"
                   >{{ selectedOrder.keterangan1 || "-" }}
                 </span>
               </div>
               <div class="detail-item">
-                <span class="label">{{ "Nomor SJ" | translate }}</span>
-                <span class="value">{{
-                  selectedOrder.noSjPengirim || "-"
+                <span class="label">{{ "Catatan 2" | translate }}</span>
+                <span class="value"
+                  >{{ selectedOrder.keterangan2 || "-" }}
+                </span>
+              </div>
+              <div class="detail-item">
+                <span class="label">{{ "Status Pesanan" | translate }}</span>
+                <span class="value">Pesanan {{
+                  this.g.getStatusOrderLabel(selectedOrder.statusPesanan)
                 }}</span>
               </div>
               <div class="detail-item">
-                <span class="label">{{ "Status Cetak" | translate }}</span>
-                <span class="value">{{
-                  selectedOrder.statusPesanan == "B" ? "Belum" : "Sudah"
-                }}</span>
+                <span class="label">{{ "Jumlah Item" | translate }}</span>
+                <span class="value">{{dataBarang?.length}}</span>
               </div>
             </div>
           </div>
