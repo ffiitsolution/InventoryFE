@@ -4,7 +4,8 @@
       <div class="row">
         <div class="d-flex col-md-4 align-items-center">
           <h3 style="padding-left: 10px">
-            {{ "Master" | translate }} {{ "Cabang" | translate }}
+            {{ "Master" | translate }}
+            {{ "Cabang - Department - Gudang" | translate }}
           </h3>
         </div>
         <div class="col col-md-8 justify-content-right text-end">
@@ -12,8 +13,9 @@
             class="menu-purpose col-sm-12 justify-content-end align-items-center"
           >
             <span
-              >Master Cabang digunakan untuk melihat dan mengelola daftar cabang
-              beserta detail informasi dan statusnya.</span
+              >Master Cabang, Department dan Gudang digunakan untuk melihat dan
+              mengelola daftar cabang beserta detail informasi dan
+              statusnya.</span
             >
           </div>
         </div>
@@ -46,7 +48,7 @@
         <c-card class="mb-3">
           <c-card-body>
             <div class="row">
-              <div class="col-md-3">
+              <div class="col-md-4">
                 <label>{{ "Status" | translate }}</label>
                 <div>
                   <ngx-select-dropdown
@@ -61,7 +63,7 @@
                 </div>
               </div>
 
-              <div class="col-md-3">
+              <div class="col-md-4">
                 <label>{{ "RSC" | translate }}</label>
                 <div>
                   <ngx-select-dropdown
@@ -76,7 +78,7 @@
                 </div>
               </div>
 
-              <div class="col-md-3">
+              <div class="col-md-4">
                 <label>{{ "Kota" | translate }}</label>
                 <div>
                   <ngx-select-dropdown
@@ -85,20 +87,6 @@
                     [options]="listKota"
                     [(ngModel)]="formKotaFilter"
                     (ngModelChange)="onKotaFilterChange()"
-                    id="Kota"
-                  >
-                  </ngx-select-dropdown>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <label>{{ "Group" | translate }}</label>
-                <div>
-                  <ngx-select-dropdown
-                    [multiple]="false"
-                    [config]="configSelectGroup"
-                    [options]="listGroup"
-                    [(ngModel)]="formGroupFilter"
-                    (ngModelChange)="onGroupFilterChange()"
                     id="Kota"
                   >
                   </ngx-select-dropdown>
@@ -124,7 +112,46 @@
           </c-card-body>
         </c-card>
       </div>
-      <div class="table-responsive">
+      <div>
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <button
+              class="nav-link"
+              [ngClass]="{ active: currentTab === 'cabang' }"
+              type="button"
+              aria-selected="{{ currentTab === 'cabang' }}"
+              (click)="onTabChange('cabang')"
+              style="color: black"
+            >
+              Cabang
+            </button>
+          </li>
+          <li class="nav-item">
+            <button
+              class="nav-link"
+              [ngClass]="{ active: currentTab === 'department' }"
+              type="button"
+              aria-selected="{{ currentTab === 'department' }}"
+              (click)="onTabChange('department')"
+              style="color: black"
+            >
+              Department
+            </button>
+          </li>
+          <li class="nav-item">
+            <button
+              class="nav-link"
+              [ngClass]="{ active: currentTab === 'gudang' }"
+              aria-selected="{{ currentTab === 'gudang' }}"
+              (click)="onTabChange('gudang')"
+              style="color: black"
+            >
+              Gudang
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div class="table-responsive mt-3">
         <table
           datatable
           [dtOptions]="dtOptions"

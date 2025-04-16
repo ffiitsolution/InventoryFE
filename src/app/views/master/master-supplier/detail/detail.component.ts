@@ -66,7 +66,6 @@ export class MasterSupplierDetailComponent implements OnInit {
     });
 
     this.myForm.disable();
-    
 
     this.myForm.get('warehouse')?.valueChanges.subscribe((value) => {
       this.handleDefaultGudangChange(value);
@@ -106,6 +105,7 @@ export class MasterSupplierDetailComponent implements OnInit {
           ? res.defaultOrderGudangList?.map((item) => ({
               cad1: item.cad1,
               kodeSingkat: item.kodeSingkat.substring(0, 3),
+              name: item.kodeSingkat.substring(0, 3) + ' - ' + item.cad1,
             }))
           : [];
 
@@ -158,7 +158,7 @@ export class MasterSupplierDetailComponent implements OnInit {
 
     this.configDefaultGudangSelect = {
       disabled: true,
-      displayKey: 'kodeSingkat',
+      displayKey: 'name',
       search: true,
       height: '300px',
       placeholder: 'Pilih Default Gudang',

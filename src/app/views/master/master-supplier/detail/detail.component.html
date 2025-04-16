@@ -368,13 +368,6 @@
           <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
             {{ "Kembali" | translate }}
           </button>
-          <button
-            class="btn btn-info text-white btn-150"
-            (click)="onEditPressed()"
-          >
-            <i class="fa fa-spinner fa-spin" *ngIf="isSubmitting"></i>
-            <span>{{ "Ubah" | translate }} {{ "Supplier" | translate }}</span>
-          </button>
         </div>
       </form>
     </c-card-body>

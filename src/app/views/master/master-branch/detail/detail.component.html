@@ -1,7 +1,7 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <h5>{{ "Lihat" | translate }} {{ "Cabang" | translate }}</h5>
+      <h5>{{ "Lihat" | translate }} {{ group | translate }}</h5>
     </c-card-body>
   </c-card>
 </div>
@@ -14,9 +14,9 @@
             <!-- left column -->
             <div class="col-md-6">
               <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Kode Cabang" | translate
-                }}</label>
+                <label class="col-sm-4 col-form-label"
+                  >{{ "Kode " | translate }}{{ group | translate }}</label
+                >
                 <div class="col-sm-8">
                   <input
                     type="text"
@@ -29,7 +29,7 @@
               </div>
               <div class="mb-3 row">
                 <label class="col-sm-4 col-form-label">{{
-                  "Kode Singkat" | translate
+                  "Inisial" | translate
                 }}</label>
                 <div class="col-sm-8">
                   <input
@@ -45,9 +45,9 @@
             <!-- right column -->
             <div class="col-md-6">
               <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Nama Cabang" | translate
-                }}</label>
+                <label class="col-sm-4 col-form-label"
+                  >{{ "Nama " | translate }}{{ group | translate }}</label
+                >
                 <div class="col-sm-8">
                   <input
                     type="text"
@@ -58,16 +58,16 @@
                   />
                 </div>
               </div>
-              <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label">{{
-                  "Group" | translate
-                }}</label>
+              <div class="row" *ngIf="group == 'Gudang'">
+                <label class="col-sm-4 col-form-label"
+                  >{{ "Keterangan Inisial" | translate }}
+                </label>
                 <div class="col-sm-8">
                   <input
                     type="text"
                     class="form-control"
-                    formControlName="deskripsiGroup"
-                    maxlength="50"
+                    formControlName="cad1"
+                    maxlength="20"
                     readonly
                   />
                 </div>
@@ -235,7 +235,7 @@
                   />
                 </div>
               </div>
-              <div class="mb-3 row">
+              <div class="mb-3 row" *ngIf="group != 'Gudang'">
                 <label class="col-sm-4 col-form-label">{{
                   "Region" | translate
                 }}</label>
@@ -254,7 +254,7 @@
                 </div>
               </div>
 
-              <div class="mb-3 row">
+              <div class="mb-3 row" *ngIf="group != 'Gudang'">
                 <label class="col-sm-4 col-form-label">{{
                   "Area" | translate
                 }}</label>
@@ -268,6 +268,32 @@
                       ' - ' +
                       (myForm.get('keteranganArea')?.value || '')
                     "
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="mb-3 row" *ngIf="group != 'Department'">
+                <label class="col-sm-4 col-form-label">{{
+                  "Alamat IP" | translate
+                }}</label>
+                <div class="col-sm-4">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="ip"
+                    maxlength="15"
+                    readonly
+                  />
+                </div>
+                <label class="col-sm-2 col-form-label">{{
+                  "Port" | translate
+                }}</label>
+                <div class="col-sm-2">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="port"
+                    maxlength="5"
                     readonly
                   />
                 </div>
@@ -302,7 +328,7 @@
                   />
                 </div>
               </div>
-              <div class="mb-3 row">
+              <div class="mb-3 row" *ngIf="group != 'Gudang'">
                 <label class="col-sm-4 col-form-label">{{
                   "Tipe Cabang" | translate
                 }}</label>

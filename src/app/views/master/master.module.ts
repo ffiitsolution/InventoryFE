@@ -9,7 +9,7 @@ import { MasterRoutingModule } from './master-routing.module';
 import { MasterUserComponent } from './master-user/master-user.component';
 import { MasterUserEditComponent } from './master-user/edit/edit.component';
 import { MasterUserDetailComponent } from './master-user/detail/detail.component';
-import {  MasterUserAddComponent } from './master-user/add/add.component';
+import { MasterUserAddComponent } from './master-user/add/add.component';
 import {
   MasterBranchComponent,
   MasterBranchDetailComponent ,

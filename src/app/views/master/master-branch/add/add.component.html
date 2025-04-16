@@ -1,13 +1,13 @@
 <div class="fade-in">
-  <c-card class="mb-4">
+  <c-card class="mb-2">
     <c-card-body>
-      <h5>{{ "Tambah" | translate }} {{ "Cabang" | translate }}</h5>
+      <h5>{{ "Tambah" | translate }} {{ group | translate }}</h5>
     </c-card-body>
   </c-card>
 </div>
 <div class="fade-in">
   <c-card class="mb-4">
-    <c-card-body class="mt-3">
+    <c-card-body class="mt-1">
       <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
         <div class="container">
           <div class="row">
@@ -15,7 +15,7 @@
             <div class="col-md-6">
               <div class="mb-3 row">
                 <label class="col-sm-4 col-form-label"
-                  >{{ "Kode Cabang" | translate }}
+                  >{{ "Kode " | translate }}{{ group | translate }}
                   <span class="stamp-required show">&nbsp;*</span>
                 </label>
                 <div class="col-sm-8">
@@ -39,15 +39,14 @@
                     *ngIf="myForm.controls['kodeCabang'].hasError('kodeCabang')"
                     class="text-danger"
                     >{{
-                      "Kode Cabang hanya boleh mengandung angka dan Huruf."
-                        | translate
+                      "Kode hanya boleh mengandung angka dan Huruf." | translate
                     }}</span
                   >
                 </div>
               </div>
-              <div class="mb-3 row">
+              <div class="row">
                 <label class="col-sm-4 col-form-label"
-                  >{{ "Kode Singkat" | translate }}
+                  >{{ "Inisial" | translate }}
                   <span class="stamp-required show">&nbsp;*</span>
                 </label>
                 <div class="col-sm-8">
@@ -84,7 +83,7 @@
             <div class="col-md-6">
               <div class="mb-3 row">
                 <label class="col-sm-4 col-form-label"
-                  >{{ "Nama Cabang" | translate }}
+                  >{{ "Nama " | translate }}{{ group | translate }}
                   <span class="stamp-required show">&nbsp;*</span>
                 </label>
                 <div class="col-sm-8">
@@ -108,38 +107,34 @@
                     *ngIf="myForm.controls['namaCabang'].hasError('namaCabang')"
                     class="text-danger"
                     >{{
-                      "Nama Cabang hanya boleh mengandung huruf, angka, spasi, ampersand (&), strip (-), tanda kurung (), dan titik (.)."
+                      "Nama hanya boleh mengandung huruf, angka, spasi, ampersand (&), strip (-), tanda kurung (), dan titik (.)."
                         | translate
                     }}</span
                   >
                 </div>
               </div>
-
-              <div class="mb-3 row">
+              <div class="row" *ngIf="group == 'Gudang'">
                 <label class="col-sm-4 col-form-label"
-                  >{{ "Group" | translate }}
-                  <span class="stamp-required show">&nbsp;*</span>
+                  >{{ "Keterangan Inisial" | translate }}
                 </label>
                 <div class="col-sm-8">
-                  <select
-                    aria-label="Group"
-                    cSelect
-                    id="selectedKodeGroup"
-                    formControlName="kodeGroup"
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="cad1"
+                    [readOnly]="adding"
+                    (keypress)="conditionInput($event, 'namaCabang')"
+                    maxlength="20"
+                  />
+
+                  <span
+                    *ngIf="myForm.controls['cad1'].hasError('namaCabang')"
+                    class="text-danger"
+                    >{{
+                      "Keterangan Inisial hanya boleh mengandung huruf, angka, spasi, ampersand (&), strip (-), tanda kurung (), dan titik (.)."
+                        | translate
+                    }}</span
                   >
-                    <option value="" disabled selected hidden>
-                      {{ "Pilih Group" | translate }}
-                    </option>
-                    <option
-                      *ngFor="let kodeGroup of kodeGroupOptions"
-                      [value]="kodeGroup.value"
-                    >
-                      {{ kodeGroup.value }} - {{ kodeGroup.label | translate }}
-                    </option>
-                  </select>
-                  <span *ngIf="isFieldValid('kodeGroup')" class="text-danger">{{
-                    "Wajib diisi" | translate
-                  }}</span>
                 </div>
               </div>
             </div>
@@ -387,7 +382,7 @@
                   </ngx-select-dropdown>
                 </div>
               </div>
-              <div class="mb-3 row">
+              <div class="mb-3 row" *ngIf="group != 'Gudang'">
                 <label class="col-sm-4 col-form-label">{{
                   "Region" | translate
                 }}</label>
@@ -403,7 +398,7 @@
                 </div>
               </div>
 
-              <div class="mb-3 row">
+              <div class="mb-3 row" *ngIf="group != 'Gudang'">
                 <label class="col-sm-4 col-form-label">{{
                   "Area" | translate
                 }}</label>
@@ -416,6 +411,47 @@
                     id="keteranganArea"
                   >
                   </ngx-select-dropdown>
+                </div>
+              </div>
+              <div class="mb-3 row" *ngIf="group != 'Department'">
+                <label class="col-sm-4 col-form-label">{{
+                  "Alamat IP" | translate
+                }}</label>
+                <div class="col-sm-4">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="ip"
+                    [readOnly]="adding"
+                    maxlength="15"
+                    (keypress)="conditionInput($event, 'ip')"
+                  />
+                  <span
+                    *ngIf="myForm.controls['ip'].hasError('ip')"
+                    class="text-danger"
+                    >{{
+                      "IP tidak valid. Format yang diperbolehkan adalah angka 0-255 yang dipisahkan oleh titik (contoh: 192.168.0.1)."
+                        | translate
+                    }}
+                  </span>
+                </div>
+                <label class="col-sm-2 col-form-label">{{
+                  "Port" | translate
+                }}</label>
+                <div class="col-sm-2">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="port"
+                    [readOnly]="adding"
+                    maxlength="5"
+                    (keypress)="conditionInput($event, 'port')"
+                  />
+                  <span
+                    *ngIf="myForm.controls['port'].hasError('port')"
+                    class="text-danger"
+                    >{{ "Port tidak valid" | translate }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -468,7 +504,7 @@
                   </span>
                 </div>
               </div>
-              <div class="mb-3 row">
+              <div class="mb-3 row" *ngIf="group != 'Gudang'">
                 <label class="col-sm-4 col-form-label">{{
                   "Tipe Cabang" | translate
                 }}</label>
@@ -582,9 +618,7 @@
             [disabled]="adding"
           >
             <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
-            <span *ngIf="!adding"
-              >{{ "Buat" | translate }} {{ "Cabang" | translate }}</span
-            >
+            <span *ngIf="!adding">{{ "Simpan" | translate }}</span>
           </button>
         </div>
       </form>
