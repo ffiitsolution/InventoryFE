@@ -35,35 +35,6 @@ export class ModalPrintListComponent {
     private g: GlobalService
   ) { }
 
-  async onClick() {
-    this.updatingStatus = true;
-    try {
-      if (this.updateStatusUrl !== '' || this.updatePrintStatusParam !== '') {
-        await lastValueFrom(
-          this.dataService.postData(this.config.BASE_URL + this.updateStatusUrl, this.updatePrintStatusParam)
-        );
-      }
-
-      try {
-
-        if(this.isShowSelection) this.generateReportParam.confirmSelection = this.confirmSelection;
-        const base64Response = await lastValueFrom(
-          this.dataService.postData(this.config.BASE_URL + this.generatePdfUrl, this.generateReportParam, true)
-        );
-        const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        window.open(url);
-      } catch (error: any) {
-        this.toastr.error(error.message ?? 'Unknown error while generating PDF');
-      }
-    } catch (error: any) {
-      this.toastr.error(error.message ?? 'Error updating status');
-    } finally {
-      this.updatingStatus = false;
-      this.reloadTable.emit();
-    }
-  }
-
   closeModal() {
     this.closeModalEvent.emit();
   }

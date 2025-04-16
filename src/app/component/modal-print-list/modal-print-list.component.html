@@ -14,11 +14,11 @@
       <div class="d-flex justify-content-center align-items-center mb-3" *ngIf="isShowSelection">
         <label class="form-check-label me-2" for="confirmSend">Expired Date, Di Cetak ? </label>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="confirmSend" id="confirmYes" value="Ya" [(ngModel)]="confirmSelection">
+          <input class="form-check-input" type="radio" name="confirmSend" id="confirmYes" value="Ya" [(ngModel)]="generateReportParam.confirmSelection">
           <label class="form-check-label" for="confirmYes">Ya</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="confirmSend" id="confirmNo" value="Tidak" [(ngModel)]="confirmSelection">
+          <input class="form-check-input" type="radio" name="confirmSend" id="confirmNo" value="Tidak" [(ngModel)]="generateReportParam.confirmSelection">
           <label class="form-check-label" for="confirmNo">Tidak</label>
         </div>
       </div>

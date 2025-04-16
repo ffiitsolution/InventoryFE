@@ -45,6 +45,11 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
   selectedRowData: any;
   defaultDate: any ;
   private ngUnsubscribe: Subject<void> = new Subject<void>();
+  paramGenerateReport = {};
+  isShowModalReport: boolean = false;
+  buttonCaptionPrint: String = 'Cetak';
+  alreadyPrint: boolean = false;
+  disabledPrintButton: boolean = false;
 
   @ViewChild('formModal') formModal: any;
   // Form data object
@@ -308,6 +313,7 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
         satuanBesar:'',
       });
       this.isShowDetail = false;
+      if(newItem) this.onShowModalPrint(newItem);
     }
 
     addJumlahBahanBaku($event:any): void {
@@ -325,6 +331,26 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
       }
     }
 
+    onShowModalPrint(data: any) {
+      this.paramGenerateReport = {
+        noTransaksi: data.nomorTransaksi,
+        userEntry: data.userCreate,
+        jamEntry: this.globalService.transformTime(data.timeCreate),
+        tglEntry: this.globalService.transformDate(data.dateCreate),
+        outletBrand: 'KFC',
+        kodeGudang: this.globalService.getUserLocationCode(),
+        isDownloadCsv: false,
+        reportName: 'cetak_production',
+        confirmSelection: 'Ya',
+      };
+      this.isShowModalReport = true;
+      // this.onBackPressed();
+    }
+    
+    closeModal(){
+      this.isShowModalReport = false;
+      this.disabledPrintButton = false;
+    }
 }
 
 

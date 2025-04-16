@@ -193,6 +193,7 @@ export class ProductionListComponent implements OnInit {
             kodeGudang: this.g.getUserLocationCode(),
             isDownloadCsv: false,
             reportName: 'cetak_production',
+            confirmSelection: 'Ya',
           };
         }
         );

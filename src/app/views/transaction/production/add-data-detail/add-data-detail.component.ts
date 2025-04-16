@@ -121,8 +121,8 @@ export class AddDataDetailProductionComponent
     this.ngUnsubscribe.complete();
   }
 
-  onBackPressed() {
-    this.onBatalPressed.emit('');
+  onBackPressed(data: any ='') {
+    this.onBatalPressed.emit(data);
   }
 
   onPageChange(event: number) {
@@ -261,10 +261,12 @@ export class AddDataDetailProductionComponent
                 if (!res.success) {
                   this.toastr.error(res.message);
                 } else {
-                  setTimeout(() => {
-                    this.toastr.success('Data production berhasil diposting!');
-                    this.onPreviousPressed();
-                  }, DEFAULT_DELAY_TIME);
+
+                  this.onBackPressed(res.data);
+                  // setTimeout(() => {
+                  //   this.toastr.success('Data production berhasil diposting!');
+                  //   this.onPreviousPressed();
+                  // }, DEFAULT_DELAY_TIME);
                 }
                 this.adding = false;
                 this.loadingSimpan = false;

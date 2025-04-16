@@ -43,6 +43,7 @@ export class PrintButtonSharedComponent {
       }
 
       try {
+        console.log('generateReportParam', this.generateReportParam);
         const base64Response = await lastValueFrom(
           this.dataService.postData(this.config.BASE_URL + this.generatePdfUrl, this.generateReportParam, true)
         );
