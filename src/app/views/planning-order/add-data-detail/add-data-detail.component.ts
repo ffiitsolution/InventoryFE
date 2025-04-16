@@ -171,7 +171,7 @@ export class AddDataDetailPlanningOrderComponent
             manual2: (item.week2 * item.konversi).toFixed(2),   
             manual3: (item.week3 * item.konversi).toFixed(2),
             manual4: (item.week4 * item.konversi).toFixed(2),  
-            isChanged: item.isChanged,
+            isChanged: item.isChanged == 1 ? true : false,
             userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
           })),
        
@@ -326,7 +326,7 @@ export class AddDataDetailPlanningOrderComponent
             periode1: (item.periode1/ item.konversi).toFixed(2),
             periode2: (item.periode2/ item.konversi).toFixed(2), 
             periode3: (item.periode3/ item.konversi).toFixed(2),
-            isChanged: false,
+            isChanged: item.isChanged,
           }
         });
         this.loading = false;

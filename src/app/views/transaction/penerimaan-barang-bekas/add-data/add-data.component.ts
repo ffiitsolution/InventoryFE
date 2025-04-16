@@ -46,6 +46,7 @@ export class AddPenerimaanBrgBksComponent implements OnInit, AfterViewInit, OnDe
   defaultDate: any ;
   private ngUnsubscribe: Subject<void> = new Subject<void>();
   buttonCaptionSelect: string = BUTTON_CAPTION_SELECT;
+ 
 
   @ViewChild('formModal') formModal: any;
   // Form data object
@@ -320,6 +321,8 @@ export class AddPenerimaanBrgBksComponent implements OnInit, AfterViewInit, OnDe
       }
       return null;
     }
+
+   
 
 }
 

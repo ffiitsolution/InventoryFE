@@ -225,9 +225,12 @@ export class AddDataDetailBarangComponent
             konversi: expiredItem.konversi,
             qtyBesar: -Math.abs(parseInt(expiredItem.qtyWasteBesar)) || 0,
             qtyKecil: -Math.abs(parseInt(expiredItem.qtyWasteKecil)) || 0,
-            totalQty: expiredItem.totalQty
-              ? -Math.abs(expiredItem.totalQty)
-              : 0,
+            // totalQty: expiredItem.totalQtyExpired
+            //   ? -Math.abs(expiredItem.totalQtyExpired)
+            //   : 0,
+              totalQty:
+              -Math.abs(this.helper.sanitizedNumber(expiredItem.qtyWasteBesar) * expiredItem.konversi +
+              this.helper.sanitizedNumber(expiredItem.qtyWasteKecil)),
           })) || [],
       };
 

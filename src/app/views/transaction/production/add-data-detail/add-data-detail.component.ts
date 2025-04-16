@@ -150,9 +150,15 @@ export class AddDataDetailProductionComponent
           'D MMM YYYY'
         ),
         konversi: this.headerProduction.satuanHasilProduksi,
+        satuanKecil: this.headerProduction.satuanKecil,
+        satuanBesar: this.headerProduction.satuanBesar,
         qtyBesar: this.headerProduction.jumlahHasilProduksi,
         qtyKecil: '0.00',
         totalQty: this.headerProduction.totalHasilProduksi,
+        totalQtyExpired:this.headerProduction.totalHasilProduksi,
+        flagExpired: 'Y',
+        tipeProduksi:'F',
+        hargaSatuan: this.headerProduction.hargaSatuan
       };
 
       const param = {
@@ -169,7 +175,8 @@ export class AddDataDetailProductionComponent
         ),
         jumlahResep: this.headerProduction.jumlahHasilProduksi,
         userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
-        details: this.listProductData
+        details: [
+          ...this.listProductData
           .filter((item) => item.bahanBaku && item.bahanBaku.trim() !== '')
           .map((item) => ({
             kodeGudang: this.g.getUserLocationCode(),
@@ -184,7 +191,8 @@ export class AddDataDetailProductionComponent
             satuanBesar: item.satuanBesar,
             qtyBesar: item.qtyPemakaianBesar || 0,
             qtyKecil: item.qtyPemakaianKecil || 0,
-            flagExpired: 'Y',
+            flagExpired: item.isConfirmed ? 'Y' : 'T',
+            tipeProduksi:'R',
             totalQty:
               this.helper.sanitizedNumber(item.qtyPemakaianBesar) *
                 item.konversi +
@@ -199,7 +207,9 @@ export class AddDataDetailProductionComponent
               ),
             hargaSatuan: 0,
             userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
-          })),
+          }))
+          ,extraItem
+        ],
           
         detailsExpired: [
           ...this.listEntryExpired?.map((expiredItem) => ({
@@ -444,6 +454,7 @@ export class AddDataDetailProductionComponent
       qtyWasteBesar: '',
       qtyWasteKecil: '',
       isConfirmed: false,
+      tipeProduksi:'R',
     },
   ];
   tempKodeBarang: string = '';
@@ -461,6 +472,7 @@ export class AddDataDetailProductionComponent
           qtyPemakaian: parseFloat(item.qtyPemakaian).toFixed(2),
           satuanKecil: item.satuanKecil,
           satuanBesar: item.satuanBesar,
+          tipeProduksi:'R',
           qtyPemakaianBesar: Math.floor(
             (item.qtyPemakaian * this.headerProduction.jumlahHasilProduksi) /
               item.konversi

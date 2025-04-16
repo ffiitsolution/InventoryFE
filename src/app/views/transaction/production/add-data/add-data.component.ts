@@ -101,6 +101,9 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
           totalHasilProduksi: ['', [Validators.required,Validators.min(1)]],
           labelSatuanHasilProduksi: [''],
           totalBahanBaku: [0],
+          hargaSatuan: [0],
+          satuanKecil:[''],
+          satuanBesar:[''],
     });
 
     this.myForm.get('jumlahHasilProduksi')?.valueChanges
@@ -267,6 +270,9 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
         namaBarang: data.namaBarang,
         satuanHasilProduksi: parseFloat(data.konversi).toFixed(2),
         labelSatuanHasilProduksi: data.satuanKecil+"/"+data.satuanBesar,
+        hargaSatuan: 0,
+        satuanKecil: data.satuanKecil,
+        satuanBesar: data.satuanBesar,
       })
      
     }
@@ -297,6 +303,9 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
         totalHasilProduksi: '',
         labelSatuanHasilProduksi: '',
         totalBahanBaku: 0,
+        hargaSatuan: 0,
+        satuanKecil:'',
+        satuanBesar:'',
       });
       this.isShowDetail = false;
     }

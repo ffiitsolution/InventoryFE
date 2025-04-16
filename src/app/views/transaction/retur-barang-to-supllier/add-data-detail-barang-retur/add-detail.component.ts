@@ -213,7 +213,7 @@ export class AddDataDetailBarangReturComponent
             totalQty:
               this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi +
               this.helper.sanitizedNumber(item.qtyWasteKecil),
-            totalQtyExpired:
+            totalQtyExpiredValue:
               this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi +
               this.helper.sanitizedNumber(item.qtyWasteKecil),
             hargaSatuan: 0,
@@ -238,6 +238,9 @@ export class AddDataDetailBarangReturComponent
               ? -Math.abs(expiredItem.totalQty)
               : 0,
             flagExpired: 'Y',
+            totalQtyExp:
+              -Math.abs(this.helper.sanitizedNumber(expiredItem.qtyWasteBesar) * expiredItem.konversi +
+              this.helper.sanitizedNumber(expiredItem.qtyWasteKecil)),
           })) || [],
       };
 

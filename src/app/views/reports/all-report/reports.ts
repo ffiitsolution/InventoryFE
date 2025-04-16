@@ -36,7 +36,7 @@ export const reports: Reports = {
       path: '/reports/master',
     },
     7: {
-      name: 'Master Barang Bekas Produksi',
+      name: 'Master Barang Produksi',
       path: '/reports/master',
     },
     8: {
