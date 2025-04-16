@@ -130,10 +130,10 @@
     </c-card-footer>
   </c-card>
   <c-modal
-#staticBackdropModal
+#staticBackdropModal2
 [visible]="isShowModal"
 backdrop="static"
-id="staticBackdropModal"
+id="staticBackdropModal2"
 size="xl"
 >
 <c-modal-header>
@@ -142,7 +142,7 @@ size="xl"
     (click)="isShowModal = false"
     type="button"
     class="btn btn-info ms-2"
-    [cModalToggle]="staticBackdropModal.id"
+    [cModalToggle]="staticBackdropModal2.id"
     cButtonClose
   >
     <i class="fa fa-times text-white"></i>
@@ -167,3 +167,4 @@ size="xl"
 </c-modal>
   <div class="modal-bg-backdrop" *ngIf="isShowModal"></div>
 </div>
+

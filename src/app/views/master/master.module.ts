@@ -103,6 +103,7 @@ import { SelectDropDownModule } from 'ngx-select-dropdown';
 import { AddDataDetailResepComponent, AddResepComponent, MasterResepComponent } from './master-resep';
 import { AddDataDetailProductionComponent } from '../transaction/production/add-data-detail/add-data-detail.component';
 import { ProfileCompanyComponent } from './profile-company/profile-company.component';
+import { SharedComponentModule } from '../../component/shared.component.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -130,6 +131,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SelectDropDownModule,
     TableModule,
     PopoverModule,
+    SharedComponentModule
   ],
   declarations: [
     MasterUserComponent,

@@ -1,10 +1,12 @@
 import { CommonModule } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
-import { CardModule, GridModule, ButtonDirective } from "@coreui/angular";
+import { CardModule, GridModule, ButtonDirective, ModalModule } from "@coreui/angular";
 import { PrintButtonSharedComponent } from "./print-btn/print-button.component";
 import { NgxPaginationModule } from "ngx-pagination";
 import { PrintButtonGrowthSharedComponent } from "./print-btn-growth/print-btn-growth.component";
+import { ModalPrintListComponent } from "./modal-print-list/modal-print-list.component";
+import { FormsModule } from "@angular/forms";
 
 @NgModule({
   imports: [
@@ -14,17 +16,20 @@ import { PrintButtonGrowthSharedComponent } from "./print-btn-growth/print-btn-g
     HttpClientModule,
     ButtonDirective,
     NgxPaginationModule,
+    ModalModule,
+    FormsModule
   ],
   declarations: [
     PrintButtonSharedComponent,
-    PrintButtonGrowthSharedComponent
+    PrintButtonGrowthSharedComponent,
+    ModalPrintListComponent
   ],
   schemas: [],
   exports: [
     PrintButtonSharedComponent,
     NgxPaginationModule,
-    PrintButtonGrowthSharedComponent
-
+    PrintButtonGrowthSharedComponent,
+    ModalPrintListComponent
   ]
 })
 export class SharedComponentModule {}

@@ -123,6 +123,7 @@ export class MasterResepComponent
           title: 'Kode',
           orderable: true,
           searchable: true,
+          width: '80px'
         },
         {
           data: 'namaBarang',
@@ -130,7 +131,12 @@ export class MasterResepComponent
           orderable: true,
           searchable: true,
         },
-        { data: 'defaultGudang', title: 'Default Gudang', searchable: false },
+        { 
+          data: 'defaultGudang',
+          title: 'Default Gudang',
+          searchable: false,
+          width:'30px' 
+        },
         {
           data: 'konversi',
           title: 'Konversi',
@@ -148,7 +154,13 @@ export class MasterResepComponent
           title: 'Satuan Kecil',
           searchable: false,
         },      
-        { data: 'jumlahBahanBaku', title: 'Bahan Baku', orderable: false, searchable: false },
+        { 
+          data: 'jumlahBahanBaku', 
+          title: 'Jumlah Resep', 
+          orderable: false, 
+          searchable: false,
+          width:'30px' 
+        },
         {
           data: 'statusAktif',
           title: 'Status',

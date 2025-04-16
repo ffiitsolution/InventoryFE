@@ -174,7 +174,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
         statusAktif: this.paramStatusAktif,
         tipeListing: this.paramTipeListing, 
       }
-    }else if (['Master Barang','Master Barang Bekas'].includes(this.currentReport)) {
+    }else if (['Master Barang','Master Barang Bekas','Master Barang Produksi'].includes(this.currentReport)) {
       param = {
         statusAktif: this.paramStatusAktif
       }

@@ -46,6 +46,11 @@ export class AddPenerimaanBrgBksComponent implements OnInit, AfterViewInit, OnDe
   defaultDate: any ;
   private ngUnsubscribe: Subject<void> = new Subject<void>();
   buttonCaptionSelect: string = BUTTON_CAPTION_SELECT;
+  paramGenerateReport = {};
+  isShowModalReport: boolean = false;
+  buttonCaptionPrint: String = 'Cetak';
+  alreadyPrint: boolean = false;
+  disabledPrintButton: boolean = false;
 
   @ViewChild('formModal') formModal: any;
   // Form data object
@@ -203,13 +208,14 @@ export class AddPenerimaanBrgBksComponent implements OnInit, AfterViewInit, OnDe
         { data: 'kodeCabang', title: 'Kode', searchable: true },
         // { data: 'kodeSingkat', title: 'Inisial', searchable: true },
         // { data: 'tipeCabang', title: 'Tipe', searchable: true },
-        { data: 'namaCabang', title: 'Nama', searchable: true },
+        { data: 'namaCabang', title: 'Nama Site', searchable: true },
         { data: 'deskripsiGroup', title: 'Group', searchable: true },
         {
          data: null, // or data: 'alamat' if needed, but `null` works fine when using render
         title: 'Alamat',
+        width: '200px',
         render: function(data, type, row) {
-          return `${row.alamat1 || ''} ${row.alamat2 || ''}`.trim();
+          return `${row.alamat1 || ''}, ${row.alamat2 || ''}`.trim();
         }
         },
         { data: 'kota', title: 'Kota', searchable: true },
@@ -295,6 +301,8 @@ export class AddPenerimaanBrgBksComponent implements OnInit, AfterViewInit, OnDe
       
       });
       this.isShowDetail = false;
+
+      if(newItem) this.onShowModalPrint(newItem);
     }
 
     addJumlahBrgBks($event:any): void {
@@ -319,6 +327,26 @@ export class AddPenerimaanBrgBksComponent implements OnInit, AfterViewInit, OnDe
         return { specialCharNotAllowed: true };
       }
       return null;
+    }
+
+    onShowModalPrint(data: any) {
+      this.paramGenerateReport = {
+        nomorTransaksi: data.nomorTransaksi,
+        userEntry: data.userCreate,
+        jamEntry: this.globalService.transformTime(data.timeCreate),
+        tglEntry: this.globalService.transformDate(data.dateCreate),
+        outletBrand: 'KFC',
+        kodeGudang: this.globalService.getUserLocationCode(),
+        isDownloadCsv: false,
+        reportName: 'cetak_penerimaan_barang_bekas',
+      };
+      this.isShowModalReport = true;
+      // this.onBackPressed();
+    }
+    
+    closeModal(){
+      this.isShowModalReport = false;
+      this.disabledPrintButton = false;
     }
 
 }

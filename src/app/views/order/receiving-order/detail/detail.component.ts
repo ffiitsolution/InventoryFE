@@ -107,14 +107,13 @@ export class ReceivingOrderDetailComponent
                 const finalData = {
                   ...rest,
                   dtIndex: this.page.start + index + 1,
-                  konversi: `${this.g.formatToDecimal(rest.konversi)} ${rest.satuanBesar}/${rest.satuanKecil}`,
-                  konversiProduct: `${this.g.formatToDecimal(rest.konversiProduct)} ${rest.satuanBesarProduct || '-'
-                    }/${rest.satuanKecilProduct || '-'}`,
+                  konversi: `${this.g.formatToDecimal(rest.konversi)} ${rest.satuanKecil}/${rest.satuanBesar}`,
+                  konversiProduct: `${this.g.formatToDecimal(rest.konversiProduct)} ${rest.satuanKecilProduct || '-'
+                    }/${rest.satuanBesarProduct || '-'}`,
                   qtyPesanBesar: this.g.formatToDecimal(rest.qtyPesanBesar),
                   totalQtyPesan: this.g.formatToDecimal(rest.totalQtyPesan),
                   qtyPesanKecil: this.g.formatToDecimal(rest.qtyPesanKecil),
                 };
-                console.log("finalData",finalData)
                 return finalData;
               });
               this.page.recordsTotal = resp.recordsTotal;

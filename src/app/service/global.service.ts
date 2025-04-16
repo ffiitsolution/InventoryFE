@@ -8,7 +8,12 @@ import { AppConfig } from '../config/app.config';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
 import { DatePipe } from '@angular/common';
 import { isNull } from 'lodash-es';
-import { PRINT_STATUS, STATUS_AKTIF, STATUS_RESULT, TIPE_PEMBAYARAN } from '../../constants';
+import {
+  PRINT_STATUS,
+  STATUS_AKTIF,
+  STATUS_RESULT,
+  TIPE_PEMBAYARAN,
+} from '../../constants';
 import moment from 'moment';
 
 @Injectable({
@@ -39,18 +44,17 @@ export class GlobalService {
   paramType: any;
   navbarVisibility: boolean = true;
 
-
   selectedReportCategory: any = null;
   statusEndOfMonth: any = '';
   statusPlanningOrder: any = '';
-    statusBackupDb: any = '';
+  statusBackupDb: any = '';
 
   constructor(
     private titleService: Title,
     @Inject(DOCUMENT) private document: Document,
     private router: Router,
     private datePipe: DatePipe
-  ) { }
+  ) {}
 
   saveLocalstorage(key: string, value: any, type: string | boolean = 'json') {
     if (type === 'json' || type === true) {
@@ -335,18 +339,18 @@ export class GlobalService {
       type == 'alphanumeric'
         ? /^[a-zA-Z0-9]$/
         : type == 'numeric'
-          ? /^[0-9]$/
-          : type == 'numericDot'
-            ? /^[0-9.]$/
-            : type == 'phone'
-              ? /^[0-9-]$/
-              : type == 'email'
-                ? /^[a-zA-Z0-9@._-]$/
-                : type == 'excludedSensitive'
-                  ? /^[a-zA-Z0-9 .,_@-]*$/
-                  : type == 'kodeSingkat'
-                    ? /^[a-zA-Z]+$/
-                    : /^[a-zA-Z.() ,\-]*$/;
+        ? /^[0-9]$/
+        : type == 'numericDot'
+        ? /^[0-9.]$/
+        : type == 'phone'
+        ? /^[0-9-]$/
+        : type == 'email'
+        ? /^[a-zA-Z0-9@._-]$/
+        : type == 'excludedSensitive'
+        ? /^[a-zA-Z0-9 .,_@-]*$/
+        : type == 'kodeSingkat'
+        ? /^[a-zA-Z]+$/
+        : /^[a-zA-Z.() ,\-]*$/;
 
     if (temp_regex.test(inp)) {
       // ⭐ Tambahkan ini:
@@ -371,7 +375,7 @@ export class GlobalService {
       search: search,
       height: '400px',
       placeholder: placeholder,
-      customComparator: () => { },
+      customComparator: () => {},
       limitTo: limit,
       moreText: 'lainnya...',
       noResultsFound: 'Tidak ditemukan!',
@@ -410,7 +414,7 @@ export class GlobalService {
   convertKeysToCamelCase(obj: any): any {
     const newObj: any = {};
 
-    Object.keys(obj).forEach(key => {
+    Object.keys(obj).forEach((key) => {
       // Convert UPPERCASE_UNDERSCORE to camelCase
       const camelCaseKey = key
         .toLowerCase()
@@ -423,7 +427,7 @@ export class GlobalService {
   }
 
   formatStrDateMMM(date: any) {
-    return moment(date, "YYYY-MM-DD").format("DD MMM yyyy");
+    return moment(date, 'YYYY-MM-DD').format('DD MMM yyyy');
   }
 
   convertToRupiah(amount: number): string {
@@ -432,6 +436,4 @@ export class GlobalService {
     }
     return 'Rp' + amount.toLocaleString('id-ID', { minimumFractionDigits: 2 });
   }
-
-
 }

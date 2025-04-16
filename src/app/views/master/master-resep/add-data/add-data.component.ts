@@ -19,6 +19,7 @@ import moment from 'moment';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HelperService } from '../../../../service/helper.service';
 import { DatePipe } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-resep',
@@ -44,6 +45,7 @@ export class AddResepComponent implements OnInit, OnDestroy {
   kodeBarang: String = '';
   detail: any;
   @ViewChild('formModal') formModal: any;
+  loadingSimpan: boolean = false;
   // Form data object
 
 
@@ -55,7 +57,8 @@ export class AddResepComponent implements OnInit, OnDestroy {
     private form: FormBuilder,
     private appService: AppService,
     private datePipe: DatePipe,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService,
   ) {
     this.dpConfig.containerClass = 'theme-red';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
@@ -69,7 +72,8 @@ export class AddResepComponent implements OnInit, OnDestroy {
         totalBahanBaku: [0],
         satuanKecil:[''],
         satuanBesar:[''],
-        defaultGudang:['']
+        defaultGudang:[''],
+        statusBarang: [''],
     });
   }
 
@@ -256,8 +260,38 @@ export class AddResepComponent implements OnInit, OnDestroy {
         namaBarang: this.detail.namaBarang,
         satuanKecil: this.detail.satuanKecil,
         satuanBesar: this.detail.satuanBesar,
-        defaultGudang: this.detail.defaultGudang
+        defaultGudang: this.detail.defaultGudang,
+        statusBarang: this.detail.statusAktif,
       });
+    }
+
+    onUpdate(): void{
+     
+        this.loadingSimpan =true;
+        const requestBody = { 
+          kodeBarang: this.myForm.get('kodeBarang')?.value,
+          statusAktif: this.myForm.get('statusBarang')?.value == 'A' ? 'T' : 'A',
+         };
+  
+        this.appService.patch('/api/product-status/update', requestBody).subscribe({
+          next: (res: any) => {
+            if (!res.success) {
+              alert(res.message);
+            } else {
+              this.myForm.patchValue({
+                statusBarang: this.myForm.get('statusBarang')?.value == 'A' ? 'T' : 'A',
+              })
+              this.toastr.success(this.translationService.instant('Berhasil Update!'));
+            }
+        
+            this.loadingSimpan =false;
+          },
+          error: (err: any) => {
+            alert('An error occurred while updating the profile.');
+            this.loadingSimpan =false;
+          },
+        });
+      
     }
   }
 

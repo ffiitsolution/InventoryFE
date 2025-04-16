@@ -46,7 +46,7 @@ export class AddDataDetailPenerimaanBrgBksComponent
   disabledPrintButton: boolean = false;
   updatingStatus: boolean = false;
   RejectingOrder: boolean = false;
-  alreadyPrint: Boolean = false;
+  alreadyPrint: boolean = false;
   totalLength: number = 0;
   listEntryExpired: any[] = [];
   buttonCaptionView: String = 'Lihat';
@@ -79,6 +79,10 @@ export class AddDataDetailPenerimaanBrgBksComponent
   };
   protected config = AppConfig.settings.apiServer;
   selectedRowData: any;
+  paramGenerateReport = {};
+  isShowModalReport: boolean = false;
+  buttonCaptionPrint: String = 'Cetak';
+
   constructor(
     public g: GlobalService,
     private translation: TranslationService,
@@ -123,8 +127,8 @@ export class AddDataDetailPenerimaanBrgBksComponent
     this.ngUnsubscribe.complete();
   }
 
-  onBackPressed() {
-    this.onBatalPressed.emit('');
+  onBackPressed(data: any ='') {
+    this.onBatalPressed.emit(data);
   }
 
 
@@ -175,7 +179,7 @@ export class AddDataDetailPenerimaanBrgBksComponent
       };
 
       Swal.fire({
-        title: 'Pastikan semua data sudah di input dengan benar!',
+        title: 'Pastikan semua data sudah di input dengan benar, PERIKSA SEKALI LAGI...!!',
         text: 'DATA YANG SUDAH DIPOSTING TIDAK DAPAT DIPERBAIKI..!!',
         icon: 'warning',
         showCancelButton: true,
@@ -193,10 +197,12 @@ export class AddDataDetailPenerimaanBrgBksComponent
                 if (!res.success) {
                   this.toastr.error(res.message);
                 } else {
-                  setTimeout(() => {
-                    this.toastr.success('Data Penerimaan Barang Bekas berhasil diposting!');
-                    this.onPreviousPressed();
-                  }, DEFAULT_DELAY_TIME);
+                 
+                  this.onBackPressed(res.data);
+                  // setTimeout(() => {
+                  //   this.toastr.success('Data Penerimaan Barang Bekas berhasil diposting!');
+                  //   this.onPreviousPressed();
+                  // }, DEFAULT_DELAY_TIME);
                 }
                 this.adding = false;
                 this.loadingSimpan = false;
@@ -591,5 +597,10 @@ export class AddDataDetailPenerimaanBrgBksComponent
       });
 
       this.jumlahItem.emit(this.listProductData.length);
+    }
+
+    closeModal(){
+      this.isShowModalReport = false;
+      this.disabledPrintButton = false;
     }
 }
