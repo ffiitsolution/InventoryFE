@@ -330,3 +330,18 @@
     </c-modal-body>
 </c-modal>
 </div>
+
+<div class="fade-in">
+  <app-modal-print-list
+    [alreadyPrint]="alreadyPrint"
+    [disabledPrintButton]="disabledPrintButton"
+    [generatePdfUrl]="'/api/send-order-to-warehouse/report'"
+    [updateStatusUrl]="''"
+    [updatePrintStatusParam]="''"
+    [generateReportParam]="paramGenerateReport"
+    [isShowModalReport]="isShowModalReport"
+    [isShowSelection]="false"
+    (closeModalEvent)="closeModal()"
+  >
+  </app-modal-print-list>
+</div>
