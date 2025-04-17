@@ -87,6 +87,7 @@ export class ReceivingOrderAddDetailFormComponent
               this.page.recordsTotal = resp.recordsTotal;
               this.page.recordsFiltered = resp.recordsFiltered;
               this.showFilterSection = false;
+              this.dataBarang = mappedData;
               callback({
                 recordsTotal: resp.recordsTotal,
                 recordsFiltered: resp.recordsFiltered,

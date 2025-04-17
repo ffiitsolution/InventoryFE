@@ -53,6 +53,7 @@ import {
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
 import { OrderComponent } from './order/order';
+import { SharedComponentModule } from '../../component/shared.component.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -78,7 +79,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     BsDatepickerModule.forRoot(),
     ModalModule,
     SelectDropDownModule,
-    TableModule
+    TableModule,
+    SharedComponentModule
   ],
   declarations: [
     ReceivingOrderComponent,
