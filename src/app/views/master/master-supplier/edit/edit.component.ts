@@ -48,7 +48,8 @@ function excludedSensitive(control: AbstractControl): ValidationErrors | null {
 
 function numeric(control: AbstractControl): ValidationErrors | null {
   const specialCharRegex = /^[0-9]+$/;
-  if (control.value && !specialCharRegex.test(control.value)) {
+  const value = control.value?.trim(); 
+  if (value && !specialCharRegex.test(control.value)) {
     return { numeric: true };
   }
   return null;
@@ -176,6 +177,7 @@ export class MasterSupplierEditComponent implements OnInit {
           ? res.defaultOrderGudangList?.map((item) => ({
               cad1: item.cad1,
               kodeSingkat: item.kodeSingkat.substring(0, 3),
+              name: item.kodeSingkat.substring(0, 3) + ' - ' + item.cad1,
             }))
           : [];
 
@@ -228,7 +230,7 @@ export class MasterSupplierEditComponent implements OnInit {
 
     this.configDefaultGudangSelect = {
       disabled: true,
-      displayKey: 'kodeSingkat',
+      displayKey: 'name',
       search: true,
       height: '300px',
       placeholder: 'Pilih Default Gudang',

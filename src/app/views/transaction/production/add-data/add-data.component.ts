@@ -45,6 +45,11 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
   selectedRowData: any;
   defaultDate: any ;
   private ngUnsubscribe: Subject<void> = new Subject<void>();
+  paramGenerateReport = {};
+  isShowModalReport: boolean = false;
+  buttonCaptionPrint: String = 'Cetak';
+  alreadyPrint: boolean = false;
+  disabledPrintButton: boolean = false;
 
   @ViewChild('formModal') formModal: any;
   // Form data object
@@ -228,7 +233,17 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
         { data: 'satuanBesar', title: 'Satuan Besar', },
         { data: 'satuanKecil', title: 'Satuan Kecil' },
         { data: 'defaultGudang', title: 'Default Gudang', },
-        { data: 'status', title: 'Status', },
+        {
+          data: 'status',
+          title: 'Status',
+          searchable: false,
+          render: (data) => {
+            if (data === 'Aktif') {
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+            }
+            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
+          },
+        },
         {
           title: 'Action',
           render: () => {
@@ -308,6 +323,7 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
         satuanBesar:'',
       });
       this.isShowDetail = false;
+      if(newItem) this.onShowModalPrint(newItem);
     }
 
     addJumlahBahanBaku($event:any): void {
@@ -325,6 +341,26 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
       }
     }
 
+    onShowModalPrint(data: any) {
+      this.paramGenerateReport = {
+        noTransaksi: data.nomorTransaksi,
+        userEntry: data.userCreate,
+        jamEntry: this.globalService.transformTime(data.timeCreate),
+        tglEntry: this.globalService.transformDate(data.dateCreate),
+        outletBrand: 'KFC',
+        kodeGudang: this.globalService.getUserLocationCode(),
+        isDownloadCsv: false,
+        reportName: 'cetak_production',
+        confirmSelection: 'Ya',
+      };
+      this.isShowModalReport = true;
+      // this.onBackPressed();
+    }
+    
+    closeModal(){
+      this.isShowModalReport = false;
+      this.disabledPrintButton = false;
+    }
 }
 
 

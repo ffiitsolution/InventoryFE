@@ -1,15 +1,16 @@
-
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
       <c-row>
-        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
+        <div
+          class="d-grid gap-3 d-md-flex justify-content-start align-items-center"
+        >
           <button class="btn btn-light btn-120" (click)="onBackPressed()">
             <i class="fa fa-chevron-left icon-12 icon-gap"></i>
             {{ "Kembali" | translate }}
           </button>
           <h5>{{ "Detail Produksi Barang" | translate }}</h5>
-        </div>       
+        </div>
       </c-row>
     </c-card-body>
   </c-card>
@@ -19,21 +20,23 @@
         <div class="col"></div>
         <div class="col text-end">
           <app-print-button
-          [alreadyPrint]="alreadyPrint"
-          [disabledPrintButton]="disabledPrintButton"
-          [generatePdfUrl]="'/cetak-production-jasper'"
-          [updateStatusUrl]="''"
-          [updatePrintStatusParam]="''"
-          [generateReportParam]="paramGenerateReport"
-          (reloadTable)="reloadTable()"
-        ></app-print-button>
+            [alreadyPrint]="alreadyPrint"
+            [disabledPrintButton]="disabledPrintButton"
+            [generatePdfUrl]="'/cetak-production-jasper'"
+            [updateStatusUrl]="''"
+            [updatePrintStatusParam]="''"
+            [generateReportParam]="paramGenerateReport"
+            (reloadTable)="reloadTable()"
+          ></app-print-button>
         </div>
         <div class="divider mt-4"></div>
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">
               <span class="label">{{ "Nomor Transaksi" | translate }}</span>
-              <span class="value">: {{ selectedProduction.nomorTransaksi }}</span>
+              <span class="value"
+                >: {{ selectedProduction.nomorTransaksi }}</span
+              >
             </div>
             <div class="detail-item">
               <span class="label">{{ "Tgl. Transaksi" | translate }}</span>
@@ -41,10 +44,10 @@
             </div>
             <div class="detail-item">
               <span class="label">{{ "Status Transaksi" | translate }}</span>
-              <span class="value">: ({{ selectedProduction.statusPosting }}) Posted</span>
+              <span class="value">: POSTED</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Keterangan" | translate }}</span>
+              <span class="label">{{ "Catatan /Keterangan" | translate }}</span>
               <span class="value">: {{ selectedProduction.keterangan }}</span>
             </div>
             <div class="detail-item">
@@ -56,23 +59,40 @@
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">
-              <span class="label">{{ "Kode Resep" | translate }}</span>
-              <span class="value">: {{ selectedProduction.kodeProduksi }} ({{ selectedProduction.barangProduksi}})</span>
+              <span class="label">{{ "Resep Produksi" | translate }}</span>
+              <span class="value"
+                >: {{ selectedProduction.kodeProduksi }} ({{
+                  selectedProduction.barangProduksi
+                }})</span
+              >
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Satuan Resep" | translate }}</span>
-              <span class="value">: {{ selectedProduction.konversi }} {{ selectedProduction.satuanKecil}}/{{ selectedProduction.satuanBesar}}</span>
+              <span class="label">{{ "Konversi Resep" | translate }}</span>
+              <span class="value"
+                >: {{ selectedProduction.konversi }}
+                {{ selectedProduction.satuanKecil }}/{{
+                  selectedProduction.satuanBesar
+                }}</span
+              >
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Jumlah Produksi" | translate }}</span>
-              <span class="value">: {{ selectedProduction.jumlahResep }} {{ selectedProduction.satuanBesar}}</span>
+              <span class="label">{{ "Hasil Produksi" | translate }}</span>
+              <span class="value"
+                >: {{ selectedProduction.jumlahResep }}
+                {{ selectedProduction.satuanBesar }}</span
+              >
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Jumlah Hasil Produksi" | translate }}</span>
-              <span class="value">: {{ selectedProduction.totalProduksi }} {{ selectedProduction.satuanKecil}}</span>
+              <span class="label">{{
+                "Total Hasil Produksi" | translate
+              }}</span>
+              <span class="value"
+                >: {{ selectedProduction.totalProduksi }}
+                {{ selectedProduction.satuanKecil }}</span
+              >
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Jumlah Item Bahan Baku" | translate }}</span>
+              <span class="label">{{ "Jumlah Resep" | translate }}</span>
               <span class="value">: {{ selectedProduction.detailCount }} </span>
             </div>
           </div>
@@ -96,3 +116,301 @@
     </c-card-body>
   </c-card>
 </div>
+
+<c-modal
+  #modalExpired
+  alignment="center"
+  [style]="{
+    display: 'flex',
+    'align-items': 'center',
+    'justify-content': 'center'
+  }"
+  [fullscreen]="false"
+  [visible]="isShowModalExpired"
+  backdrop="static"
+  #modalLg
+  size="xl"
+  id="formModal"
+  [attr.aria-hidden]="!isShowModalExpired"
+>
+  <c-modal-header>
+    <h5 cModalTitle>History Data Expired</h5>
+    <button
+      (click)="isShowModalExpired = false"
+      type="button"
+      class="btn btn-primary ms-2"
+      cButtonClose
+    >
+      <i class="fa fa-times"></i>
+    </button>
+  </c-modal-header>
+  <c-modal-body>
+    <div class="row" *ngIf="selectedRowData">
+      <div class="col-9">
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Nama Barang" | translate }}</label>
+          </div>
+          <div class="col-8 pe-0 d-flex">
+            <div class="col-3 pe-2">
+              <input
+                type="text"
+                class="form-control"
+                id="kodeBarang"
+                [(ngModel)]="selectedRowData.kodeBarang"
+                name="kodeBarang"
+                readonly
+              />
+            </div>
+            <div class="col-9">
+              <input
+                type="text"
+                class="form-control"
+                id="namaBarang"
+                [(ngModel)]="selectedRowData.namaBarang"
+                name="namaBarang"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{
+              "Konversi Barang" | translate
+            }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input
+              type="text"
+              class="form-control"
+              id="konversi"
+              [value]="
+                selectedRowData.konversi +
+                ' ' +
+                selectedRowData.satuanKecil +
+                '/' +
+                selectedRowData.satuanBesar
+              "
+              name="konversi"
+              readonly
+            />
+          </div>
+        </div>
+
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label class="fw-semibold" for="nomorPesanan">{{
+              "Total Qty" | translate
+            }}</label>
+          </div>
+          <div class="col-5 pe-0">
+            <input
+              type="text"
+              placeholder="Nomor pesanan"
+              class="form-control"
+              id="totalQtyProduksi"
+              [value]="this.selectedRowData.totalQty | number : '1.2-2'"
+              name="totalQtyProduksi"
+              readonly
+            />
+          </div>
+          <div class="col-3 d-flex align-items-start">
+            <label for="totalQtyProduksi">{{
+              selectedRowData.satuanKecil
+            }}</label>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Quantity Besar" | translate }}</label>
+          </div>
+          <div class="col-5 pe-0">
+            <input
+              type="text"
+              class="form-control"
+              id="qtyPemakaianBesar"
+              [value]="selectedRowData.qtyBesar | number : '1.2-2'"
+              name="qtyPemakaianBesar"
+              readonly
+            />
+          </div>
+          <div class="col-3 d-flex align-items-start">
+            <label for="qtyPemakaianBesar">{{
+              selectedRowData.satuanBesar
+            }}</label>
+          </div>
+        </div>
+
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Quantity Kecil" | translate }}</label>
+          </div>
+          <div class="col-5 pe-0">
+            <input
+              type="text"
+              class="form-control"
+              id="qtyPemakaianKecil"
+              [value]="selectedRowData.qtyKecil | number : '1.2-2'"
+              name="qtyPemakaianKecil"
+              readonly
+            />
+          </div>
+          <div class="col-3 d-flex align-items-start">
+            <label for="qtyPemakaianKecil">{{
+              selectedRowData.satuanKecil
+            }}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="table-responsive">
+      <ng-container>
+        <!-- <div *ngIf="loading">
+          <app-loading></app-loading>
+        </div> -->
+        <table
+          bordered
+          [hover]="true"
+          [responsive]="true"
+          [striped]="true"
+          align="middle"
+          cTable
+          class="mb-0 border"
+        >
+          <thead>
+            <tr>
+              <th
+                scope="col"
+                style="
+                  background-color: #3c4b64;
+                  color: white;
+                  vertical-align: middle;
+                  width: 20%;
+                "
+                class="text-center align-items-start"
+                rowspan="2"
+              >
+                Tgl. Expired
+              </th>
+              <th
+                scope="col"
+                style="
+                  background-color: #3c4b64;
+                  color: white;
+                  vertical-align: middle;
+                  width: 20%;
+                "
+                class="text-center align-items-start"
+                rowspan="3"
+              >
+                Keterangan Tanggal
+              </th>
+              <th
+                scope="col"
+                style="
+                  background-color: #3c4b64;
+                  color: white;
+                  vertical-align: middle;
+                  width: 124px;
+                "
+                class="text-center align-items-start"
+                rowspan="2"
+              >
+                Qty Besar
+              </th>
+              <th
+                scope="col"
+                style="
+                  background-color: #3c4b64;
+                  color: white;
+                  vertical-align: middle;
+                  width: 124px;
+                "
+                class="text-center align-items-start btn-danger"
+                rowspan="2"
+              >
+                Qty Kecil
+              </th>
+              <!-- Masih sejajar -->
+              <th
+                scope="col"
+                style="
+                  background-color: #3c4b64;
+                  color: white;
+                  vertical-align: middle;
+                  width: 10%;
+                "
+                class="text-center align-items-start"
+                rowspan="2"
+              >
+                Total Qty Expired
+              </th>
+            </tr>
+          </thead>
+          <tbody *ngIf="!listDataExpired || listDataExpired.length === 0">
+            <tr>
+              <td colspan="9" scope="col" class="text-center">No Data Found</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr *ngFor="let data of listDataExpired; let i = index">
+              <td class="text-center">
+                {{ data.tglExpired | date : "dd MMM yyyy" }}
+              </td>
+
+              <td class="text-center">
+                {{ data.tglExpired | date : "dd MMM yyyy" }}
+              </td>
+              <td class="text-center input-column">
+                <div class="d-flex justify-content-center" style="gap: 5px">
+                  {{ helper.abs(data.qtyBesar) | number : "1.2-2" }}
+                  <span
+                    class="d-flex align-items-center justify-content-center"
+                  >
+                    / {{ data.satuanBesar }}
+                  </span>
+                </div>
+              </td>
+
+              <td class="text-center">
+                <div class="d-flex justify-content-center" style="gap: 5px">
+                  {{ helper.abs(data.qtyKecil) | number : "1.2-2" }}
+                  <span
+                    class="d-flex align-items-center justify-content-center"
+                  >
+                    / {{ data.satuanKecil }}
+                  </span>
+                </div>
+              </td>
+
+              <td class="text-center">
+                {{ helper.abs(data.totalQty) | number : "1.2-2" }}
+                {{ data.satuanKecil }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+    </div>
+
+    <div
+      class="row justify-content-between gap-3 mt-3"
+      *ngIf="selectedRowData"
+      style="margin-right: 20px"
+    >
+      <div class="col-4 d-flex"></div>
+      <div class="col-6 d-flex justify-content-end align-items-center gap-3">
+        <p class="mb-0">
+          <strong>TOTAL QTY EXPIRED:</strong>
+          {{ getTotalQty() | number : "1.2-2" }}
+          {{ selectedRowData.satuanKecil }}
+        </p>
+      </div>
+      <div class="col-2"></div>
+    </div>
+  </c-modal-body>
+</c-modal>

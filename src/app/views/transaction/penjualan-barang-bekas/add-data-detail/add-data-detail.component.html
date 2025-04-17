@@ -1,5 +1,32 @@
 <div class="fade-in">
   <c-card class="mb-4">
+    <c-card-body >
+      <div class="w-100 px-2 py-1 row justify-content-between">
+        <div class="col d-flex">
+          <div class="col-3 d-flex align-items-center">
+            <label for="jabatanSaksi">{{ "Jumlah Item" | translate }}</label>
+          </div>
+          <div class="col-1 pe-0">
+            <input type="text" class="form-control text-center" [value]="listProductData.length-1" readonly />
+          </div>
+          <div class="col"></div>
+
+        </div>
+        <div class="col d-flex">
+          <div class="col"></div>
+          <div class="col-3 d-flex align-items-center">
+            <label for="jabatanSaksi">{{ "Total Penjualan" | translate }}</label>
+          </div>
+          <div class="col-7 pe-0">
+            <input type="text" class="form-control" [value]="g.convertToRupiah(getTotalPenjualan())" readonly />
+          </div>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
     <c-card-body>
       <div class="table-responsive">
         <ng-container>
@@ -30,6 +57,9 @@
                 <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
                   class="text-center align-items-start" rowspan="2">
                   Total Penjualan</th>
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                  class="text-center align-items-start" rowspan="2">
+                  Action</th>
               </tr>
               <tr>
                 <th scope="col" class="text-center"
@@ -101,8 +131,8 @@
                 </td>
 
                 <td class="text-center">
-                  {{ getTotalHarga(i, data) }}.00 {{data.satuanKecil}}
-                
+                  {{ getTotalQtyJual(i) }}.00 {{data.satuanKecil}}
+
                   <!-- Validation message area -->
                   <br>
                   <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageQtyPesanList [i]">
@@ -111,14 +141,15 @@
                 </td>
                 <td class="text-center">
                   <div class="d-flex justify-content-center" style="gap: 5px;">
-                    <span class="d-flex align-items-center justify-content-center">
+                    <!-- <span class="d-flex align-items-center justify-content-center">
                       Rp.
-                    </span>
+                    </span> -->
 
                     <input type="text" numberOnly max="{{data.qtyKecil}}" min="0"
                       [ngClass]="{'form-invalid': validationMessageList[i]}"
-                      class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.hargaSatuan"
-                      (keypress)="g.conditionInput($event, 'numericDot')" (blur)="onBlurHargaSatuan(i)" />
+                      class="form-control text-center inputQty inputNumberSpace" (input)="onInputHargaSatuan($event, i)"
+                      [(ngModel)]="data.hargaSatuan" (keypress)="g.conditionInput($event, 'numericDot')"
+                      (blur)="onBlurHargaSatuan($event,i)" />
                   </div>
 
 
@@ -126,11 +157,17 @@
 
                 <td class="text-center">
                   {{
-                  getTotalPenjualan(data.kodeBarang,data.konversi)
-                  }} {{data.satuanKecil}}
+                  getTotalPenjualanByItem(i)
+                  }}
 
                   <!-- Validation message area -->
                   <br>
+                </td>
+                <td class="text-center">
+                  <button (click)="onDeleteRow(data.kodeBarang,i)" type="button" class="btn btn-secondary ms-2"
+                    [disabled]="listProductData.length < 1">
+                    <i class="fa fa-trash me-1"></i>
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -166,6 +203,91 @@
       </c-modal-body>
     </c-modal>
 
+    <c-modal #modalPosting [fullscreen]="false" [visible]="isShowModalPosting" backdrop="static" #modalLg size="lg"
+      id="modalPosting" [attr.aria-hidden]="!isShowModalPosting">
+      <c-modal-header>
+        <h5 cModalTitle>Konfirmasi Proses Posting Data</h5>
+        <button (click)="isShowModalPosting = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
+            class="fa fa-times"></i></button>
+      </c-modal-header>
+      <c-modal-body>
+        <div class="w-100 px-2 py-1 row justify-content-center fw-semibold">
+          Pastikan semua data sudah terisi dengan benar, PERIKSA SEKALI LAGI
+        </div>
+        <div class="divider my-2"></div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-6 d-flex align-items-center">
+            <label for="alamat1" class="form-label">{{ "Total Penjualan" | translate }}</label>
+          </div>
+          <div class="col-6 pe-0 d-flex">
+            <input type="text" class="form-control" id="nomorPesanan" [value]="g.convertToRupiah(formPosting.subTotal)"
+              name="subTotal" disabled />
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-6 d-flex align-items-center">
+            <label for="alamat1" class="form-label">{{ "Adjustment Pembayaran: (isi dengan +/-)" | translate }}</label>
+          </div>
+          <div class="col-6 pe-0 d-flex">
+            <input type="text" placeholder="Masukkan nilai..." class="form-control" id="nomorPesanan"
+              [(ngModel)]="formPosting.nilaiAdjustment" (keypress)="g.conditionInput($event, 'numberPlusMinusDot')"
+              name="alamat1" (input)="onChangeAdjustment($event, 'value')"
+              (blur)="onBlurAdjustment(formPosting.nilaiAdjustment)" />
+          </div>
+        </div>
+
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-6 d-flex align-items-center">
+            <label for="alamat1" class="form-label">{{ "Persentase Pajak: (isi bila ada)" | translate }}</label>
+          </div>
+          <div class="col-6 pe-0 d-flex">
+            <input type="text" placeholder="% Pajak" class="form-control" id="nomorPesanan"
+              [(ngModel)]="formPosting.persenPajak" name="persenPajak"
+              (keypress)="g.conditionInput($event, 'numberPlusMinusDot')" name="alamat1"
+              (input)="onChangeAdjustment($event, 'pajak')" />
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-6 d-flex align-items-center">
+            <label for="alamat1" class="form-label">{{ "Total Penjualan Setelah Adjustment" | translate }}</label>
+          </div>
+          <div class="col-6 pe-0 d-flex">
+            <input type="text" placeholder="" class="form-control" id="nomorPesanan"
+              [value]="g.convertToRupiah(formPosting.nilaiPenjualan)" name="alamat1" disabled />
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-6 d-flex align-items-center">
+            <label for="alamat1" class="form-label">{{ "Tipe Pembayaran" | translate }}</label>
+          </div>
+          <div class="col-6 pe-0 ">
+            <ngx-select-dropdown [multiple]="false" [options]="optionTipePembayaran"
+              [(ngModel)]="formPosting.displayTipePembayaran" (change)="onChangeTipePembayaran($event)"
+              [config]="baseConfig" id="value"></ngx-select-dropdown>
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-6 d-flex align-items-center">
+            <label for="alamat1" class="form-label">{{ "Keterangan Pembayaran" | translate }}</label>
+          </div>
+          <div class="col-6 pe-0 d-flex">
+            <input type="text" placeholder="Keterangan pembayaran" class="form-control" id="nomorPesanan"
+              [(ngModel)]="formPosting.keteranganBayar" name="alamat1" />
+          </div>
+        </div>
+        <div class="divider my-2"></div>
+        <div class="w-100 px-2 py-1 row justify-content-center text-danger fw-semibold">
+          DATA YANG SUDAH DI POSTING TIDAK DAPAT DIPERBAIKI..!!
+        </div>
+        <div class="d-grid gap-3 d-md-flex justify-content-center mt-2">
+          <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
+            <i class="fa fa-check pe-2"></i> {{ "Proses" | translate }} {{ "Posting" | translate }}
+          </button>
+        </div>
+      </c-modal-body>
+    </c-modal>
+
+
     <c-modal #formModalDelete [fullscreen]="false" [visible]="isShowModalDelete" backdrop="static" #modalLg
       id="formModalDelete" [attr.aria-hidden]="!isShowModalDelete">
       <c-modal-header>
@@ -189,7 +311,8 @@
 </div>
 
 <div class="d-grid gap-3 d-md-flex justify-content-end">
-  <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
+  <button class="btn btn-info text-white btn-150 pe-3" (click)="onShowModalPosting()"
+    [disabled]="listProductData.length <= 1">
     <i class="fa fa-check pe-2" *ngIf="!adding"></i>
     <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
     {{ "Proses Simpan Data" | translate }}

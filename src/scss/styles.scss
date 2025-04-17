@@ -64,28 +64,33 @@ $enable-rtl: true;
 
 
 .stamp-required {
-  color:red;
-  font-size:12pt;
-  font-weight:bold;
+  color: red;
+  font-size: 12pt;
+  font-weight: bold;
 
   &.hide {
     display: none;
   }
 
-  &.show{
+  &.show {
     display: contents;
   }
 }
 
 .vh100 {
-  height: 100vh; /* Full screen height */
-  overflow: hidden; /* Prevents scrolling */
+  height: 100vh;
+  /* Full screen height */
+  overflow: hidden;
+  /* Prevents scrolling */
 }
-.text-red{
+
+.text-red {
   color: red;
 }
+
 .form-invalid {
-  border: 1px solid red;  /* Merahkan border input */
+  border: 1px solid red;
+  /* Merahkan border input */
 }
 
 
@@ -102,11 +107,11 @@ $enable-rtl: true;
 //   font-weight: bold;
 //   border: 2px solid red !important; /* Create a red border */
 //   border-radius: 50% !important; /* Makes it a circle */
-  
+
 //   display: flex !important; /* Use flexbox for centering */
 //   justify-content: center !important; /* Horizontally center */
 //   align-items: center !important; /* Vertically center */
-  
+
 //   width: 30px; /* Adjust width */
 //   height: 30px; /* Adjust height */
 //   line-height: 30px;
@@ -141,18 +146,35 @@ $enable-rtl: true;
 
 .my-datepicker-top .bs-datepicker-container {
   position: absolute !important;
-  bottom: 100% !important; /* Move above the input */
+  bottom: 100% !important;
+  /* Move above the input */
   top: auto !important;
-  transform: translateY(-5px); /* Adjust spacing */
-  z-index: 1050; /* Ensure it's above other elements */
-  background-color: white !important; /* Force white background */
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1) !important; /* Add a slight shadow */
-  border-radius: 5px; /* Optional: rounded corners */
-  padding: 5px; /* Add spacing */
+  transform: translateY(-5px);
+  /* Adjust spacing */
+  z-index: 1050;
+  /* Ensure it's above other elements */
+  background-color: white !important;
+  /* Force white background */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1) !important;
+  /* Add a slight shadow */
+  border-radius: 5px;
+  /* Optional: rounded corners */
+  padding: 5px;
+  /* Add spacing */
 }
 
 .input-disabled {
   background-color: #d8dbe0;
   border-color: #b1b7c1;
   opacity: 1;
+}
+
+.validation-input {
+  font-size: 14px;
+  max-width: 200px;
+  white-space: normal;
+  word-wrap: break-word;
+  display: inline-block;
+  text-align: justify;
+
 }

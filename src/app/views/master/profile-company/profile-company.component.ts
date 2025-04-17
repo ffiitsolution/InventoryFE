@@ -75,7 +75,7 @@ export class ProfileCompanyComponent implements OnInit,OnDestroy {
       alamat1: ['', [Validators.required, this.specialCharValidator]],
       alamat2: ['', [Validators.required, this.specialCharValidator]],
       namaKota: ['', [Validators.required, this.specialCharValidator]],
-      kodePos: ['', [Validators.required]],
+      kodePos: ['', [Validators.required,Validators.max(99999)]],
       negara: ['', [Validators.required, this.specialCharValidator]],
       noTelp1: ['', [this.numberHyphenValidator]],
       noTelp2: ['', [this.numberHyphenValidator]],

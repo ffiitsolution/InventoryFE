@@ -417,7 +417,7 @@ export class AddDataDetailWastageComponent
     this.totalFilteredExpired = totalQtySum;
     if (
       !this.listEntryExpired.some(
-        (item) => item.kodeBarang === this.selectedExpProduct.bahanBaku
+        (item) => item.kodeBarang === this.selectedExpProduct.kodeBarang
       )
     ) {
       this.listEntryExpired.push({
@@ -767,7 +767,7 @@ export class AddDataDetailWastageComponent
 
     this.updateTotalExpired();
   }
-  
+
   insertDetail() {
     // param for order header detail
     const paramDetail = this.listProductData.map(item => ({

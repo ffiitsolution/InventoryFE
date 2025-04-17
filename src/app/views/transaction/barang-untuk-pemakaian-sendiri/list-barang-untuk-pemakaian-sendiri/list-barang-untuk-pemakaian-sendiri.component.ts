@@ -114,7 +114,6 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
         }, DEFAULT_DELAY_TABLE);
       },
       columns: [
-        { data: 'dtIndex', title: 'No.' },
         {
           data: 'tglTransaksi',
           title: 'Tanggal Transaksi',

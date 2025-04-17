@@ -8,6 +8,7 @@ import {
   ChangeDetectorRef ,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { DataService } from '../../../../service/data.service';
 import { GlobalService } from '../../../../service/global.service';
 import { TranslationService } from '../../../../service/translation.service';
 import { Subject, takeUntil } from 'rxjs';
@@ -15,11 +16,13 @@ import { DataTableDirective } from 'angular-datatables';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { Page } from '../../../../model/page';
 import { AppService } from '../../../../service/app.service';
-import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
+import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER, BUTTON_CAPTION_SELECT,DEFAULT_DATE_RANGE_RECEIVING_ORDER } from '../../../../../constants';
 import moment from 'moment';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HelperService } from '../../../../service/helper.service';
 import { DatePipe } from '@angular/common';
+import { AppConfig } from '../../../../config/app.config';
+
 
 @Component({
   selector: 'app-add-terima-barang-retur-dari-site',
@@ -31,6 +34,7 @@ import { DatePipe } from '@angular/common';
 export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewInit, OnDestroy {
   nomorPesanan: any;
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+  public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -42,14 +46,28 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
   minDate: Date;
   maxDate: Date;
   isShowDetail: boolean = false;
+  isShowDetailBranch: boolean = false;
   selectedRowData: any;
   defaultDate: any ;
   someBoolean: boolean = true; 
   private ngUnsubscribe: Subject<void> = new Subject<void>();
+  buttonCaptionSelect: string = BUTTON_CAPTION_SELECT;
+  currentDate: Date = new Date();
+  startDateFilter: Date = new Date(
+      this.currentDate.setDate(
+        this.currentDate.getDate() - DEFAULT_DATE_RANGE_RECEIVING_ORDER
+      )
+    );
+  dateRangeFilter: any = [this.startDateFilter, new Date()];
+  isShowModalBranch: boolean = false;
+  dtOptionsBranch: DataTables.Settings = {};
+  selectedRowDataBranch: any;
+  pageBranch = new Page();
+  
 
   @ViewChild('formModal') formModal: any;
   // Form data object
-
+  protected config = AppConfig.settings.apiServer;
 
   constructor(
     private router: Router,
@@ -59,15 +77,41 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     private form: FormBuilder,
     private appService: AppService,
     private datePipe: DatePipe,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private dataService: DataService,
   ) {
     this.dpConfig.containerClass = 'theme-red';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
     this.dpConfig.minDate = new Date();
+
+    this.dpConfigtrans.containerClass = 'theme-red';
+    this.dpConfigtrans.dateInputFormat = 'DD/MM/YYYY';
+    this.dpConfigtrans.adaptivePosition = true;
+    this.dpConfigtrans.maxDate = new Date();
+    this.dpConfigtrans.customTodayClass='today-highlight';
   }
+  
 
   myForm: FormGroup;
+
+  formData: {
+    kodeTujuan: string;
+    noReturnPengirim : string;
+    namaTujuan: string;
+    alamatTujuan: string;
+    statusTujuan: string;
+    keterangan: string;
+    tglTransaksi?: Date;
+  } = {
+    kodeTujuan: '',
+    noReturnPengirim: '',
+    namaTujuan: '',
+    alamatTujuan: '',
+    statusTujuan: '',
+    keterangan: '',
+  };
+  
 
   ngOnInit(): void {
 
@@ -86,12 +130,14 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     this.myForm = this.form.group({
           kodeBarang: ['', [Validators.required]],
           namaBarang: ['', [Validators.required]],
+          alamatPengirim: ['', [Validators.required]],
+          noReturnPengirim:['', [Validators.required]],
           satuanHasilProduksi: ['', [Validators.required]],
-          tglTransaksi: [this.defaultDate || new Date(), [Validators.required]],
-          jumlahHasilProduksi: ['', [Validators.required,Validators.min(1)]],
+          tglTransaksi: [this.defaultDate, [Validators.required]],
+          // jumlahHasilProduksi: ['', [Validators.required,Validators.min(1)]],
           keterangan: [''],
-          tglExp:[this.defaultDate, [Validators.required]],
-          totalHasilProduksi: ['', [Validators.required,Validators.min(1)]],
+          // tglExp:[this.defaultDate, [Validators.required]],
+          // totalHasilProduksi: ['', [Validators.required,Validators.min(1)]],
           labelSatuanHasilProduksi: [''],
           totalBahanBaku: [0],
     });
@@ -108,17 +154,24 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
       this.calculateTotalHasilProduksi();
     });
 
-    this.renderDataTables()
-   
+    this.renderDataTables();
+    this.renderDataTablesBranch();
+
   }
 
   onAddDetail() {
+    this.myForm.patchValue({
+          tglTransaksi: moment(this.myForm.value.tglTransaksi,'DD/MM/YYYY',true).format('DD/MM/YYYY'),
+          tglExp: moment(this.myForm.value.tglExp, 'DD/MM/YYYY',true).format('DD/MM/YYYY')
+      });
+
     this.globalService.saveLocalstorage(
       'headerProduction',
       JSON.stringify(this.myForm.value)
     );
 
     this.isShowDetail = true;
+    this.isShowDetailBranch = true;
   }
 
   get isFormInvalid(): boolean {
@@ -143,20 +196,89 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     
   }
 
+  actionBtnClick(data: any = null) {
+    this.formData.kodeTujuan = data?.outletCode;
+    this.formData.tglTransaksi = data?.dateReturn ? new Date(data.dateReturn) : undefined;
+    this.formData.namaTujuan = data?.namaPengirim;
+    this.formData.alamatTujuan = data?.alamatPengirim;
+    this.formData.statusTujuan = data?.statusAktif;
+    this.formData.noReturnPengirim = data?.returnNo;
+    this.isShowModal = false;
+  }
+
+
+  actionBtnClickBranch(data: any = null) {
+    this.formData.kodeTujuan = data?.kodeCabang;
+    this.formData.namaTujuan = data?.namaCabang;
+    this.formData.alamatTujuan = data?.alamat1;
+    this.formData.statusTujuan = data?.statusAktif;
+    this.isShowModalBranch = false;
+  }
+
+  handleEnterPemesan(event: any) {
+    event.preventDefault(); // Prevents the form from submitting
+
+    this.dataService
+    .postData(this.config.BASE_URL_HQ + '/api/return-order/list-search',
+      {"returnNo":  event.target.value, 
+        "kodeGudang" : this.globalService.getUserLocationCode(),
+        "status" : 'K'
+      }
+    )
+    .subscribe((resp: any) => {
+      if(resp.length > 0) {
+        this.mappingDataPemesan(this.globalService.convertKeysToCamelCase(resp[0]))
+      }
+      else
+        this.resetDataPemesan();
+    });
+  }
+
+  resetDataPemesan() {
+    this.myForm.controls['kodeBarang'].setValue("");
+    this.myForm.controls['namaBarang'].setValue("");
+    this.myForm.controls['alamatPengirim'].setValue("");
+    this.myForm.controls['noReturnPengirim'].setValue("");   
+    this.myForm.controls['satuanHasilProduksi'].setValue("");  
+    this.myForm.controls['keterangan'].setValue("");  
+  }
+
+  mappingDataPemesan(data : any) {
+    this.myForm.controls['kodeBarang'].setValue(data.outletCode);
+    this.myForm.controls['namaBarang'].setValue(data.namaPengirim);  
+    this.myForm.controls['tglTransaksi'].setValue(data.dateReturn ? new Date(data.dateReturn) : null);
+    if (data.statusAktif.trim() === 'Aktif') {
+      this.myForm.controls['satuanHasilProduksi'].setValue("A");
+    }  
+    else if(data.statusAktif.trim() === 'Tidak Aktif'){
+      this.myForm.controls['satuanHasilProduksi'].setValue("T");
+    }
+    else {
+      this.myForm.controls['satuanHasilProduksi'].setValue(data.statusAktif);
+    }
+    this.myForm.controls['alamatPengirim'].setValue(data.alamatPengirim);  
+    this.myForm.controls['noReturnPengirim'].setValue(data.returnNo);
+    // this.myForm.controls['kodeBarang'].setValue(data.kodeCabang);
+    // this.myForm.controls['namaBarang'].setValue(data.namaCabang);
+    // this.myForm.controls['alamatPengirim'].setValue(data.alamat1);  
+    // if (data.statusAktifLabel.trim() === 'Aktif') {
+    //   this.myForm.controls['satuanHasilProduksi'].setValue("Aktif");
+    // }  
+    // else if(data.statusAktifLabel.trim() === 'Tidak Aktif'){
+    //   this.myForm.controls['satuanHasilProduksi'].setValue("Tidak Aktif");
+    // }
+    // else {
+    //   this.myForm.controls['satuanHasilProduksi'].setValue(data.statusAktifLabel);
+    // }       
+  }
+
 
   onPreviousPressed(): void {
-    this.router.navigate(['/transaction/production/list-dt']);
+    this.router.navigate(['/transaction/terima-barang-retur-dari-site/list-dt']);
   }
 
   onShowModal() {
     this.isShowModal = true;
-  }
-
-  actionBtnClick(action: string, data: any = null) {
-    this.selectedRow = JSON.stringify(data);
-    this.renderDataTables();
-    this.isShowModal = false;
-    this.mapOrderData(data);
   }
 
   renderDataTables(): void {
@@ -181,8 +303,13 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.globalService.getUserLocationCode(),
+          status: 'K'
         };
-        this.appService.getProductionProductList(params)
+        this.dataService
+          .postData(
+            this.config.BASE_URL_HQ + '/api/return-order/get-from-hq/dt',
+            params
+          )
           .subscribe((resp: any) => {
             const mappedData = resp.data.map((item: any, index: number) => {
               // hapus rn dari data
@@ -202,49 +329,148 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
             });
           });
       },
+      
       columns: [
-        { data: 'kodeBarang', title: 'Kode' },
-        { data: 'namaBarang', title: 'Nama Barang' },
-        { data: 'konversi', title: 'Konversi' },
-        { data: 'satuanKecil', title: 'Satuan Kecil' },
-        { data: 'satuanBesar', title: 'Satuan Besar', },
-        { data: 'defaultGudang', title: 'Default Gudang', },
-        { data: 'status', title: 'Status', },
+        { data: 'dtIndex', title: '#', orderable: false, searchable: false },
+        { data: 'returnNo', title: 'Tipe', searchable: true },
+        { data: 'outletCode', title: 'Kode', searchable: true },
+        { data: 'namaPengirim', title: 'Inisial', searchable: true },
         {
-          title: 'Action',
-          render: () => {
-            return `<button class="btn btn-sm action-select btn-info btn-80 text-white">Pilih</button>`;
+          data: 'statusAktif',
+          title: 'Status',
+          searchable: false,
+          render: (data) => {
+            if (data === 'Aktif') {
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+            }
+            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
           },
         },
-
+        {
+          title: 'Action',
+          render: (data, type, row) => {
+            if (row.statusAktif === 'Aktif') {
+              return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-select btn-info btn-60 text-white">${this.buttonCaptionSelect}</button>
+                </div>
+              `;
+            }
+            return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-select btn-info btn-60 text-white" disabled>${this.buttonCaptionSelect}</button>
+                </div>
+              `;
+          },
+        },
       ],
-      searchDelay: 1000,
+      searchDelay: 1500,
+      order: [
+        [2, 'asc'],
+        [1, 'asc'],
+      ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        $('.action-select', row).on('click', () =>
-          this.actionBtnClick(ACTION_SELECT, data)
-        );
-        if (index === 0 && !this.selectedRowData) {
-          setTimeout(() => {
-            $(row).trigger('td'); 
-          }, 0);
-        }
-        $('td', row).on('click', () => {
-          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
-          if (this.selectedRowData !== data) {
-            this.selectedRowData = data;
-            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
-          } else {
-            this.selectedRowData = undefined;
-          }
-        });
-      
-    
-        return row;
+        $('.action-select', row).on('click', () => this.actionBtnClick(data));
 
+        return row;
+      },
+    };
+
+  }
+
+  renderDataTablesBranch(): void {
+    console.log('Running......');
+    this.dtOptionsBranch = {
+      language: this.translationService.getCurrentLanguage() === 'id' ? this.translationService.idDatatable : {},
+      processing: true,
+      serverSide: true,
+      autoWidth: true,
+      info: true,
+      pageLength: 5,
+      drawCallback: (drawCallback) => {
+        
+        this.selectedRowDataBranch = undefined;
+      },
+      ajax: (dataTablesParameters: any, callback) => {
+        console.log('Sending AJAX request...', dataTablesParameters);
+        this.pageBranch.start = dataTablesParameters.start;
+        this.pageBranch.length = dataTablesParameters.length;
+  
+        const params = {
+          ...dataTablesParameters,
+        };
+  
+        this.dataService
+          .postData(this.config.BASE_URL + '/api/branch/dt', params)
+          .subscribe((resp: any) => {
+            console.log('Response from backend:', resp);
+  
+            const mappedData = resp.data.map((item: any, index: number) => {
+              const { rn, ...rest } = item;
+              const finalData = {
+                ...rest,
+                kodeKeteranganRsc: `${rest.kodeRsc} - ${rest.keteranganRsc}`,
+                dtIndex: this.page.start + index + 1,
+              };
+              return finalData;
+            });
+  
+            this.pageBranch.recordsTotal = resp.recordsTotal;
+            this.pageBranch.recordsFiltered = resp.recordsFiltered;
+  
+            callback({
+              recordsTotal: resp.recordsTotal,
+              recordsFiltered: resp.recordsFiltered,
+              data: mappedData,
+            });
+          });
+      },
+      columns: [
+        { data: 'dtIndex', title: '#', orderable: false, searchable: false },
+        { data: 'kodeCabang', title: 'Kode', searchable: true },
+        { data: 'namaCabang', title: 'Nama', searchable: true },
+        { data: 'kodeKeteranganRsc', title: 'RSC', searchable: true },
+        { data: 'kota', title: 'Kota', searchable: true },
+        { data: 'deskripsiGroup', title: 'Group', searchable: true },
+        {
+          data: 'statusAktif',
+          title: 'Status',
+          searchable: false,
+          render: (data) => {
+            return data === 'A'
+              ? `<div class="d-flex justify-content-center"><span class="badge badge-success py-2" style="color:white; background-color:#2eb85c; width:60px">Active</span></div>`
+              : `<div class="d-flex justify-content-center"><span class="badge badge-secondary py-2" style="background-color:grey; width:60px">Inactive</span></div>`;
+          },
+        },
+        {
+          title: 'Action',
+          render: (data, type, row) => {
+            if (row.statusAktif === 'A') {
+              return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-select btn-info btn-60 text-white">${this.buttonCaptionSelect}</button>
+                </div>
+              `;
+            }
+            return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-select btn-info btn-60 text-white" disabled>${this.buttonCaptionSelect}</button>
+                </div>
+              `;
+          },
+        },
+      ],
+      searchDelay: 1500,
+      order: [
+        [1, 'asc'],
+      ],
+      rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        $('.action-select', row).on('click', () => this.actionBtnClickBranch(data));
+        return row;
       },
     };
   }
-
+  
     private mapOrderData(data: any): void {
       this.myForm.patchValue({
         kodeBarang: data.kodeBarang,
@@ -252,7 +478,6 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
         satuanHasilProduksi: data.konversi,
         labelSatuanHasilProduksi: data.satuanKecil+"/"+data.satuanBesar,
       })
-     
     }
 
     calculateTotalHasilProduksi(): void {
@@ -297,6 +522,10 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
         date = new Date(year, month - 1, day); // Bulan dalam JavaScript dimulai dari 0
       }
       return this.datePipe?.transform(date, 'dd/MM/yyyy') || '';
+    }
+
+    onShowModalBranch() {
+      this.isShowModalBranch= true;
     }
     
 

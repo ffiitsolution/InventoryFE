@@ -87,35 +87,36 @@
       <div class="row p-2 justify-content-end">
         <div class="col-6">
           <div class="w-100 mb-2">
+            <label for="alamat" class="form-label">{{ "Alamat Pengirim" | translate }}</label>
+            <input type="text" disabled placeholder="Alamat Pengirim" class="form-control" 
+              [value]="(selectedRowData.alamat1 || '')+', '+(selectedRowData.alamat2 || '')" name="alamat" />
+          </div>
+        
+        </div>
+        <div class="col-6">
+          <div class="w-100 mb-2">
             <label for="keterangan" class="form-label">{{ "Keterangan" | translate }}</label>
             <input type="text" disabled placeholder="Keterangan" class="form-control" 
               [(ngModel)]="selectedRowData.keterangan" name="keterangan" />
           </div>
         
         </div>
-        <div class="col-2">
-         
-            <div class="w-100 mb-2 ">
-              <label for="userCreate" class="form-label">{{ "User Create" | translate }}</label>
-              <input type="text" disabled placeholder="User Create" class="form-control"
-                [(ngModel)]="selectedRowData.userCreate" name="userCreate" />
-            </div>
-        </div>
-        <div class="col-2">
-          <div class="w-100 mb-2 ">
-            <label for="dateCreate" class="form-label">{{ "Date Create" | translate }}</label>
-            <input type="text" disabled placeholder="Alamat 1" class="form-control" 
-              [(ngModel)]="selectedRowData.dateCreateFormat2" name="dateCreate" />
-          </div>
-        </div>
-        <div class="col-2">
-          <div class="w-100 mb-2 ">
-            <label for="timeCreate" class="form-label">{{ "Time Create" | translate }}</label>
-            <input type="text" disabled placeholder="Time Create" class="form-control"
-              [(ngModel)]="selectedRowData.timeCreate" name="timeCreate" />
-          </div> 
-        </div>
+      
       </div>
     </c-card-body>
   </c-card>
+</div>
+
+<div class="fade-in">
+  <app-modal-print-list
+    [alreadyPrint]="alreadyPrint"
+    [disabledPrintButton]="disabledPrintButton"
+    [generatePdfUrl]="'/api/cetak/penerimaan-barang-bekas'"
+    [updateStatusUrl]="''"
+    [updatePrintStatusParam]="''"
+    [generateReportParam]="paramGenerateReport"
+    [isShowModalReport]="isShowModalReport"
+    (closeModalEvent)="closeModal()"
+  >
+  </app-modal-print-list>
 </div>

@@ -43,7 +43,12 @@ export class PenerimaanBrgBksListComponent implements OnInit {
     )
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
-
+  paramGenerateReport = {};
+  isShowModalReport: boolean = false;
+  alreadyPrint: boolean = false;
+  disabledPrintButton: boolean = false;
+  buttonCaptionPrint: String = 'Cetak';
+  selectedRowCetak: any = false;
   constructor(
     private dataService: DataService,
     private g: GlobalService,
@@ -116,12 +121,15 @@ export class PenerimaanBrgBksListComponent implements OnInit {
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render: (data) => this.g.getStatusOrderLabel(data),
+          render:function(data, type, row) {return 'POSTING'} ,
         },
         {
           title: 'Aksi',
           render: () => {
-            return `<button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>`;
+            return ` <div class="btn-group" role="group" aria-label="Action">
+                        <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
+                        <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>           
+                    </div>`;
           },
         },
       ],
@@ -140,10 +148,31 @@ export class PenerimaanBrgBksListComponent implements OnInit {
             this.selectedRowData = undefined;
           }
         });
+        $('.action-print', row).on('click', () =>{
+          // this.onClickPrint(data)
+          this.selectedRowCetak = data;
+          this.isShowModalReport=true;
+
+          this.paramGenerateReport = {
+            nomorTransaksi: this.selectedRowCetak.nomorTransaksi,
+            userEntry: this.selectedRowCetak.userCreate,
+            jamEntry: this.g.transformTime(this.selectedRowCetak.timeCreate),
+            tglEntry: this.g.transformDate(this.selectedRowCetak.dateCreate),
+            outletBrand: 'KFC',
+            kodeGudang: this.g.getUserLocationCode(),
+            isDownloadCsv: false,
+            reportName: 'cetak_penerimaan_barang_bekas',
+          };
+        }
+        );
         return row;
       },
     };
     this.dtColumns = this.dtOptions.columns;
+
+    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.customTodayClass='today-highlight';
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
   }
 
   ngOnInit(): void {
@@ -219,5 +248,11 @@ export class PenerimaanBrgBksListComponent implements OnInit {
   }
   dtPageChange(event: any): void {
     console.log('Page changed', event);
+  }
+
+  closeModal(){
+    this.isShowModalReport = false;
+    this.selectedRowCetak = null;
+    this.disabledPrintButton = false;
   }
 }

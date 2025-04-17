@@ -111,7 +111,9 @@ export class AddDataDetailResepComponent
         konversi: '', 
         satuanKecil: '',
         satuanBesar: '', 
-        qtyPemakaian: '' }
+        qtyPemakaian: '',
+        status: '' 
+      }
     ];
 
     this.loadResep();
@@ -267,7 +269,8 @@ export class AddDataDetailResepComponent
             qtyPemakaian: parseFloat(item.qtyPemakaian).toFixed(2) ,
             satuanKecil: item.satuanKecil,
             satuanBesar: item.satuanBesar,
-            kodeResep: item.kodeResep
+            kodeResep: item.kodeResep,
+            status: item.status
           }));
 
         
@@ -280,7 +283,9 @@ export class AddDataDetailResepComponent
               konversi: '', 
               satuanKecil: '',
               satuanBesar: '', 
-              qtyPemakaian: '1.00' }
+              qtyPemakaian: '1.00',
+              status: ''
+            }
           ];
          }  
       },
@@ -295,7 +300,8 @@ export class AddDataDetailResepComponent
         konversi: '', 
         satuanKecil: '',
         satuanBesar: '', 
-        qtyPemakaian: '1.00'
+        qtyPemakaian: '1.00',
+        status: ''
       }
     )
   }
@@ -313,6 +319,8 @@ export class AddDataDetailResepComponent
         [8, 10],   // Available page sizes
         ['8', '10']  // Displayed page size labels
       ],
+      order: [
+        [6, 'asc']      ],
       drawCallback: (drawCallback) => {
         this.selectedRowData = undefined;
       },
@@ -357,11 +365,23 @@ export class AddDataDetailResepComponent
           { data: 'satuanBesar', title: 'Satuan Besar', },
           { data: 'satuanKecil', title: 'Satuan Kecil' },
           { data: 'defaultGudang', title: 'Default Gudang', },
-          { data: 'status', title: 'Status', },
+          {
+            data: 'status',
+            title: 'Status',
+            searchable: false,
+            render: (data) => {
+              if (data === 'Aktif') {
+                return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+              }
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
+            },
+          },
           {
             title: 'Action',
-            render: () => {
-              return `<button class="btn btn-sm action-select btn-info btn-80 text-white">Pilih</button>`;
+            orderable: false,
+            render: (data, type, row) => {
+              const disabled = row.status !== 'Aktif' ? 'disabled' : '';
+              return `<button class="btn btn-sm action-select btn-info btn-80 text-white" ${disabled}>Pilih</button>`;
             },
           },
   
@@ -412,7 +432,8 @@ export class AddDataDetailResepComponent
           konversi: parseFloat(data.konversi).toFixed(2), 
           satuanKecil: data.satuanKecil,
           satuanBesar: data.satuanBesar, 
-          qtyPemakaian: '1.00'
+          qtyPemakaian: '1.00',
+          status: data.status,
         };
     
       
@@ -526,7 +547,8 @@ export class AddDataDetailResepComponent
                 konversi: res.konversi, 
                 satuanKecil: res.satuanKecil,
                 satuanBesar: res.satuanBesar, 
-                qtyPemakaian: res.qtyPemakaian 
+                qtyPemakaian: res.qtyPemakaian,
+                status: res.status, 
               };
           
             

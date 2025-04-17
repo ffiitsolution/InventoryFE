@@ -141,6 +141,7 @@ export class MasterResepComponent
           data: 'konversi',
           title: 'Konversi',
           searchable: false,
+          width:'50px',
           render: (data) => {
             if (!isNaN(parseFloat(data)) && isFinite(data)) {
               return parseFloat(data).toFixed(2);
@@ -148,11 +149,17 @@ export class MasterResepComponent
             return data; // Return as is if not a number
           },
         },
-        { data: 'satuanBesar', title: 'Satuan Besar', searchable: false },
+        { 
+          data: 'satuanBesar',
+          title: 'Satuan Besar', 
+          searchable: false ,
+          width:'30px'
+        },
         {
           data: 'satuanKecil',
           title: 'Satuan Kecil',
           searchable: false,
+           width:'30px'
         },      
         { 
           data: 'jumlahBahanBaku', 
@@ -165,6 +172,7 @@ export class MasterResepComponent
           data: 'statusAktif',
           title: 'Status',
           searchable: false,
+          width:'30px',
           render: (data) => {
             if (data === 'A') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;

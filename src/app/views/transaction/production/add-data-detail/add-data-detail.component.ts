@@ -101,7 +101,7 @@ export class AddDataDetailProductionComponent
     this.disabledPrintButton = isCanceled;
     this.disabledCancelButton = isCanceled;
     this.alreadyPrint =
-    this.headerProduction.statusCetak == SEND_PRINT_STATUS_SUDAH;
+      this.headerProduction.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.loadBahanBaku();
   }
@@ -121,8 +121,8 @@ export class AddDataDetailProductionComponent
     this.ngUnsubscribe.complete();
   }
 
-  onBackPressed() {
-    this.onBatalPressed.emit('');
+  onBackPressed(data: any = '') {
+    this.onBatalPressed.emit(data);
   }
 
   onPageChange(event: number) {
@@ -155,10 +155,10 @@ export class AddDataDetailProductionComponent
         qtyBesar: this.headerProduction.jumlahHasilProduksi,
         qtyKecil: '0.00',
         totalQty: this.headerProduction.totalHasilProduksi,
-        totalQtyExpired:this.headerProduction.totalHasilProduksi,
+        totalQtyExpired: this.headerProduction.totalHasilProduksi,
         flagExpired: 'Y',
-        tipeProduksi:'F',
-        hargaSatuan: this.headerProduction.hargaSatuan
+        tipeProduksi: 'F',
+        hargaSatuan: this.headerProduction.hargaSatuan,
       };
 
       const param = {
@@ -177,40 +177,40 @@ export class AddDataDetailProductionComponent
         userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
         details: [
           ...this.listProductData
-          .filter((item) => item.bahanBaku && item.bahanBaku.trim() !== '')
-          .map((item) => ({
-            kodeGudang: this.g.getUserLocationCode(),
-            tglTransaksi: moment(
-              this.headerProduction.tglTransaksi,
-              'DD-MM-YYYY'
-            ).format('D MMM YYYY'),
-            tipeTransaksi: 12,
-            kodeBarang: item.bahanBaku,
-            konversi: item.konversi,
-            satuanKecil: item.satuanKecil,
-            satuanBesar: item.satuanBesar,
-            qtyBesar: item.qtyPemakaianBesar || 0,
-            qtyKecil: item.qtyPemakaianKecil || 0,
-            flagExpired: item.isConfirmed ? 'Y' : 'T',
-            tipeProduksi:'R',
-            totalQty:
-              this.helper.sanitizedNumber(item.qtyPemakaianBesar) *
-                item.konversi +
-              this.helper.sanitizedNumber(item.qtyPemakaianKecil),
-            totalQtyExpired:
-              this.helper.sanitizedNumber(
-                this.getExpiredData(item.bahanBaku).qtyPemakaianBesar
-              ) *
-                item.konversi +
-              this.helper.sanitizedNumber(
-                this.getExpiredData(item.bahanBaku).qtyPemakaianKecil
-              ),
-            hargaSatuan: 0,
-            userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
-          }))
-          ,extraItem
+            .filter((item) => item.bahanBaku && item.bahanBaku.trim() !== '')
+            .map((item) => ({
+              kodeGudang: this.g.getUserLocationCode(),
+              tglTransaksi: moment(
+                this.headerProduction.tglTransaksi,
+                'DD-MM-YYYY'
+              ).format('D MMM YYYY'),
+              tipeTransaksi: 12,
+              kodeBarang: item.bahanBaku,
+              konversi: item.konversi,
+              satuanKecil: item.satuanKecil,
+              satuanBesar: item.satuanBesar,
+              qtyBesar: item.qtyPemakaianBesar || 0,
+              qtyKecil: item.qtyPemakaianKecil || 0,
+              flagExpired: item.isConfirmed ? 'Y' : 'T',
+              tipeProduksi: 'R',
+              totalQty:
+                this.helper.sanitizedNumber(item.qtyPemakaianBesar) *
+                  item.konversi +
+                this.helper.sanitizedNumber(item.qtyPemakaianKecil),
+              totalQtyExpired:
+                this.helper.sanitizedNumber(
+                  this.getExpiredData(item.bahanBaku).qtyPemakaianBesar
+                ) *
+                  item.konversi +
+                this.helper.sanitizedNumber(
+                  this.getExpiredData(item.bahanBaku).qtyPemakaianKecil
+                ),
+              hargaSatuan: 0,
+              userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+            })),
+          extraItem,
         ],
-          
+
         detailsExpired: [
           ...this.listEntryExpired?.map((expiredItem) => ({
             kodeGudang: this.g.getUserLocationCode(),
@@ -261,10 +261,11 @@ export class AddDataDetailProductionComponent
                 if (!res.success) {
                   this.toastr.error(res.message);
                 } else {
-                  setTimeout(() => {
-                    this.toastr.success('Data production berhasil diposting!');
-                    this.onPreviousPressed();
-                  }, DEFAULT_DELAY_TIME);
+                  this.onBackPressed(res.data);
+                  // setTimeout(() => {
+                  //   this.toastr.success('Data production berhasil diposting!');
+                  //   this.onPreviousPressed();
+                  // }, DEFAULT_DELAY_TIME);
                 }
                 this.adding = false;
                 this.loadingSimpan = false;
@@ -454,7 +455,7 @@ export class AddDataDetailProductionComponent
       qtyWasteBesar: '',
       qtyWasteKecil: '',
       isConfirmed: false,
-      tipeProduksi:'R',
+      tipeProduksi: 'R',
     },
   ];
   tempKodeBarang: string = '';
@@ -472,7 +473,7 @@ export class AddDataDetailProductionComponent
           qtyPemakaian: parseFloat(item.qtyPemakaian).toFixed(2),
           satuanKecil: item.satuanKecil,
           satuanBesar: item.satuanBesar,
-          tipeProduksi:'R',
+          tipeProduksi: 'R',
           qtyPemakaianBesar: Math.floor(
             (item.qtyPemakaian * this.headerProduction.jumlahHasilProduksi) /
               item.konversi
@@ -566,11 +567,14 @@ export class AddDataDetailProductionComponent
       source = 'datepicker';
     }
 
-    const expiredDate = moment(inputDate, 'DD/MM/YYYY').toDate();
-    const today = new Date();
+    const expiredDate = moment(inputDate, 'DD/MM/YYYY').startOf('day').toDate();
+    const today = moment().startOf('day').toDate();
+
+    console.log('today', today);
+    console.log('expiredDate', expiredDate);
 
     if (expiredDate < today) {
-      validationMessage = `Tanggal kadaluarsa tidak boleh lebih <= dari sekarang!`;
+      validationMessage = `Tanggal kadaluarsa tidak boleh lebih < dari sekarang!`;
     }
 
     // ✅ Get only the filtered list of entries for the same `kodeBarang`

@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from 'src/app/service/app.service';
@@ -44,7 +50,7 @@ function excludedSensitive(control: AbstractControl): ValidationErrors | null {
 }
 
 function numeric(control: AbstractControl): ValidationErrors | null {
-  const specialCharRegex = /^[0-9]+$/;
+  const specialCharRegex = /^[0-9\s]+$/;
   if (control.value && !specialCharRegex.test(control.value)) {
     return { numeric: true };
   }
@@ -68,10 +74,41 @@ function contactPerson(control: AbstractControl): ValidationErrors | null {
 }
 
 function alphabet(control: AbstractControl): ValidationErrors | null {
-  const specialCharRegex = /[^a-zA-Z]/;
+  const specialCharRegex = /[^a-zA-Z\s]/;
   if (control.value && specialCharRegex.test(control.value)) {
     return { alphabet: true };
   }
+  return null;
+}
+
+function ip(control: AbstractControl): ValidationErrors | null {
+  const ipRegex =
+    /^(25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})){3}$/;
+  const value = control.value?.trim();
+
+  if (value && !ipRegex.test(control.value)) {
+    return { ip: true };
+  }
+  return null;
+}
+
+function port(control: AbstractControl): ValidationErrors | null {
+  const value = control.value?.trim();
+
+  // Jika kosong, valid (misalnya opsional)
+  if (!value) return null;
+
+  // Harus angka
+  if (!/^[0-9]+$/.test(value)) {
+    return { port: true };
+  }
+
+  // Ubah ke number dan cek rentang valid port
+  const portNumber = Number(value);
+  if (portNumber < 1 || portNumber > 65535) {
+    return { port: true };
+  }
+
   return null;
 }
 
@@ -106,6 +143,7 @@ export class MasterBranchEditComponent implements OnInit {
   configSelectRegion: any;
   configSelectArea: any;
   detail: any;
+  group: any;
 
   constructor(
     private toastr: ToastrService,
@@ -117,6 +155,16 @@ export class MasterBranchEditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.group = this.g.getLocalstorage('inv_tab_title');
+    let kodeGroup;
+    if (this.group === 'Branch') {
+      kodeGroup = 'C';
+    } else if (this.group === 'Department') {
+      kodeGroup = 'D';
+    } else if (this.group === 'Gudang') {
+      kodeGroup = 'G';
+    }
+
     this.detail = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_BRANCH));
 
     this.myForm = this.form.group({
@@ -152,6 +200,9 @@ export class MasterBranchEditComponent implements OnInit {
       tipeCabang: [this.detail.tipeCabang, [alphabet]],
       status: [this.detail.statusAktif, [Validators.required]],
       statusAktif: [this.detail.statusAktif],
+      ip: [this.detail.alamatIp, [ip]],
+      port: [this.detail.alamatPort, [port]],
+      cad1: [this.detail.cad1, [namaCabang]],
       userCreate: [this.detail.userCreate],
       userUpdate: [this.detail.userUpdate],
       dateCreate: [this.detail.dateCreate],
@@ -312,6 +363,9 @@ export class MasterBranchEditComponent implements OnInit {
         keterangan: controls?.['keterangan']?.value,
         kodeGroup: controls?.['kodeGroup']?.value,
         statusAktif: controls?.['statusAktif']?.value,
+        port: controls?.['port']?.value,
+        ip: controls?.['ip']?.value,
+        cad1: controls?.['cad1']?.value,
       };
       this.service.insert('/api/branch/update', param).subscribe({
         next: (res) => {
@@ -356,7 +410,7 @@ export class MasterBranchEditComponent implements OnInit {
         : type == 'kodeSingkat' //kode singkat
         ? /^[A-Z0-9&-]$/
         : type == 'numeric' //kode pos
-        ? /^[0-9]$/
+        ? /^[0-9\s]$/
         : type == 'phone' //phone 1 & 2, Fax 1 & 2
         ? /^[0-9-()\s]$/
         : type == 'email' //email
@@ -364,9 +418,13 @@ export class MasterBranchEditComponent implements OnInit {
         : type == 'contactPerson' //contactPerson
         ? /^[a-zA-Z./s]$/
         : type == 'alphabet' //tipe cabang
-        ? /^[a-zA-Z]+$/
+        ? /^[a-zA-Z/s]+$/
         : type == 'excludedSensitive' //keterangan & alamat 1-2
         ? /^[a-zA-Z0-9\s.,#\-()\/]+$/
+        : type == 'ip'
+        ? /^[0-9.]$/
+        : type == 'port'
+        ? /^[0-9]$/
         : /^[a-zA-Z.() ,\-]*$/; //alphabet
 
     if (temp_regex.test(inp)) return true;

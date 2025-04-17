@@ -39,8 +39,6 @@
     <c-card>
       <c-card-body>
         <form [formGroup]="myForm" (ngSubmit)="onSubmit()" >
-         
-          {{ myForm.invalid }}
           <div class="row">
             <div class="col-md-6">
   
@@ -53,6 +51,7 @@
                   <textarea class="form-control" 
                   [readonly]="roleId != 3"
                   formControlName="alamat1" 
+                  maxlength="60"
                   rows="3">
                   </textarea>
                   <small class="text-danger" *ngIf="myForm.get('alamat1')?.hasError('required')">Alamat1 is required</small>
@@ -70,6 +69,7 @@
                   <textarea class="form-control"
                   [readonly]="roleId != 3"
                   formControlName="alamat2" 
+                  maxlength="60"
                   rows="3">
                 </textarea>
                 <small class="text-danger" *ngIf="myForm.get('alamat2')?.hasError('required')">Alamat2 is required</small>
@@ -88,6 +88,7 @@
                   <input type="text" 
                   [readonly]="roleId != 3"
                   class="form-control" 
+                  maxlength="30"
                   formControlName="namaKota">
                   <small class="text-danger" *ngIf="myForm.get('namaKota')?.hasError('required')">Nama Kota is required</small>
                   <small class="text-danger" *ngIf="myForm.get('namaKota')?.hasError('specialCharNotAllowed')">Special Char Not Allowed</small>
@@ -103,9 +104,11 @@
                   <input type="number" 
                   [readonly]="roleId != 3"
                   class="form-control" 
+                  max="9999999999"
                   formControlName="kodePos">
                   <small class="text-danger" *ngIf="myForm.get('kodePos')?.hasError('required')">Kode Pos is required</small>
-                  
+                  <small class="text-danger" *ngIf="myForm.get('kodePos')?.hasError('max')">Max Kode Pos is 99999 </small>
+
                 </div>
               </div>
   
@@ -117,6 +120,7 @@
                 <div class="col-sm-8">
                   <input type="text" class="form-control" 
                   [readonly]="roleId != 3"
+                  maxlength="30"
                   formControlName="negara">
                   <small class="text-danger" *ngIf="myForm.get('negara')?.hasError('required')">Negara is required</small>
                   <small class="text-danger" *ngIf="myForm.get('negara')?.hasError('specialCharNotAllowed')">Special Char Not Allowed</small>
@@ -208,6 +212,7 @@
                 <div class="col-sm-8">
                   <input type="text" 
                   [readonly]="roleId != 3"
+                  maxlength="20"
                   class="form-control" 
                   formControlName="noTelp1">
                   <small class="text-danger" *ngIf="myForm.get('noTelp1')?.hasError('numberHyphenOnly')">Only Number and - Allowed</small>
@@ -220,6 +225,7 @@
                   <input type="text" 
                   [readonly]="roleId != 3"
                   class="form-control" 
+                  maxlength="20"
                   formControlName="noTelp2">
                   <small class="text-danger" *ngIf="myForm.get('noTelp2')?.hasError('numberHyphenOnly')">Only Number and - Allowed</small>
                 </div>
@@ -231,6 +237,7 @@
                   <input type="text" 
                   [readonly]="roleId != 3"
                   class="form-control" 
+                  maxlength="20"
                   formControlName="noFax1">
                   <small class="text-danger" *ngIf="myForm.get('noFax1')?.hasError('numberHyphenOnly')">Only Number and - Allowed</small>
                 </div>
@@ -242,6 +249,7 @@
                   <input type="text" 
                   [readonly]="roleId != 3"
                   class="form-control" 
+                  maxlength="20"
                   formControlName="noFax2">
                   <small class="text-danger" *ngIf="myForm.get('noFax2')?.hasError('numberHyphenOnly')">Only Number and - Allowed</small>
                 </div>
@@ -250,6 +258,7 @@
                 <label class="col-sm-4 col-form-label">Website</label>
                 <div class="col-sm-8">
                   <input type="text" 
+                  maxlength="50"
                   [readonly]="roleId != 3"
                   class="form-control" 
                   formControlName="website">
@@ -263,6 +272,7 @@
                   [readonly]="roleId != 3"
                   autocomplete="off"
                   class="form-control" 
+                  maxlength="50"
                   formControlName="alamatEmail">
                   <small class="text-danger" *ngIf="myForm.get('alamatEmail')?.hasError('email')">Format Email Salah</small>
 
@@ -277,7 +287,8 @@
                   </label>
                   <div class="col-sm-8">
                     <input type="text" 
-                    class="form-control" 
+                    class="form-control"
+                    maxlength="50" 
                     formControlName="lokasiDataBackup">
                     <small class="text-danger" *ngIf="myForm.get('lokasiDataBackup')?.hasError('required')">Lokasi Data Backup is required</small>
 
@@ -291,7 +302,7 @@
                   </label>
                   <div class="col-sm-8">
                     <input type="text" 
-                  
+                    maxlength="30"
                     class="form-control" 
                     formControlName="alamatOrcl">
                     <small class="text-danger" *ngIf="myForm.get('alamatOrcl')?.hasError('required')">Database is required</small>
@@ -310,6 +321,7 @@
                     [type]="showPassword ? 'text' : 'password'"
                     class="form-control" 
                     autocomplete="new-password"
+                    maxlength="30"
                     formControlName="passwordOrcl">
                     <small class="text-danger" *ngIf="myForm.get('passwordOrcl')?.hasError('required')">Password Database is required</small>
                   </div>
@@ -335,6 +347,7 @@
                   <div class="col-sm-8">
                     <input type="text" 
                     class="form-control" 
+                    maxlength="30"
                     formControlName="ipSvrhq">
                     <small class="text-danger" *ngIf="myForm.get('ipSvrhq')?.hasError('required')">IP Server HQ is required</small>
                     <small class="text-danger" *ngIf="myForm.get('ipSvrhq')?.hasError('specialCharNotAllowed')">Special Char Not Allowed</small>
