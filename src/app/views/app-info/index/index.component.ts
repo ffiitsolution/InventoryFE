@@ -25,6 +25,7 @@ import { TranslationService } from '../../../service/translation.service';
 export class AllAppInfoComponent implements OnInit, OnDestroy, AfterViewInit {
   data: any;
   public panes = [
+    { name: 'About Software', content: 'app-info/about-software' },
     { name: 'Release Notes', content: 'app-info/release-notes' },
     { name: 'Module', content: 'app-info/modules' },
     // { name: 'Company Profile', content: 'app-company-profile' },
@@ -43,16 +44,15 @@ export class AllAppInfoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     this.g.changeTitle(
-      this.translation.instant('App') +
+      this.translation.instant('About') +
         ' ' +
-        this.translation.instant('Info') +
+        this.translation.instant('Software') +
         ' - ' +
         this.g.tabTitle
     );
   }
 
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 
   capitalizeWords(str: string) {
     return str
@@ -67,6 +67,27 @@ export class AllAppInfoComponent implements OnInit, OnDestroy, AfterViewInit {
     return Object.keys(obj);
   }
 
-  onTabChange(event: any) {
+  onTabChange(tabId: any) {
+    if (tabId === 0) {
+      this.g.changeTitle(
+        this.translation.instant('About') +
+          ' ' +
+          this.translation.instant('Software') +
+          ' - ' +
+          this.g.tabTitle
+      );
+    } else if (tabId === 1) {
+      this.g.changeTitle(
+        this.translation.instant('Release') +
+          ' ' +
+          this.translation.instant('Note') +
+          ' - ' +
+          this.g.tabTitle
+      );
+    } else if (tabId === 2) {
+      this.g.changeTitle(
+        this.translation.instant('Modules') + ' - ' + this.g.tabTitle
+      );
+    }
   }
 }
