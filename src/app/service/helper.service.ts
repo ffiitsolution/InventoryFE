@@ -112,4 +112,9 @@ export class HelperService {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;  // Return in DD/MM/YYYY format
   }
+
+  abs(value: number): number {
+    return Math.abs(value);
+  }
+  
 }

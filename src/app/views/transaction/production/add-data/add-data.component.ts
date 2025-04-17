@@ -233,7 +233,17 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
         { data: 'satuanBesar', title: 'Satuan Besar', },
         { data: 'satuanKecil', title: 'Satuan Kecil' },
         { data: 'defaultGudang', title: 'Default Gudang', },
-        { data: 'status', title: 'Status', },
+        {
+          data: 'status',
+          title: 'Status',
+          searchable: false,
+          render: (data) => {
+            if (data === 'Aktif') {
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+            }
+            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
+          },
+        },
         {
           title: 'Action',
           render: () => {

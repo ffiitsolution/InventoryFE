@@ -152,7 +152,7 @@ export class ProductionListComponent implements OnInit {
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render: (data) => this.g.getStatusOrderLabel(data),
+          render:function(data, type, row) {return 'POSTING'} ,
         },
         {
           title: 'Aksi',
@@ -201,6 +201,10 @@ export class ProductionListComponent implements OnInit {
       },
     };
     this.dtColumns = this.dtOptions.columns;
+
+    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.customTodayClass='today-highlight';
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
   }
 
   ngOnInit(): void {

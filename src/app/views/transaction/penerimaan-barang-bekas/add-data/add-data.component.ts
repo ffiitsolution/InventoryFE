@@ -280,7 +280,7 @@ export class AddPenerimaanBrgBksComponent implements OnInit, AfterViewInit, OnDe
       this.myForm.patchValue({
         kodeCabang: data.kodeCabang,
         namaCabang: data.namaCabang,
-        alamatCabang: data.alamat1+' '+data.alamat2,
+        alamatCabang: data.alamat1+', '+data.alamat2,
       })
      
     }
