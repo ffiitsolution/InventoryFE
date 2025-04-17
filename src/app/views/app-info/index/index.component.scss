@@ -1,6 +1,6 @@
 .d-grid {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   grid-template-rows: auto;
 }
 
@@ -21,12 +21,11 @@
 }
 
 .btn-order-item {
-  padding: 8px 24px;
-  margin: 0px 16px;
-  width: 225px;
-  height: 44px;
+  margin: 0px 8px;
+  width: 180px;
+  height: 40px;
   border: 2px solid gray;
-  border-radius: 16px;
+  border-radius: 12px;
   color: gray;
   font-weight: bold;
 

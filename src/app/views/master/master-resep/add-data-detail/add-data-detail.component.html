@@ -27,19 +27,23 @@
           <table bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
             <thead>
               <tr>
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 25%"
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 18%"
                   class="text-center align-items-start" rowspan="2">Kode
                   Barang</th>
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 25%;"
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 30%;"
                   class="text-center align-items-start" rowspan="3">Nama
                  Barang</th>
                 <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
                   class="text-center align-items-start" rowspan="2">
                   Konversi</th>
-                <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle;"
+                <th scope="col" style="background-color:  #3c4b64; color:white; vertical-align: middle;"
                   class="text-center align-items-start btn-danger" >Qty
                   Pemakaian Bahan Baku
                 </th>
+                <th scope="col" style="background-color:  #3c4b64; color:white; vertical-align: middle;"
+                class="text-center align-items-start btn-danger" >
+                  Status Aktif
+              </th>
                 <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle;"
                 class="text-center align-items-start btn-danger" >
                   Action
@@ -89,7 +93,9 @@
                     {{ validationMessageList[i] }}
                   </span>
                 </td>
-
+                <td class="text-center">
+                  {{ data.status }}
+                </td>
                 <td class="text-center"> 
                   <button (click)="onDeleteRow(i,data)" type="button" class="btn btn-secondary ms-2">
                     <i class="fa fa-trash me-1"></i>

@@ -17,20 +17,21 @@ import { DataService } from '../../../service/data.service';
 import { GlobalService } from '../../../service/global.service';
 import { TranslationService } from '../../../service/translation.service';
 import { DatePipe } from '@angular/common';
-import { releaseNotes } from './release-notes';
+import { environment } from '../../../../environments/environment';
 
 @Component({
-  selector: 'app-release-note-app-info',
-  templateUrl: './release-note.component.html',
-  styleUrl: './release-note.component.scss',
+  selector: 'app-about-software-app-info',
+  templateUrl: './about-software.component.html',
+  styleUrl: './about-software.component.scss',
 })
-export class ReleaseNoteComponent implements OnInit, OnDestroy, AfterViewInit {
+export class AboutSoftwareComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   data: any;
   loadingIndicator = true;
 
   selectedVersionIndex: number = 0;
-  releaseNotes: ReleaseNote[] = releaseNotes;
-  selectedRelease: ReleaseNote;
+  version: string = environment.VERSION;
 
   constructor(
     private dataService: DataService,
@@ -41,7 +42,6 @@ export class ReleaseNoteComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.selectedRelease = this.releaseNotes[0];
   }
 
   ngOnDestroy(): void {}
@@ -58,21 +58,4 @@ export class ReleaseNoteComponent implements OnInit, OnDestroy, AfterViewInit {
   getObjectKeys(obj: Object) {
     return Object.keys(obj);
   }
-
-  selectVersion(index: number): void {
-    // console.log('index: ', index);
-    this.selectedVersionIndex = index;
-    this.selectedRelease = this.releaseNotes[index];
-  }
-}
-
-interface ReleaseNote {
-  version: string;
-  date: string;
-  changelog: {
-    features: string[];
-    bug_fixs: string[];
-    improvements: string[];
-    security_updates: string[];
-  };
 }
