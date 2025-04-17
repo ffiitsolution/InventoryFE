@@ -3,7 +3,7 @@
 
   "LOGIN_SCREEN": "LOGIN_SCREEN",
   "labelAppName": "Inventory Management System",
-  "labelCompany": "IT Department PT.Fast Food Indonesia, Tbk.",
+  "labelCompany": "IT Department PT. Fast Food Indonesia, Tbk.",
   "errorMessageWarehouseRequired": "Akun anda tidak tertaut dengan lokasi gudang. Silakan pilih Gudang",
   "errorMessageUsernamePasswordRequired": "Silakan mengisi nama pengguna dan kata sandi",
   "confirmDeleteReceivingLabel": "Tambahkan catatan untuk membatalkan penerimaan pesanan ini",

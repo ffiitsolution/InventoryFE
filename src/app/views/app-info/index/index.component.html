@@ -2,7 +2,7 @@
   <c-card class="mb-2">
     <c-card-body>
       <div class="row">
-        <div class="col-xs-12 col-md-3">
+        <div class="col-xs-6 col-md-3">
           <h5>{{ "App" | translate }} {{ "Info" | translate }}</h5>
         </div>
         <div class="col text-end">
@@ -26,8 +26,9 @@
         <c-tab-pane *ngFor="let pane of panes; index as i;">
           <c-card-body class="p-3">
             <div>
-              <app-release-note-app-info *ngIf="i == 0"></app-release-note-app-info>
-              <app-modules-app-info *ngIf="i == 1"></app-modules-app-info>
+              <app-about-software-app-info *ngIf="i == 0"></app-about-software-app-info>
+              <app-release-note-app-info *ngIf="i == 1"></app-release-note-app-info>
+              <app-modules-app-info *ngIf="i == 2"></app-modules-app-info>
               <!-- <app-company-profile *ngIf="i == 2"></app-company-profile>
           <app-info-utility *ngIf="i == 3"></app-info-utility> -->
             </div>
