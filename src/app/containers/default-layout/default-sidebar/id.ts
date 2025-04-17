@@ -7,103 +7,11 @@ export const menu_id: any = [
     },
   },
   {
-    name: 'Masters',
-    iconComponent: {
-      name: 'cil-storage',
-    },
-    children: [
-      {
-        name: 'User',
-        url: '/master/master-user',
-        iconComponent: {
-          name: 'cil-user',
-        },
-      },
-      {
-        name: 'Cabang & Dept.',
-        url: '/master/master-branch',
-        iconComponent: {
-          name: 'cil-house',
-        },
-      },
-      {
-        name: 'Location',
-        url: '/master/master-location',
-        iconComponent: {
-          name: 'cil-location-pin',
-        },
-      },
-      {
-        name: 'Supplier',
-        url: '/master/master-supplier',
-        iconComponent: {
-          name: 'cib-codesandbox',
-        },
-      },
-      {
-        name: 'Barang',
-        url: '/master/master-product',
-        iconComponent: {
-          name: 'cil-fastfood',
-        },
-      },
-      {
-        name: 'RSC',
-        url: '/master/master-rsc',
-        iconComponent: {
-          name: 'cil-contact',
-        },
-      },
-      {
-        name: 'Regional',
-        url: '/master/master-regional',
-        iconComponent: {
-          name: 'cil-map',
-        },
-      },
-      {
-        name: 'Area',
-        url: '/master/master-area',
-        iconComponent: {
-          name: 'cil-location-pin',
-        },
-      },
-      {
-        name: 'Satuan',
-        url: '/master/master-uom',
-        iconComponent: {
-          name: 'cib-dropbox',
-        },
-      },
-      {
-        name: 'Wilayah Kota',
-        url: '/master/master-city-area',
-        iconComponent: {
-          name: 'cil-globe-alt',
-        },
-      },
-      {
-        name: 'Counter',
-        url: '/master/master-set-number',
-        iconComponent: {
-          name: 'cil-window',
-        },
-      },
-      {
-        name: 'Jabatan',
-        url: '/master/master-position',
-        iconComponent: {
-          name: 'cil-contact',
-        },
-      },
-      {
-        name: 'Resep',
-        url: '/master/master-resep',
-        iconComponent: {
-          name: 'cil-dinner',
-        },
-      },
-    ],
+    "name": "Master",
+    "url": "/master",
+    "iconComponent": {
+      "name": "cil-storage"
+    }
   },
   {
     name: 'Pesanan',

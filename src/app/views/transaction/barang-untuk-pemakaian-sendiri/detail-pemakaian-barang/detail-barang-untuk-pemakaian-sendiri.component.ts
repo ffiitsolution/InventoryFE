@@ -173,22 +173,22 @@ export class DetailBarangUntukPemakaianSendiriComponent
             }
           },
           {
-            data: 'QTY_BESAR',
-            title: 'Qty Besar',
+            data: 'ABS_EXPIRED_QTY_BESAR',
+            title: 'Quantity Besar',
             render: function (data, type, row) {
               return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_BESAR;  // Menambahkan .00
             }
           },
           {
             data: 'QTY_KECIL',
-            title: 'Qty Kecil',
+            title: 'Quantity Kecil',
             render: function (data, type, row) {
               return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_KECIL;  // Menambahkan .00
             }
           },
           {
-            data: 'TOTAL_QTY_WH',
-            title: 'Qty Total',
+            data: 'ABS_TOTAL_QTY_WE',
+            title: 'Total Quantity',
             render: function (data, type, row, meta) {
               const rowsWithSameKodeBarang = meta.settings.data?.filter((item: any) => item.KODE_BARANG === row.KODE_BARANG) || [];
               

@@ -63,8 +63,7 @@ export class AddDataDetailDeliveryComponent
   protected config = AppConfig.settings.apiServer;
   filteredListTypeOrder: any[] = [];
   validationMessages: { [key: number]: string } = {};
-
-
+  validationQtyKecilKonversi: { [key: number]: string } = {};
 
   constructor(
     public g: GlobalService,
@@ -110,7 +109,7 @@ export class AddDataDetailDeliveryComponent
           qtyPesanBesar: Number(data.qtyPesanBesar).toFixed(2),
           qtyPesanKecil: Number(data.qtyPesanKecil).toFixed(2),
         }));
-        
+
         this.filteredListTypeOrder = this.listOrderData;
         this.totalLength = res?.data?.length;
         this.page = 1;
@@ -130,6 +129,7 @@ export class AddDataDetailDeliveryComponent
 
     const value = target.value;
     let validationMessage = '';
+    let validationQtyKecil = '';
 
     if (type === 'numeric') {
       const numericValue = parseFloat(value) || 0;
@@ -144,9 +144,12 @@ export class AddDataDetailDeliveryComponent
             (numericQtyKecil || 0);
         } else if (qtyType === 'kecil') {
           newTempTotal = numericQtyBesar * (this.listOrderData[index].konversi || 1) + numericValue;
+          if (numericQtyKecil >= this.listOrderData[index].konversi) {
+            validationQtyKecil = 'Qty kecil tidak boleh sama atau lebih besar dari konversi '
+          }
         }
         if (newTempTotal > (this.listOrderData[index].totalQtyPesanOld || 0)) {
-          validationMessage = `qty kirim harus < dari qty pesan`;
+          validationMessage = `Qty kirim tidak boleh lebih besar dari qty pesanan`;
         }
       }
     } else {
@@ -157,6 +160,7 @@ export class AddDataDetailDeliveryComponent
 
     // Simpan pesan validasi berdasarkan index
     this.validationMessages[index] = validationMessage;
+    this.validationQtyKecilKonversi[index] = validationQtyKecil;
   }
 
   onFilterSearch(
@@ -243,42 +247,65 @@ export class AddDataDetailDeliveryComponent
       return;
     }
 
-        Swal.fire({
-          title: 'Apa Anda Sudah Yakin?',
-          text: 'Pastikan data yang dimasukkan sudah benar!',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Ya, Simpan!',
-          cancelButtonText: 'Batal',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.appService.saveDeliveryOrder(param).subscribe({
+    const self = this;
 
-              next: (res) => {
-                if (!res.success) {
-                  alert(res.message);
-                } else {
-                  this.toastr.success("Berhasil!");
-                  setTimeout(() => {
-                    this.router.navigate(["/transaction/delivery-item"]);
-                  }, DEFAULT_DELAY_TIME);
-                }
-                this.adding = false;
-              },
-              error: (err) => {
-                console.error("Error saat insert:", err);
-                this.adding = false;
-              },
-            });
-          } else {
-            this.toastr.info('Penyimpanan dibatalkan');
-            this.adding = false;
-          }
+    Swal.fire({
+      title: '<div style="color: white; background: #c0392b; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
+      html: `
+    <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">
+      <p>Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
+      <p class="text-danger" style="font-weight: bold;">DATA YANG SUDAH DI POSTING TIDAK DAPAT DIPERBAIKI ..!!</p>
+    </div>
+    <div class="divider my-3"></div>
+    <div class="d-flex justify-content-center gap-3 mt-3">
+      <button class="btn btn-info text-white btn-150 pe-3" id="btn-submit">
+        <i class="fa fa-check pe-2"></i> Proses Pengiriman
+      </button>
+      <button class="btn btn-secondary text-white btn-150" id="btn-cancel">
+        <i class="fa fa-times pe-1"></i> Batal
+      </button>
+    </div>
+  `,
+      showConfirmButton: false,
+      showCancelButton: false,
+      width: '600px',
+      customClass: {
+        popup: 'custom-popup'
+      },
+      didOpen: () => {
+        const submitBtn = document.getElementById('btn-submit');
+        const cancelBtn = document.getElementById('btn-cancel');
+
+        submitBtn?.addEventListener('click', () => {
+          this.appService.saveDeliveryOrder(param).subscribe({
+
+            next: (res) => {
+              if (!res.success) {
+                alert(res.message);
+              } else {
+                this.toastr.success("Berhasil!");
+                setTimeout(() => {
+                  this.router.navigate(["/transaction/delivery-item"]);
+                }, DEFAULT_DELAY_TIME);
+              }
+              this.adding = false;
+            },
+            error: (err) => {
+              console.error("Error saat insert:", err);
+              this.adding = false;
+            },
+          }); // 👈 bukan onSubmit lagi
+          Swal.close();
         });
+
+        cancelBtn?.addEventListener('click', () => {
+          Swal.close();
+          this.adding = false
+        });
+      }
+    })
     // ✅ Jika semua valid, lanjutkan dengan pemanggilan API
-    
+
   }
 
   onSearchDetail(event: any) {
@@ -318,7 +345,7 @@ export class AddDataDetailDeliveryComponent
     if (!isNaN(parsed)) {
       this.listOrderData[index].qtyPesanBesar = parsed.toFixed(2);
     } else {
-      this.listOrderData[index].qtyPesanBesar = '0.00'; 
+      this.listOrderData[index].qtyPesanBesar = '0.00';
     }
   }
 
@@ -331,5 +358,5 @@ export class AddDataDetailDeliveryComponent
       this.listOrderData[index].qtyPesanKecil = '0.00'; // fallback if input is not a number
     }
   }
-  
+
 }

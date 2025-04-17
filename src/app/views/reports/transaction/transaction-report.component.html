@@ -34,7 +34,7 @@
         </div>
       </div>
     </ng-container>
-    
+
     <ng-container *ngIf="['Transaksi Pengiriman'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
@@ -50,19 +50,19 @@
             <input class="btn-check" type="radio" [(ngModel)]="paramTipeListing" name="tipeListing"
               id="tipeListingDetail" value="detail" />
             <label cButton cFormCheckLabel class="w-120" variant="outline" for="tipeListingDetail">Detail</label>
-           
+
             <input class="btn-check" type="radio" [(ngModel)]="paramTipeListing" name="tipeListing"
               id="tipeListingByItem" value="by-item" />
             <label cButton cFormCheckLabel class="w-120" variant="outline" for="tipeListingByItem">By Item</label>
-        
+
 
           </c-button-group>
         </div>
       </div>
     </ng-container>
-    
 
-    
+
+
 
     <!-- footer -->
     <div class="border-top mt-4 pt-3" *ngIf="loadingState['submit']">
@@ -73,20 +73,16 @@
     </div>
     <div class="d-flex justify-content-end align-items-center border-top mt-4 pt-3" *ngIf="!loadingState['submit']">
       <c-dropdown>
-        <button cButton cDropdownToggle color="primary" variant="outline">
-          <i class="fa fa-download me-2"></i>
-          Download
+        <button cButton cDropdownToggle color="primary" variant="outline" class="w-120">
+          <i class="fa fa-print me-2"></i>
+          Print
         </button>
         <ul cDropdownMenu>
-          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')">PDF</button></li>
-          <li><button class="btn btn-outline-primary w-100" (click)="doSubmit('csv')">Excel CSV</button></li>
+          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('preview')">Preview PDF</button></li>
+          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')">Download PDF</button></li>
+          <li><button class="btn btn-outline-primary w-100" (click)="doSubmit('csv')">Download CSV</button></li>
         </ul>
       </c-dropdown>
-
-      <button class="btn btn-primary ms-4 w-120" (click)="doSubmit('preview')">
-        <i class="fa fa-search me-2"></i>
-        Preview
-      </button>
     </div>
 
   </c-card-body>

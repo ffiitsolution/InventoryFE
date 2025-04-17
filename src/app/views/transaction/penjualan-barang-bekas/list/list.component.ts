@@ -99,7 +99,7 @@ export class ListPenjualanBrgBekasComponent implements OnInit {
               });
               this.page.recordsTotal = resp.recordsTotal;
               this.page.recordsFiltered = resp.recordsFiltered;
-              this.showFilterSection = false;
+              this.showFilterSection = false
               callback({
                 recordsTotal: resp.recordsTotal,
                 recordsFiltered: resp.recordsFiltered,

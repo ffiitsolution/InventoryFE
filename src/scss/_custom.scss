@@ -28,8 +28,9 @@ $theme-colors: map-merge(
   )
 );
 
-$primary: #b51823;
-$info: #b51823; // Change to your desired color
+// $primary: #b51823;
+$primary: #000080;
+$info: #b51823;
 
 $theme-colors: map-merge(
   $theme-colors,
@@ -94,5 +95,5 @@ c-modal[backdrop="static"] {
 }
 
 .ngx-pagination .current {
-  background: #b51823 !important;
+  background: $primary !important;
 }

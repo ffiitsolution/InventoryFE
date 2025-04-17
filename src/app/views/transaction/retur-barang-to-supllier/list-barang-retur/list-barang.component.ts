@@ -123,7 +123,7 @@ export class ListBarangReturComponent implements OnInit {
         }, DEFAULT_DELAY_TABLE);
       },
       columns: [
-        { data: 'dtIndex', title: 'No.' },
+        // { data: 'dtIndex', title: 'No.' },
         { data: 'TGL_TRANSAKSI', title: 'Tanggal Transaksi', 
           render: (data) => this.g.transformDate(data),
         },
@@ -155,8 +155,8 @@ export class ListBarangReturComponent implements OnInit {
         },
         {
           data: 'STATUS_POSTING',
-          render: (data) => (data === 'P' ? 'Posting' : 'Belum Posting'),
-          title: 'Status Posting',
+          render: (data) => (data === 'P' ? 'Posted' : 'Belum Posting'),
+          title: 'Status Transaksi',
         },
         {
           title: 'Aksi',

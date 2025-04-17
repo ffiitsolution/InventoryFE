@@ -29,7 +29,7 @@
                 <div class="col-8 pe-0 d-flex">
                   <input type="text" id="tglTransaksi" class="form-control" aria-describedby="tglTransaksi"
                     #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker autocomplete="off"
-                    [(ngModel)]="formData.tglTransaksi" placeholder="{{ 'Tanggal transaksi' | translate }}" />
+                    [(ngModel)]="formData.tglTransaksi" [maxDate]="maxDate" placeholder="{{ 'Tanggal transaksi' | translate }}" />
                 </div>
               </div>
               <div class="divider mt-4"></div>

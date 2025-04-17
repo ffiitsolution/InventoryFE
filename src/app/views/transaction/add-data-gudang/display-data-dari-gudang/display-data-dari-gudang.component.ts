@@ -144,9 +144,8 @@ export class DisplayDataGudangComponent implements OnInit {
         }, DEFAULT_DELAY_TABLE);
       },
       columns: [
-        { data: 'dtIndex', title: 'No.' },
-        { data: 'TANGGAL_TERIMA', title: 'Tgl Terima' },
-        { data: 'TANGGAL_SURAT_JALAN', title: 'Tgl Surat Jalan' },
+        { data: 'TANGGAL_TERIMA', title: 'Tanggal Terima' },
+        { data: 'TANGGAL_SURAT_JALAN', title: 'Tanggal Surat Jalan' },
         { data: 'NO_PESANAN', title: 'Nomor Pesanan' },
         { data: 'NO_SURAT_JALAN', title: 'Nomor Surat Jalan' },
         { data: 'NO_PENERIMAAN', title: 'Nomor Penerimaan' },

@@ -28,11 +28,18 @@
         <button
           *ngIf="this.roleId === '3' || this.roleId === '2'"
           type="button"
-          class="btn btn-success text-white me-2"
+          class="w-120 btn btn-success text-white me-2"
           (click)="actionBtnClick(CONST_ACTION_ADD)"
         >
           {{ "Tambah" | translate }}
         </button>
+        <a
+          type="button"
+          class="btn w-120 btn-outline-primary me-2"
+          href="#/master"
+        >
+          {{ "Kembali" | translate }}
+        </a>
       </div>
       <div>
         <table

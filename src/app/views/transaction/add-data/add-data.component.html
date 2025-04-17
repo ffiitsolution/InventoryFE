@@ -7,7 +7,7 @@
             <i class="fa fa-chevron-left icon-12 icon-gap"></i>
             {{ "Kembali" | translate }}
           </button>
-          <h5>{{ "Tambah Pengiriman" | translate }}</h5>
+          <h5>{{ "Tambah Pengiriman (Transfer Out)" | translate }}</h5>
         </div>
       </c-row>
     </c-card-body>
@@ -16,7 +16,7 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="row">
-        <div [ngClass]="isShowDetail ? 'col-4' : 'col-5'" class="pe-0 d-flex red-line">
+        <div [ngClass]="isShowDetail ? 'col-3' : 'col-5'" class="pe-0 d-flex red-line">
           <div class="w-100">
             <div class="p-2">
               <h5 class="mb-2 p-2" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5>
@@ -27,13 +27,15 @@
 
                 <div class="col-8 pe-0 d-flex">
                   <input type="text" placeholder="Nomor pesanan" class="form-control" id="nomorPesanan"
-                    [(ngModel)]="formData.nomorPesanan" name="nomorPesanan" (keydown.enter)="handleEnter($event)" />
+                    [(ngModel)]="formData.nomorPesanan" name="nomorPesanan" (keydown.enter)="handleEnter($event)"
+                    [readOnly]="isShowDetail" />
                   <button *ngIf="isShowDetail === false" type="button" class="btn btn-info ms-2"
-                    [cModalToggle]="staticBackdropModal.id" (click)="onShowModal()"><i
-                      class="fa fa-search text-white" [disabled]="isShowDetail"></i></button>
+                    [cModalToggle]="staticBackdropModal.id" (click)="onShowModal()"><i class="fa fa-search text-white"
+                      [disabled]="isShowDetail"></i></button>
                 </div>
-
               </div>
+
+              <div class="divider"></div>
 
               <div class="w-100 px-2 py-1 row">
 
@@ -41,38 +43,30 @@
                   <label for="codeDestination">{{ "Tujuan Kirim" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <input placeholder="Kode - nama tujuan" type="text" class="form-control" id="codeDestination"
+                  <input placeholder="Kode Tujuan - Nama tujuan" type="text" class="form-control" id="codeDestination"
                     [ngModel]="formData.nomorPesanan ? formData.codeDestination + ' - ' + formData.namaCabang : '' "
                     name="codeDestination" disabled />
                 </div>
               </div>
 
               <div class="w-100 px-2 py-1 row">
-
                 <div class="col-4 d-flex align-items-center">
-                  <label for="notes">{{ "Catatan" | translate }}</label>
+                  <label for="alamat1">{{ "Alamat Tujuan" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <input maxlength="50" placeholder="Catatan" type="text" class="form-control" id="keterangan"
-                    [(ngModel)]="formData.keterangan" name="keterangan" [disabled]="isShowDetail"/>
+                  <textarea placeholder="Alamat tujuan" class="form-control w-100" [value]="fullAlamat"
+                    id="exampleFormControlTextarea1" rows="2" name="alamat1" disabled></textarea>
                 </div>
               </div>
 
               <div class="w-100 px-2 py-1 row">
 
                 <div class="col-4 d-flex align-items-center">
-                  <label for="validatedDeliveryDate">{{ "Tgl. kirim" | translate }}
-                    <span class="text-danger">*</span></label>
+                  <label for="deliveryStatus">{{ "Status Aktif" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <div class="input-group">
-                    <input type="text" id="validatedDeliveryDate" class="form-control"
-                      aria-describedby="validatedDeliveryDate" #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker
-                      autocomplete="off" [(ngModel)]="formData.validatedDeliveryDate"
-                      placeholder="{{ 'Tanggal kirim barang' | translate }}" [minDate]="minDate" [maxDate]="maxDate"
-                      [disabled]="isShowDetail" />
-                    <button class="btn btn-outline-info fa fa-calendar" type="button" (click)="dp.toggle()"></button>
-                  </div>
+                  <input placeholder="Status pengiriman" type="text" class="form-control" id="deliveryStatus"
+                    [(ngModel)]="formData.deliveryStatus" name="deliveryStatus" disabled />
                 </div>
               </div>
 
@@ -100,36 +94,58 @@
                 </div>
 
               </div>
+
               <div class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
-                  <label for="tglKadaluarsa">{{ "Tanggal Kadaluarsa" | translate }}</label>
+                  <label for="tglKadaluarsa">{{ "Tgl. Kadaluarsa Pesanan" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <input type="text" id="tglKadaluarsa" class="form-control" aria-describedby="tglK adaluarsa"
                     #dp="bsDatepicker" [bsConfig]="dpConfig" disabled bsDatepicker autocomplete="off"
                     [(ngModel)]="formData.tglKadaluarsa" placeholder="{{ 'Tanggal kadaluarsa' | translate }}"
-                    [minDate]="minDate" [maxDate]="maxDate" style="pointer-events: none; " />
+                    [minDate]="minDate" [maxDate]="maxDate"  style="pointer-events: none; " />
                 </div>
               </div>
 
-              <div class="w-100 px-2 py-1 row">
-                <div class="col-4 d-flex align-items-center">
-                  <label for="alamat1">{{ "Alamat Tujuan" | translate }}</label>
-                </div>
-                <div class="col-8 pe-0 d-flex">
-                  <textarea placeholder="Alamat tujuan" class="form-control w-100" [(ngModel)]="formData.alamat1"
-                    id="exampleFormControlTextarea1" rows="2" name="alamat1" disabled></textarea>
-                </div>
-              </div>
+              <div class="divider"></div>
 
               <div class="w-100 px-2 py-1 row">
 
                 <div class="col-4 d-flex align-items-center">
-                  <label for="deliveryStatus">{{ "Status Pengiriman" | translate }}</label>
+                  <label for="validatedDeliveryDate">{{ "Tgl. Barang Dikirim Gudang" | translate }}
+                    <span class="text-danger">*</span></label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <input placeholder="Status pengiriman" type="text" class="form-control" id="deliveryStatus"
-                    [(ngModel)]="formData.deliveryStatus" name="deliveryStatus" disabled />
+                  <div class="input-group">
+                    <input type="text" id="validatedDeliveryDate" class="form-control"
+                      aria-describedby="validatedDeliveryDate" #dpBrg="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker
+                      autocomplete="off" [(ngModel)]="formData.validatedDeliveryDate"
+                      placeholder="{{ 'Tanggal kirim barang' | translate }}" [minDate]="minDate" [maxDate]="maxDate"
+                      [disabled]="isShowDetail" (ngModelChange)="getValidationTglKirimBrg()" />
+                    <button *ngIf="!isShowDetail" class="btn btn-outline-info fa fa-calendar" type="button"
+                      (click)="dpBrg.toggle()"></button>
+                  </div>
+                </div>
+              </div>
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4">
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <span style="font-size: 14px;" class="text-danger" *ngIf="formData.tglPesan !== '' ">
+                    {{ validationTglKirimBrg }}
+                  </span>
+                </div>
+              </div>
+              <div class="w-100 px-2 py-1 row">
+
+                <div class="col-4 d-flex align-items-center">
+                  <label for="notes">{{ "Catatan" | translate }}</label>
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <input maxlength="50" placeholder="Catatan" type="text" class="form-control" id="keterangan"
+                    [(ngModel)]="formData.keterangan"
+                    (keypress)="globalService.conditionInput($event, 'excludedSensitive')" name="keterangan"
+                    [disabled]="isShowDetail" />
                 </div>
               </div>
 
@@ -144,7 +160,7 @@
 
           </div>
         </div>
-        <div class=" ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
+        <div class=" ps-0" [ngClass]="isShowDetail ? 'col-9' : 'col-7'">
           <div class="p-2" *ngIf="isShowDetail">
             <app-add-data-detail-delivery-order>
             </app-add-data-detail-delivery-order>

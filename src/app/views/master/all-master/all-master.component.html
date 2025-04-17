@@ -1,0 +1,111 @@
+<div class="fade-in">
+  <c-card class="mb-2">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>{{ "Master" | translate }}</h5>
+        </div>
+        <div class="col text-end">
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in row">
+  <div class="col">
+    <div class="fade-in row">
+      <div class="col-4">
+        <c-card class="mb-4">
+          <c-card-body>
+
+            <ul cListGroup flush>
+              <li cListGroupItem class="fw-bold">
+                <div (click)="onCategoryClick('Master')"
+                  class="p-1 ps-3 text-capitalize pointer-only rounded {{'Master' === selectedCategory ? 'text-bg-secondary text-white' : ''}}">
+                  {{ 'Master' | translate }}
+                </div>
+              </li>
+              <li cListGroupItem class="fw-bold">
+                <div (click)="onCategoryClick('Setup No Transaksi')"
+                  class="p-1 ps-3 text-capitalize pointer-only rounded {{'Setup No Transaksi' === selectedCategory ? 'text-bg-secondary text-white' : ''}}">
+                  {{ 'Setup No Transaksi' | translate }}
+                </div>
+              </li>
+            </ul>
+          </c-card-body>
+        </c-card>
+      </div>
+      <div class="col">
+        <c-card class="mb-4">
+          <c-card-body>
+
+            <ng-container *ngIf="selectedCategory === 'Master'">
+              <div class="row">
+                <div *ngFor="let master of listMaster" class="col-12 col-md-6 col-lg-6 mb-3">
+                  <div
+                    class="list-group-item list-group-item-action d-flex align-items-center gap-3 pointer-only rounded shadow-sm"
+                    (click)="navigateMaster(master)">
+                    <svg cIcon [name]="master.iconComponent" size="lg" class="text"></svg>
+
+                    <div class="flex-grow-1">
+                      <h5><strong>{{ master.name }}</strong></h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+
+            <ng-container *ngIf="selectedCategory === 'Setup No Transaksi'">
+              <div class="table-responsive mt-3">
+                <table cTable striped bordered hover>
+                  <thead class="text-center">
+                    <tr class="table-secondary">
+                      <th>#</th>
+                      <th>TRANSAKSI</th>
+                      <!-- <th>TIPE</th> -->
+                      <th>KODE</th>
+                      <th>NO URUT</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngIf="loadingSetupNoTransaksi || listSetupNoTransaksi.length == 0">
+                      <td colspan="4" class="text-center">
+                        {{ loadingSetupNoTransaksi ? 'memuat ...' : 'Tidak ada data'}}
+                      </td>
+                    </tr>
+                    <tr
+                      *ngFor="let item of listSetupNoTransaksi | paginate: { itemsPerPage: 15, currentPage: currentPage }; let i = index;"
+                      class="text-end">
+                      <td>
+                        {{i+1}}
+                      </td>
+                      <td class="text-start">
+                        {{item.keterangan}}
+                      </td>
+                      <!-- <td>
+                        {{item.tipeTransaksi}}
+                      </td> -->
+                      <td class="text-start">
+                        {{item.kodeTransaksi}}
+                      </td>
+                      <td>
+                        {{item.noUrut | number}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="text-end">
+                  <pagination-controls (pageChange)="currentPage = $event" previousLabel="Sebelumnya"
+                    nextLabel="Berikutnya">
+                  </pagination-controls>
+                </div>
+              </div>
+            </ng-container>
+
+          </c-card-body>
+        </c-card>
+      </div>
+    </div>
+  </div>
+</div>

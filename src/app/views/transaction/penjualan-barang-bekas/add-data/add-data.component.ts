@@ -39,8 +39,8 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
   selectedSupplier: any = {};
   minDate: Date;
   maxDate: Date;
-  selectedSupplierwData: any;
-  isShowDetail: boolean = true;
+  selectedSupplierData: any;
+  isShowDetail: boolean = false;
   configSelectUser: any;
   baseConfig: any = {
     displayKey: 'name', // Key to display in the dropdown
@@ -61,7 +61,7 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
     namaSaksi: '',
     jabatanSaksi: '',
     keterangan: '',
-    tglTransaksi: '',
+    tglTransaksi: moment(new Date(), 'YYYY-MM-DD').format('DD-MM-YYYY') || '',
     supplier: '',
     namaSupplier: '',
     alamatSupplier: '',
@@ -126,7 +126,7 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
   }
 
   onAddDetail() {
-    this.formData.tglTransaksi = moment(this.formData.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
+    this.formData.tglTransaksi = moment(this.formData.tglTransaksi, 'DD-MM-YYYY').format('DD-MM-YYYY');
 
     this.globalService.saveLocalstorage(
       'headerData',
@@ -153,7 +153,7 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
 
 
   onPreviousPressed(): void {
-    this.router.navigate(['/transaction/delivery-item']);
+    this.router.navigate(['/transaction/penjualan-barang-bekas/list']);
   }
 
   onShowModal() {
@@ -173,9 +173,10 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
       autoWidth: true,
       info: true,
       drawCallback: (drawCallback) => {
-        this.selectedSupplierwData = undefined;
+        this.selectedSupplierData = undefined;
       },
       order: [[2, 'desc']],
+      pageLength: 5,
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
@@ -203,12 +204,12 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
           });
       },
       columns: [
-        { data: 'kodeSupplier', title: 'Kode Supplier' },
-        { data: 'namaSupplier', title: 'Nama Supplier' },
-        { data: 'alamat1', title: 'Alamat Supplier' },
-        { data: 'kota', title: 'Kota' },
+        { data: 'kodeSupplier', title: 'Kode Supplier', searchable: true, orderable: true },
+        { data: 'namaSupplier', title: 'Nama Supplier', searchable: true, orderable: true },
+        { data: 'alamat1', title: 'Alamat Supplier', searchable: true, orderable: true },
+        { data: 'kota', title: 'Kota', searchable: true, orderable: true },
         {
-          data: 'kodePemesan', title: 'Status',
+          data: 'statusAktif', title: 'Status',
           render: (data) => this.globalService.getStatusAktifLabel(data)
         },
         {
@@ -224,18 +225,18 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
         $('.action-select', row).on('click', () =>
           this.actionBtnClick(ACTION_SELECT, data)
         );
-        if (index === 0 && !this.selectedSupplierwData) {
+        if (index === 0 && !this.selectedSupplierData) {
           setTimeout(() => {
             $(row).trigger('td');
           }, 0);
         }
         $('td', row).on('click', () => {
           $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
-          if (this.selectedSupplierwData !== data) {
-            this.selectedSupplierwData = data;
+          if (this.selectedSupplierData !== data) {
+            this.selectedSupplierData = data;
             $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
           } else {
-            this.selectedSupplierwData = undefined;
+            this.selectedSupplierData = undefined;
           }
         });
 

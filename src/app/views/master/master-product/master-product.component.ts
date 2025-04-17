@@ -69,6 +69,7 @@ export class MasterProductComponent
     private translation: TranslationService,
     private router: Router
   ) {
+    this.g.navbarVisibility = false;
     this.roleId = this.g.getLocalstorage('inv_currentUser')?.roleId;
     this.dtOptions = {
       language:
@@ -122,6 +123,7 @@ export class MasterProductComponent
           title: 'Kode',
           orderable: true,
           searchable: true,
+          width: '45px',
         },
         {
           data: 'namaBarang',
@@ -129,15 +131,9 @@ export class MasterProductComponent
           orderable: true,
           searchable: true,
         },
-        { data: 'defaultGudang', title: 'Default Gudang', searchable: false },
-        {
-          data: 'satuanKecil',
-          title: 'Satuan Kecil',
-          searchable: false,
-        },
         {
           data: 'konversi',
-          title: 'Konversi',
+          title: 'Konv.',
           searchable: false,
           render: (data) => {
             if (!isNaN(parseFloat(data)) && isFinite(data)) {
@@ -145,8 +141,107 @@ export class MasterProductComponent
             }
             return data; // Return as is if not a number
           },
+          width: '25px',
         },
-        { data: 'satuanBesar', title: 'Satuan Besar', searchable: false },
+        {
+          data: 'satuanKecil',
+          title: 'Satuan Kecil',
+          searchable: false,
+          width: '25px',
+        },
+        {
+          data: 'satuanBesar',
+          title: 'Satuan Besar',
+          searchable: false,
+          width: '25px',
+        },
+        { data: 'flagCom', title: 'COM', searchable: false, width: '5px' },
+        { data: 'flagDry', title: 'DRY', searchable: false, width: '5px' },
+        { data: 'flagPrd', title: 'PRD', searchable: false, width: '5px' },
+        { data: 'flagMkt', title: 'MKT', searchable: false, width: '5px' },
+        { data: 'flagCtr', title: 'CTR', searchable: false, width: '5px' },
+        { data: 'flagHra', title: 'HRA', searchable: false, width: '5px' },
+        { data: 'defaultGudang', title: 'Default Order', searchable: false },
+        // {
+        //   data: 'minStock',
+        //   title: 'Min. Stock',
+        //   searchable: false,
+        //   render: (data) => {
+        //     if (!isNaN(parseFloat(data)) && isFinite(data)) {
+        //       return parseFloat(data).toFixed(2);
+        //     }
+        //     return data; // Return as is if not a number
+        //   },
+        //   width: '25px',
+        // },
+        // {
+        //   data: 'maxStock',
+        //   title: 'Max. Stock',
+        //   searchable: false,
+        //   render: (data) => {
+        //     if (!isNaN(parseFloat(data)) && isFinite(data)) {
+        //       return parseFloat(data).toFixed(2);
+        //     }
+        //     return data; // Return as is if not a number
+        //   },
+        //   width: '25px',
+        // },
+        {
+          data: 'flagExpired',
+          title: 'Flag Expired',
+          searchable: false,
+          render: (data) => {
+            if (data == 'Y') {
+              return 'Ya';
+            }else if (data == 'T'){
+              return 'Tidak'
+            }
+            return data; // Return as is if not a number
+          },
+          width: '25px',
+        },
+        // {
+        //   data: 'flagBrgBekas',
+        //   title: 'Flag Brg Bekas',
+        //   searchable: false,
+        //   render: (data) => {
+        //     if (data == 'Y') {
+        //       return 'Ya';
+        //     }else if (data == 'T'){
+        //       return 'Tidak'
+        //     }
+        //     return data; // Return as is if not a number
+        //   },
+        //   width: '25px',
+        // },
+        {
+          data: 'flagResepProduksi',
+          title: 'Flag Resep Produksi',
+          searchable: false,
+          render: (data) => {
+            if (data == 'Y') {
+              return 'Ya';
+            }else if (data == 'T'){
+              return 'Tidak'
+            }
+            return data; // Return as is if not a number
+          },
+          width: '25px',
+        },
+        // {
+        //   data: 'others2',
+        //   title: 'Beli Kgs ?',
+        //   searchable: false,
+        //   render: (data) => {
+        //     if (data == 'Y') {
+        //       return 'Ya';
+        //     }else if (data == 'T'){
+        //       return 'Tidak'
+        //     }
+        //     return data; // Return as is if not a number
+        //   },
+        //   width: '25px',
+        // },
         {
           data: 'statusAktif',
           title: 'Status',
@@ -179,7 +274,7 @@ export class MasterProductComponent
       ],
       searchDelay: 1500,
       order: [
-        [7, 'asc'],
+        [15, 'asc'],
         [1, 'asc'],
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
@@ -297,6 +392,7 @@ export class MasterProductComponent
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
     $.fn['dataTable'].ext.search.pop();
+    this.g.navbarVisibility = true;
   }
 
   ngAfterViewInit(): void {

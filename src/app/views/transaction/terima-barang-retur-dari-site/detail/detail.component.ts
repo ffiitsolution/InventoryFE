@@ -112,17 +112,17 @@ export class DetailTerimaBarangReturDariSiteComponent
 
               });
             this.paramGenerateReport = {
-              nomorTransaksi: this.selectedProduction.nomorTransaksi,
+              noTransaksi: this.selectedProduction.nomorTransaksi,
               userEntry: this.selectedProduction.userCreate,
               jamEntry: this.g.transformTime(this.selectedProduction.timeCreate),
               tglEntry: this.g.transformDate(this.selectedProduction.dateCreate),
               outletBrand: 'KFC',
               kodeGudang: this.g.getUserLocationCode(),
               isDownloadCsv: false,
-              reportName: 'cetak_production',
+              reportName: 'cetak retur dari site',
             };
             this.paramUpdatePrintStatus = {
-              nomorTransaksi: this.selectedProduction.nomorTransaksi
+              noTransaksi: this.selectedProduction.nomorTransaksi
             }
           }, DEFAULT_DELAY_TABLE);
         },

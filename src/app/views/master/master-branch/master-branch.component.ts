@@ -20,7 +20,7 @@ import {
   BUTTON_CAPTION_VIEW,
   LS_INV_SELECTED_BRANCH,
 } from '../../../../constants';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-master-branch',
@@ -81,8 +81,9 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
   listKota: any[] = [];
 
   configSelectGroup: any;
-  formGroupFilter: any;
+  formGroupFilter: any = 'C';
   listGroup: any[] = [];
+  currentTab: string = 'cabang';
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
@@ -122,7 +123,7 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
           kodeRSC: this.formRscFilter?.id ? this.formRscFilter.id : '',
 
           kota: this.formKotaFilter?.id ? this.formKotaFilter.id : '',
-          kodeGroup: this.formGroupFilter?.id ? this.formGroupFilter.id : '',
+          kodeGroup: this.formGroupFilter,
         };
         this.dataService
           .postData(this.g.urlServer + '/api/branch/dt', requestData)
@@ -300,12 +301,19 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
       searchPlaceholder: 'Cari Kota',
       limitTo: this.listKota.length,
     };
-    this.configSelectGroup = {
-      ...this.baseConfig,
-      placeholder: 'Pilih Group',
-      searchPlaceholder: 'Cari Group',
-      limitTo: this.listGroup.length,
-    };
+    this.g.saveLocalstorage('inv_tab_title', 'Cabang');
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        const url = event.urlAfterRedirects || event.url;
+        
+        // Cek path master-branch termasuk subpath seperti add/edit/detail
+        const isStillInMasterBranch = /^\/master\/master-branch(\/.*)?$/.test(url);
+    
+        if (!isStillInMasterBranch) {
+          this.g.removeLocalstorage('inv_tab_title');
+        }
+      }
+    });
   }
 
   actionBtnClick(action: string, data: any = null) {
@@ -324,6 +332,27 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
       default:
         return true;
     }
+  }
+
+  loadData(tab: string) {
+    this.currentTab = tab;
+    if (tab == 'cabang') {
+      this.formGroupFilter = 'C';
+      this.g.saveLocalstorage('inv_tab_title', 'Cabang');
+    } else if (tab == 'department') {
+      this.formGroupFilter = 'D';
+      this.g.saveLocalstorage('inv_tab_title', 'Department');
+    } else if (tab == 'gudang') {
+      this.formGroupFilter = 'G';
+      this.g.saveLocalstorage('inv_tab_title', 'Gudang');
+    }
+    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload();
+    });
+  }
+
+  onTabChange(tab: string) {
+    this.loadData(tab);
   }
 
   dtPageChange(event: any) {
