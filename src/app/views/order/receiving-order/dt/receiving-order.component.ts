@@ -269,6 +269,7 @@ export class ReceivingOrderComponent
   closeModal(){
     this.isShowModalReport = false;
     this.disabledPrintButton = false;
+    window.location.reload();
   }
 
 }
