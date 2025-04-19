@@ -59,6 +59,7 @@ export class SendOrderToWarehouseAddComponent implements OnInit, OnDestroy {
   alreadyPrint: boolean = false;
   disabledPrintButton: boolean = false;
   paramGenerateReport = {};
+  paramUpdatePrintStatus = {};
   state : any;
 
   constructor(
@@ -78,7 +79,6 @@ export class SendOrderToWarehouseAddComponent implements OnInit, OnDestroy {
     const storedState = sessionStorage.getItem('sendOrderState');
     if (storedState) {
       const parsedState = JSON.parse(storedState);
-      console.log("Modal state:", parsedState);
   
       if (parsedState.showModal) {
         this.onShowModalPrint(parsedState);
@@ -333,7 +333,8 @@ export class SendOrderToWarehouseAddComponent implements OnInit, OnDestroy {
   // }
 
   onShowModalPrint(state: any) {
-    this.paramGenerateReport = state
+    this.paramGenerateReport = state;
+    this.paramUpdatePrintStatus=state;
     this.isShowModalReport = true;
   }
   closeModal(){
