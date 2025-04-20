@@ -150,3 +150,43 @@ export const STATUS_RESULT = [
     value: 'R',
   },
 ];
+
+export const STATUS_PESANAN_TERIMA_PESANAN = [
+  {
+    label: 'BARU',
+    value: '1',
+  },
+  {
+    label: 'SISA',
+    value: '2',
+  },
+  {
+    label: 'SELESAI',
+    value: '3',
+  },
+  {
+    label: 'BATAL',
+    value: '4',
+  },
+]
+
+
+export const STATUS_PESANAN_TERIMA_PO = [
+  {
+    label: 'P.O BARU',
+    value: '1',
+  },
+  {
+    label: 'SISA PESANAN',
+    value: '2',
+  },
+  {
+    label: 'SELESAI',
+    value: '3',
+  },
+  {
+    label: 'P.O DIBATALKAN',
+    value: '4',
+  },
+]
+

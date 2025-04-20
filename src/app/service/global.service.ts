@@ -13,6 +13,8 @@ import {
   STATUS_AKTIF,
   STATUS_RESULT,
   TIPE_PEMBAYARAN,
+  STATUS_PESANAN_TERIMA_PESANAN,
+  STATUS_PESANAN_TERIMA_PO
 } from '../../constants';
 import moment from 'moment';
 
@@ -326,7 +328,24 @@ export class GlobalService {
     }
     return `${found?.label}` || status;
   }
-
+  getStatusReceivingOrderLabel(status: string, isPrintStatus: boolean = false) {
+    const data = STATUS_PESANAN_TERIMA_PESANAN
+    const found = data.find((item) => item.value == status);
+    if (!found) {
+      return '-';
+    }
+    // return `(${status}) ${found?.label}` || status;
+    return `${found?.label?.toUpperCase()}` || status;
+  }
+  getStatusReceivingPOLabel(status: string, isPrintStatus: boolean = false) {
+    const data = STATUS_PESANAN_TERIMA_PO
+    const found = data.find((item) => item.value == status);
+    if (!found) {
+      return '-';
+    }
+    // return `(${status}) ${found?.label}` || status;
+    return `${found?.label?.toUpperCase()}` || status;
+  }
   trimOutletCode(label: string) {
     const numberPattern = /\d+/g;
     const result = label.match(numberPattern);

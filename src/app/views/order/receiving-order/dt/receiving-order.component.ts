@@ -145,7 +145,7 @@ export class ReceivingOrderComponent
           searchable: true,
           render: (data) => {
             const isCancel = data == CANCEL_STATUS;
-            const label = this.g.getStatusOrderLabel(data);
+            const label = this.g.getStatusReceivingOrderLabel(data);
             if (isCancel) {
               return `<span class="text-center text-danger">${label}</span>`;
             }
