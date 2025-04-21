@@ -137,6 +137,11 @@ export class ReceivingPoSupplierDetailComponent
         { data: 'qtyPesanBesar', title: 'Qty Pesan Bsr' },
         { data: 'qtyPesanKecil', title: 'Qty Pesan Kcl' },
         { data: 'totalQtyPesan', title: 'Total Pesanan' },
+        { data: 'totalQtyPesan', title: 'Total Qty Diterima',
+          render: (data) => {
+            return '';
+          }
+        },
         { data: 'konversiProduct', title: 'Konversi Gudang' },
         {
           data: 'keterangan',
