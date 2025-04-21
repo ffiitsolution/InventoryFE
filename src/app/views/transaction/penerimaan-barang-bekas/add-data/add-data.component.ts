@@ -146,7 +146,7 @@ export class AddPenerimaanBrgBksComponent implements OnInit, AfterViewInit, OnDe
 
 
   onPreviousPressed(): void {
-    this.router.navigate(['/transaction/penerimaan-brg-bks/list-dt']);
+    this.router.navigate(['/transaction/penerimaan-barang-bekas/list']);
   }
 
   onShowModal() {
