@@ -8,7 +8,7 @@ import {
 import { TranslationService } from 'src/app/service/translation.service';
 
 import { DataTableDirective } from 'angular-datatables';
-import { lastValueFrom, Subject } from 'rxjs';
+import { lastValueFrom, Subject, takeUntil } from 'rxjs';
 import { Page } from 'src/app/model/page';
 import { DataService } from 'src/app/service/data.service';
 import { GlobalService } from 'src/app/service/global.service';
@@ -16,8 +16,15 @@ import { Router } from '@angular/router';
 // import { AppConfig } from 'src/app/config/app.config.ts';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
-import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DELAY_TABLE, SEND_PRINT_STATUS_SUDAH } from 'src/constants';
+import {
+  ACTION_VIEW,
+  CANCEL_STATUS,
+  DEFAULT_DELAY_TABLE,
+  SEND_PRINT_STATUS_SUDAH,
+} from 'src/constants';
 import { AppConfig } from 'src/app/config/app.config';
+import { AppService } from '../../../../service/app.service';
+import { HelperService } from '../../../../service/helper.service';
 
 @Component({
   selector: 'app-detail-production',
@@ -25,7 +32,8 @@ import { AppConfig } from 'src/app/config/app.config';
   styleUrl: './detail.component.scss',
 })
 export class DetailProductionComponent
-  implements OnInit, OnDestroy, AfterViewInit {
+  implements OnInit, OnDestroy, AfterViewInit
+{
   columns: any;
   page = new Page();
 
@@ -35,9 +43,7 @@ export class DetailProductionComponent
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
-  selectedProduction: any = JSON.parse(
-    localStorage['selectedProduction']
-  );
+  selectedProduction: any = JSON.parse(localStorage['selectedProduction']);
   adding: boolean = false;
   loadingIndicator: boolean = false;
   showFilterSection: boolean = false;
@@ -50,31 +56,47 @@ export class DetailProductionComponent
   buttonCaptionView: String = 'Lihat';
   paramGenerateReport = {};
   paramUpdatePrintStatus = {};
-
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
+  listDataExpired: any[] = [];
   protected config = AppConfig.settings.apiServer;
-
+  isShowModalExpired: boolean = false;
+  selectedRowData: any;
   constructor(
     private dataService: DataService,
     public g: GlobalService,
     private translation: TranslationService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private appService: AppService,
+    public helper: HelperService
   ) {
     this.g.navbarVisibility = true;
     this.selectedProduction = JSON.parse(this.selectedProduction);
-    this.selectedProduction.tglPesanan = this.g.transformDate(this.selectedProduction.tglPesanan),
-    this.selectedProduction.tglTransaksi = this.g.transformDate(this.selectedProduction.tglTransaksi),
-    this.selectedProduction.konversi = parseFloat( this.selectedProduction.konversi).toFixed(2),
-    this.selectedProduction.jumlahResep = parseFloat( this.selectedProduction.jumlahResep).toFixed(2),
-    this.selectedProduction.totalProduksi = parseFloat( this.selectedProduction.totalProduksi).toFixed(2),
-      this.dtOptions = {
+    (this.selectedProduction.tglPesanan = this.g.transformDate(
+      this.selectedProduction.tglPesanan
+    )),
+      (this.selectedProduction.tglTransaksi = this.g.transformDate(
+        this.selectedProduction.tglTransaksi
+      )),
+      (this.selectedProduction.konversi = parseFloat(
+        this.selectedProduction.konversi
+      ).toFixed(2)),
+      (this.selectedProduction.jumlahResep = parseFloat(
+        this.selectedProduction.jumlahResep
+      ).toFixed(2)),
+      (this.selectedProduction.totalProduksi = parseFloat(
+        this.selectedProduction.totalProduksi
+      ).toFixed(2)),
+      (this.dtOptions = {
         language:
-          translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
+          translation.getCurrentLanguage() == 'id'
+            ? translation.idDatatable
+            : {},
         processing: true,
         serverSide: true,
         autoWidth: true,
         info: true,
-        drawCallback: () => { },
+        drawCallback: () => {},
         ajax: (dataTablesParameters: any, callback) => {
           this.page.start = dataTablesParameters.start;
           this.page.length = dataTablesParameters.length;
@@ -85,10 +107,7 @@ export class DetailProductionComponent
           };
           setTimeout(() => {
             this.dataService
-              .postData(
-                this.config.BASE_URL + '/api/production/detail',
-                params
-              )
+              .postData(this.config.BASE_URL + '/api/production/detail', params)
               .subscribe((resp: any) => {
                 const updatedselectedProduction = {
                   ...this.selectedProduction,
@@ -105,8 +124,8 @@ export class DetailProductionComponent
                     ...rest,
                     dtIndex: this.page.start + index + 1,
                     tglPesanan: this.g.transformDate(rest.tglPesanan),
-                    tglTransaksi: this.g.transformDate(rest.tglTransaksi)
-                  }
+                    tglTransaksi: this.g.transformDate(rest.tglTransaksi),
+                  };
                   return finalData;
                 });
                 this.page.recordsTotal = resp.recordsTotal;
@@ -117,41 +136,65 @@ export class DetailProductionComponent
                   recordsFiltered: resp.recordsFiltered,
                   data: mappedData,
                 });
-
               });
             this.paramGenerateReport = {
               noTransaksi: this.selectedProduction.nomorTransaksi,
               userEntry: this.selectedProduction.userCreate,
-              jamEntry: this.g.transformTime(this.selectedProduction.timeCreate),
-              tglEntry: this.g.transformDate(this.selectedProduction.dateCreate),
+              jamEntry: this.g.transformTime(
+                this.selectedProduction.timeCreate
+              ),
+              tglEntry: this.g.transformDate(
+                this.selectedProduction.dateCreate
+              ),
               outletBrand: 'KFC',
               kodeGudang: this.g.getUserLocationCode(),
               isDownloadCsv: false,
               reportName: 'cetak_production',
+              confirmSelection: 'Ya',
             };
             this.paramUpdatePrintStatus = {
-              nomorTransaksi: this.selectedProduction.nomorTransaksi
-            }
+              nomorTransaksi: this.selectedProduction.nomorTransaksi,
+            };
           }, DEFAULT_DELAY_TABLE);
         },
         columns: [
           { data: 'kodeBarang', title: 'Kode Barang' },
           { data: 'namaBarang', title: 'Nama Barang' },
           {
-            data: 'konversi', title: 'Konversi',
-            render: (data, type, row) => `${Number(data).toFixed(2)} ${row.satuanKecil}`
+            data: 'konversi',
+            title: 'Konversi',
+            render: (data, type, row) =>
+              `${Number(data).toFixed(2)} ${row.satuanKecil}`,
           },
           {
-            data: 'qtyBesar', title: 'Qty Besar',
-            render: (data, type, row) => `${Number(data).toFixed(2)} ${row.satuanBesar}`
+            data: 'qtyBesar',
+            title: 'Qty Besar',
+            render: (data, type, row) =>
+              `${Number(data).toFixed(2)} ${row.satuanBesar}`,
           },
           {
-            data: 'qtyKecil', title: 'Qty Kecil',
-            render: (data, type, row) => `${Number(data).toFixed(2)} ${row.satuanKecil}`
+            data: 'qtyKecil',
+            title: 'Qty Kecil',
+            render: (data, type, row) =>
+              `${Number(data).toFixed(2)} ${row.satuanKecil}`,
           },
           {
-            data: 'totalQty', title: 'Total Qty',
-            render: (data, type, row) => `${Number(data).toFixed(2)} ${row.satuanKecil}`
+            data: 'totalQty',
+            title: 'Total Qty',
+            render: (data, type, row) =>
+              `${Number(data).toFixed(2)} ${row.satuanKecil}`,
+          },
+          {
+            title: 'Cek Quantity Expired',
+            render: (data, type, row) => {
+              if (row.flagExpired === 'Y') {
+                return `<div class="d-flex justify-content-start">
+                      <button class="btn btn-sm action-view btn-outline-success w-50"><i class="fa fa-check pe-1"></i> Cek</button>
+                </div>`;
+              } else {
+                return '';
+              }
+            },
           },
         ],
         searchDelay: 1000,
@@ -160,10 +203,10 @@ export class DetailProductionComponent
           $('.action-view', row).on('click', () =>
             this.actionBtnClick(ACTION_VIEW, data)
           );
-         
+
           return row;
         },
-      };
+      });
     this.dtColumns = this.dtOptions.columns;
   }
   reloadTable() {
@@ -185,9 +228,33 @@ export class DetailProductionComponent
       this.selectedProduction.cetakSuratJalan == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
   }
-  actionBtnClick(action: string, data: any = null) { }
 
-  dtPageChange(event: any) { }
+  actionBtnClick(action: string, data: any = null) {
+    this.selectedRowData = data;
+    const payload = {
+      nomorTransaksi: this.selectedProduction.nomorTransaksi,
+      kodeBarang: data.kodeBarang,
+      tipeTransaksi: 12,
+    };
+
+    this.appService
+      .getExpiredData(payload)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (res) => {
+          if (res) {
+            this.listDataExpired = res;
+            this.isShowModalExpired = true;
+          }
+        },
+        error: (err) => {
+          // Handle error case and show error toast
+          this.toastr.error('Kode barang tidak ditemukan!');
+        },
+      });
+  }
+
+  dtPageChange(event: any) {}
 
   ngAfterViewInit(): void {
     this.rerenderDatatable();
@@ -257,5 +324,11 @@ export class DetailProductionComponent
       return 'Belum';
     }
     return 'Sudah';
+  }
+
+  getTotalQty(): number {
+    return this.listDataExpired.reduce((sum, item) => {
+      return sum + Math.abs(Number(item.totalQty));
+    }, 0);
   }
 }

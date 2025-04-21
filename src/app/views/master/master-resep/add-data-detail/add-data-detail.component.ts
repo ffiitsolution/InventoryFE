@@ -111,7 +111,9 @@ export class AddDataDetailResepComponent
         konversi: '', 
         satuanKecil: '',
         satuanBesar: '', 
-        qtyPemakaian: '' }
+        qtyPemakaian: '',
+        status: '' 
+      }
     ];
 
     this.loadResep();
@@ -267,7 +269,8 @@ export class AddDataDetailResepComponent
             qtyPemakaian: parseFloat(item.qtyPemakaian).toFixed(2) ,
             satuanKecil: item.satuanKecil,
             satuanBesar: item.satuanBesar,
-            kodeResep: item.kodeResep
+            kodeResep: item.kodeResep,
+            status: item.status
           }));
 
         
@@ -280,7 +283,9 @@ export class AddDataDetailResepComponent
               konversi: '', 
               satuanKecil: '',
               satuanBesar: '', 
-              qtyPemakaian: '1.00' }
+              qtyPemakaian: '1.00',
+              status: ''
+            }
           ];
          }  
       },
@@ -295,7 +300,8 @@ export class AddDataDetailResepComponent
         konversi: '', 
         satuanKecil: '',
         satuanBesar: '', 
-        qtyPemakaian: '1.00'
+        qtyPemakaian: '1.00',
+        status: ''
       }
     )
   }
@@ -426,7 +432,8 @@ export class AddDataDetailResepComponent
           konversi: parseFloat(data.konversi).toFixed(2), 
           satuanKecil: data.satuanKecil,
           satuanBesar: data.satuanBesar, 
-          qtyPemakaian: '1.00'
+          qtyPemakaian: '1.00',
+          status: data.status,
         };
     
       
@@ -540,7 +547,8 @@ export class AddDataDetailResepComponent
                 konversi: res.konversi, 
                 satuanKecil: res.satuanKecil,
                 satuanBesar: res.satuanBesar, 
-                qtyPemakaian: res.qtyPemakaian 
+                qtyPemakaian: res.qtyPemakaian,
+                status: res.status, 
               };
           
             

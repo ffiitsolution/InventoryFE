@@ -124,7 +124,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
         { data: 'dtIndex', title: '#' },
         { 
           data: 'tglPesanan', 
-          title: 'Tanggal Pesanan',
+          title: 'Tanggal Pesan',
           render: function (data, type, row) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
@@ -132,7 +132,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
         },
         { 
           data: 'tglKirimBrg', 
-          title: 'Tanggal Kirim' ,
+          title: 'Tanggal Di Kirim' ,
           render: function (data, type, row) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
@@ -183,7 +183,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
         
         { 
           data: 'statusCetak', 
-          title: 'Status Cetak' ,
+          title: 'Status Cetak Pesanan' ,
           render: function (data) {
             let statusLabel = "";
             
@@ -222,17 +222,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
             }
             return statusLabel;
           }
-        },
-        { 
-          data: 'keterangan1', 
-          title: 'Catatan1',
-          render: function (data, type, row) {
-            if (!data) return ""; // Handle null/undefined values
-            return data.substring(0, 20); // Cut the first 20 characters
-          }
-        },
-
-        
+        },        
         
         {
           title: 'Opsi',

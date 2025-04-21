@@ -73,11 +73,16 @@ import { MasterUserDetailComponent } from './master-user/detail/detail.component
 import { MasterUserAddComponent } from './master-user/add/add.component';
 import { AddResepComponent, MasterResepComponent } from './master-resep';
 import { ProfileCompanyComponent } from './profile-company/profile-company.component';
+import { AllMasterComponent } from './all-master/all-master.component';
 
 const routes: Routes = [
   {
     path: '',
     children: [
+      {
+        path: '',
+        component: AllMasterComponent,
+      },
       {
         path: 'master-company',
         component: MasterCompanyComponent,
@@ -105,15 +110,15 @@ const routes: Routes = [
       {
         path: 'master-branch/detail',
         component: MasterBranchDetailComponent,
-      },   
+      },
       {
         path: 'master-branch/add',
         component: MasterBranchAddComponent,
-      },     
+      },
       {
         path: 'master-branch/edit',
         component: MasterBranchEditComponent,
-      },   
+      },
       {
         path: 'master-department',
         component: MasterDepartmentComponent,

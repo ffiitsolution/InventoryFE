@@ -29,7 +29,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     selectedRegion: false,
     statusAktif: false,
     tipeListing: false,
-    selectedRsc:false
+    selectedRsc: false,
   };
   userData: any;
   currentReport: string = '';
@@ -42,14 +42,13 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
 
   selectedRegion: any;
 
-  
   configRsc: any;
   listRsc: any = [];
   selectedRsc: any;
 
   paramStatusAktif: string = '';
   paramTipeListing: string = 'header';
-  paramInisial: string ;
+  paramInisial: string;
 
   constructor(
     private service: AppService,
@@ -58,8 +57,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     private datePipe: DatePipe,
     private router: Router,
     private route: ActivatedRoute,
-    private toastr: ToastrService,
-
+    private toastr: ToastrService
   ) {
     this.paramInisial = this.service.getUserData().defaultLocation.kodeSingkat;
   }
@@ -80,11 +78,12 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     this.configRsc = this.g.dropdownConfig('description');
 
     this.userData = this.service.getUserData();
-    console.log("paraminisial",this.paramInisial);
 
     if (['Master Cabang'].includes(this.currentReport)) {
       this.getListParam('listRegion');
-    }else if(['Master Department','Master Gudang'].includes(this.currentReport)) {
+    } else if (
+      ['Master Department', 'Master Gudang'].includes(this.currentReport)
+    ) {
       this.getListParam('listRsc');
     }
   }
@@ -102,12 +101,12 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getListParam(type: string, report: string = '') {
-    if(type == 'listRegion'){
+    if (type == 'listRegion') {
       this.loadingState['selectedRegion'] = true;
-    }else if(type == 'listRsc'){
+    } else if (type == 'listRsc') {
       this.loadingState['selectedRsc'] = true;
     }
-   
+
     this.service
       .insert('/api/report/list-report-param', { type: type, report: report })
       .subscribe({
@@ -117,16 +116,15 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
             code: '',
             description: 'Semua',
           };
-          if(type == 'listRegion'){
+          if (type == 'listRegion') {
             this.listRegion = [allVal, ...data];
             this.selectedRegion = allVal;
             this.loadingState['selectedRegion'] = false;
-          }else if(type == 'listRsc'){
+          } else if (type == 'listRsc') {
             this.listRsc = [allVal, ...data];
             this.selectedRsc = allVal;
             this.loadingState['selectedRsc'] = false;
           }
-         
         },
         error: (error) => {
           console.log(error);
@@ -163,21 +161,29 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
         status: this.paramStatusAktif,
         tipeListing: this.paramTipeListing,
       };
-    } else if (['Master Department','Master Gudang',].includes(this.currentReport)) {
+    } else if (
+      ['Master Department', 'Master Gudang'].includes(this.currentReport)
+    ) {
       param = {
         kodeRsc: this.selectedRsc['code'],
         status: this.paramStatusAktif,
         tipeListing: this.paramTipeListing,
-      }
-    }else if (['Master Supplier'].includes(this.currentReport)) {
+      };
+    } else if (['Master Supplier'].includes(this.currentReport)) {
       param = {
         statusAktif: this.paramStatusAktif,
-        tipeListing: this.paramTipeListing, 
-      }
-    }else if (['Master Barang','Master Barang Bekas','Master Barang Produksi'].includes(this.currentReport)) {
+        tipeListing: this.paramTipeListing,
+      };
+    } else if (
+      [
+        'Master Barang',
+        'Master Barang Bekas',
+        'Master Barang Produksi',
+      ].includes(this.currentReport)
+    ) {
       param = {
-        statusAktif: this.paramStatusAktif
-      }
+        statusAktif: this.paramStatusAktif,
+      };
     }
 
     param = {
@@ -186,7 +192,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
       isDownloadCsv: type === 'csv',
       reportName: this.currentReport,
       reportSlug: this.g.formatUrlSafeString(this.currentReport),
-    };  
+    };
     this.service.getFile('/api/report/report-jasper', param).subscribe({
       next: (res) => {
         this.loadingState['submit'] = false;
@@ -228,9 +234,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
       )}.pdf`;
       link.click();
       this.toastr.success('File sudah terunduh');
-    } else
-      this.toastr.error('File tidak dapat terunduh');
-
+    } else this.toastr.error('File tidak dapat terunduh');
   }
 
   downloadCsv(res: any, reportType: string) {
@@ -249,7 +253,6 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
       )}.csv`;
       link.click();
       this.toastr.success('File sudah terunduh');
-    } else
-      this.toastr.error('File tidak dapat terunduh');
+    } else this.toastr.error('File tidak dapat terunduh');
   }
 }

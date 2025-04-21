@@ -65,7 +65,7 @@ export class QueryStockReportComponent
 
   constructor(
     private service: AppService,
-    private g: GlobalService,
+    public g: GlobalService,
     private translation: TranslationService,
     private datePipe: DatePipe,
     private router: Router,
@@ -76,7 +76,7 @@ export class QueryStockReportComponent
     this.g.changeTitle(
       this.translation.instant('Query') +
         ' ' +
-        this.translation.instant('Stock Card') +
+        this.translation.instant('Stock') +
         ' - ' +
         this.g.tabTitle
     );
@@ -183,7 +183,11 @@ export class QueryStockReportComponent
   }
 
   getStockSubdetail(setnum: any, data: any) {
-    if ([1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12].includes(setnum.keyTransaksi)) {
+    if (
+      data &&
+      data.kodeBarang &&
+      [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12].includes(setnum.keyTransaksi)
+    ) {
       this.selectedSetnum = setnum;
       this.listDataSubdetail = [];
       this.totalSubdetailIn = 0;

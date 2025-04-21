@@ -40,14 +40,16 @@
     </div>
     <div class="table-responsive mt-3">
       <table cTable striped bordered hover>
-        <thead class="text-center" cTableColor="secondary">
-          <th>#</th>
-          <th>KODE BARANG</th>
-          <th>NAMA BARANG</th>
-          <th>SALDO AWAL</th>
-          <th>QTY IN</th>
-          <th>QTY OUT</th>
-          <th>SALDO AKHIR</th>
+        <thead class="text-center table-dark">
+          <tr>
+            <th>#</th>
+            <th>KODE BARANG</th>
+            <th>NAMA BARANG</th>
+            <th>SALDO AWAL</th>
+            <th>QTY IN</th>
+            <th>QTY OUT</th>
+            <th>SALDO AKHIR</th>
+          </tr>
         </thead>
         <tbody>
           <tr *ngIf="isLoading || listData.length == 0">
@@ -91,7 +93,7 @@
 
     <div>
       <c-modal id="showModalDetail" backdrop="static" [visible]="showModalDetail"
-        (visibleChange)="onChangeModalDetail($event)" size="xl" scrollable>
+        (visibleChange)="onChangeModalDetail($event)" [fullscreen]="true" scrollable>
         <c-modal-header>
           <h5 cModalTitle>
             Detail Stock
@@ -105,7 +107,7 @@
         <c-modal-body>
           <div class="mt-2 row">
             <div class="col">
-              <table class="table table-bordered table-striped table-hovered align-middle">
+              <table class="table table-bordered table-striped table-hover align-middle">
                 <thead>
                   <tr class="text-center table-dark align-middle">
                     <th>#</th>
@@ -157,7 +159,7 @@
               </h5>
               <div class="table-responsive">
                 <div style="max-height: calc( 100vh - 300px );">
-                  <table class="table table-bordered table-striped table-hovered align-middle">
+                  <table class="table table-bordered table-striped table-hover align-middle">
                     <thead>
                       <tr class="text-center table-dark align-middle">
                         <th>#</th>
@@ -177,7 +179,7 @@
                       <ng-container *ngFor="let sub of listDataSubdetail; let i = index;">
                         <tr class="text-end">
                           <td>{{ i + 1 }}</td>
-                          <td class="text-start">{{ sub.tglTransaksi }}</td>
+                          <td class="text-start">{{ g.transformDate(sub.tglTransaksi) }}</td>
                           <td class="text-start">{{ sub.nomorTransaksi }}</td>
                           <td>{{ sub.qtyIn | number }}</td>
                           <td>{{ sub.qtyOut | number }}</td>

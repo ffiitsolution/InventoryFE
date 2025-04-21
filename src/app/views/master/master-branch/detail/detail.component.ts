@@ -13,6 +13,7 @@ export class MasterBranchDetailComponent implements OnInit {
   myForm: FormGroup;
   detail: any;
   showPassword: boolean = false;
+  group: any;
 
   constructor(
     private form: FormBuilder,
@@ -21,6 +22,15 @@ export class MasterBranchDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.group = this.g.getLocalstorage('inv_tab_title');
+    let kodeGroup;
+    if (this.group === 'Branch') {
+      kodeGroup = 'C';
+    } else if (this.group === 'Department') {
+      kodeGroup = 'D';
+    } else if (this.group === 'Gudang') {
+      kodeGroup = 'G';
+    }
     this.detail = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_BRANCH));
     this.myForm = this.form.group({
       namaCabang: [this.detail.namaCabang],
@@ -48,7 +58,9 @@ export class MasterBranchDetailComponent implements OnInit {
       alamatIp: [this.detail.alamatIp],
       tipeCabang: [this.detail.tipeCabang],
       statusAktif: [this.detail.statusAktif],
-
+      ip: [this.detail.alamatIp],
+      port: [this.detail.alamatPort],
+      cad1: [this.detail.cad1],
       userCreate: [this.detail.userCreate],
       userUpdate: [this.detail.userUpdate],
       dateCreate: [moment(this.detail.dateCreate).format('DD MMM yyyy')],

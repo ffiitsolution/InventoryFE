@@ -66,6 +66,13 @@ export class SendOrderToWarehouseComponent
   selectedRowCetak: any = false;
   isShowModalCetak: boolean;
 
+  isShowModalReport: boolean = false;
+  alreadyPrint: boolean = false;
+  disabledPrintButton: boolean = false;
+  paramGenerateReport = {};
+  paramUpdatePrintStatus = {};
+  state : any;
+
   protected config = AppConfig.settings.apiServer;
 
   constructor(
@@ -269,8 +276,7 @@ export class SendOrderToWarehouseComponent
         );
         $('.action-print', row).on('click', () =>{
           // this.onClickPrint(data)
-          this.selectedRowCetak = data;
-          this.isShowModalCetak=true;
+          this.onShowModalPrint(data)
         }
         );
         return row;
@@ -403,4 +409,27 @@ export class SendOrderToWarehouseComponent
       }
 
     }
+
+    onShowModalPrint(selectedRowCetak: any) {
+      this.paramUpdatePrintStatus = {
+        statusKirim : "S",
+        userKirim : this.dataUser.kodeUser,
+        dateKirim :  moment().format("DD-MM-YYYY"),
+        timeKirim :  moment().format("HHmmss"),
+        nomorPesanan : selectedRowCetak.nomorPesanan
+      }
+      this.paramGenerateReport = {
+        nomorPesanan : selectedRowCetak.nomorPesanan,
+        userCetak:  this.dataUser.kodeUser,
+        kodeCabang:  this.dataUser.defaultLocation.kodeLocation,
+        statusCetak: selectedRowCetak.statusCetak
+      }
+      this.isShowModalReport = true;
+    }
+    closeModal(){
+      this.isShowModalReport = false;
+      this.disabledPrintButton = false;
+      window.location.reload();
+    }
+  
 }

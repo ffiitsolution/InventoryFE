@@ -159,7 +159,7 @@ export class MasterSupplierAddComponent implements OnInit {
 
     this.configDefaultGudangSelect = {
       disabled: true,
-      displayKey: 'kodeSingkat',
+      displayKey: 'name',
       search: true,
       height: '300px',
       placeholder: 'Pilih Default Gudang',
@@ -197,6 +197,7 @@ export class MasterSupplierAddComponent implements OnInit {
       this.defaultOrderGudangList = res.map((item: any) => ({
         cad1: item.cad1,
         kodeSingkat: item.kodeSingkat.substring(0, 3),
+        name: item.kodeSingkat.substring(0, 3) + ' - ' + item.cad1,
       }));
     });
   }

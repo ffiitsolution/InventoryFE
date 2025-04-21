@@ -17,6 +17,7 @@ import { AppService } from '../../../service/app.service';
 import { DatePipe } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import * as moment from 'moment';
 import {
 
   DEFAULT_DATE_RANGE_RECEIVING_ORDER
@@ -55,7 +56,8 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedRegion: any;
 
   paramStatusAktif: string = '';
-  paramTipeListing: string = 'header';
+  // paramTipeListing: string = 'header';
+  paramTipeListing: string = 'rekap';
 
   constructor(
     private service: AppService,
@@ -148,10 +150,17 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
         startDate: this.g.transformDate(this.dateRangeFilter[0]),
         endDate: this.g.transformDate(this.dateRangeFilter[1]),
       };
-
-
+    } 
+    if (this.currentReport === 'Pesanan Ke Supplier') {
+      param = {
+        kodeGudang: this.userData.defaultLocation.kodeLocation,
+        tipePesanan: 'S',  
+        userCetak: this.userData.namaUser,
+        tipeListing: this.paramTipeListing,
+        startDate: this.g.transformDate(this.dateRangeFilter[0].format('MM/DD/YYYY')),
+        endDate: this.g.transformDate(this.dateRangeFilter[1].format('MM/DD/YYYY')),
+      };
     }
-
 
     param = {
       ...param,

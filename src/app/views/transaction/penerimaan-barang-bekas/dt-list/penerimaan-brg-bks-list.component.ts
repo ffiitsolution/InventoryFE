@@ -121,14 +121,14 @@ export class PenerimaanBrgBksListComponent implements OnInit {
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render: (data) => this.g.getStatusOrderLabel(data),
+          render:function(data, type, row) {return 'POSTED'} ,
         },
         {
           title: 'Aksi',
           render: () => {
             return ` <div class="btn-group" role="group" aria-label="Action">
-                        <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
-                        <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>           
+                        <button class="btn btn-sm action-view btn-outline-primary btn-60">${this.buttonCaptionView}</button>
+                        <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>           
                     </div>`;
           },
         },
@@ -169,6 +169,10 @@ export class PenerimaanBrgBksListComponent implements OnInit {
       },
     };
     this.dtColumns = this.dtOptions.columns;
+
+    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.customTodayClass='today-highlight';
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
   }
 
   ngOnInit(): void {

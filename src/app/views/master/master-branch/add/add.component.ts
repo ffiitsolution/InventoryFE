@@ -46,7 +46,7 @@ function excludedSensitive(control: AbstractControl): ValidationErrors | null {
 }
 
 function numeric(control: AbstractControl): ValidationErrors | null {
-  const specialCharRegex = /^[0-9]+$/;
+  const specialCharRegex = /^[0-9\s]+$/;
   if (control.value && !specialCharRegex.test(control.value)) {
     return { numeric: true };
   }
@@ -77,6 +77,36 @@ function alphabet(control: AbstractControl): ValidationErrors | null {
   return null;
 }
 
+function ip(control: AbstractControl): ValidationErrors | null {
+  const ipRegex =
+    /^(25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})){3}$/;
+
+  if (control.value && !ipRegex.test(control.value)) {
+    return { ip: true };
+  }
+  return null;
+}
+
+function port(control: AbstractControl): ValidationErrors | null {
+  const value = control.value;
+
+  // Jika kosong, valid (misalnya opsional)
+  if (!value) return null;
+
+  // Harus angka
+  if (!/^[0-9]+$/.test(value)) {
+    return { port: true };
+  }
+
+  // Ubah ke number dan cek rentang valid port
+  const portNumber = Number(value);
+  if (portNumber < 1 || portNumber > 65535) {
+    return { port: true };
+  }
+
+  return null;
+}
+
 @Component({
   selector: 'app-add',
   templateUrl: './add.component.html',
@@ -92,6 +122,7 @@ export class MasterBranchAddComponent implements OnInit {
   listArea: any[] = [];
   isEmailValid: boolean = true;
   kodeGroupOptions: any;
+  group: any;
 
   baseConfig: any = {
     displayKey: 'name', // Key to display in the dropdown
@@ -118,11 +149,20 @@ export class MasterBranchAddComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.group = this.g.getLocalstorage('inv_tab_title');
+    let kodeGroup;
+    if (this.group === 'Cabang') {
+      kodeGroup = 'C';
+    } else if (this.group === 'Department') {
+      kodeGroup = 'D';
+    } else if (this.group === 'Gudang') {
+      kodeGroup = 'G';
+    }
     this.myForm = this.form.group({
       namaCabang: ['', [Validators.required, namaCabang]],
       kodeCabang: ['', [Validators.required, kodeCabang]],
       kodeSingkat: ['', [Validators.required, kodeSingkat]],
-      kodeGroup: ['', Validators.required],
+      kodeGroup: [kodeGroup, Validators.required],
       kota: [''],
       alamat1: ['', [Validators.required, excludedSensitive]],
       alamat2: ['', [excludedSensitive]],
@@ -146,6 +186,9 @@ export class MasterBranchAddComponent implements OnInit {
       userUpdate: [''],
       dateCreate: [''],
       dateupdate: [''],
+      ip: ['', [ip]],
+      port: ['', [port]],
+      cad1: ['',[namaCabang]]
     });
 
     this.configSelectKota = {
@@ -282,21 +325,24 @@ export class MasterBranchAddComponent implements OnInit {
         keterangan: controls?.['keterangan']?.value,
         kodeGroup: controls?.['kodeGroup']?.value,
         statusAktif: controls?.['statusAktif']?.value,
+        ip: controls?.['ip']?.value,
+        port: controls?.['port']?.value,
+        cad1:controls?.['cad1']?.value,
       };
       console.log(param);
-      // this.service.insert('/api/branch/insert', param).subscribe({
-      //   next: (res) => {
-      //     if (!res.success) {
-      //       alert(res.message);
-      //     } else {
-      //       this.toastr.success('Berhasil!');
-      //       setTimeout(() => {
-      //         this.onPreviousPressed();
-      //       }, DEFAULT_DELAY_TIME);
-      //     }
-      //     this.adding = false;
-      //   },
-      // });
+      this.service.insert('/api/branch/insert', param).subscribe({
+        next: (res) => {
+          if (!res.success) {
+            alert(res.message);
+          } else {
+            this.toastr.success('Berhasil!');
+            setTimeout(() => {
+              this.onPreviousPressed();
+            }, DEFAULT_DELAY_TIME);
+          }
+          this.adding = false;
+        },
+      });
     }
   }
 
@@ -335,9 +381,13 @@ export class MasterBranchAddComponent implements OnInit {
         : type == 'contactPerson' //contactPerson
         ? /^[a-zA-Z.\s]$/
         : type == 'alphabet' //tipe cabang
-        ? /^[a-zA-Z]+$/
+        ? /^[a-zA-Z\s]+$/
         : type == 'excludedSensitive' //keterangan & alamat 1-2
         ? /^[a-zA-Z0-9\s.,#\-()\/]+$/
+        : type == 'ip'
+        ? /^[0-9.]$/
+        : type == 'port'
+        ? /^[0-9]$/
         : /^[a-zA-Z.() ,\-]*$/; //alphabet
 
     if (temp_regex.test(inp)) return true;

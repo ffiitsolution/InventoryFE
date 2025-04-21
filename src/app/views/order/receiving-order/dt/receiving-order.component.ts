@@ -12,6 +12,7 @@ import {
   DEFAULT_DATE_RANGE_RECEIVING_ORDER,
   DEFAULT_DELAY_TABLE,
   LS_INV_SELECTED_RECEIVING_ORDER,
+  OUTLET_BRAND_KFC,
 } from '../../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
@@ -45,6 +46,7 @@ export class ReceivingOrderComponent
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
   buttonCaptionView: String = 'Lihat';
+  buttonCaptionPrint: String = 'Cetak';
   currentDate: Date = new Date();
   startDateFilter: Date = new Date(
     this.currentDate.setDate(
@@ -54,6 +56,17 @@ export class ReceivingOrderComponent
   dateRangeFilter: any = [this.startDateFilter, new Date()];
   selectedRowData: any;
   protected config = AppConfig.settings.apiServer;
+
+  selectedRowCetak: any ;
+  isShowModalCetak: boolean;
+
+  isShowModalReport: boolean = false;
+  alreadyPrint: boolean = false;
+  disabledPrintButton: boolean = false;
+  paramGenerateReport = {};
+  paramUpdatePrintStatus = {};
+  state : any;
+  dataUser: any;
 
   constructor(
     private dataService: DataService,
@@ -132,7 +145,7 @@ export class ReceivingOrderComponent
           searchable: true,
           render: (data) => {
             const isCancel = data == CANCEL_STATUS;
-            const label = this.g.getStatusOrderLabel(data);
+            const label = this.g.getStatusReceivingOrderLabel(data);
             if (isCancel) {
               return `<span class="text-center text-danger">${label}</span>`;
             }
@@ -147,7 +160,13 @@ export class ReceivingOrderComponent
         {
           title: 'Opsi',
           render: () => {
-            return `<button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>`;
+            const htmlString = `
+              <div class="btn-group" role="group" aria-label="Action">
+                <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
+                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>           
+              </div>
+            `;
+            return htmlString;
           },
         },
       ],
@@ -169,6 +188,11 @@ export class ReceivingOrderComponent
             this.selectedRowData = undefined;
           }
         });
+        $('.action-print', row).on('click', () =>{
+          // this.onClickPrint(data)
+          this.onShowModalPrint(data)
+        }
+        );
         return row;
       },
     };
@@ -184,6 +208,8 @@ export class ReceivingOrderComponent
     );
     this.buttonCaptionView = this.translation.instant('Lihat');
     localStorage.removeItem(LS_INV_SELECTED_RECEIVING_ORDER);
+    this.dataUser = this.g.getLocalstorage('inv_currentUser');
+
   }
 
   actionBtnClick(action: string, data: any = null) {
@@ -229,4 +255,21 @@ export class ReceivingOrderComponent
   onOrderManualPressed() {
     this.router.navigate(['/order/receiving-order/order-manual']);
   }
+
+  onShowModalPrint(selectedOrder: any) {
+    this.paramGenerateReport = {
+        outletBrand: OUTLET_BRAND_KFC,
+        user:  this.dataUser.kodeUser,
+        nomorPesanan: selectedOrder.nomorPesanan,
+        statusPesanan: selectedOrder.statusPesanan,
+        statusCetak: selectedOrder.statusCetak 
+    };
+    this.isShowModalReport = true;
+  }
+  closeModal(){
+    this.isShowModalReport = false;
+    this.disabledPrintButton = false;
+    window.location.reload();
+  }
+
 }

@@ -68,9 +68,6 @@ export class ModulesComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.g.changeTitle(
-      this.translation.instant('Modul') + ' - ' + this.g.tabTitle
-    );
     this.loadingModule = true;
     this.service.getExternal(this.urlModule + '/list.json').subscribe((res) => {
       const transformResponse = res.map((i:any) => ({

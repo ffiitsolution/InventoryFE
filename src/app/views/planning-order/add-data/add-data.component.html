@@ -19,13 +19,13 @@
         <div [ngClass]="isShowDetail  ? 'd-none' : 'col-4'" class="pe-0 d-flex red-line">
           <div class="w-100">
             <div class="p-2">
-              <h5 class="mb-2 p-2" style="color:#3c4b64;">{{ "Isi Data Planning" | translate }}</h5>
+              <h5 class="mb-2 py-2" style="color:#3c4b64;">{{ "Isi Data Planning" | translate }}</h5>
               <form [formGroup]="myForm" >
              
              
-              <div class="w-100 px-2 py-1 row">
+              <div class="w-100  py-1 row">
                
-                  <div class="col-4 text-start">
+                  <div class="col-5 text-start">
                     Periode Bulan-Tahun
                     <span
                     class="text-danger">*
@@ -45,8 +45,8 @@
                
               </div>
               
-              <div class="w-100 px-2 py-1 row">
-                <div class="col-4 d-flex align-items-center">
+              <div class="w-100 py-1 row">
+                <div class="col-5 d-flex align-items-center">
                   <label for="jumlahHasilProduksi">{{
                     "Estimasi Buffer Stock" | translate
                   }}

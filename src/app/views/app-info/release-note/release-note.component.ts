@@ -41,13 +41,6 @@ export class ReleaseNoteComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.g.changeTitle(
-      this.translation.instant('Release') +
-        ' ' +
-        this.translation.instant('Notes') +
-        ' - ' +
-        this.g.tabTitle
-    );
     this.selectedRelease = this.releaseNotes[0];
   }
 
