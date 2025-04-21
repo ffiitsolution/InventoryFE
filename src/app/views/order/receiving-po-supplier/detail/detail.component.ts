@@ -109,9 +109,9 @@ export class ReceivingPoSupplierDetailComponent
                 const finalData = {
                   ...rest,
                   dtIndex: this.page.start + index + 1,
-                  konversi: `${rest.konversi}.00 ${rest.satuanBesar}/${rest.satuanKecil}`,
-                  konversiProduct: `${rest.konversiProduct || 0} ${rest.satuanBesarProduct || '-'
-                    }/${rest.satuanKecilProduct || '-'}`,
+                  konversi: `${rest.konversi}.00 ${rest.satuanKecil}/${rest.satuanBesar}`,
+                  konversiProduct: `${rest.konversi}.00 ${rest.satuanKecilProduct || '-'
+                    }/${rest.satuanBesarProduct || '-'}`,
                   qtyPesanBesar: this.g.formatToDecimal(rest.qtyPesanBesar),
                   totalQtyPesan: this.g.formatToDecimal(rest.totalQtyPesan),
                   qtyPesanKecil: this.g.formatToDecimal(rest.qtyPesanKecil),
