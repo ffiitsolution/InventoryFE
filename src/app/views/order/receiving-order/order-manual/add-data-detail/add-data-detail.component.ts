@@ -231,7 +231,7 @@ export class AddDataDetailOrderManualComponent
           } else {
             this.toastr.success('Berhasil!');
             setTimeout(() => {
-              this.onPreviousPressed();
+              this.onPreviousAfterSubmitPressed(res);
             }, DEFAULT_DELAY_TIME);
             
           }
@@ -601,4 +601,27 @@ export class AddDataDetailOrderManualComponent
     }
   }
   
+  
+  onPreviousAfterSubmitPressed(res: any): void { 
+    // Simpan data ke sessionStorage agar bisa dibaca saat reload
+    const stateData = {
+      showModal: true,
+      outletBrand: OUTLET_BRAND_KFC,
+      isDownloadCsv: false,
+      staffName: this.dataUser.namaUser,
+      nomorPesanan: res.item[0].nomorPesanan,
+      user: this.dataUser.kodeUser,
+      statusPesanan: res.item[0].statusPesanan,
+      statusCetak: res.item[0].statusCetak
+    }
+
+
+    sessionStorage.setItem('sendOrderState', JSON.stringify(stateData));
+
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate(['/order/receiving-order/order-manual']);
+    });
+  }
+  
+
 }
