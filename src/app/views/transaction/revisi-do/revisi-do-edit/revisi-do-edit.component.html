@@ -82,25 +82,43 @@
           <div *ngIf="loading">
             <app-loading></app-loading>
           </div>
+
+          <div class="col"></div>
+          <div class="col-4">
+            <c-input-group>
+              <span cInputGroupText id="basic-addon1"><i class="fa fa-search"></i></span>
+              <input #listViewOrders id="appendedInputButton" [(ngModel)]="searchListViewOrder" class="form-control"
+                size="16" type="text" placeholder="Search..." (ngModelChange)="onFilterTextChange($event)">
+            </c-input-group>
+          </div>
+
           <table bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
             <thead>
               <tr>
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">Kode</th>
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="3">Nama
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
+                  class="text-center align-items-start" rowspan="2">Kode</th>
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
+                  class="text-center align-items-start" rowspan="3">Nama
                   Barang</th>
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
+                  class="text-center align-items-start" rowspan="2">
                   Total Qty Pesan</th>
-                <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle;" class="text-center align-items-start btn-danger" colspan="2">Qty
+                <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle;"
+                  class="text-center align-items-start btn-danger" colspan="2">Qty
                   Kirim</th> <!-- Masih sejajar -->
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
+                  class="text-center align-items-start" rowspan="2">
                   Konversi</th>
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
+                  class="text-center align-items-start" rowspan="2">
                   Total Qty Kirim
                 </th>
               </tr>
               <tr>
-                <th scope="col" class="text-center" style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle; ">Besar</th>
-                <th scope="col" class="text-center" style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle;">Kecil</th>
+                <th scope="col" class="text-center"
+                  style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle; ">Besar</th>
+                <th scope="col" class="text-center"
+                  style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle;">Kecil</th>
               </tr>
             </thead>
             <tbody *ngIf="!listOrderData || listOrderData.length === 0">
@@ -124,9 +142,10 @@
 
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
-                    <input [ngClass]="{'form-invalid': validationMessages[i]}"type="number" max="{{data.qtyBKirim}}" min="0"
+                    <input [ngClass]="{'form-invalid': validationMessages[i]}" max="{{data.qtyBKirim}}" min="0"
                       class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyBKirim"
-                      (input)="onInputValueItemDetail($event, i, 'numericDot', 'besar')" (blur)="onBlurQtyPesanBesar(i)"/>
+                      (input)="onInputValueItemDetail($event, i, 'numericDot', 'besar')"
+                      (blur)="onBlurQtyPesanBesar(i)" />
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanBesar}}
                     </span>
@@ -135,8 +154,10 @@
 
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
-                    <input [ngClass]="{'form-invalid': validationMessages[i]}" type="number" min="0" class="form-control text-center inputQty inputNumberSpace"
-                      [(ngModel)]="data.qtyKKirim" (input)="onInputValueItemDetail($event, i, 'numericDot', 'kecil')"(blur)="onBlurQtyPesanKecil(i)" />
+                    <input [ngClass]="{'form-invalid': validationMessages[i]}" min="0"
+                      class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyKKirim"
+                      (input)="onInputValueItemDetail($event, i, 'numericDot', 'kecil')"
+                      (blur)="onBlurQtyPesanKecil(i)" />
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanKecil}}
                     </span>
@@ -147,7 +168,7 @@
                 <td class="text-center">
                   {{(helper.sanitizedNumber(data.qtyBKirim) *
                   data.konversi + data.qtyKKirim)}} {{data.satuanKecil}}
-                   <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessages[i]">
+                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessages[i]">
                     {{ validationMessages[i] }}
                   </span>
                 </td>
