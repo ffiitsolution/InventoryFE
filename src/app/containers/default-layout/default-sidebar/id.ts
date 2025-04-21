@@ -11,7 +11,8 @@ export const menu_id: any = [
     "url": "/master",
     "iconComponent": {
       "name": "cil-storage"
-    }
+    },
+    'access': 'master'
   },
   {
     name: 'Pesanan',
@@ -19,6 +20,7 @@ export const menu_id: any = [
       name: 'cil-inbox',
     },
     url: '/order/order',
+    'access': 'master'
   },
   {
     name: 'Transaksi',

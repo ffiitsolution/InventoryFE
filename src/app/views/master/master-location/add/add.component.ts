@@ -84,7 +84,6 @@ export class MasterLocationAddComponent implements OnInit {
       height: '200px', // Dropdown height
       placeholder: 'Pilih', // Placeholder text
       customComparator: () => {}, // Custom sorting comparator
-      limitTo: 8, // Limit the number of displayed options
       moreText: 'lebih banyak', // Text for "more" options
       noResultsFound: 'Tidak ada hasil', // Text when no results are found
       searchPlaceholder: 'Cari Lokasi', // Placeholder for the search input

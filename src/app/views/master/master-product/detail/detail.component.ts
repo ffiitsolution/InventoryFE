@@ -82,6 +82,7 @@ export class MasterProductDetailComponent implements OnInit {
       flagResepProduksi: ['T'],
       flagConversion: ['T'],
       others2: ['T'],
+      stockOpname: ['T'],
       minStock: [this.defaultValue.toFixed(2)],
       maxStock: [this.defaultValue.toFixed(2)],
       minOrder: [this.defaultValue.toFixed(2)],
@@ -164,6 +165,7 @@ export class MasterProductDetailComponent implements OnInit {
           flagResepProduksi: this.detail.flagResepProduksi,
           flagConversion: this.detail.flagConversion,
           others2: this.detail.others2,
+          stockOpname: this.detail.stockOpname,
           minStock: this.detail.minStock.toFixed(2),
           maxStock: this.detail.maxStock.toFixed(2),
           minOrder: this.detail.minOrder.toFixed(2),
@@ -178,6 +180,8 @@ export class MasterProductDetailComponent implements OnInit {
           lokasiBarang: this.detail.lokasiBarang,
           statusAktif: this.detail.statusAktif,
           keteranganBrg: this.detail.keteranganBrg,
+          userCreate: this.detail.userCreateName,
+          userUpdate: this.detail.userUpdateName,
         });
         this.myForm.disable();
       },

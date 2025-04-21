@@ -108,6 +108,27 @@ export class MasterUserEditComponent implements OnInit {
       defaultLocation: [{}],
       roleID: [],
       location: [],
+      companyProfile: [this.detail.companyProfile === 'Y'],
+      maintenancePassword: [this.detail.maintenancePassword === 'Y'],
+      masterCabang: [this.detail.masterCabang === 'Y'],
+      masterSupplier: [this.detail.masterSupplier === 'Y'],
+      masterBarang: [this.detail.masterBarang === 'Y'],
+      masterLain: [this.detail.masterLain === 'Y'],
+      pembelian: [this.detail.pembelian === 'Y'],
+      penerimaan: [this.detail.penerimaan === 'Y'],
+      pengiriman: [this.detail.pengiriman === 'Y'],
+      barangRusak: [this.detail.barangRusak === 'Y'],
+      penyesuaianStock: [this.detail.penyesuaianStock === 'Y'],
+      returnBarang: [this.detail.returnBarang === 'Y'],
+      produksi: [this.detail.produksi === 'Y'],
+      barangBekas: [this.detail.barangBekas === 'Y'],
+      stockOpname: [this.detail.stockOpname === 'Y'],
+      usulOrder: [this.detail.usulOrder === 'Y'],
+      listingMaster: [this.detail.listingMaster === 'Y'],
+      laporanTransaksi: [this.detail.laporanTransaksi === 'Y'],
+      closing: [this.detail.closing === 'Y'],
+      backupData: [this.detail.backupData === 'Y'],
+      utility: [this.detail.utility === 'Y']
     });
 
     this.configSelectLokasi = {
@@ -229,6 +250,29 @@ export class MasterUserEditComponent implements OnInit {
         jabatan: controls?.['jabatan']?.value?.id ?? ' ',
         defaultLocation: controls?.['defaultLocation']?.value?.id ?? ' ',
         roleID: controls?.['roleID']?.value?.id ?? ' ',
+        companyProfile: controls?.['companyProfile']?.value ? 'Y' : 'N',
+        maintenancePassword: controls?.['maintenancePassword']?.value
+          ? 'Y'
+          : 'N',
+        masterCabang: controls?.['masterCabang']?.value ? 'Y' : 'N',
+        masterSupplier: controls?.['masterSupplier']?.value ? 'Y' : 'N',
+        masterBarang: controls?.['masterBarang']?.value ? 'Y' : 'N',
+        masterLain: controls?.['masterLain']?.value ? 'Y' : 'N',
+        pembelian: controls?.['pembelian']?.value ? 'Y' : 'N',
+        penerimaan: controls?.['penerimaan']?.value ? 'Y' : 'N',
+        pengiriman: controls?.['pengiriman']?.value ? 'Y' : 'N',
+        barangRusak: controls?.['barangRusak']?.value ? 'Y' : 'N',
+        penyesuaianStock: controls?.['penyesuaianStock']?.value ? 'Y' : 'N',
+        returnBarang: controls?.['returnBarang']?.value ? 'Y' : 'N',
+        produksi: controls?.['produksi']?.value ? 'Y' : 'N',
+        barangBekas: controls?.['barangBekas']?.value ? 'Y' : 'N',
+        stockOpname: controls?.['stockOpname']?.value ? 'Y' : 'N',
+        usulOrder: controls?.['usulOrder']?.value ? 'Y' : 'N',
+        listingMaster: controls?.['listingMaster']?.value ? 'Y' : 'N',
+        laporanTransaksi: controls?.['laporanTransaksi']?.value ? 'Y' : 'N',
+        closing: controls?.['closing']?.value ? 'Y' : 'N',
+        backupData: controls?.['backupData']?.value ? 'Y' : 'N',
+        utility: controls?.['utility']?.value ? 'Y' : 'N',
       };
       this.service.patch('/api/users/current', param).subscribe({
         next: (res: any) => {
