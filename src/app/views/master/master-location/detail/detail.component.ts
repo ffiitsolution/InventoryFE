@@ -35,8 +35,8 @@ export class MasterLocationDetailComponent implements OnInit {
           disabled: true,
         },
       ],
-      userCreate: [{ value: this.detail.userCreate, disabled: true }],
-      userUpdate: [{ value: this.detail.userUpdate, disabled: true }],
+      userCreate: [{ value: this.detail.userCreateName, disabled: true }],
+      userUpdate: [{ value: this.detail.userUpdateName, disabled: true }],
       dateUpdate: [
         {
           value: moment(this.detail.dateUpdate).format('DD MMM yyyy'),

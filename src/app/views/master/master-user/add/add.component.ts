@@ -74,7 +74,6 @@ export class MasterUserAddComponent implements OnInit {
   detail: any;
   selectedLocations: any;
 
-
   constructor(
     private toastr: ToastrService,
     private form: FormBuilder,
@@ -95,6 +94,27 @@ export class MasterUserAddComponent implements OnInit {
       jabatan: [''],
       roleID: [''],
       location: [],
+      companyProfile: [false],
+      maintenancePassword: [false],
+      masterCabang: [false],
+      masterSupplier: [false],
+      masterBarang: [false],
+      masterLain: [false],
+      pembelian: [false],
+      penerimaan: [false],
+      pengiriman: [false],
+      barangRusak: [false],
+      penyesuaianStock: [false],
+      returnBarang: [false],
+      produksi: [false],
+      barangBekas: [false],
+      stockOpname: [false],
+      usulOrder: [false],
+      listingMaster: [false],
+      laporanTransaksi: [false],
+      closing: [false],
+      backupData: [false],
+      utility: [false],
     });
 
     this.configSelectDefaultLokasi = {
@@ -123,15 +143,13 @@ export class MasterUserAddComponent implements OnInit {
     };
 
     this.dataService
-    .postData(this.g.urlServer + '/api/location/dropdown-lokasi', {})
-    .subscribe((resp: any) => {
-      this.listLokasi = resp.map((item: any) => ({
-        id: item.KODE_LOCATION,
-        name: item.KODE_LOCATION + ' - ' + item.KETERANGAN_LOKASI,
-      }));
-  
-
-    });
+      .postData(this.g.urlServer + '/api/location/dropdown-lokasi', {})
+      .subscribe((resp: any) => {
+        this.listLokasi = resp.map((item: any) => ({
+          id: item.KODE_LOCATION,
+          name: item.KODE_LOCATION + ' - ' + item.KETERANGAN_LOKASI,
+        }));
+      });
 
     this.dataService
       .postData(this.g.urlServer + '/api/role/dropdown-role', {})
@@ -187,6 +205,29 @@ export class MasterUserAddComponent implements OnInit {
         jabatan: controls?.['jabatan']?.value?.id ?? ' ',
         defaultLocation: controls?.['defaultLocation']?.value?.id ?? ' ',
         roleID: controls?.['roleID']?.value?.id,
+        companyProfile: controls?.['companyProfile']?.value ? 'Y' : 'N',
+        maintenancePassword: controls?.['maintenancePassword']?.value
+          ? 'Y'
+          : 'N',
+        masterCabang: controls?.['masterCabang']?.value ? 'Y' : 'N',
+        masterSupplier: controls?.['masterSupplier']?.value ? 'Y' : 'N',
+        masterBarang: controls?.['masterBarang']?.value ? 'Y' : 'N',
+        masterLain: controls?.['masterLain']?.value ? 'Y' : 'N',
+        pembelian: controls?.['pembelian']?.value ? 'Y' : 'N',
+        penerimaan: controls?.['penerimaan']?.value ? 'Y' : 'N',
+        pengiriman: controls?.['pengiriman']?.value ? 'Y' : 'N',
+        barangRusak: controls?.['barangRusak']?.value ? 'Y' : 'N',
+        penyesuaianStock: controls?.['penyesuaianStock']?.value ? 'Y' : 'N',
+        returnBarang: controls?.['returnBarang']?.value ? 'Y' : 'N',
+        produksi: controls?.['produksi']?.value ? 'Y' : 'N',
+        barangBekas: controls?.['barangBekas']?.value ? 'Y' : 'N',
+        stockOpname: controls?.['stockOpname']?.value ? 'Y' : 'N',
+        usulOrder: controls?.['usulOrder']?.value ? 'Y' : 'N',
+        listingMaster: controls?.['listingMaster']?.value ? 'Y' : 'N',
+        laporanTransaksi: controls?.['laporanTransaksi']?.value ? 'Y' : 'N',
+        closing: controls?.['closing']?.value ? 'Y' : 'N',
+        backupData: controls?.['backupData']?.value ? 'Y' : 'N',
+        utility: controls?.['utility']?.value ? 'Y' : 'N',
       };
       this.service
         .insert('/api/users', param)
@@ -212,33 +253,31 @@ export class MasterUserAddComponent implements OnInit {
           },
         });
 
-        if (controls?.['location']?.value) {
-          const paramsUserLoc = {
-            kodeUser: controls?.['kodeUser']?.value,
-            statusSync: 'T',
-            ListKodeLocation: controls?.['location']?.value?.map(
-              (item: any) => item.id
-            ) || [''],
-          };
-  
-          this.service
-            .insert('/api/user-location/updateBatch', paramsUserLoc)
-            .subscribe({
-              next: (res: any) => {
-                if (!res.success) {
-                  alert(res.message);
-                }
-              },
-              error: (err: any) => {
-                console.error('Error updating user location:', err);
-                alert('An error occurred while updating the use locationr.');
-                this.adding = false;
-              },
-            });
-        }
+      if (controls?.['location']?.value) {
+        const paramsUserLoc = {
+          kodeUser: controls?.['kodeUser']?.value,
+          statusSync: 'T',
+          ListKodeLocation: controls?.['location']?.value?.map(
+            (item: any) => item.id
+          ) || [''],
+        };
 
+        this.service
+          .insert('/api/user-location/updateBatch', paramsUserLoc)
+          .subscribe({
+            next: (res: any) => {
+              if (!res.success) {
+                alert(res.message);
+              }
+            },
+            error: (err: any) => {
+              console.error('Error updating user location:', err);
+              alert('An error occurred while updating the use locationr.');
+              this.adding = false;
+            },
+          });
+      }
     }
-    
   }
 
   onPreviousPressed() {
@@ -297,7 +336,7 @@ export class MasterUserAddComponent implements OnInit {
   onChangeLocation(selected: any) {
     const defaultLocationId = this.myForm.get('defaultLocation')?.value?.id;
     this.listDefaultLokasi = selected;
-    console.log("selected", selected);
+    console.log('selected', selected);
     if (
       selected.some(
         (item: { id: string; name: string }) => item.id === defaultLocationId
