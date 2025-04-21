@@ -67,6 +67,8 @@ export class AddDataDetailDeliveryComponent
   validationMessages: { [key: number]: string } = {};
   validationQtyKecilKonversi: { [key: number]: string } = {};
 
+  searchListViewOrder: string = '';
+
     @Output() dataCetak = new EventEmitter<any>();
 
   constructor(
@@ -75,7 +77,7 @@ export class AddDataDetailDeliveryComponent
     private router: Router,
     public helper: HelperService,
     private appService: AppService,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {
     this.selectedOrder = JSON.parse(this.selectedOrder);
     this.getDeliveryItemDetails()
@@ -128,6 +130,15 @@ export class AddDataDetailDeliveryComponent
     );
   }
 
+  onFilterTextChange(newValue: string) {
+    if (newValue.length >= 3) {
+      this.totalLength = 1;
+    } else {
+      this.totalLength = this.listOrderData.length;
+    }
+    this.listCurrentPage = this.listCurrentPage;
+  }
+
   onInputValueItemDetail(event: any, index: number, type: string, qtyType: string) {
     const target = event.target;
 
@@ -167,6 +178,16 @@ export class AddDataDetailDeliveryComponent
     this.validationQtyKecilKonversi[index] = validationQtyKecil;
   }
 
+  get filteredList() {
+    if (!this.searchListViewOrder) {
+      return this.filteredListTypeOrder;
+    }
+    const searchText = this.searchListViewOrder.toLowerCase();
+    return this.filteredListTypeOrder.filter(item =>
+      JSON.stringify(item).toLowerCase().includes(searchText)
+    );
+  }
+  
   onFilterSearch(
     listData: any[],
     filterText: string,
@@ -293,10 +314,10 @@ export class AddDataDetailDeliveryComponent
                   isDownloadCsv: true,
                   noSuratJalan: res.message,
                 }
+                this.dataCetak.emit(paramGenerateReport)
                 setTimeout(() => {
                   this.router.navigate(["/transaction/delivery-item/add-data"]);
                 }, DEFAULT_DELAY_TIME);
-                this.dataCetak.emit(paramGenerateReport)
               }
               this.adding = false;
             },

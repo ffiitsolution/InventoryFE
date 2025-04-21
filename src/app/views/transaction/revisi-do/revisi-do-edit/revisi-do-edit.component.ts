@@ -49,7 +49,7 @@ export class RevisiDoEditComponent
   totalLengthList: number = 1;
   protected config = AppConfig.settings.apiServer;
   validationMessages: { [key: number]: string } = {};
-
+  searchListViewOrder: string = '';
   constructor(
     public g: GlobalService,
     private translation: TranslationService,
@@ -149,6 +149,25 @@ export class RevisiDoEditComponent
     return this.helper.applyFilterList(listData, filterText, startAfter);
   }
 
+
+  onFilterTextChange(newValue: string) {
+    if (newValue.length >= 3) {
+      this.totalLength = 1;
+    } else {
+      this.totalLength = this.listOrderData.length;
+    }
+    this.listCurrentPage = this.listCurrentPage;
+  }
+
+  get filteredList() {
+    if (!this.searchListViewOrder) {
+      return this.listOrderData;
+    }
+    const searchText = this.searchListViewOrder.toLowerCase();
+    return this.listOrderData.filter(item =>
+      JSON.stringify(item).toLowerCase().includes(searchText)
+    );
+  }
   ngAfterViewInit(): void {
   }
   ngOnDestroy(): void {
