@@ -262,7 +262,7 @@ export class EntryPackingListComponent
           this.showFilterSection = false;
 
           callback({
-            recordsTotal: response?.length,
+            recordsTotal: response.recordsTotal,
             recordsFiltered: response.recordsFiltered,
             data: this.reportProposeData,
           });

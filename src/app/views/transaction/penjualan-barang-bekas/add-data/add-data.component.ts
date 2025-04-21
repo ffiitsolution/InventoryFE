@@ -75,7 +75,7 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
     private translationService: TranslationService,
     private appService: AppService
   ) {
-    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
   }

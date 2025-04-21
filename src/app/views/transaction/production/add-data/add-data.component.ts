@@ -64,7 +64,7 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
     private appService: AppService,
     private datePipe: DatePipe
   ) {
-    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
     this.dpConfig.minDate = new Date();

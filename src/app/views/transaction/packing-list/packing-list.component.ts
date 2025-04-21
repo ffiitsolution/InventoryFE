@@ -62,6 +62,7 @@ export class PackagingListComponent
   ) {
     this.minDate.setDate(this.minDate.getDate() - 7);
     this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
+    this.dpConfig.containerClass = 'theme-dark-blue';
   }
 
   ngOnInit(): void {

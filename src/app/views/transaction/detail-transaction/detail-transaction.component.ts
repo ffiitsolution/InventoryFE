@@ -153,7 +153,7 @@ export class DetailTransactionComponent
         { data: 'kodeBarang', title: 'Kode Barang' },
         { data: 'namaBarang', title: 'Nama Barang' },
         {
-          data: 'totalQtyPesan', title: 'Total Pesanan',
+          data: 'totalQtyPesan', title: 'Total Qty Pesan',
           render: (data, type, row) => `${data} ${row.satuanKecil}`
         },
         {
@@ -165,10 +165,10 @@ export class DetailTransactionComponent
           render: (data, type, row) => `${data} ${row.satuanKecil}`
         },
         { data: 'konversi', title: 'Konversi',
-          render: (data, type, row) => `${data}  ${row.satuanKecil}/${row.satuanBesar}`
+          render: (data, type, row) => `${data} `
          },
         {
-          data: 'totalQtyKirim', title: 'Total Kirim',
+          data: 'totalQtyKirim', title: 'Total Qty Kirim',
           render: (data, type, row) => `${data} ${row.satuanKecil}`
         },
       ],

@@ -62,7 +62,7 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
     private service: AppService,
     private dataService: DataService,
   ) {
-    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfigTglKirimBarang.containerClass = 'theme-red';
     this.dpConfigTglBatalPesanan.containerClass = 'theme-red';
   }

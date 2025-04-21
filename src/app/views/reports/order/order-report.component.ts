@@ -66,7 +66,7 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
     private route: ActivatedRoute,
     private toastr: ToastrService,
   ) {
-      this.dpConfig.containerClass = 'theme-red';
+      this.dpConfig.containerClass = 'theme-dark-blue';
       this.dpConfig.customTodayClass='today-highlight';
       this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';    
   }

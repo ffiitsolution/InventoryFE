@@ -149,7 +149,7 @@ export class ReceivingPoSupplierAddFormComponent
       },
     };
     this.dtColumns = this.dtOptions.columns;
-    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.containerClass = 'theme-dark-blue';
 
   }
 
