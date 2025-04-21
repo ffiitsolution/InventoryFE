@@ -20,6 +20,17 @@ export class MasterUserDetailComponent implements OnInit {
   listDefaultLokasi: any[] = [];
   roleId: any;
   listPosition: any[] = [];
+  baseConfig: any = {
+    displayKey: 'name', // Key to display in the dropdown
+    search: true, // Enable search functionality
+    height: '200px', // Dropdown height
+    customComparator: () => {}, // Custom sorting comparator
+    moreText: 'lebih banyak', // Text for "more" options
+    noResultsFound: 'Tidak ada hasil', // Text when no results are found
+    searchOnKey: 'name', // Key to search
+  };
+  configSelectRole: any;
+  listRole: any[] = [];
 
   constructor(
     private form: FormBuilder,
@@ -40,12 +51,41 @@ export class MasterUserDetailComponent implements OnInit {
       defaultLocation: [this.detail.keteranganLokasi],
       jabatan: [this.detail.jabatan],
       location: '',
-      userCreate: [this.detail.userCreate],
-      userUpdate: [this.detail.userUpdate],
+      roleID: [''],
+      companyProfile: [this.detail.companyProfile === 'Y'],
+      maintenancePassword: [this.detail.maintenancePassword === 'Y'],
+      masterCabang: [this.detail.masterCabang === 'Y'],
+      masterSupplier: [this.detail.masterSupplier === 'Y'],
+      masterBarang: [this.detail.masterBarang === 'Y'],
+      masterLain: [this.detail.masterLain === 'Y'],
+      pembelian: [this.detail.pembelian === 'Y'],
+      penerimaan: [this.detail.penerimaan === 'Y'],
+      pengiriman: [this.detail.pengiriman === 'Y'],
+      barangRusak: [this.detail.barangRusak === 'Y'],
+      penyesuaianStock: [this.detail.penyesuaianStock === 'Y'],
+      returnBarang: [this.detail.returnBarang === 'Y'],
+      produksi: [this.detail.produksi === 'Y'],
+      barangBekas: [this.detail.barangBekas === 'Y'],
+      stockOpname: [this.detail.stockOpname === 'Y'],
+      usulOrder: [this.detail.usulOrder === 'Y'],
+      listingMaster: [this.detail.listingMaster === 'Y'],
+      laporanTransaksi: [this.detail.laporanTransaksi === 'Y'],
+      closing: [this.detail.closing === 'Y'],
+      backupData: [this.detail.backupData === 'Y'],
+      utility: [this.detail.utility === 'Y'],
+      userCreate: [this.detail.userCreateName],
+      userUpdate: [this.detail.userUpdateName],
       dateCreate: [moment(this.detail.dateCreate).format('DD MMM yyyy')],
       dateUpdate: [moment(this.detail.dateUpdate).format('DD MMM yyyy')],
     });
     this.myForm.disable();
+
+    this.configSelectRole = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Role',
+      searchPlaceholder: 'Cari Role',
+      limitTo: this.listRole.length,
+    };
 
     this.dataService
       .postData(this.g.urlServer + '/api/location/dropdown-lokasi', {})
@@ -93,6 +133,19 @@ export class MasterUserDetailComponent implements OnInit {
           (item: any) => Number(item.id) === Number(this.detail.jabatan)
         );
         this.myForm.get('jabatan')?.setValue(getPositionID?.name);
+      });
+
+    this.dataService
+      .postData(this.g.urlServer + '/api/role/dropdown-role', {})
+      .subscribe((resp: any) => {
+        this.listRole = resp.map((item: any) => ({
+          id: item.ID,
+          name: item.NAME,
+        }));
+        const getRoleID = this.listRole.find(
+          (item: any) => Number(item.id) === Number(this.detail.roleId)
+        );
+        this.myForm.get('roleID')?.setValue(getRoleID);
       });
   }
 

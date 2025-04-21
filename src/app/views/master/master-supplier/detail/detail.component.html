@@ -1,5 +1,5 @@
 <div class="fade-in">
-  <c-card class="mb-4">
+  <c-card class="mb-2">
     <c-card-body>
       <h5>{{ "Lihat" | translate }} {{ "Supplier" | translate }}</h5>
     </c-card-body>
@@ -10,7 +10,7 @@
     <c-card-body>
       <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
         <div class="row justify-content-start">
-          <div class="col-6 mb-3">
+          <div class="col-6 mb-1">
             <div class="row">
               <label class="col-sm-4 col-form-label">{{
                 "Kode" | translate
@@ -28,7 +28,7 @@
               </span>
             </div>
           </div>
-          <div class="col-6 mb-3">
+          <div class="col-6 mb-1">
             <div class="row">
               <label class="col-sm-4 col-form-label">{{
                 "Nama Supplier" | translate
@@ -90,8 +90,8 @@
             </div>
           </div>
         </div>
-        <div class="divider"></div>
-        <div class="mb-3 row">
+        <div class="divider mt-2 mb-2"></div>
+        <div class="mb-1 row">
           <label class="col-sm-2 col-form-label">{{
             "Alamat 1" | translate
           }}</label>
@@ -123,7 +123,7 @@
             >{{ "Wajib diisi" | translate }}
           </span>
         </div>
-        <div class="mb-3 row">
+        <div class="mb-1 row">
           <label class="col-sm-2 col-form-label">{{
             "Alamat 2" | translate
           }}</label>
@@ -148,9 +148,9 @@
           </div>
         </div>
 
-        <div class="divider"></div>
+        <div class="divider mt-2 mb-2"></div>
 
-        <div class="mb-3 row">
+        <div class="mb-1 row">
           <label class="col-sm-2 col-form-label">{{
             "Telepon 1" | translate
           }}</label>
@@ -174,7 +174,7 @@
             />
           </div>
         </div>
-        <div class="mb-3 row">
+        <div class="mb-1 row">
           <label class="col-sm-2 col-form-label">{{
             "Telepon 2" | translate
           }}</label>
@@ -198,7 +198,7 @@
             />
           </div>
         </div>
-        <div class="mb-3 row">
+        <div class="mb-1 row">
           <label class="col-sm-2 col-form-label">{{
             "FAX 1" | translate
           }}</label>
@@ -228,7 +228,7 @@
             "Alamat email tidak valid" | translate
           }}</span>
         </div>
-        <div class="mb-3 row">
+        <div class="mb-1 row">
           <label class="col-sm-2 col-form-label">{{
             "FAX 2" | translate
           }}</label>
@@ -241,8 +241,8 @@
             />
           </div>
         </div>
-        <div class="divider"></div>
-        <div class="mb-3 row">
+        <div class="divider mt-2 mb-2"></div>
+        <div class="mb-1 row">
           <label class="col-sm-2 col-form-label">{{
             "Keterangan" | translate
           }}</label>
@@ -255,7 +255,7 @@
             />
           </div>
         </div>
-        <!-- <div class="mb-3 row">
+        <!-- <div class="mb-1 row">
           <label class="col-sm-2 col-form-label">{{ "CAD" | translate }}</label>
           <div class="col-sm-5">
             <input type="text" class="form-control" formControlName="cad1" />
@@ -264,7 +264,7 @@
             <input type="text" class="form-control" formControlName="cad2" />
           </div>
         </div> -->
-        <div class="mb-3 row">
+        <div class="mb-1 row">
           <label class="col-sm-2 col-form-label">{{
             "Status" | translate
           }}</label>
@@ -303,12 +303,12 @@
           </c-col>
           <div class="col-sm-6"></div>
         </div>
-        <div class="divider"></div>
+        <div class="divider mt-2 mb-2"></div>
         <div class="container">
           <div class="row">
             <div class="col-md-6">
               <!-- left column -->
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Dibuat Oleh" | translate
                 }}</label>
@@ -320,7 +320,7 @@
                   />
                 </div>
               </div>
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Tanggal Dibuat" | translate
                 }}</label>
@@ -335,7 +335,7 @@
             </div>
             <div class="col-md-6">
               <!-- right column -->
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Diperbarui Oleh" | translate
                 }}</label>
@@ -347,7 +347,7 @@
                   />
                 </div>
               </div>
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Tanggal Diperbarui" | translate
                 }}</label>
@@ -363,7 +363,7 @@
           </div>
         </div>
 
-        <div class="divider"></div>
+        <div class="divider mt-2 mb-2"></div>
         <div class="d-grid gap-3 d-md-flex justify-content-end">
           <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
             {{ "Kembali" | translate }}

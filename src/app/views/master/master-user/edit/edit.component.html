@@ -1,7 +1,9 @@
 <div class="fade-in">
-  <c-card class="mb-4">
+  <c-card class="mb-2">
     <c-card-body>
-      <h5>{{ "Ubah" | translate }} {{ "User" | translate }}</h5>
+      <h5 style="margin-bottom: 0px">
+        {{ "Ubah" | translate }} {{ "User" | translate }}
+      </h5>
     </c-card-body>
   </c-card>
 </div>
@@ -9,253 +11,508 @@
   <c-card class="mb-4">
     <c-card-body>
       <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label"
-            >{{ "Kode User" | translate }}
-            <span class="stamp-required show">&nbsp;*</span>
-          </label>
-          <div class="col-sm-10">
-            <input
-              type="text"
-              class="form-control"
-              formControlName="kodeUser"
-              (keypress)="conditionInput($event, 'alphanumeric')"
-              maxlength="10"
-            />
-            <span *ngIf="isFieldValid('kodeUser')" class="text-danger">{{
-              "Wajib diisi" | translate
-            }}</span>
-          </div>
-        </div>
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label"
-            >{{ "Nama User" | translate }}
-            <span class="stamp-required show">&nbsp;*</span>
-          </label>
-          <div class="col-sm-10">
-            <input
-              type="text"
-              class="form-control"
-              formControlName="namaUser"
-              (keypress)="conditionInput($event, 'alphabet')"
-              maxlength="50"
-            />
-            <span
-              *ngIf="
-                myForm.controls['namaUser'].hasError('required') &&
-                myForm.controls['namaUser'].touched
-              "
-              class="text-danger"
-              >{{ "Wajib diisi (max.50 karakter)" | translate }}</span
-            >
-            <span
-              *ngIf="
-                myForm.controls['namaUser'].hasError(
-                  'specialCharNotAllowedExcept'
-                )
-              "
-              class="text-danger"
-              >{{
-                "Nama User tidak boleh mengandung karakter khusus." | translate
-              }}</span
-            >
-          </div>
-        </div>
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label"
-            >{{ "Password" | translate }}
-            <span class="stamp-required show">&nbsp;*</span>
-          </label>
-          <div class="col-sm-10">
-            <div class="d-flex align-items-center">
-              <input
-                maxlength="10"
-                [type]="showPassword ? 'text' : 'password'"
-                class="form-control"
-                formControlName="kodePassword"
-                (keypress)="conditionInput($event, 'alphanumeric')"
-                (keyup)="onChangePassword($event, 'user')"
-              />
-              <span
-                class="input-group-text eye-icon text-center"
-                style="margin-right: 5px"
-                (click)="togglePasswordVisibility('password')"
-              >
-                <i
-                  class="fa"
-                  [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
-                ></i>
-              </span>
+        <div class="row">
+          <div class="col-md-9" style="padding-right: 0px; width: 71%">
+            <div class="container">
+              <div class="mb-1 row">
+                <label class="col-sm-2 col-form-label"
+                  >{{ "Kode User" | translate }}
+                  <span class="stamp-required show">&nbsp;*</span>
+                </label>
+                <div class="col-sm-10">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="kodeUser"
+                    (keypress)="conditionInput($event, 'alphanumeric')"
+                    maxlength="10"
+                  />
+                  <span *ngIf="isFieldValid('kodeUser')" class="text-danger">{{
+                    "Wajib diisi" | translate
+                  }}</span>
+                </div>
+              </div>
+              <div class="mb-1 row">
+                <label class="col-sm-2 col-form-label"
+                  >{{ "Nama User" | translate }}
+                  <span class="stamp-required show">&nbsp;*</span>
+                </label>
+                <div class="col-sm-10">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="namaUser"
+                    (keypress)="conditionInput($event, 'alphabet')"
+                    maxlength="50"
+                  />
+                  <span
+                    *ngIf="
+                      myForm.controls['namaUser'].hasError('required') &&
+                      myForm.controls['namaUser'].touched
+                    "
+                    class="text-danger"
+                    >{{ "Wajib diisi (max.50 karakter)" | translate }}</span
+                  >
+                  <span
+                    *ngIf="
+                      myForm.controls['namaUser'].hasError(
+                        'specialCharNotAllowedExcept'
+                      )
+                    "
+                    class="text-danger"
+                    >{{
+                      "Nama User tidak boleh mengandung karakter khusus."
+                        | translate
+                    }}</span
+                  >
+                </div>
+              </div>
+              <div class="mb-1 row">
+                <label class="col-sm-2 col-form-label"
+                  >{{ "Password" | translate }}
+                  <span class="stamp-required show">&nbsp;*</span>
+                </label>
+                <div class="col-sm-10">
+                  <div class="input-group">
+                    <input
+                      maxlength="10"
+                      [type]="showPassword ? 'text' : 'password'"
+                      class="form-control"
+                      formControlName="kodePassword"
+                      (keypress)="conditionInput($event, 'alphanumeric')"
+                      (keyup)="onChangePassword($event, 'user')"
+                    />
+                    <span
+                      class="input-group-text"
+                      style="margin-right: 5px"
+                      (click)="togglePasswordVisibility('password')"
+                    >
+                      <i
+                        class="fa"
+                        [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+                      ></i>
+                    </span>
+                  </div>
+                  <span
+                    *ngIf="isFieldValid('kodePassword')"
+                    class="text-danger"
+                    >{{ "Wajib diisi" | translate }}</span
+                  >
+
+                  <span *ngIf="isNotMatchPass" class="text-danger">
+                    {{ "Password Tidak Cocok" | translate }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="mb-1 row">
+                <label class="col-sm-2 col-form-label"
+                  >{{ "Konfirmasi Password" | translate }}
+                  <span class="stamp-required show">&nbsp;*</span>
+                </label>
+                <div class="col-sm-10">
+                  <div class="input-group">
+                    <input
+                      maxlength="10"
+                      [type]="showConfirmationPassword ? 'text' : 'password'"
+                      class="form-control"
+                      (keypress)="conditionInput($event, 'alphanumeric')"
+                      formControlName="konfirmasiKodePassword"
+                      (keyup)="onChangePassword($event, 'user')"
+                    />
+                    <span
+                      class="input-group-text"
+                      style="margin-right: 5px"
+                      (click)="togglePasswordVisibility('confirmationPassword')"
+                    >
+                      <i
+                        class="fa"
+                        [ngClass]="
+                          showConfirmationPassword ? 'fa-eye-slash' : 'fa-eye'
+                        "
+                      ></i>
+                    </span>
+                  </div>
+                  <span
+                    *ngIf="isFieldValid('konfirmasiKodePassword')"
+                    class="text-danger"
+                    >{{ "Wajib diisi" | translate }}</span
+                  >
+
+                  <span
+                    *ngIf="
+                      isNotMatchPass && !isFieldValid('konfirmasiKodePassword')
+                    "
+                    class="text-danger"
+                  >
+                    {{ "Password Tidak Cocok" | translate }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="mb-1 row">
+                <label class="col-sm-2 col-form-label">{{
+                  "Status" | translate
+                }}</label>
+                <c-col xs="8">
+                  <c-row class="mt-2">
+                    <c-col xs="6">
+                      <c-form-check class="flex align-items-center">
+                        <input
+                          cFormCheckInput
+                          checked
+                          id="active"
+                          type="radio"
+                          value="A"
+                          name="status"
+                          formControlName="statusAktif"
+                          (change)="onChangeSelect($event, 'status')"
+                        />
+                        <label
+                          cFormCheckLabel
+                          for="active"
+                          style="margin-left: 4px"
+                          >Aktif</label
+                        >
+                      </c-form-check>
+                    </c-col>
+                    <c-col xs="6">
+                      <c-form-check class="flex align-items-center">
+                        <input
+                          cFormCheckInput
+                          id="inactive"
+                          type="radio"
+                          value="I"
+                          name="status"
+                          formControlName="statusAktif"
+                          (change)="onChangeSelect($event, 'status')"
+                        />
+                        <label
+                          cFormCheckLabel
+                          for="inactive"
+                          style="margin-left: 4px"
+                          >Tidak Aktif</label
+                        >
+                      </c-form-check>
+                    </c-col>
+                  </c-row>
+                </c-col>
+              </div>
+
+              <div class="mb-1 row">
+                <label class="col-sm-2 col-form-label">{{
+                  "Jabatan" | translate
+                }}</label>
+                <div class="col-sm-10">
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [config]="configSelectPosition"
+                    [options]="listPosition"
+                    formControlName="jabatan"
+                    id="jabatan"
+                  >
+                  </ngx-select-dropdown>
+                  <!-- <span *ngIf="isFieldValid('jabatan')" class="text-danger">{{
+                    "Wajib diisi" | translate
+                  }}</span>
+                  <span
+                    *ngIf="myForm.controls['jabatan'].hasError('jabatan')"
+                    class="text-danger"
+                    >{{
+                      " Jabatan hanya boleh mengandung huruf, strip (-), underscore (_) dan spasi."
+                        | translate
+                    }}</span
+                  > -->
+                </div>
+              </div>
+
+              <div class="mb-1 row">
+                <label class="col-sm-2 col-form-label">{{
+                  "Lokasi" | translate
+                }}</label>
+                <div class="col-sm-10">
+                  <ngx-select-dropdown
+                    [multiple]="true"
+                    [config]="configSelectLokasi"
+                    [options]="listLokasi"
+                    formControlName="location"
+                    id="location"
+                    [(ngModel)]="selectedLocations"
+                    (ngModelChange)="onChangeLocation($event)"
+                  >
+                  </ngx-select-dropdown>
+                </div>
+              </div>
+              <div class="mb-1 row">
+                <label class="col-sm-2 col-form-label">{{
+                  "Default Lokasi" | translate
+                }}</label>
+                <div class="col-sm-10">
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [config]="configSelectDefaultLokasi"
+                    [options]="listDefaultLokasi"
+                    formControlName="defaultLocation"
+                    id="default-location"
+                  >
+                  </ngx-select-dropdown>
+                </div>
+              </div>
+
+              <div class="mb-1 row">
+                <label class="col-sm-2 col-form-label">{{
+                  "Role" | translate
+                }}</label>
+                <div class="col-sm-10">
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [config]="configSelectRole"
+                    [options]="listRole"
+                    formControlName="roleID"
+                    id="roleID"
+                  >
+                  </ngx-select-dropdown>
+                </div>
+              </div>
             </div>
-            <span *ngIf="isFieldValid('kodePassword')" class="text-danger">{{
-              "Wajib diisi" | translate
-            }}</span>
-
-            <span *ngIf="isNotMatchPass" class="text-danger">
-              {{ "Password Tidak Cocok" | translate }}
-            </span>
           </div>
-        </div>
-
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label"
-            >{{ "Konfirmasi Password" | translate }}
-            <span class="stamp-required show">&nbsp;*</span>
-          </label>
-          <div class="col-sm-10">
-            <div class="d-flex align-items-center">
-              <input
-                maxlength="10"
-                [type]="showConfirmationPassword ? 'text' : 'password'"
-                class="form-control"
-                (keypress)="conditionInput($event, 'alphanumeric')"
-                formControlName="konfirmasiKodePassword"
-                (keyup)="onChangePassword($event, 'user')"
-              />
-              <span
-                class="input-group-text eye-icon text-center"
-                style="margin-right: 5px"
-                (click)="togglePasswordVisibility('confirmationPassword')"
+          <div
+            class="col-md-3"
+            style="width: 29%; overflow-y: scroll; height: 385px"
+          >
+            <div class="col-md-12 mb-1">
+              <label
+                class="col-sm-12 col-form-label"
+                style="padding-bottom: 0px; padding-top: 0px; margin-top: 0px"
               >
-                <i
-                  class="fa"
-                  [ngClass]="
-                    showConfirmationPassword ? 'fa-eye-slash' : 'fa-eye'
-                  "
-                ></i>
-              </span>
-            </div>
-            <span
-              *ngIf="isFieldValid('konfirmasiKodePassword')"
-              class="text-danger"
-              >{{ "Wajib diisi" | translate }}</span
-            >
-
-            <span
-              *ngIf="isNotMatchPass && !isFieldValid('konfirmasiKodePassword')"
-              class="text-danger"
-            >
-              {{ "Password Tidak Cocok" | translate }}
-            </span>
-          </div>
-        </div>
-
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Status" | translate
-          }}</label>
-          <c-col xs="8">
-            <c-row class="mt-2">
-              <c-col xs="6">
-                <c-form-check class="flex align-items-center">
+                {{ "Hak Akses User " | translate }}
+              </label>
+              <div class="col-sm-12 d-flex flex-column">
+                <c-form-check>
                   <input
                     cFormCheckInput
-                    checked
-                    id="active"
-                    type="radio"
-                    value="A"
-                    name="status"
-                    formControlName="statusAktif"
-                    (change)="onChangeSelect($event, 'status')"
+                    id="companyProfile"
+                    type="checkbox"
+                    formControlName="companyProfile"
                   />
-                  <label cFormCheckLabel for="active" style="margin-left: 4px"
-                    >Active</label
+                  <label cFormCheckLabel for="companyProfile"
+                    >Master Perusahaan</label
                   >
                 </c-form-check>
-              </c-col>
-              <c-col xs="6">
-                <c-form-check class="flex align-items-center">
+                <c-form-check>
                   <input
                     cFormCheckInput
-                    id="inactive"
-                    type="radio"
-                    value="I"
-                    name="status"
-                    formControlName="statusAktif"
-                    (change)="onChangeSelect($event, 'status')"
+                    id="maintenancePassword"
+                    type="checkbox"
+                    formControlName="maintenancePassword"
                   />
-                  <label cFormCheckLabel for="inactive" style="margin-left: 4px"
-                    >Inactive</label
+                  <label cFormCheckLabel for="maintenancePassword"
+                    >Maintenance Password</label
                   >
                 </c-form-check>
-              </c-col>
-            </c-row>
-          </c-col>
-        </div>
-
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Jabatan" | translate
-          }}</label>
-          <div class="col-sm-10">
-            <ngx-select-dropdown
-              [multiple]="false"
-              [config]="configSelectPosition"
-              [options]="listPosition"
-              formControlName="jabatan"
-              id="jabatan"
-            >
-            </ngx-select-dropdown>
-            <!-- <span *ngIf="isFieldValid('jabatan')" class="text-danger">{{
-              "Wajib diisi" | translate
-            }}</span>
-            <span
-              *ngIf="myForm.controls['jabatan'].hasError('jabatan')"
-              class="text-danger"
-              >{{
-                " Jabatan hanya boleh mengandung huruf, strip (-), underscore (_) dan spasi."
-                  | translate
-              }}</span
-            > -->
-          </div>
-        </div>
-
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Lokasi" | translate
-          }}</label>
-          <div class="col-sm-10">
-            <ngx-select-dropdown
-              [multiple]="true"
-              [config]="configSelectLokasi"
-              [options]="listLokasi"
-              formControlName="location"
-              id="location"
-              [(ngModel)]="selectedLocations"
-              (ngModelChange)="onChangeLocation($event)"
-            >
-            </ngx-select-dropdown>
-          </div>
-        </div>
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Default Lokasi" | translate
-          }}</label>
-          <div class="col-sm-10">
-            <ngx-select-dropdown
-              [multiple]="false"
-              [config]="configSelectDefaultLokasi"
-              [options]="listDefaultLokasi"
-              formControlName="defaultLocation"
-              id="default-location"
-            >
-            </ngx-select-dropdown>
-          </div>
-        </div>
-
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Role" | translate
-          }}</label>
-          <div class="col-sm-10">
-            <ngx-select-dropdown
-              [multiple]="false"
-              [config]="configSelectRole"
-              [options]="listRole"
-              formControlName="roleID"
-              id="roleID"
-            >
-            </ngx-select-dropdown>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="masterCabang"
+                    type="checkbox"
+                    formControlName="masterCabang"
+                  />
+                  <label cFormCheckLabel for="masterCabang"
+                    >Master Cabang, Department dan Gudang</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="masterSupplier"
+                    type="checkbox"
+                    formControlName="masterSupplier"
+                  />
+                  <label cFormCheckLabel for="masterSupplier"
+                    >Master Supplier</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="masterBarang"
+                    type="checkbox"
+                    formControlName="masterBarang"
+                  />
+                  <label cFormCheckLabel for="masterBarang"
+                    >Master Barang</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="masterLain"
+                    type="checkbox"
+                    formControlName="masterLain"
+                  />
+                  <label cFormCheckLabel for="masterLain"
+                    >Master Lain-Lain</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="pembelian"
+                    type="checkbox"
+                    formControlName="pembelian"
+                  />
+                  <label cFormCheckLabel for="pembelian"
+                    >Pembelian (Purchase)</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="penerimaan"
+                    type="checkbox"
+                    formControlName="penerimaan"
+                  />
+                  <label cFormCheckLabel for="penerimaan"
+                    >Penerimaan (Transfer In)</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="pengiriman"
+                    type="checkbox"
+                    formControlName="pengiriman"
+                  />
+                  <label cFormCheckLabel for="pengiriman"
+                    >Pengiriman (Transfer Out)</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="barangRusak"
+                    type="checkbox"
+                    formControlName="barangRusak"
+                  />
+                  <label cFormCheckLabel for="barangRusak"
+                    >Barang Rusak / Pemusnahan</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="penyesuaianStock"
+                    type="checkbox"
+                    formControlName="penyesuaianStock"
+                  />
+                  <label cFormCheckLabel for="penyesuaianStock"
+                    >Penyesuaian Stock</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="returnBarang"
+                    type="checkbox"
+                    formControlName="returnBarang"
+                  />
+                  <label cFormCheckLabel for="returnBarang"
+                    >Return Ke Supplier</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="produksi"
+                    type="checkbox"
+                    formControlName="produksi"
+                  />
+                  <label cFormCheckLabel for="produksi">Proses Produksi</label>
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="barangBekas"
+                    type="checkbox"
+                    formControlName="barangBekas"
+                  />
+                  <label cFormCheckLabel for="barangBekas">Barang Bekas</label>
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="stockOpname"
+                    type="checkbox"
+                    formControlName="stockOpname"
+                  />
+                  <label cFormCheckLabel for="stockOpname">Stock Opname</label>
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="usulOrder"
+                    type="checkbox"
+                    formControlName="usulOrder"
+                  />
+                  <label cFormCheckLabel for="usulOrder">Planning Order</label>
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="listingMaster"
+                    type="checkbox"
+                    formControlName="listingMaster"
+                  />
+                  <label cFormCheckLabel for="listingMaster"
+                    >Listing Master</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="laporanTransaksi"
+                    type="checkbox"
+                    formControlName="laporanTransaksi"
+                  />
+                  <label cFormCheckLabel for="laporanTransaksi"
+                    >Laporan Transaksi</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="closing"
+                    type="checkbox"
+                    formControlName="closing"
+                  />
+                  <label cFormCheckLabel for="closing"
+                    >Tutup Bulan (Closing)</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="backupData"
+                    type="checkbox"
+                    formControlName="backupData"
+                  />
+                  <label cFormCheckLabel for="backupData"
+                    >Tutup Hari (End Of Day)</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="utility"
+                    type="checkbox"
+                    formControlName="utility"
+                  />
+                  <label cFormCheckLabel for="utility"
+                    >Utility (Administrator)</label
+                  >
+                </c-form-check>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -275,7 +532,7 @@
           >
             <i class="fa fa-spinner fa-spin" *ngIf="editing"></i>
             <span *ngIf="!editing"
-              >{{ "Simpan" | translate }} {{ "User" | translate }}</span
+              >{{ "Simpan" | translate }}</span
             >
           </button>
         </div>

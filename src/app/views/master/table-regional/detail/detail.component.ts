@@ -25,8 +25,8 @@ export class TableRegionalDetailComponent implements OnInit {
       code: [this.detail.kodeRegion],
       desc: [this.detail.keteranganRegion],
       dateCreate: [{ value: this.detail.dateCreate, disabled: true }],
-      userCreate: [{ value: this.detail.userCreate, disabled: true }],
-      userUpdate: [{ value: this.detail.userUpdate, disabled: true }],
+      userCreate: [{ value: this.detail.userCreateName, disabled: true }],
+      userUpdate: [{ value: this.detail.userUpdateName, disabled: true }],
       dateUpdate: [{ value: this.detail.dateUpdate, disabled: true }],
     });
     this.myForm.disable();
