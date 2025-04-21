@@ -129,7 +129,7 @@ export class PackagingListComponent
 
         return row;
       },
-      order: [[2, 'desc']],
+      order: [[1, 'desc']],
     };
 
   }

@@ -173,16 +173,16 @@
       </div>
 
       <div class="modal-footer justify-content-center">
-        <button class="btn btn-warning me-2" (click)="onSubmit()">
+        <button class="btn btn-warning me-2" (click)="onSubmit('download')">
           <i class="fa fa-file-pdf-o pe-2" *ngIf="!printing"></i> 
           <i class="fa fa-spinner fa-spin" *ngIf="printing"></i>
           PDF
         </button>
-        <!-- <button class="btn btn-primary me-2">
-          <i class="fa fa-print pe-2" (click)="onSubmit()" *ngIf="!printing"></i>
+        <button class="btn btn-primary me-2" (click)="onSubmit('print')">
+          <i class="fa fa-print pe-2"  *ngIf="!printing"></i>
           <i class="fa fa-spinner fa-spin" *ngIf="printing"></i>
           Printer
-        </button> -->
+        </button>
         <button class="btn btn-danger" (click)="isShowPrintModal = false">
           <i class="fa fa-times pe-2" [cModalToggle]="printModal.id" cButtonClose></i> Batal
         </button>

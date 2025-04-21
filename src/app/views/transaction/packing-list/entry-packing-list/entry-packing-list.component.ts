@@ -342,7 +342,7 @@ export class EntryPackingListComponent
     });
   }
 
-  async onSubmit() {
+  async onSubmit(typePrint: any) {
     this.printing = true;
     const tanggalCetak = this.g.transformDate(new Date().toISOString());
     const nomorPl = this.selectedData.packingListNumber;
@@ -421,7 +421,19 @@ export class EntryPackingListComponent
       const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       this.toastr.success('Sukses mencetak Packing List');
-      window.open(url);
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-'); // "2025-04-16T12-34-56-789Z"
+      const fileName = `packing-list-${nomorPl}_${timestamp}.pdf`;
+      if (typePrint === 'download') {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      } else {
+        window.open(url);
+      }
       this.printing = false;
     } catch (error: any) {
       this.toastr.error(error.message ?? 'Unknown error while generating PDF');
