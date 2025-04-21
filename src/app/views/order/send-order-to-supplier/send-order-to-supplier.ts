@@ -131,7 +131,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
         { data: 'dtIndex', title: '#' },
         { 
           data: 'tglPesanan', 
-          title: 'Tanggal Pesan',
+          title: 'Tgl. Pesan',
           render: function (data, type, row) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
@@ -139,7 +139,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
         },
         { 
           data: 'tglKirimBrg', 
-          title: 'Tanggal Di Kirim' ,
+          title: 'Tgl. Di Kirim' ,
           render: function (data, type, row) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
@@ -147,7 +147,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
         },
         { 
           data: 'tglBatalExp', 
-          title: 'Tanggal Batal',
+          title: 'Tgl. Batal',
           render: function (data, type, row) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
