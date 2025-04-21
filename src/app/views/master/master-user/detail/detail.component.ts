@@ -20,6 +20,17 @@ export class MasterUserDetailComponent implements OnInit {
   listDefaultLokasi: any[] = [];
   roleId: any;
   listPosition: any[] = [];
+  baseConfig: any = {
+    displayKey: 'name', // Key to display in the dropdown
+    search: true, // Enable search functionality
+    height: '200px', // Dropdown height
+    customComparator: () => {}, // Custom sorting comparator
+    moreText: 'lebih banyak', // Text for "more" options
+    noResultsFound: 'Tidak ada hasil', // Text when no results are found
+    searchOnKey: 'name', // Key to search
+  };
+  configSelectRole: any;
+  listRole: any[] = [];
 
   constructor(
     private form: FormBuilder,
@@ -40,6 +51,7 @@ export class MasterUserDetailComponent implements OnInit {
       defaultLocation: [this.detail.keteranganLokasi],
       jabatan: [this.detail.jabatan],
       location: '',
+      roleID: [''],
       companyProfile: [this.detail.companyProfile === 'Y'],
       maintenancePassword: [this.detail.maintenancePassword === 'Y'],
       masterCabang: [this.detail.masterCabang === 'Y'],
@@ -67,6 +79,13 @@ export class MasterUserDetailComponent implements OnInit {
       dateUpdate: [moment(this.detail.dateUpdate).format('DD MMM yyyy')],
     });
     this.myForm.disable();
+
+    this.configSelectRole = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Role',
+      searchPlaceholder: 'Cari Role',
+      limitTo: this.listRole.length,
+    };
 
     this.dataService
       .postData(this.g.urlServer + '/api/location/dropdown-lokasi', {})
@@ -114,6 +133,19 @@ export class MasterUserDetailComponent implements OnInit {
           (item: any) => Number(item.id) === Number(this.detail.jabatan)
         );
         this.myForm.get('jabatan')?.setValue(getPositionID?.name);
+      });
+
+    this.dataService
+      .postData(this.g.urlServer + '/api/role/dropdown-role', {})
+      .subscribe((resp: any) => {
+        this.listRole = resp.map((item: any) => ({
+          id: item.ID,
+          name: item.NAME,
+        }));
+        const getRoleID = this.listRole.find(
+          (item: any) => Number(item.id) === Number(this.detail.roleId)
+        );
+        this.myForm.get('roleID')?.setValue(getRoleID);
       });
   }
 

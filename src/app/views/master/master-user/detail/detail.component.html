@@ -150,6 +150,21 @@
                   ></textarea>
                 </div>
               </div>
+              <div class="mb-1 row">
+                <label class="col-sm-2 col-form-label">{{
+                  "Role" | translate
+                }}</label>
+                <div class="col-sm-10">
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [config]="configSelectRole"
+                    [options]="listRole"
+                    formControlName="roleID"
+                    id="roleID"
+                  >
+                  </ngx-select-dropdown>
+                </div>
+              </div>
             </div>
           </div>
           <div
