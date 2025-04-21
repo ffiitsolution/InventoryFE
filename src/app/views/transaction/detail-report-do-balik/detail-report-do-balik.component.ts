@@ -71,7 +71,7 @@ export class DetailReportDoBalikComponent
     private appService: AppService,
     private translation: TranslationService
   ) {
-    this.g.navbarVisibility = false;
+    this.g.navbarVisibility = true;
     this.selectedOrder = JSON.parse(this.selectedOrder);
     this.selectedOrder.TGL_PESANAN = this.g.transformDate(this.selectedOrder.TGL_PESANAN);
     this.selectedOrder.TGL_TRANSAKSI = this.g.transformDate(this.selectedOrder.TGL_TRANSAKSI);

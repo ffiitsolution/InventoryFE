@@ -70,7 +70,7 @@ export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewI
     private route: ActivatedRoute,
     private toastr: ToastrService,
   ) {
-    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.customTodayClass='today-highlight';
     this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
   }

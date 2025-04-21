@@ -80,7 +80,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     private cdr: ChangeDetectorRef,
     private dataService: DataService,
   ) {
-    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
     this.dpConfig.minDate = new Date();

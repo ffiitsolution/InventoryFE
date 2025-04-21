@@ -61,7 +61,7 @@ export class AddDataPemakaianBarangSendiriComponent implements OnInit, AfterView
         private deliveryDataService: DeliveryDataService,
         private appService: AppService
       ) {
-        this.dpConfig.containerClass = 'theme-red';
+        this.dpConfig.containerClass = 'theme-dark-blue';
         this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
         this.dpConfig.adaptivePosition = true;
         this.dpConfig.customTodayClass = 'today-highlight';

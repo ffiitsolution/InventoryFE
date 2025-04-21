@@ -43,6 +43,12 @@ export class TerimaBarangReturDariSiteListComponent implements OnInit {
     )
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
+  alreadyPrint: boolean = false;
+  disabledPrintButton: boolean = false;
+  paramGenerateReport = {};
+  isShowModalReport: boolean = false;
+  selectedRowCetak: any = false;
+  buttonCaptionPrint: String = 'Cetak';
 
   constructor(
     private dataService: DataService,
@@ -105,7 +111,10 @@ export class TerimaBarangReturDariSiteListComponent implements OnInit {
         {
           title: 'Aksi',
           render: () => {
-            return `<button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>`;
+            return `<div class="btn-group" role="group" aria-label="Action">
+                <button class="btn btn-sm action-view btn-outline-primary btn-60">${this.buttonCaptionView}</button>
+                <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>           
+              </div>`;
           },
         },
       ],
@@ -123,6 +132,21 @@ export class TerimaBarangReturDariSiteListComponent implements OnInit {
           } else {
             this.selectedRowData = undefined;
           }
+        });
+        $('.action-print', row).on('click', () =>{
+          this.selectedRowCetak = data;
+          this.isShowModalReport=true;
+
+          this.paramGenerateReport = {
+            noTransaksi: this.selectedRowCetak.nomorTransaksi,
+            userEntry: this.selectedRowCetak.userCreate,
+            jamEntry: this.g.transformTime(this.selectedRowCetak.timeCreate),
+            tglEntry: this.g.transformDate(this.selectedRowCetak.dateCreate),
+            outletBrand: 'KFC',
+            kodeGudang: this.g.getUserLocationCode(),
+            isDownloadCsv: false,
+            reportName: 'cetak retur dari site',
+          };
         });
         return row;
       },
@@ -203,5 +227,11 @@ export class TerimaBarangReturDariSiteListComponent implements OnInit {
   }
   dtPageChange(event: any): void {
     console.log('Page changed', event);
+  }
+
+  closeModal(){
+    this.isShowModalReport = false;
+    this.selectedRowCetak = null;
+    this.disabledPrintButton = false;
   }
 }

@@ -1,8 +1,10 @@
 import {
   AfterViewInit,
   Component,
+  EventEmitter,
   OnDestroy,
   OnInit,
+  Output,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -64,6 +66,8 @@ export class AddDataDetailDeliveryComponent
   filteredListTypeOrder: any[] = [];
   validationMessages: { [key: number]: string } = {};
   validationQtyKecilKonversi: { [key: number]: string } = {};
+
+    @Output() dataCetak = new EventEmitter<any>();
 
   constructor(
     public g: GlobalService,
@@ -284,9 +288,15 @@ export class AddDataDetailDeliveryComponent
                 alert(res.message);
               } else {
                 this.toastr.success("Berhasil!");
+                const paramGenerateReport = {
+                  outletBrand: 'KFC',
+                  isDownloadCsv: true,
+                  noSuratJalan: res.message,
+                }
                 setTimeout(() => {
-                  this.router.navigate(["/transaction/delivery-item"]);
+                  this.router.navigate(["/transaction/delivery-item/add-data"]);
                 }, DEFAULT_DELAY_TIME);
+                this.dataCetak.emit(paramGenerateReport)
               }
               this.adding = false;
             },
@@ -358,5 +368,6 @@ export class AddDataDetailDeliveryComponent
       this.listOrderData[index].qtyPesanKecil = '0.00'; // fallback if input is not a number
     }
   }
+
 
 }
