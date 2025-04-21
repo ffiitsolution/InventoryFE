@@ -257,12 +257,7 @@ export class AddDataDetailDeliveryComponent
           satuanBesar: data.satuanBesar,
           totalQtyPesanOld: data.totalQtyPesanOld,
           keterangan: this.selectedOrder.keterangan || '',
-          tglKirimGudang: moment(this.selectedOrder.validatedDeliveryDate, 'DD-MM-YYYY').set({
-            hours: 0,
-            minutes: 0,
-            seconds: 0,
-            milliseconds: 0,
-          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
+          tglKirimGudang: moment(this.selectedOrder.validatedDeliveryDate).format('DD MMM YYYY')
         };
       })
       .filter((item) => item !== null); // Hapus item yang tidak valid
