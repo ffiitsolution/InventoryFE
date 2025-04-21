@@ -149,25 +149,6 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
   onSubmit() {
       if (!this.isDataInvalid()) {
         this.loadingSimpan = true;
-        // param for order Header
-  
-        // const extraItem = {
-        //   kodeGudang: this.g.getUserLocationCode(),
-        //   tglTransaksi: moment(
-        //     this.headerProduction.tglTransaksi,
-        //     'DD-MM-YYYY'
-        //   ).format('D MMM YYYY'),
-        //   tipeTransaksi: 9,
-        //   kodeBarang: this.headerProduction.kodeBarang,
-        //   tglExpired: moment(this.headerProduction.tglExp, 'DD-MM-YYYY').format(
-        //     'D MMM YYYY'
-        //   ),
-        //   konversi: this.headerProduction.satuanHasilProduksi = 
-        //   this.headerProduction.satuanHasilProduksi === 'Aktif' ? 'A' : 'T',
-        //   qtyBesar: this.headerProduction.jumlahHasilProduksi,
-        //   qtyKecil: '0.00',
-        //   totalQty: this.headerProduction.totalHasilProduksi,
-        // };
   
         const param = {
           kodeGudang: this.g.getUserLocationCode(),
@@ -179,11 +160,6 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
           ).format('D MMM YYYY'),
           statusPosting: 'P',
           keterangan: 'RT - ' + this.headerProduction.keterangan,
-          // kodeResep: this.headerProduction.kodeBarang,
-          // tglExp: moment(this.headerProduction.tglExp, 'DD-MM-YYYY').format(
-          //   'D MMM YYYY'
-          // ),
-          // jumlahResep: this.headerProduction.jumlahHasilProduksi,
           userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
           statusSync: 'Y',
           details: this.listProductData
@@ -249,6 +225,12 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
             // extraItem,
           ],
         };
+
+        const paramUpdate = {
+          returnNo: this.headerProduction.noReturnPengirim,
+          status: 'T',
+          user: this.g.getLocalstorage('inv_currentUser').namaUser,
+        };
   
         Swal.fire({
           title: 'Pastikan semua data sudah di input dengan benar!',
@@ -268,16 +250,32 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
                 next: (res) => {
                   if (!res.success) {
                     this.toastr.error(res.message);
+                    this.loadingSimpan = false;
                   } else {
-                    setTimeout(() => {
-                      this.toastr.success('Data production berhasil diposting!');
-                      this.onPreviousPressed();
-                    }, DEFAULT_DELAY_TIME);
+                    // Call update status return order
+                    this.service
+                      .updateWarehouse('/api/return-order/update', paramUpdate)
+                      .pipe(takeUntil(this.ngUnsubscribe))
+                      .subscribe({
+                        next: (res2) => {
+                          if (!res2.success) {
+                            this.toastr.warning('Data berhasil diposting, tetapi update status retur gagal!');
+                          } else {
+                            this.toastr.success('Data production berhasil diposting dan status retur diperbarui!');
+                          }
+                          this.adding = false;
+                          this.loadingSimpan = false;
+                          this.onPreviousPressed();
+                        },
+                        error: () => {
+                          this.toastr.warning('Data berhasil diposting, tetapi gagal update status retur!');
+                          this.loadingSimpan = false;
+                        },
+                      });
                   }
-                  this.adding = false;
-                  this.loadingSimpan = false;
                 },
                 error: () => {
+                  this.toastr.error('Gagal posting data production!');
                   this.loadingSimpan = false;
                 },
               });

@@ -80,3 +80,86 @@
     </c-card-body>
   </c-card>
 </div>
+
+<c-modal
+  #staticBackdropModal
+  [visible]="isShowModal"
+  backdrop="static"
+  id="staticBackdropModal"
+  size="xl"
+>
+  <c-modal-header>
+    <h5 cModalTitle>History Data Expired</h5>
+    <button
+      (click)="closeModal($event)"
+      type="button"
+      class="btn btn-info ms-2"
+      [cModalToggle]="staticBackdropModal.id"
+      cButtonClose
+    >
+      <i class="fa fa-times text-white"></i>
+    </button>
+  </c-modal-header>
+
+  <c-modal-body>
+    <c-row class="mb-3">
+      <label cLabel="col" cCol [sm]="2" for="inputEmail3">
+        Kode dan Nama Barang
+      </label>
+      <c-col [sm]="6">
+        <input cFormControl id="inputEmail3" type="text" [value]="formExpiredData.kodeNamaBarang" readonly />
+      </c-col>
+    </c-row>
+    
+    <c-row class="mb-3">
+      <label cLabel="col" cCol [sm]="2" for="inputEmail3">
+        Konversi Barang
+      </label>
+      <c-col [sm]="6">
+        <input cFormControl id="inputEmail3" type="text" [value]="formExpiredData.konversi" readonly />
+      </c-col>
+    </c-row>
+    
+    <c-row class="mb-3">
+      <label cLabel="col" cCol [sm]="2" for="inputEmail3">
+        Quantity Besar
+      </label>
+      <c-col [sm]="6">
+        <input cFormControl id="inputEmail3" type="text" [value]="formExpiredData.qtyBesar" readonly />
+      </c-col>
+    </c-row>
+    
+    <c-row class="mb-3">
+      <label cLabel="col" cCol [sm]="2" for="inputEmail3">
+        Quantity Kecil
+      </label>
+      <c-col [sm]="6">
+        <input cFormControl id="inputEmail3" type="text" [value]="formExpiredData.qtyKecil" readonly />
+      </c-col>
+    </c-row>
+    
+    <c-row class="mb-3">
+      <label cLabel="col" cCol [sm]="2" for="inputEmail3">
+        TOTAL QTY
+      </label>
+      <c-col [sm]="6">
+        <input cFormControl id="inputEmail3" type="text" [value]="formExpiredData.totalQty" readonly />
+      </c-col>
+    </c-row>
+    <c-card class="mb-2">
+      <c-card-body>
+        <div class="table-responsive" *ngIf="dtOptionsExpired">
+          <table
+            datatable
+            [dtOptions]="dtOptionsExpired"
+            [dtTrigger]="dtTriggerExpired"
+            class="datatable row-border hover stripe w-100"
+            id="tableIdExpired"
+          ></table>
+        </div>              
+      </c-card-body>
+    </c-card>
+  </c-modal-body>
+</c-modal>
+
+
