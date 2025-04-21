@@ -160,6 +160,7 @@ export class MasterProductEditComponent implements OnInit {
       flagResepProduksi: ['T'],
       flagConversion: ['T'],
       others2: ['T'],
+      stockOpname: ['T'],
       minStock: [this.defaultValue.toFixed(2), decimal12_2Validator()],
       maxStock: [this.defaultValue.toFixed(2), decimal12_2Validator()],
       minOrder: [this.defaultValue.toFixed(2), decimal12_2Validator()],
@@ -258,6 +259,7 @@ export class MasterProductEditComponent implements OnInit {
           lokasiBarang: this.detail.lokasiBarang,
           statusAktif: this.detail.statusAktif,
           keteranganBrg: this.detail.keteranganBrg,
+          stockOpname: this.detail.stockOpname,
         });
         this.myForm.get('kodeBarang')?.disable();
       },
@@ -604,6 +606,7 @@ export class MasterProductEditComponent implements OnInit {
         flagBrgBekas: controls?.['flagBrgBekas']?.value,
         others2: controls?.['others2']?.value,
         flagConversion: controls?.['flagConversion']?.value,
+        stockOpname: controls?.['stockOpname']?.value,
         minStock: controls?.['minStock']?.value,
         maxStock: controls?.['maxStock']?.value,
         minOrder: controls?.['minOrder']?.value,
@@ -616,7 +619,6 @@ export class MasterProductEditComponent implements OnInit {
         berat: controls?.['berat']?.value,
         lokasiBarang: controls?.['lokasiBarang']?.value,
         keteranganBrg: controls?.['keteranganBrg']?.value,
-        stockOpname: 'T',
         warningExpired: 0,
         unitPrice: 0,
       };

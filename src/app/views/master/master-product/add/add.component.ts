@@ -157,6 +157,7 @@ export class MasterProductAddComponent implements OnInit {
       flagBrgBekas: ['T'],
       flagResepProduksi: ['T'],
       flagConversion: ['T'],
+      stockOpname: ['T'],
       others2: ['T'],
       minStock: [this.defaultValue.toFixed(2), decimal12_2Validator()],
       maxStock: [this.defaultValue.toFixed(2), decimal12_2Validator()],
@@ -198,7 +199,9 @@ export class MasterProductAddComponent implements OnInit {
       displayKey: 'keteranganUom',
       search: true,
       height: '300px',
+      width: 'auto',
       placeholder: 'Pilih Satuan',
+      fontSize: '12px',
     };
 
     this.configDefaultGudangSelect = {
@@ -534,6 +537,7 @@ export class MasterProductAddComponent implements OnInit {
         flagAlternate: 'T',
         flagCogs: 'Y',
         flagBrgBekas: controls?.['flagBrgBekas']?.value,
+        stockOpname: controls?.['stockOpname']?.value,
         others2: controls?.['others2']?.value,
         flagConversion: controls?.['flagConversion']?.value,
         minStock: controls?.['minStock']?.value,
@@ -548,7 +552,6 @@ export class MasterProductAddComponent implements OnInit {
         berat: controls?.['berat']?.value,
         lokasiBarang: controls?.['lokasiBarang']?.value,
         keteranganBrg: controls?.['keteranganBrg']?.value,
-        stockOpname: 'T',
         warningExpired: 0,
         unitPrice: 0,
       };

@@ -54,6 +54,7 @@ export class RevisiDoComponent implements OnInit {
     private translation: TranslationService,
     private router: Router
   ) {
+    this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
     this.dtOptions = {
       language:

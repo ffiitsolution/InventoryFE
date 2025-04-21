@@ -1,5 +1,5 @@
 <div class="fade-in">
-  <c-card class="mb-4">
+  <c-card class="mb-2">
     <c-card-body>
       <h5>{{ "Ubah" | translate }} {{ group | translate }}</h5>
     </c-card-body>
@@ -13,7 +13,7 @@
           <div class="row">
             <!-- left column -->
             <div class="col-md-6">
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label"
                   >{{ "Kode " | translate }}{{ group | translate }}
                   <span class="stamp-required show">&nbsp;*</span>
@@ -44,7 +44,7 @@
                   >
                 </div>
               </div>
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label"
                   >{{ "Inisial" | translate }}
                   <span class="stamp-required show">&nbsp;*</span>
@@ -81,7 +81,7 @@
             </div>
             <!-- right column -->
             <div class="col-md-6">
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label"
                   >{{ "Nama " | translate }}{{ group | translate }}
                   <span class="stamp-required show">&nbsp;*</span>
@@ -141,13 +141,13 @@
           </div>
         </div>
 
-        <div class="divider"></div>
+        <div class="divider mt-2 mb-2"></div>
         <!-- alamat kota kode pos telp fax -->
         <div class="container">
           <div class="row">
             <div class="col-md-6">
               <!-- left column -->
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label"
                   >{{ "Alamat 1" | translate }}
                   <span class="stamp-required show">&nbsp;*</span>
@@ -181,7 +181,7 @@
                   </span>
                 </div>
               </div>
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Alamat 2" | translate
                 }}</label>
@@ -207,7 +207,7 @@
                 </div>
               </div>
 
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Kota" | translate
                 }}</label>
@@ -222,7 +222,7 @@
                   </ngx-select-dropdown>
                 </div>
               </div>
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Kode Pos" | translate
                 }}</label>
@@ -245,7 +245,7 @@
             </div>
             <div class="col-md-6">
               <!-- right column -->
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Telpon 1" | translate
                 }}</label>
@@ -268,7 +268,7 @@
                   </span>
                 </div>
               </div>
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Telpon 2" | translate
                 }}</label>
@@ -292,7 +292,7 @@
                 </div>
               </div>
 
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Fax 1" | translate
                 }}</label>
@@ -315,7 +315,7 @@
                   </span>
                 </div>
               </div>
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Fax 2" | translate
                 }}</label>
@@ -341,13 +341,13 @@
             </div>
           </div>
         </div>
-        <div class="divider"></div>
+        <div class="divider mt-2 mb-2"></div>
 
         <div class="container">
           <div class="row">
             <div class="col-md-6">
               <!-- left column -->
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Alamat Email" | translate
                 }}</label>
@@ -367,7 +367,7 @@
                 </div>
               </div>
 
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label">{{
                   "RSC" | translate
                 }}</label>
@@ -382,7 +382,7 @@
                   </ngx-select-dropdown>
                 </div>
               </div>
-              <div class="mb-3 row" *ngIf="group != 'Gudang'">
+              <div class="mb-1 row" *ngIf="group != 'Gudang'">
                 <label class="col-sm-4 col-form-label">{{
                   "Region" | translate
                 }}</label>
@@ -398,7 +398,7 @@
                 </div>
               </div>
 
-              <div class="mb-3 row" *ngIf="group != 'Gudang'">
+              <div class="mb-1 row" *ngIf="group != 'Gudang'">
                 <label class="col-sm-4 col-form-label">{{
                   "Area" | translate
                 }}</label>
@@ -413,7 +413,7 @@
                   </ngx-select-dropdown>
                 </div>
               </div>
-              <div class="mb-3 row" *ngIf="group != 'Department'">
+              <div class="mb-1 row" *ngIf="group != 'Department'">
                 <label class="col-sm-4 col-form-label">{{
                   "Alamat IP" | translate
                 }}</label>
@@ -456,7 +456,7 @@
               </div>
             </div>
             <div class="col-md-6">
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Contact Person" | translate
                 }}</label>
@@ -481,7 +481,7 @@
                   </span>
                 </div>
               </div>
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Contact Telp" | translate
                 }}</label>
@@ -504,7 +504,7 @@
                   </span>
                 </div>
               </div>
-              <div class="mb-3 row" *ngIf="group != 'Gudang'">
+              <div class="mb-1 row" *ngIf="group != 'Gudang'">
                 <label class="col-sm-4 col-form-label">{{
                   "Tipe Cabang" | translate
                 }}</label>
@@ -526,7 +526,7 @@
                   </span>
                 </div>
               </div>
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label"
                   >{{ "Status" | translate }}
                   <span class="stamp-required show">&nbsp;*</span>
@@ -575,7 +575,7 @@
                   </c-row>
                 </c-col>
               </div>
-              <div class="mb-3 row">
+              <div class="mb-1 row">
                 <label class="col-sm-4 col-form-label">{{
                   "Keterangan" | translate
                 }}</label>
@@ -606,7 +606,7 @@
           </div>
         </div>
 
-        <div class="divider"></div>
+        <div class="divider mt-2 mb-2"></div>
 
         <div class="d-grid gap-3 d-md-flex justify-content-end">
           <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
