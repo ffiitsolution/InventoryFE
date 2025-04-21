@@ -54,6 +54,16 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
   isShowModalBack: boolean = false;
   isShowModalBuatPesanan: boolean = false;
 
+  
+  isShowModalReport: boolean = false;
+  buttonCaptionPrint: String = 'Cetak';
+  alreadyPrint: boolean = false;
+  disabledPrintButton: boolean = false;
+  paramGenerateReport = {};
+  paramUpdatePrintStatus = {};
+  state : any;
+
+
   constructor(
     private toastr: ToastrService,
     private form: FormBuilder,
@@ -74,6 +84,19 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const storedState = sessionStorage.getItem('sendOrderState');
+    if (storedState) {
+      const parsedState = JSON.parse(storedState);
+  
+      if (parsedState.showModal) {
+        this.onShowModalPrint(parsedState);
+      }
+  
+      // Setelah dipakai, hapus agar tidak muncul lagi saat refresh berikutnya
+      sessionStorage.removeItem('sendOrderState');
+    }
+
+    
     this.currentUser = this.g.getLocalstorage('inv_currentUser');
     this.myForm = this.form.group({
 
@@ -290,6 +313,16 @@ export class AddDataSendOrderToSupplierComponent implements OnInit {
 
   onShowModalBuatPesanan() {
     this.isShowModalBuatPesanan= true;
+  }
+  
+  onShowModalPrint(state: any) {
+    this.paramGenerateReport = state;
+    this.paramUpdatePrintStatus=state;
+    this.isShowModalReport = true;
+  }
+  closeModal(){
+    this.isShowModalReport = false;
+    this.disabledPrintButton = false;
   }
 
 }

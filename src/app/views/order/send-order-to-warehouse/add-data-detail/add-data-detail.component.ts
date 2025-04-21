@@ -475,9 +475,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
     this.router.navigate(['order/send-order-to-warehouse']);
   }
 
-  onPreviousAfterSubmitPressed(res: any): void {
-    console.log("res", res);
-  
+  onPreviousAfterSubmitPressed(res: any): void { 
     // Simpan data ke sessionStorage agar bisa dibaca saat reload
     const stateData = {
       showModal: true,
@@ -486,9 +484,9 @@ export class AddDataDetailSendOrderToWarehouseComponent
       kodeCabang: res.item[0].kodeGudang,
       statusCetak: res.item[0].statusCetak,
     };
-  
+
+
     sessionStorage.setItem('sendOrderState', JSON.stringify(stateData));
-    sessionStorage.setItem('testKey', '123');
 
     this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
       this.router.navigate(['order/send-order-to-warehouse/add']);

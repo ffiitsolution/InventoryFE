@@ -22,6 +22,7 @@ import { GlobalService } from 'src/app/service/global.service';
 import { Router } from '@angular/router';
 import { AppConfig } from 'src/app/config/app.config';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import moment from 'moment';
 
 @Component({
   selector: 'app-receiving-order',
@@ -189,7 +190,6 @@ export class ReceivingOrderComponent
           }
         });
         $('.action-print', row).on('click', () =>{
-          // this.onClickPrint(data)
           this.onShowModalPrint(data)
         }
         );
@@ -258,12 +258,24 @@ export class ReceivingOrderComponent
 
   onShowModalPrint(selectedOrder: any) {
     this.paramGenerateReport = {
-        outletBrand: OUTLET_BRAND_KFC,
-        user:  this.dataUser.kodeUser,
-        nomorPesanan: selectedOrder.nomorPesanan,
-        statusPesanan: selectedOrder.statusPesanan,
-        statusCetak: selectedOrder.statusCetak 
+      outletBrand: OUTLET_BRAND_KFC,
+      isDownloadCsv: false,
+      staffName: this.dataUser.namaUser,
+      nomorPesanan: selectedOrder.nomorPesanan,
+      tglBrgDikirim: selectedOrder.tglKirimBrg,
+      tglPesan: selectedOrder.tglPesanan,
+      user: this.g.getUserCode(),
+      statusPesanan: selectedOrder.statusPesanan,
+      statusCetak: selectedOrder.statusCetak
     };
+
+    this.paramUpdatePrintStatus={
+      statusKirim: "S",
+      userKirim: this.dataUser.namaUser,
+      dateKirim: moment().format("DD-MM-YYYY"),
+      timeKirim: moment().format("HHmmss"),
+      nomorPesanan: selectedOrder.nomorPesanan,
+    }    
     this.isShowModalReport = true;
   }
   closeModal(){

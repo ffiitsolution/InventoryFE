@@ -148,3 +148,17 @@
     </c-card-body>
   </c-card>
 </div>
+<div class="fade-in">
+  <app-modal-print-list
+    [alreadyPrint]="alreadyPrint"
+    [disabledPrintButton]="disabledPrintButton"
+    [generatePdfUrl]="'/api/receiving-po-supplier/report'"
+    [updateStatusUrl]="'/api/send-order-to-supplier/update-status-cetak'"
+    [updatePrintStatusParam]="paramUpdatePrintStatus"
+    [generateReportParam]="paramGenerateReport"
+    [isShowModalReport]="isShowModalReport"
+    [isShowSelection]="false"
+    (closeModalEvent)="closeModal()"
+  >
+  </app-modal-print-list>
+</div>

@@ -260,3 +260,18 @@
     </c-modal-body>
 </c-modal>
 </div>
+
+<div class="fade-in">
+  <app-modal-print-list
+    [alreadyPrint]="alreadyPrint"
+    [disabledPrintButton]="disabledPrintButton"
+    [generatePdfUrl]="'/api/send-order-to-supplier/report'"
+    [updateStatusUrl]="'/api/send-order-to-supplier/update-status-cetak'"
+    [updatePrintStatusParam]="paramGenerateReport"
+    [generateReportParam]="paramGenerateReport"
+    [isShowModalReport]="isShowModalReport"
+    [isShowSelection]="false"
+    (closeModalEvent)="closeModal()"
+  >
+  </app-modal-print-list>
+</div>

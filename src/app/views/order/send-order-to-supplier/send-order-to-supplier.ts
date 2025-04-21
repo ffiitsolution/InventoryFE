@@ -65,6 +65,13 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
   selectedRowCetak: any = false;
   isShowModalCetak: boolean;
 
+  isShowModalReport: boolean = false;
+  alreadyPrint: boolean = false;
+  disabledPrintButton: boolean = false;
+  paramGenerateReport = {};
+  paramUpdatePrintStatus = {};
+  state : any;
+
   protected config = AppConfig.settings.apiServer;
 
   constructor(
@@ -258,8 +265,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
         );
         $('.action-print', row).on('click', () =>{
           // this.onClickPrint(data)
-          this.selectedRowCetak = data;
-          this.isShowModalCetak=true;
+          this.onShowModalPrint(data)
         }
         );
         return row;
@@ -359,43 +365,20 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
   }
 
 
-    async onClickPrint() {
-      try {
-        const param = {
-          nomorPesanan : this.selectedRowCetak.nomorPesanan,
-          userCetak:  this.dataUser.kodeUser,
-          kodeCabang:  this.dataUser.defaultLocation.kodeLocation,
-          statusCetak: this.selectedRowCetak.statusCetak
-        }
 
-        const base64Response = await lastValueFrom(
-          this.dataService.postData(this.config.BASE_URL + "/api/send-order-to-supplier/report", param, true)
-        );
-        const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        window.open(url);
-        
-        this.dataService
-        .postData(this.g.urlServer + '/api/send-order-to-supplier/update-status-cetak',param)
-        .subscribe({
-          next: (res: any) => {
-            if (!res.success) {
-              alert(res.message);
-            } else {
-              this.toastr.success(this.translation.instant('Berhasil!'));
-              setTimeout(() => {
-                window.location.reload();
-              }, DEFAULT_DELAY_TIME);
-            }
-          },
-          error: (err: any) => {
-            console.error('Error updating user:', err);
-            alert('An error occurred while updating the user.');
-          },    
-        });
-      } catch (error: any) {
-        this.toastr.error(error.message ?? 'Unknown error while generating PDF');
+    onShowModalPrint(selectedRowCetak: any) {      
+      this.paramGenerateReport = {
+        nomorPesanan : selectedRowCetak.nomorPesanan,
+        userCetak:  this.dataUser.kodeUser,
+        kodeCabang:  this.dataUser.defaultLocation.kodeLocation,
+        statusCetak: selectedRowCetak.statusCetak
       }
-
+      this.isShowModalReport = true;
     }
+ 
+  closeModal(){
+    this.isShowModalReport = false;
+    this.disabledPrintButton = false;
+    window.location.reload();
+  }
 }
