@@ -11,6 +11,6 @@
   {{
     alreadyPrint ? 
       typePrint == 'print' ? ("Cetak Ulang") : ("Screen Pdf Ulang") 
-    : typePrint == 'print' ? ("Cetak") : ("Screen Pdf")
+    : typePrint == 'print' ? ("Cetak") : updatingStatus ? '' : ("Screen Pdf")
   }}
   </button>
