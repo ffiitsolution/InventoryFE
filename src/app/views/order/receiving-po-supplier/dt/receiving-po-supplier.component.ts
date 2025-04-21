@@ -110,17 +110,17 @@ export class ReceivingPoSupplierComponent
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'tglPesanan', title: 'Tanggal P.O', 
+        { data: 'tglPesanan', title: 'Tgl. P.O', 
           render: (data, type, row) => {
             return this.g.formatStrDateMMM(data);
           }
         },
-        { data: 'tglKirimBrg', title: 'Tanggal Kirim',
+        { data: 'tglKirimBrg', title: 'Tgl. Kirim Brg',
           render: (data, type, row) => {
             return this.g.formatStrDateMMM(data);
           }
         },
-        { data: 'tglBatalExp', title: 'Tanggal Batal',
+        { data: 'tglBatalExp', title: 'Tgl. Batal',
           render: (data, type, row) => {
             return this.g.formatStrDateMMM(data);
           }
@@ -141,7 +141,7 @@ export class ReceivingPoSupplierComponent
           searchable: true,
           render: (data) => {
             const isCancel = data == CANCEL_STATUS;
-            const label = this.g.getStatusOrderLabel(data);
+            const label = this.g.getStatusReceivingPOLabel(data);
             if (isCancel) {
               return `<span class="text-center text-danger">${label}</span>`;
             }
@@ -150,7 +150,7 @@ export class ReceivingPoSupplierComponent
         },
         {
           data: 'statusCetak',
-          title: 'Status Cetak',
+          title: 'Status Cetak P.O',
           render: (data) => this.g.getStatusOrderLabel(data, true),
         },
         {

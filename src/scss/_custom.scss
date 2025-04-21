@@ -17,8 +17,6 @@
   justify-content: center !important;
 }
 
-$primary: #b51823;
-$info: #b51823; // Change to your desired color
 
 $theme-colors: map-merge(
   $theme-colors,
@@ -30,7 +28,7 @@ $theme-colors: map-merge(
 
 // $primary: #b51823;
 $primary: #000080;
-$info: #b51823;
+$info: #000080;
 
 $theme-colors: map-merge(
   $theme-colors,

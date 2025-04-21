@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AllAppInfoComponent } from './index/index.component';
 import { ModulesComponent } from './modules/modules.component';
 import { ReleaseNoteComponent } from './release-note/release-note.component';
+import { AboutSoftwareComponent } from './about-software/about-software.component';
 
 const routes: Routes = [
   {
@@ -19,6 +20,10 @@ const routes: Routes = [
       {
         path: 'release-notes',
         component: ReleaseNoteComponent,
+      },
+      {
+        path: 'about-software',
+        component: AboutSoftwareComponent,
       },
     ],
   },

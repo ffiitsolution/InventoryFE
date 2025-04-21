@@ -131,11 +131,11 @@ export class ReceivingPoSupplierDetailComponent
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'kodeBarang', title: 'Kode Barang', searchable: true },
+        { data: 'kodeBarang', title: 'Kode', searchable: true },
         { data: 'namaBarang', title: 'Nama Barang', searchable: true },
-        { data: 'konversi', title: 'Konversi Pesan' },
-        { data: 'qtyPesanBesar', title: 'Qty Pesan Besar' },
-        { data: 'qtyPesanKecil', title: 'Qty Pesan Kecil' },
+        { data: 'konversi', title: 'Konversi Supplier' },
+        { data: 'qtyPesanBesar', title: 'Qty Pesan Bsr' },
+        { data: 'qtyPesanKecil', title: 'Qty Pesan Kcl' },
         { data: 'totalQtyPesan', title: 'Total Pesanan' },
         { data: 'konversiProduct', title: 'Konversi Gudang' },
         {
