@@ -115,7 +115,7 @@ export class PenerimaanBrgBksListComponent implements OnInit {
         { data: 'tglTransaksi', title: 'Tanggal Transaksi' },
         { data: 'nomorTransaksi', title: 'No. Transaksi' },
         { data: 'namaCabang', title: 'Nama Cabang' },
-        { data: 'userCreate', title: 'User Proses' },
+        { data: 'namaUser', title: 'User Proses' },
         { data: 'dateCreateFormat2', title: 'Tgl Proses' },
         { data: 'timeCreate', title: 'Jam Proses' },
         {

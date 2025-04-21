@@ -92,7 +92,7 @@ export class AllMasterComponent implements OnInit, OnDestroy, AfterViewInit {
       iconComponent: 'cilContact',
     },
     {
-      name: 'Resep',
+      name: 'Resep Produksi',
       url: '/master/master-resep',
       iconComponent: 'cilDinner',
     },

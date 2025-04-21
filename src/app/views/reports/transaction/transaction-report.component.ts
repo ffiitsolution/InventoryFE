@@ -150,7 +150,7 @@ export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewI
     this.loadingState['submit'] = true;
 
     let param = {};
-    if (['Transaksi Pengiriman','Produksi'].includes(this.currentReport) ) {
+    if (['Transaksi Pengiriman','Produksi','Penerimaan Barang Bekas'].includes(this.currentReport) ) {
      
       param = {
         kodeGudang: this.userData.defaultLocation.kodeLocation,
