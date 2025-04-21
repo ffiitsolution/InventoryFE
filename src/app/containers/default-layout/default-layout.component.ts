@@ -57,8 +57,13 @@ export class DefaultLayoutComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.dataOutlet = this.g.getLocalstorage('inv_outletData');
     this.dataUser = this.g.getLocalstorage('inv_currentUser');
+    // console.log(menu_id.filter((menu : any) => menu?.access =));
+    const allowedAccess = ['master'];
     this.translation.listMenuSidebar =
-      this.translation.getCurrentLanguage() === 'id' ? menu_id : menu_en;
+      this.translation.getCurrentLanguage() === 'id'
+        ? menu_id
+        : // menu_id.filter((menu: any) => allowedAccess.includes(menu?.access))
+          menu_en;
   }
 
   updateSelectedNavItem(currentUrl: string) {

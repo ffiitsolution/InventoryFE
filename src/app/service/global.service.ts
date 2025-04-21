@@ -56,7 +56,7 @@ export class GlobalService {
     @Inject(DOCUMENT) private document: Document,
     private router: Router,
     private datePipe: DatePipe
-  ) {}
+  ) { }
 
   saveLocalstorage(key: string, value: any, type: string | boolean = 'json') {
     if (type === 'json' || type === true) {
@@ -254,13 +254,28 @@ export class GlobalService {
       return `${hours}:${minutes}`;
     }
   }
-
-  transformDate(date: string, format: any = 'dd MMM yyyy') {
-    if (date == '-' || date == null) {
+  transformDate(dateString: string, format: string = 'dd MMM yyyy'): string {
+    if (!dateString || dateString === '-') {
       return '-';
     }
-    return this.datePipe.transform(date, format);
+  
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return '-';
+    }
+  
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Juni',
+      'Juli', 'Agus', 'Sept', 'Okt', 'Nov', 'Des'
+    ];
+  
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+  
+    return `${day} ${month} ${year}`;
   }
+  
 
   transformDateTime(
     date: string,
@@ -399,7 +414,7 @@ export class GlobalService {
       search: search,
       height: '400px',
       placeholder: placeholder,
-      customComparator: () => {},
+      customComparator: () => { },
       limitTo: limit,
       moreText: 'lainnya...',
       noResultsFound: 'Tidak ditemukan!',
@@ -463,10 +478,10 @@ export class GlobalService {
   }
 
   parseRupiahToNumber(formatted: string): number {
-    if(formatted){
+    if (formatted) {
       const cleaned = formatted.replace(/[^\d]/g, ''); // hapus semua selain angka
       return parseInt(cleaned, 10) || 0;
-    } else{
+    } else {
       return 0
     }
   }

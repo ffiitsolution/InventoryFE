@@ -64,6 +64,14 @@ export class AddDataOrderManualComponent implements OnInit {
 
   selectedRow: any = {};
 
+  isShowModalReport: boolean = false;
+  buttonCaptionPrint: String = 'Cetak';
+  alreadyPrint: boolean = false;
+  disabledPrintButton: boolean = false;
+  paramGenerateReport = {};
+  paramUpdatePrintStatus = {};
+  state : any;
+
   constructor(
     private toastr: ToastrService,
     private form: FormBuilder,
@@ -76,6 +84,19 @@ export class AddDataOrderManualComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const storedState = sessionStorage.getItem('sendOrderState');
+    if (storedState) {
+      const parsedState = JSON.parse(storedState);
+  
+      if (parsedState.showModal) {
+        this.onShowModalPrint(parsedState);
+      }
+  
+      // Setelah dipakai, hapus agar tidak muncul lagi saat refresh berikutnya
+      sessionStorage.removeItem('sendOrderState');
+    }
+
+
     this.currentUser = this.g.getLocalstorage('inv_currentUser');
     this.myForm = this.form.group({
 
@@ -456,10 +477,17 @@ export class AddDataOrderManualComponent implements OnInit {
       this.myForm.controls['gudangTujuan'].setValue("");
       this.myForm.controls['namaPemesan'].setValue("");
 
-
-
       this.myForm.controls['statusGudang'].setValue("");
       this.myForm.controls['alamatGudang'].setValue("");   
-    
     }
-}
+
+    onShowModalPrint(state: any) {
+      this.paramGenerateReport = state;
+      this.paramUpdatePrintStatus=state;
+      this.isShowModalReport = true;
+    }
+    closeModal(){
+      this.isShowModalReport = false;
+      this.disabledPrintButton = false;
+    }
+  }

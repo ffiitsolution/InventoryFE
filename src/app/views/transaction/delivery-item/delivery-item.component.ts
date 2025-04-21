@@ -47,6 +47,10 @@ export class DeliveryItemComponent implements OnInit {
   );
   dateRangeFilter: any = [this.startDateFilter, this.endDateFilter];
   selectedRowData: any;
+  paramGenerateReport = {};
+  isShowModalReport: boolean = false;
+  alreadyPrint: boolean = false;
+  disabledPrintButton: boolean = false;
 
   constructor(
     private dataService: DataService,
@@ -153,7 +157,7 @@ export class DeliveryItemComponent implements OnInit {
           },
         },
         {
-          title: 'Opsi',
+          title: 'Aksi',
           className: 'text-center',
           render: () => {
             return `<div class="d-flex px-2 gap-1"> 
@@ -185,7 +189,7 @@ export class DeliveryItemComponent implements OnInit {
       },
     };
     this.dtColumns = this.dtOptions.columns;
-    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
   }

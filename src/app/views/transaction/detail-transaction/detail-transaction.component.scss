@@ -21,3 +21,14 @@
   text-align: left;
   padding-left: 10px;
 }
+
+#myTable thead th:nth-child(1) {
+  background-color: #f39c12; /* orange */
+}
+#myTable thead th:nth-child(2) {
+  background-color: #3498db; /* biru */
+}
+#myTable thead th:nth-child(3) {
+  background-color: #2ecc71; /* hijau */
+}
+

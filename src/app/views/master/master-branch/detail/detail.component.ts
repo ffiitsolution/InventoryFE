@@ -61,8 +61,8 @@ export class MasterBranchDetailComponent implements OnInit {
       ip: [this.detail.alamatIp],
       port: [this.detail.alamatPort],
       cad1: [this.detail.cad1],
-      userCreate: [this.detail.userCreate],
-      userUpdate: [this.detail.userUpdate],
+      userCreate: [this.detail.userCreateName],
+      userUpdate: [this.detail.userUpdateName],
       dateCreate: [moment(this.detail.dateCreate).format('DD MMM yyyy')],
       dateUpdate: [moment(this.detail.dateUpdate).format('DD MMM yyyy')],
     });

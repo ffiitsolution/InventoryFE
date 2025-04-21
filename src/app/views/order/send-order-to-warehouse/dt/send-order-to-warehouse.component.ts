@@ -293,7 +293,7 @@ export class SendOrderToWarehouseComponent
     localStorage.removeItem(LS_INV_SELECTED_SEND_TO_WAREHOUSE_ORDER);
     this.dataUser = this.g.getLocalstorage('inv_currentUser');
 
-    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.containerClass = 'theme-dark-blue';
 
     this.dpConfig.customTodayClass = 'today-highlight';
     this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';

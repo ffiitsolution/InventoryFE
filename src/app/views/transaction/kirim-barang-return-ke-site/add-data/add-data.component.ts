@@ -75,7 +75,7 @@ export class AddKirimBarangReturnKeSiteComponent
     private datePipe: DatePipe,
     private helperService: HelperService
   ) {
-    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
   }

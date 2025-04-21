@@ -12,6 +12,7 @@ import {
   DEFAULT_DATE_RANGE_RECEIVING_ORDER,
   DEFAULT_DELAY_TABLE,
   LS_INV_SELECTED_RECEIVING_ORDER,
+  OUTLET_BRAND_KFC
 } from '../../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
@@ -45,6 +46,7 @@ export class ReceivingPoSupplierComponent
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
   buttonCaptionView: String = 'Lihat';
+  buttonCaptionPrint: String = 'Cetak';
   currentDate: Date = new Date();
   startDateFilter: Date = new Date(
     this.currentDate.setDate(
@@ -54,6 +56,14 @@ export class ReceivingPoSupplierComponent
   dateRangeFilter: any = [this.startDateFilter, new Date()];
   selectedRowData: any;
   protected config = AppConfig.settings.apiServer;
+
+  isShowModalReport: boolean = false;
+  alreadyPrint: boolean = false;
+  disabledPrintButton: boolean = false;
+  paramGenerateReport = {};
+  paramUpdatePrintStatus = {};
+  state : any;
+  dataUser: any;
 
   constructor(
     private dataService: DataService,
@@ -156,7 +166,12 @@ export class ReceivingPoSupplierComponent
         {
           title: 'Opsi',
           render: () => {
-            return `<button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>`;
+            return `
+              <div class="btn-group" role="group" aria-label="Action">
+                <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
+                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>           
+              </div>
+            `;
           },
         },
       ],
@@ -167,6 +182,9 @@ export class ReceivingPoSupplierComponent
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
+        );
+        $('.action-print', row).on('click', () =>
+          this.onShowModalPrint(data)
         );
         $('td', row).on('click', () => {
           $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
@@ -182,7 +200,7 @@ export class ReceivingPoSupplierComponent
     };
     this.dtColumns = this.dtOptions.columns;
 
-    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.customTodayClass = 'today-highlight';
     this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
 
@@ -194,6 +212,8 @@ export class ReceivingPoSupplierComponent
     );
     this.buttonCaptionView = this.translation.instant('Lihat');
     localStorage.removeItem(LS_INV_SELECTED_RECEIVING_ORDER);
+    this.dataUser = this.g.getLocalstorage('inv_currentUser');
+
   }
 
   actionBtnClick(action: string, data: any = null) {
@@ -235,5 +255,20 @@ export class ReceivingPoSupplierComponent
   }
   onAddPressed() {
     this.router.navigate(['/order/receiving-order/add']);
+  }
+  onShowModalPrint(selectedOrder: any) {
+    this.paramGenerateReport = {
+        outletBrand: OUTLET_BRAND_KFC,
+        user:  this.dataUser.kodeUser,
+        nomorPesanan: selectedOrder.nomorPesanan,
+        statusPesanan: selectedOrder.statusPesanan,
+        statusCetak: selectedOrder.statusCetak 
+    };
+    this.isShowModalReport = true;
+  }
+  closeModal(){
+    this.isShowModalReport = false;
+    this.disabledPrintButton = false;
+    window.location.reload();
   }
 }

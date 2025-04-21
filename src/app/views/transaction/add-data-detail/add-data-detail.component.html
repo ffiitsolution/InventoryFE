@@ -1,28 +1,24 @@
 <c-card class="mb-4">
   <c-card-body class="w-100">
-    <div class="row justify-content-between">
+    <div class="row justify-content-between mb-2">
       <div class="col-6 d-flex align-items-center">
         <div class="col-4 ">
           <label for="jabatanSaksi">{{ "Jumlah Item Pesanan" | translate }}</label>
         </div>
-        <div class="col-1 pe-0">
+        <div class="col-2 pe-0">
           <input type="text" class="form-control text-center" [value]="listOrderData.length" readonly />
         </div>
         <div class="col"></div>
 
       </div>
-      <div class="col-6">
-        <div class="gap-3 d-md-flex justify-content-end mb-3">
-          <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()" [disabled]="adding">
-            <i class="fa fa-check pe-2" *ngIf="!adding"></i>
-            <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
-            {{ "Proses Pengiriman" | translate }}
-          </button>
+      <div class="col-2"></div>
+      <div class="col-4 d-flex justify-content-end">
+        <c-input-group>
+          <span cInputGroupText id="basic-addon1"><i class="fa fa-search"></i></span>
+          <input #listViewOrders id="appendedInputButton" [(ngModel)]="searchListViewOrder" class="form-control"
+            size="16" type="text" placeholder="Search..." (ngModelChange)="onFilterTextChange($event)">
+        </c-input-group>
 
-          <button class="btn btn-secondary text-white btn-150" (click)="onBackPressed()">
-            <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
-          </button>
-        </div>
       </div>
     </div>
     <div class="table-responsive">
@@ -30,18 +26,7 @@
         <div *ngIf="loading">
           <app-loading></app-loading>
         </div>
-
-        <!-- <div class="row justify-content-end py-2">
-          <div class="w-25 pb-2">
-            <c-input-group>
-              <span cInputGroupText id="basic-addon1"><i class="fa fa-search"></i></span>
-              <input id="appendedInputButton" (input)="onSearchDetail($event)" class="form-control" size="16"
-                type="text" placeholder="Search...">
-            </c-input-group>
-          </div>
-        </div> -->
-
-        <table *ngIf="filteredListTypeOrder as list" bordered [hover]="true" [responsive]="true" [striped]="true"
+        <table *ngIf="filteredList as list" bordered [hover]="true" [responsive]="true" [striped]="true"
           align="middle" cTable class="mb-0 border">
           <thead>
             <tr>
@@ -70,9 +55,9 @@
             </tr>
             <tr>
               <th scope="col" class="text-center"
-                style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle; ">Besar</th>
+                style="background-color: #3c4b64; color:white; vertical-align: middle; ">Besar</th>
               <th scope="col" class="text-center"
-                style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle;">Kecil</th>
+                style="background-color: #3c4b64; color:white; vertical-align: middle;">Kecil</th>
             </tr>
           </thead>
           <tbody *ngIf="!list || list.length === 0">
@@ -86,10 +71,10 @@
             <tr *ngFor="let data of list | paginate: {
                 itemsPerPage: 5,
                 currentPage: listCurrentPage,
-                totalItems:totalLengthList,
+                totalItems:totalLength,
                 id:'dataTableDetail'
             }; let i = index">
-              <td class="text-center">{{ data.kodeBarang }}</td>
+              <td class="text-center" style="width: 100px;">{{ data.kodeBarang }}</td>
               <td class="text-center">{{ data.namaBarang }}</td>
               <td class="text-center">{{ data.totalQtyPesan }}.00 {{data.satuanKecil}}</td>
               <!-- <td class="text-center">{{ data.qtyPesanBesar }} {{ data.satuanBesar }}</td> -->
@@ -153,3 +138,14 @@
     </div>
   </c-card-body>
 </c-card>
+
+<div class="gap-3 d-md-flex justify-content-start ms-2">
+  <button class="btn btn-secondary text-white btn-150" (click)="onBackPressed()">
+    <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
+  </button>
+  <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()" [disabled]="adding">
+    <i class="fa fa-check pe-2" *ngIf="!adding"></i>
+    <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
+    {{ "Proses Pengiriman" | translate }}
+  </button>
+</div>

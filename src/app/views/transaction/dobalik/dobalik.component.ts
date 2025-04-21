@@ -19,6 +19,7 @@ import {
   ACTION_VIEW,
   DEFAULT_DATE_RANGE_RECEIVING_ORDER,
   DEFAULT_DELAY_TABLE,
+  DEFAULT_DELAY_TIME,
   LS_INV_SELECTED_DELIVERY_ORDER,
 } from '../../../../constants';
 import { AppService } from '../../../service/app.service';
@@ -59,16 +60,18 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
   dataUser: any;
   protected config = AppConfig.settings.apiServer;
   selectedRowData: any;
+  isShowModalPosting: boolean = false;
 
   constructor(
     private dataService: DataService,
-    private g: GlobalService,
+    public g: GlobalService,
     private router: Router,
     private toastr: ToastrService,
     private appService: AppService
   ) {
     this.minDate.setDate(this.minDate.getDate() - 7);
     this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
+    this.dpConfig.containerClass = 'theme-dark-blue';
 
     this.dtOptions = {
       paging: true,
@@ -78,8 +81,8 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
       serverSide: true,
       ajax: (dataTablesParameters: any, callback) => {
         setTimeout(() => this.getProsesDoBalik(dataTablesParameters, callback), DEFAULT_DELAY_TABLE);
-        
-        
+
+
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
       },
@@ -87,21 +90,10 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
       autoWidth: true,
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'kodeGudang', title: 'Kode Gudang' },
-        {
-          data: 'statusPosting',
-          title: 'Status Posting',
-          render: (data: string) => this.getStatusPostingLegend(data),
-        },
         {
           data: 'tglTransaksi',
-          title: 'Tanggal Transaksi',
+          title: 'Tanggal Kirim',
           render: (data) => this.g.transformDate(data),
-        },
-        {
-          data: 'tipeTransaksi',
-          title: 'Tipe Transaksi',
-          render: (data: string) => this.gettIipeTransaksiLabel(data),
         },
         {
           data: 'tglPesanan',
@@ -111,10 +103,21 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
         { data: 'nomorPesanan', title: 'Nomor Pesanan' },
         { data: 'noSuratJalan', title: 'No Surat Jalan' },
         { data: 'kodeTujuan', title: 'Kode Tujuan' },
+        { data: 'namaCabang', title: 'Kode Tujuan' },
+        {
+          data: 'cetakSuratJalan',
+          title: 'Status Cetak Surat Jalan',
+          render: (data: string) => this.g.getStatusOrderLabel(data, true),
+        },
         {
           data: 'statusDoBalik',
           title: 'Status DO Balik',
-          render: (data: string) => this.getStatusDoBalikLegend(data),
+          render: (data: string) => this.g.getStatusOrderLabel(data, true),
+        },
+        {
+          data: 'statusPosting',
+          title: 'Status Transaksi',
+          render: (data: string) => this.g.getStatusOrderLabel(data),
         },
         {
           title: 'Opsi',
@@ -135,7 +138,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
         );
 
         $('.action-posting', row).on('click', () => {
-          this.showPostingConfirmation(data);
+          this.onShowModalPosting(data);
         });
 
         return row;
@@ -171,7 +174,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-  
+
   }
 
   showPostingConfirmation(data: any) {
@@ -202,6 +205,11 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  onShowModalPosting(data: any) {
+    this.isShowModalPosting = true;
+    this.selectedRowData = data
+  }
+
   actionBtnClick(action: string, data: any): void {
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage(
@@ -214,10 +222,6 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
       this;
     }
     if (action === 'POSTING') {
-      this.g.saveLocalstorage(
-        LS_INV_SELECTED_DELIVERY_ORDER,
-        JSON.stringify(data)
-      );
       const param = {
         kodeGudang: data.kodeGudang,
         noSuratJalan: data.noSuratJalan,
@@ -245,7 +249,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dtTrigger.unsubscribe();
   }
 
-  dtPageChange(event: any): void {}
+  dtPageChange(event: any): void { }
 
   search(): void {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -288,7 +292,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
             return {
               ...item,
               dtIndex: this.page.start + index + 1,
-             tglTransaksi: this.g.transformDate(item.tglTransaksi),
+              tglTransaksi: this.g.transformDate(item.tglTransaksi),
               tglPesanan: this.g.transformDate(item.tglPesanan),
             };
           });
@@ -319,6 +323,27 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
   onFilterPressed() {
     this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload();
+    });
+  }
+
+  onProsesDoBalik(data: any) {
+    const param = {
+      kodeGudang: data.kodeGudang,
+      noSuratJalan: data.noSuratJalan,
+      userPosted: JSON.parse(localStorage.getItem('inv_currentUser') || '')
+        .namaUser,
+      datePosted: this.g.getLocalDateTime(new Date()),
+    };
+    this.appService.updateDeliveryOrderPostingStatus(param).subscribe({
+      next: (response) => {
+        this.toastr.success('Berhasil Posting DO Balik');
+        this.isShowModalPosting = false;
+        this.search();
+        
+      },
+      error: (error) => {
+        this.toastr.error('Gagal Posting DO Balik');
+      },
     });
   }
 }

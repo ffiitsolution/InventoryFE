@@ -1,414 +1,488 @@
 <div class="fade-in">
-  <c-card class="mb-4">
+  <c-card class="mb-2">
     <c-card-body>
-      <h5>{{ "Tambah" | translate }} {{ "Barang" | translate }}</h5>
+      <h5 style="margin-bottom: 0px">
+        {{ "Tambah" | translate }} {{ "Barang" | translate }}
+      </h5>
     </c-card-body>
   </c-card>
 </div>
 <div class="fade-in">
   <c-card class="mb-4">
-    <c-card-body>
+    <c-card-body style="padding-top: 10px">
       <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
-        <div class="container">
-          <div class="row">
-            <!-- left column -->
-            <div class="col-md-4">
-              <div class="my-3 row">
-                <label class="col-sm-6 col-form-label"
-                  >{{ "Kode Barang" | translate }}
-                  <span class="stamp-required show">&nbsp;*</span>
-                </label>
-                <div class="col-sm-6">
-                  <input
-                    type="text"
-                    class="form-control"
-                    formControlName="kodeBarang"
-                    maxlength="10"
-                    (keypress)="conditionInput($event, 'kodeBarang')"
-                  />
-                </div>
-                <span
-                  *ngIf="
-                    myForm.controls['kodeBarang']?.hasError('required') &&
-                    myForm.controls['kodeBarang']?.touched
-                  "
-                  class="text-danger"
-                  >{{ "Wajib diisi (max. 10 karakter)" | translate }}
-                </span>
-                <span
-                  *ngIf="myForm.controls['kodeBarang']?.hasError('kodeBarang')"
-                  class="text-danger"
-                  >{{
-                    "Kode Cabang hanya boleh mengandung angka dan tanda strip (-)."
-                      | translate
-                  }}</span
-                >
-              </div>
-            </div>
-            <!-- right column -->
-            <div class="col-md-8">
-              <div class="my-3 row">
-                <label class="col-sm-3 col-form-label"
-                  >{{ "Nama Barang " | translate }}
-                  <span class="stamp-required show">&nbsp;*</span>
-                </label>
-                <div class="col-sm-9">
-                  <input
-                    type="text"
-                    class="form-control"
-                    formControlName="namaBarang"
-                    maxlength="50"
-                    (input)="convertToUppercase('namaBarang')"
-                    (keypress)="conditionInput($event, 'namaBarang')"
-                  />
-                </div>
-                <span
-                  *ngIf="
-                    myForm.controls['namaBarang']?.hasError('required') &&
-                    myForm.controls['namaBarang']?.touched
-                  "
-                  class="text-danger"
-                  >{{ "Wajib diisi (max. 10 karakter)" | translate }}
-                </span>
-                <span
-                  *ngIf="myForm.controls['namaBarang']?.hasError('namaBarang')"
-                  class="col-sm-8 text-danger"
-                  >{{
-                    "Nama Barang hanya boleh mengandung huruf, angka, spasi, ampersand (&), strip (-), tanda kurung (), dan titik (.)."
-                      | translate
-                  }}</span
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-        <!-- detail Konversi dan default gudang -->
-        <div class="container">
-          <div class="row">
-            <div class="col-md-3 vertical-divider mb-3">
+        <div class="row">
+          <div class="col-md-10">
+            <div class="container">
               <div class="row">
-                <label class="col-sm-6 col-form-label">
-                  {{ "Konversi " | translate }}
-                  <span class="stamp-required show">&nbsp;*</span>
-                </label>
-                <div class="col-sm-6">
-                  <input
-                    style="text-align: right"
-                    type="text"
-                    class="form-control"
-                    step="0.01"
-                    formControlName="konversi"
-                    (input)="preventEmpty($event)"
-                    (keypress)="conditionInput($event, 'numeric')"
-                    pattern="^\d{1,10}(\.\d{1,2})?$"
-                    maxlength="12"
-                  />
-                </div>
-                <span
-                  *ngIf="isInvalid('konversi', 'nonZero')"
-                  class="col-sm-12 text-danger"
-                >
-                  {{ "Tidak Boleh diisi oleh 0" | translate }}
-                </span>
-
-                <span
-                  *ngIf="isInvalid('konversi', 'invalidDecimal')"
-                  class="col-sm-12 text-danger"
-                >
-                  {{
-                    "Input harus berupa angka dengan maksimal 8 digit sebelum koma dan maksimal 2 digit setelah koma."
-                      | translate
-                  }}
-                </span>
-              </div>
-            </div>
-            <div class="col-md-3 vertical-divider mb-3">
-              <div class="row">
-                <label class="col-sm-6 col-form-label">
-                  {{ "Satuan Kecil " | translate }}
-                  <span class="stamp-required show">&nbsp;*</span>
-                </label>
-                <div class="col-sm-6">
-                  <ngx-select-dropdown
-                    [multiple]="false"
-                    [options]="uomSatuanKecilList"
-                    [config]="configUomSelect"
-                    [bindLabel]="'keteranganUom'"
-                    [bindValue]="'kodeUom'"
-                    formControlName="satuanKecil"
-                  >
-                  </ngx-select-dropdown>
-                  <span *ngIf="isInvalid('satuanKecil')" class="text-danger"
-                    >{{ "Wajib diisi" | translate }}
-                  </span>
-                  <!-- <input
-                      type="text"
-                      class="form-control"
-                      formControlName="satuanKecil"
-                      maxlength="40"
-                    /> -->
-                </div>
-              </div>
-
-              <!-- <div class="row">
+                <!-- left column -->
+                <div class="col-md-6">
+                  <div class="mb-1 mt-3 row">
                     <label
-                      class="d-flex justify-content-center align-items-end col-form-label"
-                      >{{ "Satuan Kecil" | translate }}
+                      class="col-sm-3 col-form-label"
+                      style="font-size: 15px"
+                      >{{ "Kode Barang" | translate }}
                       <span class="stamp-required show">&nbsp;*</span>
                     </label>
-                    <div class="col-sm-12">
-                      <ngx-select-dropdown
-                        [multiple]="false"
-                        formControlName="keteranganRsc"
-                        id="keteranganRsc"
-                      >
-                      </ngx-select-dropdown>
+                    <div class="col-sm-9">
+                      <input
+                        type="text"
+                        class="form-control"
+                        formControlName="kodeBarang"
+                        maxlength="10"
+                        (keypress)="conditionInput($event, 'kodeBarang')"
+                      />
                     </div>
-                  </div> -->
-            </div>
-            <div class="col-md-3 vertical-divider mb-3">
-              <!-- right column -->
-              <div class="row">
-                <label class="col-sm-6 col-form-label">
-                  {{ "Satuan Besar " | translate }}
-                  <span class="stamp-required show">&nbsp;*</span>
-                </label>
-                <div class="col-sm-6">
-                  <ngx-select-dropdown
-                    [multiple]="false"
-                    [options]="uomSatuanBesarList"
-                    [config]="configUomSelect"
-                    [bindLabel]="'keteranganUom'"
-                    [bindValue]="'kodeUom'"
-                    formControlName="satuanBesar"
-                  >
-                  </ngx-select-dropdown>
-                  <span *ngIf="isInvalid('satuanBesar')" class="text-danger"
-                    >{{ "Wajib diisi" | translate }}
-                  </span>
+                    <span
+                      *ngIf="
+                        myForm.controls['kodeBarang']?.hasError('required') &&
+                        myForm.controls['kodeBarang']?.touched
+                      "
+                      class="text-danger"
+                      >{{ "Wajib diisi (max. 10 karakter)" | translate }}
+                    </span>
+                    <span
+                      *ngIf="
+                        myForm.controls['kodeBarang']?.hasError('kodeBarang')
+                      "
+                      class="text-danger"
+                      >{{
+                        "Kode Cabang hanya boleh mengandung angka dan tanda strip (-)."
+                          | translate
+                      }}</span
+                    >
+                  </div>
+                </div>
+                <!-- right column -->
+                <div class="col-md-6">
+                  <div class="mb-1 mt-3 row">
+                    <label
+                      class="col-sm-3 col-form-label"
+                      style="font-size: 14px"
+                      >{{ "Nama Barang " | translate }}
+                      <span class="stamp-required show">&nbsp;*</span>
+                    </label>
+                    <div class="col-sm-9">
+                      <input
+                        type="text"
+                        class="form-control"
+                        formControlName="namaBarang"
+                        maxlength="50"
+                        (input)="convertToUppercase('namaBarang')"
+                        (keypress)="conditionInput($event, 'namaBarang')"
+                      />
+                    </div>
+                    <span
+                      *ngIf="
+                        myForm.controls['namaBarang']?.hasError('required') &&
+                        myForm.controls['namaBarang']?.touched
+                      "
+                      class="text-danger"
+                      >{{ "Wajib diisi (max. 10 karakter)" | translate }}
+                    </span>
+                    <span
+                      *ngIf="
+                        myForm.controls['namaBarang']?.hasError('namaBarang')
+                      "
+                      class="col-sm-8 text-danger"
+                      >{{
+                        "Nama Barang hanya boleh mengandung huruf, angka, spasi, ampersand (&), strip (-), tanda kurung (), dan titik (.)."
+                          | translate
+                      }}</span
+                    >
+                  </div>
                 </div>
               </div>
-              <!-- <div class="row">
-                    <label
-                      class="d-flex justify-content-center align-items-end col-form-label"
-                      >{{ "Satuan Besar" | translate
-                      }}<span class="stamp-required show">&nbsp;*</span></label
+            </div>
+
+            <div class="divider mt-2 mb-2"></div>
+            <!-- detail Konversi dan default gudang -->
+            <div class="container">
+              <div class="row">
+                <div class="col-md-3 vertical-divider mb-1">
+                  <div class="row">
+                    <label class="col-sm-6 col-form-label">
+                      {{ "Konversi " | translate }}
+                      <span class="stamp-required show">&nbsp;*</span>
+                    </label>
+                    <div class="col-sm-6">
+                      <input
+                        style="text-align: right"
+                        type="text"
+                        class="form-control"
+                        step="0.01"
+                        formControlName="konversi"
+                        (input)="preventEmpty($event)"
+                        (keypress)="conditionInput($event, 'numeric')"
+                        pattern="^\d{1,10}(\.\d{1,2})?$"
+                        maxlength="12"
+                      />
+                    </div>
+                    <span
+                      *ngIf="isInvalid('konversi', 'nonZero')"
+                      class="col-sm-12 text-danger"
                     >
-                    <div class="col-sm-12">
+                      {{ "Tidak Boleh diisi oleh 0" | translate }}
+                    </span>
+
+                    <span
+                      *ngIf="isInvalid('konversi', 'invalidDecimal')"
+                      class="col-sm-12 text-danger"
+                    >
+                      {{
+                        "Input harus berupa angka dengan maksimal 8 digit sebelum koma dan maksimal 2 digit setelah koma."
+                          | translate
+                      }}
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-3 vertical-divider mb-1">
+                  <div class="row">
+                    <label class="col-sm-6 col-form-label">
+                      {{ "Satuan Kecil " | translate }}
+                      <span class="stamp-required show">&nbsp;*</span>
+                    </label>
+                    <div class="col-sm-6">
                       <ngx-select-dropdown
                         [multiple]="false"
-                        formControlName="keteranganRsc"
-                        id="keteranganRsc"
+                        [options]="uomSatuanKecilList"
+                        [config]="configUomSelect"
+                        [bindLabel]="'keteranganUom'"
+                        [bindValue]="'kodeUom'"
+                        formControlName="satuanKecil"
+                      >
+                      </ngx-select-dropdown>
+                      <span *ngIf="isInvalid('satuanKecil')" class="text-danger"
+                        >{{ "Wajib diisi" | translate }}
+                      </span>
+                      <!-- <input
+                          type="text"
+                          class="form-control"
+                          formControlName="satuanKecil"
+                          maxlength="40"
+                        /> -->
+                    </div>
+                  </div>
+
+                  <!-- <div class="row">
+                        <label
+                          class="d-flex justify-content-center align-items-end col-form-label"
+                          >{{ "Satuan Kecil" | translate }}
+                          <span class="stamp-required show">&nbsp;*</span>
+                        </label>
+                        <div class="col-sm-12">
+                          <ngx-select-dropdown
+                            [multiple]="false"
+                            formControlName="keteranganRsc"
+                            id="keteranganRsc"
+                          >
+                          </ngx-select-dropdown>
+                        </div>
+                      </div> -->
+                </div>
+                <div class="col-md-3 vertical-divider mb-1">
+                  <!-- right column -->
+                  <div class="row">
+                    <label class="col-sm-6 col-form-label">
+                      {{ "Satuan Besar " | translate }}
+                      <span class="stamp-required show">&nbsp;*</span>
+                    </label>
+                    <div class="col-sm-6">
+                      <ngx-select-dropdown
+                        [multiple]="false"
+                        [options]="uomSatuanBesarList"
+                        [config]="configUomSelect"
+                        [bindLabel]="'keteranganUom'"
+                        [bindValue]="'kodeUom'"
+                        formControlName="satuanBesar"
+                      >
+                      </ngx-select-dropdown>
+                      <span *ngIf="isInvalid('satuanBesar')" class="text-danger"
+                        >{{ "Wajib diisi" | translate }}
+                      </span>
+                    </div>
+                  </div>
+                  <!-- <div class="row">
+                        <label
+                          class="d-flex justify-content-center align-items-end col-form-label"
+                          >{{ "Satuan Besar" | translate
+                          }}<span class="stamp-required show">&nbsp;*</span></label
+                        >
+                        <div class="col-sm-12">
+                          <ngx-select-dropdown
+                            [multiple]="false"
+                            formControlName="keteranganRsc"
+                            id="keteranganRsc"
+                          >
+                          </ngx-select-dropdown>
+                        </div>
+                      </div> -->
+                </div>
+
+                <div class="col-md-3 mb-1">
+                  <!-- right column -->
+                  <div class="row">
+                    <label class="col-sm-6 col-form-label" style="font-size: 12.8px; padding-top: 10px;">
+                      {{ "Satuan Min Order" | translate }}
+                      </label>
+                    <div class="col-sm-6">
+                      <ngx-select-dropdown
+                        [multiple]="false"
+                        [options]="uomList"
+                        [config]="configUomSelect"
+                        [bindLabel]="'keteranganUom'"
+                        [bindValue]="'kodeUom'"
+                        formControlName="satuanMinOrder"
                       >
                       </ngx-select-dropdown>
                     </div>
-                  </div> -->
-            </div>
-            <div class="col-md-3 mb-3">
-              <!-- right column -->
-              <div class="row">
-                <label class="col-sm-6 col-form-label">
-                  {{ "Satuan Min Order " | translate }}
-                </label>
-                <div class="col-sm-6">
-                  <ngx-select-dropdown
-                    [multiple]="false"
-                    [options]="uomList"
-                    [config]="configUomSelect"
-                    [bindLabel]="'keteranganUom'"
-                    [bindValue]="'kodeUom'"
-                    formControlName="satuanMinOrder"
-                  >
-                  </ngx-select-dropdown>
+                  </div>
+                  <!-- <div class="row">
+                        <label
+                          class="d-flex justify-content-center align-items-end col-form-label"
+                          >{{ "Satuan Besar" | translate
+                          }}<span class="stamp-required show">&nbsp;*</span></label
+                        >
+                        <div class="col-sm-12">
+                          <ngx-select-dropdown
+                            [multiple]="false"
+                            formControlName="keteranganRsc"
+                            id="keteranganRsc"
+                          >
+                          </ngx-select-dropdown>
+                        </div>
+                      </div> -->
                 </div>
               </div>
-              <!-- <div class="row">
-                    <label
-                      class="d-flex justify-content-center align-items-end col-form-label"
-                      >{{ "Satuan Besar" | translate
-                      }}<span class="stamp-required show">&nbsp;*</span></label
-                    >
-                    <div class="col-sm-12">
+            </div>
+            <div class="divider mt-2 mb-2"></div>
+            <!-- detail Konversi dan default gudang -->
+            <div class="container">
+              <div class="row mb-1">
+                <div class="col-md-6 mb-1">
+                  <div class="row">
+                    <label class="col-sm-3 col-form-label">
+                      {{ "Default Order " | translate }}
+                    </label>
+                    <div class="col-sm-9">
                       <ngx-select-dropdown
                         [multiple]="false"
-                        formControlName="keteranganRsc"
-                        id="keteranganRsc"
+                        [options]="defaultOrderGudangList"
+                        [config]="configDefaultGudangSelect"
+                        [bindLabel]="'kodeSingkat'"
+                        [bindValue]="'kodeSingkat'"
+                        formControlName="defaultGudang"
                       >
                       </ngx-select-dropdown>
                     </div>
-                  </div> -->
+                  </div>
+                </div>
+                <div class="col-md-6 mb-1">
+                  <!-- right column -->
+                  <div class="row">
+                    <label class="col-sm-4 col-form-label">
+                      {{ "Default Supplier " | translate }}
+                    </label>
+                    <div class="col-sm-8 d-flex">
+                      <input
+                        style="width: 80%"
+                        type="text"
+                        class="form-control"
+                        formControlName="namaSupplier"
+                        readonly
+                      />
+                      <button
+                        type="button"
+                        style="width: 20%"
+                        class="btn ms-2"
+                        style="background-color: #b51823; color: white"
+                        (click)="onShowModal()"
+                      >
+                        <i class="fa fa-search"></i>
+                      </button>
+                      <!-- <ngx-select-dropdown
+                        [multiple]="false"
+                        [options]="supplierList"
+                        [config]="configSupplierSelect"
+                        [bindLabel]="'namaSupplier'"
+                        [bindValue]="'kodeSingkatan'"
+                        formControlName="defaultSupplier"
+                      >
+                      </ngx-select-dropdown> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="divider"></div>
-        <!-- detail Konversi dan default gudang -->
-        <div class="container">
-          <div class="row mb-3">
-            <div class="col-md-6 mb-3">
-              <div class="row">
-                <label class="col-sm-4 col-form-label">
-                  {{ "Default Order " | translate }}
-                </label>
-                <div class="col-sm-8">
-                  <ngx-select-dropdown
-                    [multiple]="false"
-                    [options]="defaultOrderGudangList"
-                    [config]="configDefaultGudangSelect"
-                    [bindLabel]="'kodeSingkat'"
-                    [bindValue]="'kodeSingkat'"
-                    formControlName="defaultGudang"
-                  >
-                  </ngx-select-dropdown>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 mb-3">
-              <!-- right column -->
-              <div class="row">
-                <label class="col-sm-4 col-form-label">
-                  {{ "Default Supplier " | translate }}
-                </label>
-                <div class="col-sm-8 d-flex">
+          <div class="col-md-2">
+            <div class="col-md-12 mb-1">
+              <label
+                class="col-sm-12 col-form-label"
+                style="padding-bottom: 0px; padding-top: 0px; margin-top: 0px"
+              >
+                {{ "Lokasi Barang Di Gudang " | translate }}
+              </label>
+              <div class="col-sm-9 d-flex flex-column">
+                <c-form-check>
                   <input
-                    style="width: 80%"
-                    type="text"
-                    class="form-control"
-                    formControlName="namaSupplier"
-                    readonly
+                    cFormCheckInput
+                    id="flagCom"
+                    type="checkbox"
+                    formControlName="flagCom"
                   />
-                  <button
-                    type="button"
-                    style="width: 20%"
-                    class="btn ms-2"
-                    style="background-color: #b51823; color: white"
-                    (click)="onShowModal()"
+                  <label cFormCheckLabel for="flagCom" style="font-size: 14px"
+                    >COMMISARY</label
                   >
-                    <i class="fa fa-search"></i>
-                  </button>
-                  <!-- <ngx-select-dropdown
-                    [multiple]="false"
-                    [options]="supplierList"
-                    [config]="configSupplierSelect"
-                    [bindLabel]="'namaSupplier'"
-                    [bindValue]="'kodeSingkatan'"
-                    formControlName="defaultSupplier"
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="flagDry"
+                    type="checkbox"
+                    formControlName="flagDry"
+                  />
+                  <label cFormCheckLabel for="flagDry" style="font-size: 14px"
+                    >DRYGOOD</label
                   >
-                  </ngx-select-dropdown> -->
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12 mb-3">
-              <div class="row">
-                <label class="col-sm-3 col-form-label">
-                  {{ "Lokasi Barang Di Gudang " | translate }}
-                </label>
-                <div class="col-sm-9 d-flex flex-wrap gap-3">
-                  <c-form-check>
-                    <input
-                      cFormCheckInput
-                      id="flagCom"
-                      type="checkbox"
-                      formControlName="flagCom"
-                    />
-                    <label cFormCheckLabel for="flagCom">COMMISARY</label>
-                  </c-form-check>
-                  <c-form-check>
-                    <input
-                      cFormCheckInput
-                      id="flagDry"
-                      type="checkbox"
-                      formControlName="flagDry"
-                    />
-                    <label cFormCheckLabel for="flagDry">DRYGOOD</label>
-                  </c-form-check>
-                  <c-form-check>
-                    <input
-                      cFormCheckInput
-                      id="flagPrd"
-                      type="checkbox"
-                      formControlName="flagPrd"
-                    />
-                    <label cFormCheckLabel for="flagPrd">PRODUCTION</label>
-                  </c-form-check>
-                  <c-form-check>
-                    <input
-                      cFormCheckInput
-                      id="flagMkt"
-                      type="checkbox"
-                      formControlName="flagMkt"
-                    />
-                    <label cFormCheckLabel for="flagMkt">MARKETING</label>
-                  </c-form-check>
-                  <c-form-check>
-                    <input
-                      cFormCheckInput
-                      id="flagCtr"
-                      type="checkbox"
-                      formControlName="flagCtr"
-                    />
-                    <label cFormCheckLabel for="flagCtr">CATERING</label>
-                  </c-form-check>
-                  <c-form-check>
-                    <input
-                      cFormCheckInput
-                      id="flagHra"
-                      type="checkbox"
-                      formControlName="flagHra"
-                    />
-                    <label cFormCheckLabel for="flagHra">H R A</label>
-                  </c-form-check>
-                </div>
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="flagPrd"
+                    type="checkbox"
+                    formControlName="flagPrd"
+                  />
+                  <label cFormCheckLabel for="flagPrd" style="font-size: 14px"
+                    >PRODUCTION</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="flagMkt"
+                    type="checkbox"
+                    formControlName="flagMkt"
+                  />
+                  <label cFormCheckLabel for="flagMkt" style="font-size: 14px"
+                    >MARKETING</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="flagCtr"
+                    type="checkbox"
+                    formControlName="flagCtr"
+                  />
+                  <label cFormCheckLabel for="flagCtr" style="font-size: 14px"
+                    >CATERING</label
+                  >
+                </c-form-check>
+                <c-form-check>
+                  <input
+                    cFormCheckInput
+                    id="flagHra"
+                    type="checkbox"
+                    formControlName="flagHra"
+                  />
+                  <label cFormCheckLabel for="flagHra" style="font-size: 14px"
+                    >H R A</label
+                  >
+                </c-form-check>
               </div>
             </div>
           </div>
         </div>
-        <div class="divider"></div>
+        <div class="divider mt-0 mb-2"></div>
         <div class="container">
           <div class="row">
-            <div class="col-md-4 vertical-divider mb-3">
-              <div class="row mb-3">
+            <div class="col-md-4 vertical-divider mb-1">
+              <div class="row mb-1">
                 <label class="col-sm-7 col-form-label">
                   {{ "Flag Expired ? " | translate }}
                 </label>
                 <div class="col-sm-5">
-                  <select cSelect formControlName="flagExpired">
+                  <select
+                    cSelect
+                    formControlName="flagExpired"
+                    class="custom-select-height"
+                  >
                     <option value="Y">{{ "Ya" | translate }}</option>
                     <option value="T">{{ "Tidak" | translate }}</option>
                   </select>
                 </div>
               </div>
-              <div class="row mb-3">
+              <div class="row mb-1">
                 <label class="col-sm-7 col-form-label">
                   {{ "Flag Barang Bekas ? " | translate }}
                 </label>
                 <div class="col-sm-5">
-                  <select cSelect formControlName="flagBrgBekas">
+                  <select
+                    cSelect
+                    formControlName="flagBrgBekas"
+                    class="custom-select-height"
+                  >
                     <option value="Y">{{ "Ya" | translate }}</option>
                     <option value="T">{{ "Tidak" | translate }}</option>
                   </select>
                 </div>
               </div>
-              <div class="row mb-3">
+              <div class="row mb-1">
                 <label class="col-sm-7 col-form-label">
                   {{ "Brg. Hasil Produksi ? " | translate }}
                 </label>
                 <div class="col-sm-5">
-                  <select cSelect formControlName="flagResepProduksi">
+                  <select
+                    cSelect
+                    formControlName="flagResepProduksi"
+                    class="custom-select-height"
+                  >
                     <option value="Y">{{ "Ya" | translate }}</option>
                     <option value="T">{{ "Tidak" | translate }}</option>
                   </select>
                 </div>
               </div>
-              <div class="row mb-3">
+              <div class="row mb-1">
                 <label class="col-sm-7 col-form-label">
                   {{ "Flag Conversion ? " | translate }}
                 </label>
                 <div class="col-sm-5">
-                  <select cSelect formControlName="flagConversion">
+                  <select
+                    cSelect
+                    formControlName="flagConversion"
+                    class="custom-select-height"
+                  >
+                    <option value="Y">{{ "Ya" | translate }}</option>
+                    <option value="T">{{ "Tidak" | translate }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-1">
+                <label class="col-sm-7 col-form-label">
+                  {{ "Pembelian Kilogram ? " | translate }}
+                </label>
+                <div class="col-sm-5">
+                  <select
+                    cSelect
+                    formControlName="others2"
+                    class="custom-select-height"
+                  >
+                    <option value="Y">{{ "Ya" | translate }}</option>
+                    <option value="T">{{ "Tidak" | translate }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-1">
+                <label class="col-sm-7 col-form-label">
+                  {{ "Barang Stock Opname ? " | translate }}
+                </label>
+                <div class="col-sm-5">
+                  <select
+                    cSelect
+                    formControlName="stockOpname"
+                    class="custom-select-height"
+                  >
                     <option value="Y">{{ "Ya" | translate }}</option>
                     <option value="T">{{ "Tidak" | translate }}</option>
                   </select>
@@ -416,18 +490,18 @@
               </div>
               <div class="row mb-3">
                 <label class="col-sm-7 col-form-label">
-                  {{ "Pembelian Kilogram ? " | translate }}
+                  {{ "Barang Stock Opname ? " | translate }}
                 </label>
                 <div class="col-sm-5">
-                  <select cSelect formControlName="others2">
+                  <select cSelect formControlName="stockOpname">
                     <option value="Y">{{ "Ya" | translate }}</option>
                     <option value="T">{{ "Tidak" | translate }}</option>
                   </select>
                 </div>
               </div>
             </div>
-            <div class="col-md-4 vertical-divider mb-3">
-              <div class="row mb-3">
+            <div class="col-md-4 vertical-divider mb-1">
+              <div class="row mb-1">
                 <label class="col-sm-6 col-form-label">
                   {{ "Minimum Stock" | translate }}
                 </label>
@@ -456,7 +530,7 @@
                   }}
                 </span>
               </div>
-              <div class="row mb-3">
+              <div class="row mb-1">
                 <label class="col-sm-6 col-form-label">
                   {{ "Maximum Stock" | translate }}
                 </label>
@@ -484,7 +558,7 @@
                   }}
                 </span>
               </div>
-              <div class="row mb-3">
+              <div class="row mb-1">
                 <label class="col-sm-6 col-form-label">
                   {{ "Minimum Order" | translate }}
                 </label>
@@ -512,10 +586,26 @@
                   }}
                 </span>
               </div>
+              <!-- <div class="row mb-1">
+                <label class="col-sm-6 col-form-label">
+                  {{ "Satuan Min Order" | translate }}
+                </label>
+                <div class="col-sm-6">
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [options]="uomList"
+                    [config]="configUomSelect"
+                    [bindLabel]="'keteranganUom'"
+                    [bindValue]="'kodeUom'"
+                    formControlName="satuanMinOrder"
+                  >
+                  </ngx-select-dropdown>
+                </div>
+              </div> -->
             </div>
-            <div class="col-md-4 mb-3">
-              <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
+            <div class="col-md-4 mb-1">
+              <div class="row mb-1">
+                <label class="col-sm-6 col-form-label">
                   {{ "Panjang" | translate }}
                 </label>
                 <div class="col-sm-4">
@@ -528,7 +618,7 @@
                     maxlength="13"
                   />
                 </div>
-                <label class="col-sm-4 col-form-label text-left px-0">
+                <label class="col-sm-2 col-form-label text-left px-0">
                   {{ "CM" | translate }}
                 </label>
                 <span
@@ -541,8 +631,8 @@
                   }}
                 </span>
               </div>
-              <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
+              <div class="row mb-1">
+                <label class="col-sm-6 col-form-label">
                   {{ "Lebar" | translate }}
                 </label>
                 <div class="col-sm-4">
@@ -556,7 +646,7 @@
                     maxlength="13"
                   />
                 </div>
-                <label class="col-sm-4 col-form-label text-left px-0">
+                <label class="col-sm-2 col-form-label text-left px-0">
                   {{ "CM" | translate }}
                 </label>
                 <span
@@ -569,8 +659,8 @@
                   }}
                 </span>
               </div>
-              <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
+              <div class="row mb-1">
+                <label class="col-sm-6 col-form-label">
                   {{ "Tinggi" | translate }}
                 </label>
                 <div class="col-sm-4">
@@ -584,7 +674,7 @@
                     maxlength="13"
                   />
                 </div>
-                <label class="col-sm-4 col-form-label text-left px-0">
+                <label class="col-sm-2 col-form-label text-left px-0">
                   {{ "CM" | translate }}
                 </label>
                 <span
@@ -597,8 +687,8 @@
                   }}
                 </span>
               </div>
-              <div class="row mb-3">
-                <label class="col-sm-4 col-form-label right-column">
+              <div class="row mb-1">
+                <label class="col-sm-6 col-form-label right-column">
                   {{ "Volume / Isi" | translate }}
                 </label>
                 <div class="col-sm-4">
@@ -612,7 +702,7 @@
                     maxlength="13"
                   />
                 </div>
-                <label class="col-sm-4 col-form-label text-left px-0">
+                <label class="col-sm-2 col-form-label text-left px-0">
                   {{
                     myForm.get("satuanBesar")?.value?.kodeUom
                       ? "M3 / " + myForm.get("satuanBesar")?.value?.kodeUom
@@ -629,8 +719,8 @@
                   }}
                 </span>
               </div>
-              <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
+              <div class="row mb-1">
+                <label class="col-sm-6 col-form-label">
                   {{ "Berat" | translate }}
                 </label>
                 <div class="col-sm-4">
@@ -644,7 +734,7 @@
                     maxlength="11"
                   />
                 </div>
-                <label class="col-sm-4 col-form-label text-left px-0">
+                <label class="col-sm-2 col-form-label text-left px-0">
                   {{ "KGS" | translate }}
                 </label>
                 <span
@@ -661,12 +751,12 @@
           </div>
         </div>
 
-        <div class="divider"></div>
+        <div class="divider mt-1 mb-2"></div>
         <div class="container">
           <div class="row">
             <div class="col-md-6">
               <!-- left column -->
-              <div class="mb-3 row">
+              <div class="row mb-1">
                 <label class="col-sm-4 col-form-label">{{
                   "Lokasi Rak Barang" | translate
                 }}</label>
@@ -692,9 +782,9 @@
                   }}
                 </span>
               </div>
-              <div class="mb-3 row">
+              <div class="row mb-1">
                 <label class="col-sm-4 col-form-label"
-                  >{{ "Status Barang" | translate
+                  >{{ "Status" | translate
                   }}<span class="stamp-required show">&nbsp;*</span>
                 </label>
                 <c-col xs="8">
@@ -749,14 +839,14 @@
               </div>
             </div>
             <div class="col-md-6">
-              <div class="mb-3 row">
+              <div class="row mb-1">
                 <label class="col-sm-4 col-form-label">{{
                   "Keterangan" | translate
                 }}</label>
                 <div class="col-sm-8">
                   <textarea
                     cFormControl
-                    rows="4"
+                    rows="1"
                     formControlName="keteranganBrg"
                     (keypress)="conditionInput($event, 'excludedSensitive')"
                   ></textarea>
@@ -778,7 +868,7 @@
           </div>
         </div>
 
-        <div class="divider"></div>
+        <div class="divider mt-0 mb-1"></div>
 
         <div class="d-grid gap-3 d-md-flex justify-content-end">
           <button class="btn btn-light btn-120" (click)="onPreviousPressed()">

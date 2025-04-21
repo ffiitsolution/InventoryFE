@@ -18,3 +18,26 @@
 .right-column {
   padding-right: 0;
 }
+
+
+.col-form-label {
+  font-size: 14px;
+  padding-bottom: 5px;
+}
+
+::ng-deep ngx-select-dropdown {
+  font-size: 9.5px; /* ukuran font dropdown */
+}
+
+::ng-deep ngx-select-dropdown .ngx-dropdown-list {
+  font-size: 9.5px; /* ukuran teks di dalam dropdown list */
+}
+
+::ng-deep ngx-select-dropdown .ngx-dropdown-button {
+  font-size: 9.5px; /* ukuran teks di tombol yang tampil sebelum klik */
+}
+
+.custom-select-height {
+  height: 35px; /* bisa kamu sesuaikan */
+  font-size: 14px;
+}
