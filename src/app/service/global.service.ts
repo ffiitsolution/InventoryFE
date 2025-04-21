@@ -265,8 +265,8 @@ export class GlobalService {
     }
   
     const months = [
-      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Juni',
+      'Juli', 'Agus', 'Sept', 'Okt', 'Nov', 'Des'
     ];
   
     const day = date.getDate().toString().padStart(2, '0');
