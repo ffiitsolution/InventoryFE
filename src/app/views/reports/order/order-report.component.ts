@@ -17,7 +17,7 @@ import { AppService } from '../../../service/app.service';
 import { DatePipe } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
-import * as moment from 'moment';
+import * as moment  from 'moment';
 import {
 
   DEFAULT_DATE_RANGE_RECEIVING_ORDER
@@ -71,6 +71,10 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
       this.dpConfig.containerClass = 'theme-red';
       this.dpConfig.customTodayClass='today-highlight';
       this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';    
+  }
+
+  transformDate(date: any): string {
+    return moment(date).format('DD MMM YYYY');  
   }
 
   ngOnInit(): void {
@@ -151,14 +155,15 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
         endDate: this.g.transformDate(this.dateRangeFilter[1]),
       };
     } 
+    
     if (this.currentReport === 'Pesanan Ke Supplier') {
       param = {
-        kodeGudang: this.userData.defaultLocation.kodeLocation,
-        tipePesanan: 'S',  
-        userCetak: this.userData.namaUser,
+        KODE_GUDANG: this.userData.defaultLocation.kodeLocation,
+        TIPE_PESANAN: 'S',  
+        USER_CETAK: this.userData.namaUser,
         tipeListing: this.paramTipeListing,
-        startDate: this.g.transformDate(this.dateRangeFilter[0].format('MM/DD/YYYY')),
-        endDate: this.g.transformDate(this.dateRangeFilter[1].format('MM/DD/YYYY')),
+        START_DATE: this.transformDate(this.dateRangeFilter[0]),
+        END_DATE: this.transformDate(this.dateRangeFilter[1]),
       };
     }
 
