@@ -81,7 +81,7 @@ export default class AccountSettingComponent implements OnInit {
         this.service.patch('/api/users/current', param).subscribe({
           next: (res: any) => {
             if (!res.success) {
-              alert(res.message);
+              this.service.handleErrorResponse(res);
             } else {
               this.toastr.success(this.translation.instant('Berhasil!'));
               setTimeout(() => {
@@ -92,7 +92,7 @@ export default class AccountSettingComponent implements OnInit {
           },
           error: (err: any) => {
             console.error('Error updating user:', err);
-            alert('An error occurred while updating the user.');
+            this.toastr.error('An error occurred while updating the user.');
           },
         });
         // this.g.saveLocalstorage('inv_currentUser', transformedCurrentUser);

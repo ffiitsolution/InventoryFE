@@ -277,7 +277,7 @@ export class MasterUserEditComponent implements OnInit {
       this.service.patch('/api/users/current', param).subscribe({
         next: (res: any) => {
           if (!res.success) {
-            alert(res.message);
+            this.service.handleErrorResponse(res);
           } else {
             this.toastr.success(this.translation.instant('Berhasil!'));
             setTimeout(() => {
@@ -288,7 +288,7 @@ export class MasterUserEditComponent implements OnInit {
         },
         error: (err: any) => {
           console.error('Error updating user:', err);
-          alert('An error occurred while updating the user.');
+          console.log('An error occurred while updating the user.');
           this.editing = false;
         },
       });
@@ -307,12 +307,12 @@ export class MasterUserEditComponent implements OnInit {
           .subscribe({
             next: (res: any) => {
               if (!res.success) {
-                alert(res.message);
+                this.service.handleErrorResponse(res);
               }
             },
             error: (err: any) => {
               console.error('Error updating user location:', err);
-              alert('An error occurred while updating the use locationr.');
+              console.log('An error occurred while updating the use locationr.');
               this.editing = false;
             },
           });

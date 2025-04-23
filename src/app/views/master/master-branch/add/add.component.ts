@@ -8,10 +8,10 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { AppService } from 'src/app/service/app.service';
-import { GlobalService } from 'src/app/service/global.service';
-import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_SET_NUMBER } from 'src/constants';
-import { DataService } from 'src/app/service/data.service';
+import { AppService } from '../../../../service/app.service';
+import { GlobalService } from '../../../../service/global.service';
+import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_SET_NUMBER } from '../../../../../constants';
+import { DataService } from '../../../../service/data.service';
 
 function kodeCabang(control: AbstractControl): ValidationErrors | null {
   const specialCharRegex = /[^a-zA-Z0-9\s]/;
@@ -333,7 +333,7 @@ export class MasterBranchAddComponent implements OnInit {
       this.service.insert('/api/branch/insert', param).subscribe({
         next: (res) => {
           if (!res.success) {
-            alert(res.message);
+            this.service.handleErrorResponse(res);
           } else {
             this.toastr.success('Berhasil!');
             setTimeout(() => {

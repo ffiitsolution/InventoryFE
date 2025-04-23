@@ -225,7 +225,9 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.downloadURL.length) {
       var link = document.createElement('a');
       link.href = this.downloadURL;
-      link.download = `${reportType} Report ${this.datePipe.transform(
+      link.download = `${reportType} Report ${this.g.formatUrlSafeString(
+        this.currentReport
+      )} ${this.datePipe.transform(
         this.rangeDateVal[0],
         'dd-MMM-yyyy'
       )} s.d. ${this.datePipe.transform(
@@ -244,7 +246,9 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.downloadURL.length) {
       var link = document.createElement('a');
       link.href = this.downloadURL;
-      link.download = `${reportType} Report ${this.datePipe.transform(
+      link.download = `${reportType} Report ${this.g.formatUrlSafeString(
+        this.currentReport
+      )} ${this.datePipe.transform(
         this.rangeDateVal[0],
         'dd-MMM-yyyy'
       )} s.d. ${this.datePipe.transform(

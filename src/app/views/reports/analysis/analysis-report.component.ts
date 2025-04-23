@@ -22,7 +22,9 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './analysis-report.component.html',
   styleUrl: './analysis-report.component.scss',
 })
-export class AnalysisReportComponent implements OnInit, OnDestroy, AfterViewInit {
+export class AnalysisReportComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   [key: string]: any;
   loadingState: { [key: string]: boolean } = {
     submit: false,
@@ -51,7 +53,7 @@ export class AnalysisReportComponent implements OnInit, OnDestroy, AfterViewInit
     private datePipe: DatePipe,
     private router: Router,
     private route: ActivatedRoute,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -183,7 +185,9 @@ export class AnalysisReportComponent implements OnInit, OnDestroy, AfterViewInit
     if (this.downloadURL.length) {
       var link = document.createElement('a');
       link.href = this.downloadURL;
-      link.download = `${reportType} Report ${this.datePipe.transform(
+      link.download = `${reportType} Report ${this.g.formatUrlSafeString(
+        this.currentReport
+      )} ${this.datePipe.transform(
         this.rangeDateVal[0],
         'dd-MMM-yyyy'
       )} s.d. ${this.datePipe.transform(
@@ -192,8 +196,7 @@ export class AnalysisReportComponent implements OnInit, OnDestroy, AfterViewInit
       )}.pdf`;
       link.click();
       this.toastr.success('File sudah terunduh');
-    } else
-      this.toastr.error('File tidak dapat terunduh');
+    } else this.toastr.error('File tidak dapat terunduh');
   }
 
   downloadCsv(res: any, reportType: string) {
@@ -203,7 +206,9 @@ export class AnalysisReportComponent implements OnInit, OnDestroy, AfterViewInit
     if (this.downloadURL.length) {
       var link = document.createElement('a');
       link.href = this.downloadURL;
-      link.download = `${reportType} Report ${this.datePipe.transform(
+      link.download = `${reportType} Report ${this.g.formatUrlSafeString(
+        this.currentReport
+      )} ${this.datePipe.transform(
         this.rangeDateVal[0],
         'dd-MMM-yyyy'
       )} s.d. ${this.datePipe.transform(
@@ -212,7 +217,6 @@ export class AnalysisReportComponent implements OnInit, OnDestroy, AfterViewInit
       )}.csv`;
       link.click();
       this.toastr.success('File sudah terunduh');
-    } else
-      this.toastr.error('File tidak dapat terunduh');
+    } else this.toastr.error('File tidak dapat terunduh');
   }
 }

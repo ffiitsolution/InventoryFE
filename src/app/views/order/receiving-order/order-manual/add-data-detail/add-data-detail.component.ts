@@ -75,7 +75,7 @@ export class AddDataDetailOrderManualComponent
   isShowModalDelete: boolean = false;
   indexDataDelete : any;
   isShowModalOnSubmit: boolean = false;
-  barangTemp: any[] = []; 
+  barangTemp: any[] = [];
   isShowModalCancel: boolean = false;
 
   @ViewChild('formModal') formModal: any;
@@ -118,7 +118,7 @@ export class AddDataDetailOrderManualComponent
 
 
   }
-  
+
 
   getSendSuppliertemDetails() {
     this.loading = true;
@@ -152,7 +152,7 @@ export class AddDataDetailOrderManualComponent
     if (this.isNotNumber(this.listOrderData[index].qtyPesanKecil)) {
       this.validationMessageListSatuanKecil[index] = "QTY kecil harus angka";
     }
-    
+
     else if(this.listOrderData[index].qtyPesanKecil > this.listOrderData[index].konversi  ){
       this.validationMessageListSatuanKecil[index] = "QTY kecil harus < Konversi";
     }
@@ -223,17 +223,17 @@ export class AddDataDetailOrderManualComponent
       }));
 
       paramHeaderDetail.listBarang = paramDetail;
-          
+
       this.service.insert('/api/receiving-order/insert-header-detail-order-manual', paramHeaderDetail).subscribe({
         next: (res) => {
           if (!res.success) {
-            alert(res.message);
+            this.service.handleErrorResponse(res);
           } else {
             this.toastr.success('Berhasil!');
             setTimeout(() => {
               this.onPreviousAfterSubmitPressed(res);
             }, DEFAULT_DELAY_TIME);
-            
+
           }
           this.adding = false;
         },
@@ -246,19 +246,19 @@ export class AddDataDetailOrderManualComponent
       this.toastr.error("Data tidak valid")
     }
 
-    if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() !== "") { 
+    if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() !== "") {
       this.listOrderData.push({
         kodeBarang: '',
         namaBarang: '',
-      });    
+      });
     }
   }
-  
+
   onShowModal() {
     this.barangTemp = []; // Reset selected items
 
 
-    
+
     setTimeout(() => {
         $('#listBarangTable tbody tr').each(function () {
           $(this).find('td').removeClass('bg-secondary bg-opacity-25 fw-semibold'); // Remove styling from <td>
@@ -281,7 +281,7 @@ export class AddDataDetailOrderManualComponent
   onShowModalCancel() {
     this.isShowModalCancel= true;
   }
-  
+
   onCancelPressed() {
     window.location.reload();
   }
@@ -296,7 +296,7 @@ export class AddDataDetailOrderManualComponent
         this.listOrderData.splice(this.listOrderData.length - 1, 1);
       }
     }
-    
+
     for (let barang of this.barangTemp) {
 
       if(!this.listOrderData.some(order => order.kodeBarang === barang.kodeBarang)){
@@ -325,16 +325,16 @@ export class AddDataDetailOrderManualComponent
     if(errorMessage)
       this.toastr.error(errorMessage);
 
-    
-    if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() !== "") { 
+
+    if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() !== "") {
       this.listOrderData.push({
         kodeBarang: '',
         namaBarang: '',
-      });    
+      });
     }
   }
 
-  
+
   renderDataTables(): void {
     this.dtOptions = {
       language:
@@ -395,33 +395,33 @@ export class AddDataDetailOrderManualComponent
         { data: 'satuanKecil', title: 'Satuan Kecil', orderable: true },
         { data: 'satuanBesar', title: 'Satuan Besar', orderable: true },
         { data: 'defaultGudang', title: 'Default Gudang', orderable: true },
-        { data: 'flagConversion', 
+        { data: 'flagConversion',
           title: 'Conversion Factor',
           render: (data, type, row) => {
-            if (data === 'T') 
+            if (data === 'T')
               return "Tidak";
-            else if (data === 'Y') 
+            else if (data === 'Y')
               return "Ya";
-          
+
             else
               return data
-          }, 
+          },
           orderable: true
         },
-        { data: 'statusAktif', 
+        { data: 'statusAktif',
           title: 'Status Aktif',
           render: (data, type, row) => {
-            if (data === 'T') 
+            if (data === 'T')
               return "Inactive";
-            else if (data === 'A') 
+            else if (data === 'A')
               return "Active";
-          
+
             else
               return data
           },
           orderable: true
          },
-        
+
 
       ],
       searchDelay: 1500,
@@ -430,7 +430,7 @@ export class AddDataDetailOrderManualComponent
       ],
       // delivery: [],
       rowCallback: (row: Node, data: any, index: number) => {
-   
+
         // Handle Checkbox Click
         $(row).find('.row-checkbox').off('change').on('change', (event: JQuery.ChangeEvent<HTMLElement>) => {
             this.handleCheckboxChange(event , data);
@@ -439,7 +439,7 @@ export class AddDataDetailOrderManualComponent
         // handle row click
         $('td', row).on('click', (event) => {
           if(data.statusAktif !== 'T'){
-            const checkbox = $(row).find('.row-checkbox'); 
+            const checkbox = $(row).find('.row-checkbox');
             const index = this.barangTemp.findIndex(item => item === data);
 
             if (index === -1) {
@@ -459,14 +459,14 @@ export class AddDataDetailOrderManualComponent
 
         return row;
       },
-    
+
     };
   }
-  
- 
+
+
   deleteBarang() {
     this.listOrderData.splice(this.indexDataDelete, 1);
-    
+
     this.validationMessageListSatuanKecil.splice(this.indexDataDelete, 1);
     this.validationMessageQtyPesanList.splice(this.indexDataDelete, 1);
     this.validationMessageListSatuanBesar.splice(this.indexDataDelete, 1);
@@ -481,8 +481,8 @@ export class AddDataDetailOrderManualComponent
 
   isDataInvalid() {
     let dataInvalid = false;
-    dataInvalid = 
-    this.validationMessageListSatuanKecil.some(msg => msg.trim() !== "") || 
+    dataInvalid =
+    this.validationMessageListSatuanKecil.some(msg => msg.trim() !== "") ||
     this.validationMessageQtyPesanList.some(msg => msg.trim() !== "")||
     this.validationMessageListSatuanBesar.some(msg => msg.trim() !== "")||
     this.listOrderData.length === 0;
@@ -490,7 +490,7 @@ export class AddDataDetailOrderManualComponent
     if(this.listOrderData.length === 0){
       this.toastr.error("Data kosong")
     }
-    
+
     return dataInvalid
   }
 
@@ -547,7 +547,7 @@ export class AddDataDetailOrderManualComponent
 
             this.listOrderData[index].isConfirmed = true;
             this.listOrderData[index].isLoading = false;
-            
+
             this.listOrderData[index].totalQtyPesan = (0).toFixed(2);
             this.listOrderData[index].qtyPesanKecil = (0).toFixed(2);
             this.listOrderData[index].qtyPesanBesar = (0).toFixed(2);
@@ -555,7 +555,7 @@ export class AddDataDetailOrderManualComponent
             // Add new properties to the object
             this.listOrderData[index] = {
               ...this.listOrderData[index],
-              ...res  
+              ...res
             };
 
 
@@ -571,7 +571,7 @@ export class AddDataDetailOrderManualComponent
               // this.mapOrderData(data);
               // this.onSaveData();
 
-       
+
           }
         },
       });
@@ -600,9 +600,9 @@ export class AddDataDetailOrderManualComponent
       this.validationMessageListSatuanBesar[index] = "";
     }
   }
-  
-  
-  onPreviousAfterSubmitPressed(res: any): void { 
+
+
+  onPreviousAfterSubmitPressed(res: any): void {
     // Simpan data ke sessionStorage agar bisa dibaca saat reload
     const stateData = {
       showModal: true,
@@ -622,6 +622,6 @@ export class AddDataDetailOrderManualComponent
       this.router.navigate(['/order/receiving-order/order-manual']);
     });
   }
-  
+
 
 }

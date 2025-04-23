@@ -101,7 +101,7 @@ export class ColorsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   actionBtnClick(action: string) {
     let data = this.selectedRowData;
-    alert(action + ': ' + data?.kodeUom)
+    console.log(action + ': ' + data?.kodeUom)
     if (action === 'view') {
     } else if (action === 'add') {
     } else if (action === 'edit') {

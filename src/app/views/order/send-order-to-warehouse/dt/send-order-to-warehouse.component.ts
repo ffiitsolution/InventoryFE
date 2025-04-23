@@ -24,6 +24,7 @@ import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 import { DEFAULT_DELAY_TIME } from 'src/constants';
+import { AppService } from '../../../../service/app.service';
 
 @Component({
   selector: 'app-send-order-to-warehouse',
@@ -80,7 +81,8 @@ export class SendOrderToWarehouseComponent
     public g: GlobalService,
     private translation: TranslationService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private service: AppService,
   ) {
     this.dtOptions = {
       language:
@@ -130,29 +132,29 @@ export class SendOrderToWarehouseComponent
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { 
-          data: 'tglPesanan', 
+        {
+          data: 'tglPesanan',
           title: 'Tanggal Pesanan',
           render: function (data, type, row) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
           }
         },
-        { 
-          data: 'tglKirimBrg', 
+        {
+          data: 'tglKirimBrg',
           title: 'Tanggal Kirim' ,
           render: function (data, type, row) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
           }
         },
-        { 
-          data: 'tglBatalExp', 
+        {
+          data: 'tglBatalExp',
           title: 'Tanggal Batal',
           render: function (data, type, row) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
-          } 
+          }
         },
         { data: 'nomorPesanan', title: 'Nomor Pesanan' },
         {
@@ -167,7 +169,7 @@ export class SendOrderToWarehouseComponent
           title: 'Status Pesanan',
           render: function (data) {
             let statusLabel = "";
-            
+
             // Map statusPesanan values to labels
             switch (data) {
               case "1":
@@ -188,13 +190,13 @@ export class SendOrderToWarehouseComponent
             return statusLabel;
           }
         },
-        
-        { 
-          data: 'statusCetak', 
+
+        {
+          data: 'statusCetak',
           title: 'Status Cetak' ,
           render: function (data) {
             let statusLabel = "";
-            
+
             // Map statusPesanan values to labels
             switch (data) {
               case "S":
@@ -210,12 +212,12 @@ export class SendOrderToWarehouseComponent
             return statusLabel;
           }
         },
-        { 
-          data: 'statusKirim', 
+        {
+          data: 'statusKirim',
           title: 'Status Kirim Data' ,
           render: function (data) {
             let statusLabel = "";
-            
+
             // Map statusPesanan values to labels
             switch (data) {
               case "S":
@@ -231,8 +233,8 @@ export class SendOrderToWarehouseComponent
             return statusLabel;
           }
         },
-        { 
-          data: 'keterangan1', 
+        {
+          data: 'keterangan1',
           title: 'Catatan1',
           render: function (data, type, row) {
             if (!data) return ""; // Handle null/undefined values
@@ -240,8 +242,8 @@ export class SendOrderToWarehouseComponent
           }
         },
 
-        
-        
+
+
         {
           title: 'Opsi',
           render: (data, type, row) => {
@@ -252,8 +254,8 @@ export class SendOrderToWarehouseComponent
                 <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
                 <button class="btn btn-sm action-send btn-outline-info btn-60" ${isDisabled ? 'disabled' : ''}>
                   Kirim
-                </button>   
-                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>           
+                </button>
+                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>
               </div>
             `;
             return htmlString;
@@ -323,7 +325,7 @@ export class SendOrderToWarehouseComponent
     .subscribe({
       next: (res: any) => {
         if (!res.success) {
-          alert(res.message);
+          this.service.handleErrorResponse(res);
         } else {
           this.toastr.success(this.translation.instant('Berhasil!'));
           setTimeout(() => {
@@ -333,8 +335,8 @@ export class SendOrderToWarehouseComponent
       },
       error: (err: any) => {
         console.error('Error updating user:', err);
-        alert('An error occurred while updating the user.');
-      },    
+        console.log('An error occurred while updating the user.');
+      },
     });
     this.isShowModalKirim = false;
   }
@@ -385,13 +387,13 @@ export class SendOrderToWarehouseComponent
         const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(blob);
         window.open(url);
-        
+
         this.dataService
         .postData(this.g.urlServer + '/api/send-order-to-warehouse/update-status-cetak',param)
         .subscribe({
           next: (res: any) => {
             if (!res.success) {
-              alert(res.message);
+              this.service.handleErrorResponse(res);
             } else {
               this.toastr.success(this.translation.instant('Berhasil!'));
               setTimeout(() => {
@@ -401,8 +403,8 @@ export class SendOrderToWarehouseComponent
           },
           error: (err: any) => {
             console.error('Error updating user:', err);
-            alert('An error occurred while updating the user.');
-          },    
+            console.log('An error occurred while updating the user.');
+          },
         });
       } catch (error: any) {
         this.toastr.error(error.message ?? 'Unknown error while generating PDF');
@@ -431,5 +433,5 @@ export class SendOrderToWarehouseComponent
       this.disabledPrintButton = false;
       window.location.reload();
     }
-  
+
 }

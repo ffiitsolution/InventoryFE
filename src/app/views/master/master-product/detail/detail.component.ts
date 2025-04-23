@@ -397,7 +397,7 @@ export class MasterProductDetailComponent implements OnInit {
       this.service.insert('/api/product/update', payload).subscribe({
         next: (res) => {
           if (!res.success) {
-            alert(res.message);
+            this.service.handleErrorResponse(res);
           } else {
             this.toastr.success('Update Barang Berhasil!');
             setTimeout(() => {

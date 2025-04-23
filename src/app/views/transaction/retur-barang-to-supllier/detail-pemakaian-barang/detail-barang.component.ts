@@ -137,12 +137,12 @@ export class DetailBarangReturComponent
                   };
                   return finalData;
                 });
-                this.page.recordsTotal = resp.totalElements; 
+                this.page.recordsTotal = resp.totalElements;
                 this.page.recordsFiltered = resp.totalElements;
                 this.totalLength = mappedData.length;
                 callback({
-                recordsTotal: resp.totalElements, 
-                recordsFiltered: resp.totalElements, 
+                recordsTotal: resp.totalElements,
+                recordsFiltered: resp.totalElements,
                 data: mappedData,
                 });
               });
@@ -198,7 +198,7 @@ export class DetailBarangReturComponent
           { data: 'TGL_EXPIRED', title: 'Tanggal Expired',
             render: (data) => this.g.transformDate(data),
           },
-          // { data: 'KETERANGAN_TANGGAL', title: 'Tanggal Expired', 
+          // { data: 'KETERANGAN_TANGGAL', title: 'Tanggal Expired',
           //   render: (data) => this.g.transformDate(data),
           // },
         ],
@@ -329,7 +329,7 @@ export class DetailBarangReturComponent
       '';
 
     if (!nomorTransaksi) {
-      alert('Nomor Transaksi tidak ditemukan. Silakan coba lagi.');
+      this.toastr.error('Nomor Transaksi tidak ditemukan. Silakan coba lagi.');
       console.error('Error: NOMOR_TRANSAKSI kosong atau tidak ditemukan!');
       return;
     }
@@ -370,7 +370,7 @@ export class DetailBarangReturComponent
         },
         (error) => {
           console.error('Gagal mengambil laporan:', error);
-          alert('Gagal mengambil laporan. Silakan coba lagi.');
+          this.toastr.error('Gagal mengambil laporan. Silakan coba lagi.');
         }
       );
   }

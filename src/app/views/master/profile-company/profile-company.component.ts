@@ -63,11 +63,11 @@ export class ProfileCompanyComponent implements OnInit,OnDestroy {
     this.myForm = this.form.group({
       kodePerusahaan: [
         { value: '', disabled: true },
-       
+
       ],
       namaPerusahaan1: [
         { value: '', disabled: true },
-       
+
       ],
       namaPerusahaan2: [
         { value: '', disabled: true },
@@ -108,7 +108,7 @@ export class ProfileCompanyComponent implements OnInit,OnDestroy {
       this.service.patch('/api/profile/update', requestBody).subscribe({
         next: (res: any) => {
           if (!res.success) {
-            alert(res.message);
+            this.service.handleErrorResponse(res);
           } else {
             this.toastr.success(this.translation.instant('Berhasil Update!'));
           }
@@ -116,7 +116,7 @@ export class ProfileCompanyComponent implements OnInit,OnDestroy {
           this.isSubmitting =false;
         },
         error: (err: any) => {
-          alert('An error occurred while updating the profile.');
+          this.toastr.error('An error occurred while updating the profile.');
           this.editing = false;
           this.isSubmitting =false;
         },
@@ -237,7 +237,7 @@ export class ProfileCompanyComponent implements OnInit,OnDestroy {
           if(res?.success == false){
             status ="Disconnected"
             this.g.serverHQStatus = "DOWN";
-          } 
+          }
 
           this.g.serverHQStatus = "UP";
           this.myForm.patchValue({

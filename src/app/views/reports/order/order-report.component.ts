@@ -17,11 +17,8 @@ import { AppService } from '../../../service/app.service';
 import { DatePipe } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
-import * as moment  from 'moment';
-import {
-
-  DEFAULT_DATE_RANGE_RECEIVING_ORDER
-} from '../../../../constants';
+import * as moment from 'moment';
+import { DEFAULT_DATE_RANGE_RECEIVING_ORDER } from '../../../../constants';
 @Component({
   selector: 'app-order-report',
   templateUrl: './order-report.component.html',
@@ -66,15 +63,15 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
     private datePipe: DatePipe,
     private router: Router,
     private route: ActivatedRoute,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {
-      this.dpConfig.containerClass = 'theme-dark-blue';
-      this.dpConfig.customTodayClass='today-highlight';
-      this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';    
+    this.dpConfig.containerClass = 'theme-dark-blue';
+    this.dpConfig.customTodayClass = 'today-highlight';
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
   }
 
   transformDate(date: any): string {
-    return moment(date).format('DD MMM YYYY');  
+    return moment(date).format('DD MMM YYYY');
   }
 
   ngOnInit(): void {
@@ -142,24 +139,23 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   doSubmit(type: string) {
-
     this.loadingState['submit'] = true;
 
     let param = {};
     if (this.currentReport === 'Pesanan Ke Gudang') {
-      console.log("userdata",this.userData)
+      console.log('userdata', this.userData);
       param = {
         kodeGudang: this.userData.defaultLocation.kodeLocation,
         tipeListing: this.paramTipeListing,
         startDate: this.g.transformDate(this.dateRangeFilter[0]),
         endDate: this.g.transformDate(this.dateRangeFilter[1]),
       };
-    } 
-    
+    }
+
     if (this.currentReport === 'Pesanan Ke Supplier') {
       param = {
         KODE_GUDANG: this.userData.defaultLocation.kodeLocation,
-        TIPE_PESANAN: 'S',  
+        TIPE_PESANAN: 'S',
         USER_CETAK: this.userData.namaUser,
         tipeListing: this.paramTipeListing,
         START_DATE: this.transformDate(this.dateRangeFilter[0]),
@@ -206,7 +202,9 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.downloadURL.length) {
       var link = document.createElement('a');
       link.href = this.downloadURL;
-      link.download = `${reportType} Report ${this.datePipe.transform(
+      link.download = `${reportType} Report ${this.g.formatUrlSafeString(
+        this.currentReport
+      )} ${this.datePipe.transform(
         this.rangeDateVal[0],
         'dd-MMM-yyyy'
       )} s.d. ${this.datePipe.transform(
@@ -215,8 +213,7 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
       )}.pdf`;
       link.click();
       this.toastr.success('File sudah terunduh');
-    } else
-      this.toastr.error('File tidak dapat terunduh');
+    } else this.toastr.error('File tidak dapat terunduh');
   }
 
   downloadCsv(res: any, reportType: string) {
@@ -226,7 +223,9 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.downloadURL.length) {
       var link = document.createElement('a');
       link.href = this.downloadURL;
-      link.download = `${reportType} Report ${this.datePipe.transform(
+      link.download = `${reportType} Report ${this.g.formatUrlSafeString(
+        this.currentReport
+      )} ${this.datePipe.transform(
         this.rangeDateVal[0],
         'dd-MMM-yyyy'
       )} s.d. ${this.datePipe.transform(
@@ -235,7 +234,6 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
       )}.csv`;
       link.click();
       this.toastr.success('File sudah terunduh');
-    } else
-      this.toastr.error('File tidak dapat terunduh');
+    } else this.toastr.error('File tidak dapat terunduh');
   }
 }

@@ -187,7 +187,7 @@ export class AddDataDetailDeliveryComponent
       JSON.stringify(item).toLowerCase().includes(searchText)
     );
   }
-  
+
   onFilterSearch(
     listData: any[],
     filterText: string,
@@ -301,7 +301,7 @@ export class AddDataDetailDeliveryComponent
 
             next: (res) => {
               if (!res.success) {
-                alert(res.message);
+                this.appService.handleErrorResponse(res);
               } else {
                 this.toastr.success("Berhasil!");
                 const paramGenerateReport = {
