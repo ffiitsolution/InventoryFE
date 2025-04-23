@@ -142,3 +142,91 @@
     </c-card-body>
   </c-card>
 </div>
+
+
+<c-modal #formModalKirim [fullscreen]="false" [visible]="isShowModalPosting" backdrop="static" #modalLg  size="lg"
+id="formModalKirim"    [attr.aria-hidden]="!isShowModalPosting" *ngIf="isShowModalPosting">
+  <c-modal-header>
+    <h5 cModalTitle>Konfirmasi Kirim Data Pesanan</h5>
+    <button (click)="isShowModalPosting = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalKirim.id"
+      cButtonClose><i class="fa fa-times"></i></button>
+  </c-modal-header>
+  <c-modal-body>
+    <div >
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Tujuan / Pemesan" | translate
+          }}</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              [value]="(selectedRowData?.kodeTujuan|| '') + ' - '+(selectedRowData?.namaCabang) "
+              readonly
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Nomor Pesanan" | translate
+          }}</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              [value]="(selectedRowData?.nomorPesanan || '')"              
+              readonly
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Nomor Surat Jalan" | translate
+          }}</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              [value]="selectedRowData?.noSuratJalan"
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Tgl. Pesan" | translate
+          }}</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              [value]="selectedRowData?.tglPesanan"
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">{{
+            "Tgl. Brg. Dikirim" | translate
+          }}</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              [value]="selectedRowData.tglTransaksi"
+            />
+          </div>
+        </div>
+        <div class="d-flex justify-content-center align-items-center flex-column">
+          <span class="fw-bold text-center text-red">Pastikan Data Tersebut yang Akan di POSTING...!!</span>
+          <span class="fw-bold text-center text-red">Akan merubah status Intransi menjadi POSTED, dan mengurangi stock Intransit..!!</span>
+        </div>
+        
+      </div>
+    </c-modal-body>
+    <c-modal-footer class="justify-center">
+      <button type="button" class="btn btn-success text-white  w-180" (click)="onProsesDoBalik(selectedRowData)"><i class ="fa fa-check pe-2"></i>Proses Posting</button>
+      <button type="button" class="btn btn-light w-180 me-3" data-bs-dismiss="modal" (click)="isShowModalPosting = false">Batal Proses</button>
+    </c-modal-footer>
+</c-modal>

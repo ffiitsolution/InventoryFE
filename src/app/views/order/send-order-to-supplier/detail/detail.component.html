@@ -24,12 +24,12 @@
               <span class="value">{{ detailDataSendToWarehouse.nomorPesanan }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tgl. Pesanan" | translate }}</span>
-              <span class="value">{{ g.formatStrDateMMM(detailDataSendToWarehouse.tglPesanan) }}</span>
-            </div>
-            <div class="detail-item">
               <span class="label">{{ "Tgl. Kirim Barang" | translate }}</span>
               <span class="value">{{ g.formatStrDateMMM(detailDataSendToWarehouse.tglKirimBrg) }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Tgl. Pesanan" | translate }}</span>
+              <span class="value">{{ g.formatStrDateMMM(detailDataSendToWarehouse.tglPesanan) }}</span>
             </div>
             <div class="detail-item">
               <span class="label ">{{ "Tgl. Batal Pesanan" | translate }}</span>
@@ -40,7 +40,7 @@
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">
-              <span class="label">{{ "Gudang Tujuan" | translate }}</span>
+              <span class="label">{{ "Tujuan (Admin RSC)" | translate }}</span>
               <span class="value">{{detailDataSendToWarehouse.supplier}} - {{ detailDataSendToWarehouse.namaSupplier }}</span>
             </div>
             <div class="detail-item">
@@ -51,7 +51,10 @@
               <span class="label">{{ "Catatan 2" | translate }}</span>
               <span class="value"> {{ detailDataSendToWarehouse.keterangan2 }}</span>
             </div>
-
+            <div class="detail-item">
+              <span class="label">{{ "Status Pesanan" | translate }}</span>
+              <span class="value">PESANAN {{  g.getStatusOrderLabel(detailDataSendToWarehouse.statusPesanan) }} </span>
+            </div>
             <div class="detail-item">
               <span class="label">{{ "Jumlah Item " | translate }}</span>
               <span class="value">{{ totalLength || "-" }}</span>
@@ -93,10 +96,10 @@
                   Barang</th>
                 <th scope="col" style="vertical-align: middle;" class="text-center align-items-start th-blue-background" rowspan="2">Nama
                   Barang</th>
+                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start th-blue-background" rowspan="2">
+                    Konversi</th>
                 <th scope="col" style="vertical-align: middle;" class="text-center align-items-start th-red-background" colspan="2">
                   Qty Pesan</th> <!-- Masih sejajar -->
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start th-blue-background" rowspan="2">
-                  Konversi Gudang</th>
                 <th scope="col" style="vertical-align: middle;" class="text-center align-items-start th-blue-background" rowspan="2">
                   Total Quantity Pesan
                 </th>

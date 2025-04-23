@@ -18,15 +18,29 @@
 </div>
 <div class="fade-in">
   <c-card class="mb-4">
-    <c-card-body>
-        <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
-        <button class="btn btn-light  btn-150" (click)="onShowModalCancel()">
-          <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
-        </button>
-        <button class="btn btn-info text-white btn-150 pe-3" (click)="onShowModalOnSubmit()">
-          <i class="fa fa-check pe-2"></i> {{ "Proses" | translate }}  {{ "Simpan" | translate }} {{ "Data" | translate }}
-        </button>
+    <c-card-body class="w-100">
+      <div class="row justify-content-between">
+        <div class="col-6 d-flex align-items-center">
+          <div class="col-4 ">
+            <label for="jabatanSaksi">{{ "Jumlah Item Pesanan" | translate }}</label>
+          </div>
+          <div class="col-2 pe-0">
+            <input type="text" class="form-control text-center" [value]="listOrderData.length-1" readonly />
+          </div>
+          <div class="col"></div>
 
+        </div>
+        <div class="col-6">
+          <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
+          <button class="btn btn-light  btn-150" (click)="onShowModalCancel()">
+            <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
+          </button>
+          <button class="btn btn-info text-white btn-150 pe-3" (click)="onShowModalOnSubmit()">
+            <i class="fa fa-check pe-2"></i> {{ "Proses" | translate }}  {{ "Simpan" | translate }} {{ "Data" | translate }}
+          </button>
+        </div>
+
+        </div>
       </div>
       <div class="table-responsive">
         <ng-container>
@@ -46,11 +60,12 @@
                 <th scope="col" style="width: 10%;"
                 class="text-center align-items-start th-blue-background" rowspan="2">
                   Nama Barang</th>
-                  <th scope="col" style="width: 10%;"
+                <th scope="col" style="width: 10%;"
                   class="text-center align-items-start th-blue-background" rowspan="2">
                     Konversi</th>
                 <th scope="col" style=" width: 10%;"
                   class="text-center align-items-start btn-danger th-red-background" colspan="2">Qty Pesan</th> <!-- Masih sejajar -->
+  
                 <th scope="col" style="width: 10%;"
                 class="text-center align-items-start th-blue-background" rowspan="2">
                   Total Quantity
@@ -89,7 +104,7 @@
 
                 </td>
                 <td class="text-center">{{ data?.namaBarang }}</td>
-
+                <td class="text-center">{{ data?.konversi?.toFixed(2) }}</td>
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
                     <input #nextInput type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
@@ -128,7 +143,6 @@
                   </span>
                 </td>
 
-                <td class="text-center">{{ data?.konversi?.toFixed(2) }}</td>
                 <td class="text-center">{{((helper.sanitizedNumber(data.qtyPesanBesar) *
                   data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil)).toFixed(2) }} {{data.satuanKecil}}
 

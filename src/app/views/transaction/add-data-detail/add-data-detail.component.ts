@@ -1,8 +1,10 @@
 import {
   AfterViewInit,
   Component,
+  EventEmitter,
   OnDestroy,
   OnInit,
+  Output,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -65,13 +67,17 @@ export class AddDataDetailDeliveryComponent
   validationMessages: { [key: number]: string } = {};
   validationQtyKecilKonversi: { [key: number]: string } = {};
 
+  searchListViewOrder: string = '';
+
+    @Output() dataCetak = new EventEmitter<any>();
+
   constructor(
     public g: GlobalService,
     private translation: TranslationService,
     private router: Router,
     public helper: HelperService,
     private appService: AppService,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {
     this.selectedOrder = JSON.parse(this.selectedOrder);
     this.getDeliveryItemDetails()
@@ -124,6 +130,15 @@ export class AddDataDetailDeliveryComponent
     );
   }
 
+  onFilterTextChange(newValue: string) {
+    if (newValue.length >= 3) {
+      this.totalLength = 1;
+    } else {
+      this.totalLength = this.listOrderData.length;
+    }
+    this.listCurrentPage = this.listCurrentPage;
+  }
+
   onInputValueItemDetail(event: any, index: number, type: string, qtyType: string) {
     const target = event.target;
 
@@ -163,6 +178,16 @@ export class AddDataDetailDeliveryComponent
     this.validationQtyKecilKonversi[index] = validationQtyKecil;
   }
 
+  get filteredList() {
+    if (!this.searchListViewOrder) {
+      return this.filteredListTypeOrder;
+    }
+    const searchText = this.searchListViewOrder.toLowerCase();
+    return this.filteredListTypeOrder.filter(item =>
+      JSON.stringify(item).toLowerCase().includes(searchText)
+    );
+  }
+  
   onFilterSearch(
     listData: any[],
     filterText: string,
@@ -232,12 +257,7 @@ export class AddDataDetailDeliveryComponent
           satuanBesar: data.satuanBesar,
           totalQtyPesanOld: data.totalQtyPesanOld,
           keterangan: this.selectedOrder.keterangan || '',
-          tglKirimGudang: moment(this.selectedOrder.validatedDeliveryDate, 'DD-MM-YYYY').set({
-            hours: 0,
-            minutes: 0,
-            seconds: 0,
-            milliseconds: 0,
-          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
+          tglKirimGudang: moment(this.selectedOrder.validatedDeliveryDate).format('DD MMM YYYY')
         };
       })
       .filter((item) => item !== null); // Hapus item yang tidak valid
@@ -284,8 +304,14 @@ export class AddDataDetailDeliveryComponent
                 alert(res.message);
               } else {
                 this.toastr.success("Berhasil!");
+                const paramGenerateReport = {
+                  outletBrand: 'KFC',
+                  isDownloadCsv: true,
+                  noSuratJalan: res.message,
+                }
+                this.dataCetak.emit(paramGenerateReport)
                 setTimeout(() => {
-                  this.router.navigate(["/transaction/delivery-item"]);
+                  this.router.navigate(["/transaction/delivery-item/add-data"]);
                 }, DEFAULT_DELAY_TIME);
               }
               this.adding = false;
@@ -358,5 +384,6 @@ export class AddDataDetailDeliveryComponent
       this.listOrderData[index].qtyPesanKecil = '0.00'; // fallback if input is not a number
     }
   }
+
 
 }

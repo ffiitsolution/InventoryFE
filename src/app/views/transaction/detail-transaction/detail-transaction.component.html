@@ -67,7 +67,7 @@
             </div>
             <div class="detail-item">
               <span class="label">{{ "Status Transaksi" | translate }}</span>
-              <span class="value">{{ selectedOrder.statusPosting === 'I' ? '(I) Intransit' : '(P) Posted' }}</span>
+              <span class="value fw-semibold">{{ selectedOrder.statusPosting === 'I' ? 'INTRANSIT' : 'POSTED' }}</span>
             </div>
 
           </div>
@@ -86,6 +86,7 @@
           [dtOptions]="dtOptions"
           (page.dt)="dtPageChange($event)"
           class="row-border hover stripe"
+          id="myTable"
         ></table>
       </div>
     </c-card-body>

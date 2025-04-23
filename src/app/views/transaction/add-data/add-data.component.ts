@@ -53,11 +53,26 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
     keteranganKota: '',
     tglPesan: '',
     tglKadaluarsa: '',
-    validatedDeliveryDate: moment(new Date(), 'YYYY-MM-DD').format('DD-MM-YYYY') || '',
     keterangan: '',
     codeDestination: '',
     kodeGudang: ''
   };
+
+  // [alreadyPrint]="alreadyPrint"
+  // [disabledPrintButton]="disabledPrintButton"
+  // [generatePdfUrl]="'/cetak-production-jasper'"
+  // [updateStatusUrl]="''"
+  // [updatePrintStatusParam]="''"
+  // [generateReportParam]="paramGenerateReport"
+  // [isShowModalReport]="isShowModalReport"
+  // [isShowSelection]="true"
+  // (closeModalEvent)="closeModal()"
+
+  alreadyPrint: boolean;
+  disabledPrintButton: any;
+  paramGenerateReport: any = {}
+  isShowModalReport: boolean;
+  paramUpdateReport: any = {}
 
   constructor(
     private router: Router,
@@ -66,7 +81,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
     private translationService: TranslationService,
     private appService: AppService
   ) {
-    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
     this.dpConfig.customTodayClass = 'today-highlight';
@@ -125,15 +140,25 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getValidationTglKirimBrg(isFormatted: boolean = false): any {
     let validationText = '';
-    let tempDateKirimGudang
+    let tempDateKirimGudang;
     const tempDatePermintaanKirim = this.formData.tglBrgDikirim;
+
     if (isFormatted) {
-      tempDateKirimGudang = this.formData.validatedDeliveryDate
+      tempDateKirimGudang = this.formData.validatedDeliveryDate;
     } else {
-      tempDateKirimGudang = moment(this.formData.validatedDeliveryDate).format("DD-MM-YYYY");
+      let validatedDate = this.formData.validatedDeliveryDate;
+      if (typeof validatedDate === 'string') {
+        // Coba parse string, tentukan format input string-nya
+        validatedDate = moment(validatedDate, 'DD-MM-YYYY').isValid()
+          ? moment(validatedDate, 'DD-MM-YYYY')
+          : moment(validatedDate);
+      } else {
+        validatedDate = moment(validatedDate);
+      }
+      tempDateKirimGudang = validatedDate.format('DD-MM-YYYY');
     }
 
-    const today = moment(new Date().toISOString()).format("DD-MM-YYYY");
+    const today = moment().format('DD-MM-YYYY');
 
     if (tempDateKirimGudang !== tempDatePermintaanKirim) {
       validationText += '** TANGGAL KIRIM TIDAK SESUAI DENGAN PERMINTAAN KIRIM..!!';
@@ -145,6 +170,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.validationTglKirimBrg = validationText;
   }
+
 
   onPreviousPressed(): void {
     this.router.navigate(['/transaction/delivery-item']);
@@ -177,7 +203,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
       drawCallback: (drawCallback) => {
         this.selectedRowData = undefined;
       },
-      order: [[2, 'desc']],
+      order: [[0, 'desc']],
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
@@ -208,6 +234,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
           });
       },
       columns: [
+        { data: 'dtIndex', title: '#' },
         { data: 'nomorPesanan', title: 'No. Pesanan' },
         { data: 'tglPesan', title: 'Tgl. Pesan', render: (data) => this.globalService.transformDate(data) },
         { data: 'tglBrgDikirim', title: 'Tgl. Dikirim', render: (data) => this.globalService.transformDate(data) },
@@ -238,6 +265,10 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
             const expiryDate = new Date(row.tglKadaluarsa);
             const today = new Date();
 
+            // Set jam ke 00:00:00 supaya hanya tanggal yang dibandingkan
+            expiryDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+
             if (expiryDate >= today) {
               if (statusCetak !== 'S') {
                 return '<span class="text-center text-warning">Data Belum Dicetak</span>';
@@ -247,6 +278,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
               return '<span class="text-center text-danger">Data kadaluarsa</span>';
             }
           }
+
 
         }
       ],
@@ -288,13 +320,51 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
     this.formData.tglBrgDikirim = moment(orderData.tglBrgDikirim, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
     this.formData.tglKadaluarsa = moment(orderData.tglKadaluarsa, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
     this.formData.nomorPesanan = orderData.nomorPesanan || '';
-    this.formData.validatedDeliveryDate = this.formData.tglBrgDikirim || '';
     this.formData.kodeGudang = orderData.kodeGudang || '';
   }
 
   handleEnter(event: any) {
 
   }
+
+  closeModal() {
+    this.isShowModalReport = false;
+    this.disabledPrintButton = false;
+  }
+
+
+  onShowModalPrint(data: any) {
+    this.paramGenerateReport = {
+      outletBrand: 'KFC',
+      isDownloadCsv: true,
+      noSuratJalan: data.noSuratJalan,
+    };
+    this.paramUpdateReport = {
+      noSuratJalan: data.noSuratJalan
+    }
+    this.isShowModalReport = true;
+    // this.onBackPressed();
+  }
+
+  onResetForm(newItem: any): void {
+    this.formData = {
+      nomorPesanan: '',
+      deliveryStatus: '',
+      namaCabang: '',
+      alamat1: '',
+      alamat2: '',
+      keteranganKota: '',
+      tglPesan: '',
+      tglKadaluarsa: '',
+      validatedDeliveryDate: moment(new Date(), 'YYYY-MM-DD').format('DD-MM-YYYY') || '',
+      keterangan: '',
+      codeDestination: '',
+      kodeGudang: ''
+    };
+    this.isShowDetail = false;
+    if (newItem) this.onShowModalPrint(newItem);
+  }
+
 }
 
 

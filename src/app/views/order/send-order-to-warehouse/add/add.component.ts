@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy  } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -22,7 +22,7 @@ function excludedSensitive(control: AbstractControl): ValidationErrors | null {
   templateUrl: './add.component.html',
   styleUrl: './add.component.scss',
 })
-export class SendOrderToWarehouseAddComponent implements OnInit {
+export class SendOrderToWarehouseAddComponent implements OnInit, OnDestroy {
   myForm: FormGroup;
   adding: boolean = false;
   showPassword: boolean = false;
@@ -54,6 +54,14 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   isShowModalBack: boolean = false;
   isShowModalBuatPesanan: boolean = false;
 
+  isShowModalReport: boolean = false;
+  buttonCaptionPrint: String = 'Cetak';
+  alreadyPrint: boolean = false;
+  disabledPrintButton: boolean = false;
+  paramGenerateReport = {};
+  paramUpdatePrintStatus = {};
+  state : any;
+
   constructor(
     private toastr: ToastrService,
     private form: FormBuilder,
@@ -62,12 +70,24 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
     private service: AppService,
     private dataService: DataService,
   ) {
-    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfigTglKirimBarang.containerClass = 'theme-red';
     this.dpConfigTglBatalPesanan.containerClass = 'theme-red';
   }
 
   ngOnInit(): void {
+    const storedState = sessionStorage.getItem('sendOrderState');
+    if (storedState) {
+      const parsedState = JSON.parse(storedState);
+  
+      if (parsedState.showModal) {
+        this.onShowModalPrint(parsedState);
+      }
+  
+      // Setelah dipakai, hapus agar tidak muncul lagi saat refresh berikutnya
+      sessionStorage.removeItem('sendOrderState');
+    }
+
     this.currentUser = this.g.getLocalstorage('inv_currentUser');
     this.myForm = this.form.group({
 
@@ -141,7 +161,14 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
     this.g.removeLocalstorage('TEMP_ORDHDK');
   }
 
-
+    ngOnDestroy(): void {
+      window.removeEventListener('beforeunload', this.clearHistoryState);
+      history.replaceState(null, '', window.location.href);
+    }
+    
+    clearHistoryState = () => {
+      history.replaceState(null, '', window.location.href);
+    }
 
   onSubmit(): void {
     this.isShowModalBuatPesanan = false;
@@ -304,6 +331,16 @@ export class SendOrderToWarehouseAddComponent implements OnInit {
   //     this.myForm.get('tanggalKirimBarang')?.setValue(this.myForm.get('tanggalKirimBarang')?.get('tanggalKirimBarang'));
   //   }
   // }
+
+  onShowModalPrint(state: any) {
+    this.paramGenerateReport = state;
+    this.paramUpdatePrintStatus=state;
+    this.isShowModalReport = true;
+  }
+  closeModal(){
+    this.isShowModalReport = false;
+    this.disabledPrintButton = false;
+  }
 
 
 }

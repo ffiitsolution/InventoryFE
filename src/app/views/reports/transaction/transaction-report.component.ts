@@ -70,7 +70,7 @@ export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewI
     private route: ActivatedRoute,
     private toastr: ToastrService,
   ) {
-    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.customTodayClass='today-highlight';
     this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
   }
@@ -150,8 +150,8 @@ export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewI
     this.loadingState['submit'] = true;
 
     let param = {};
-    if (this.currentReport === 'Transaksi Pengiriman') {
-      console.log("userdata",this.userData)
+    if (['Transaksi Pengiriman','Produksi','Penerimaan Barang Bekas'].includes(this.currentReport) ) {
+     
       param = {
         kodeGudang: this.userData.defaultLocation.kodeLocation,
         tipeListing: this.paramTipeListing,

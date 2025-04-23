@@ -65,7 +65,7 @@ export class AddPenerimaanBrgBksComponent implements OnInit, AfterViewInit, OnDe
     private appService: AppService,
     private datePipe: DatePipe
   ) {
-    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
     this.dpConfig.minDate = new Date();
@@ -146,7 +146,7 @@ export class AddPenerimaanBrgBksComponent implements OnInit, AfterViewInit, OnDe
 
 
   onPreviousPressed(): void {
-    this.router.navigate(['/transaction/penerimaan-brg-bks/list-dt']);
+    this.router.navigate(['/transaction/penerimaan-barang-bekas/list']);
   }
 
   onShowModal() {

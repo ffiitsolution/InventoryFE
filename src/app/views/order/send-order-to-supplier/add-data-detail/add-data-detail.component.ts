@@ -232,7 +232,7 @@ export class AddDataDetailSendOrderToSupplierComponent
           } else {
             this.toastr.success('Berhasil!');
             setTimeout(() => {
-              this.onPreviousPressed();
+              this.onPreviousAfterSubmitPressed(res);
             }, DEFAULT_DELAY_TIME);
             
           }
@@ -478,6 +478,22 @@ export class AddDataDetailSendOrderToSupplierComponent
 
   onPreviousPressed(): void {
     this.router.navigate(['order/send-order-to-supplier-via-rsc']);
+  }
+  onPreviousAfterSubmitPressed(res: any): void { 
+    // Simpan data ke sessionStorage agar bisa dibaca saat reload
+    const stateData = {
+      showModal: true,
+      userCetak: this.dataUser.kodeUser,
+      nomorPesanan: res.item[0].nomorPesanan,
+      kodeCabang: res.item[0].kodeGudang,
+      statusCetak: res.item[0].statusCetak,
+    };
+  
+    sessionStorage.setItem('sendOrderState', JSON.stringify(stateData));
+
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate(['order/send-order-to-supplier-via-rsc/add-data']);
+    });
   }
 
   isDataInvalid() {

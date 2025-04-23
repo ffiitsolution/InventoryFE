@@ -111,12 +111,9 @@ export class AddDataDetailSendOrderToWarehouseComponent
     this.disabledPrintButton = isCanceled;
     this.disabledCancelButton = isCanceled;
     this.alreadyPrint =
-      this.newOrhdk.statusCetak == SEND_PRINT_STATUS_SUDAH;
+    this.newOrhdk.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.renderDataTables();
-
-
-
   }
   
 
@@ -219,7 +216,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
           } else {
             this.toastr.success('Berhasil!');
             setTimeout(() => {
-              this.onPreviousPressed();
+              this.onPreviousAfterSubmitPressed(res);
             }, DEFAULT_DELAY_TIME);
             
           }
@@ -477,6 +474,26 @@ export class AddDataDetailSendOrderToWarehouseComponent
   onPreviousPressed(): void {
     this.router.navigate(['order/send-order-to-warehouse']);
   }
+
+  onPreviousAfterSubmitPressed(res: any): void { 
+    // Simpan data ke sessionStorage agar bisa dibaca saat reload
+    const stateData = {
+      showModal: true,
+      userCetak: this.dataUser.kodeUser,
+      nomorPesanan: res.item[0].nomorPesanan,
+      kodeCabang: res.item[0].kodeGudang,
+      statusCetak: res.item[0].statusCetak,
+    };
+
+
+    sessionStorage.setItem('sendOrderState', JSON.stringify(stateData));
+
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate(['order/send-order-to-warehouse/add']);
+    });
+  }
+  
+  
 
   isDataInvalid() {
     let dataInvalid = false;

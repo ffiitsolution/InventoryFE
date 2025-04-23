@@ -109,9 +109,9 @@ export class ReceivingPoSupplierDetailComponent
                 const finalData = {
                   ...rest,
                   dtIndex: this.page.start + index + 1,
-                  konversi: `${rest.konversi}.00 ${rest.satuanBesar}/${rest.satuanKecil}`,
-                  konversiProduct: `${rest.konversiProduct || 0} ${rest.satuanBesarProduct || '-'
-                    }/${rest.satuanKecilProduct || '-'}`,
+                  konversi: `${rest.konversi}.00 ${rest.satuanKecil}/${rest.satuanBesar}`,
+                  konversiProduct: `${rest.konversi}.00 ${rest.satuanKecilProduct || '-'
+                    }/${rest.satuanBesarProduct || '-'}`,
                   qtyPesanBesar: this.g.formatToDecimal(rest.qtyPesanBesar),
                   totalQtyPesan: this.g.formatToDecimal(rest.totalQtyPesan),
                   qtyPesanKecil: this.g.formatToDecimal(rest.qtyPesanKecil),
@@ -131,12 +131,17 @@ export class ReceivingPoSupplierDetailComponent
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'kodeBarang', title: 'Kode Barang', searchable: true },
+        { data: 'kodeBarang', title: 'Kode', searchable: true },
         { data: 'namaBarang', title: 'Nama Barang', searchable: true },
-        { data: 'konversi', title: 'Konversi Pesan' },
-        { data: 'qtyPesanBesar', title: 'Qty Pesan Besar' },
-        { data: 'qtyPesanKecil', title: 'Qty Pesan Kecil' },
+        { data: 'konversi', title: 'Konversi Supplier' },
+        { data: 'qtyPesanBesar', title: 'Qty Pesan Bsr' },
+        { data: 'qtyPesanKecil', title: 'Qty Pesan Kcl' },
         { data: 'totalQtyPesan', title: 'Total Pesanan' },
+        { data: 'totalQtyPesan', title: 'Total Qty Diterima',
+          render: (data) => {
+            return '';
+          }
+        },
         { data: 'konversiProduct', title: 'Konversi Gudang' },
         {
           data: 'keterangan',

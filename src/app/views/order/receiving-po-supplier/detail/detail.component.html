@@ -62,23 +62,21 @@
               <span class="value">{{ selectedOrder.nomorPesanan }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tanggal P.O" | translate }}</span>
-              <span class="value">{{ g.formatStrDateMMM(selectedOrder.tglPesanan) }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Tanggal Kirim" | translate }}</span>
+              <span class="label">{{ "Tgl. Kirim Barang" | translate }}</span>
               <span class="value">{{ g.formatStrDateMMM(selectedOrder.tglKirimBrg) }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tanggal Batal P.O" | translate }}</span>
-              <span class="value">{{ g.formatStrDateMMM(selectedOrder.tglBatalExp) }}</span>
+              <span class="label">{{ "Tgl. P.O" | translate }}</span>
+              <span class="value">{{ g.formatStrDateMMM(selectedOrder.tglPesanan) }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Status Pesanan" | translate }}</span>
-              <span class="value">{{
-                this.g.getStatusOrderLabel(selectedOrder.statusPesanan)
-              }}</span>
+              <span class="label">{{ "Tgl. Batal P.O" | translate }}</span>
+              <span class="value">{{ g.formatStrDateMMM(selectedOrder.tglBatalExp) }}</span>
             </div>
+          </div>
+          <div class="detail-item">
+            <span class="label">{{ "Status Cetak" | translate }}</span>
+            <span class="value">{{ getPrintStatus() }}</span>
           </div>
         </div>
         <div class="col">
@@ -95,15 +93,9 @@
               <span class="label">{{ "Catatan2" | translate }}</span>
               <span class="value">{{ selectedOrder.keterangan2 }} </span>
             </div>
-      
-            <div class="detail-item">
-              <span class="label">{{ "Status Cetak" | translate }}</span>
-              <span class="value">{{ getPrintStatus() }}</span>
-            </div>
-
             <div class="detail-item">
               <span class="label">{{ "Status P.O" | translate }}</span>
-              <span class="value">{{ g.getStatusOrderLabel(selectedOrder.statusPesanan) }}</span>
+              <span class="value">PESANAN {{ g.getStatusReceivingPOLabel(selectedOrder.statusPesanan) }}</span>
             </div>
             <div class="detail-item">
               <span class="label">{{ "Jumlah Item" | translate }}</span>

@@ -115,20 +115,20 @@ export class PenerimaanBrgBksListComponent implements OnInit {
         { data: 'tglTransaksi', title: 'Tanggal Transaksi' },
         { data: 'nomorTransaksi', title: 'No. Transaksi' },
         { data: 'namaCabang', title: 'Nama Cabang' },
-        { data: 'userCreate', title: 'User Proses' },
+        { data: 'namaUser', title: 'User Proses' },
         { data: 'dateCreateFormat2', title: 'Tgl Proses' },
         { data: 'timeCreate', title: 'Jam Proses' },
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render:function(data, type, row) {return 'POSTING'} ,
+          render:function(data, type, row) {return 'POSTED'} ,
         },
         {
           title: 'Aksi',
           render: () => {
             return ` <div class="btn-group" role="group" aria-label="Action">
-                        <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
-                        <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>           
+                        <button class="btn btn-sm action-view btn-outline-primary btn-60">${this.buttonCaptionView}</button>
+                        <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>           
                     </div>`;
           },
         },
