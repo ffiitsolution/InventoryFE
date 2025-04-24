@@ -2,7 +2,9 @@
   <c-card class="mb-4">
     <c-card-body>
       <c-row>
-        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
+        <div
+          class="d-grid gap-3 d-md-flex justify-content-start align-items-center"
+        >
           <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
             <i class="fa fa-chevron-left icon-12 icon-gap"></i>
             {{ "Kembali" | translate }}
@@ -16,21 +18,24 @@
   <c-card class="mb-4">
     <c-card-body>
       <c-row>
-        <div [ngClass]="isShowDetail ? 'col-4' : 'col-5'" class="pe-0 d-flex red-line">
+        <div
+          [ngClass]="isShowDetail ? 'col-4' : 'col-5'"
+          class="pe-0 d-flex red-line"
+        >
           <div class="w-100">
             <div class="p-2">
-              <h5 class="mb-2 p-2" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5>
-              <form [formGroup]="myForm" >
+              <h5 class="mb-2 p-2" style="color: #3c4b64">
+                {{ "Isi Format" | translate }}
+              </h5>
+              <form [formGroup]="myForm">
                 <div class="w-100 px-2 py-1 row">
                   <div class="col-4 d-flex align-items-center">
-                    <label for="noDocument">{{
-                      "No. Documen Retur Dari Site" | translate
-                        }}<span
-                      class="text-danger"> *
-                    </span>
+                    <label for="noDocument"
+                      >{{ "No. Documen Retur Dari Site" | translate
+                      }}<span class="text-danger"> * </span>
                     </label>
                   </div>
-                  <div class="col-6 pe-0 ">
+                  <div class="col-8 pe-0 d-flex">
                     <input
                       type="text"
                       placeholder="No Documen Retur Dari Site"
@@ -39,207 +44,238 @@
                       formControlName="noDocument"
                       name="noDocument"
                       maxlength="15"
-                    >
-                    <small class="text-danger" *ngIf="myForm.get('noDocument')?.hasError('specialCharNotAllowed')">Special Char Not Allowed</small>
-
-                  </div>
-                  <div class="col-2 pe-0 d-flex">
-                  <button 
-                  [disabled]="isShowDetail"
-                  class="shadow-sm btn w-100 btn-info text-white" style="height: 38px;" >
-                    <i class="fa fa-refresh"></i> 
-                      <!-- {{ "Get Data" | translate }} -->
-                  </button>
-                   </div>
-                </div>
-
-              <div class="w-100 px-2 py-1 row">
-                <div class="col-4 d-flex align-items-center">
-                  <label for="tglTransaksi">{{ "Tgl. Transaksi" | translate }} <span
-                      class="text-danger">*</span></label>
-                </div>
-
-                <div class="col-8 pe-0 d-flex">
-                  <input type="text"
-                  *ngIf="!isShowDetail"
-                   id="tglTransaksi" 
-                   class="form-control"
-                    aria-describedby="tglTransaksi"
-                    #dp="bsDatepicker"
-                    [bsConfig]="dpConfigtrans" 
-                    bsDatepicker
-                    autocomplete="off"
-                    formControlName="tglTransaksi"
-                    placeholder="{{ 'Tanggal transaksi' | translate }}"
-                    [readOnly]="isShowDetail"
-                   />
-                   <input type="text"
-                   *ngIf="isShowDetail"
-                    id="tglTransaksi" 
-                    [bsConfig]="dpConfigtrans" 
-                    class="form-control"
-                     aria-describedby="tglTransaksi"
-                     autocomplete="off"
-                     placeholder="{{ 'Tanggal transaksi' | translate }}"
-                     [readOnly]="true"
-                     formControlName="tglTransaksi"
+                      (keydown.enter)="handleEnterRetur($event)"
                     />
+
+                    <button
+                      [disabled]="isShowDetail"
+                      [cModalToggle]="staticBackdropModalRetur.id"
+                      (click)="onShowModalRetur()"
+                      class="btn btn-info ms-2 px-4"
+                      type="button"
+                    >
+                      <i class="fa fa-search text-white"></i>
+                      <!-- {{ "Get Data" | translate }} -->
+                    </button>
+                  </div>
                 </div>
-               
-              </div>
-              <div class="divider mt-4"></div>
-              <div class="w-100 px-2 py-1 row">
-                <div class="col-4 d-flex align-items-center">
-                  <label for="kodeCabang">{{
-                    "Kode Cabang" | translate
-                  }}<span
-                      class="text-danger">*
-                    </span>
-                  </label>
-                </div>
-                <div class="col-8 pe-0 d-flex">
-                  <input
-                    type="text"
-                    placeholder="Kode Cabang"
-                    class="form-control"
-                    id="kodeCabang"
-                    formControlName="kodeCabang"
-                    name="kodeCabang"
-                    [readOnly]="true"
-                  />
-                  <button
-                    *ngIf="!isShowModal"
-                    type="button"
-                    class="btn btn-info ms-2"
-                    [cModalToggle]="staticBackdropModal.id"
-                    (click)="onShowModal()"
-                    [disabled]="isShowDetail"
+                <div class="w-100 px-2 py-1 row">
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      myForm
+                        .get('noDocument')
+                        ?.hasError('specialCharNotAllowed')
+                    "
+                    >Special Char Not Allowed</small
                   >
-                    <i class="fa fa-search text-white"></i>
+                </div>
+                <div class="w-100 px-2 py-1 row">
+                  <div class="col-4 d-flex align-items-center">
+                    <label for="tglTransaksi"
+                      >{{ "Tgl. Transaksi" | translate }}
+                      <span class="text-danger">*</span></label
+                    >
+                  </div>
+
+                  <div class="col-8 pe-0 d-flex">
+                    <input
+                      type="text"
+                      *ngIf="!isShowDetail"
+                      id="tglTransaksi"
+                      class="form-control"
+                      aria-describedby="tglTransaksi"
+                      #dp="bsDatepicker"
+                      [bsConfig]="dpConfigtrans"
+                      bsDatepicker
+                      autocomplete="off"
+                      formControlName="tglTransaksi"
+                      placeholder="{{ 'Tanggal transaksi' | translate }}"
+                      [readOnly]="isShowDetail"
+                    />
+                    <input
+                      type="text"
+                      *ngIf="isShowDetail"
+                      id="tglTransaksi"
+                      [bsConfig]="dpConfigtrans"
+                      class="form-control"
+                      aria-describedby="tglTransaksi"
+                      autocomplete="off"
+                      placeholder="{{ 'Tanggal transaksi' | translate }}"
+                      [readOnly]="true"
+                      formControlName="tglTransaksi"
+                    />
+                  </div>
+                </div>
+                <div class="divider mt-4"></div>
+                <div class="w-100 px-2 py-1 row">
+                  <div class="col-4 d-flex align-items-center">
+                    <label for="kodeCabang"
+                      >{{ "Kode Cabang" | translate
+                      }}<span class="text-danger">* </span>
+                    </label>
+                  </div>
+                  <div class="col-8 pe-0 d-flex">
+                    <input
+                      type="text"
+                      placeholder="Kode Cabang"
+                      class="form-control"
+                      id="kodeCabang"
+                      formControlName="kodeCabang"
+                      name="kodeCabang"
+                      [readOnly]="true"
+                    />
+                    <button
+                      *ngIf="!isShowModal"
+                      type="button"
+                      class="btn btn-info ms-2"
+                      [cModalToggle]="staticBackdropModal.id"
+                      (click)="onShowModal()"
+                      [disabled]="isShowDetail || isDisabledCabang"
+                    >
+                      <i class="fa fa-search text-white"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="w-100 px-2 py-1 row">
+                  <div class="col-4 d-flex align-items-center">
+                    <label for="namaCabang"
+                      >{{ "Nama Cabang" | translate }}
+                    </label>
+                  </div>
+                  <div class="col-8 pe-0 d-flex">
+                    <input
+                      type="text"
+                      placeholder="Nama Cabang"
+                      class="form-control"
+                      id="namaCabang"
+                      formControlName="namaCabang"
+                      name="namaCabang"
+                      [readOnly]="true"
+                    />
+                  </div>
+                </div>
+
+                <div class="w-100 px-2 py-1 row">
+                  <div class="col-4 d-flex align-items-center">
+                    <label for="alamatCabang"
+                      >{{ "Alamat Cabang" | translate }}
+                    </label>
+                  </div>
+                  <div class="col-8 pe-0 d-flex">
+                    <textarea
+                      placeholder="Alamat Cabang"
+                      type="text"
+                      maxlength="50"
+                      class="form-control"
+                      id="alamatCabang"
+                      [readonly]="isShowDetail"
+                      formControlName="alamatCabang"
+                      name="alamatCabang"
+                      [readOnly]="true"
+                    >
+                    </textarea>
+                  </div>
+                </div>
+                <div
+                  class="w-100 row"
+                  *ngIf="
+                    myForm.get('kodeCabang')?.invalid &&
+                    myForm.get('kodeCabang')?.touched
+                  "
+                >
+                  <div class="col-4 d-flex align-items-center"></div>
+                  <div class="col-8 pe-0 d-flex">
+                    <small
+                      class="text-danger"
+                      *ngIf="myForm.get('kodeCabang')?.hasError('required')"
+                      >Data Cabang is required</small
+                    >
+                  </div>
+                </div>
+
+                <div class="divider mt-4"></div>
+
+                <div class="w-100 px-2 py-1 row">
+                  <div class="col-4 d-flex align-items-center">
+                    <label for="keterangan">{{
+                      "Catatan(keterangan lain)" | translate
+                    }}</label>
+                  </div>
+
+                  <div class="col-8 pe-0">
+                    <textarea
+                      placeholder="Catatan"
+                      type="text"
+                      maxlength="50"
+                      class="form-control"
+                      id="keterangan"
+                      [readonly]="isShowDetail"
+                      formControlName="keterangan"
+                      maxlength="35"
+                      name="keterangan"
+                    >
+                    </textarea>
+                    <small
+                      class="text-danger"
+                      *ngIf="
+                        myForm
+                          .get('keterangan')
+                          ?.hasError('specialCharNotAllowed')
+                      "
+                      >Special Char Not Allowed</small
+                    >
+                  </div>
+                </div>
+
+                <div class="w-100 px-2 py-1 row" *ngIf="isShowDetail">
+                  <div class="col-4 d-flex align-items-center">
+                    <label for="jumlahItem">{{
+                      "Jumlah Item" | translate
+                    }}</label>
+                  </div>
+                  <div class="col-8 pe-0 d-flex">
+                    <input
+                      type="number"
+                      placeholder="Jumlah Item"
+                      class="form-control"
+                      id="jumlahItem"
+                      formControlName="jumlahItem"
+                      name="jumlahItem"
+                      [readOnly]="true"
+                    />
+                  </div>
+                </div>
+
+                <div style="width: 96%" class="p-2">
+                  <button
+                    class="shadow-sm btn w-100 btn-info text-white"
+                    *ngIf="!isShowDetail"
+                    [disabled]="myForm.invalid"
+                    (click)="onAddDetail()"
+                  >
+                    <i class="fa fa-check pe-2"></i>
+                    {{ "Detail Transaksi" | translate }}
                   </button>
                 </div>
-              </div>
-
-              <div class="w-100 px-2 py-1 row">
-                <div class="col-4 d-flex align-items-center">
-                  <label for="namaCabang">{{
-                    "Nama Cabang" | translate
-                  }}
-                </label>
-                </div>
-                <div class="col-8 pe-0 d-flex">
-                  <input
-                    type="text"
-                    placeholder="Nama Cabang"
-                    class="form-control"
-                    id="namaCabang"
-                    formControlName="namaCabang"
-                    name="namaCabang"
-                    [readOnly]="true"
-                  >
-
-                </div>
-              </div>
-              
-              <div class="w-100 px-2 py-1 row">
-                <div class="col-4 d-flex align-items-center">
-                  <label for="alamatCabang">{{
-                    "Alamat Cabang" | translate
-                  }}
-              
-                </label>
-                </div>
-                <div class="col-8 pe-0 d-flex">
-                  <textarea placeholder="Alamat Cabang"
-                    type="text"
-                    maxlength="50"
-                    class="form-control" id="alamatCabang"
-                    [readonly]="isShowDetail"
-                    formControlName="alamatCabang"
-                    name="alamatCabang"
-                    [readOnly]="true"
-                    >
-                  </textarea>
-                </div>
-              </div>
-              <div class="w-100 row" *ngIf="myForm.get('kodeCabang')?.invalid && myForm.get('kodeCabang')?.touched">
-                <div class="col-4 d-flex align-items-center">
-
-                </div>
-                <div class="col-8 pe-0 d-flex">
-                  <small class="text-danger" *ngIf="myForm.get('kodeCabang')?.hasError('required')">Data Cabang is required</small>
-                </div>
-              </div>
-
-              <div class="divider mt-4"></div>
-             
-            
-               
-
-             
-              <div class="w-100 px-2 py-1 row">
-                <div class="col-4 d-flex align-items-center">
-                  <label for="keterangan">{{ "Catatan(keterangan lain)" | translate }}</label>
-                </div>
-
-                <div class="col-8 pe-0">
-                  <textarea placeholder="Catatan"
-                   type="text"
-                   maxlength="50"
-                   class="form-control" id="keterangan"
-                   [readonly]="isShowDetail"
-                   formControlName="keterangan"
-                   maxlength="35"
-                    name="keterangan">
-                
-                  </textarea>
-                  <small class="text-danger" *ngIf="myForm.get('keterangan')?.hasError('specialCharNotAllowed')">Special Char Not Allowed</small>
-
-                </div>
-              </div>
-
-              <div class="w-100 px-2 py-1 row" *ngIf="isShowDetail">
-                <div class="col-4 d-flex align-items-center">
-                  <label for="jumlahItem">{{
-                    "Jumlah Item" | translate
-                  }}</label>
-                </div>
-                <div class="col-8 pe-0 d-flex">
-                  <input
-                    type="number"
-                    placeholder="Jumlah Item"
-                    class="form-control"
-                    id="jumlahItem"
-                    formControlName="jumlahItem"
-                    name="jumlahItem"
-                    [readOnly]="true"
-                  />
-                </div>
-              </div>
-
-              <div style="width: 96%;" class="p-2">
-                <button class="shadow-sm btn w-100 btn-info text-white" *ngIf="!isShowDetail" [disabled]="myForm.invalid"
-                  (click)="onAddDetail()">
-                  <i class="fa fa-check pe-2"></i>
-                  {{ "Detail Transaksi" | translate }}
-                </button>
-              </div>
               </form>
             </div>
           </div>
         </div>
 
-        <div class=" ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
+        <div class="ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
           <div class="p-2" *ngIf="isShowDetail">
-            <app-add-data-detail-penerimaan-brg-bks (onBatalPressed)="onBatalPressed($event)" (jumlahItem)="addJumlahBrgBks($event)"></app-add-data-detail-penerimaan-brg-bks>
+            <app-add-data-detail-penerimaan-brg-bks
+              (onBatalPressed)="onBatalPressed($event)"
+              (jumlahItem)="addJumlahBrgBks($event)"
+            ></app-add-data-detail-penerimaan-brg-bks>
           </div>
         </div>
-
       </c-row>
     </c-card-body>
   </c-card>
 
-  <!-- Modal Pilih Barang -->
   <c-modal
     #staticBackdropModal
     [visible]="isShowModal"
@@ -268,28 +304,52 @@
               datatable
               [dtOptions]="dtOptions"
               class="datatable row-border hover stripe w-100 h-65"
-              >
-            <!-- <thead class="table-header"> </thead> -->
+            >
+              <!-- <thead class="table-header"> </thead> -->
             </table>
           </div>
         </c-card-body>
-       
       </c-card>
     </c-modal-body>
     <c-modal-footer *ngIf="selectedRowData">
       <div class="d-flex flex-wrap justify-content-start w-100">
         <div class="me-3">
           <label class="form-label">{{ "Rsc" | translate }}</label>
-          <input type="text" [value]="(selectedRowData.kodeRsc || '')  + ' ' + (selectedRowData.keteranganRsc || '')" class="form-control" disabled />       
+          <input
+            type="text"
+            [value]="
+              (selectedRowData.kodeRsc || '') +
+              ' ' +
+              (selectedRowData.keteranganRsc || '')
+            "
+            class="form-control"
+            disabled
+          />
         </div>
         <div class="me-3">
           <label class="form-label">{{ "Region" | translate }}</label>
-          <input type="text" [value]="(selectedRowData.kodeRegion || '') ?? '' + ' ' + (selectedRowData.keteranganRegion || '') ?? '' " class="form-control" disabled />       
+          <input
+            type="text"
+            [value]="
+              selectedRowData.kodeRegion || '' ??
+              '' + ' ' + (selectedRowData.keteranganRegion || '') ??
+              ''
+            "
+            class="form-control"
+            disabled
+          />
         </div>
         <div>
           <label class="form-label">{{ "Area" | translate }}</label>
-          <input type="text" [value]="(selectedRowData.kodeArea || '') ?? '' + ' ' + (selectedRowData.keteranganArea ?? '') " class="form-control" disabled />       
-
+          <input
+            type="text"
+            [value]="
+              selectedRowData.kodeArea || '' ??
+              '' + ' ' + (selectedRowData.keteranganArea ?? '')
+            "
+            class="form-control"
+            disabled
+          />
         </div>
       </div>
     </c-modal-footer>
@@ -297,6 +357,47 @@
 
   <!-- Modal Backdrop -->
   <div class="modal-bg-backdrop" *ngIf="isShowModal"></div>
+
+  <!-- Modal Pilih Barang -->
+  <c-modal
+    #staticBackdropModalRetur
+    [visible]="isShowModalRetur"
+    backdrop="static"
+    id="staticBackdropModalRetur"
+    size="xl"
+  >
+    <c-modal-header>
+      <h5 cModalTitle>Daftar Retur From Site</h5>
+      <button
+        (click)="isShowModalRetur = false"
+        type="button"
+        class="btn btn-info ms-2"
+        [cModalToggle]="staticBackdropModalRetur.id"
+        cButtonClose
+      >
+        <i class="fa fa-times text-white"></i>
+      </button>
+    </c-modal-header>
+
+    <c-modal-body>
+      <c-card class="mb-4">
+        <c-card-body>
+          <div class="table-responsive">
+            <table
+              datatable
+              [dtOptions]="dtOptionsRetur"
+              class="datatable row-border hover stripe w-100 h-65"
+            >
+              <!-- <thead class="table-header"> </thead> -->
+            </table>
+          </div>
+        </c-card-body>
+      </c-card>
+    </c-modal-body>
+  </c-modal>
+
+  <!-- Modal Backdrop -->
+  <div class="modal-bg-backdrop" *ngIf="isShowModalRetur"></div>
 </div>
 <div class="fade-in">
   <app-modal-print-list
