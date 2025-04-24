@@ -18,7 +18,7 @@ import { Page } from '../../../../model/page';
 import { AppService } from '../../../../service/app.service';
 import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER, BUTTON_CAPTION_SELECT,DEFAULT_DATE_RANGE_RECEIVING_ORDER } from '../../../../../constants';
 import moment from 'moment';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { HelperService } from '../../../../service/helper.service';
 import { DatePipe } from '@angular/common';
 import { AppConfig } from '../../../../config/app.config';
@@ -135,7 +135,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
           satuanHasilProduksi: ['', [Validators.required]],
           tglTransaksi: [this.defaultDate, [Validators.required]],
           // jumlahHasilProduksi: ['', [Validators.required,Validators.min(1)]],
-          keterangan: [''],
+          keterangan: ['', this.specialCharValidator],
           // tglExp:[this.defaultDate, [Validators.required]],
           // totalHasilProduksi: ['', [Validators.required,Validators.min(1)]],
           labelSatuanHasilProduksi: [''],
@@ -528,6 +528,26 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
       this.isShowModalBranch= true;
     }
     
+    specialCharValidator(control: AbstractControl): ValidationErrors | null {
+        const specialCharRegex = /[^a-zA-Z0-9&\-().\s]/;
+        const value = control.value;
+        if (value && specialCharRegex.test(value)) {
+          return { specialCharNotAllowed: true };
+        }
+        return null;
+      }
+
+      onKeteranganInput(event: Event): void {
+        const input = event.target as HTMLTextAreaElement;
+        const originalValue = input.value;
+        const filteredValue = originalValue.replace(/[^a-zA-Z0-9\-]/g, '');
+        
+        if (originalValue !== filteredValue) {
+          input.value = filteredValue;
+          this.myForm.get('keterangan')?.setValue(filteredValue);
+        }
+      }
+      
 
 }
 
