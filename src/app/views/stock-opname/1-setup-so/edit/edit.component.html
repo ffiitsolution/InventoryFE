@@ -1,5 +1,5 @@
 <div class="fade-in">
-  <c-card class="mb-4">
+  <c-card class="mb-2">
     <c-card-body>
       <c-row>
         <div class="col">
@@ -30,9 +30,9 @@
     </c-card-body>
   </c-card>
 
-  <c-card class="mb-4">
+  <c-card class="mb-2">
     <c-card-body>
-      <div class="row">
+      <div class="row align-items-center">
         <div class="col-sm-12 col-lg-3">
           <div class="row">
             <div class="col ps-4">Tanggal SO</div>
@@ -66,7 +66,7 @@
   </c-card>
 
   <div class="fade-in">
-    <c-card class="mb-4">
+    <c-card class="mb-2">
       <c-card-body>
         <div>
 
@@ -74,6 +74,12 @@
             <div *ngIf="loading">
               <app-loading></app-loading>
             </div>
+            <ng-template #loadingInput let-label="label">
+              <div class="text-center w-100 text-bg-warning">
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                <span>{{ label || 'Loading...' }}</span>
+              </div>
+            </ng-template>
             <table class="table table-bordered table-hover table-striped table-sm">
               <thead>
                 <tr class="text-center align-middle table-dark">
@@ -88,7 +94,7 @@
                   <th scope="col" class="text-white text-bg-danger" colspan="4">
                     Qty Fisik
                   </th>
-                  <th scope="col" class="text-bg-dark" rowspan="2">
+                  <th scope="col" class="text-bg-dark" rowspan="2" colspan="2">
                     Total Qty Fisik
                   </th>
                   <th scope="col" class="text-bg-dark" rowspan="2">
@@ -129,25 +135,47 @@
                     {{data.satuanKecil}} / {{data.satuanBesar}}
                   </td>
                   <td>
-                    <input type="text" [(value)]="data.qtyBesarSo" class="form-control text-end">
+                    <ng-container *ngIf="!loadingUpdateQtyBesar[i]; else loadingInput">
+                      <input id="inputQtyBesar{{i}}" type="text" min="0" class="form-control text-end"
+                        [(ngModel)]="data.qtyBesarSo" (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
+                        (keypress)="g.conditionInput($event, 'numericDot')" (keydown.arrowup)="focusPrevInput($event)"
+                        (keydown.arrowdown)="focusNextInput($event)"
+                        [ngClass]="{'form-invalid': validationMessageListSatuanBesar[i]}" (blur)="onBlurQtyBesar(i)" />
+                      <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageListSatuanBesar[i]">
+                        {{ validationMessageListSatuanBesar[i] }}
+                      </span>
+                    </ng-container>
                   </td>
                   <td class="text-start">
                     {{ data.satuanBesar }}
                   </td>
 
                   <td class="text-end">
-                    <input type="text" [(value)]="data.qtyKecilSo" class="form-control text-end">
+                    <ng-container *ngIf="!loadingUpdateQtyKecil[i]; else loadingInput">
+                      <input id="inputQtyKecil{{i}}" type="text" min="0" class="form-control text-end"
+                        [(ngModel)]="data.qtyKecilSo" (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')"
+                        (keypress)="g.conditionInput($event, 'numericDot')" (keydown.arrowup)="focusPrevInput($event)"
+                        (keydown.arrowdown)="focusNextInput($event)"
+                        [ngClass]="{'form-invalid': validationMessageListSatuanKecil[i]}" (blur)="onBlurQtyKecil(i)" />
+                      <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageListSatuanKecil[i]">
+                        {{ validationMessageListSatuanKecil[i] }}
+                      </span>
+                    </ng-container>
                   </td>
                   <td class="text-start">
                     {{ data.satuanKecil }}
                   </td>
 
                   <td class="text-end fw-bold">
-                    {{ data.totalQtySo}} {{ data.satuanKecil || '' }}
+                    {{ (data.qtyBesarSo > 0 ? data.qtyBesarSo * data.konversi : 0) + data.qtyKecilSo | number}}
                   </td>
+                  <td class="text-start">
+                    {{ data.satuanKecil }}
+                  </td>
+
                   <td>
                     <button class="btn btn-success btn-sm text-white w-90" (click)="onShowModalExpired($event, i)"
-                      [disabled]="!data.isConfirmed">
+                      *ngIf="data.flagExpired === 'Y'">
                       <i class="fa fa-check pe-1"></i> {{ "Exp." | translate }}
                     </button>
                   </td>
@@ -161,13 +189,18 @@
             </table>
           </div>
           <div class="row">
-            <div class="col-2">
-              <select name="pageSelect" class="form-select text-end ms-4"
-                *ngIf="searchText.length == 0 && listDetail && listDetail.length > 0" [(ngModel)]="currentPage">
-                <option *ngFor="let i of listPages" [value]="i">{{i}}</option>
-              </select>
+            <div class="col-3">
+              <div class="row text-end align-items-center">
+                <div class="col">Halaman</div>
+                <div class="col">
+                  <select name="pageSelect" class="form-select text-end ms-4"
+                    *ngIf="searchText.length == 0 && listDetail && listDetail.length > 0" [(ngModel)]="currentPage">
+                    <option *ngFor="let i of listPages" [value]="i">{{i}}</option>
+                  </select>
+                </div>
+              </div>
             </div>
-            <div class="col-10 text-end">
+            <div class="col-9 text-end">
               <pagination-controls (pageChange)="currentPage = $event" previousLabel="Sebelumnya"
                 nextLabel="Berikutnya">
               </pagination-controls>

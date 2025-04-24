@@ -76,6 +76,14 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
   searchText: string = '';
   listPages: any[] = [];
 
+  validationMessageListSatuanKecil: any[] = [];
+  validationMessageListSatuanBesar: any[] = [];
+  validationMessageQtyPesanList: any[] = [];
+  loadingUpdateQtyBesar: boolean[] = [];
+  loadingUpdateQtyKecil: boolean[] = [];
+  errorUpdateQtyBesar: boolean[] = [];
+  errorUpdateQtyKecil: boolean[] = [];
+
   listDetail: any[] = [];
   tempKodeBarang: string = '';
   @Output() onBatalPressed = new EventEmitter<string>();
@@ -113,7 +121,7 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
     this.userData = this.appService.getUserData();
     this.g.navbarVisibility = false;
     this.selectedSo = JSON.parse(this.selectedSo);
-    if(!this.selectedSo?.nomorSo){
+    if (!this.selectedSo?.nomorSo) {
       this.onBackPressed();
     }
     this.getStockDetail();
@@ -176,6 +184,13 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
           if (this.listDetail.length > 0) {
             let pageCount = Math.ceil(this.listDetail.length / 10);
             this.listPages = this.g.generateNumberRange(1, pageCount);
+
+            this.loadingUpdateQtyBesar = new Array(this.listDetail.length).fill(
+              false
+            );
+            this.loadingUpdateQtyKecil = new Array(this.listDetail.length).fill(
+              false
+            );
           }
           this.loading = false;
         },
@@ -272,28 +287,6 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }
   }
-
-  // onBatalPressed(newItem: any): void {
-  //   const todayDate = new Date();
-  //   this.defaultDate = this.helper.formatDate(todayDate);
-  //   this.myForm.reset({
-  //     kodeBarang: '',
-  //     namaBarang: '',
-  //     satuanHasilProduksi: '',
-  //     tglTransaksi: this.defaultDate, // Assign default date to tglTransaksi
-  //     jumlahHasilProduksi: '',
-  //     keterangan: '',
-  //     tglExp: this.defaultDate, // Assign default date to tglExp
-  //     totalHasilProduksi: '',
-  //     labelSatuanHasilProduksi: '',
-  //     totalBahanBaku: 0,
-  //     hargaSatuan: 0,
-  //     satuanKecil: '',
-  //     satuanBesar: '',
-  //   });
-  //   this.isShowDetail = false;
-  //   if (newItem) this.onShowModalPrint(newItem);
-  // }
 
   addJumlahBahanBaku($event: any): void {
     this.myForm.patchValue({
@@ -425,13 +418,11 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
       value = '0.00'; // Default if empty
     }
 
-    // ✅ Find all entries with the same kodeBarang
     const filteredEntries = this.listEntryExpired.filter(
       (entry) => entry.kodeBarang === kodeBarang
     );
 
     if (filteredEntries.length > index) {
-      // ✅ Get the real index in listEntryExpired
       const realIndex = this.listEntryExpired.indexOf(filteredEntries[index]);
 
       if (realIndex !== -1) {
@@ -536,22 +527,18 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
       validationMessage = `Tanggal kadaluarsa tidak boleh lebih < dari sekarang!`;
     }
 
-    // ✅ Get only the filtered list of entries for the same `kodeBarang`
     const filteredEntries = this.listEntryExpired.filter(
       (entry) => entry.kodeBarang === kodeBarang
     );
     console.log('tgllist', filteredEntries);
 
-    // ✅ Validate empty input
     if (!inputDate) {
       validationMessage = 'Tanggal tidak boleh kosong!';
     } else {
-      // ✅ Check if the item is expired
       const expiredData = this.listEntryExpired.find(
         (exp) => exp.kodeBarang === kodeBarang
       );
 
-      // ✅ Check for duplicate expiration dates within the same kodeBarang
       const isDuplicate = filteredEntries.some(
         (otherEntry, otherIndex) =>
           otherIndex !== index &&
@@ -571,10 +558,9 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
     );
 
     if (realIndex !== -1) {
-      // ✅ Update the correct entry in the original list
       this.listEntryExpired[realIndex] = {
         ...this.listEntryExpired[realIndex],
-        tglExpired: expiredDate, // Update the date in the list
+        tglExpired: expiredDate,
         validationExpiredMessageList: validationMessage,
       };
 
@@ -852,5 +838,189 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
     );
 
     return totalExpired;
+  }
+
+  onBlurQtyKecil(index: number) {
+    const value = this.listDetail[index].qtyKecilSo;
+    let parsed = Number(value);
+    if (!isNaN(parsed)) {
+      this.listDetail[index].qtyKecilSo = parsed.toFixed(2);
+    } else {
+      this.listDetail[index].qtyKecilSo = '0.00';
+      this.validationMessageListSatuanKecil[index] = '';
+    }
+    this.reCountTotal(index, 'kecil');
+  }
+
+  onBlurQtyBesar(index: number) {
+    const value = this.listDetail[index].qtyBesarSo;
+    let parsed = Number(value);
+    if (!isNaN(parsed)) {
+      this.listDetail[index].qtyBesarSo = parsed.toFixed(2);
+    } else {
+      this.listDetail[index].qtyBesarSo = '0.00';
+      this.validationMessageListSatuanBesar[index] = '';
+    }
+    this.reCountTotal(index, 'besar');
+  }
+
+  reCountTotal(index: number, input: 'besar' | 'kecil') {
+    const value1 = this.listDetail[index].qtyKecilSo;
+    let valKecil = Number(value1);
+    const value2 = this.listDetail[index].qtyBesarSo;
+    let valBesar = Number(value2);
+    const value3 = this.listDetail[index].konversi;
+    let valKonversi = Number(value3);
+
+    this.listDetail[index].totalQtySo =
+      (valBesar > 0 ? valBesar * valKonversi : 0) + valKecil;
+
+    this.listDetail[index].selisihQty =
+      this.listDetail[index].totalQtySystem - this.listDetail[index].totalQtySo;
+
+    if (!this.validationMessageQtyPesanList[index] && valKonversi >= valKecil) {
+      this.updateQtyDbDetail(index, input);
+    }
+  }
+
+  onInputValueItemDetail(
+    event: any,
+    index: number,
+    type: string,
+    qtyType: string
+  ) {
+    // const target = event.target;
+    // const value = target.value;
+    let validationMessage = '';
+    if (this.isNotNumber(this.listDetail[index].qtyKecilSo)) {
+      this.validationMessageListSatuanKecil[index] = 'QTY kecil harus angka';
+    } else if (
+      this.listDetail[index].qtyKecilSo > this.listDetail[index].konversi
+    ) {
+      this.validationMessageListSatuanKecil[index] =
+        'QTY kecil harus < Konversi';
+    } else {
+      this.validationMessageListSatuanKecil[index] = '';
+    }
+
+    if (this.isNotNumber(this.listDetail[index].qtyBesarSo)) {
+      this.validationMessageListSatuanBesar[index] = 'QTY besar harus angka';
+    } else {
+      this.validationMessageListSatuanBesar[index] = '';
+    }
+
+    if (
+      this.listDetail[index].qtyKecilSo != 0 ||
+      this.listDetail[index].qtyBesarSo != 0
+    ) {
+      this.validationMessageQtyPesanList[index] = '';
+    } else {
+      this.validationMessageQtyPesanList[index] =
+        'Quantity Pesan tidak Boleh 0';
+    }
+  }
+
+  isNotNumber(value: any) {
+    return !/^\d+(\.\d+)?$/.test(value);
+  }
+
+  updateQtyDbDetail(index: number, input: 'besar' | 'kecil') {
+    this.setLoadingUpdateQty(index, input, true);
+    this.setErrorUpdateQty(index, input, false);
+
+    let data = this.listDetail[index];
+    this.appService
+      .insert('/api/stock-opname/update-qty', {
+        kodeGudang: data.kodeGudang,
+        kodeBarang: data.kodeBarang,
+        qtyBesarSo: parseFloat(data.qtyBesarSo) || 0,
+        qtyKecilSo: parseFloat(data.qtyKecilSo) || 0,
+        nomorSo: data.nomorSo,
+        totalQtySo: parseFloat(data.totalQtySo) || 0,
+        selisihQty: data.totalQtySystem - data.totalQtySo,
+      })
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (res) => {
+          if (!res.success) {
+            this.setErrorUpdateQty(index, input, true);
+          }
+          this.setLoadingUpdateQty(index, input, false);
+        },
+        error: () => {
+          this.setLoadingUpdateQty(index, input, false);
+        },
+      });
+  }
+
+  setLoadingUpdateQty(index: number, input: 'besar' | 'kecil', val: boolean) {
+    if (input === 'besar') {
+      this.loadingUpdateQtyBesar[index] = val;
+    } else {
+      this.loadingUpdateQtyKecil[index] = val;
+    }
+  }
+
+  setErrorUpdateQty(index: number, input: 'besar' | 'kecil', val: boolean) {
+    if (input === 'besar') {
+      this.errorUpdateQtyBesar[index] = val;
+    } else {
+      this.errorUpdateQtyKecil[index] = val;
+    }
+  }
+
+  focusPrevInput(event: Event) {
+    const current = event.target as HTMLElement;
+    const prev = current
+      .closest('tr')
+      ?.previousElementSibling?.querySelector('input');
+
+    if (prev) {
+      (prev as HTMLElement).focus();
+    } else {
+      const currentIndex = this.listPages.indexOf(this.currentPage);
+      const isFirstPage = currentIndex === 0;
+
+      if (!isFirstPage) {
+        this.currentPage--;
+
+        setTimeout(() => {
+          const inputs = document.querySelectorAll(
+            'input[id^="inputQtyBesar"]'
+          );
+          const lastInput = inputs[inputs.length - 1];
+          if (lastInput) {
+            (lastInput as HTMLElement).focus();
+          }
+        }, 100);
+      }
+    }
+  }
+
+  focusNextInput(event: Event) {
+    const current = event.target as HTMLElement;
+    const next = current
+      .closest('tr')
+      ?.nextElementSibling?.querySelector('input');
+
+    if (next) {
+      (next as HTMLElement).focus();
+    } else {
+      const currentIndex = this.listPages.indexOf(this.currentPage);
+      const isLastPage = currentIndex === this.listPages.length - 1;
+
+      if (!isLastPage) {
+        this.currentPage++;
+
+        setTimeout(() => {
+          const firstInput = document.querySelector(
+            'input[id^="inputQtyBesar"]'
+          );
+          if (firstInput) {
+            (firstInput as HTMLElement).focus();
+          }
+        }, 100);
+      }
+    }
   }
 }
