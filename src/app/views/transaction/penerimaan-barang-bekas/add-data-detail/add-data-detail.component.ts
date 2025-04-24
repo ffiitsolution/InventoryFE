@@ -90,7 +90,8 @@ export class AddDataDetailPenerimaanBrgBksComponent
     public helper: HelperService,
     private appService: AppService,
     private toastr: ToastrService,
-    private service: AppService
+    private service: AppService,
+    private dataService: DataService,
   ) {
     this.g.navbarVisibility = false;
     this.headerBrgBks = JSON.parse(this.headerBrgBks);
@@ -110,6 +111,7 @@ export class AddDataDetailPenerimaanBrgBksComponent
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.jumlahItem.emit(this.listProductData.length);
     this.renderDataTables();
+    this.loadDataPenerimaan();
   }
 
   onFilterSearch(
@@ -141,6 +143,14 @@ export class AddDataDetailPenerimaanBrgBksComponent
     if (!this.isDataInvalid()) {
       this.loadingSimpan = true;
       // param for order Header
+
+      
+      const paramUpdate = {
+        returnNo: this.headerBrgBks.noDocument,
+        status: 'T',
+        user: this.g.getLocalstorage('inv_currentUser').namaUser,
+        flagBrgBekas: 'Y',
+      };
 
      
       const param = {
@@ -198,11 +208,29 @@ export class AddDataDetailPenerimaanBrgBksComponent
                   this.toastr.error(res.message);
                 } else {
                  
+                  this.service
+                  .updateWarehouse('/api/return-order/update', paramUpdate)
+                  .pipe(takeUntil(this.ngUnsubscribe))
+                  .subscribe({
+                    next: (res2) => {
+                      
+                      if (!res2.success) {
+                        this.toastr.warning('Data berhasil diposting, tetapi update status retur gagal!');
+                      } else {
+                        this.toastr.success('Data production berhasil diposting dan status retur diperbarui!');
+                      }
+                      this.adding = false;
+                      this.loadingSimpan = false;
+                      this.onPreviousPressed();
+                    },
+                    error: () => {
+                      this.toastr.warning('Data berhasil diposting, tetapi gagal update status retur!');
+                      this.loadingSimpan = false;
+                    },
+                  });
+
                   this.onBackPressed(res.data);
-                  // setTimeout(() => {
-                  //   this.toastr.success('Data Penerimaan Barang Bekas berhasil diposting!');
-                  //   this.onPreviousPressed();
-                  // }, DEFAULT_DELAY_TIME);
+               
                 }
                 this.adding = false;
                 this.loadingSimpan = false;
@@ -245,7 +273,7 @@ export class AddDataDetailPenerimaanBrgBksComponent
       qtyWasteBesar: '',
       qtyWasteKecil: '',
       totalQty: '0.00',
-      isConfirmed: false,
+      isFromRetur: false,
     },
   ];
 
@@ -338,6 +366,11 @@ export class AddDataDetailPenerimaanBrgBksComponent
     }
 
     this.listProductData[index].qtyWasteBesar = value;
+    this.listProductData[index].totalQty =
+    (
+      Number(value) * Number(this.listProductData[index].konversi) +
+      Number(this.listProductData[index].qtyWasteKecil)
+    ).toFixed(2);
     this.updateTotalQty();
   }
 
@@ -371,7 +404,11 @@ export class AddDataDetailPenerimaanBrgBksComponent
 
     this.listProductData[index].qtyWasteKecil = value;
    
-    
+    this.listProductData[index].totalQty =
+    (
+    Number(this.listProductData[index].qtyWasteBesar) * Number(this.listProductData[index].konversi) +
+    Number(value)
+    ).toFixed(2);
     this.updateTotalQty();
   }
 
@@ -566,7 +603,9 @@ export class AddDataDetailPenerimaanBrgBksComponent
           satuanKecil: data.satuanKecil,
           satuanBesar: data.satuanBesar, 
           qtyWasteBesar: '1.00',
-          qtyWasteKecil: '0.00'        
+          qtyWasteKecil: '0.00',
+          totalQty: '1.00', 
+          isFromRetur: false       
         };
     
       
@@ -602,5 +641,50 @@ export class AddDataDetailPenerimaanBrgBksComponent
     closeModal(){
       this.isShowModalReport = false;
       this.disabledPrintButton = false;
+    }
+
+    loadDataPenerimaan() {
+      let param = { returnNo: this.headerBrgBks?.noDocument };
+   
+      this.dataService
+      .postData(this.config.BASE_URL_HQ + '/api/return-order/list-detail', param)
+      .subscribe({
+          next: (res) => {
+              if (!res || !res.item) {
+                  console.error('Response dari API tidak valid:', res);
+                  return;
+              }
+  
+              if(res.item.length == 0) {
+                return;
+              }
+
+              this.listProductData = res.item
+              .filter((item: any) => item.flagBrgBekas === 'Y') // ⬅️ only items with flagBrgBekas === 'Y'
+              .map((item: any) => ({
+                kodeBarang: item.itemCode,
+                namaBarang: item.namaBarang,
+                konversi: parseFloat(item.konversi).toFixed(2),
+                qtyPemakaian: parseFloat(item.totalQty).toFixed(2),
+                satuanKecil: item.uomWhKcl,
+                satuanBesar: item.uomWhBsr,
+                qtyWasteBesar: parseFloat(item.qtyBsr).toFixed(2),
+                qtyWasteKecil: parseFloat(item.qtyKcl).toFixed(2),
+                totalQty: parseFloat(item.totalQty).toFixed(2),
+                isFromRetur: true,
+              }));
+            
+  
+              if(this.listProductData.length == 0) {
+                this.toastr.error(`Data barang bekas tidak ditemukan di No Retur tersebut!`);
+                this.onBackPressed();
+              }
+                this.jumlahItem.emit(this.listProductData.length);
+           
+          },
+          error: (err) => {
+              console.error('Terjadi kesalahan saat memanggil API:', err);
+          },
+      });
     }
 }

@@ -233,7 +233,7 @@ export class RevisiDoEditComponent
         this.appService.revisiQtyDo(param).subscribe({
           next: (res) => {
             if (!res.success) {
-              alert(res.message);
+              this.appService.handleErrorResponse(res);
             } else {
               this.toastr.success("Berhasil!");
               setTimeout(() => {

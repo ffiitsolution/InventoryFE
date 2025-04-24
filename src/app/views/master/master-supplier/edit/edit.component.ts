@@ -48,7 +48,7 @@ function excludedSensitive(control: AbstractControl): ValidationErrors | null {
 
 function numeric(control: AbstractControl): ValidationErrors | null {
   const specialCharRegex = /^[0-9]+$/;
-  const value = control.value?.trim(); 
+  const value = control.value?.trim();
   if (value && !specialCharRegex.test(control.value)) {
     return { numeric: true };
   }
@@ -429,7 +429,7 @@ export class MasterSupplierEditComponent implements OnInit {
       this.service.insert('/api/supplier/update', payload).subscribe({
         next: (res) => {
           if (!res.success) {
-            alert(res.message);
+            this.service.handleErrorResponse(res);
           } else {
             this.toastr.success('Berhasil!');
             setTimeout(() => {

@@ -374,7 +374,7 @@ export class MasterSupplierAddComponent implements OnInit {
       this.service.insert('/api/supplier/insert', payload).subscribe({
         next: (res) => {
           if (!res.success) {
-            alert(res.message);
+            this.service.handleErrorResponse(res);
           } else {
             this.toastr.success('Berhasil!');
             setTimeout(() => {

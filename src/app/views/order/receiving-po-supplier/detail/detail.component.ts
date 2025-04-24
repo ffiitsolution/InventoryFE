@@ -60,7 +60,7 @@ export class ReceivingPoSupplierDetailComponent
   isShowModalBatal: boolean = false;
   alasanDiBatalkan: string = '';
   dataUser: any;
-  
+
   protected config = AppConfig.settings.apiServer;
 
   constructor(
@@ -338,13 +338,13 @@ export class ReceivingPoSupplierDetailComponent
       statusPesanan: this.selectedOrder.statusPesanan,
       statusCetak: this.selectedOrder.statusCetak
     };
-  
+
     // Step 1: Call Jasper report API
     this.appService.reporReceivingPoSupplierJasper(params, "").subscribe((res) => {
       const blob = new Blob([res], { type: 'application/pdf' });
       this.downloadURL = window.URL.createObjectURL(blob);
       this.downloadPDF();
-  
+
       // Step 2: Once report is ready, update status
       const param = {
         statusKirim: "S",
@@ -353,18 +353,18 @@ export class ReceivingPoSupplierDetailComponent
         timeKirim: moment().format("HHmmss"),
         nomorPesanan: params.nomorPesanan
       };
-  
+
       this.dataService
         .postData(this.g.urlServer + '/api/send-order-to-supplier/update-status-cetak', param)
         .subscribe({
           next: (res: any) => {
             if (!res.success) {
-              alert(res.message);
+              this.appService.handleErrorResponse(res);
             } else {
               console.log("finish statuscetak");
               this.toastr.success(this.translation.instant('Berhasil!'));
               this.refreshDetail();
-  
+
               // ✅ Step 3: Reload the page AFTER all is successful
               setTimeout(() => {
                 window.location.reload();
@@ -373,12 +373,12 @@ export class ReceivingPoSupplierDetailComponent
           },
           error: (err: any) => {
             console.error('Error updating user:', err);
-            alert('An error occurred while updating the user.');
+            this.toastr.error('An error occurred while updating the user.');
           },
         });
     });
   }
-  
+
 
   refreshDetail(){
     this.dataService
@@ -387,7 +387,7 @@ export class ReceivingPoSupplierDetailComponent
       next: (res: any) => {
         console.log("res0",res)
         if (!(res && res.length > 0)){
-          alert(res.message);
+          this.appService.handleErrorResponse(res);
         } else {
             console.log("res",res[0])
             this.g.saveLocalstorage(
@@ -397,16 +397,16 @@ export class ReceivingPoSupplierDetailComponent
             setTimeout(() => {
               window.location.reload();
             }, DEFAULT_DELAY_TIME);
-      
-          }  
+
+          }
       },
       error: (err: any) => {
         console.error('Error updating user:', err);
-        alert('An error occurred while updating the user.');
-      },    
+        console.log('An error occurred while updating the user.');
+      },
     });
   }
-  
+
 
   downloadPDF() {
     var link = document.createElement('a');

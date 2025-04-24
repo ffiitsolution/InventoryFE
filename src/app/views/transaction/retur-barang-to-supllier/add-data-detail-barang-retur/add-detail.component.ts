@@ -363,7 +363,7 @@ export class AddDataDetailBarangReturComponent
       }
 
   isValidQtyExpired: boolean = true;
-  lastAddedItem: any; 
+  lastAddedItem: any;
 
   onSaveEntryExpired() {
     let totalQtyExpired = 0;
@@ -608,7 +608,7 @@ export class AddDataDetailBarangReturComponent
         const productData = {
           totalQtyPesan: 0,
           qtyWasteBesar: '0.00',
-          qtyWasteKecil: '0.00', 
+          qtyWasteKecil: '0.00',
           namaBarang: barang?.namaBarang,
           satuanKecil: barang?.satuanKecil,
           kodeBarang: barang?.kodeBarang,
@@ -661,7 +661,7 @@ export class AddDataDetailBarangReturComponent
     let inputValue = event.target.value;
 
     if (inputValue && !inputValue.includes('.')) {
-      inputValue = inputValue + '.00';  
+      inputValue = inputValue + '.00';
     }
 
     event.target.value = inputValue;
@@ -674,7 +674,7 @@ export class AddDataDetailBarangReturComponent
     console.log("this.listProductData[i].konversi",this.listProductData[i].konversi)
 
     const konversiValue = parseFloat(this.selectedExpProduct.konversi);
-    
+
     if (parseFloat(this.listProductData[i].qtyWasteKecil) > parseFloat(this.listProductData[i].konversi)) {
       console.log("1")
       this.validationMessageList[i] = "Qty Kecil Tidak Boleh Lebih Besar Dari Konversi, Silahkan Cek Lagi...!!!";
@@ -713,7 +713,7 @@ export class AddDataDetailBarangReturComponent
       .subscribe({
         next: (res) => {
           if (!res.success) {
-            alert(res.message);
+            this.service.handleErrorResponse(res);
           } else {
             this.toastr.success('Berhasil!');
             // setTimeout(() => {
@@ -819,16 +819,16 @@ export class AddDataDetailBarangReturComponent
     if (!isNaN(parsed)) {
       this.listProductData[index].qtyWasteBesar = parsed.toFixed(2);
     } else {
-      this.listProductData[index].qtyWasteBesar = '0.00'; 
+      this.listProductData[index].qtyWasteBesar = '0.00';
     }
   }
   undoLastAddedRow() {
     if (this.lastAddedItem) {
       const index = this.listEntryExpired.indexOf(this.lastAddedItem);
       if (index > -1) {
-        this.listEntryExpired.splice(index, 1); 
+        this.listEntryExpired.splice(index, 1);
       }
-      this.lastAddedItem = null; 
+      this.lastAddedItem = null;
     }
   }
 
@@ -836,7 +836,7 @@ export class AddDataDetailBarangReturComponent
         let inputDate: any = '';
         let source: string;
         let validationMessage = '';
-    
+
         if (event?.target?.value) {
           inputDate = event.target.value;
           source = 'manual input';
@@ -844,23 +844,23 @@ export class AddDataDetailBarangReturComponent
           inputDate = event;
           source = 'datepicker';
         }
-    
+
         const expiredDate = moment(inputDate, 'DD/MM/YYYY').startOf('day').toDate();
         const today = moment().startOf('day').toDate();
-    
+
         console.log('today', today);
         console.log('expiredDate', expiredDate);
-    
+
         if (expiredDate < today) {
           validationMessage = `Tanggal kadaluarsa tidak boleh lebih < dari sekarang!`;
         }
-    
+
         // ✅ Get only the filtered list of entries for the same `kodeBarang`
         const filteredEntries = this.listEntryExpired.filter(
           (entry) => entry.kodeBarang === kodeBarang
         );
         console.log('tgllist', filteredEntries);
-    
+
         // ✅ Validate empty input
         if (!inputDate) {
           validationMessage = 'Tanggal tidak boleh kosong!';
@@ -869,7 +869,7 @@ export class AddDataDetailBarangReturComponent
           const expiredData = this.listEntryExpired.find(
             (exp) => exp.kodeBarang === kodeBarang
           );
-    
+
           // ✅ Check for duplicate expiration dates within the same kodeBarang
           const isDuplicate = filteredEntries.some(
             (otherEntry, otherIndex) =>
@@ -877,18 +877,18 @@ export class AddDataDetailBarangReturComponent
               moment(otherEntry.tglExpired).format('YYYY-MM-DD') ===
                 moment(expiredDate).format('YYYY-MM-DD')
           );
-    
+
           if (isDuplicate) {
             validationMessage = 'Tanggal ini sudah ada dalam daftar!';
           }
         }
-    
+
         const realIndex = this.listEntryExpired.findIndex(
           (entry) =>
             entry.kodeBarang === kodeBarang &&
             entry.tglExpired === filteredEntries[index].tglExpired
         );
-    
+
         if (realIndex !== -1) {
           // ✅ Update the correct entry in the original list
           this.listEntryExpired[realIndex] = {
@@ -896,14 +896,14 @@ export class AddDataDetailBarangReturComponent
             tglExpired: expiredDate, // Update the date in the list
             validationExpiredMessageList: validationMessage,
           };
-    
+
           console.log('Updated Validation:', this.listEntryExpired[realIndex]);
         }
       }
 
   simpanDataExpired() {
     const invalidDate = this.listEntryExpired.some(item => !item.tglExpired || item.tglExpired === '');
-  
+
     if (invalidDate) {
       Swal.fire({
         title: 'TANGGAL SALAH!',
@@ -911,33 +911,33 @@ export class AddDataDetailBarangReturComponent
         icon: 'error',
         confirmButtonText: 'OK',
       });
-      return; 
+      return;
     }
-  
+
     let totalQtyExpiredPerRow: { [key: string]: number } = {};
     this.listEntryExpired.forEach((item: any) => {
-      const kodeBarang = item.kodeBarang;  
+      const kodeBarang = item.kodeBarang;
       const qtyExpired = (this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyWasteKecil);
-  
+
       if (totalQtyExpiredPerRow[kodeBarang]) {
         totalQtyExpiredPerRow[kodeBarang] += qtyExpired;
       } else {
         totalQtyExpiredPerRow[kodeBarang] = qtyExpired;
       }
     });
-  
+
     let totalQtyReturPerRow: { [key: string]: number } = {};
     this.listProductData.forEach((item: any) => {
-      const kodeBarang = item.kodeBarang;  
+      const kodeBarang = item.kodeBarang;
       const qtyRetur = (this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyWasteKecil);
-  
+
       if (totalQtyReturPerRow[kodeBarang]) {
         totalQtyReturPerRow[kodeBarang] += qtyRetur;
       } else {
         totalQtyReturPerRow[kodeBarang] = qtyRetur;
       }
     });
-  
+
     let allMatch = true;
     for (let kodeBarang in totalQtyExpiredPerRow) {
       if (totalQtyExpiredPerRow[kodeBarang] !== totalQtyReturPerRow[kodeBarang]) {
@@ -945,7 +945,7 @@ export class AddDataDetailBarangReturComponent
         break;
       }
     }
-  
+
     if (!allMatch) {
       Swal.fire({
         title: 'Total Qty Retur TIDAK SAMA dengan Qty Expired!',
@@ -956,5 +956,5 @@ export class AddDataDetailBarangReturComponent
     } else {
       this.isShowModalExpired = false;
     }
-  }  
+  }
 }
