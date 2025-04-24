@@ -429,7 +429,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
         { data: 'kodeCabang', title: 'Kode', searchable: true },
         { data: 'namaCabang', title: 'Nama', searchable: true },
-        { data: 'kodeKeteranganRsc', title: 'RSC', searchable: true },
+        { data: 'keteranganRsc', title: 'RSC', searchable: true },
         { data: 'kota', title: 'Kota', searchable: true },
         { data: 'deskripsiGroup', title: 'Group', searchable: true },
         {
