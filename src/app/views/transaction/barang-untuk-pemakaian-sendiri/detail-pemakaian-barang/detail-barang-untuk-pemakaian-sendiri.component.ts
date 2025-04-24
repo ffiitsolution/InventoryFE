@@ -87,9 +87,9 @@ export class DetailBarangUntukPemakaianSendiriComponent
         serverSide: true,
         autoWidth: true,
         info: true,
-        paging: true, 
+        paging: true,
   ordering: true,
-  pageLength: 10, 
+  pageLength: 10,
   lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
         drawCallback: () => {},
         ajax: (dataTablesParameters: any, callback) => {
@@ -99,13 +99,13 @@ export class DetailBarangUntukPemakaianSendiriComponent
             kodeGudang: kodeGudang,
             tipeTransaksi: tipeTransaksi,
             nomorTransaksi: nomorTransaksi,
-          } = this.selectedOrder ?? {}; 
+          } = this.selectedOrder ?? {};
           const params = {
             ...dataTablesParameters,
             kodeGudang: kodeGudang ?? '',
             tipeTransaksi: tipeTransaksi?.toString() ?? '',
             nomorTransaksi: nomorTransaksi?.trim() ?? '',
-          };          
+          };
           setTimeout(() => {
             this.dataService
               .postData(
@@ -191,16 +191,16 @@ export class DetailBarangUntukPemakaianSendiriComponent
             title: 'Total Quantity',
             render: function (data, type, row, meta) {
               const rowsWithSameKodeBarang = meta.settings.data?.filter((item: any) => item.KODE_BARANG === row.KODE_BARANG) || [];
-              
+
               if (rowsWithSameKodeBarang.length > 1) {
-                const totalQtyWe = Math.abs(parseFloat(row.TOTAL_QTY_WE)); 
+                const totalQtyWe = Math.abs(parseFloat(row.TOTAL_QTY_WE));
                 return totalQtyWe.toFixed(2) + ' ' + row.SATUAN_KECIL;
               } else {
-                const totalQtyWh = Math.abs(parseFloat(data)); 
+                const totalQtyWh = Math.abs(parseFloat(data));
                 return totalQtyWh.toFixed(2) + ' ' + row.SATUAN_KECIL;
               }
             }
-          }                                     
+          }
         ],
         searchDelay: 1000,
         order: [[1, 'asc']],
@@ -321,23 +321,23 @@ export class DetailBarangUntukPemakaianSendiriComponent
       this.cekPrint = data;
       this.printData = data;
     }
-  
+
     onCetakAtauPrintReport(isDownload: boolean, nomorTransaksi?: string) {
       nomorTransaksi = nomorTransaksi?.trim() ?? this.selectedOrder?.NOMOR_TRANSAKSI?.trim() ?? '';
-    
+
       if (!nomorTransaksi) {
-        alert("Nomor Transaksi tidak ditemukan. Silakan coba lagi.");
+        this.toastr.error("Nomor Transaksi tidak ditemukan. Silakan coba lagi.");
         console.error("Error: NOMOR_TRANSAKSI kosong atau tidak ditemukan!");
         return;
       }
-    
+
       const requestBody = { nomorTransaksi, isDownload };
-    
+
       const headers = new HttpHeaders({
         'Content-Type': 'application/json',
         'Accept': 'application/pdf',
       });
-    
+
       this.http.post(
           `${this.config.BASE_URL}/api/delivery-order/report-pemakaian-barang-sendiri`,
           requestBody,
@@ -347,7 +347,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
           (response) => {
             const blob = new Blob([response as any], { type: 'application/pdf' });
             const url = window.URL.createObjectURL(blob);
-    
+
             if (isDownload) {
               const a = document.createElement('a');
               a.href = url;
@@ -366,7 +366,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
           },
           (error) => {
             console.error('Gagal mengambil laporan:', error);
-            alert('Gagal mengambil laporan. Silakan coba lagi.');
+            this.toastr.error('Gagal mengambil laporan. Silakan coba lagi.');
           }
         );
     }

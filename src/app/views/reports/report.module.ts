@@ -37,7 +37,7 @@ import { OrderReportComponent } from './order/order-report.component';
 import { StockReportComponent } from './stock/stock-report.component';
 import { TransactionReportComponent } from './transaction/transaction-report.component';
 import { QueryStockReportComponent } from './query-stock/query-stock-report.component';
-import { FilterDataPipe } from '../../pipes/filter.pipe';
+import { SharedCustomPipeModule } from '../../pipes/shared-pipe.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -69,6 +69,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     NgxPaginationModule,
     TableModule,
     BsDatepickerModule.forRoot(),
+    SharedCustomPipeModule,
   ],
   declarations: [
     AllReportComponent,
@@ -78,7 +79,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     StockReportComponent,
     TransactionReportComponent,
     QueryStockReportComponent,
-    FilterDataPipe,
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

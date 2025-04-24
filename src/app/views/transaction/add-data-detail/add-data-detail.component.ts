@@ -187,7 +187,7 @@ export class AddDataDetailDeliveryComponent
       JSON.stringify(item).toLowerCase().includes(searchText)
     );
   }
-  
+
   onFilterSearch(
     listData: any[],
     filterText: string,
@@ -257,12 +257,7 @@ export class AddDataDetailDeliveryComponent
           satuanBesar: data.satuanBesar,
           totalQtyPesanOld: data.totalQtyPesanOld,
           keterangan: this.selectedOrder.keterangan || '',
-          tglKirimGudang: moment(this.selectedOrder.validatedDeliveryDate, 'DD-MM-YYYY').set({
-            hours: 0,
-            minutes: 0,
-            seconds: 0,
-            milliseconds: 0,
-          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
+          tglKirimGudang: moment(this.selectedOrder.validatedDeliveryDate).format('DD MMM YYYY')
         };
       })
       .filter((item) => item !== null); // Hapus item yang tidak valid
@@ -306,7 +301,7 @@ export class AddDataDetailDeliveryComponent
 
             next: (res) => {
               if (!res.success) {
-                alert(res.message);
+                this.appService.handleErrorResponse(res);
               } else {
                 this.toastr.success("Berhasil!");
                 const paramGenerateReport = {

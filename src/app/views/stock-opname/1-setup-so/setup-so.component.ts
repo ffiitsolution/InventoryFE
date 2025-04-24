@@ -9,7 +9,7 @@ import {
   ACTION_ADD,
   ACTION_EDIT,
   ACTION_VIEW,
-  LS_INV_SELECTED_UOM,
+  LS_INV_SELECTED_SO,
 } from '../../../../constants';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
@@ -38,7 +38,7 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedRowData: any;
   dtColumns: any = [];
   buttonCaptionView: String = 'Lihat';
-  buttonCaptionEdit: String = 'Ubah';
+  buttonCaptionEdit: String = 'Entry';
   CONST_ACTION_ADD: string = ACTION_ADD;
   adding: boolean = false;
   userData: any;
@@ -78,8 +78,12 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
               const finalData = {
                 ...rest,
                 dtIndex: this.page.start + index + 1,
+                statusProses: item.statusProses === 'P' ? 'PROSES' : 'BELUM',
+                tanggalSo: this.g.transformDate(item.tanggalSo),
                 dateCreate: this.g.transformDate(item.dateCreate),
                 dateProses: this.g.transformDate(item.dateProses),
+                timeCreate: this.g.transformTime(item.timeCreate, true),
+                timeProses: this.g.transformTime(item.timeProses, true),
               };
               return finalData;
             });
@@ -115,18 +119,27 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
         { data: 'timeProses', title: 'Jam Proses', searchable: false },
         {
           title: 'Action',
-          render: () => {
-            return `
-            <div class="btn-group" role="group" aria-label="Action">
-              <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
-              <button class="btn btn-sm action-edit btn-outline-info btn-60">${this.buttonCaptionEdit}</button>
-            </div>
-            `;
+          render: (data: any, type: any, row: any) => {
+            let html =
+              '<div class="btn-group" role="group" aria-label="Action">';
+            if (row.statusProses !== 'PROSES') {
+              html += '<button class="btn btn-sm action-edit btn-info btn-60">';
+              html += this.buttonCaptionEdit;
+              html += '</button>';
+            }
+            html +=
+              '<button class="btn btn-sm action-view btn-outline-info btn-60">';
+            html += this.buttonCaptionView;
+            html += '</button></div>';
+            return html;
           },
         },
       ],
       searchDelay: 1500,
-      order: [[1, 'asc']],
+      order: [
+        [3, 'asc'],
+        [1, 'desc'],
+      ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
@@ -154,8 +167,8 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
         this.g.tabTitle
     );
     this.buttonCaptionView = this.translation.instant('Lihat');
-    this.buttonCaptionEdit = this.translation.instant('Ubah');
-    localStorage.removeItem(LS_INV_SELECTED_UOM);
+    this.buttonCaptionEdit = this.translation.instant('Entri');
+    localStorage.removeItem(LS_INV_SELECTED_SO);
   }
 
   rerenderDatatable(): void {
@@ -167,12 +180,11 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   actionBtnClick(action: string, data: any = null) {
-    console.log(action);
     if (action === ACTION_VIEW) {
-      this.g.saveLocalstorage(LS_INV_SELECTED_UOM, JSON.stringify(data));
+      this.g.saveLocalstorage(LS_INV_SELECTED_SO, JSON.stringify(data));
       this.router.navigate(['/stock-opname/detail']);
     } else if (action === ACTION_EDIT) {
-      this.g.saveLocalstorage(LS_INV_SELECTED_UOM, JSON.stringify(data));
+      this.g.saveLocalstorage(LS_INV_SELECTED_SO, JSON.stringify(data));
       this.router.navigate(['/stock-opname/edit']);
     } else if (action === ACTION_ADD) {
       this.router.navigate(['/stock-opname/add']);

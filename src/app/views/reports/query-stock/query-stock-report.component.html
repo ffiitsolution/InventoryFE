@@ -45,6 +45,7 @@
             <th>#</th>
             <th>KODE BARANG</th>
             <th>NAMA BARANG</th>
+            <th>KONVERSI</th>
             <th>SALDO AWAL</th>
             <th>QTY IN</th>
             <th>QTY OUT</th>
@@ -69,6 +70,9 @@
             </td>
             <td class="text-start">
               {{item.namaBarang}}
+            </td>
+            <td>
+              {{item.konversi}} {{item.satuanKecil}}/{{item.satuanBesar}}
             </td>
             <td>
               {{item.saldoAwal | number}}
@@ -98,7 +102,6 @@
           <h5 cModalTitle>
             Detail Stock
             {{ selectedItem?.kodeBarang ?? '' }} - {{ selectedItem?.namaBarang ?? '' }}
-            | Periode {{ getPeriode() }}
           </h5>
           <button class="btn btn-link" (click)="toggleModalDetail()" cButtonClose>
             <i class="fa fa-times"></i>
@@ -212,12 +215,21 @@
             </div>
           </div>
         </c-modal-body>
-        <c-modal-footer>
-          <button (click)="toggleModalDetail()" cButton color="secondary" class="w-120">
-            Close
-          </button>
-          <!-- <button cButton color="primary">Save changes</button> -->
-        </c-modal-footer>
+        <div class="p-3 border-top">
+          <div class="row align-middle">
+            <div class="col text-start">
+              <h5>
+                Periode {{ getPeriode() }} | Konversi {{selectedItem?.konversi}}
+                {{selectedItem?.satuanKecil}}/{{selectedItem?.satuanBesar}}
+              </h5>
+            </div>
+            <div class="col-3 text-end">
+              <button (click)="toggleModalDetail()" class="btn btn-outline-primary w-120">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       </c-modal>
     </div>
   </c-card-body>

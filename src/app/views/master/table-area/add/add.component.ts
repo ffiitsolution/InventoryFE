@@ -83,7 +83,7 @@ export class TableAreaAddComponent implements OnInit {
       this.service.insert('/api/area/insert', param).subscribe({
         next: (res) => {
           if (!res.success) {
-            alert(res.message);
+            this.service.handleErrorResponse(res);
           } else {
             this.toastr.success('Berhasil!');
             setTimeout(() => {

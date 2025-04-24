@@ -83,7 +83,7 @@ export class TableCityAreaAddComponent implements OnInit {
       this.service.insert('/api/city/insert', param).subscribe({
         next: (res) => {
           if (!res.success) {
-            alert(res.message);
+            this.service.handleErrorResponse(res);
           } else {
             this.toastr.success('Berhasil!');
             setTimeout(() => {

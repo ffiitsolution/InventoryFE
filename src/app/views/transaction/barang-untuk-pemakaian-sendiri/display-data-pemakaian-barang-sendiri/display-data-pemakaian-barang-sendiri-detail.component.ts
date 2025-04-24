@@ -161,7 +161,7 @@ export class DisplayDataPemakaianBarangSendiriComponent
       this.service.insert('/api/send-order-to-warehouse/insert-header', paramHeader).subscribe({
         next: (res) => {
           if (!res.success) {
-            alert(res.message);
+            this.service.handleErrorResponse(res);
           } else {
             this.newOrhdk.nomorPesanan = res.item?.[0]?.nomorPesanan;
 
@@ -280,7 +280,7 @@ export class DisplayDataPemakaianBarangSendiriComponent
         const params = {
           ...dataTablesParameters,
           defaultGudang: this.newOrhdk?.kodeSingkat,
-          
+
         };
         this.dataService
           .postData(this.config.BASE_URL+'/api/delivery-order/display-data-pemakaian-barang-sendiri', params)
@@ -291,7 +291,7 @@ export class DisplayDataPemakaianBarangSendiriComponent
               const finalData = {
                 ...rest,
                 dtIndex: this.pageModal.start + index + 1,
-                
+
               };
               return finalData;
             });
@@ -383,7 +383,7 @@ export class DisplayDataPemakaianBarangSendiriComponent
     this.service.insert('/api/send-order-to-warehouse/insert-detail', paramDetail).subscribe({
       next: (res) => {
         if (!res.success) {
-          alert(res.message);
+          this.service.handleErrorResponse(res);
         } else {
 
           this.toastr.success('Berhasil!');
@@ -464,4 +464,4 @@ export class DisplayDataPemakaianBarangSendiriComponent
     }
   }
 
-}    
+}

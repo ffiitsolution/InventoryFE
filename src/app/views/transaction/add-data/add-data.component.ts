@@ -53,7 +53,6 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
     keteranganKota: '',
     tglPesan: '',
     tglKadaluarsa: '',
-    validatedDeliveryDate: moment(new Date(), 'YYYY-MM-DD').format('DD-MM-YYYY') || '',
     keterangan: '',
     codeDestination: '',
     kodeGudang: ''
@@ -141,15 +140,25 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getValidationTglKirimBrg(isFormatted: boolean = false): any {
     let validationText = '';
-    let tempDateKirimGudang
+    let tempDateKirimGudang;
     const tempDatePermintaanKirim = this.formData.tglBrgDikirim;
+
     if (isFormatted) {
-      tempDateKirimGudang = this.formData.validatedDeliveryDate
+      tempDateKirimGudang = this.formData.validatedDeliveryDate;
     } else {
-      tempDateKirimGudang = moment(this.formData.validatedDeliveryDate).format("DD-MM-YYYY");
+      let validatedDate = this.formData.validatedDeliveryDate;
+      if (typeof validatedDate === 'string') {
+        // Coba parse string, tentukan format input string-nya
+        validatedDate = moment(validatedDate, 'DD-MM-YYYY').isValid()
+          ? moment(validatedDate, 'DD-MM-YYYY')
+          : moment(validatedDate);
+      } else {
+        validatedDate = moment(validatedDate);
+      }
+      tempDateKirimGudang = validatedDate.format('DD-MM-YYYY');
     }
 
-    const today = moment(new Date().toISOString()).format("DD-MM-YYYY");
+    const today = moment().format('DD-MM-YYYY');
 
     if (tempDateKirimGudang !== tempDatePermintaanKirim) {
       validationText += '** TANGGAL KIRIM TIDAK SESUAI DENGAN PERMINTAAN KIRIM..!!';
@@ -161,6 +170,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.validationTglKirimBrg = validationText;
   }
+
 
   onPreviousPressed(): void {
     this.router.navigate(['/transaction/delivery-item']);
@@ -193,7 +203,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
       drawCallback: (drawCallback) => {
         this.selectedRowData = undefined;
       },
-      order: [[2, 'desc']],
+      order: [[0, 'desc']],
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
@@ -224,6 +234,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
           });
       },
       columns: [
+        { data: 'dtIndex', title: '#' },
         { data: 'nomorPesanan', title: 'No. Pesanan' },
         { data: 'tglPesan', title: 'Tgl. Pesan', render: (data) => this.globalService.transformDate(data) },
         { data: 'tglBrgDikirim', title: 'Tgl. Dikirim', render: (data) => this.globalService.transformDate(data) },
@@ -309,7 +320,6 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
     this.formData.tglBrgDikirim = moment(orderData.tglBrgDikirim, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
     this.formData.tglKadaluarsa = moment(orderData.tglKadaluarsa, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
     this.formData.nomorPesanan = orderData.nomorPesanan || '';
-    this.formData.validatedDeliveryDate = this.formData.tglBrgDikirim || '';
     this.formData.kodeGudang = orderData.kodeGudang || '';
   }
 
@@ -352,7 +362,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
       kodeGudang: ''
     };
     this.isShowDetail = false;
-    if(newItem) this.onShowModalPrint(newItem);
+    if (newItem) this.onShowModalPrint(newItem);
   }
 
 }

@@ -127,11 +127,11 @@
                   </div>
                 </div>
               </div>
-              <div class="w-100 px-2 py-1 row">
+              <div class="w-100 px-2 py-1 row" *ngIf="formData.nomorPesanan !== ''">
                 <div class="col-4">
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <span style="font-size: 14px;" class="text-danger" *ngIf="formData.tglPesan !== '' && isShowDetail === false">
+                  <span style="font-size: 14px;" class="text-danger" *ngIf="formData.validatedDeliveryDate && isShowDetail === false">
                     {{ validationTglKirimBrg }}
                   </span>
                 </div>
@@ -151,7 +151,7 @@
 
               <div style="width: 96%;" class="p-2">
                 <button class="shadow-sm btn w-100 btn-info text-white" *ngIf="!isShowDetail"
-                  [disabled]="formData.nomorPesanan === ''" (click)="onAddDetail()">
+                  [disabled]="formData.nomorPesanan === '' || formData.validatedDeliveryDate === ''" (click)="onAddDetail()">
                   <i class="fa fa-check pe-2"></i>
                   {{ "Detail Transaksi" | translate }}
                 </button>
