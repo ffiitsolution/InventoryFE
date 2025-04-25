@@ -39,7 +39,7 @@ export const CANCEL_STATUS = '4';
 export const OUTLET_BRAND_KFC = 'KFC';
 
 export const DEFAULT_DELAY_TIME = 500;
-export const DEFAULT_DATE_RANGE_RECEIVING_ORDER = 5;
+export const DEFAULT_DATE_RANGE_RECEIVING_ORDER = 7;
 export const DEFAULT_DELAY_TABLE = 500;
 export const STATUS_SAME_CONVERSION = 'KONVERSI SAMA';
 
