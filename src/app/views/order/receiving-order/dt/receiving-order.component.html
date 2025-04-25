@@ -195,7 +195,9 @@ id="formModalPesananMasuk"    [attr.aria-hidden]="!isShowModalPesananMasuk">
       cButtonClose><i class="fa fa-times"></i></button>
   </c-modal-header>
   <c-modal-body>
-    <p class="text-center">Ada X Pesanan Masuk</p>
+    <p class="text-center"  *ngIf="jumlahPesananMasuk!=0">Ada {{jumlahPesananMasuk}} Pesanan Baru, Yang Masuk.....  Harap Diperiksa Kembali.. !!</p>
+    <p class="text-center"  *ngIf="jumlahPesananMasuk ==0">Tidak Ada Pesanan Baru, Yang Masuk</p>
+
     <div class="d-flex justify-center py-2">
 
       <button class="btn btn-primary text-white w-90" (click)="onClickModalPesananMasuk()">Iya</button>

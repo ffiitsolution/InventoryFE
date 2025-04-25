@@ -72,6 +72,7 @@ export class ReceivingOrderComponent
   dataUser: any;
   isShowModalRefresh: boolean = false;
   isShowModalPesananMasuk: boolean = false;
+  jumlahPesananMasuk: number;
 
   constructor(
     private dataService: DataService,
@@ -302,7 +303,7 @@ export class ReceivingOrderComponent
       this.g.urlServer + '/api/receiving-order/get-header-and-detail-all-hq',paramGetHeaderDetailAllHQ
     ).subscribe((respGetHeaderDetail: any) => {
       console.log("respGetHeaderDetail", respGetHeaderDetail);
-  
+      this.jumlahPesananMasuk = respGetHeaderDetail.item[0].header.length;
       // ✅ Call API 2 inside this block
       this.dataService.postData(
         this.g.urlServer + '/api/receiving-order/insert-receiving-from-warehouse-all',
