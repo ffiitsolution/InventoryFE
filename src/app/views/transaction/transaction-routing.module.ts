@@ -76,10 +76,6 @@ const routes: Routes = [
         component: AddDataDetailDeliveryComponent,
       },
       {
-        path: 'delivery-item/revisi-do/pageawal-dobalik',
-        component: PageAwalDoBalikComponent,
-      },
-      {
         path: 'delivery-item/dobalik',
         component: DobalikComponent,
       },
@@ -93,12 +89,7 @@ const routes: Routes = [
       },
       {
         path: 'delivery-item/revisi-do',
-        component: RevisiDoComponent,
-        // children: [{
-        //   path: 'edit',
-        //   component: RevisiDoEditComponent,
-        // }
-        // ]
+        component: PageAwalDoBalikComponent,
       },
       {
         path: 'delivery-item/revisi-do/edit',
