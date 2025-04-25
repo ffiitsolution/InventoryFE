@@ -6,29 +6,29 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataService } from '../../../service/data.service';
-import { GlobalService } from '../../../service/global.service';
-import { TranslationService } from '../../../service/translation.service';
+import { DataService } from '../../../../service/data.service';
+import { GlobalService } from '../../../../service/global.service';
+import { TranslationService } from '../../../../service/translation.service';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Page } from '../../../model/page';
-import { AppService } from '../../../service/app.service';
-import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../constants';
+import { Page } from '../../../../model/page';
+import { AppService } from '../../../../service/app.service';
+import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
 import moment from 'moment';
 import { event } from 'jquery';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-add-data-gudang',
-  templateUrl: './add-data-gudang.component.html',
-  styleUrls: ['./add-data-gudang.component.scss'],
+  selector: 'app-page-awal-do-balik',
+  templateUrl: './page-awal-do.component.html',
+  styleUrls: ['./page-awal-do.component.scss'],
 
 })
-export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PageAwalDoBalikComponent implements OnInit, AfterViewInit, OnDestroy {
   nomorPesanan: any;
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
