@@ -103,7 +103,7 @@
                   <input type="text" id="tglKadaluarsa" class="form-control" aria-describedby="tglK adaluarsa"
                     #dp="bsDatepicker" [bsConfig]="dpConfig" disabled bsDatepicker autocomplete="off"
                     [(ngModel)]="formData.tglKadaluarsa" placeholder="{{ 'Tanggal kadaluarsa' | translate }}"
-                    [minDate]="minDate" [maxDate]="maxDate"  style="pointer-events: none; " />
+                    [minDate]="minDate" [maxDate]="maxDate" style="pointer-events: none; " />
                 </div>
               </div>
 
@@ -131,7 +131,8 @@
                 <div class="col-4">
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <span style="font-size: 14px;" class="text-danger" *ngIf="formData.validatedDeliveryDate && isShowDetail === false">
+                  <span style="font-size: 14px;" class="text-danger"
+                    *ngIf="formData.validatedDeliveryDate && isShowDetail === false">
                     {{ validationTglKirimBrg }}
                   </span>
                 </div>
@@ -151,7 +152,8 @@
 
               <div style="width: 96%;" class="p-2">
                 <button class="shadow-sm btn w-100 btn-info text-white" *ngIf="!isShowDetail"
-                  [disabled]="formData.nomorPesanan === '' || formData.validatedDeliveryDate === ''" (click)="onAddDetail()">
+                  [disabled]="formData.nomorPesanan === '' || formData.validatedDeliveryDate === ''"
+                  (click)="onAddDetail()">
                   <i class="fa fa-check pe-2"></i>
                   {{ "Detail Transaksi" | translate }}
                 </button>
@@ -223,16 +225,10 @@
 </div>
 
 <div class="fade-in">
-  <app-modal-print-list
-    [alreadyPrint]="alreadyPrint"
-    [disabledPrintButton]="disabledPrintButton"
+  <app-modal-print-list [alreadyPrint]="alreadyPrint" [disabledPrintButton]="disabledPrintButton"
     [generatePdfUrl]="'/api/delivery-order/delivery-order-report'"
-    [updateStatusUrl]="'/api/delivery-order/update-print-status'"
-    [updatePrintStatusParam]="paramGenerateReport"
-    [generateReportParam]="paramGenerateReport"
-    [isShowModalReport]="isShowModalReport"
-    [isShowSelection]="false"
-    (closeModalEvent)="closeModal()"
-  >
+    [updateStatusUrl]="'/api/delivery-order/update-print-status'" [updatePrintStatusParam]="paramGenerateReport"
+    [generateReportParam]="paramGenerateReport" [isShowModalReport]="isShowModalReport" [isShowSelection]="false"
+    (closeModalEvent)="closeModal()">
   </app-modal-print-list>
 </div>

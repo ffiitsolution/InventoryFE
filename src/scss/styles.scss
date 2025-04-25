@@ -166,8 +166,18 @@ $enable-rtl: true;
 .input-disabled {
   background-color: #d8dbe0;
   border-color: #b1b7c1;
+  color: #6c757d; /* explicitly make text grey */
   opacity: 1;
 }
+
+/* Ensure color doesn't change when focused */
+.input-disabled:focus {
+  color: #6c757d;
+  background-color: #d8dbe0;
+  border-color: #b1b7c1;
+  box-shadow: none; /* optional: remove blue focus outline if needed */
+}
+
 
 .validation-input {
   font-size: 14px;
