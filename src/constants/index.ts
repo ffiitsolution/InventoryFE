@@ -26,6 +26,7 @@ export const LS_INV_SELECTED_DELIVERY_ORDER = 'LS_INV_SELECTED_DELIVERY_ORDER';
 export const LS_INV_DISPLAY_DATA_GUDANG = 'LS_INV_DISPALY_DATA_GUDANG';
 export const LS_INV_SELECTED_DETAIL_ADD_DATA_GUDANG =
   'LS_INV_SELECTED_DETAIL_ADD_DATA_GUDANG';
+export const LS_INV_SELECTED_SO = 'LS_INV_SELECTED_SO';
 export const DEFAULT_DATE_RANGE_DELIVERY_ORDER = 5;
 export const BUTTON_CAPTION_VIEW = 'Lihat';
 export const BUTTON_CAPTION_EDIT = 'Ubah';
@@ -68,25 +69,25 @@ export const STATUS_AKTIF = [
 export const TIPE_PEMBAYARAN = [
   {
     label: 'Cash',
-    value: '1'
+    value: '1',
   },
   {
     label: 'Cek',
-    value: '2'
+    value: '2',
   },
   {
     label: 'Giro',
-    value: '3'
+    value: '3',
   },
   {
     label: 'Transfer',
-    value: '4'
+    value: '4',
   },
   {
     label: 'Others',
-    value: '5'
+    value: '5',
   },
-]
+];
 
 export const STATUS_RESULT = [
   {
@@ -168,8 +169,7 @@ export const STATUS_PESANAN_TERIMA_PESANAN = [
     label: 'BATAL',
     value: '4',
   },
-]
-
+];
 
 export const STATUS_PESANAN_TERIMA_PO = [
   {
@@ -188,5 +188,4 @@ export const STATUS_PESANAN_TERIMA_PO = [
     label: 'P.O DIBATALKAN',
     value: '4',
   },
-]
-
+];

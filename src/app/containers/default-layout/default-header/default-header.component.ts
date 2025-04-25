@@ -71,7 +71,7 @@ export class DefaultHeaderComponent
         //       window.location.reload();
         //     }
         //   },
-        //   error: (err) => alert(err),
+        //   error: (err) => console.log(err),
         // });
       });
   }

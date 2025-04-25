@@ -21,7 +21,7 @@
 <c-card class="fade-in mb-4">
   <c-card-body>
 
-    <ng-container *ngIf="['Transaksi Pengiriman','Produksi','Pesanan Ke Supplier'].includes(currentReport)">
+    <ng-container *ngIf="['Transaksi Pengiriman','Produksi','Pesanan Ke Supplier','Penerimaan Barang Bekas'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Tanggal Pengiriman
@@ -61,7 +61,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="['Produksi'].includes(currentReport)">
+    <ng-container *ngIf="['Produksi','Penerimaan Barang Bekas'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Tipe Listing

@@ -370,7 +370,7 @@ export class MasterBranchEditComponent implements OnInit {
       this.service.insert('/api/branch/update', param).subscribe({
         next: (res) => {
           if (!res.success) {
-            alert(res.message);
+            this.service.handleErrorResponse(res);
           } else {
             this.toastr.success('Berhasil!');
             setTimeout(() => {

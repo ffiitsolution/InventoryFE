@@ -24,6 +24,7 @@ import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 import { DEFAULT_DELAY_TIME } from 'src/constants';
+import { AppService } from '../../../service/app.service';
 
 @Component({
   selector: 'app-send-order-to-supplier',
@@ -79,7 +80,8 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
     public g: GlobalService,
     private translation: TranslationService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private service: AppService,
   ) {
     this.dtOptions = {
       language:
@@ -129,29 +131,29 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { 
-          data: 'tglPesanan', 
+        {
+          data: 'tglPesanan',
           title: 'Tgl. Pesan',
           render: function (data, type, row) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
           }
         },
-        { 
-          data: 'tglKirimBrg', 
+        {
+          data: 'tglKirimBrg',
           title: 'Tgl. Di Kirim' ,
           render: function (data, type, row) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
           }
         },
-        { 
-          data: 'tglBatalExp', 
+        {
+          data: 'tglBatalExp',
           title: 'Tgl. Batal',
           render: function (data, type, row) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
-          } 
+          }
         },
         { data: 'nomorPesanan', title: 'Nomor Pesanan' },
         {
@@ -166,7 +168,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
           title: 'Status Pesanan',
           render: function (data) {
             let statusLabel = "";
-            
+
             // Map statusPesanan values to labels
             switch (data) {
               case "1":
@@ -187,13 +189,13 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
             return statusLabel;
           }
         },
-        
-        { 
-          data: 'statusCetak', 
+
+        {
+          data: 'statusCetak',
           title: 'Status Cetak Pesanan' ,
           render: function (data) {
             let statusLabel = "";
-            
+
             // Map statusPesanan values to labels
             switch (data) {
               case "S":
@@ -209,12 +211,12 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
             return statusLabel;
           }
         },
-        { 
-          data: 'statusKirim', 
+        {
+          data: 'statusKirim',
           title: 'Status Kirim Data' ,
           render: function (data) {
             let statusLabel = "";
-            
+
             // Map statusPesanan values to labels
             switch (data) {
               case "S":
@@ -229,8 +231,8 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
             }
             return statusLabel;
           }
-        },        
-        
+        },
+
         {
           title: 'Opsi',
           render: (data, type, row) => {
@@ -241,8 +243,8 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
                 <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
                 <button class="btn btn-sm action-send btn-outline-info btn-60" ${isDisabled ? 'disabled' : ''}>
                   Kirim
-                </button>   
-                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>           
+                </button>
+                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>
               </div>
             `;
             return htmlString;
@@ -312,7 +314,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
     .subscribe({
       next: (res: any) => {
         if (!res.success) {
-          alert(res.message);
+          this.service.handleErrorResponse(res);
         } else {
           this.toastr.success(this.translation.instant('Berhasil!'));
           setTimeout(() => {
@@ -322,8 +324,8 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
       },
       error: (err: any) => {
         console.error('Error updating user:', err);
-        alert('An error occurred while updating the user.');
-      },    
+        this.toastr.error('An error occurred while updating the user.');
+      },
     });
     this.isShowModalKirim = false;
   }
@@ -366,7 +368,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
 
 
 
-    onShowModalPrint(selectedRowCetak: any) {      
+    onShowModalPrint(selectedRowCetak: any) {
       this.paramGenerateReport = {
         nomorPesanan : selectedRowCetak.nomorPesanan,
         userCetak:  this.dataUser.kodeUser,
@@ -375,7 +377,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
       }
       this.isShowModalReport = true;
     }
- 
+
   closeModal(){
     this.isShowModalReport = false;
     this.disabledPrintButton = false;

@@ -210,8 +210,19 @@
                       [readonly]="isShowDetail"
                       formControlName="keterangan"
                       name="keterangan"
+                      maxlength="35"
+                      (input)="onKeteranganInput($event)"
                     >
                     </textarea>
+                    <small
+                      class="text-danger"
+                      *ngIf="
+                        myForm
+                          .get('keterangan')
+                          ?.hasError('specialCharNotAllowed')
+                      "
+                      >Special Char Not Allowed</small
+                    >
                   </div>
                 </div>
 

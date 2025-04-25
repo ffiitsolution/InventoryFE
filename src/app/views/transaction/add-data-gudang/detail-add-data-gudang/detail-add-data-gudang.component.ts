@@ -222,7 +222,7 @@ export class AddDataDetailGudangComponent
         },
         (error) => {
           console.error('Gagal mengambil laporan:', error);
-          alert('Gagal mengambil laporan. Silakan coba lagi.');
+          console.log('Gagal mengambil laporan. Silakan coba lagi.');
         }
       );
   }

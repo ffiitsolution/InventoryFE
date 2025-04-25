@@ -30,7 +30,9 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './transaction-report.component.html',
   styleUrl: './transaction-report.component.scss',
 })
-export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewInit {
+export class TransactionReportComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   currentDate: Date = new Date();
   startDateFilter: Date = new Date(
@@ -68,10 +70,10 @@ export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewI
     private datePipe: DatePipe,
     private router: Router,
     private route: ActivatedRoute,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {
     this.dpConfig.containerClass = 'theme-dark-blue';
-    this.dpConfig.customTodayClass='today-highlight';
+    this.dpConfig.customTodayClass = 'today-highlight';
     this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
   }
 
@@ -150,16 +152,17 @@ export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewI
     this.loadingState['submit'] = true;
 
     let param = {};
-    if (['Transaksi Pengiriman','Produksi'].includes(this.currentReport) ) {
-     
+    if (
+      ['Transaksi Pengiriman', 'Produksi', 'Penerimaan Barang Bekas'].includes(
+        this.currentReport
+      )
+    ) {
       param = {
         kodeGudang: this.userData.defaultLocation.kodeLocation,
         tipeListing: this.paramTipeListing,
         startDate: this.g.transformDate(this.dateRangeFilter[0]),
         endDate: this.g.transformDate(this.dateRangeFilter[1]),
       };
-
-
     }
 
     param = {
@@ -201,7 +204,9 @@ export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewI
     if (this.downloadURL.length) {
       var link = document.createElement('a');
       link.href = this.downloadURL;
-      link.download = `${reportType} Report ${this.datePipe.transform(
+      link.download = `${reportType} Report ${this.g.formatUrlSafeString(
+        this.currentReport
+      )} ${this.datePipe.transform(
         this.rangeDateVal[0],
         'dd-MMM-yyyy'
       )} s.d. ${this.datePipe.transform(
@@ -210,8 +215,7 @@ export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewI
       )}.pdf`;
       link.click();
       this.toastr.success('File sudah terunduh');
-    } else
-      this.toastr.error('File tidak dapat terunduh');
+    } else this.toastr.error('File tidak dapat terunduh');
   }
 
   downloadCsv(res: any, reportType: string) {
@@ -230,7 +234,6 @@ export class TransactionReportComponent implements OnInit, OnDestroy, AfterViewI
       )}.csv`;
       link.click();
       this.toastr.success('File sudah terunduh');
-    } else
-      this.toastr.error('File tidak dapat terunduh');
+    } else this.toastr.error('File tidak dapat terunduh');
   }
 }

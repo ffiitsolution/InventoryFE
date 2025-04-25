@@ -22,14 +22,14 @@ import { FormsModule } from "@angular/forms";
   declarations: [
     PrintButtonSharedComponent,
     PrintButtonGrowthSharedComponent,
-    ModalPrintListComponent
+    ModalPrintListComponent,
   ],
   schemas: [],
   exports: [
     PrintButtonSharedComponent,
     NgxPaginationModule,
     PrintButtonGrowthSharedComponent,
-    ModalPrintListComponent
+    ModalPrintListComponent,
   ]
 })
 export class SharedComponentModule {}

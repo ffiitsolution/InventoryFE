@@ -71,6 +71,31 @@ export class AppService {
     }, 1000);
   }
 
+  // untuk menampilkan pesan ketika gagal simpan
+  handleErrorResponse(res: any) {
+    const titleError = 'Terjadi kesalahan!';
+    const data = res.data;
+    let error = (data?.error ?? res.error ?? res.message ?? '')
+      .toString()
+      .toLowerCase();
+
+    if (error.includes('unique constraint') || error.includes('sudah ada')) {
+      this.toastr.error('Data sudah pernah dibuat!', titleError);
+    } else if (error.includes('year must be between')) {
+      this.toastr.error(
+        'Mohon cek pengaturan tanggal server/database!',
+        titleError
+      );
+    } else if (
+      error.includes('unknown error') ||
+      error.includes('http failure response')
+    ) {
+      this.toastr.error('Koneksi gagal!', titleError);
+    } else {
+      this.toastr.error(titleError);
+    }
+  }
+
   getListMenu(): Observable<any> {
     const languange = this.translation.getCurrentLanguage();
     const url = `../../assets/config/listMenu-${languange}.json`;
@@ -331,7 +356,7 @@ export class AppService {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/check-endpoint`,
       payload
-    )
+    );
   }
 
   getSupplier(payload: any) {
@@ -344,7 +369,7 @@ export class AppService {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/planning-order/generate`,
       payload
-    )
+    );
   }
 
   getBranchList(payload: any) {

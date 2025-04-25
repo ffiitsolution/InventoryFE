@@ -241,6 +241,7 @@ export class DetailProductionComponent
       .getExpiredData(payload)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
+
         next: (res) => {
           if (res) {
             this.listDataExpired = res;

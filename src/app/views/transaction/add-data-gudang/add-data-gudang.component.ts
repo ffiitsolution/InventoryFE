@@ -216,21 +216,21 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
         { data: 'KETERANGAN1', title: 'Keterangan', render: (data) => data ? data : '-' },
         { data: 'NO_SURAT_JALAN', title: 'Nomor Surat Jalan', render: (data) => data ? data : '-'},
         {
-          data: 'statusRecieve',
+          data: 'ALAMAT1',
           title: 'Status Penerimaan',
-          render: (data) => {
-            const isCancel = data == CANCEL_STATUS;
-            const label = this.globalService.getsatusDeliveryOrderLabel(data);
-            if (isCancel) {
-              return `<span class="text-center text-danger">${label}</span>`;
-            }
-            return label;
-          },
         },
         {
-          data: 'statusCetak',
+          data: 'STATUS_CETAK',
           title: 'Status Cetak',
-          render: (data) => this.globalService.getsatusDeliveryOrderLabel(data, true),
+          render: (data) => {
+            if (data === 'B') {
+              return '<span class="badge bg-warning">Belum</span>'; 
+            } else if (data === 'S') {
+              return '<span class="badge bg-success">Sudah</span>'; 
+            } else {
+              return '<span class="badge bg-secondary">Tidak Diketahui</span>'; 
+            }
+          },
         },
         {
           title: 'Action',
@@ -238,7 +238,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
             return `<button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>`;
           },
         },
-      ],
+      ],      
       searchDelay: 1000,
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-select', row).on('click', () =>
