@@ -79,9 +79,4 @@
   border-radius: 0.375rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 
-  :disabled{
-    background-color: #d8dbe0;
-    border-color: #b1b7c1;
-    opacity: 1;
-  }
 }

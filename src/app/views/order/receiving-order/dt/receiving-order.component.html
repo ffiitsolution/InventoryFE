@@ -34,6 +34,11 @@
           <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
           {{ "Tambah Penerimaan" | translate }}
         </button>
+        <button type="button" class="btn btn-success text-white me-2 btn-360" data-toggle="modal"
+        (click)="isShowModalRefresh = true">
+        <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
+        {{ "REFRESH (TERIMA DATA ONLINE)" | translate }}
+      </button>
       </div>  
       <div [visible]="showFilterSection" cCollapse>
         <div class="row" style="margin-top: -16px">
@@ -134,3 +139,67 @@
   >
   </app-modal-print-list>
 </div>
+
+<c-modal #formModalKirim [fullscreen]="false" [visible]="isShowModalRefresh" backdrop="static"
+id="formModalKirim"    [attr.aria-hidden]="!isShowModalRefresh">
+  <c-modal-header>
+    <h5 cModalTitle>Konfirmasi Kirim Data Pesanan</h5>
+    <button (click)="isShowModalRefresh = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalKirim.id"
+      cButtonClose><i class="fa fa-times"></i></button>
+  </c-modal-header>
+  <c-modal-body>
+    <div >
+        <div class="mb-3 row">
+          <label class="col-sm-4 col-form-label">{{
+            "Kode Gudang" | translate
+          }}</label>
+          <div class="col-sm-8">
+            <input
+              type="text"
+              class="form-control input-disabled"
+              readonly
+              [value]="(g.getUserLocationCode() || '') "
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-4 col-form-label">{{
+            "Tanggal Pesan Dari" | translate
+          }}</label>
+          <div class="col-sm-8">
+            <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
+              aria-describedby="dateFilter" [(ngModel)]="dateRangeRefresh" #dp="bsDaterangepicker"
+              placeholder="{{ 'Tanggal Pesan' | translate }}" />
+          </div>
+        </div>
+        
+
+   
+        <div class="d-flex justify-content-center align-items-center flex-column">
+          <span class="fw-bold text-center">Synchronize Database - Refresh</span>
+        </div>
+        
+      </div>
+    </c-modal-body>
+    <c-modal-footer class="justify-center">
+      <button type="button" class="btn btn-light w-180 me-3" data-bs-dismiss="modal" (click)="isShowModalRefresh = false">Close</button>
+      <button type="button" class="btn btn-success text-white  w-180" (click)="refreshDatabase()">Proses kirim Data</button>
+    </c-modal-footer>
+</c-modal>
+
+<c-modal #formModalPesananMasuk [fullscreen]="false" [visible]="isShowModalPesananMasuk" backdrop="static" #modalLg 
+id="formModalPesananMasuk"    [attr.aria-hidden]="!isShowModalPesananMasuk">
+  <c-modal-header>
+    <h5 cModalTitle>Perhatian </h5>
+    <button (click)="isShowModalPesananMasuk = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalPesananMasuk.id"
+      cButtonClose><i class="fa fa-times"></i></button>
+  </c-modal-header>
+  <c-modal-body>
+    <p class="text-center">Ada X Pesanan Masuk</p>
+    <div class="d-flex justify-center py-2">
+
+      <button class="btn btn-primary text-white w-90" (click)="onClickModalPesananMasuk()">Iya</button>
+
+    </div>
+  </c-modal-body>
+</c-modal>
