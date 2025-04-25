@@ -64,7 +64,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private router: Router,
     private dataService: DataService,
-    private globalService: GlobalService,
+    public globalService: GlobalService,
     private translationService: TranslationService,
     private deliveryDataService: DeliveryDataService,
     private appService: AppService
