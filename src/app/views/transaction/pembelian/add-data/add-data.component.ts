@@ -15,6 +15,7 @@ import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
+import Swal from 'sweetalert2';
 import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
 import moment from 'moment';
 import { Page } from '../../../../model/page';
@@ -88,12 +89,24 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onAddDetail() {
+    if (!this.formData.nomorDokumen || this.formData.nomorDokumen.trim() === '') {
+      Swal.fire({
+        title: 'Peringatan!',
+        text: 'NOMOR DOKUMEN TIDAK BOLEH DIKOSONGKAN, HARAP DIPERIKSA KEMBALI..!!!!',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
+      return; 
+    }
+  
     this.isShowDetail = true;
+  
     this.globalService.saveLocalstorage(
       'headerPembelian',
       JSON.stringify(this.formData)
     );
   }
+  
 
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
