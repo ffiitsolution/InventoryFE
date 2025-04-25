@@ -4,10 +4,6 @@
     <c-card-body>
       <c-row>
         <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
-          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
-            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
-            {{ "Kembali" | translate }}
-          </button>
           <h5>{{ "Revisi Surat Jalan Gudang (D.O)" | translate }}</h5>
         </div>
       </c-row>
@@ -17,28 +13,26 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="row">
-        <div [ngClass]="isShowDetail ? 'col-4' : 'col-5'" class="pe-0 d-flex red-line">
+        <div [ngClass]="isShowDetail ? 'col-3' : 'col-5'" class="pe-0 d-flex red-line">
           <div class="w-100">
             <div class="p-2">
-              <h5 class="mb-2 p-2" style="color: #3c4b64">
-                {{ "Isi Format" | translate }}
-              </h5>
-
               <div class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
                   <label for="nomorSuratJalan">{{
-                    "Nomor Surat Jalan Gudang(D.O)" | translate
+                    "Nomor Surat Jalan Gudang (D.O)" | translate
                     }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <input type="text" class="form-control" id="nomorSuratJalanGudang" [(ngModel)]="formData.noSuratJalan"
-                    name="nomorSuratJalanGudang" />
+                    name="nomorSuratJalanGudang" readonly />
                   <button *ngIf="!isShowModal" type="button" class="btn btn-info ms-2"
-                    [cModalToggle]="staticBackdropModal.id" (click)="onShowModal()">
+                    [cModalToggle]="staticBackdropModal.id" (click)="onShowModal()" readonly>
                     <i class="fa fa-search text-white"></i>
                   </button>
                 </div>
               </div>
+
+              <div class="divider"></div>
 
               <div class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
@@ -47,8 +41,8 @@
                     }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <input type="text" id="tglSuratJalan" class="form-control" aria-describedby="tglSuratJalan"
-                    #dp="bsDatepicker" [bsConfig]="dpConfig" [isDisabled]="false" bsDatepicker autocomplete="off"
+                  <input type="text" id="tglTransaksi" class="form-control" aria-describedby="tglTransaksi"
+                    #dp="bsDatepicker" [bsConfig]="dpConfig" disabled bsDatepicker autocomplete="off"
                     [(ngModel)]="formData.tglTransaksi" style="pointer-events: none" />
                 </div>
               </div>
@@ -60,11 +54,9 @@
                     }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <input type="text" class="form-control" id="codeDestination" [ngModel]="
-                      formData.codeDestination
-                        ? formData.kodeTujuan + ' - ' + formData.namaTujuan
-                        : ''
-                    " name="codeDestination" readonly />
+                  <textarea class="form-control w-100"
+                    [value]="formData.kodeTujuan? formData.kodeTujuan + ' - ' + formData.namaTujuan : ''" rows="2"
+                    name="alamatTujuan" disabled></textarea>
                 </div>
               </div>
 
@@ -75,8 +67,8 @@
                     }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <textarea class="form-control w-100" [(ngModel)]="formData.alamat1" rows="2" name="alamat1"
-                    readonly></textarea>
+                  <textarea class="form-control w-100" [(ngModel)]="formData.alamatTujuan" rows="2" name="alamatTujuan"
+                    disabled></textarea>
                 </div>
               </div>
 
@@ -87,8 +79,8 @@
                     }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <input type="text" class="form-control" id="statusAktif"
-                    [value]="formData.statusPosting === 'I' ? 'INTRANSIT' : 'POSTED'" name="statusAktif" readonly />
+                  <input type="text" class="form-control" id="statusPosting"
+                    [value]="formData.statusPosting === 'I' ? 'INTRANSIT' : ''" name="statusPosting" disabled />
                 </div>
               </div>
 
@@ -100,7 +92,7 @@
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <input type="text" id="tglPesanan" class="form-control" aria-describedby="tglPesanan"
-                    #dp="bsDatepicker" [bsConfig]="dpConfig" [isDisabled]="true" bsDatepicker autocomplete="off"
+                    #dp="bsDatepicker" [bsConfig]="dpConfig" disabled bsDatepicker autocomplete="off"
                     [(ngModel)]="formData.tglTransaksi" [minDate]="minDate" [maxDate]="maxDate"
                     style="pointer-events: none" />
                 </div>
@@ -110,23 +102,23 @@
 
               <div class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
-                  <label for="nomorSuratJalan">{{
+                  <label for="nomorPesanan">{{
                     "Nomor Pesanan" | translate
                     }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex" style="display: flex; flex-direction: column;">
-                  <input type="text" class="form-control" id="nomorSuratJalan" [(ngModel)]="formData.nomorSuratJan"
-                    name="nomorSuratJalan" pattern="[0-9]*" keypress="return isNumberKey(event)" />
+                  <input type="text" class="form-control" id="nomorPesanan" [(ngModel)]="formData.nomorPesanan"
+                    name="nomorPesanan" pattern="[0-9]*" keypress="return isNumberKey(event)" disabled />
                 </div>
               </div>
 
               <div class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
-                  <label for="notes">{{ "Keterangan Kirim" | translate }}</label>
+                  <label for="keterangan">{{ "Keterangan Kirim" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <textarea class="form-control w-100" [(ngModel)]="formData.notes" id="exampleFormControlTextarea1"
-                    rows="1" name="keterangan1" readonly></textarea>
+                  <textarea class="form-control w-100" [(ngModel)]="formData.keterangan"
+                    id="exampleFormControlTextarea1" rows="1" name="keterangan1" disabled></textarea>
                 </div>
               </div>
 
@@ -142,10 +134,20 @@
         </div>
 
         <!-- Bagian Detail -->
-        <div class="ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
+        <div class="ps-0" [ngClass]="isShowDetail ? 'col-9' : 'col-7'">
           <div class="p-2" *ngIf="isShowDetail">
-            <app-detail-add-data-gudang></app-detail-add-data-gudang>
+            <app-revisi-do-edit></app-revisi-do-edit>
           </div>
+          <div class="p-2" *ngIf="!isShowDetail">
+            <div class="w-100 px-2 fst-italic">
+              <span class="text-danger d-block">Kondisi:</span>
+              <span class="d-block ms-2">- Program Revisi dijalankan, jika ada jumlah/qty yang dikirim tidak sesuai dengan
+                fisik barang yang diterima oleh pemesan.</span>
+              <span class="d-block ms-2">- Hanya bisa dilakukan, jika tanggal Surat Jalan (tanggal pengiriman dari gudang),
+                masih dalam hari yang sama.</span>
+            </div>
+          </div>
+
         </div>
       </div>
       <!-- Tutup row -->

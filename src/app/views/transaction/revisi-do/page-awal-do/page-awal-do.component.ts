@@ -72,6 +72,7 @@ export class PageAwalDoBalikComponent implements OnInit, AfterViewInit, OnDestro
     tglBrgDikirim: '',
     note: '',
     nomorSuratJan: '',
+    statusPosting: '',
   };
 
 
@@ -133,19 +134,13 @@ export class PageAwalDoBalikComponent implements OnInit, AfterViewInit, OnDestro
     return false
   }
 
-  onAddDetail() {
-    if (this.isDoNumberValid()) {
-      Swal.fire('Error', 'Nomor Surat Jalan Salah', 'error');
-      return;
-    }
-    else {
+  onAddDetail() {  
       this.isShowDetail = true;
       // this.router.navigate(['/transaction/receipt-from-warehouse/tambah-data/detail-add-data-gudang']);
       this.globalService.saveLocalstorage(
         LS_INV_SELECTED_DELIVERY_ORDER,
         JSON.stringify(this.formData)
       );
-    }
   }
 
   ngAfterViewInit(): void {
@@ -213,7 +208,7 @@ export class PageAwalDoBalikComponent implements OnInit, AfterViewInit, OnDestro
               return finalData;
             });
             this.page.recordsTotal = resp.recordsTotal || mappedData.length;
-            this.page.recordsFiltered = resp.recordsFiltered || mappedData.length;  
+            this.page.recordsFiltered = resp.recordsFiltered || mappedData.length;
             callback({
               recordsTotal: resp.recordsTotal,
               recordsFiltered: resp.recordsFiltered,
@@ -222,8 +217,17 @@ export class PageAwalDoBalikComponent implements OnInit, AfterViewInit, OnDestro
           });
       },
       columns: [
-        { data: 'tglTransaksi', title: 'Tgl. Kirim' },
-        { data: 'tglPesanan', title: 'Tgl. Pesan' },
+        {
+          data: 'tglTransaksi', title: 'Tgl. Kirim', 
+          render: (data) => {
+            return this.globalService.transformDate(data)
+          }
+        },
+        { data: 'tglPesanan', title: 'Tgl. Pesan',
+          render: (data) => {
+            return this.globalService.transformDate(data)
+          }
+         },
         { data: 'nomorPesanan', title: 'No. Pesanan', searchable: true },
         { data: 'noSuratJalan', title: 'No. Pengiriman', searchable: true },
         {
@@ -240,8 +244,13 @@ export class PageAwalDoBalikComponent implements OnInit, AfterViewInit, OnDestro
         },
         {
           title: 'Aksi',
-          render: () => {
-            return `<button class="btn btn-sm btn-outline-danger btn-60 action-view hover:bg-danger hover:text-white">Pilih</button>`;
+          render: (data: any, type: any, row: any) => {
+            const statusPosting = row.statusPosting;
+            if (statusPosting !== 'I') {
+              return '<span class="text-center text-warning">DATA SUDAH POSTED</span>';
+            } else{
+              return `<button class="btn btn-sm action-select btn-info btn-80 text-white">Pilih</button>`
+            }
           },
         },
       ],
@@ -270,18 +279,9 @@ export class PageAwalDoBalikComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private mapOrderData(orderData: any): void {
-    console.log('Order data: ', orderData);
-    this.formData.nomorPesanan = orderData.NOMOR_PESANAN;
-    this.formData.tglPesan = moment(orderData.TGL_PESANAN, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.tglBrgDikirim = moment(orderData.TGL_KIRIM_BRG, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.tglTerimaBarang = moment(orderData.TGL_PESANAN, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.codeDestination = orderData.SUPPLIER;
-    this.formData.namaCabang = orderData.NAMA_CABANG;
-    this.formData.deliveryStatus = 'Aktif';
-    this.formData.alamat1 = orderData.ALAMAT1;
-    this.formData.notes = orderData.KETERANGAN1;
-    this.formData.validatedDeliveryDate = this.formData.TGL_BATAL_EXP;
-    this.formData.nomorSuratJan = orderData.NO_SURAT_JALAN;
+    this.formData = orderData;
+    this.formData.tglPesananan = moment(orderData.tglPesananan, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
+    this.formData.tglTransaksi = moment(orderData.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
   }
 
   onPreviousPressed(): void {
