@@ -47,7 +47,7 @@
                 </div>
               </div>
 
-              <div class="w-100 px-2 py-1 row ">
+              <!-- <div class="w-100 px-2 py-1 row ">
                 <div class="col-4 d-flex align-items-center">
                   <label for="alamat1">{{ "Alamat Pengirim" | translate }}</label>
                 </div>
@@ -55,6 +55,24 @@
                   <textarea placeholder="" class="form-control w-100" [(ngModel)]="formData.alamatSupplier"
                     id="exampleFormControlTextarea1" rows="2" name="alamatSupplier" disabled></textarea>
                 </div>  
+              </div> -->
+
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="alamatSupplier">{{
+                    "Alamat Pengirim" | translate
+                  }}</label>
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <textarea
+                    placeholder=""
+                    type="text"
+                    class="form-control"
+                    id="alamatSupplier"
+                    [(ngModel)]="formData.alamatSupplier"
+                    name="alamatSupplier"
+                  ></textarea>
+                </div>
               </div>
               
               <div class="w-100 px-2 py-1 row">
@@ -77,8 +95,8 @@
               </div>
 
               <div class="w-100 px-2 py-1 row">
-                <div class="col-4 d-flex align-items-center">
-                  <label for="nomorDokumen">{{ "Nomor Dokumen" | translate }}</label>
+                <div class="col-4 d-flex align-items-start">
+                  <label for="nomorDokumen" class="label-dynamic-wrap">{{ "Nomor Dokumen" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <input placeholder="" type="text" class="form-control" id="nomorDokumen" [(ngModel)]="formData.nomorDokumen"
@@ -120,7 +138,7 @@
                 </div>
               </div>
 
-              <div class="w-100 px-2 py-1 row">
+              <!-- <div class="w-100 px-2 py-1 row">
 
                 <div class="col-4 d-flex align-items-center">
                   <label for="notes">{{ "Catatan (Keterangan Lain)" | translate }}</label>
@@ -129,15 +147,41 @@
                   <input placeholder="" maxlength="50" type="text" class="form-control" id="notes" [(ngModel)]="formData.notes"
                     name="notes" />
                 </div>
+              </div> -->
+
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="notes">{{ "Catatan (Keterangan Lain)" | translate }}</label>
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <input 
+                    placeholder="" 
+                    maxlength="50" 
+                    type="text" 
+                    class="form-control" 
+                    id="notes" 
+                    [(ngModel)]="formData.notes" 
+                    name="notes" 
+                    pattern="^[a-zA-Z0-9\-]*$" 
+                    title="Hanya boleh angka, huruf, dan tanda minus (-) Untuk catatan"
+                    (input)="updateCharCount()"
+                    (blur)="validateNotes()" />
+                </div>
+                <div *ngIf="invalidNotes" class="text-danger mt-1">
+                  <small>Catatan hanya boleh berisi angka, huruf, dan tanda minus (-).</small>
+                </div>
+                <div class="text-end text-muted mt-1">
+                  <small>{{ charCount }}/50 karakter</small>
+                </div>
               </div>
 
               <div style="width: 96%;" class="p-2">
                 <button class="shadow-sm btn w-100 btn-info text-white" *ngIf="!isShowDetail"
-                  [disabled]="isFormInvalid" (click)="onAddDetail()">
+                  [disabled]="isFormInvalid || invalidNotes" (click)="onAddDetail()">
                   <i class="fa fa-check pe-2"></i>
                   {{ "Detail Transaksi" | translate }}
                 </button>
-              </div>
+              </div>              
             </div>
 
           </div>

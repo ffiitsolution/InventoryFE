@@ -42,9 +42,13 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
   maxDate: Date;
   isShowDetail: boolean = false;
   selectedRowData: any;
+  charCount: number = 0;
+  isKeteranganInvalid: boolean = false;
+  invalidNotes: boolean = false; // Added property to fix the error
   @ViewChild('formModal') formModal: any;
   // Form data object
   formData: any = {
+    notes: ''
   };
 
   constructor(
@@ -96,7 +100,27 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
         icon: 'warning',
         confirmButtonText: 'OK'
       });
+      return;
+    }
+  
+    const regex = /^[a-zA-Z0-9-]+$/;  
+    if (!regex.test(this.formData.nomorDokumen)) {
+      Swal.fire({
+        title: 'Nomor Dokumen Salah!',
+        text: 'NOMOR DOKUMEN SALAH, HARAP MASUKAN NOMOR DOKUMEN YANG BENAR PERIKSA KEMBALI...!',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+    if (this.invalidNotes) {
       return; 
+    }
+
+    if (!this.formData.notes || this.formData.notes.trim() === '') {
+      alert('Catatan (Keterangan Lain) tidak boleh kosong');
+      return;
     }
   
     this.isShowDetail = true;
@@ -106,6 +130,7 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
       JSON.stringify(this.formData)
     );
   }
+  
   
 
   ngAfterViewInit(): void {
@@ -250,6 +275,18 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
 
   handleEnter(event: any) {
 
+  }
+
+  updateCharCount() {
+    this.charCount = this.formData.notes ? this.formData.notes.length : 0;
+    this.invalidNotes = false; 
+  }
+
+  validateNotes() {
+    const notes = this.formData.notes;
+    if (notes && !notes.match(/^[a-zA-Z0-9\-]*$/)) {
+      this.invalidNotes = true;
+    }
   }
 }
 
