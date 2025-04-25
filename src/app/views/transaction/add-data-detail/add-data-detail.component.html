@@ -6,7 +6,7 @@
           <label for="jabatanSaksi">{{ "Jumlah Item Pesanan" | translate }}</label>
         </div>
         <div class="col-2 pe-0">
-          <input type="text" class="form-control text-center" [value]="listOrderData.length" readonly />
+          <input type="text" class="form-control text-center" [value]="listOrderData.length" disabled />
         </div>
         <div class="col"></div>
 
@@ -26,8 +26,8 @@
         <div *ngIf="loading">
           <app-loading></app-loading>
         </div>
-        <table *ngIf="filteredList as list" bordered [hover]="true" [responsive]="true" [striped]="true"
-          align="middle" cTable class="mb-0 border">
+        <table *ngIf="filteredList as list" bordered [hover]="true" [responsive]="true" [striped]="true" align="middle"
+          cTable class="mb-0 border">
           <thead>
             <tr>
               <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
@@ -58,7 +58,9 @@
               </th>
               <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle;"
                 class="text-center align-items-start btn-danger" rowspan="2">Total Qty Expired</th>
-              
+              <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
+                class="text-center align-items-start btn-danger" rowspan="2">Stock </th>
+
             </tr>
             <tr>
               <th scope="col" class="text-center"
@@ -87,7 +89,7 @@
               <!-- <td class="text-center">{{ data.qtyPesanBesar }} {{ data.satuanBesar }}</td> -->
 
               <td class="text-center input-column">
-                <div class="d-flex" style="gap: 5px;">
+                <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" numberOnly max="{{data.qtyPesanBesar}}" min="0"
                     [ngClass]="{'form-invalid': validationMessages[i]}"
                     class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyPesanBesar"
@@ -98,7 +100,7 @@
               </td>
 
               <td class="text-center input-column">
-                <div class="d-flex" style="gap: 5px;">
+                <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" numberOnly max="{{data.qtyPesanKecil}}" min="0"
                     [ngClass]="{'form-invalid': validationMessages[i] || validationQtyKecilKonversi[i]}"
                     class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyPesanKecil"
@@ -140,7 +142,7 @@
               </td>
               <td class="text-center">
                 {{
-                  getTotalExpiredData(data.kodeBarang,data.konversi) 
+                getTotalExpiredData(data.kodeBarang,data.konversi)
                 }} {{data.satuanKecil}}
 
                 <!-- Validation message area -->
@@ -148,6 +150,16 @@
                 <!-- <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageQtyPesanList [i]">
                   {{ validationMessageQtyPesanList[i] }}
                 </span> -->
+              </td>
+
+              <td class="text-center">
+                <button class="btn btn-warning btn-sm text-white btn-150" (click)="onShowModalStockExp(i)"
+                  [disabled]="data.flagExpired !== 'Y'">
+                  <i class="fa fa-info pe-1"></i> {{ "Cek" | translate }}
+                </button>
+                <span class="text-warning validation-input text-center" *ngIf="validationTotalStock[i]">
+                  {{ validationTotalStock[i] }}
+                </span>
               </td>
             </tr>
           </tbody>
@@ -182,11 +194,11 @@
           <div class="col-8 pe-0 d-flex">
             <div class="col-3 pe-2">
               <input type="text" class="form-control" id="kodeBarang" [(ngModel)]="selectedExpProduct.kodeBarang"
-                name="kodeBarang" readonly />
+                name="kodeBarang" disabled />
             </div>
             <div class="col-9">
               <input type="text" class="form-control" id="namaBarang" [(ngModel)]="selectedExpProduct.namaBarang"
-                name="namaBarang" readonly />
+                name="namaBarang" disabled />
             </div>
           </div>
         </div>
@@ -197,7 +209,7 @@
           <div class="col-8 pe-0">
             <input type="text" class="form-control" id="konversi"
               [value]="selectedExpProduct.konversi + ' ' + selectedExpProduct.satuanKecil + '/' + selectedExpProduct.satuanBesar"
-              name="konversi" readonly />
+              name="konversi" disabled />
 
           </div>
 
@@ -210,7 +222,7 @@
           <div class="col-8 pe-0">
             <input type="text" placeholder="Nomor pesanan" class="form-control" id="konversi"
               [value]="(helper.sanitizedNumber(selectedExpProduct.qtyPesanBesar) * selectedExpProduct.konversi) + helper.sanitizedNumber(selectedExpProduct.qtyPesanKecil) + ' ' + selectedExpProduct.satuanKecil"
-              name="konversi" readonly />
+              name="konversi" disabled />
           </div>
 
         </div>
@@ -223,7 +235,7 @@
           </div>
           <div class="col-8 pe-0">
             <input type="text" class="form-control" id="konversi" [value]="selectedExpProduct.qtyPesanBesar"
-              name="konversi" readonly />
+              name="konversi" disabled />
           </div>
 
         </div>
@@ -234,13 +246,24 @@
           </div>
           <div class="col-8 pe-0">
             <input type="text" class="form-control" id="konversi" [value]="selectedExpProduct.qtyPesanKecil || 0"
-              name="konversi" readonly />
+              name="konversi" disabled />
           </div>
         </div>
       </div>
     </div>
 
-
+    <div class="divider"></div>
+    <div class="text-danger fw-semibold col-sm-12 d-flex flex-column justify-content-start align-items-center">
+      <span>
+        Isi tanggal expired dengan benar..!!
+      </span>
+      <span>
+       Pengisian tanggal expired tidak boleh sama (Duplikat)
+      </span>
+      <span>
+        Jumlah TOTAL QTY EXPIRED  harus sama dengan TOTAL QTY PENGIRIMAN..!!
+      </span>
+    </div>
     <div class="divider"></div>
 
     <div class="table-responsive">
@@ -261,14 +284,14 @@
               <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 124px;"
                 class="text-center align-items-start" rowspan="2">Qty
                 Kecil</th> <!-- Masih sejajar -->
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
-                  class="text-center align-items-start" rowspan="2">
-                  Total Qty Expired</th>
-              </tr>
               <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
-                  class="text-center align-items-start">
-                 Action</th>
-              
+                class="text-center align-items-start" rowspan="2">
+                Total Qty Expired</th>
+            </tr>
+            <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+              class="text-center align-items-start">
+              Action</th>
+
           </thead>
           <tbody *ngIf="!listEntryExpired || listEntryExpired.length === 0">
             <tr>
@@ -284,9 +307,9 @@
                   #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker autocomplete="off" [(ngModel)]="data.tglExpired"
                   (ngModelChange)="updateKeteranganTanggal(data,$event,i)"
                   placeholder="{{ 'Tanggal transaksi' | translate }}" />
-                  <span style="font-size: 14px;" class="text-danger" *ngIf="data.validationExpiredMessageList">
-                    {{ data.validationExpiredMessageList}}
-                  </span>
+                <span style="font-size: 14px;" class="text-danger" *ngIf="data.validationExpiredMessageList">
+                  {{ data.validationExpiredMessageList}}
+                </span>
               </td>
 
               <td class="text-center">
@@ -295,9 +318,8 @@
               <td class="text-center input-column">
                 <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.qtyPesanBesar" 
-                    (change)="onInputQtyBesarExpired($event,data.kodeBarang, i)" (keypress)="g.conditionInput($event, 'numericDot')"
-                    />
+                    [(ngModel)]="data.qtyPesanBesar" (change)="onInputQtyBesarExpired($event,data.kodeBarang, i)"
+                    (keypress)="g.conditionInput($event, 'numericDot')" />
                   <span class="d-flex align-items-center justify-content-center">
                     / {{data.satuanBesar}}
                   </span>
@@ -307,9 +329,8 @@
               <td class="text-center input-column">
                 <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.qtyPesanKecil"
-                    (change)="onInputQtyKecilExpired($event,data.kodeBarang, i)" (keypress)="g.conditionInput($event, 'numericDot')"
-                    />
+                    [(ngModel)]="data.qtyPesanKecil" (change)="onInputQtyKecilExpired($event,data.kodeBarang, i)"
+                    (keypress)="g.conditionInput($event, 'numericDot')" />
                   <span class="d-flex align-items-center justify-content-center">
                     / {{data.satuanKecil}}
                   </span>
@@ -324,8 +345,8 @@
               <td class="text-center">
                 {{
                 ((helper.sanitizedNumber(data.qtyPesanBesar) *
-                data.konversi) + helper.sanitizedNumber(data.qtyPesanKecil)).toFixed(2) 
-                }} 
+                data.konversi) + helper.sanitizedNumber(data.qtyPesanKecil)).toFixed(2)
+                }}
                 {{data.satuanKecil}}
 
                 <!-- Validation message area -->
@@ -351,14 +372,113 @@
         </button>
       </div>
       <div class="col-6 d-flex justify-content-end align-items-center gap-3">
-       <p class="mb-0"> Total: {{
+        <p class="mb-0"> Total: {{
           totalFilteredExpired
-        }} {{ selectedExpProduct.satuanKecil }}
+          }} {{ selectedExpProduct.satuanKecil }}
         </p>
         <button (click)="onSaveEntryExpired()" type="button" class="btn btn-primary ms-2">
           <i class="fa fa-check me-1"></i>Simpan
         </button>
       </div>
+    </div>
+
+  </c-modal-body>
+</c-modal>
+
+<c-modal #modalStockProduct alignment="center"
+  [style]="{'display': 'flex', 'align-items': 'center', 'justify-content': 'center'}" [fullscreen]="false"
+  [visible]="isShowModalStockExpired" backdrop="static" #modalLg size="xl" id="formModal"
+  [attr.aria-hidden]="!isShowModalStockExpired">
+  <c-modal-header>
+    <h5 cModalTitle>Stock Product & Data Expired</h5>
+    <button (click)="isShowModalStockExpired = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
+        class="fa fa-times"></i></button>
+  </c-modal-header>
+  <c-modal-body>
+    <div class="row" *ngIf="isShowModalStockExpired">
+      <div class="col-6">
+        <div class="w-100 px-2 py-1 row">
+
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Nama Barang" | translate }}</label>
+          </div>
+          <div class="col-8 pe-0 d-flex">
+            <div class="col-4 pe-2">
+              <input type="text" class="form-control" id="kodeBarang" [value]="selectedStockExp.kodeBarang"
+                name="kodeBarang" disabled />
+            </div>
+            <div class="col-8">
+              <input type="text" class="form-control" id="namaBarang" [value]="selectedStockExp.namaBarang"
+                name="namaBarang" disabled />
+            </div>
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Konversi" | translate }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi"
+              [value]="selectedStockExp.konversi + ' ' + selectedStockExp.satuanKecil + '/' + selectedStockExp.satuanBesar"
+              name="konversi" disabled />
+
+          </div>
+        </div>
+
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan" class="fw-semibold">{{ "Total Stock" | translate }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi"
+              [value]="selectedStockExp.totalStock + ' ' + selectedStockExp.satuanKecil" name="konversi" disabled />
+
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan" class="fw-semibold">{{ "Stock Qty Besar" | translate }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi"
+              [value]="selectedStockExp.qtyBesar + ' ' + selectedStockExp.satuanBesar" name="konversi" disabled />
+
+          </div>
+        </div>
+
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan" class="fw-semibold">{{ "Stock Qty Kecil" | translate }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi"
+              [value]="selectedStockExp.qtyKecil + ' ' + selectedStockExp.satuanKecil" name="konversi" disabled />
+
+          </div>
+        </div>
+
+        <div class="w-100 px-2 py-1 row" *ngIf="selectedStockExp.qtyBesar <=10">
+          <div class="col text-warning fw-semibold">
+            PERINGATAN..!! SISA STOCK SUDAH KURANG DARI 10 {{ selectedStockExp.satuanBesar }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="divider"></div>
+
+    <div class="table-responsive">
+      <ng-container>
+        <div *ngIf="loading">
+          <app-loading></app-loading>
+        </div>
+        <table *ngIf="!loading" datatable [dtOptions]="dtOptions" class="row-border hover stripe custom-header"
+          id="myTable"></table>
+      </ng-container>
     </div>
 
   </c-modal-body>

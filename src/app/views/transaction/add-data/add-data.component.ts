@@ -282,6 +282,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
 
         }
       ],
+      pageLength: 5,
       searchDelay: 1000,
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-select', row).on('click', () =>
