@@ -232,6 +232,7 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
     this.formData.alamatSupplier = orderData.alamatSupplier || '';
     this.formData.tglDokumen = moment().format('DD-MM-YYYY');
     this.formData.tglTerimaBrg = moment().format('DD-MM-YYYY');
+    this.formData.statusAktif = orderData.statusAktif;
   }
 
   handleEnter(event: any) {
