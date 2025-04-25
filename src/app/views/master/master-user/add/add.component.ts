@@ -241,7 +241,7 @@ export class MasterUserAddComponent implements OnInit {
           next: (res) => {
             console.log(res);
             if (!res.success) {
-              alert(res.message);
+              this.service.handleErrorResponse(res);
               this.adding = false;
             } else {
               this.toastr.success('Berhasil!');
@@ -267,12 +267,12 @@ export class MasterUserAddComponent implements OnInit {
           .subscribe({
             next: (res: any) => {
               if (!res.success) {
-                alert(res.message);
+                this.service.handleErrorResponse(res);
               }
             },
             error: (err: any) => {
               console.error('Error updating user location:', err);
-              alert('An error occurred while updating the use locationr.');
+              console.log('An error occurred while updating the use locationr.');
               this.adding = false;
             },
           });

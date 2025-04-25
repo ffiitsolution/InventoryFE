@@ -115,6 +115,17 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.loadBahanBaku();
     this.renderDataTables();
+    this.listProductData = [
+      {
+        kodeBarang: '',
+        namaBarang: '',
+        qtyPesanBesar: 0,
+        qtyPesanKecil: 0,
+        konversi: 1,
+        satuanBesar: '',
+        satuanKecil: ''
+      }
+    ];
 
   }
 
@@ -160,7 +171,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
           ).format('D MMM YYYY'),
           statusPosting: 'P',
           keterangan: 'RT - ' + this.headerProduction.keterangan,
-          userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+          userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
           statusSync: 'Y',
           details: this.listProductData
             .filter((item) => item.bahanBaku && item.bahanBaku.trim() !== '')
@@ -191,7 +202,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
                   this.getExpiredData(item.bahanBaku).qtyPemakaianKecil
                 ),
               hargaSatuan: 0,
-              userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+              userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
               statusSync: 'Y',
             })),
             
@@ -229,7 +240,8 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
         const paramUpdate = {
           returnNo: this.headerProduction.noReturnPengirim,
           status: 'T',
-          user: this.g.getLocalstorage('inv_currentUser').namaUser,
+          user: this.g.getLocalstorage('inv_currentUser').kodeUser,
+          flagBrgBekas : 'T'
         };
   
         Swal.fire({
@@ -464,7 +476,9 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
                 return;
             }
 
-            this.listProductData = res.item.map((item: any) => ({
+            const filteredItems = res.item.filter((item: any) => item.flagBrgBekas === 'T');
+
+              this.listProductData = filteredItems.map((item: any) => ({
                 bahanBaku: item.itemCode,
                 namaBarang: item.namaBarang,
                 konversi: parseFloat(item.konversi).toFixed(2),
@@ -474,11 +488,11 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
                 qtyPemakaianBesar: parseFloat(item.qtyBsr).toFixed(2),
                 qtyPemakaianKecil: parseFloat(item.qtyKcl).toFixed(2),
                 totalQtyPemakaian: parseFloat(item.totalQty).toFixed(2),
-                isConfirmed: item.flagExpired == 'Y' ? true : false
-            }));
+                isConfirmed: item.flagExpired === 'Y'
+              }));
 
-            this.jumlahBahanbaku.emit(this.listProductData.length);
-        },
+              this.jumlahBahanbaku.emit(this.listProductData.length);
+            },
         error: (err) => {
             console.error('Terjadi kesalahan saat memanggil API:', err);
         },

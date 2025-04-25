@@ -78,7 +78,7 @@ export class AddDataDetailWastageComponent
   @ViewChild('formModal') formModal: any;
   public dpConfig: Partial<BsDatepickerConfig> = {
     dateInputFormat: 'DD/MM/YYYY',
-    containerClass: 'theme-red',
+    containerClass: 'theme-dark-blue',
   };
   protected config = AppConfig.settings.apiServer;
 
@@ -788,7 +788,7 @@ export class AddDataDetailWastageComponent
     this.service.insert('/api/send-order-to-warehouse/insert-detail', paramDetail).subscribe({
       next: (res) => {
         if (!res.success) {
-          alert(res.message);
+          this.service.handleErrorResponse(res);
         } else {
 
           this.toastr.success('Berhasil!');
@@ -892,4 +892,4 @@ export class AddDataDetailWastageComponent
     }
   }
 
-}    
+}

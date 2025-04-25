@@ -88,7 +88,7 @@ export class TablePositionAddComponent implements OnInit {
       this.service.insert('/api/position/insert', param).subscribe({
         next: (res) => {
           if (!res.success) {
-            alert(res.message);
+            this.service.handleErrorResponse(res);
           } else {
             this.toastr.success('Berhasil!');
             setTimeout(() => {

@@ -39,6 +39,10 @@
                 </th>
                 <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle; width: 10%;"
                   class="text-center align-items-start" rowspan="2">Total Qty Expired</th>
+                  <th *ngIf="!listProductData || listProductData.length === 0" scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                class="text-center align-items-start" rowspan="2">
+                   Action
+                </th>
               </tr>
               <tr>
                 <th scope="col" class="text-center"
@@ -46,14 +50,72 @@
                 <th scope="col" class="text-center"
                   style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle;">Kecil</th>
               </tr>
+              
             </thead>
+
             <tbody *ngIf="!listProductData || listProductData.length === 0">
               <tr>
-                <td colspan="9" scope="col" class="text-center">
-                  No Data Found
+                <td class="text-center">
+                  <div class="input-group">
+                    <input type="text" autofocus class="form-control text-center" [(ngModel)]="listProductData[0].kodeBarang"
+                      (keydown.enter)="handleEnter($event, 0)" (keyup.enter)="nextInput.focus()" [disabled]="!!listProductData[0]?.namaBarang" />
+                    <button class="btn btn-outline-secondary" type="button" (click)="onShowModal()">
+                      <i class="fa fa-search"></i>
+                    </button>
+                  </div>
+                </td>
+                <td class="text-center">{{ listProductData[0]?.namaBarang }}</td>
+                <td class="text-center input-column">
+                  <div class="d-flex" style="gap: 5px;">
+                    <input #nextInput type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
+                      [(ngModel)]="listProductData[0].qtyPesanBesar"
+                      (input)="onInputValueItemDetail($event, 0, 'numeric', 'besar')"
+                      (keypress)="g.conditionInput($event, 'numericDot')"
+                      [ngClass]="{'form-invalid': validationMessageListSatuanBesar[0]}"
+                      (blur)="onBlurQtyPesanBesar(0)" />
+                    <span class="d-flex align-items-center justify-content-center">
+                      / {{listProductData[0]?.satuanBesar}}
+                    </span>
+                  </div>
+                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageListSatuanBesar[0]">
+                    {{ validationMessageListSatuanBesar[0] }}
+                  </span>
+                </td>
+                <td class="text-center input-column">
+                  <div class="d-flex" style="gap: 5px;">
+                    <input type="text" numberOnly max="{{listProductData[0]?.qtyPesanKecil}}" min="0"
+                      [ngClass]="{'form-invalid': validationMessageListSatuanKecil[0]}"
+                      class="form-control text-center inputQty inputNumberSpace"
+                      [(ngModel)]="listProductData[0].qtyPesanKecil"
+                      (input)="onInputValueItemDetail($event, 0, 'numeric', 'kecil')"
+                      (keypress)="g.conditionInput($event, 'numericDot')"
+                      (blur)="onBlurQtyPesanKecil(0)" />
+                    <span class="d-flex align-items-center justify-content-center">
+                      / {{listProductData[0]?.satuanKecil}}
+                    </span>
+                  </div>
+                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageListSatuanKecil[0]">
+                    {{ validationMessageListSatuanKecil[0] }}
+                  </span>
+                </td>
+                <td class="text-center">{{ listProductData[0]?.konversi?.toFixed(2) }}</td>
+                <td class="text-center">
+                  {{ ((helper.sanitizedNumber(listProductData[0]?.qtyPesanBesar) * listProductData[0]?.konversi)
+                    + helper.sanitizedNumber(listProductData[0]?.qtyPesanKecil)).toFixed(2) }}
+                  {{listProductData[0]?.satuanKecil}}
+                  <br />
+                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageQtyPesanList[0]">
+                    {{ validationMessageQtyPesanList[0] }}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn btn-primary text-white btn-150" (click)="onShowModalDelete(0)">
+                    <i class="fa fa-trash pe-1"></i> {{ "Hapus" | translate }}
+                  </button>
                 </td>
               </tr>
             </tbody>
+            
             <tbody>
               <tr *ngFor="let data of listProductData; let i = index">
                 <td class="text-center">

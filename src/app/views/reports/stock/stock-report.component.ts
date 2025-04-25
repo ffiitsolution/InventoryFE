@@ -183,7 +183,9 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.downloadURL.length) {
       var link = document.createElement('a');
       link.href = this.downloadURL;
-      link.download = `${reportType} Report ${this.datePipe.transform(
+      link.download = `${reportType} Report ${this.g.formatUrlSafeString(
+        this.currentReport
+      )} ${this.datePipe.transform(
         this.rangeDateVal[0],
         'dd-MMM-yyyy'
       )} s.d. ${this.datePipe.transform(
@@ -192,9 +194,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       )}.pdf`;
       link.click();
       this.toastr.success('File sudah terunduh');
-    } else
-      this.toastr.error('File tidak dapat terunduh');
-      
+    } else this.toastr.error('File tidak dapat terunduh');
   }
 
   downloadCsv(res: any, reportType: string) {
@@ -204,7 +204,9 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.downloadURL.length) {
       var link = document.createElement('a');
       link.href = this.downloadURL;
-      link.download = `${reportType} Report ${this.datePipe.transform(
+      link.download = `${reportType} Report ${this.g.formatUrlSafeString(
+        this.currentReport
+      )} ${this.datePipe.transform(
         this.rangeDateVal[0],
         'dd-MMM-yyyy'
       )} s.d. ${this.datePipe.transform(
@@ -213,7 +215,6 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       )}.csv`;
       link.click();
       this.toastr.success('File sudah terunduh');
-    } else
-      this.toastr.error('File tidak dapat terunduh');
+    } else this.toastr.error('File tidak dapat terunduh');
   }
 }

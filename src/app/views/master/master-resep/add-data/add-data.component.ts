@@ -80,15 +80,15 @@ export class AddResepComponent implements OnInit, OnDestroy {
   myForm: FormGroup;
 
   ngOnInit(): void {
-    
+
     this.detail = JSON.parse(this.globalService.getLocalstorage(LS_INV_SELECTED_RESEP));
 
     console.log(this.detail,'detail')
-   
+
     this.getProduct()
     this.onAddDetail()
     // this.renderDataTables()
-   
+
   }
 
   onAddDetail() {
@@ -113,7 +113,7 @@ export class AddResepComponent implements OnInit, OnDestroy {
     );
     // clean subsribe rxjs
     this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();  
+    this.ngUnsubscribe.complete();
   }
 
 
@@ -196,7 +196,7 @@ export class AddResepComponent implements OnInit, OnDestroy {
   //       );
   //       if (index === 0 && !this.selectedRowData) {
   //         setTimeout(() => {
-  //           $(row).trigger('td'); 
+  //           $(row).trigger('td');
   //         }, 0);
   //       }
   //       $('td', row).on('click', () => {
@@ -208,8 +208,8 @@ export class AddResepComponent implements OnInit, OnDestroy {
   //           this.selectedRowData = undefined;
   //         }
   //       });
-      
-    
+
+
   //       return row;
 
   //     },
@@ -223,10 +223,10 @@ export class AddResepComponent implements OnInit, OnDestroy {
         satuanHasilProduksi: data.konversi,
         labelSatuanHasilProduksi: data.satuanKecil+"/"+data.satuanBesar,
       })
-     
+
     }
 
-    
+
 
     onBatalPressed(newItem: any): void {
       const todayDate = new Date();
@@ -242,7 +242,7 @@ export class AddResepComponent implements OnInit, OnDestroy {
 
     addJumlahBahanBaku($event:any): void {
         this.myForm.patchValue({
-          totalBahanBaku: $event  
+          totalBahanBaku: $event
         });
     }
 
@@ -266,32 +266,32 @@ export class AddResepComponent implements OnInit, OnDestroy {
     }
 
     onUpdate(): void{
-     
+
         this.loadingSimpan =true;
-        const requestBody = { 
+        const requestBody = {
           kodeBarang: this.myForm.get('kodeBarang')?.value,
           statusAktif: this.myForm.get('statusBarang')?.value == 'A' ? 'T' : 'A',
          };
-  
+
         this.appService.patch('/api/product-status/update', requestBody).subscribe({
           next: (res: any) => {
             if (!res.success) {
-              alert(res.message);
+              this.appService.handleErrorResponse(res);
             } else {
               this.myForm.patchValue({
                 statusBarang: this.myForm.get('statusBarang')?.value == 'A' ? 'T' : 'A',
               })
               this.toastr.success(this.translationService.instant('Berhasil Update!'));
             }
-        
+
             this.loadingSimpan =false;
           },
           error: (err: any) => {
-            alert('An error occurred while updating the profile.');
+            console.log('An error occurred while updating the profile.');
             this.loadingSimpan =false;
           },
         });
-      
+
     }
   }
 

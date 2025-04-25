@@ -16,7 +16,7 @@ import { Page } from '../../../../model/page';
 import { AppService } from '../../../../service/app.service';
 import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
 import moment from 'moment';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { HelperService } from '../../../../service/helper.service';
 import { DatePipe } from '@angular/common';
 
@@ -101,7 +101,7 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
           satuanHasilProduksi: ['', [Validators.required]],
           tglTransaksi: [this.defaultDate, [Validators.required]],
           jumlahHasilProduksi: ['', [Validators.required,Validators.min(1)]],
-          keterangan: [''],
+          keterangan: ['',[this.specialCharValidator]],
           tglExp:[this.defaultDate, [Validators.required]],
           totalHasilProduksi: ['', [Validators.required,Validators.min(1)]],
           labelSatuanHasilProduksi: [''],
@@ -164,6 +164,14 @@ export class AddProductionComponent implements OnInit, AfterViewInit, OnDestroy 
     
   }
 
+  specialCharValidator(control: AbstractControl): ValidationErrors | null {
+    const specialCharRegex = /[^a-zA-Z0-9&\-().\s]/;
+    const value = control.value;
+    if (value && specialCharRegex.test(value)) {
+      return { specialCharNotAllowed: true };
+    }
+    return null;
+  }
 
   onPreviousPressed(): void {
     this.router.navigate(['/transaction/production/list-dt']);

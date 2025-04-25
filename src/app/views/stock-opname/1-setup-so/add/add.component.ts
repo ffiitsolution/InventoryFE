@@ -19,7 +19,7 @@ import { DataService } from '../../../../service/data.service';
 import * as moment from 'moment';
 
 @Component({
-  selector: 'app-add',
+  selector: 'app-add-so',
   templateUrl: './add.component.html',
   styleUrl: './add.component.scss',
 })
@@ -57,6 +57,7 @@ export class StockSoAddComponent implements OnInit {
     this.myForm = this.form.group({
       tahun: ['', [Validators.required]],
       bulan: ['', [Validators.required]],
+      keterangan: ['', [Validators.required]],
       noSo: new FormControl({value: '', disabled: true}),
       tanggalSo: new FormControl({value: '', disabled: true}),
       userCreate: [''],
@@ -126,14 +127,14 @@ export class StockSoAddComponent implements OnInit {
         bulan: controls?.['bulan']?.value,
         nomorSo: controls?.['noSo']?.value,
         tanggalSo: controls?.['tanggalSo']?.value,
+        keterangan: controls?.['keterangan']?.value,
         kodeGudang: this.userData.defaultLocation.kodeLocation,
         userCreate: this.userData.kodeUser,
       };
-      console.log(param);
       this.service.insert('/api/stock-opname/insert', param).subscribe({
         next: (res) => {
           if (!res.success) {
-            alert(res.message);
+            this.service.handleErrorResponse(res);
           } else {
             this.toastr.success('Berhasil!');
             setTimeout(() => {
@@ -142,6 +143,9 @@ export class StockSoAddComponent implements OnInit {
           }
           this.adding = false;
         },
+        error: (err) => {
+          this.adding = false;
+        }
       });
     }
   }
