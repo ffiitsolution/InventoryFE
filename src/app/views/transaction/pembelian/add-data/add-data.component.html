@@ -13,20 +13,20 @@
     </c-card-body>
   </c-card>
 
-  <c-card class="mb-4" >
+  <c-card class="mb-1" >
     <c-card-body>
       <div class="row" style="font-size: 12px;">
         <div [ngClass]="isShowDetail ? 'col-3' : 'col-5'" class="pe-0 d-flex red-line">
           <div class="w-100">
             <div class="p-2">
-              <h5 class="mb-2 p-2" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5>
+              <!-- <h5 class="mb-2 p-2" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5> -->
               <div class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
-                  <label for="nomorPesanan">{{ "No. Purchase Order" | translate }}</label>
+                  <label for="nomorPesanan">{{ "Nomor Purchase Order (P.O)" | translate }}</label>
                 </div>
 
                 <div class="col-8 pe-0 d-flex">
-                  <input type="text" placeholder="Nomor purchase order" class="form-control" id="nomorPesanan"
+                  <input type="text" placeholder="" class="form-control" id="nomorPesanan"
                     [(ngModel)]="formData.nomorPesanan" name="nomorPesanan" (keydown.enter)="handleEnter($event)"/>
                   <button *ngIf="isShowDetail === false" type="button" class="btn btn-info ms-2"
                     [cModalToggle]="staticBackdropModal.id" (click)="onShowModal()"><i
@@ -38,10 +38,10 @@
               <div class="w-100 px-2 py-1 row">
 
                 <div class="col-4 d-flex align-items-center">
-                  <label for="codeDestination">{{ "Supplier" | translate }}</label>
+                  <label for="codeDestination">{{ "Supplier Pengirim" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <input placeholder="Supplier - nama supplier" type="text" class="form-control" id="codeDestination"
+                  <input placeholder="" type="text" class="form-control" id="codeDestination"
                     [ngModel]="formData.nomorPesanan ? formData.supplier + ' - ' + formData.namaSupplier : '' "
                     name="supplier" disabled />
                 </div>
@@ -49,21 +49,40 @@
 
               <div class="w-100 px-2 py-1 row ">
                 <div class="col-4 d-flex align-items-center">
-                  <label for="alamat1">{{ "Alamat Supplier" | translate }}</label>
+                  <label for="alamat1">{{ "Alamat Pengirim" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <textarea placeholder="Alamat pengirim" class="form-control w-100" [(ngModel)]="formData.alamatSupplier"
+                  <textarea placeholder="" class="form-control w-100" [(ngModel)]="formData.alamatSupplier"
                     id="exampleFormControlTextarea1" rows="2" name="alamatSupplier" disabled></textarea>
+                </div>
+              </div>
+              
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="statusAktif">{{
+                    "Status Aktif" | translate
+                  }}</label>
+                </div>
+                <div class="col-8 pe-0 d-flex">
+                  <input
+                    placeholder=""
+                    type="text"
+                    class="form-control"
+                    id="statusAktif"
+                    [(ngModel)]="formData.statusAktif"
+                    name="statusAktif"
+                    readonly
+                  />
                 </div>
               </div>
 
               <div class="w-100 px-2 py-1 row">
 
                 <div class="col-4 d-flex align-items-center">
-                  <label for="nomorDokumen">{{ "No. Dokumen" | translate }}</label>
+                  <label for="nomorDokumen">{{ "Nomor Dokumen" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex"> 
-                  <input placeholder="Nomor dokumen" type="text" class="form-control" id="nomorDokumen" [(ngModel)]="formData.nomorDokumen"
+                  <input placeholder="" type="text" class="form-control" id="nomorDokumen" [(ngModel)]="formData.nomorDokumen"
                     name="nomorDokumen" />
                 </div>
               </div>
@@ -71,14 +90,14 @@
               <div class="w-100 px-2 py-1 row">
 
                 <div class="col-4 d-flex align-items-center">
-                  <label for="notes">{{ "Tgl. Dokumen" | translate }}</label>
+                  <label for="notes">{{ "Tanggal Dokumen" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <div class="input-group">
                     <input type="text" id="tglDokumen" class="form-control"
                     aria-describedby="tglDokumen" #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker
                     autocomplete="off" [(ngModel)]="formData.tglDokumen"
-                    placeholder="{{ 'Tanggal dokumen' | translate }}" [minDate]="minDate" [maxDate]="maxDate"
+                    placeholder="{{ '' | translate }}" [minDate]="minDate" [maxDate]="maxDate"
                     [disabled]="formData.nomorPesanan === ''" />
                     <button class="btn btn-outline-info fa fa-calendar" type="button"  (click)="dp.toggle()"></button>
                   </div>
@@ -88,14 +107,14 @@
               <div class="w-100 px-2 py-1 row">
 
                 <div class="col-4 d-flex align-items-center">
-                  <label for="notes">{{ "Tgl. Terima" | translate }}</label>
+                  <label for="notes">{{ "Tanggal terima barang" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <div class="input-group">
                     <input type="text" id="tglTerimaBrg" class="form-control"
                     aria-describedby="tglTerimaBrg" #dp2="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker
                     autocomplete="off" [(ngModel)]="formData.tglTerimaBrg"
-                    placeholder="{{ 'Tanggal terima barang' | translate }}" [minDate]="minDate" [maxDate]="maxDate"
+                    placeholder="{{ '' | translate }}" [minDate]="minDate" [maxDate]="maxDate"
                     [disabled]="formData.nomorPesanan === ''" />
                     <button class="btn btn-outline-info fa fa-calendar" type="button"  (click)="dp2.toggle()"></button>
                   </div>
@@ -105,10 +124,10 @@
               <div class="w-100 px-2 py-1 row">
 
                 <div class="col-4 d-flex align-items-center">
-                  <label for="notes">{{ "Catatan" | translate }}</label>
+                  <label for="notes">{{ "Catatan (Keterangan Lain)" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <input placeholder="Catatan" maxlength="50" type="text" class="form-control" id="notes" [(ngModel)]="formData.notes"
+                  <input placeholder="" maxlength="50" type="text" class="form-control" id="notes" [(ngModel)]="formData.notes"
                     name="notes" />
                 </div>
               </div>
