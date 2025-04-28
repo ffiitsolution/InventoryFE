@@ -46,6 +46,21 @@
             <div class="row mb-1">
               <div class="col-md-3">
                 <label cLabel for="selectStatusFilter"
+                  >{{ "Status" | translate }}:
+                </label>
+                <select
+                  aria-label="Status"
+                  cSelect
+                  [(ngModel)]="selectedStatusFilter"
+                  (ngModelChange)="onStatusFilterChange()"
+                >
+                  <option value="">{{ "Semua" | translate }}</option>
+                  <option value="A">{{ "Aktif" | translate }}</option>
+                  <option value="T">{{ "Tidak aktif" | translate }}</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label cLabel for="selectStatusFilter"
                   >{{ "Default Order" | translate }}:
                 </label>
                 <div>

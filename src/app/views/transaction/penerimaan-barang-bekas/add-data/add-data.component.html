@@ -302,6 +302,7 @@
           <div class="table-responsive">
             <table
               datatable
+              #dtElement2
               [dtOptions]="dtOptions"
               class="datatable row-border hover stripe w-100 h-65"
             >
@@ -331,9 +332,8 @@
           <input
             type="text"
             [value]="
-              selectedRowData.kodeRegion || '' ??
-              '' + ' ' + (selectedRowData.keteranganRegion || '') ??
-              ''
+              selectedRowData.kodeRegion +
+             ' ' + (selectedRowData.keteranganRegion || '') 
             "
             class="form-control"
             disabled
@@ -344,8 +344,7 @@
           <input
             type="text"
             [value]="
-              selectedRowData.kodeArea || '' ??
-              '' + ' ' + (selectedRowData.keteranganArea ?? '')
+              selectedRowData.kodeArea ?? '' + ' ' + (selectedRowData.keteranganArea )
             "
             class="form-control"
             disabled
@@ -386,6 +385,8 @@
             <table
               datatable
               [dtOptions]="dtOptionsRetur"
+              [dtTrigger]="dtTriggerRetur"
+              #dtElementRetur
               class="datatable row-border hover stripe w-100 h-65"
             >
               <!-- <thead class="table-header"> </thead> -->

@@ -86,7 +86,7 @@ export class MasterResepComponent
         this.page.length = dataTablesParameters.length;
         const requestData = {
           ...dataTablesParameters,
-          status: this.selectedStatusFilter,
+          STATUS: this.selectedStatusFilter,
           DEFAULT_GUDANG: this.selectedGudangFilter.id
             ? this.selectedGudangFilter.id
             : '',

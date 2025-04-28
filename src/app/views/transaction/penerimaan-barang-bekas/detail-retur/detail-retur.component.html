@@ -1,20 +1,66 @@
+
 <div class="fade-in">
   <c-card class="mb-4">
-    <c-card-header>
-      <div class="d-grid gap-3 d-md-flex justify-content-end">
-        <button class="btn btn-info text-white btn-150 pe-3"
-         [disabled]="loadingSimpan"
-         (click)="onSubmit()">
+    <c-card-body>
+      <c-row>
+        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
+          <button class="btn btn-light btn-120" (click)="onBackPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button>
+          <h5>{{ "Detail Penerimaan Barang Bekas" | translate }}</h5>
+        </div>       
+      </c-row>
+    </c-card-body>
+  </c-card>
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="row">
+        <div class="col"></div>
+        <div class="col text-end">
+          <button
+          class="btn btn-info text-white btn-150 pe-3"
+          [disabled]="loadingSimpan"
+          (click)="onSubmit()"
+        >
           <i class="fa fa-check pe-2" *ngIf="!loadingSimpan"></i>
           <i class="fa fa-spinner fa-spin" *ngIf="loadingSimpan"></i>
-          {{ "Proses Simpan Data" | translate }}
+          {{ "Simpan Data" | translate }}
         </button>
-      
-        <button class="btn btn-secondary text-white btn-150" (click)="onBackPressed()">
-          <i class="fa fa-times pe-1"></i> {{ "Batal Penerimaan" | translate }}
-        </button>
+        </div>
+        <div class="divider mt-4"></div>
+        <div class="col">
+          <div class="row order-details">
+            <div class="detail-item">
+              <span class="label">{{ "No Retur" | translate }}</span>
+              <span class="value">: {{ selectedPenerimaanBrgBks.returnNo }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Outlet Code" | translate }}</span>
+              <span class="value">: {{ selectedPenerimaanBrgBks.outletCode }}</span>
+            </div>
+          
+          </div>
+        </div>
+        <div class="col">
+          <div class="row order-details">
+            <div class="detail-item">
+              <span class="label">{{ "Nama Pengirim" | translate }}</span>
+              <span class="value">: {{ selectedPenerimaanBrgBks.namaPengirim }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Alamat Pengirim" | translate }}</span>
+              <span class="value">: {{ selectedPenerimaanBrgBks.alamatPengirim }}</span>
+            </div>
+          </div>
+        </div>
       </div>
-    </c-card-header>
+    </c-card-body>
+  </c-card>
+</div>
+
+<div class="fade-in">
+  <c-card class="mb-4">
     <c-card-body>
       <div class="table-responsive">
         <ng-container>
@@ -40,10 +86,10 @@
                   class="text-center align-items-start" rowspan="2">
                   Total Qty Terima
                 </th>
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                <!-- <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
                   class="text-center align-items-start" rowspan="2">
                  Action
-                </th>
+                </th> -->
               </tr>
               <tr>
                 <th scope="col" class="text-center"
@@ -102,69 +148,17 @@
                 <td class="text-center">
                   {{ data.totalQty}} {{ data.satuanKecil }}
                 </td>
-                <td class="text-center">
+                <!-- <td class="text-center">
                   <button (click)="onDeleteRow(i,data)" type="button" class="btn btn-secondary ms-2">
                     <i class="fa fa-trash me-1"></i>
                   </button>
-                </td>
+                </td> -->
               </tr>
             </tbody>
           </table>
 
         </ng-container>
       </div>
-
-    </c-card-body>
-
-
-    <c-card-footer>
-      <div class="d-md-flex justify-content-end">
-        <div class="d-grid gap-3 d-md-flex justify-content-end" >
-          <button class="btn btn-success text-white btn-150 pe-3" *ngIf="!isGenerate" (click)="onAdd()">
-            <i class="fa fa-plus pe-2" *ngIf="!adding"></i>
-            {{ "Tambah Data" | translate }}
-          </button>
-        </div>
-      
-      </div>
-    </c-card-footer>
-  </c-card>
-  <c-modal
-#staticBackdropModal2
-[visible]="isShowModal"
-backdrop="static"
-id="staticBackdropModal2"
-size="xl"
->
-<c-modal-header>
-  <h5 cModalTitle>Daftar Barang</h5>
-  <button
-    (click)="isShowModal = false"
-    type="button"
-    class="btn btn-info ms-2"
-    [cModalToggle]="staticBackdropModal2.id"
-    cButtonClose
-  >
-    <i class="fa fa-times text-white"></i>
-  </button>
-</c-modal-header>
-
-<c-modal-body>
-  <c-card class="mb-4">
-    <c-card-body>
-      <div class="table-responsive">
-        <table
-          datatable
-          [dtOptions]="dtOptions"
-          class="datatable row-border hover stripe w-100 h-65"
-          >
-        <!-- <thead class="table-header"> </thead> -->
-        </table>
-      </div>
     </c-card-body>
   </c-card>
-</c-modal-body>
-</c-modal>
-  <div class="modal-bg-backdrop" *ngIf="isShowModal"></div>
 </div>
-
