@@ -43,7 +43,7 @@
           </button> -->
           <button
             type="button"
-            class="btn btn-outline-danger me-2 btn-120"
+            class="btn btn-outline-danger me-2"
             (click)="onShowModalBatal()"
             [disabled]="updatingStatus || disabledCancelButton"
           >
@@ -51,6 +51,7 @@
             <i class="fa fa-spinner fa-spin" *ngIf="RejectingOrder"></i>
             {{ "Batalkan Pesanan" | translate }}
           </button>
+          
         </div>
       </div>
       <div class="row">

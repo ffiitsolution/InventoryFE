@@ -36,7 +36,7 @@
         </button>
         <button type="button" class="btn btn-success text-white me-2 btn-360" data-toggle="modal"
         (click)="isShowModalRefresh = true">
-        <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
+        <i class="fa fa-refresh pe-1 icon-12 icon-gap" aria-hidden="true"></i>
         {{ "REFRESH (TERIMA DATA ONLINE)" | translate }}
       </button>
       </div>  
@@ -143,7 +143,7 @@
 <c-modal #formModalKirim [fullscreen]="false" [visible]="isShowModalRefresh" backdrop="static"
 id="formModalKirim"    [attr.aria-hidden]="!isShowModalRefresh">
   <c-modal-header>
-    <h5 cModalTitle>Konfirmasi Kirim Data Pesanan</h5>
+    <h5 cModalTitle>Konfirmasi Terima Data Pesanan - Online</h5>
     <button (click)="isShowModalRefresh = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalKirim.id"
       cButtonClose><i class="fa fa-times"></i></button>
   </c-modal-header>
@@ -182,8 +182,8 @@ id="formModalKirim"    [attr.aria-hidden]="!isShowModalRefresh">
       </div>
     </c-modal-body>
     <c-modal-footer class="justify-center">
-      <button type="button" class="btn btn-light w-180 me-3" data-bs-dismiss="modal" (click)="isShowModalRefresh = false">Close</button>
-      <button type="button" class="btn btn-success text-white  w-180" (click)="refreshDatabase()">Proses kirim Data</button>
+      <button type="button" class="btn btn-light w-180 me-3" data-bs-dismiss="modal" (click)="isShowModalRefresh = false">Batal</button>
+      <button type="button" class="btn btn-success text-white  w-180" (click)="refreshDatabase()">Proses Terima Data</button>
     </c-modal-footer>
 </c-modal>
 
@@ -200,7 +200,7 @@ id="formModalPesananMasuk"    [attr.aria-hidden]="!isShowModalPesananMasuk">
 
     <div class="d-flex justify-center py-2">
 
-      <button class="btn btn-primary text-white w-90" (click)="onClickModalPesananMasuk()">Iya</button>
+      <button class="btn btn-primary text-white w-90" (click)="onClickModalPesananMasuk()">Oke</button>
 
     </div>
   </c-modal-body>
