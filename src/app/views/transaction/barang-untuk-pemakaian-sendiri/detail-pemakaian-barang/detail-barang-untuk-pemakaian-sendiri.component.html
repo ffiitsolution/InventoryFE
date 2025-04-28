@@ -346,37 +346,37 @@
           <tbody>
             <tr *ngFor="let data of listDataExpired; let i = index">
               <td class="text-center">
-                {{ selectedRowData.tglExpired | date : "dd MMM yyyy" }}
+                {{ data.tglExpired | date : "dd MMM yyyy" }}
               </td>
 
               <td class="text-center">
-                {{ selectedRowData.tglExpired | date : "dd MMM yyyy" }}
+                {{ data.tglExpired | date : "dd MMM yyyy" }}
               </td>
               <td class="text-center input-column">
                 <div class="d-flex justify-content-center" style="gap: 5px">
-                  {{ helper.abs(selectedRowData.qtyBesar) | number : "1.2-2" }}
+                  {{ helper.abs(data.qtyBesar) | number : "1.2-2" }}
                   <span
                     class="d-flex align-items-center justify-content-center"
                   >
-                    / {{ selectedRowData.satuanBesar }}
+                    / {{ data.satuanBesar }}
                   </span>
                 </div>
               </td>
 
               <td class="text-center">
                 <div class="d-flex justify-content-center" style="gap: 5px">
-                  {{ helper.abs(selectedRowData.qtyKecil) | number : "1.2-2" }}
+                  {{ helper.abs(data.qtyKecil) | number : "1.2-2" }}
                   <span
                     class="d-flex align-items-center justify-content-center"
                   >
-                    / {{ selectedRowData.satuanKecil }}
+                    / {{ data.satuanKecil }}
                   </span>
                 </div>
               </td>
 
               <td class="text-center">
-                {{ helper.abs(selectedRowData.totalQty) | number : "1.2-2" }}
-                {{ selectedRowData.satuanKecil }}
+                {{ helper.abs(data.totalQty) | number : "1.2-2" }}
+                {{ data.satuanKecil }}
               </td>
             </tr>
           </tbody>
