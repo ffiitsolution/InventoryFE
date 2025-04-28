@@ -26,20 +26,20 @@
             <label for="jabatanSaksi">{{ "Jumlah Item Pesanan" | translate }}</label>
           </div>
           <div class="col-2 pe-0">
-            <input type="text" class="form-control text-center" [value]="listOrderData.length-1" readonly />
+            <input type="text" class="form-control text-center" [value]="getJumlahItem()" readonly />
           </div>
           <div class="col"></div>
 
         </div>
         <div class="col-6">
-          <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
-            <button class="btn btn-light  btn-150" (click)="onShowModalCancel()">
-              <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
-            </button>
-            <button class="btn btn-info text-white btn-150 pe-3" (click)="onShowModalOnSubmit()">
-              <i class="fa fa-check pe-2"></i> {{ "Proses" | translate }}  {{ "Simpan" | translate }} {{ "Data" | translate }}
-            </button>
-
+          <div class="d-grid gap-3 d-md-flex justify-content-end mb-3"> 
+            <div class="col-9 d-flex align-items-center">
+              <c-input-group>
+                <span cInputGroupText id="basic-addon1"><i class="fa fa-search"></i></span>
+                <input #listViewOrders id="appendedInputButton" [(ngModel)]="searchListViewOrder" class="form-control"
+                  size="16" type="text" placeholder="Search..." (ngModelChange)="onFilterTextChange($event)">
+              </c-input-group>
+            </div>
           </div>
         </div>
       </div>
@@ -82,7 +82,7 @@
                   style="background-color: #3c4b64; color:white; vertical-align: middle;">Kecil</th>
               </tr>
             </thead>
-            <tbody *ngIf="!listOrderData || listOrderData.length === 0">
+            <tbody *ngIf="!filteredList || filteredList.length === 0">
               <tr>
                 <td colspan="9" scope="col" class="text-center">
                   No Data Found
@@ -90,13 +90,18 @@
               </tr>
             </tbody>
             <tbody>
-              <tr *ngFor="let data of listOrderData; let i = index">
-                <td class="text-center">{{ i + 1 }}</td>
+              <tr *ngFor="let data of filteredList | paginate: {
+                  itemsPerPage: itemsPerPage,
+                  currentPage: listCurrentPage,
+                  totalItems:totalLength,
+                  id:'dataTableDetail'
+              }; let i = index ">                            
+            <td class="text-center">{{ i + 1 }}</td>
                 <!-- <td class="text-center">{{ data?.kodeBarang }}</td> -->
                 <td class="text-center">
                   <div class="input-group">
                     <input type="text" autofocus class="form-control text-center" [(ngModel)]="data.kodeBarang"
-                      (keydown.enter)="handleEnter($event, i)" (keyup.enter)="nextInput.focus()"  [disabled]="!!data?.namaBarang"  />
+                      (keydown.enter)="handleEnter($event, getPaginationIndex(i))" (keyup.enter)="nextInput.focus()"  [disabled]="!!data?.namaBarang"  />
                     <button class="btn btn-outline-secondary" type="button" (click)="onShowModal()">
                       <i class="fa fa-search"></i>
                     </button>
@@ -109,28 +114,28 @@
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
                     <input #nextInput type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                      [(ngModel)]="data.qtyPesanBesar"  (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
-                      (keypress)="g.conditionInput($event, 'numericDot')" [ngClass]="{'form-invalid': validationMessageListSatuanBesar[i]}"
-                      (blur)="onBlurQtyPesanBesar(i)"
+                      [(ngModel)]="data.qtyPesanBesar"  (input)="onInputValueItemDetail($event, getPaginationIndex(i), 'numeric', 'besar')"
+                      (keypress)="g.conditionInput($event, 'numericDot')" [ngClass]="{'form-invalid': validationMessageListSatuanBesar[getPaginationIndex(i)]}"
+                      (blur)="onBlurQtyPesanBesar(getPaginationIndex(i))"
                       />
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data?.satuanBesar}}
                     </span>
                   </div>
                     <!-- Validation message area -->
-                    <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageListSatuanBesar[i]">
-                    {{ validationMessageListSatuanBesar[i] }}
+                    <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageListSatuanBesar[getPaginationIndex(i)]">
+                    {{ validationMessageListSatuanBesar[getPaginationIndex(i)] }}
                   </span>
                 </td>
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
                     <input type="text" numberOnly max="{{data.qtyPesanKecil}}" min="0"
-                      [ngClass]="{'form-invalid': validationMessageListSatuanKecil[i]}"
+                      [ngClass]="{'form-invalid': validationMessageListSatuanKecil[getPaginationIndex(i)]}"
                       class="form-control text-center inputQty inputNumberSpace"
                       [(ngModel)]="data.qtyPesanKecil"
-                      (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')" 
+                      (input)="onInputValueItemDetail($event, getPaginationIndex(i), 'numeric', 'kecil')" 
                       (keypress)="g.conditionInput($event, 'numericDot')" 
-                      (blur)="onBlurQtyPesanKecil(i)"
+                      (blur)="onBlurQtyPesanKecil(getPaginationIndex(i))"
                       />
 
                     <span class="d-flex align-items-center justify-content-center">
@@ -138,8 +143,8 @@
                     </span>
                   </div>
                   <!-- Validation message area -->
-                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageListSatuanKecil[i]">
-                    {{ validationMessageListSatuanKecil[i] }}
+                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageListSatuanKecil[getPaginationIndex(i)]">
+                    {{ validationMessageListSatuanKecil[getPaginationIndex(i)] }}
                   </span>
                 </td>
 
@@ -148,12 +153,12 @@
 
                   <!-- Validation message area -->
                    <br>
-                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageQtyPesanList [i]">
-                    {{ validationMessageQtyPesanList[i] }}
+                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageQtyPesanList [getPaginationIndex(i)]">
+                    {{ validationMessageQtyPesanList[getPaginationIndex(i)] }}
                   </span>
                 </td>
                 <td>
-                  <button class="btn btn-primary text-white btn-150" (click)="onShowModalDelete(i)">
+                  <button class="btn btn-primary text-white btn-150" (click)="onShowModalDelete(getPaginationIndex(i))">
                     <i class="fa fa-trash pe-1"></i> {{ "Hapus" | translate }}
                   </button>
                 </td>
@@ -162,7 +167,7 @@
           </table>
 
           <c-pagination class="text-right">
-            <pagination-controls (pageChange)="onPageChange(1)" id="dataTable"></pagination-controls>
+            <pagination-controls (pageChange)="listCurrentPage = $event" id="dataTableDetail"></pagination-controls>
           </c-pagination>
         </ng-container>
       </div>
@@ -248,4 +253,12 @@
 
 
   </c-card>
+  <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
+    <button class="btn btn-light  btn-150" (click)="onShowModalCancel()">
+      <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
+    </button>
+    <button class="btn btn-info text-white btn-150 pe-3" (click)="onShowModalOnSubmit()">
+      <i class="fa fa-check pe-2"></i> {{ "Proses" | translate }}  {{ "Simpan" | translate }} {{ "Data" | translate }}
+    </button>
+  </div>
 <!-- </div> -->

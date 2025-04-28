@@ -78,6 +78,10 @@ export class AddDataDetailSendOrderToSupplierComponent
   barangTemp: any[] = [];
   isShowModalCancel: boolean = false;
 
+  listCurrentPage: number = 1;
+  itemsPerPage: number = 5;
+  searchListViewOrder: string = '';
+  
   @ViewChild('formModal') formModal: any;
 
 
@@ -618,6 +622,39 @@ export class AddDataDetailSendOrderToSupplierComponent
       this.listOrderData[index].qtyPesanBesar = '0.00'; // fallback if input is not a number
       this.validationMessageListSatuanBesar[index] = "";
     }
+  }
+  
+  onFilterTextChange(newValue: string) {
+    if (newValue.length >= 3) {
+      this.totalLength = 1;
+    } else {
+      this.totalLength = this.listOrderData.length;
+    }
+    this.listCurrentPage = this.listCurrentPage;
+  }
+
+    get filteredList() {
+    if (!this.searchListViewOrder) {
+      return this.listOrderData;
+    }
+    const searchText = this.searchListViewOrder.toLowerCase();
+    return this.listOrderData.filter(item =>
+      JSON.stringify(item).toLowerCase().includes(searchText)
+    );
+  }
+
+  getPaginationIndex(i: number): number {
+    return (this.listCurrentPage - 1) * this.itemsPerPage + i;
+  }
+
+  getJumlahItem(): number {
+    if (this.filteredList.length === 0) {
+      return 0;
+    }
+    if (this.filteredList[this.filteredList.length - 1].namaBarang.trim() === "") {
+      return this.filteredList.length - 1;
+    }
+    return this.filteredList.length;
   }
 
 }
