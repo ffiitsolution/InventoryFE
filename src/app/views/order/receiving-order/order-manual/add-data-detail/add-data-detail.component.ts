@@ -80,13 +80,9 @@ export class AddDataDetailOrderManualComponent
 
   listCurrentPage: number = 1;
   itemsPerPage: number = 5;
-
   searchListViewOrder: string = '';
 
-
-
   @ViewChild('formModal') formModal: any;
-
 
   protected config = AppConfig.settings.apiServer;
 
