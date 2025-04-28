@@ -97,21 +97,14 @@ export class AddPlanningOrderComponent implements OnInit, AfterViewInit, OnDestr
       this.selectedYear,
       this.selectedYear + 2
     );
-
-    if(this.globalService.statusPlanningOrder){
-      this.isShowDetail = true;
-    }
-
-    // this.myForm.get('bufferStock')?.valueChanges
-    // .pipe(
-    //   takeUntil(this.ngUnsubscribe),
-    //   debounceTime(500), // <- delay for 500ms after last keystroke
-    //   distinctUntilChanged()
-    // )
-    // .subscribe(value => {
-    //     this.onInputValue(value);
-    // })
    
+  }
+
+  ngDoCheck() {
+    const current = this.globalService.statusPlanningOrder;
+    if (current && !this.isShowDetail) {
+     this.onAddDetail();
+    }
   }
 
   onAddDetail() {

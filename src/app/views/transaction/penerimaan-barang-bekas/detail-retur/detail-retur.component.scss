@@ -5,6 +5,9 @@
 
 .detail-item {
   display: flex;
+  gap: 100px;
+  justify-content: space-between;
+  margin-bottom: 4px;
 }
 
 .label {
