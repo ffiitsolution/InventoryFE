@@ -16,6 +16,7 @@ import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DELAY_TABLE, SEND_PRINT_STATUS_SUDAH } from '../../../../../constants';
 import { AppConfig } from '../../../../config/app.config';
+import moment from 'moment';
 
 @Component({
   selector: 'app-detail-terima-barang-retur-dari-site',
@@ -67,11 +68,13 @@ export class DetailTerimaBarangReturDariSiteComponent
   selectedRowCetak: any = false;
 
   formExpiredData = {
+    kodeBarang:'',
     kodeNamaBarang: '',
     konversi: '',
     qtyBesar: '',
     qtyKecil: '',
-    totalQty: ''
+    totalQty: '',
+    totalExpiredQty: ''
   };
 
   constructor(
@@ -177,32 +180,32 @@ export class DetailTerimaBarangReturDariSiteComponent
         { data: 'namaBarang', title: 'Nama Barang' },
         {
           data: 'konversi', title: 'Konversi',
-          render: (data, type, row) => `${data} ${row.satuanKecil}`
+          render: (data, type, row) => `${(parseFloat(data) || 0).toFixed(2)} ${row.satuanKecil}`
         },
         {
-          data: 'qtyBesar', title: 'Qty Besar',
-          render: (data, type, row) => `${data} ${row.satuanBesar}`
+          data: 'qtyBesar', title: 'Quantity Besar',
+          render: (data, type, row) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanBesar}`
         },
         {
-          data: 'qtyKecil', title: 'Qty Kecil',
-          render: (data, type, row) => `${data} ${row.satuanKecil}`
+          data: 'qtyKecil', title: 'Quantity Kecil',
+          render: (data, type, row) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanKecil}`
         },
         {
-          data: 'totalQty', title: 'Total Qty',
-          render: (data, type, row) => `${data} ${row.satuanKecil}`
+          data: 'totalQty', title: 'Total Quantity',
+          render: (data, type, row) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanKecil}`
         },
         {
           title: 'Cek Quantity Expired',
           orderable: false,
           render: (data, type, row, meta) => {
             return `
-              <div class="d-flex justify-content-start">
-                <button class="btn btn-sm btn-outline-success action-print">
+              <div class="d-flex justify-content-start w-100">
+                <button class="btn btn-sm btn-outline-success w-100 action-print">
                   <i class="fa fa-check pe-1"></i> Cek
                 </button>
               </div>`;
           },
-        }
+        }        
       ],
       rowCallback: (row: Node, data: any, index: number) => {
         $('.action-print', row).on('click', () => {
@@ -213,13 +216,14 @@ export class DetailTerimaBarangReturDariSiteComponent
       
           if (kodeBarang) {
             this.formExpiredData = {
-              kodeNamaBarang: `${rowData.kodeBarang} - ${rowData.namaBarang}`,
-              konversi: `${rowData.konversi} ${rowData.satuanKecil}`,
-              qtyBesar: `${Math.abs(rowData.qtyBesar)} ${rowData.satuanBesar}`,
-              qtyKecil: `${Math.abs(rowData.qtyKecil)} ${rowData.satuanKecil}`,
-              totalQty: `${Math.abs(rowData.totalQty)} ${rowData.satuanKecil}`,
-            };
-      
+              kodeBarang: `${rowData.kodeBarang} `,
+              kodeNamaBarang: `${rowData.namaBarang}`,
+              konversi: `${(parseFloat(rowData.konversi) || 0).toFixed(2)} ${rowData.satuanKecil} / ${rowData.satuanBesar}`,
+              qtyBesar: `${Math.abs(rowData.qtyBesar).toFixed(2)}`,
+              qtyKecil: `${Math.abs(rowData.qtyKecil).toFixed(2)}`,
+              totalQty: `${Math.abs(rowData.totalQty).toFixed(2)}`,
+              totalExpiredQty: `${Math.abs(rowData.totalQty).toFixed(2)} ${rowData.satuanKecil}`,
+            };      
             this.renderDataTables(kodeBarang);
             this.isShowModal = true;
           }
@@ -286,25 +290,26 @@ export class DetailTerimaBarangReturDariSiteComponent
             });
         },
         columns: [
-          { data: 'dtIndex', title: '#', orderable: false, searchable: false },
-          { data: 'tglExpired', title: 'Tgl. Expired' },
+          { data: 'tglExpired', title: 'Tgl. Expired', 
+            render: (data) => moment(data).format('DD/MM/YYYY') 
+          },
           { data: 'ketTglExpired', title: 'Keterangan Tanggal' },
           {
             data: 'qtyBesar',
             title: 'Qty Besar',
-            render: (data, _, row) => `${Math.abs(data)} ${row.satuanBesar}`,
+            render: (data, _, row) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanBesar}`,
           },
           {
             data: 'qtyKecil',
             title: 'Qty Kecil',
-            render: (data, _, row) => `${Math.abs(data)} ${row.satuanKecil}`,
+            render: (data, _, row) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanKecil}`,
           },
           {
             data: 'totalQty',
             title: 'Total Qty',
-            render: (data, _, row) => `${Math.abs(data)} ${row.satuanKecil}`,
+            render: (data, _, row) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanKecil}`,
           },
-        ],
+        ]        
       };
   
       // Reset & Trigger datatable expired dengan delay DOM
