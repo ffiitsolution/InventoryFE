@@ -23,24 +23,8 @@
   min-width: 240px;
 }
 
-.table-responsive {
-  display: flex;
-  padding: 14px;
-  min-height: 60vh;
-  // background-color: blue;
-  border: 1px solid black;
-  border-radius: 4px;
-  // max-width: 50vw;
-  // max-height: 50vh;
-  // overflow: auto;
+.red-line {
+  border-right: 3px solid #000080;
+  opacity: 1;
+  max-height: auto;
 }
-// .table-header {
-//   background-color: #aab2bd;
-//   color: #ffffff;
-// }
-
-table.dataTable tbody tr:hover {
-  background-color: #d9d9d9 !important;
-  transition: background-color 0.3s ease-in-out;
-}
-

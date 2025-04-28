@@ -1,124 +1,58 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <c-row>
-        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
-          <button class="btn btn-light btn-120" (click)="onBackPressed()">
-            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
-            {{ "Kembali" | translate }}
-          </button>
-          <h5>{{ "Rubah Qty Kirim" | translate }}</h5>
-        </div>
-      </c-row>
-    </c-card-body>
-  </c-card>
-  <c-card class="mb-4">
-    <c-card-body>
-      <div class="d-grid gap-3 d-md-flex justify-content-end">
-        <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
-          <i class="fa fa-check pe-2" *ngIf="!adding"></i>
-          <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
-          {{ "Proses revisi" | translate }}
-        </button>
+      <div class="row justify-content-between mb-2">
+        <div class="col-8"></div>
+        <div class="col-4 d-flex justify-content-end">
+          <c-input-group>
+            <span cInputGroupText id="basic-addon1"><i class="fa fa-search"></i></span>
+            <input #listViewOrders id="appendedInputButton" [(ngModel)]="searchListViewOrder" class="form-control"
+              size="16" type="text" placeholder="Search..." (ngModelChange)="onFilterTextChange($event)">
+          </c-input-group>
 
-        <button class="btn btn-danger text-white btn-150" (click)="onBackPressed()">
-          <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
-        </button>
-      </div>
-
-      <div class="row">
-        <div class="divider mt-4"></div>
-        <div class="col">
-          <div class="row order-details">
-            <div class="detail-item">
-              <span class="label">{{ "Nomor Pesanan" | translate }}</span>
-              <span class="value">{{ selectedOrder.nomorPesanan }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Nomor Surat Jalan" | translate }}</span>
-              <span class="value">{{ selectedOrder.noSuratJalan }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Tgl. Pesanan" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglPesanan }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label ">{{ "Tgl. Kirim Gudang" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglTransaksi }}</span>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="row order-details">
-            <div class="detail-item">
-              <span class="label">{{ "Kode Tujuan" | translate }}</span>
-              <span class="value"> {{ selectedOrder.kodeTujuan }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Nama Tujuan" | translate }}</span>
-              <span class="value"> {{ selectedOrder.namaTujuan }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Catatan" | translate }}</span>
-              <span class="value">{{ selectedOrder.keterangan }} </span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Status Pengiriman" | translate }}</span>
-              <span class="value">{{ selectedOrder.statusPosting === 'I' ? 'INTRANSIT' : 'POSTED' }}
-              </span>
-            </div>
-
-          </div>
         </div>
       </div>
-    </c-card-body>
-  </c-card>
-</div>
-<div class="fade-in">
-  <c-card class="mb-4">
-    <c-card-body>
       <div class="table-responsive">
         <ng-container>
           <div *ngIf="loading">
             <app-loading></app-loading>
           </div>
 
-          <div class="col"></div>
-          <div class="col-4">
-            <c-input-group>
-              <span cInputGroupText id="basic-addon1"><i class="fa fa-search"></i></span>
-              <input #listViewOrders id="appendedInputButton" [(ngModel)]="searchListViewOrder" class="form-control"
-                size="16" type="text" placeholder="Search..." (ngModelChange)="onFilterTextChange($event)">
-            </c-input-group>
-          </div>
 
-          <table bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
+
+          <table *ngIf="filteredList as list" bordered [hover]="true" [responsive]="true" [striped]="true"
+            align="middle" cTable class="mb-0 border">
             <thead>
               <tr>
                 <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
                   class="text-center align-items-start" rowspan="2">Kode</th>
                 <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
-                  class="text-center align-items-start" rowspan="3">Nama
+                  class="text-center align-items-start" rowspan="2">Nama
                   Barang</th>
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
+                <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle;"
                   class="text-center align-items-start" rowspan="2">
                   Total Qty Pesan</th>
-                <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle;"
-                  class="text-center align-items-start btn-danger" colspan="2">Qty
-                  Kirim</th> <!-- Masih sejajar -->
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
+                  class="text-center align-items-start btn-danger" rowspan="2">Qty
+                  Kirim Besar</th> <!-- Masih sejajar -->
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
+                  class="text-center align-items-start btn-danger" rowspan="2">Qty
+                  Kirim Besar</th> <!-- Masih sejajar -->
                 <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
                   class="text-center align-items-start" rowspan="2">
                   Konversi</th>
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
+                <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle;"
                   class="text-center align-items-start" rowspan="2">
                   Total Qty Kirim
                 </th>
-              </tr>
-              <tr>
-                <th scope="col" class="text-center"
-                  style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle; ">Besar</th>
-                <th scope="col" class="text-center"
-                  style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle;">Kecil</th>
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
+                  class="text-center align-items-start" rowspan="2">
+                  History Expired
+                </th>
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
+                  class="text-center align-items-start" rowspan="2">
+                  RUBAH QTY KIRIM
+                </th>
               </tr>
             </thead>
             <tbody *ngIf="!listOrderData || listOrderData.length === 0">
@@ -129,7 +63,7 @@
               </tr>
             </tbody>
             <tbody>
-              <tr *ngFor="let data of listOrderData  | paginate: {
+              <tr *ngFor="let data of list  | paginate: {
                 itemsPerPage: 5,
                 currentPage: listCurrentPage,
                 totalItems:totalLengthList,
@@ -137,22 +71,21 @@
             };  let i = index">
                 <td class="text-center">{{ data.kodeBarang }}</td>
                 <td class="text-center">{{ data.namaBarang }}</td>
-                <td class="text-center">{{ data.totalQtyPesan }}.00</td>
+                <td class="text-center">{{ data.totalQtyPesan }} {{data.satuanKecil}}</td>
                 <!-- <td class="text-center">{{ data.qtyBKirim }} {{ data.satuanBesar }}</td> -->
 
-                <td class="text-center input-column">
-                  <div class="d-flex" style="gap: 5px;">
-                    <input [ngClass]="{'form-invalid': validationMessages[i]}" max="{{data.qtyBKirim}}" min="0"
-                      class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyBKirim"
-                      (input)="onInputValueItemDetail($event, i, 'numericDot', 'besar')"
-                      (blur)="onBlurQtyPesanBesar(i)" />
-                    <span class="d-flex align-items-center justify-content-center">
-                      / {{data.satuanBesar}}
-                    </span>
-                  </div>
+                <td class="text-center">{{ data.qtyBKirim }} {{data.satuanBesar}}</td>
+                <td class="text-center">{{ data.qtyKKirim }} {{data.satuanKecil}}</td>
+                <td class="text-center">{{ data.konversi }}</td>
+                <td class="text-center">{{ data.totalQtyKirim }} {{data.satuanKecil}}</td>
+                <td class="text-center">
+                  <button class="btn btn-sm action-view btn-outline-success w-50"><i class="fa fa-check pe-1"></i> Cek</button>
                 </td>
-
-                <td class="text-center input-column">
+                
+                <td class="text-center">
+                  <button class="btn btn-sm action-view btn-outline-danger w-75">Rubah Qty</button>
+                </td>
+                <!-- <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
                     <input [ngClass]="{'form-invalid': validationMessages[i]}" min="0"
                       class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyKKirim"
@@ -162,16 +95,15 @@
                       / {{data.satuanKecil}}
                     </span>
                   </div>
-                </td>
+                </td> -->
 
-                <td class="text-center">{{ data.konversi }}.00 {{data.satuanKecil}}/{{data.satuanBesar}}</td>
-                <td class="text-center">
+                <!-- <td class="text-center">
                   {{(helper.sanitizedNumber(data.qtyBKirim) *
                   data.konversi + data.qtyKKirim)}} {{data.satuanKecil}}
                   <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessages[i]">
                     {{ validationMessages[i] }}
                   </span>
-                </td>
+                </td> -->
               </tr>
             </tbody>
           </table>

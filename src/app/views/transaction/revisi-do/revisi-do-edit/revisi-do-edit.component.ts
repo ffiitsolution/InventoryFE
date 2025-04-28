@@ -58,7 +58,7 @@ export class RevisiDoEditComponent
     private appService: AppService,
     private toastr: ToastrService,
   ) {
-    this.g.navbarVisibility = true;
+    this.g.navbarVisibility = false;
     this.selectedOrder = JSON.parse(this.selectedOrder);
     this.getDeliveryItemDetails()
   }
