@@ -651,7 +651,13 @@ export class AddDataDetailOrderManualComponent
   getPaginationIndex(i: number): number {
     return (this.listCurrentPage - 1) * this.itemsPerPage + i;
   }
-  
+  getJumlahItem(): number {
+    console.log("this.filteredList[this.filteredList.length - 1]",this.filteredList[this.filteredList.length - 1])
+    if (this.filteredList[this.filteredList.length - 1].namaBarang.trim() === "") {
+      return this.filteredList.length-1;
+    }
+    return this.filteredList.length;
+  }
 
 
 }
