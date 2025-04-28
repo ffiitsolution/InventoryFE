@@ -188,18 +188,33 @@
                 </th>
                 <th
                   scope="col"
-                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Qty Pesan Besar
+                  style="
+                    background-color: #e55353;
+                    color: white;
+                    vertical-align: middle;
+                  "
+                  class="text-center align-items-start btn-danger"
+                  colspan="2"
+                >
+                  Qty Pesan
                 </th>
-                <th
-                  scope="col"
-                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Qty Pesan Kecil
-                </th>
+                
                 <th
                   scope="col"
                   style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Total Qty Pesan
+                </th>
+                <th
+                  scope="col"
+                  style="
+                    background-color: #e55353;
+                    color: white;
+                    vertical-align: middle;
+                  "
+                  class="text-center align-items-start btn-danger"
+                  colspan="2"
+                >
+                  Qty Terima
                 </th>
                 <th
                   scope="col"
@@ -209,7 +224,62 @@
                 <th
                   scope="col"
                   style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
+                  Isi Qty Expired
+                </th>
+                <th
+                scope="col"
+                style="background-color: #e55353; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
                   Total Qty Expired
+              </th>
+              </tr>
+              <tr>
+                <th
+                  scope="col"
+                  class="text-center"
+                  style="
+                    width: 160px;
+                    background-color: #3c4b64;
+                    color: white;
+                    vertical-align: middle;
+                  "
+                >
+                  Besar
+                </th>
+                <th
+                  scope="col"
+                  class="text-center"
+                  style="
+                    width: 160px;
+                    background-color: #3c4b64;
+                    color: white;
+                    vertical-align: middle;
+                  "
+                >
+                  Kecil
+                </th>
+                <th
+                  scope="col"
+                  class="text-center"
+                  style="
+                    width: 160px;
+                    background-color: #3c4b64;
+                    color: white;
+                    vertical-align: middle;
+                  "
+                >
+                  Besar
+                </th>
+                <th
+                  scope="col"
+                  class="text-center"
+                  style="
+                    width: 160px;
+                    background-color: #3c4b64;
+                    color: white;
+                    vertical-align: middle;
+                  "
+                >
+                  Kecil
                 </th>
               </tr>
             </thead>
@@ -229,22 +299,17 @@
                 <td class="text-center">{{ data.QTY_PESAN_BESAR }}</td>
                 <td class="text-center">{{ data.QTY_PESAN_KECIL }}</td>
                 <td class="text-center">{{ data.TOTAL_QTY_PESAN }}</td>
-                <td class="text-center">{{ data.TOTAL_QTY_TERIMA }}</td>
-                <td>
-                  <button class="btn btn-success btn-sm text-white btn-150" (click)="onShowModalExpired($event, i)">
-                    <i class="fa fa-check pe-1"></i> {{ "Exp." | translate }}
-                  </button>
-                </td>
-                <td class="text-center">
-                  {{
-                  getTotalExpiredData(data.kodeBarang,data.konversi)
-                  }} {{data.satuanKecil}}
-  
-                  <!-- Validation message area -->
-                  <br>
-                  <!-- <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageQtyPesanList [i]">
-                    {{ validationMessageQtyPesanList[i] }}
-                  </span> -->
+                <td class="text-center input-column">
+                  <div class="d-flex justify-content-center" style="gap: 5px">
+                    <input
+                      type="number"
+                      max="{{ data.TOTAL_QTY_EXPIRED }}"
+                      min="0"
+                      class="form-control text-center inputQty inputNumberSpace"
+                      [(ngModel)]="data.QTY_TERIMA_BESAR"
+                      (input)="onInputValueItemDetail($event, i)"
+                    />
+                  </div>
                 </td>
                 <td class="text-center input-column">
                   <div class="d-flex justify-content-center" style="gap: 5px">
@@ -253,11 +318,28 @@
                       max="{{ data.TOTAL_QTY_EXPIRED }}"
                       min="0"
                       class="form-control text-center inputQty inputNumberSpace"
-                      [(ngModel)]="data.TOTAL_QTY_EXPIRED"
+                      [(ngModel)]="data.QTY_TERIMA_KECIL"
                       (input)="onInputValueItemDetail($event, i)"
                     />
                   </div>
+                </td>            
+                <td class="text-center">
+                  {{
+                  getTotalExpiredData(data.kodeBarang,data.konversi)
+                  }} {{data.satuanKecil}}
+  
+                  <!-- Validation message area -->
+                  <!-- <br>
+                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageQtyPesanList [i]">
+                    {{ validationMessageQtyPesanList[i] }}
+                  </span> -->
                 </td>
+                <td>
+                  <button class="btn btn-success btn-sm text-white btn-150" (click)="onShowModalExpired($event, i)">
+                    <i class="fa fa-check pe-1"></i> {{ "Exp." | translate }}
+                  </button>
+                </td>
+                <td class="text-center">{{ data.TOTAL_QTY_EXPIRED }}</td>
               </tr>
             </tbody>
           </table>
@@ -294,11 +376,11 @@
           </div>
           <div class="col-8 pe-0 d-flex">
             <div class="col-3 pe-2">
-              <input type="text" class="form-control" id="kodeBarang" [(ngModel)]="selectedExpProduct.kodeBarang"
+              <input type="text" class="form-control" id="kodeBarang" [(ngModel)]="selectedExpProduct.KODE_BARANG"
                 name="kodeBarang" disabled />
             </div>
             <div class="col-9">
-              <input type="text" class="form-control" id="namaBarang" [(ngModel)]="selectedExpProduct.namaBarang"
+              <input type="text" class="form-control" id="namaBarang" [(ngModel)]="selectedExpProduct.NAMA_BARANG"
                 name="namaBarang" disabled />
             </div>
           </div>
@@ -309,7 +391,7 @@
           </div>
           <div class="col-8 pe-0">
             <input type="text" class="form-control" id="konversi"
-              [value]="selectedExpProduct.konversi + ' ' + selectedExpProduct.satuanKecil + '/' + selectedExpProduct.satuanBesar"
+              [value]="selectedExpProduct.KONVERSI + ' ' + selectedExpProduct.SATUAN_KECIL + '/' + selectedExpProduct.SATUAN_BESAR"
               name="konversi" disabled />
 
           </div>
@@ -322,7 +404,7 @@
           </div>
           <div class="col-8 pe-0">
             <input type="text" placeholder="Nomor pesanan" class="form-control" id="konversi"
-              [value]="(helper.sanitizedNumber(selectedExpProduct.qtyPesanBesar) * selectedExpProduct.konversi) + helper.sanitizedNumber(selectedExpProduct.qtyPesanKecil) + ' ' + selectedExpProduct.satuanKecil"
+              [value]="(helper.sanitizedNumber(selectedExpProduct.QTY_PESAN_BESAR) * selectedExpProduct.KONVERSI) + helper.sanitizedNumber(selectedExpProduct.QTY_PESAN_KECIL) + ' ' + selectedExpProduct.SATUAN_KECIL"
               name="konversi" disabled />
           </div>
 
@@ -335,7 +417,7 @@
             <label for="nomorPesanan">{{ "Quantity Besar" | translate }}</label>
           </div>
           <div class="col-8 pe-0">
-            <input type="text" class="form-control" id="konversi" [value]="selectedExpProduct.qtyPesanBesar"
+            <input type="text" class="form-control" id="konversi" [value]="selectedExpProduct.QTY_PESAN_BESAR || 0"
               name="konversi" disabled />
           </div>
 
@@ -346,7 +428,7 @@
             <label for="nomorPesanan">{{ "Quantity Kecil" | translate }}</label>
           </div>
           <div class="col-8 pe-0">
-            <input type="text" class="form-control" id="konversi" [value]="selectedExpProduct.qtyPesanKecil || 0"
+            <input type="text" class="form-control" id="konversi" [value]="selectedExpProduct.QTY_PESAN_KECIL || 0"
               name="konversi" disabled />
           </div>
         </div>
@@ -362,7 +444,7 @@
        Pengisian tanggal expired tidak boleh sama (Duplikat)
       </span>
       <span>
-        Jumlah TOTAL QTY EXPIRED  harus sama dengan TOTAL QTY PENGIRIMAN..!!
+        Jumlah TOTAL QTY EXPIRED  harus sama dengan TOTAL QTY TERIMA..!!
       </span>
     </div>
     <div class="divider"></div>
@@ -419,10 +501,10 @@
               <td class="text-center input-column">
                 <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.qtyPesanBesar" (change)="onInputQtyBesarExpired($event,data.kodeBarang, i)"
+                    [(ngModel)]="data.qtyPesanBesar" (change)="onInputQtyBesarExpired($event,data.KODE_BARANG, i)"
                     (keypress)="g.conditionInput($event, 'numericDot')" />
                   <span class="d-flex align-items-center justify-content-center">
-                    / {{data.satuanBesar}}
+                    / {{data.SATUAN_BESAR}}
                   </span>
                 </div>
               </td>
@@ -430,10 +512,10 @@
               <td class="text-center input-column">
                 <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.qtyPesanKecil" (change)="onInputQtyKecilExpired($event,data.kodeBarang, i)"
+                    [(ngModel)]="data.QTY_PESAN_KECIL" (change)="onInputQtyKecilExpired($event,data.KODE_BARANG, i)"
                     (keypress)="g.conditionInput($event, 'numericDot')" />
                   <span class="d-flex align-items-center justify-content-center">
-                    / {{data.satuanKecil}}
+                    / {{data.SATUAN_KECIL}}
                   </span>
                 </div>
 
@@ -445,8 +527,8 @@
 
               <td class="text-center">
                 {{
-                ((helper.sanitizedNumber(data.qtyPesanBesar) *
-                data.konversi) + helper.sanitizedNumber(data.qtyPesanKecil)).toFixed(2)
+                ((helper.sanitizedNumber(data.QTY_PESAN_BESAR) *
+                data.konversi) + helper.sanitizedNumber(data.QTY_PESAN_KECIL)).toFixed(2)
                 }}
                 {{data.satuanKecil}}
 
@@ -457,7 +539,7 @@
                 </span>
               </td>
               <td class="text-center">
-                <button (click)="onModalDeleteRow(data.kodeBarang,i)" type="button" class="btn btn-secondary ms-2">
+                <button (click)="onModalDeleteRow(data.KODE_BARANG,i)" type="button" class="btn btn-secondary ms-2">
                   <i class="fa fa-trash me-1"></i>
                 </button>
               </td>
@@ -475,7 +557,7 @@
       <div class="col-6 d-flex justify-content-end align-items-center gap-3">
         <p class="mb-0"> Total: {{
           totalFilteredExpired
-          }} {{ selectedExpProduct.satuanKecil }}
+          }} {{ selectedExpProduct.SATUAN_KECIL }} 
         </p>
         <button (click)="onSaveEntryExpired()" type="button" class="btn btn-primary ms-2">
           <i class="fa fa-check me-1"></i>Simpan
