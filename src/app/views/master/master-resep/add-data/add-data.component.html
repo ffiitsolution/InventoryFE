@@ -150,16 +150,16 @@
                 </div>
               </div>
 
-              <div class="w-100  py-1 row">
-                <div class="col-3 pe-0 d-flex">
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="statusBarang">
+                    {{
+                      "Status Barang" | translate
+                    }}
+                    </label>
                 </div>
-                <div class="col-5 pe-0 d-flex justify-content-end">
-                  <!-- <label *ngIf="myForm.get('statusBarang')?.value == 'A'">
-                      {{ "Clik untuk menonaktifkan" | translate }}
-                  </label> -->
-                </div>
-                <div class="col-4 d-flex align-items-end justify-content-end">
-                  <button 
+                <div class="col-8 d-flex align-items-end justify-content-start">
+                  <!-- <button 
                   [ngClass]="myForm.get('statusBarang')?.value == 'A' ? 'btn btn-success btn-150 pe-3' : 'btn  btn-info btn-150 pe-3'"
                   class=" text-white btn-150 pe-3"
                   [disabled]="loadingSimpan"
@@ -168,7 +168,12 @@
                    <i class="fa fa-check pe-2" *ngIf="!loadingSimpan"></i>
                    <i class="fa fa-spinner fa-spin" *ngIf="loadingSimpan"></i>
                    {{ myForm.get('statusBarang')?.value == 'A' ? "Active" : "Inactive" | translate }}
-                 </button>
+                 </button> -->
+
+                 <div  class="d-flex justify-content-center"> 
+                  <span *ngIf="myForm.get('statusBarang')?.value == 'A'" class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span>
+                  <span *ngIf="myForm.get('statusBarang')?.value == 'T'" class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span>
+                </div>
                 </div>
               
                 </div>

@@ -82,6 +82,7 @@ export class AddDataDetailPenerimaanBrgBksComponent
   paramGenerateReport = {};
   isShowModalReport: boolean = false;
   buttonCaptionPrint: String = 'Cetak';
+  isGenerate: boolean = false;
 
   constructor(
     public g: GlobalService,
@@ -91,7 +92,7 @@ export class AddDataDetailPenerimaanBrgBksComponent
     private appService: AppService,
     private toastr: ToastrService,
     private service: AppService,
-    private dataService: DataService,
+    private dataService: DataService
   ) {
     this.g.navbarVisibility = false;
     this.headerBrgBks = JSON.parse(this.headerBrgBks);
@@ -107,7 +108,7 @@ export class AddDataDetailPenerimaanBrgBksComponent
     this.disabledPrintButton = isCanceled;
     this.disabledCancelButton = isCanceled;
     this.alreadyPrint =
-    this.headerBrgBks.statusCetak == SEND_PRINT_STATUS_SUDAH;
+      this.headerBrgBks.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.jumlahItem.emit(this.listProductData.length);
     this.renderDataTables();
@@ -129,11 +130,9 @@ export class AddDataDetailPenerimaanBrgBksComponent
     this.ngUnsubscribe.complete();
   }
 
-  onBackPressed(data: any ='') {
+  onBackPressed(data: any = '') {
     this.onBatalPressed.emit(data);
   }
-
-
 
   formatStrDate(date: any) {
     return moment(date, 'YYYY-MM-DD').format('DD-MM-YYYY');
@@ -144,7 +143,6 @@ export class AddDataDetailPenerimaanBrgBksComponent
       this.loadingSimpan = true;
       // param for order Header
 
-      
       const paramUpdate = {
         returnNo: this.headerBrgBks.noDocument,
         status: 'T',
@@ -152,7 +150,6 @@ export class AddDataDetailPenerimaanBrgBksComponent
         flagBrgBekas: 'Y',
       };
 
-     
       const param = {
         kodeGudang: this.g.getUserLocationCode(),
         tglTransaksi: moment(
@@ -180,8 +177,7 @@ export class AddDataDetailPenerimaanBrgBksComponent
             qtyBesar: item.qtyWasteBesar || 0,
             qtyKecil: item.qtyWasteKecil || 0,
             totalQty:
-              this.helper.sanitizedNumber(item.qtyWasteBesar) *
-                item.konversi +
+              this.helper.sanitizedNumber(item.qtyWasteBesar) * item.konversi +
               this.helper.sanitizedNumber(item.qtyWasteKecil),
             hargaSatuan: 0,
             userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
@@ -189,7 +185,8 @@ export class AddDataDetailPenerimaanBrgBksComponent
       };
 
       Swal.fire({
-        title: 'Pastikan semua data sudah di input dengan benar, PERIKSA SEKALI LAGI...!!',
+        title:
+          'Pastikan semua data sudah di input dengan benar, PERIKSA SEKALI LAGI...!!',
         text: 'DATA YANG SUDAH DIPOSTING TIDAK DAPAT DIPERBAIKI..!!',
         icon: 'warning',
         showCancelButton: true,
@@ -207,30 +204,33 @@ export class AddDataDetailPenerimaanBrgBksComponent
                 if (!res.success) {
                   this.toastr.error(res.message);
                 } else {
-                 
                   this.service
-                  .updateWarehouse('/api/return-order/update', paramUpdate)
-                  .pipe(takeUntil(this.ngUnsubscribe))
-                  .subscribe({
-                    next: (res2) => {
-                      
-                      if (!res2.success) {
-                        this.toastr.warning('Data berhasil diposting, tetapi update status retur gagal!');
-                      } else {
-                        this.toastr.success('Data production berhasil diposting dan status retur diperbarui!');
-                      }
-                      this.adding = false;
-                      this.loadingSimpan = false;
-                      this.onPreviousPressed();
-                    },
-                    error: () => {
-                      this.toastr.warning('Data berhasil diposting, tetapi gagal update status retur!');
-                      this.loadingSimpan = false;
-                    },
-                  });
+                    .updateWarehouse('/api/return-order/update', paramUpdate)
+                    .pipe(takeUntil(this.ngUnsubscribe))
+                    .subscribe({
+                      next: (res2) => {
+                        if (!res2.success) {
+                          this.toastr.warning(
+                            'Data berhasil diposting, tetapi update status retur gagal!'
+                          );
+                        } else {
+                          this.toastr.success(
+                            'Data production berhasil diposting dan status retur diperbarui!'
+                          );
+                        }
+                        this.adding = false;
+                        this.loadingSimpan = false;
+                        this.onPreviousPressed();
+                      },
+                      error: () => {
+                        this.toastr.warning(
+                          'Data berhasil diposting, tetapi gagal update status retur!'
+                        );
+                        this.loadingSimpan = false;
+                      },
+                    });
 
                   this.onBackPressed(res.data);
-               
                 }
                 this.adding = false;
                 this.loadingSimpan = false;
@@ -247,12 +247,11 @@ export class AddDataDetailPenerimaanBrgBksComponent
     }
   }
 
-  onShowModal(index:number) {
+  onShowModal(index: number) {
     this.isShowModal = true;
-    this.currentSelectedForModal = index
+    this.currentSelectedForModal = index;
   }
 
-  
   onPreviousPressed(): void {
     this.router.navigate(['/transaction/penerimaan-barang-bekas/list']);
   }
@@ -276,9 +275,6 @@ export class AddDataDetailPenerimaanBrgBksComponent
       isFromRetur: false,
     },
   ];
-
-  
-  
 
   validateDate(event: any, kodeBarang: string, index: number) {
     let inputDate: any = '';
@@ -359,15 +355,14 @@ export class AddDataDetailPenerimaanBrgBksComponent
       value = '0.00'; // Default if empty
     }
 
-    if(value <= 0){
-      this.validationMessageList[index] = "Quantity tidak boleh <= 0"
-    }else{
-      this.validationMessageList[index] ="";
+    if (value <= 0) {
+      this.validationMessageList[index] = 'Quantity tidak boleh <= 0';
+    } else {
+      this.validationMessageList[index] = '';
     }
 
     this.listProductData[index].qtyWasteBesar = value;
-    this.listProductData[index].totalQty =
-    (
+    this.listProductData[index].totalQty = (
       Number(value) * Number(this.listProductData[index].konversi) +
       Number(this.listProductData[index].qtyWasteKecil)
     ).toFixed(2);
@@ -382,32 +377,31 @@ export class AddDataDetailPenerimaanBrgBksComponent
       if (isNaN(numericValue)) {
         numericValue = 0;
       }
-      value =  Math.abs(numericValue).toFixed(2);
+      value = Math.abs(numericValue).toFixed(2);
     } else {
       value = '0.00'; // Default if empty
     }
 
-    if(value <= 0){
-      this.validationMessageList[index] = "Quantity tidak boleh <= 0"
-    }else{
-      this.validationMessageList[index] ="";
+    if (value <= 0) {
+      this.validationMessageList[index] = 'Quantity tidak boleh <= 0';
+    } else {
+      this.validationMessageList[index] = '';
     }
 
-    if( Math.round(value) >=
-        Math.round(this.listProductData[index].konversi)){
-        this.validationMessageList[index] = "Quantity kecil tidak boleh >= konversi"
+    if (Math.round(value) >= Math.round(this.listProductData[index].konversi)) {
+      this.validationMessageList[index] =
+        'Quantity kecil tidak boleh >= konversi';
 
-        this.toastr.error('Quantity kecil tidak boleh >= konversi');
-        value = '0.00';
+      this.toastr.error('Quantity kecil tidak boleh >= konversi');
+      value = '0.00';
     }
-
 
     this.listProductData[index].qtyWasteKecil = value;
-   
-    this.listProductData[index].totalQty =
-    (
-    Number(this.listProductData[index].qtyWasteBesar) * Number(this.listProductData[index].konversi) +
-    Number(value)
+
+    this.listProductData[index].totalQty = (
+      Number(this.listProductData[index].qtyWasteBesar) *
+        Number(this.listProductData[index].konversi) +
+      Number(value)
     ).toFixed(2);
     this.updateTotalQty();
   }
@@ -423,12 +417,10 @@ export class AddDataDetailPenerimaanBrgBksComponent
       0
     );
 
-    this.totalData = parseFloat(this.totalData).toFixed(
-      2
-    );
+    this.totalData = parseFloat(this.totalData).toFixed(2);
   }
 
-  onDeleteRow(index: number,data:any) {
+  onDeleteRow(index: number, data: any) {
     this.listProductData.splice(index, 1);
     this.jumlahItem.emit(this.listProductData.length);
   }
@@ -443,7 +435,6 @@ export class AddDataDetailPenerimaanBrgBksComponent
   }
 
   getProductRow(kodeBarang: string, index: number) {
-     
     if (kodeBarang !== '') {
       const isDuplicate = this.listProductData.some(
         (item, i) => item.kodeBarang === kodeBarang && i !== index
@@ -454,49 +445,51 @@ export class AddDataDetailPenerimaanBrgBksComponent
         return;
       }
 
-      this.appService.getProductResep(kodeBarang)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe({
-        next: (res) => {
-          if (res) {
-            const resepData = { 
-              kodeBarang: res.kodeBarang,
-              namaBarang: res.namaBarang, 
-              konversi: res.konversi, 
-              satuanKecil: res.satuanKecil,
-              satuanBesar: res.satuanBesar, 
-              qtyPemakaian: res.qtyPemakaian 
-            };
-        
-          
-            this.listProductData[index] = resepData; 
-          }
-        },
-        error: (err) => {
-          // Handle error case and show error toast
-          this.toastr.error('Kode barang tidak ditemukan!');
-        }
-      });
+      this.appService
+        .getProductResep(kodeBarang)
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe({
+          next: (res) => {
+            if (res) {
+              const resepData = {
+                kodeBarang: res.kodeBarang,
+                namaBarang: res.namaBarang,
+                konversi: res.konversi,
+                satuanKecil: res.satuanKecil,
+                satuanBesar: res.satuanBesar,
+                qtyPemakaian: res.qtyPemakaian,
+              };
+
+              this.listProductData[index] = resepData;
+            }
+          },
+          error: (err) => {
+            // Handle error case and show error toast
+            this.toastr.error('Kode barang tidak ditemukan!');
+          },
+        });
     }
   }
 
   renderDataTables(): void {
     this.dtOptions = {
       language:
-        this.translation.getCurrentLanguage() == 'id' ? this.translation.idDatatable : {},
+        this.translation.getCurrentLanguage() == 'id'
+          ? this.translation.idDatatable
+          : {},
       processing: true,
       serverSide: true,
       autoWidth: true,
       info: true,
-      pageLength:5,
-      lengthMenu: [  // Provide page size options
-        [8, 10],   // Available page sizes
-        ['8', '10']  // Displayed page size labels
+      pageLength: 5,
+      lengthMenu: [
+        // Provide page size options
+        [8, 10], // Available page sizes
+        ['8', '10'], // Displayed page size labels
       ],
       order: [
         [6, 'desc'],
         [0, 'asc'],
-       
       ],
       drawCallback: (drawCallback) => {
         this.selectedRowData = undefined;
@@ -508,7 +501,8 @@ export class AddDataDetailPenerimaanBrgBksComponent
           ...dataTablesParameters,
           kodeGudang: this.g.getUserLocationCode(),
         };
-        this.appService.getProductWastedList(params)
+        this.appService
+          .getProductWastedList(params)
           .pipe(takeUntil(this.ngUnsubscribe))
           .subscribe((resp: any) => {
             const mappedData = resp.data.map((item: any, index: number) => {
@@ -528,163 +522,162 @@ export class AddDataDetailPenerimaanBrgBksComponent
               data: mappedData,
             });
           });
+      },
+      columns: [
+        { data: 'kodeBarang', title: 'Kode' },
+        { data: 'namaBarang', title: 'Nama Barang' },
+        {
+          data: 'konversi',
+          title: 'Konversi',
+          render: function (data, type, row) {
+            return Number(data).toFixed(2); // Ensures two decimal places
+          },
         },
-        columns: [
-          { data: 'kodeBarang', title: 'Kode' },
-          { data: 'namaBarang', title: 'Nama Barang' },
-          { 
-            data: 'konversi', 
-            title: 'Konversi', 
-            render: function(data, type, row) {
-              return Number(data).toFixed(2); // Ensures two decimal places
+        { data: 'satuanBesar', title: 'Satuan Besar' },
+        { data: 'satuanKecil', title: 'Satuan Kecil' },
+        { data: 'defaultGudang', title: 'Default Gudang' },
+        {
+          data: 'status',
+          title: 'Status',
+          searchable: false,
+          render: (data) => {
+            if (data === 'Aktif') {
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
+            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
           },
-          { data: 'satuanBesar', title: 'Satuan Besar', },
-          { data: 'satuanKecil', title: 'Satuan Kecil' },
-          { data: 'defaultGudang', title: 'Default Gudang', },
-          {
-            data: 'status',
-            title: 'Status',
-            searchable: false,
-            render: (data) => {
-              if (data === 'Aktif') {
-                return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
-              }
-              return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
-            },
-          },
-          {
-            title: 'Action',
-            orderable: false,
-            render: (data, type, row) => {
-              const disabled = row.status !== 'Aktif' ? 'disabled' : '';
-              return `<button class="btn btn-sm action-select btn-info btn-80 text-white" ${disabled}>Pilih</button>`;
-            },
-          },
-  
-        ],
-        searchDelay: 1000,
-        rowCallback: (row: Node, data: any[] | Object, index: number) => {
-          $('.action-select', row).on('click', () =>
-            this.onPilihBarang(data)
-          );
-          
-          $('td', row).on('click', () => {
-            $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
-            if (this.selectedRowData !== data) {
-              this.selectedRowData = data;
-              $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
-            } else {
-              this.selectedRowData = undefined;
-            }
-          });
-        
-      
-          return row;
-  
         },
-      };
-    }
+        {
+          title: 'Action',
+          orderable: false,
+          render: (data, type, row) => {
+            const disabled = row.status !== 'Aktif' ? 'disabled' : '';
+            return `<button class="btn btn-sm action-select btn-info btn-80 text-white" ${disabled}>Pilih</button>`;
+          },
+        },
+      ],
+      searchDelay: 1000,
+      rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        $('.action-select', row).on('click', () => this.onPilihBarang(data));
 
-    onPilihBarang(data: any) {
-      let errorMessage;
-      this.isShowModal = false;
-    
-  
-      const existingItemIndex = this.listProductData.findIndex(
-        (item) => item.kodeBarang === data.kodeBarang
-      );
-    
-      if (existingItemIndex === -1) {
-        const resepData = { 
-          kodeBarang: data.kodeBarang,
-          namaBarang: data.namaBarang, 
-          konversi: parseFloat(data.konversi).toFixed(2), 
-          satuanKecil: data.satuanKecil,
-          satuanBesar: data.satuanBesar, 
-          qtyWasteBesar: '1.00',
-          qtyWasteKecil: '0.00',
-          totalQty: '1.00', 
-          isFromRetur: false       
-        };
-    
-      
-        this.listProductData[this.currentSelectedForModal] = resepData; 
-      
-      } else {
-        // If item already exists in the list
-        errorMessage = 'Barang sudah ditambahkan';
-      }
-    
-      // Show error if there was an issue
-      if (errorMessage) {
-        this.toastr.error(errorMessage);
-      }
-    }
+        $('td', row).on('click', () => {
+          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
 
-    onAdd(){
-      this.listProductData.push({
-        kodeBarang: '',
-        namaBarang: '',
-        konversi: '',
-        satuanKecil: '',
-        satuanBesar: '',
-        qtyWasteBesar: '0.00',
+        return row;
+      },
+    };
+  }
+
+  onPilihBarang(data: any) {
+    let errorMessage;
+    this.isShowModal = false;
+
+    const existingItemIndex = this.listProductData.findIndex(
+      (item) => item.kodeBarang === data.kodeBarang
+    );
+
+    if (existingItemIndex === -1) {
+      const resepData = {
+        kodeBarang: data.kodeBarang,
+        namaBarang: data.namaBarang,
+        konversi: parseFloat(data.konversi).toFixed(2),
+        satuanKecil: data.satuanKecil,
+        satuanBesar: data.satuanBesar,
+        qtyWasteBesar: '1.00',
         qtyWasteKecil: '0.00',
-        totalQty: '0.00',
-        isConfirmed: false,
-      });
+        totalQty: '1.00',
+        isFromRetur: false,
+      };
 
-      this.jumlahItem.emit(this.listProductData.length);
+      this.listProductData[this.currentSelectedForModal] = resepData;
+    } else {
+      // If item already exists in the list
+      errorMessage = 'Barang sudah ditambahkan';
     }
 
-    closeModal(){
-      this.isShowModalReport = false;
-      this.disabledPrintButton = false;
+    // Show error if there was an issue
+    if (errorMessage) {
+      this.toastr.error(errorMessage);
     }
+  }
 
-    loadDataPenerimaan() {
-      let param = { returnNo: this.headerBrgBks?.noDocument };
-   
-      this.dataService
-      .postData(this.config.BASE_URL_HQ + '/api/return-order/list-detail', param)
+  onAdd() {
+    this.listProductData.push({
+      kodeBarang: '',
+      namaBarang: '',
+      konversi: '',
+      satuanKecil: '',
+      satuanBesar: '',
+      qtyWasteBesar: '0.00',
+      qtyWasteKecil: '0.00',
+      totalQty: '0.00',
+      isConfirmed: false,
+    });
+
+    this.jumlahItem.emit(this.listProductData.length);
+  }
+
+  closeModal() {
+    this.isShowModalReport = false;
+    this.disabledPrintButton = false;
+  }
+
+  loadDataPenerimaan() {
+    let param = { returnNo: this.headerBrgBks?.noDocument };
+
+    this.dataService
+      .postData(
+        this.config.BASE_URL_HQ + '/api/return-order/list-detail',
+        param
+      )
       .subscribe({
-          next: (res) => {
-              if (!res || !res.item) {
-                  console.error('Response dari API tidak valid:', res);
-                  return;
-              }
-  
-              if(res.item.length == 0) {
-                return;
-              }
+        next: (res) => {
+          if (!res || !res.item) {
+            console.error('Response dari API tidak valid:', res);
+            return;
+          }
 
-              this.listProductData = res.item
-              .filter((item: any) => item.flagBrgBekas === 'Y') // ⬅️ only items with flagBrgBekas === 'Y'
-              .map((item: any) => ({
-                kodeBarang: item.itemCode,
-                namaBarang: item.namaBarang,
-                konversi: parseFloat(item.konversi).toFixed(2),
-                qtyPemakaian: parseFloat(item.totalQty).toFixed(2),
-                satuanKecil: item.uomWhKcl,
-                satuanBesar: item.uomWhBsr,
-                qtyWasteBesar: parseFloat(item.qtyBsr).toFixed(2),
-                qtyWasteKecil: parseFloat(item.qtyKcl).toFixed(2),
-                totalQty: parseFloat(item.totalQty).toFixed(2),
-                isFromRetur: true,
-              }));
-            
-  
-              if(this.listProductData.length == 0) {
-                this.toastr.error(`Data barang bekas tidak ditemukan di No Retur tersebut!`);
-                this.onBackPressed();
-              }
-                this.jumlahItem.emit(this.listProductData.length);
-           
-          },
-          error: (err) => {
-              console.error('Terjadi kesalahan saat memanggil API:', err);
-          },
+          if (res.item.length == 0) {
+            return;
+          }
+
+          this.listProductData = res.item
+            .filter((item: any) => item.flagBrgBekas === 'Y') // ⬅️ only items with flagBrgBekas === 'Y'
+            .map((item: any) => ({
+              kodeBarang: item.itemCode,
+              namaBarang: item.namaBarang,
+              konversi: parseFloat(item.konversi).toFixed(2),
+              qtyPemakaian: parseFloat(item.totalQty).toFixed(2),
+              satuanKecil: item.uomWhKcl,
+              satuanBesar: item.uomWhBsr,
+              qtyWasteBesar: parseFloat(item.qtyBsr).toFixed(2),
+              qtyWasteKecil: parseFloat(item.qtyKcl).toFixed(2),
+              totalQty: parseFloat(item.totalQty).toFixed(2),
+              isFromRetur: true,
+            }));
+
+          if (this.listProductData.length == 0) {
+            this.toastr.error(
+              `Data barang bekas tidak ditemukan di No Retur tersebut!`
+            );
+            this.onBackPressed();
+          } else {
+            this.isGenerate = true;
+          }
+
+          console.log('listProductData', this.isGenerate);
+          this.jumlahItem.emit(this.listProductData.length);
+        },
+        error: (err) => {
+          console.error('Terjadi kesalahan saat memanggil API:', err);
+        },
       });
-    }
+  }
 }

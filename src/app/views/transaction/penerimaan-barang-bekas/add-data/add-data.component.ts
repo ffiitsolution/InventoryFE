@@ -5,6 +5,7 @@ import {
   OnInit,
   ViewChild,
   Output,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { GlobalService } from '../../../../service/global.service';
@@ -33,6 +34,7 @@ import { HelperService } from '../../../../service/helper.service';
 import { DatePipe } from '@angular/common';
 import { DataService } from '../../../../service/data.service';
 import { AppConfig } from '../../../../config/app.config';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-add-penerimaan-brg-bks',
   templateUrl: './add-data.component.html',
@@ -46,13 +48,17 @@ export class AddPenerimaanBrgBksComponent
   nomorPesanan: any;
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
-  @ViewChild(DataTableDirective, { static: false })
-  dtElement: DataTableDirective;
+  // @ViewChild(DataTableDirective, { static: false })
+  // dtElement: DataTableDirective;
+  @ViewChild(DataTableDirective, { static: false }) dtElement2: DataTableDirective;
+
+  @ViewChild(DataTableDirective, { static: false }) dtElementRetur: DataTableDirective;
+  dtTriggerRetur: Subject<DataTables.Settings> = new Subject<DataTables.Settings>();
+  dtTrigger: Subject<DataTables.Settings> = new Subject<DataTables.Settings>();
   dtOptions: DataTables.Settings = {};
   dtOptionsRetur: DataTables.Settings = {};
   isShowModal: boolean = false;
   isShowModalRetur: boolean = false;
-  dtTrigger: Subject<any> = new Subject();
   bsConfig: Partial<BsDatepickerConfig>;
   page = new Page();
   selectedRow: any = {};
@@ -81,7 +87,9 @@ export class AddPenerimaanBrgBksComponent
     private form: FormBuilder,
     private appService: AppService,
     private dataService: DataService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+     private toastr: ToastrService,
+     private cdr: ChangeDetectorRef
   ) {
     this.dpConfigtrans.containerClass = 'theme-dark-blue';
     this.dpConfigtrans.dateInputFormat = 'DD/MM/YYYY';
@@ -120,8 +128,8 @@ export class AddPenerimaanBrgBksComponent
       jumlahItem: [1],
     });
 
-    this.renderDataTablesRetur();
     this.renderDataTables();
+    this.renderDataTablesRetur();
   }
 
   onAddDetail() {
@@ -146,11 +154,16 @@ export class AddPenerimaanBrgBksComponent
   }
 
   ngAfterViewInit(): void {
-    this.dtTrigger.next(null);
+   
+    this.dtTriggerRetur.next(this.dtOptionsRetur);
+    console.log(this.dtElementRetur?.dtInstance,'instance')
   }
+
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
+    this.dtTriggerRetur.unsubscribe();
+
     this.globalService.removeLocalstorage('headerBrgBks');
     // clean subsribe rxjs
     this.ngUnsubscribe.next();
@@ -177,117 +190,44 @@ export class AddPenerimaanBrgBksComponent
   }
 
   actionBtnClickRetur(data: any = null) {
-    console.log(data, 'data');
-    this.selectedRowRetur = JSON.stringify(data);
-    this.isShowModalRetur = false;
-    this.mapReturData(data);
+   
+    const params = {
+      noDoc:  data.returnNo,
+    };
+
+    const paramUpdate = {
+      returnNo: data.returnNo,
+      status: 'T',
+      user: this.globalService.getLocalstorage('inv_currentUser').namaUser,
+      flagBrgBekas: 'Y',
+    };
+
+    this.appService.checkNoReturExistPenerimaanBrgBks(params)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((resp: any) => {
+          if(resp){
+            this.toastr.error(`No retur tersebut sudah di input secara manual!`);
+            this.appService
+                    .updateWarehouse('/api/return-order/update', paramUpdate)
+                    .pipe(takeUntil(this.ngUnsubscribe))
+                    .subscribe({
+                      next: (res2) => {
+                      
+                        const currentUrl = this.router.url;
+                        this.router.navigateByUrl('/empty', { skipLocationChange: true }).then(() => {
+                          this.router.navigate([currentUrl]);
+                        });
+                      },
+                    });
+          }else{
+            this.selectedRowRetur = JSON.stringify(data);
+            this.isShowModalRetur = false;
+            this.mapReturData(data);
+          }
+      });
+      
+  
   }
-
-  //   renderDataTables(): void {
-  //     this.dtOptions = {
-  //       language:
-  //         this.translationService.getCurrentLanguage() == 'id' ? this.translationService.idDatatable : {},
-  //       processing: true,
-  //       serverSide: true,
-  //       autoWidth: true,
-  //       info: true,
-  //       drawCallback: (drawCallback) => {
-  //         this.selectedRowData = undefined;
-  //       },
-  //       ajax: (dataTablesParameters: any, callback) => {
-  //         this.page.start = dataTablesParameters.start;
-  //         this.page.length = dataTablesParameters.length;
-  //         const requestData = {
-  //           ...dataTablesParameters,
-  //         };
-  //         this.dataService
-  //           .postData(this.globalService.urlServer + '/api/branch/dt', requestData)
-  //           .subscribe((resp: any) => {
-  //             const mappedData = resp.data.map((item: any, index: number) => {
-  //               // hapus rn
-  //               const { rn, ...rest } = item;
-  //               const finalData = {
-  //                 ...rest,
-  //                 kodeKeteranganRsc: `${rest.kodeRsc} - ${rest.keteranganRsc}`,
-  //                 dtIndex: this.page.start + index + 1,
-  //               };
-  //               return finalData;
-  //             });
-  //             this.page.recordsTotal = resp.recordsTotal;
-  //             this.page.recordsFiltered = resp.recordsFiltered;
-  //             callback({
-  //               recordsTotal: resp.recordsTotal,
-  //               recordsFiltered: resp.recordsFiltered,
-  //               data: mappedData,
-  //             });
-  //           });
-  //       },
-  //       columns: [
-  //         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
-  //         { data: 'kodeCabang', title: 'Kode', searchable: true },
-  //         { data: 'namaCabang', title: 'Nama', searchable: true },
-  //         { data: 'keteranganRsc', title: 'RSC', searchable: true },
-  //         { data: 'kota', title: 'Kota', searchable: true },
-  //         { data: 'deskripsiGroup', title: 'Group', searchable: true },
-  //         {
-  //           data: 'statusAktif',
-  //           title: 'Status',
-  //           searchable: false,
-  //           render: (data) => {
-  //             if (data === 'A') {
-  //               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
-  //             }
-  //             return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:grey; width: 60px">Inactive</span> </div>`;
-  //           },
-  //         },
-  //         {
-  //           title: 'Action',
-  //           render: (data, type, row) => {
-  //             if (row.statusAktif === 'T') {
-  //               return `
-  //                 <div class="btn-group" role="group" aria-label="Action">
-  //                   <button class="btn btn-sm action-select btn-outline-info btn-60" disabled>Pilih</button>
-  //                 </div>
-  //               `;
-  //             }
-  //             else
-  //               return `
-  //               <div class="btn-group" role="group" aria-label="Action">
-  //                 <button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>
-  //               </div>
-  //             `;
-  //           }
-  //         }
-
-  //       ],
-  //       searchDelay: 1500,
-  //       order: [
-  //         [1, 'asc'],
-  //       ],
-  // rowCallback: (row: Node, data: any[] | Object, index: number) => {
-  //        $('.action-select', row).on('click', () =>
-  //          this.actionBtnClick(ACTION_SELECT, data)
-  //        );
-  //        if (index === 0 && !this.selectedRowData) {
-  //          setTimeout(() => {
-  //            $(row).trigger('td');
-  //          }, 0);
-  //        }
-  //        $('td', row).on('click', () => {
-  //          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
-  //          if (this.selectedRowData !== data) {
-  //            this.selectedRowData = data;
-  //            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
-  //          } else {
-  //            this.selectedRowData = undefined;
-  //          }
-  //        });
-
-  //        return row;
-
-  //      },
-  //     };
-  //   }
 
   renderDataTables(): void {
     this.dtOptions = {
@@ -425,6 +365,7 @@ export class AddPenerimaanBrgBksComponent
       keterangan: '',
       jumlahItem: '0',
     });
+    this.isDisabledCabang= false;
     this.isShowDetail = false;
 
     if (newItem) this.onShowModalPrint(newItem);
@@ -529,6 +470,13 @@ export class AddPenerimaanBrgBksComponent
       columns: [
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
         { data: 'returnNo', title: 'Tipe', searchable: true },
+        {
+          data: 'dateReturn',
+          title: 'Tgl Retur',
+          render: (data, type, row) => {
+            return this.globalService.formatStrDateMMM(data);
+          },
+        },
         { data: 'outletCode', title: 'Kode', searchable: true },
         { data: 'namaPengirim', title: 'Inisial', searchable: true },
         {
@@ -562,8 +510,7 @@ export class AddPenerimaanBrgBksComponent
       ],
       searchDelay: 1500,
       order: [
-        [2, 'asc'],
-        [1, 'asc'],
+        [2, 'desc'],
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-select', row).on('click', () =>
@@ -611,4 +558,57 @@ export class AddPenerimaanBrgBksComponent
       alamatCabang: '',
     });
   }
+
+  getDataOnline(): void {
+    // Reinitialize DataTable when data is updated
+    console.log(this.dtElementRetur);
+    if (this.dtElementRetur?.dtInstance) {
+      this.dtElementRetur.dtInstance.then((dtInstance: DataTables.Api) => {
+        console.log(dtInstance,'2');
+        if (dtInstance) {
+          dtInstance.clear();
+          dtInstance.destroy();
+        }
+     
+        setTimeout(() => {
+          this.renderDataTablesRetur();
+          this.dtTriggerRetur.next(this.dtOptionsRetur);
+        }, 100); // small delay to make sure Angular fully renders
+      });
+    } else {
+      console.log('3');
+      // If dtElementRetur is not available, just initialize it
+   
+      setTimeout(() => {
+        this.renderDataTablesRetur();
+        this.dtTriggerRetur.next(this.dtOptionsRetur);
+      }, 100);
+    }
+  }
+  // getDataOnline(): void {
+  //   // Get all DataTables
+  //   const allTables = $.fn.dataTable.tables({ visible: true, api: true });
+  
+  //   // If there are DataTables, we can loop over each table and destroy them
+  //   if (allTables.length > 0) {
+  //     // Loop through each table instance and destroy
+  //     for (let i = 0; i < allTables.length; i++) {
+  //       const dtInstance = $(allTables[i]).DataTable();
+  //       if (dtInstance) {
+  //         dtInstance.clear();   // Clear the data
+  //         dtInstance.destroy(); // Destroy the DataTable instance
+  //       }
+  //     }
+  //   }
+  
+  //   // Reinitialize DataTable after destruction
+  //   this.renderDataTablesRetur();  // Initialize or reinitialize the table
+  //   setTimeout(() => {
+  //     this.dtTriggerRetur.next(this.dtOptionsRetur);  // Trigger the data update
+  //   }, 100); // Small delay to ensure Angular fully renders
+  // }
+  
+  
+  
+  
 }

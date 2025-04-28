@@ -53,6 +53,8 @@ import { PenerimaanBrgBksListComponent } from './penerimaan-barang-bekas/dt-list
 import { AddPenerimaanBrgBksComponent } from './penerimaan-barang-bekas/add-data/add-data.component';
 import { AddDataDetailPenerimaanBrgBksComponent } from './penerimaan-barang-bekas/add-data-detail/add-data-detail.component';
 import { DetailPenerimaanBrgBksComponent } from './penerimaan-barang-bekas/detail/detail.component';
+import { PenerimaanBrgBksListNoreturComponent } from './penerimaan-barang-bekas/dt-list-noretur/penerimaan-brg-bks-list-noretur.component';
+import { DetailPenerimaanBrgBksReturComponent } from './penerimaan-barang-bekas/detail-retur/detail-retur.component';
 
 const routes: Routes = [
   {
@@ -308,6 +310,10 @@ const routes: Routes = [
         component: PenerimaanBrgBksListComponent,
       },
       {
+        path: 'list-retur',
+        component: PenerimaanBrgBksListNoreturComponent,
+      },
+      {
         path: 'add-data',
         component: AddPenerimaanBrgBksComponent,
       },
@@ -319,6 +325,11 @@ const routes: Routes = [
         path: 'detail',
         component: DetailPenerimaanBrgBksComponent,
       },
+      {
+        path: 'detail-retur',
+        component: DetailPenerimaanBrgBksReturComponent,
+      },
+      
     ],
   },
 ];

@@ -392,4 +392,12 @@ export class AppService {
       payload
     );
   }
+
+  checkNoReturExistPenerimaanBrgBks(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/whbkshd/check-nodoc`,
+      payload
+    );
+  }
+ 
 }
