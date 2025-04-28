@@ -319,27 +319,27 @@
                       min="0"
                       class="form-control text-center inputQty inputNumberSpace"
                       [(ngModel)]="data.QTY_TERIMA_KECIL"
-                      (input)="onInputValueItemDetail($event, i)"
+                      (input)="onInputValueItemDetailkecil($event, i)"
                     />
                   </div>
-                </td>            
+                </td>
+                <td class="text-center">{{ data.TOTAL_QTY_TERIMA }}</td>
+                <td>
+                  <button class="btn btn-success btn-sm text-white btn-150" (click)="onShowModalExpired($event, i)">
+                    <i class="fa fa-check pe-1"></i> {{ "Exp." | translate }}
+                  </button>
+                </td>
                 <td class="text-center">
                   {{
-                  getTotalExpiredData(data.kodeBarang,data.konversi)
-                  }} {{data.satuanKecil}}
+                  getTotalExpiredData(data.KODE_BARANG,data.KONVERSI)
+                  }} {{data.SATUAN_KECIL}}
   
                   <!-- Validation message area -->
                   <!-- <br>
                   <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageQtyPesanList [i]">
                     {{ validationMessageQtyPesanList[i] }}
                   </span> -->
-                </td>
-                <td>
-                  <button class="btn btn-success btn-sm text-white btn-150" (click)="onShowModalExpired($event, i)">
-                    <i class="fa fa-check pe-1"></i> {{ "Exp." | translate }}
-                  </button>
-                </td>
-                <td class="text-center">{{ data.TOTAL_QTY_EXPIRED }}</td>
+                </td>              
               </tr>
             </tbody>
           </table>
@@ -363,8 +363,8 @@
   [attr.aria-hidden]="!isShowModalExpired">
   <c-modal-header>
     <h5 cModalTitle>Entry Data Expired</h5>
-    <!-- <button (click)="isShowModalExpired = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
-        class="fa fa-times"></i></button> -->
+    <button (click)="isShowModalExpired = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
+        class="fa fa-times"></i></button>
   </c-modal-header>
   <c-modal-body>
     <div class="row">
@@ -501,7 +501,7 @@
               <td class="text-center input-column">
                 <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.qtyPesanBesar" (change)="onInputQtyBesarExpired($event,data.KODE_BARANG, i)"
+                    [(ngModel)]="data.QTY_TERIMA_BESAR" (change)="onInputQtyBesarExpired($event,data.KODE_BARANG, i)"
                     (keypress)="g.conditionInput($event, 'numericDot')" />
                   <span class="d-flex align-items-center justify-content-center">
                     / {{data.SATUAN_BESAR}}
@@ -512,7 +512,7 @@
               <td class="text-center input-column">
                 <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.QTY_PESAN_KECIL" (change)="onInputQtyKecilExpired($event,data.KODE_BARANG, i)"
+                    [(ngModel)]="data.QTY_TERIMA_KECIL" (change)="onInputQtyKecilExpired($event,data.KODE_BARANG, i)"
                     (keypress)="g.conditionInput($event, 'numericDot')" />
                   <span class="d-flex align-items-center justify-content-center">
                     / {{data.SATUAN_KECIL}}
@@ -527,10 +527,10 @@
 
               <td class="text-center">
                 {{
-                ((helper.sanitizedNumber(data.QTY_PESAN_BESAR) *
-                data.konversi) + helper.sanitizedNumber(data.QTY_PESAN_KECIL)).toFixed(2)
+                ((helper.sanitizedNumber(data.QTY_TERIMA_BESAR) *
+                data.KONVERSI) + helper.sanitizedNumber(data.QTY_TERIMA_KECIL)).toFixed(2)
                 }}
-                {{data.satuanKecil}}
+                {{data.SATUAN_KECIL}}
 
                 <!-- Validation message area -->
                 <br>
