@@ -78,7 +78,7 @@ export class AddDataDetailWastageComponent
   @ViewChild('formModal') formModal: any;
   public dpConfig: Partial<BsDatepickerConfig> = {
     dateInputFormat: 'DD/MM/YYYY',
-    containerClass: 'theme-red',
+    containerClass: 'theme-dark-blue',
   };
   protected config = AppConfig.settings.apiServer;
 

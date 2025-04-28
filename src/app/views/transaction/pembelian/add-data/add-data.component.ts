@@ -15,6 +15,7 @@ import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
+import Swal from 'sweetalert2';
 import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
 import moment from 'moment';
 import { Page } from '../../../../model/page';
@@ -41,9 +42,13 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
   maxDate: Date;
   isShowDetail: boolean = false;
   selectedRowData: any;
+  charCount: number = 0;
+  isKeteranganInvalid: boolean = false;
+  invalidNotes: boolean = false; // Added property to fix the error
   @ViewChild('formModal') formModal: any;
   // Form data object
   formData: any = {
+    notes: ''
   };
 
   constructor(
@@ -88,12 +93,45 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onAddDetail() {
+    if (!this.formData.nomorDokumen || this.formData.nomorDokumen.trim() === '') {
+      Swal.fire({
+        title: 'Peringatan!',
+        text: 'NOMOR DOKUMEN TIDAK BOLEH DIKOSONGKAN, HARAP DIPERIKSA KEMBALI..!!!!',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+  
+    const regex = /^[a-zA-Z0-9-]+$/;  
+    if (!regex.test(this.formData.nomorDokumen)) {
+      Swal.fire({
+        title: 'Nomor Dokumen Salah!',
+        text: 'NOMOR DOKUMEN SALAH, HARAP MASUKAN NOMOR DOKUMEN YANG BENAR PERIKSA KEMBALI...!',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+    if (this.invalidNotes) {
+      return; 
+    }
+
+    if (!this.formData.notes || this.formData.notes.trim() === '') {
+      alert('Catatan (Keterangan Lain) tidak boleh kosong');
+      return;
+    }
+  
     this.isShowDetail = true;
+  
     this.globalService.saveLocalstorage(
       'headerPembelian',
       JSON.stringify(this.formData)
     );
   }
+  
+  
 
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
@@ -232,10 +270,23 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
     this.formData.alamatSupplier = orderData.alamatSupplier || '';
     this.formData.tglDokumen = moment().format('DD-MM-YYYY');
     this.formData.tglTerimaBrg = moment().format('DD-MM-YYYY');
+    this.formData.statusAktif = orderData.statusAktif;
   }
 
   handleEnter(event: any) {
 
+  }
+
+  updateCharCount() {
+    this.charCount = this.formData.notes ? this.formData.notes.length : 0;
+    this.invalidNotes = false; 
+  }
+
+  validateNotes() {
+    const notes = this.formData.notes;
+    if (notes && !notes.match(/^[a-zA-Z0-9\-]*$/)) {
+      this.invalidNotes = true;
+    }
   }
 }
 

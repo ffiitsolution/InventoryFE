@@ -30,6 +30,7 @@ import { DetailTransactionComponent } from './detail-transaction/detail-transact
 import { AddDataDetailDeliveryComponent } from './add-data-detail/add-data-detail.component';
 import { DobalikComponent } from './dobalik/dobalik.component';
 import { DetailReportDoBalikComponent } from './detail-report-do-balik/detail-report-do-balik.component';
+import { PageAwalDoBalikComponent } from './revisi-do/page-awal-do/page-awal-do.component';
 import { PackagingListComponent } from './packing-list/packing-list.component';
 import { SharedComponentModule } from '../../component/shared.component.module';
 import { AddDataGudangComponent } from './add-data-gudang/add-data-gudang.component';
@@ -119,6 +120,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AddDataComponent,
     DetailTransactionComponent,
     AddDataDetailDeliveryComponent,
+    PageAwalDoBalikComponent,
     DobalikComponent,
     DetailReportDoBalikComponent,
     PackagingListComponent,

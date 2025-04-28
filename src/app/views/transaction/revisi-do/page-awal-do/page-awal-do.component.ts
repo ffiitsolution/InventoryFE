@@ -6,29 +6,30 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataService } from '../../../service/data.service';
-import { GlobalService } from '../../../service/global.service';
-import { TranslationService } from '../../../service/translation.service';
+import { DataService } from '../../../../service/data.service';
+import { GlobalService } from '../../../../service/global.service';
+import { TranslationService } from '../../../../service/translation.service';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Page } from '../../../model/page';
-import { AppService } from '../../../service/app.service';
-import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../constants';
+import { Page } from '../../../../model/page';
+import { AppService } from '../../../../service/app.service';
+import { ACTION_SELECT, CANCEL_STATUS, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
 import moment from 'moment';
 import { event } from 'jquery';
 import Swal from 'sweetalert2';
+import { AppConfig } from '../../../../config/app.config';
 
 @Component({
-  selector: 'app-add-data-gudang',
-  templateUrl: './add-data-gudang.component.html',
-  styleUrls: ['./add-data-gudang.component.scss'],
+  selector: 'app-page-awal-do-balik',
+  templateUrl: './page-awal-do.component.html',
+  styleUrls: ['./page-awal-do.component.scss'],
 
 })
-export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PageAwalDoBalikComponent implements OnInit, AfterViewInit, OnDestroy {
   nomorPesanan: any;
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
@@ -43,10 +44,25 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
   maxDate: Date;
   isShowDetail: boolean = false;
   selectedRowData: any;
+  protected config = AppConfig.settings.apiServer;
+
+  currentDate: Date = new Date();
+  startDateFilter: Date = new Date(
+    this.currentDate.setDate(
+      this.currentDate.getDate() - 1
+    )
+  );
+
+  endDateFilter: Date = new Date(
+    this.currentDate.setDate(
+      this.currentDate.getDate() + 1
+    )
+  );
+  dateRangeFilter: any = [this.startDateFilter, this.endDateFilter];
 
   @ViewChild('formModal') formModal: any;
   // Form data object
-  
+
   formData: any = {
     nomorPesanan: '',
     codeDestination: '',
@@ -56,15 +72,15 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     tglBrgDikirim: '',
     note: '',
     nomorSuratJan: '',
+    statusPosting: '',
   };
-  
+
 
   constructor(
     private router: Router,
     private dataService: DataService,
     private globalService: GlobalService,
     private translationService: TranslationService,
-    private deliveryDataService: DeliveryDataService,
     private appService: AppService
   ) {
     this.dpConfig.containerClass = 'theme-dark-blue';
@@ -106,10 +122,10 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     this.onSaveData();
   }
 
-  isDoNumberValid(){
+  isDoNumberValid() {
     // dicek apakah  this.selectedRo.nosuratjalan ada
     //
-    if (this.selectedRo.nomorSuratJan && this.selectedRo.nomorSuratJan != this.formData.nomorSuratJan)  {
+    if (this.selectedRo.nomorSuratJan && this.selectedRo.nomorSuratJan != this.formData.nomorSuratJan) {
       return false;
     }
     else if ((this.formData.nomorSuratJan?.length && !/^DO-\d+$/.test(this.formData.nomorSuratJan)) || this.formData.nomorSuratJan.length > 20) {
@@ -118,19 +134,13 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     return false
   }
 
-  onAddDetail() {
-    if (this.isDoNumberValid()) {
-      Swal.fire('Error', 'Nomor Surat Jalan Salah', 'error');
-      return;
-    }
-    else{
+  onAddDetail() {  
       this.isShowDetail = true;
       // this.router.navigate(['/transaction/receipt-from-warehouse/tambah-data/detail-add-data-gudang']);
       this.globalService.saveLocalstorage(
         LS_INV_SELECTED_DELIVERY_ORDER,
         JSON.stringify(this.formData)
       );
-    }
   }
 
   ngAfterViewInit(): void {
@@ -158,6 +168,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
       autoWidth: true,
       info: true,
       pageLength: 5,
+      order: [4, 'desc'],
       lengthMenu: [[5, 10, 15, 20], [5, 10, 15, 20]],
       searching: true,
       ordering: true,
@@ -166,79 +177,83 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
       ajax: (dataTablesParameters: any, callback) => {
         let page = Math.floor(dataTablesParameters.start / dataTablesParameters.length);
         let limit = dataTablesParameters.length || 5;
-        let offset = page * limit;
         // this.page.start = dataTablesParameters.start || 0;
         // this.page.length = dataTablesParameters.length|| 10;
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.globalService.getUserLocationCode(),
-          tipePesanan : 'I',
-          // limit : this.page.length,
-          // offset : this.page.start,
-          limit: limit, 
-          offset: offset,
+          tipePesanan: 'I',
+          startDate: moment(this.dateRangeFilter[0]).set({
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+            milliseconds: 0,
+          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
+          endDate: moment(this.dateRangeFilter[1]).set({
+            hours: 23,
+            minutes: 59,
+            seconds: 59,
+            milliseconds: 999,
+          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
+          limit: limit,
         };
-        this.appService.getNewReceivingOrderGudang(params)
-          .subscribe((resp: any) => {
-            const mappedData = resp.penerimaanGudangList.map((item: any, index: number) => {
+        this.dataService
+          .postData(this.config.BASE_URL + '/api/delivery-order/dt', params).subscribe((resp: any) => {
+            const mappedData = resp.data.map((item: any, index: number) => {
               // hapus rn dari data
               const { rn, ...rest } = item;
               const finalData = {
                 ...rest,
-                // dtIndex: this.page.start + index + 1,
-                dtIndex: offset + index + 1,
               };
               return finalData;
             });
-            // this.page.recordsTotal = resp.recordsTotal || mappedData.length;
-            // this.page.recordsFiltered = resp.recordsFiltered || mappedData.length;  
-            const totalRecords = resp.totalRecords !== undefined && !isNaN(resp.totalRecords) 
-              ? resp.totalRecords 
-              : mappedData.length;
+            this.page.recordsTotal = resp.recordsTotal || mappedData.length;
+            this.page.recordsFiltered = resp.recordsFiltered || mappedData.length;
             callback({
-              // recordsTotal: resp.recordsTotal,
-              // recordsFiltered: resp.recordsFiltered,
-              recordsTotal: totalRecords,
-              recordsFiltered: totalRecords,
+              recordsTotal: resp.recordsTotal,
+              recordsFiltered: resp.recordsFiltered,
               data: mappedData,
             });
           });
       },
       columns: [
-        { data: 'dtIndex', title: 'No.', render: (data) => `<strong>${data || '-'}</strong>` },
-        { data: 'NOMOR_PESANAN', title: 'Nomor Pesanan' },
-        { data: 'SUPPLIER', title: 'Kode Gudang' },
-        { data: 'NAMA_CABANG', title: 'Alamat Gudang' },
-        { data: 'ALAMAT1', title: 'Alamat Pengirim' },
-        { data: 'TGL_KIRIM_BRG', title: 'Tanggal Surat Jalan',
-          render: (data) => this.globalService.transformDate(data),
-        },
-        { data: 'KETERANGAN1', title: 'Keterangan', render: (data) => data ? data : '-' },
-        { data: 'NO_SURAT_JALAN', title: 'Nomor Surat Jalan', render: (data) => data ? data : '-'},
         {
-          data: 'ALAMAT1',
-          title: 'Status Penerimaan',
-        },
-        {
-          data: 'STATUS_CETAK',
-          title: 'Status Cetak',
+          data: 'tglTransaksi', title: 'Tgl. Kirim', 
           render: (data) => {
-            if (data === 'B') {
-              return '<span class="badge bg-warning">Belum</span>'; 
-            } else if (data === 'S') {
-              return '<span class="badge bg-success">Sudah</span>'; 
-            } else {
-              return '<span class="badge bg-secondary">Tidak Diketahui</span>'; 
+            return this.globalService.transformDate(data)
+          }
+        },
+        { data: 'tglPesanan', title: 'Tgl. Pesan',
+          render: (data) => {
+            return this.globalService.transformDate(data)
+          }
+         },
+        { data: 'nomorPesanan', title: 'No. Pesanan', searchable: true },
+        { data: 'noSuratJalan', title: 'No. Pengiriman', searchable: true },
+        {
+          data: 'kodeTujuan',
+          title: 'Kode Tujuan',
+          orderable: true,
+          searchable: true,
+        },
+        {
+          data: 'namaTujuan',
+          title: 'Tujuan',
+          orderable: true,
+          searchable: true,
+        },
+        {
+          title: 'Aksi',
+          render: (data: any, type: any, row: any) => {
+            const statusPosting = row.statusPosting;
+            if (statusPosting !== 'I') {
+              return '<span class="text-center text-warning">DATA SUDAH POSTED</span>';
+            } else{
+              return `<button class="btn btn-sm action-select btn-info btn-80 text-white">Pilih</button>`
             }
           },
         },
-        {
-          title: 'Action',
-          render: () => {
-            return `<button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>`;
-          },
-        },
-      ],      
+      ],
       searchDelay: 1000,
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-select', row).on('click', () =>
@@ -246,7 +261,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
         );
         if (index === 0 && !this.selectedRowData) {
           setTimeout(() => {
-            $(row).trigger('td'); 
+            $(row).trigger('td');
           }, 0);
         }
         $('td', row).on('click', () => {
@@ -264,37 +279,15 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   private mapOrderData(orderData: any): void {
-    console.log('Order data: ', orderData);
-    this.formData.nomorPesanan = orderData.NOMOR_PESANAN;
-    this.formData.tglPesan = moment(orderData.TGL_PESANAN, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.tglBrgDikirim = moment(orderData.TGL_KIRIM_BRG, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.tglTerimaBarang = moment(orderData.TGL_PESANAN, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.codeDestination = orderData.SUPPLIER;
-    this.formData.namaCabang = orderData.NAMA_CABANG;
-    this.formData.deliveryStatus = 'Aktif';
-    this.formData.alamat1 = orderData.ALAMAT1;
-    this.formData.notes = orderData.KETERANGAN1;
-    this.formData.validatedDeliveryDate = this.formData.TGL_BATAL_EXP;
-    this.formData.nomorSuratJan = orderData.NO_SURAT_JALAN;
+    this.formData = orderData;
+    this.formData.tglPesananan = moment(orderData.tglPesananan, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
+    this.formData.tglTransaksi = moment(orderData.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
   }
 
   onPreviousPressed(): void {
     this.router.navigate(['/transaction/receipt-from-warehouse/display-data-dari-gudang']);
   }
 
-}
-@Injectable({
-  providedIn: 'root',
-})
-export class DeliveryDataService {
-  private baseUrl: string = 'http://localhost:8093/inventory'; // Replace with your actual base URL
-
-  constructor(private http: HttpClient) { }
-
-  saveDeliveryData(data: any): Observable<any> {
-    const apiUrl = `${this.baseUrl}/inventory/api/delivery-order/status-descriptions`; // Gunakan baseUrl
-    return this.http.post<any>(apiUrl, data);
-  }
 }
 
 

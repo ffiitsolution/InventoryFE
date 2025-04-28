@@ -41,7 +41,7 @@
 
                 <div class="col-8 pe-0 d-flex">
                   <ngx-select-dropdown [(ngModel)]="formData.namaSaksi" [multiple]="false" [config]="configSelectUser"
-                    [options]="listUser" id="namaSaksi" (change)="onUserChange($event)" class="w-100">
+                    [options]="listUser" id="namaSaksi" (change)="onUserChange($event)" (keypress)="globalService.conditionInput($event, 'excludedSensitive')" class="w-100">
                   </ngx-select-dropdown>
                 </div>
               </div>
@@ -53,7 +53,7 @@
 
                 <div class="col-8 pe-0 d-flex">
                   <input placeholder="Jabatan saksi" type="text" class="form-control" id="jabatanSaksi"
-                    [(ngModel)]="formData.jabatanSaksi" name="jabatanSaksi"/>
+                    [(ngModel)]="formData.jabatanSaksi" (keypress)="globalService.conditionInput($event, 'excludedSensitive')" name="jabatanSaksi"/>
                 </div>
               </div>
 
@@ -64,7 +64,7 @@
 
                 <div class="col-8 pe-0 d-flex">
                   <textarea placeholder="Catatan" type="text" class="form-control" id="keterangan"
-                    [(ngModel)]="formData.keterangan" name="keterangan"></textarea>
+                    [(ngModel)]="formData.keterangan" (keypress)="globalService.conditionInput($event, 'excludedSensitive')" name="keterangan"></textarea>
                 </div>
               </div>
               <div style="width: 96%;" class="p-2">

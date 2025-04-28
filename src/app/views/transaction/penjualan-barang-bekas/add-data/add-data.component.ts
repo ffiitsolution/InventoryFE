@@ -71,7 +71,7 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
   constructor(
     private router: Router,
     private dataService: DataService,
-    private globalService: GlobalService,
+    public globalService: GlobalService,
     private translationService: TranslationService,
     private appService: AppService
   ) {
