@@ -22,6 +22,7 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors }
 import { HelperService } from '../../../../service/helper.service';
 import { DatePipe } from '@angular/common';
 import { AppConfig } from '../../../../config/app.config';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -160,6 +161,15 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
   }
 
   onAddDetail() {
+    const keteranganValue = this.myForm.get('keterangan')?.value;
+
+    if (!keteranganValue || keteranganValue.trim() === '') {
+      this.showWarningModal(
+        'CATATAN/KETERANGAN PENGEMBALIAN BARANG, TIDAK BOLEH DIKOSONGKAN, PERIKSA KEMBALI...!!!'
+      );
+      return;
+    }
+
     this.myForm.patchValue({
           tglTransaksi: moment(this.myForm.value.tglTransaksi,'DD/MM/YYYY',true).format('DD/MM/YYYY'),
           tglExp: moment(this.myForm.value.tglExp, 'DD/MM/YYYY',true).format('DD/MM/YYYY')
@@ -176,7 +186,6 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
 
   get isFormInvalid(): boolean {
     return true
-    // return Object.values(this.formData).some(value => value === '');
   }
 
   ngAfterViewInit(): void {
@@ -211,8 +220,16 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     this.formData.kodeTujuan = data?.kodeCabang;
     this.formData.namaTujuan = data?.namaCabang;
     this.formData.alamatTujuan = data?.alamat1;
-    this.formData.statusTujuan = data?.statusAktif;
+    this.formData.statusTujuan = this.getStatusAktifText(data?.statusAktif);
     this.isShowModalBranch = false;
+  }
+
+  getStatusAktifText(statusAktif: string): string {
+    const statusMap: { [key: string]: string } = {
+      'A': 'Aktif',
+      'T': 'Tidak Aktif'
+    };
+    return statusMap[statusAktif] || '-';
   }
 
   handleEnterPemesan(event: any) {
@@ -546,6 +563,15 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
           input.value = filteredValue;
           this.myForm.get('keterangan')?.setValue(filteredValue);
         }
+      }
+
+
+      showWarningModal(message: string) {
+        Swal.fire({
+          title: 'Pesan Error',
+          text: message,
+          confirmButtonText: 'OK'
+        });
       }
       
 
