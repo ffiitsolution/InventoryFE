@@ -19,14 +19,29 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-        <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
-        <button class="btn btn-light  btn-150" (click)="onShowModalCancel()">
-          <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
-        </button>
-        <button class="btn btn-info text-white btn-150 pe-3" (click)="onShowModalOnSubmit()">
-          <i class="fa fa-check pe-2"></i> {{ "Proses" | translate }}  {{ "Simpan" | translate }} {{ "Data" | translate }}
-        </button>
+      <div class="row justify-content-between">
+        <div class="col-6 d-flex align-items-center">
+          <div class="col-4 ">
+            <label for="jabatanSaksi">{{ "Jumlah Item Pesanan" | translate }}</label>
+          </div>
+          <div class="col-2 pe-0">
+            <input type="text" class="form-control text-center" [value]="listOrderData.length-1" readonly />
+          </div>
+          <div class="col"></div>
 
+        </div>
+        <div class="col-6">
+          <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
+            <button class="btn btn-light  btn-150" (click)="onShowModalCancel()">
+              <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
+            </button>
+            <button class="btn btn-info text-white btn-150 pe-3" (click)="onShowModalOnSubmit()">
+              <i class="fa fa-check pe-2"></i> {{ "Proses" | translate }}  {{ "Simpan" | translate }} {{ "Data" | translate }}
+            </button>
+    
+          </div>
+
+        </div>
       </div>
       <div class="table-responsive">
         <ng-container>
