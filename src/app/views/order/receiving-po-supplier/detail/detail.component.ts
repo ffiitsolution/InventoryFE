@@ -27,6 +27,7 @@ import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { AppService } from '../../../../service/app.service';
 import moment from 'moment';
+import { HelperService } from '../../../../service/helper.service';
 
 @Component({
   selector: 'app-detail-receiving-po-supplier',
@@ -61,6 +62,13 @@ export class ReceivingPoSupplierDetailComponent
   alasanDiBatalkan: string = '';
   dataUser: any;
 
+  listCurrentPage: number = 1;
+  itemsPerPage: number = 5;
+  searchListViewOrder: string = '';
+  listOrderData: any[] = [];
+  statusSameConversion = STATUS_SAME_CONVERSION;
+  public loading: boolean = false;
+
   protected config = AppConfig.settings.apiServer;
 
   constructor(
@@ -69,7 +77,9 @@ export class ReceivingPoSupplierDetailComponent
     private translation: TranslationService,
     private router: Router,
     private toastr: ToastrService,
-    private appService: AppService
+    private appService: AppService,
+    public helper: HelperService
+
   ) {
     this.g.navbarVisibility = false;
     this.selectedOrder = JSON.parse(this.selectedOrder);
@@ -188,6 +198,15 @@ export class ReceivingPoSupplierDetailComponent
     this.alreadyPrint =
       this.selectedOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
+
+    const params = {
+      nomorPesanan: this.selectedOrder.nomorPesanan,
+    }
+    this.dataService
+      .postData(this.g.urlServer + '/api/receiving-po-supplier/detail/list', params)
+      .subscribe((resp: any) => {
+        this.listOrderData = resp.map((item:any) => this.g.convertKeysToCamelCase(item));
+    });
   }
   actionBtnClick(action: string, data: any = null) { }
 
@@ -443,5 +462,37 @@ export class ReceivingPoSupplierDetailComponent
     } finally {
       this.RejectingOrder = false;
     }
+  }
+
+  
+  get filteredList() {
+    if (!this.searchListViewOrder) {
+      return this.listOrderData;
+    }
+    const searchText = this.searchListViewOrder.toLowerCase();
+    return this.listOrderData.filter(item =>
+      JSON.stringify(item).toLowerCase().includes(searchText)
+    );
+  }
+
+  getPaginationIndex(i: number): number {
+    return (this.listCurrentPage - 1) * this.itemsPerPage + i;
+  }
+  getJumlahItem(): number {
+    if (this.filteredList.length === 0) {
+      return 0;
+    }
+    if (this.filteredList[this.filteredList.length - 1].namaBarang.trim() === "") {
+      return this.filteredList.length - 1;
+    }
+    return this.filteredList.length;
+  }
+  onFilterTextChange(newValue: string) {
+    if (newValue.length >= 3) {
+      this.totalLength = 1;
+    } else {
+      this.totalLength = this.listOrderData.length;
+    }
+    this.listCurrentPage = this.listCurrentPage;
   }
 }
