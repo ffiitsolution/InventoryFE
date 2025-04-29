@@ -98,7 +98,7 @@ export class ReceivingOrderDetailComponent
     this.disabledPrintButton = false;
     this.disabledCancelButton = isCanceled;
     this.alreadyPrint =
-      this.selectedOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
+    this.selectedOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.dataUser = this.g.getLocalstorage('inv_currentUser');
 

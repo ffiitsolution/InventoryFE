@@ -100,7 +100,7 @@
             </div>
             <div class="detail-item">
               <span class="label">{{ "Jumlah Item" | translate }}</span>
-              <span class="value">{{ totalLength }} </span>
+              <span class="value">{{ getJumlahItem() }} </span>
             </div>
           </div>
         </div>
@@ -113,13 +113,6 @@
     <c-card-body>
       <div class="row justify-content-between">
         <div class="col-6 d-flex align-items-center">
-          <div class="col-3 ">
-            <label for="jabatanSaksi">{{ "Jumlah Item Pesanan" | translate }}</label>
-          </div>
-          <div class="col-2 pe-0">
-            <input type="text" class="form-control text-center input-disabled" [value]="getJumlahItem()" readonly />
-          </div>
-          <div class="col"></div>
 
         </div>
         
