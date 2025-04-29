@@ -314,7 +314,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
       const payload = {
         nomorTransaksi: this.selectedOrder.nomorTransaksi,
         kodeBarang: data.kodeBarang,
-        tipeTransaksi: 8,
+        tipeTransaksi: '8',
       };
   
       this.appService
@@ -323,8 +323,8 @@ export class DetailBarangUntukPemakaianSendiriComponent
         .subscribe({
   
           next: (res) => {
-            if (res) {
-              this.selectedOrder = res;
+            if (res.item) {
+              this.selectedOrder = res.item;
               this.isShowModalExpired = true;
             }
           },
@@ -376,7 +376,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
       preConfirm: async (keterangan2) => {
         try {
           const params = {
-            status: '4',
+            status: '8',
             user: this.g.getUserCode(),
             keterangan2,
             nomorPesanan: this.selectedOrder.nomorPesanan,
@@ -473,8 +473,8 @@ export class DetailBarangUntukPemakaianSendiriComponent
     }
     
     getTotalQty(): number {
-      return this.listDataExpired.reduce((sum, item) => {
-        return sum + Math.abs(Number(item.TOTAL_QTY_WE));
+      return this.listDataExpired.reduce((sum, data) => {
+        return sum + Math.abs(Number(data.TOTAL_QTY));
       }, 0);
     }
 }

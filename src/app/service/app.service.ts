@@ -388,7 +388,7 @@ export class AppService {
 
   getExpiredData(payload: any) {
     return this.dataService.postData(
-      `${this.config.BASE_URL}/api/expired/list`,
+      `${this.config.BASE_URL}/api/exp-sendiri/list`,
       payload
     );
   }

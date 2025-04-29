@@ -346,37 +346,37 @@
           <tbody>
             <tr *ngFor="let data of listDataExpired; let i = index">
               <td class="text-center">
-                {{ data.tglExpired | date : "dd MMM yyyy" }}
+                {{ data.TGL_EXPIRED | date : "dd MMM yyyy" }}
               </td>
 
               <td class="text-center">
-                {{ data.tglExpired | date : "dd MMM yyyy" }}
+                {{ data.TGL_EXPIRED | date : "dd MMM yyyy" }}
               </td>
               <td class="text-center input-column">
                 <div class="d-flex justify-content-center" style="gap: 5px">
-                  {{ helper.abs(data.qtyBesar) | number : "1.2-2" }}
+                  {{ helper.abs(data.QTY_BESAR) | number : "1.2-2" }}
                   <span
                     class="d-flex align-items-center justify-content-center"
                   >
-                    / {{ data.satuanBesar }}
+                    / {{ data.SATUAN_BESAR }}
                   </span>
                 </div>
               </td>
 
               <td class="text-center">
                 <div class="d-flex justify-content-center" style="gap: 5px">
-                  {{ helper.abs(data.qtyKecil) | number : "1.2-2" }}
+                  {{ helper.abs(data.QTY_KECIL) | number : "1.2-2" }}
                   <span
                     class="d-flex align-items-center justify-content-center"
                   >
-                    / {{ data.satuanKecil }}
+                    / {{ data.SATUAN_KECIL }}
                   </span>
                 </div>
               </td>
 
               <td class="text-center">
-                {{ helper.abs(data.totalQty) | number : "1.2-2" }}
-                {{ data.satuanKecil }}
+                {{ helper.abs(data.TOTAL_QTY) | number : "1.2-2" }}
+                {{ data.SATUAN_KECIL }}
               </td>
             </tr>
           </tbody>
@@ -386,7 +386,7 @@
 
     <div
       class="row justify-content-between gap-3 mt-3"
-      *ngIf="selectedRowData"
+      *ngIf="selectedOrder"
       style="margin-right: 20px"
     >
       <div class="col-4 d-flex"></div>
@@ -394,7 +394,7 @@
         <p class="mb-0">
           <strong>TOTAL QTY EXPIRED:</strong>
           {{ getTotalQty() | number : "1.2-2" }}
-          {{ selectedRowData.satuanKecil }}
+          {{ selectedOrder.SATUAN_KECIL }}
         </p>
       </div>
       <div class="col-2"></div>
