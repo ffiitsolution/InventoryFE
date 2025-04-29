@@ -407,4 +407,11 @@ export class AppService {
     );
   }
 
+  checkNoReturFromSiteExist(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/whrtchd/check-nodoc`,
+      payload
+    );
+  }
+
 }

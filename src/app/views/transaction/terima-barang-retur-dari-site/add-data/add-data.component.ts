@@ -23,6 +23,7 @@ import { HelperService } from '../../../../service/helper.service';
 import { DatePipe } from '@angular/common';
 import { AppConfig } from '../../../../config/app.config';
 import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -64,6 +65,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
   dtOptionsBranch: DataTables.Settings = {};
   selectedRowDataBranch: any;
   pageBranch = new Page();
+  selectedRowRetur: any = {};
   
 
   @ViewChild('formModal') formModal: any;
@@ -80,6 +82,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     private datePipe: DatePipe,
     private cdr: ChangeDetectorRef,
     private dataService: DataService,
+    private toastr: ToastrService,
   ) {
     this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
@@ -206,6 +209,44 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
   }
 
   actionBtnClick(data: any = null) {
+    const params = {
+      noDoc:  data.returnNo,
+    };
+
+    const paramUpdate = {
+      returnNo: data.returnNo,
+      status: 'T',
+      user: this.globalService.getLocalstorage('inv_currentUser').namaUser,
+      flagBrgBekas: 'T',
+    };
+
+    this.appService.checkNoReturFromSiteExist(params)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((resp: any) => {
+        console.log('on going', resp)
+          if(resp){
+            console.log('berhasil', resp)
+            this.toastr.error(`No retur tersebut sudah di input secara manual!`);
+            this.appService
+                    .updateWarehouse('/api/return-order/update', paramUpdate)
+                    .pipe(takeUntil(this.ngUnsubscribe))
+                    .subscribe({
+                      next: (res2) => {
+                      
+                        const currentUrl = this.router.url;
+                        this.router.navigateByUrl('/empty', { skipLocationChange: true }).then(() => {
+                          this.router.navigate([currentUrl]);
+                        });
+                      },
+                    });
+          }else{
+            console.log('gagal', resp)
+            this.selectedRowRetur = JSON.stringify(data);
+            this.isShowModal = false;
+            this.mappingDataPemesan(data);
+          }
+      });
+
     this.formData.kodeTujuan = data?.outletCode;
     this.formData.tglTransaksi = data?.dateReturn ? new Date(data.dateReturn) : undefined;
     this.formData.namaTujuan = data?.namaPengirim;
