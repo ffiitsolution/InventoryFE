@@ -99,3 +99,15 @@ c-modal[backdrop="static"] {
 .ngx-pagination .current {
   background: $primary !important;
 }
+
+.text-ellipsis {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+}
+
+.fs-8 {
+  font-size: 0.8em !important;
+}
