@@ -399,5 +399,12 @@ export class AppService {
       payload
     );
   }
- 
+
+  getProductReturnList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/product-return/dt`,
+      payload
+    );
+  }
+
 }
