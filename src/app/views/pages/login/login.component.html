@@ -7,7 +7,9 @@
             <c-card-group>
               <c-card class="p-4">
                 <c-card-body class="text-center">
-                  <img src="../../../../assets/img/brand/logo_kfc.png" class="mb-2 kfc-logo" />
+                  <img src="../../../../assets/img/brand/logo_kfc.png" class="mb-2 kfc-logo me-4" />
+                  <img src="./assets/images/logo_tacobell.png" class="img-fluid kfc-logo" style="max-width: 90px;"
+                    alt="KFC" draggable="false">
 
                   <form cForm>
                     <h2 class="text-center">
@@ -44,7 +46,7 @@
                       <span cInputGroupText>
                         <svg cIcon name="cilBank"></svg>
                       </span>
-                      <input cFormControl readonly [value]="loadingUser ? 'loading ...' : defaultGudang" placeholder="Gudang" />
+                      <input cFormControl readonly [value]="loadingUser ? 'loading ...' : defaultGudang" placeholder="Gudang" [disabled]="true"/>
                     </c-input-group> -->
 
                     <p class="text-center">
