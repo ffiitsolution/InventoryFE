@@ -57,7 +57,7 @@
             </div>
             <div class="detail-item">
               <span class="label">{{ "Jumlah Item " | translate }}</span>
-              <span class="value">{{ totalLength || "-" }}</span>
+              <span class="value">{{ getJumlahItem() || "-" }}</span>
             </div>
 
           </div>
@@ -82,6 +82,24 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
+      <div class="row justify-content-between">
+        <div class="col-6 d-flex align-items-center">
+
+        </div>
+        
+        <div class="col-6">
+          <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
+            <div class="col-9 d-flex align-items-center">
+              <c-input-group>
+                <span cInputGroupText id="basic-addon1"><i class="fa fa-search"></i></span>
+                <input #listViewOrders id="appendedInputButton" [(ngModel)]="searchListViewOrder" class="form-control"
+                  size="16" type="text" placeholder="Search..." (ngModelChange)="onFilterTextChange($event)">
+              </c-input-group>
+            </div>
+          </div>
+
+        </div>
+      </div>
       <div class="table-responsive">
         <ng-container>
           <div *ngIf="loading">
@@ -128,7 +146,12 @@
               </tr>
             </tbody>
             <tbody>
-              <tr *ngFor="let data of listOrderData; let i = index">
+              <tr *ngFor="let data of filteredList | paginate: {
+                    itemsPerPage: itemsPerPage,
+                    currentPage: listCurrentPage,
+                    totalItems:totalLength,
+                    id:'dataTableDetail'
+                }; let i = index ">
                 <td class="text-center">{{ i + 1 }}</td>
                 <td class="text-center">{{ data.kodeBarang }}</td>
                 <td class="text-center">{{ data.namaBarang }}</td>
@@ -167,7 +190,7 @@
           </table>
 
           <c-pagination class="text-right">
-            <pagination-controls (pageChange)="onPageChange(1)" id="dataTable"></pagination-controls>
+            <pagination-controls (pageChange)="listCurrentPage = $event" id="dataTableDetail"></pagination-controls>
           </c-pagination>
         </ng-container>
       </div>
