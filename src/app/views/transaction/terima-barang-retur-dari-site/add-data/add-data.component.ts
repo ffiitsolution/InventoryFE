@@ -216,7 +216,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     const paramUpdate = {
       returnNo: data.returnNo,
       status: 'T',
-      user: this.globalService.getLocalstorage('inv_currentUser').namaUser,
+      user: this.globalService.getLocalstorage('inv_currentUser').kodeUser,
       flagBrgBekas: 'T',
     };
 

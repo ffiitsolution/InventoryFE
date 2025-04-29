@@ -192,7 +192,8 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
           satuanBesar: item.satuanBesar,
           qtyBesar: item.qtyPemakaianBesar || 0,
           qtyKecil: item.qtyPemakaianKecil || 0,
-          flagExpired: item.flagExpired,
+          // flagExpired: item.flagExpired,
+          flagExpired: 'Y',
           totalQty: (this.helper.sanitizedNumber(item.qtyPemakaianBesar) * item.konversi) +
                     this.helper.sanitizedNumber(item.qtyPemakaianKecil),
           totalQtyExpired: (this.helper.sanitizedNumber(this.getExpiredData(item.kodeBarang).qtyPemakaianBesar) * item.konversi) +
