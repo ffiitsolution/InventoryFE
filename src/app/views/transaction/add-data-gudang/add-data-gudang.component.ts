@@ -54,7 +54,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     alamatPengiriman: '',
     deliveryStatus: '',
     tglBrgDikirim: '',
-    note: '',
+    notes: '',
     nomorSuratJan: '',
   };
   
