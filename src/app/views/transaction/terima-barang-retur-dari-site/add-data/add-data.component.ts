@@ -22,6 +22,8 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors }
 import { HelperService } from '../../../../service/helper.service';
 import { DatePipe } from '@angular/common';
 import { AppConfig } from '../../../../config/app.config';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -63,6 +65,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
   dtOptionsBranch: DataTables.Settings = {};
   selectedRowDataBranch: any;
   pageBranch = new Page();
+  selectedRowRetur: any = {};
   
 
   @ViewChild('formModal') formModal: any;
@@ -79,6 +82,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     private datePipe: DatePipe,
     private cdr: ChangeDetectorRef,
     private dataService: DataService,
+    private toastr: ToastrService,
   ) {
     this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
@@ -160,6 +164,15 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
   }
 
   onAddDetail() {
+    const keteranganValue = this.myForm.get('keterangan')?.value;
+
+    if (!keteranganValue || keteranganValue.trim() === '') {
+      this.showWarningModal(
+        'CATATAN/KETERANGAN PENGEMBALIAN BARANG, TIDAK BOLEH DIKOSONGKAN, PERIKSA KEMBALI...!!!'
+      );
+      return;
+    }
+
     this.myForm.patchValue({
           tglTransaksi: moment(this.myForm.value.tglTransaksi,'DD/MM/YYYY',true).format('DD/MM/YYYY'),
           tglExp: moment(this.myForm.value.tglExp, 'DD/MM/YYYY',true).format('DD/MM/YYYY')
@@ -176,7 +189,6 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
 
   get isFormInvalid(): boolean {
     return true
-    // return Object.values(this.formData).some(value => value === '');
   }
 
   ngAfterViewInit(): void {
@@ -197,22 +209,80 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
   }
 
   actionBtnClick(data: any = null) {
+    const params = {
+      noDoc:  data.returnNo,
+    };
+
+    const paramUpdate = {
+      returnNo: data.returnNo,
+      status: 'T',
+      user: this.globalService.getLocalstorage('inv_currentUser').kodeUser,
+      flagBrgBekas: 'T',
+    };
+
+    this.appService.checkNoReturFromSiteExist(params)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((resp: any) => {
+        console.log('on going', resp)
+          if(resp){
+            console.log('berhasil', resp)
+            this.toastr.error(`No retur tersebut sudah di input secara manual!`);
+            this.appService
+                    .updateWarehouse('/api/return-order/update', paramUpdate)
+                    .pipe(takeUntil(this.ngUnsubscribe))
+                    .subscribe({
+                      next: (res2) => {
+                      
+                        const currentUrl = this.router.url;
+                        this.router.navigateByUrl('/empty', { skipLocationChange: true }).then(() => {
+                          this.router.navigate([currentUrl]);
+                        });
+                      },
+                    });
+          }else{
+            console.log('gagal', resp)
+            this.selectedRowRetur = JSON.stringify(data);
+            this.isShowModal = false;
+            this.mappingDataPemesan(data);
+          }
+      });
+
     this.formData.kodeTujuan = data?.outletCode;
     this.formData.tglTransaksi = data?.dateReturn ? new Date(data.dateReturn) : undefined;
     this.formData.namaTujuan = data?.namaPengirim;
     this.formData.alamatTujuan = data?.alamatPengirim;
-    this.formData.statusTujuan = data?.statusAktif;
+    this.formData.statusTujuan = this.convertStatusAktif(data?.statusAktif); // ✅ Gunakan function ini
     this.formData.noReturnPengirim = data?.returnNo;
     this.isShowModal = false;
   }
-
-
+  
   actionBtnClickBranch(data: any = null) {
     this.formData.kodeTujuan = data?.kodeCabang;
     this.formData.namaTujuan = data?.namaCabang;
     this.formData.alamatTujuan = data?.alamat1;
-    this.formData.statusTujuan = data?.statusAktif;
+    this.formData.statusTujuan = this.convertStatusAktif(data?.statusAktif); // ✅ Gunakan function ini
     this.isShowModalBranch = false;
+  }
+  
+  convertStatusAktif(statusAktif: string): string {
+    const status = statusAktif?.trim().toUpperCase();
+    if (status === 'AKTIF') {
+      return 'A';
+    } else if (status === 'TIDAK AKTIF') {
+      return 'T';
+    } else if (status === 'A' || status === 'T') {
+      return status;
+    }
+    return '-'; // Atau default lainnya
+  }
+  
+
+  getStatusAktifText(statusAktif: string): string {
+    const statusMap: { [key: string]: string } = {
+      'A': 'Aktif',
+      'T': 'Tidak Aktif'
+    };
+    return statusMap[statusAktif] || '-';
   }
 
   handleEnterPemesan(event: any) {
@@ -233,6 +303,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
         this.resetDataPemesan();
     });
   }
+  
 
   resetDataPemesan() {
     this.myForm.controls['kodeBarang'].setValue("");
@@ -246,30 +317,17 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
   mappingDataPemesan(data : any) {
     this.myForm.controls['kodeBarang'].setValue(data.outletCode);
     this.myForm.controls['namaBarang'].setValue(data.namaPengirim);  
-    this.myForm.controls['tglTransaksi'].setValue(data.dateReturn ? new Date(data.dateReturn) : null);
-    if (data.statusAktif.trim() === 'Aktif') {
-      this.myForm.controls['satuanHasilProduksi'].setValue("A");
-    }  
-    else if(data.statusAktif.trim() === 'Tidak Aktif'){
-      this.myForm.controls['satuanHasilProduksi'].setValue("T");
-    }
-    else {
-      this.myForm.controls['satuanHasilProduksi'].setValue(data.statusAktif);
-    }
+    let statusValue = '';
+      if (data.statusAktif?.trim().toUpperCase() === 'AKTIF') {
+        statusValue = 'A';
+      } else if (data.statusAktif?.trim().toUpperCase() === 'TIDAK AKTIF') {
+        statusValue = 'T';
+      } else {
+        statusValue = data.statusAktif;
+      }
+    this.myForm.controls['satuanHasilProduksi'].setValue(statusValue);
     this.myForm.controls['alamatPengirim'].setValue(data.alamatPengirim);  
-    this.myForm.controls['noReturnPengirim'].setValue(data.returnNo);
-    // this.myForm.controls['kodeBarang'].setValue(data.kodeCabang);
-    // this.myForm.controls['namaBarang'].setValue(data.namaCabang);
-    // this.myForm.controls['alamatPengirim'].setValue(data.alamat1);  
-    // if (data.statusAktifLabel.trim() === 'Aktif') {
-    //   this.myForm.controls['satuanHasilProduksi'].setValue("Aktif");
-    // }  
-    // else if(data.statusAktifLabel.trim() === 'Tidak Aktif'){
-    //   this.myForm.controls['satuanHasilProduksi'].setValue("Tidak Aktif");
-    // }
-    // else {
-    //   this.myForm.controls['satuanHasilProduksi'].setValue(data.statusAktifLabel);
-    // }       
+    this.myForm.controls['noReturnPengirim'].setValue(data.returnNo);      
   }
 
 
@@ -366,7 +424,6 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
       ],
       searchDelay: 1500,
       order: [
-        [2, 'asc'],
         [1, 'asc'],
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
@@ -540,12 +597,32 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
       onKeteranganInput(event: Event): void {
         const input = event.target as HTMLTextAreaElement;
         const originalValue = input.value;
-        const filteredValue = originalValue.replace(/[^a-zA-Z0-9\-]/g, '');
+        const filteredValue = originalValue.replace(/[^a-zA-Z0-9\s\-]/g, '');
         
         if (originalValue !== filteredValue) {
           input.value = filteredValue;
           this.myForm.get('keterangan')?.setValue(filteredValue);
         }
+      }
+
+      onNoDocumentInput(event: Event): void {
+        const input = event.target as HTMLTextAreaElement;
+        const originalValue = input.value;
+        const filteredValue = originalValue.replace(/[^a-zA-Z0-9\-]/g, '');
+        
+        if (originalValue !== filteredValue) {
+          input.value = filteredValue;
+          this.myForm.get('noReturnPengirim')?.setValue(filteredValue);
+        }
+      }
+
+
+      showWarningModal(message: string) {
+        Swal.fire({
+          title: 'Pesan Error',
+          text: message,
+          confirmButtonText: 'OK'
+        });
       }
       
 

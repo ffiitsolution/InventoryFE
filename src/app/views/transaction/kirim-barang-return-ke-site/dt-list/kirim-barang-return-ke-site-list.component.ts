@@ -5,13 +5,7 @@ import { GlobalService } from '../../../../service/global.service';
 import { TranslationService } from '../../../../service/translation.service';
 import { Subject } from 'rxjs';
 import { Page } from '../../../../model/page';
-import {
-  ACTION_VIEW,
-  CANCEL_STATUS,
-  DEFAULT_DATE_RANGE_RECEIVING_ORDER,
-  DEFAULT_DELAY_TABLE,
-  LS_INV_SELECTED_DELIVERY_ORDER,
-} from '../../../../../constants';
+import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { DataTableDirective } from 'angular-datatables';
 import moment from 'moment';
@@ -28,8 +22,8 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
   expiredFilter: string = '';
   tujuanFilter: string = '';
   dtOptions: DataTables.Settings = {};
-  protected config = AppConfig.settings.apiServer;
-
+    protected config = AppConfig.settings.apiServer;
+  
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
   dtColumns: any = [];
@@ -42,9 +36,19 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
     | DataTableDirective
     | undefined;
   currentDate: Date = new Date();
-
-  startDateFilter: Date = new Date();
-  dateRangeFilter: any = ['', ''];
+  selectedRowData: any;
+  startDateFilter: Date = new Date(
+    this.currentDate.setDate(
+      this.currentDate.getDate() - DEFAULT_DATE_RANGE_RECEIVING_ORDER
+    )
+  );
+  dateRangeFilter: any = [this.startDateFilter, new Date()];
+  alreadyPrint: boolean = false;
+  disabledPrintButton: boolean = false;
+  paramGenerateReport = {};
+  isShowModalReport: boolean = false;
+  selectedRowCetak: any = false;
+  buttonCaptionPrint: String = 'Cetak';
 
   constructor(
     private dataService: DataService,
@@ -59,42 +63,19 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: () => {},
+      drawCallback: () => { },
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.g.getUserLocationCode(),
-          startDate:
-            this.dateRangeFilter[0] != ''
-              ? moment(this.dateRangeFilter[0])
-                  .set({
-                    hours: 0,
-                    minutes: 0,
-                    seconds: 0,
-                    milliseconds: 0,
-                  })
-                  .format('YYYY-MM-DD')
-              : '',
-          endDate:
-            this.dateRangeFilter[1] != ''
-              ? moment(this.dateRangeFilter[1])
-                  .set({
-                    hours: 23,
-                    minutes: 59,
-                    seconds: 59,
-                    milliseconds: 999,
-                  })
-                  .format('YYYY-MM-DD')
-              : '',
+          startDate: moment(this.dateRangeFilter[0]).format('DD MMM yyyy' ),
+          endDate: moment(this.dateRangeFilter[1]).format('DD MMM yyyy' ),
         };
         setTimeout(() => {
           this.dataService
-            .postData(
-              this.config.BASE_URL + '/api/kirim-barang-return-ke-site/dt',
-              params
-            )
+            .postData(this.config.BASE_URL + '/api/send-return-to-site/dt', params)
             .subscribe((resp: any) => {
               const mappedData = resp.data.map((item: any, index: number) => {
                 // hapus rn dari data
@@ -102,7 +83,6 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
                 const finalData = {
                   ...rest,
                   dtIndex: this.page.start + index + 1,
-                  tglPesanan: this.g.transformDate(rest.tglPesanan),
                   tglTransaksi: this.g.transformDate(rest.tglTransaksi),
                 };
                 return finalData;
@@ -120,44 +100,96 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'tglTransaksi', title: 'Tanggal Transaksi' },
+        { 
+          data: 'tglTransaksi', 
+          title: 'Tanggal Transaksi',
+          render: (data: any) => {
+            return data ? moment(data).format('DD/MM/YYYY') : '';
+          }
+        },
+    
         { data: 'nomorTransaksi', title: 'No. Transaksi' },
-        {
-          data: 'keterangan',
-          title: 'Keterangan Pemusnahan',
-          searchable: true,
+    
+        { 
+          data: null, 
+          title: 'Tujuan',
+          render: (data: any) => {
+            if (data?.kodeTujuan && data?.namaTujuan) {
+              return `${data.kodeTujuan} - ${data.namaTujuan}`;
+            }
+            return data?.namaTujuan || '';
+          }
         },
+    
+        { data: 'keterangan', title: 'Keterangan' },
+    
         { data: 'userCreate', title: 'User Proses', searchable: true },
-        {
-          data: 'dateCreate',
-          title: 'Tgl. Proses',
-          orderable: true,
+    
+        { 
+          data: 'dateCreate', 
+          title: 'Tanggal', 
           searchable: true,
+          render: (data: any) => {
+            return data ? moment(data).format('DD/MM/YYYY') : '';
+          }
         },
-        {
-          data: 'timeCreate',
-          title: 'Jam Proses',
-          orderable: true,
+    
+        { 
+          data: 'timeCreate', 
+          title: 'Jam', 
           searchable: true,
+          render: (data: any) => {
+            return data ? moment(data, 'HH:mm:ss').format('HH:mm:ss') : '';
+          }
         },
-        {
-          data: 'statusPosting',
-          title: 'Status Transaksi',
-          render: (data) => this.g.getStatusOrderLabel(data),
-        },
+        { data: 'namaPosting', title: 'Status Transaksi' },
         {
           title: 'Aksi',
           render: () => {
-            return `<button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>`;
+            return `<div class="btn-group" role="group" aria-label="Action">
+                <button class="btn btn-sm action-view btn-outline-primary btn-60">${this.buttonCaptionView}</button>
+                <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>           
+              </div>`;
           },
         },
       ],
       searchDelay: 1000,
-      // delivery: [],
+      order: [
+        [6, 'desc'],
+        [7, 'desc'],
+        [2, 'desc'],
+        [1, 'desc'],
+      
+      ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
         );
+        $('td', row).on('click', () => {
+          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
+        $('.action-print', row).on('click', () =>{
+          this.selectedRowCetak = data;
+          this.isShowModalReport=true;
+
+          this.paramGenerateReport = {
+            noTransaksi: this.selectedRowCetak.nomorTransaksi,
+            userEntry: this.selectedRowCetak.userCreate,
+            jamEntry: this.g.transformTime(this.selectedRowCetak.timeCreate),
+            tglEntry: this.g.transformDate(this.selectedRowCetak.dateCreate),
+            outletBrand: 'KFC',
+            kodeGudang: this.g.getUserLocationCode(),
+            isDownloadCsv: false,
+            reportName: 'cetak retur dari site',
+            confirmSelection: 'Ya',
+          };
+        });
         return row;
       },
     };
@@ -165,11 +197,7 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.dtOptions = {
-    //   pagingType: 'full_numbers',
-    //   pageLength: 10,
-    //   processing: true,
-    // };
+  
   }
 
   toggleFilter(): void {
@@ -177,18 +205,17 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
   }
 
   onAddPressed(): void {
-    // Logic for adding a new order
-    const route = this.router.createUrlTree([
-      '/transaction/kirim-barang-return-ke-site/add-data',
-    ]);
+    const route = this.router.createUrlTree(['/transaction/kirim-barang-return-ke-site/add-data']);
     this.router.navigateByUrl(route);
   }
 
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
-      this.g.saveLocalstorage('selectedWastage', JSON.stringify(data));
-      this.router.navigate(['/transaction/kirim-barang-return-ke-site/detail']);
-      this;
+      this.g.saveLocalstorage(
+        'selectedProduction',
+        JSON.stringify(data)
+      );
+      this.router.navigate(['/transaction/kirim-barang-return-ke-site/detail']); this
     }
   }
 
@@ -201,12 +228,12 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
   }
 
   refreshData(): void {
-    const route = this.router.createUrlTree(['/transaction/wastage/detail']);
+    const route = this.router.createUrlTree(['/transaction/kirim-barang-return-ke-site/detail']);
     this.router.navigateByUrl(route);
   }
   onFilterStatusChange(event: Event): void {
     // Logic for handling status filter change
-    // console.log('Status filter changed:', this.selectedStatusFilter);
+    console.log('Status filter changed:', this.selectedStatusFilter);
   }
 
   onFilterOrderDateChange(event: Event): void {
@@ -242,21 +269,11 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
   }
   dtPageChange(event: any): void {
     console.log('Page changed', event);
-    // Logic for handling page change
-    // You can fetch new data based on the page number or perform other actions
   }
 
-  validateDeliveryDate(): void {
-    const today = new Date();
-    this.orders.forEach((order) => {
-      const deliveryDate = new Date(order.deliveryDate);
-      const timeDiff = Math.abs(today.getTime() - deliveryDate.getTime());
-      const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-      if (diffDays > 7) {
-        console.warn(
-          `Order ${order.orderNo} has a delivery date older than 7 days.`
-        );
-      }
-    });
+  closeModal(){
+    this.isShowModalReport = false;
+    this.selectedRowCetak = null;
+    this.disabledPrintButton = false;
   }
 }

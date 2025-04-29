@@ -100,7 +100,7 @@
             </div>
             <div class="detail-item">
               <span class="label">{{ "Jumlah Item" | translate }}</span>
-              <span class="value">{{ totalLength }} </span>
+              <span class="value">{{ getJumlahItem() }} </span>
             </div>
           </div>
         </div>
@@ -111,14 +111,117 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <div class="table-responsive">
-        <table
-          datatable
-          [dtOptions]="dtOptions"
-          (page.dt)="dtPageChange($event)"
-          class="row-border hover stripe"
-        ></table>
+      <div class="row justify-content-between">
+        <div class="col-6 d-flex align-items-center">
+
+        </div>
+        
+        <div class="col-6">
+          <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
+            <div class="col-9 d-flex align-items-center">
+              <c-input-group>
+                <span cInputGroupText id="basic-addon1"><i class="fa fa-search"></i></span>
+                <input #listViewOrders id="appendedInputButton" [(ngModel)]="searchListViewOrder" class="form-control"
+                  size="16" type="text" placeholder="Search..." (ngModelChange)="onFilterTextChange($event)">
+              </c-input-group>
+            </div>
+          </div>
+
+        </div>
       </div>
+      <div class="table-responsive">
+        <ng-container>
+          <div *ngIf="loading">
+            <app-loading></app-loading>
+          </div>
+          <table bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
+            <thead>
+              <tr>
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                class="text-center align-items-start" rowspan="2">
+                 Kode Barang</th>
+                 <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 15%;"
+                 class="text-center align-items-start" rowspan="2">
+                   Nama Barang</th>
+                 <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle; width: 10%;"
+                 class="text-center align-items-start btn-danger" colspan="2">Konversi Pemesan</th> <!-- Masih sejajar -->
+
+                <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle; width: 10%;"
+                  class="text-center align-items-start btn-danger" colspan="2">Qty Pesan</th> <!-- Masih sejajar -->
+                  <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                  class="text-center align-items-start" rowspan="2">
+                    Total Pesanan
+                  </th>
+                  <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle; width: 10%;"
+                  class="text-center align-items-start btn-danger" colspan="2">Konversi Gudang</th> <!-- Masih sejajar -->
+                  <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                  class="text-center align-items-start" rowspan="2">
+                    Keterangan <br>
+                    -Perbedaan Konversi-
+                  </th>
+              </tr>
+              <tr>
+              <th scope="col" class="text-center"
+                style="background-color: #3c4b64; color:white; vertical-align: middle; ">Konv.</th>
+              <th scope="col" class="text-center"
+                style="background-color: #3c4b64; color:white; vertical-align: middle;">Satuan</th>
+
+                <th scope="col" class="text-center"
+                  style="background-color: #3c4b64; color:white; vertical-align: middle; ">Besar</th>
+                <th scope="col" class="text-center"
+                  style="background-color: #3c4b64; color:white; vertical-align: middle;">Kecil</th>
+             
+                <th scope="col" class="text-center"
+                  style="background-color: #3c4b64; color:white; vertical-align: middle; ">Konv.</th>
+                <th scope="col" class="text-center"
+                  style="background-color: #3c4b64; color:white; vertical-align: middle;">Satuan</th>
+                </tr>
+            </thead>
+            <tbody *ngIf="!filteredList || filteredList.length === 0">
+              <tr>
+                <td colspan="9" scope="col" class="text-center">
+                  No Data Found
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr *ngFor="let data of filteredList | paginate: {
+                  itemsPerPage: itemsPerPage,
+                  currentPage: listCurrentPage,
+                  totalItems:totalLength,
+                  id:'dataTableDetail'
+              }; let i = index ">
+                <!-- <td class="text-center">{{ data?.kodeBarang }}</td> -->
+                <td class="text-center">{{data?.kodeBarang}}</td>
+                <td class="text-center">{{ data?.namaBarang }}</td>
+
+                <td class="text-center">{{ data?.konversi?.toFixed(2) }}</td>
+                <td class="text-center">{{ data?.satuanKecil}}/{{data?.satuanBesar}}</td>
+
+                <td class="text-center">{{data?.qtyPesanBesar?.toFixed(2)}}</td>
+                <td class="text-center">{{data?.qtyPesanKecil?.toFixed(2)}}</td>                    
+                <td class="text-center">{{((helper.sanitizedNumber(data.qtyPesanBesar) *
+                  data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil)).toFixed(2) }}
+                </td>
+                <td class="text-center">{{ data?.konversiProduct?.toFixed(2) }}</td>
+                <td class="text-center">{{ data?.satuanKecilProduct}}/{{data?.satuanBesarProduct}}</td> 
+                <td class="text-center">
+                  <span class="text-center text-success" *ngIf="data?.keterangan?.toUpperCase() == statusSameConversion">
+                    {{ data?.keterangan?.toUpperCase() }}
+                  </span>
+                  <span class="text-center text-danger" *ngIf="data?.keterangan?.toUpperCase() != statusSameConversion">
+                    {{ data?.keterangan?.toUpperCase() }}
+                  </span>
+              </tr>
+            </tbody>
+          </table>
+
+          <c-pagination class="text-right">
+            <pagination-controls (pageChange)="listCurrentPage = $event" id="dataTableDetail"></pagination-controls>
+          </c-pagination>
+        </ng-container>
+      </div>
+
     </c-card-body>
   </c-card>
 </div>

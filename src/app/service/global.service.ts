@@ -86,6 +86,13 @@ export class GlobalService {
     );
   }
 
+  getUserKodeSingkat() {
+    return (
+      this.getLocalstorage('inv_currentUser')?.defaultLocation?.kodeSingkat ||
+      ''
+    );
+  }
+
   getUserAreaCode() {
     return this.getLocalstorage('inv_currentUser')?.kodeRsc || '';
   }

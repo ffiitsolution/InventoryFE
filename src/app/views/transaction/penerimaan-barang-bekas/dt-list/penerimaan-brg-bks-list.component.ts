@@ -188,6 +188,12 @@ export class PenerimaanBrgBksListComponent implements OnInit {
     this.router.navigateByUrl(route);
   }
 
+  
+  onAddPressedOtomatis(): void {
+    const route = this.router.createUrlTree(['/transaction/penerimaan-barang-bekas/list-retur']);
+    this.router.navigateByUrl(route);
+  }
+
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage(
