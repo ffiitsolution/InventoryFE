@@ -413,6 +413,7 @@ export class DetailSendOrderToSupplierComponent
   }
 
   onFilterTextChange(newValue: string) {
+    this.listCurrentPage = 1;
     if (newValue.length >= 3) {
       this.totalLength = 1;
     } else {
