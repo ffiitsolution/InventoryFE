@@ -207,6 +207,7 @@ export class AddDataDetailSendOrderToSupplierComponent
   }
 
   onSubmit() {
+    this.isShowModalOnSubmit= false;
     if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() === "") {
       this.listOrderData.splice(this.listOrderData.length - 1, 1);
     }

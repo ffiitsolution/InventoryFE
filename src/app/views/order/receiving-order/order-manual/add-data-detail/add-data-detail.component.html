@@ -254,7 +254,7 @@
     <button class="btn btn-secondary text-white btn-150" (click)="onBackPressed()">
       <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
     </button>
-    <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()" [disabled]="adding">
+    <button class="btn btn-info text-white btn-150 pe-3" (click)="onShowModalOnSubmit()" [disabled]="adding">
       <i class="fa fa-check pe-2" *ngIf="!adding"></i>
       <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
       {{ "Proses Simpan Data" | translate }}
