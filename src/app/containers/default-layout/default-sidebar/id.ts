@@ -185,35 +185,14 @@ export const menu_id: any = [
     },
     children: [
       {
-        name: 'Setup SO',
+        name: 'Display SO',
         url: '/stock-opname/setup-so',
         iconComponent: {
           name: 'cil-circle',
         },
       },
       {
-        name: 'Cetak Form SO',
-        url: '/dashboard',
-        iconComponent: {
-          name: 'cil-circle',
-        },
-      },
-      {
-        name: 'Entry Stock Opname',
-        url: '/dashboard',
-        iconComponent: {
-          name: 'cil-circle',
-        },
-      },
-      {
         name: 'Laporan Selisih SO (Sementara)',
-        url: '/dashboard',
-        iconComponent: {
-          name: 'cil-circle',
-        },
-      },
-      {
-        name: 'Proses Posting SO',
         url: '/dashboard',
         iconComponent: {
           name: 'cil-circle',

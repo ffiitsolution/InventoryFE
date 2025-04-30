@@ -5,6 +5,8 @@ import {
   OnInit,
   SimpleChanges,
   ViewChild,
+  EventEmitter,
+  Output,
 } from '@angular/core';
 import {
   ACTION_VIEW,
@@ -52,9 +54,10 @@ export class AddDataDetailBarangComponent
   disabledPrintButton: boolean = false;
   updatingStatus: boolean = false;
   RejectingOrder: boolean = false;
-  alreadyPrint: Boolean = false;
+  alreadyPrint: boolean = false;
   totalLength: number = 0;
   // listProductData: any[] = [];
+  @Output() onBatalPressed = new EventEmitter<string>();
   listEntryExpired: any[] = [];
   buttonCaptionView: String = 'Lihat';
   public loading: boolean = false;
@@ -70,6 +73,8 @@ export class AddDataDetailBarangComponent
   isShowModalExpired: boolean = false;
   isShowModalDelete: boolean = false;
   indexDataDelete: any;
+  isShowModalReport: boolean = false;
+  paramGenerateReport = {};
   selectedExpProduct: any = {};
   data: any = {};
   isQtyKecilError: boolean = false;
@@ -162,6 +167,9 @@ export class AddDataDetailBarangComponent
   onBackPressed() {
     this.router.navigate(['/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri']);
   }
+  onBackPressedE(data: any = '') {
+    this.onBatalPressed.emit(data);
+  }
 
   onPageChange(event: number) {
     this.page = event;
@@ -250,7 +258,8 @@ export class AddDataDetailBarangComponent
               } else {
                 setTimeout(() => {
                   this.toastr.success(res.message);
-                  this.onPreviousPressed();
+                  this.onBackPressedE(res);
+                  // this.onShowModalPrint(this.headerWastage);
                 }, DEFAULT_DELAY_TIME);
               }
               this.adding = false;
@@ -262,7 +271,7 @@ export class AddDataDetailBarangComponent
       });
     } else {
       this.toastr.error('Data tidak valid');
-    }
+    } 
   }
 
   onShowModal() {
@@ -856,4 +865,27 @@ export class AddDataDetailBarangComponent
         this.isShowModalExpired = false;
       }
     }
+
+    onShowModalPrint(data: any) {
+      this.paramGenerateReport = {
+        nomorTransaksi: data.nomorTransaksi,
+        userEntry: data.userCreate,
+        jamEntry: this.globalService.transformTime(data.timeCreate),
+        tglEntry: this.globalService.transformDate(data.dateCreate),
+        outletBrand: 'KFC',
+        kodeGudang: this.globalService.getUserLocationCode(),
+        isDownloadCsv: false,
+        reportName: 'cetak_pemakaian_barang',
+        confirmSelection: 'Ya',
+      };
+      this.isShowModalReport = true;
+      // this.onBackPressed();
+    }
+
+    closeModal(){
+      this.isShowModalReport = false;
+      this.disabledPrintButton = false;
+    }
+
+    
 }

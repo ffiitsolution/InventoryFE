@@ -64,6 +64,7 @@ export class SetupSoDetailComponent
   protected config = AppConfig.settings.apiServer;
   isShowModalExpired: boolean = false;
   selectedRowData: any;
+  userData: any;
   constructor(
     private dataService: DataService,
     public g: GlobalService,
@@ -74,6 +75,7 @@ export class SetupSoDetailComponent
     public helper: HelperService
   ) {
     this.g.navbarVisibility = true;
+    this.userData = this.appService.getUserData();
     this.selectedSo = JSON.parse(this.selectedSo);
     (this.selectedSo.dateCreate = this.g.transformDate(
       this.selectedSo.dateCreate
@@ -237,18 +239,22 @@ export class SetupSoDetailComponent
     this.selectedRowData = data;
     const payload = {
       nomorSo: this.selectedSo.nomorSo,
+      nomorTransaksi: this.selectedSo.nomorSo,
       kodeBarang: data.kodeBarang,
-      tipeTransaksi: 12,
+      tipeTransaksi: 7,
+      kodeGudang: this.userData.defaultLocation.kodeLocation,
     };
 
     this.appService
-      .getExpiredData(payload)
+      .insert('/api/stock-opname/expired', payload)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
         next: (res) => {
-          if (res) {
-            this.listDataExpired = res;
+          if (res.success) {
+            this.listDataExpired = res.data;
             this.isShowModalExpired = true;
+          } else {
+            this.appService.handleErrorResponse(res);
           }
         },
         error: (err) => {
@@ -331,10 +337,11 @@ export class SetupSoDetailComponent
   }
 
   getTotalQty(): number {
-    // return this.listDataExpired?.reduce((sum, item) => {
-    //   return sum + Math.abs(Number(item.totalQty));
-    // }, 0) ?? 0;
-    return 0;
+    return (
+      this.listDataExpired?.reduce((sum, item) => {
+        return sum + Math.abs(Number(item.totalQty));
+      }, 0) ?? 0
+    );
   }
 
   conditionInput(event: any, type: string): boolean {

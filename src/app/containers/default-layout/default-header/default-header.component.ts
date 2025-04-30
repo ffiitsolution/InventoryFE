@@ -42,7 +42,7 @@ export class DefaultHeaderComponent
   }
 
   ngOnInit(): void {
-    this.checkConnection();
+    // this.checkConnection(); // check hanya jika diperlukan
     this.currentUser = this.g.getLocalstorage('inv_currentUser');
     this.g.currentUser = this.currentUser;
     if (!isEmpty(this.currentUser?.defaultLocation)) {

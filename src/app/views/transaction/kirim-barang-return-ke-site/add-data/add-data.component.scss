@@ -25,7 +25,7 @@
 }
 
 .red-line {
-  border-right: 3px solid #000080;
+  border-right: 3px solid #3c4b64;
   opacity: 1;
   max-height: auto;
 }
@@ -49,4 +49,8 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 80%;
+}
+
+.h-65{
+  height: 65%;
 }

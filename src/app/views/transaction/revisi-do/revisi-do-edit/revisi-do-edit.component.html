@@ -71,26 +71,28 @@
             };  let i = index">
                 <td class="text-center">{{ data.kodeBarang }}</td>
                 <td class="text-center">{{ data.namaBarang }}</td>
-                <td class="text-center">{{ data.totalQtyPesan }} {{data.satuanKecil}}</td>
+                <td class="text-center">{{ g.formatToDecimal(data.totalQtyPesan) }} {{data.satuanKecil}}</td>
                 <!-- <td class="text-center">{{ data.qtyBKirim }} {{ data.satuanBesar }}</td> -->
 
                 <td class="text-center">{{ data.qtyBKirim }} {{data.satuanBesar}}</td>
                 <td class="text-center">{{ data.qtyKKirim }} {{data.satuanKecil}}</td>
-                <td class="text-center">{{ data.konversi }}</td>
-                <td class="text-center">{{ data.totalQtyKirim }} {{data.satuanKecil}}</td>
+                <td class="text-center">{{ g.formatToDecimal(data.konversi) }}</td>
+                <td class="text-center">{{ g.formatToDecimal(data.totalQtyKirim) }} {{data.satuanKecil}}</td>
                 <td class="text-center">
-                  <button class="btn btn-sm action-view btn-outline-success w-50"><i class="fa fa-check pe-1"></i> Cek</button>
+                  <button class="btn btn-sm action-view btn-outline-success w-75" (click)="actionBtnClick(data)"><i
+                      class="fa fa-check pe-1"></i> Cek</button>
                 </td>
-                
+
                 <td class="text-center">
-                  <button class="btn btn-sm action-view btn-outline-danger w-75">Rubah Qty</button>
+                  <button class="btn btn-sm action-view btn-outline-danger w-75" (click)="onShowModalRevisi(data)"><i
+                      class="fa fa-pen pe-1"></i> Rubah Qty</button>
                 </td>
-                <!-- <td class="text-center input-column">
+                <!-- <td class="text-center form-control">
                   <div class="d-flex" style="gap: 5px;">
                     <input [ngClass]="{'form-invalid': validationMessages[i]}" min="0"
                       class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyKKirim"
                       (input)="onInputValueItemDetail($event, i, 'numericDot', 'kecil')"
-                      (blur)="onBlurQtyPesanKecil(i)" />
+                      (blur)="onBlurqtyKKirim(i)" />
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanKecil}}
                     </span>
@@ -118,3 +120,762 @@
     </c-card-body>
   </c-card>
 </div>
+
+<c-modal #modalExpired alignment="center" [style]="{
+    display: 'flex',
+    'align-items': 'center',
+    'justify-content': 'center'
+  }" [fullscreen]="false" [visible]="isShowModalExpired" backdrop="static" #modalLg size="xl" id="formModal"
+  [attr.aria-hidden]="!isShowModalExpired">
+  <c-modal-header>
+    <h5 cModalTitle>History Data Expired</h5>
+    <button (click)="isShowModalExpired = false" type="button" class="btn btn-primary ms-2" cButtonClose>
+      <i class="fa fa-times"></i>
+    </button>
+  </c-modal-header>
+  <c-modal-body>
+    <div class="row" *ngIf="selectedRowData">
+      <div class="col-7">
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Nama Barang" | translate }}</label>
+          </div>
+          <div class="col-8 pe-0 d-flex">
+            <div class="col-3 pe-2">
+              <input type="text" class="form-control" id="kodeBarang" [(ngModel)]="selectedRowData.kodeBarang"
+                name="kodeBarang" disabled />
+            </div>
+            <div class="col-9">
+              <input type="text" class="form-control" id="namaBarang" [(ngModel)]="selectedRowData.namaBarang"
+                name="namaBarang" disabled />
+            </div>
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{
+              "Konversi Barang" | translate
+              }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi" [value]="
+                selectedRowData.konversi +
+                ' ' +
+                selectedRowData.satuanKecil +
+                '/' +
+                selectedRowData.satuanBesar
+              " name="konversi" disabled />
+          </div>
+        </div>
+
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label class="fw-semibold" for="nomorPesanan">{{
+              "Total Qty" | translate
+              }}</label>
+          </div>
+          <div class="col-5 pe-0">
+            <input type="text" placeholder="Nomor pesanan" class="form-control" id="totalQtyProduksi"
+              [value]="g.formatToDecimal(this.selectedRowData.totalQtyPesan)  + ' ' + this.selectedRowData.satuanKecil"
+              name="totalQtyProduksi" disabled />
+          </div>
+
+        </div>
+      </div>
+      <div class="col-5">
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Quantity Besar" | translate }}</label>
+          </div>
+          <div class="col pe-0">
+            <input type="text" class="form-control" id="qtyPemakaianBesar"
+              [value]="g.formatToDecimal(this.selectedRowData.qtyBKirim) + ' ' + this.selectedRowData.satuanBesar"
+              name="qtyPemakaianBesar" disabled />
+          </div>
+        </div>
+
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Quantity Kecil" | translate }}</label>
+          </div>
+          <div class="col pe-0">
+            <input type="text" class="form-control" id="qtyPemakaianKecil"
+              [value]="g.formatToDecimal(selectedRowData.qtyKKirim) + ' ' + this.selectedRowData.satuanKecil"
+              name="qtyPemakaianKecil" disabled />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="table-responsive">
+      <ng-container>
+        <!-- <div *ngIf="loading">
+          <app-loading></app-loading>
+        </div> -->
+        <table bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
+          <thead>
+            <tr>
+              <th scope="col" style="
+                  background-color: #3c4b64;
+                  color: white;
+                  vertical-align: middle;
+                  width: 20%;
+                " class="text-center align-items-start" rowspan="2">
+                Tgl. Expired
+              </th>
+              <th scope="col" style="
+                  background-color: #3c4b64;
+                  color: white;
+                  vertical-align: middle;
+                  width: 20%;
+                " class="text-center align-items-start" rowspan="3">
+                Keterangan Tanggal
+              </th>
+              <th scope="col" style="
+                  background-color: #3c4b64;
+                  color: white;
+                  vertical-align: middle;
+                  width: 124px;
+                " class="text-center align-items-start" rowspan="2">
+                Qty Besar
+              </th>
+              <th scope="col" style="
+                  background-color: #3c4b64;
+                  color: white;
+                  vertical-align: middle;
+                  width: 124px;
+                " class="text-center align-items-start btn-danger" rowspan="2">
+                Qty Kecil
+              </th>
+              <!-- Masih sejajar -->
+              <th scope="col" style="
+                  background-color: #3c4b64;
+                  color: white;
+                  vertical-align: middle;
+                  width: 10%;
+                " class="text-center align-items-start" rowspan="2">
+                Total Qty Expired
+              </th>
+            </tr>
+          </thead>
+          <tbody *ngIf="!listDataExpired || listDataExpired.length === 0">
+            <tr>
+              <td colspan="9" scope="col" class="text-center">No Data Found</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr *ngFor="let data of listDataExpired; let i = index">
+              <td class="text-center">
+                {{ data.tglExpired | date : "dd MMM yyyy" }}
+              </td>
+
+              <td class="text-center">
+                {{ data.tglExpired | date : "dd MMM yyyy" }}
+              </td>
+              <td class="text-center form-control">
+                <div class="d-flex justify-content-center" style="gap: 5px">
+                  {{ helper.abs(data.qtyBesar) | number : "1.2-2" }}
+                  <span class="d-flex align-items-center justify-content-center">
+                    / {{ data.satuanBesar }}
+                  </span>
+                </div>
+              </td>
+
+              <td class="text-center">
+                <div class="d-flex justify-content-center" style="gap: 5px">
+                  {{ helper.abs(data.qtyKecil) | number : "1.2-2" }}
+                  <span class="d-flex align-items-center justify-content-center">
+                    / {{ data.satuanKecil }}
+                  </span>
+                </div>
+              </td>
+
+              <td class="text-center">
+                {{ helper.abs(data.totalQty) | number : "1.2-2" }}
+                {{ data.satuanKecil }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+    </div>
+
+    <div class="row justify-content-between gap-3 mt-3" *ngIf="selectedRowData" style="margin-right: 20px">
+      <div class="col-4 d-flex"></div>
+      <div class="col-6 d-flex justify-content-end align-items-center gap-3">
+        <p class="mb-0">
+          <strong>TOTAL QTY EXPIRED:</strong>
+          {{ getTotalQty() | number : "1.2-2" }}
+          {{ selectedRowData.satuanKecil }}
+        </p>
+      </div>
+      <div class="col-2"></div>
+    </div>
+  </c-modal-body>
+</c-modal>
+
+<c-modal #modalRevisi alignment="center" [style]="{
+    display: 'flex',
+    'align-items': 'center',
+    'justify-content': 'center'
+  }" [fullscreen]="false" [visible]="isShowModalRevisi" backdrop="static" #modalLg size="xl" id="formModal"
+  [attr.aria-hidden]="!isShowModalRevisi">
+  <c-modal-header>
+    <h5 cModalTitle>Rubah Qty Kirim</h5>
+    <!-- <button (click)="isShowModalRevisi = false" type="button" class="btn btn-primary ms-2" cButtonClose>
+      <i class="fa fa-times"></i>
+    </button> -->
+  </c-modal-header>
+  <c-modal-body *ngIf="selectedRowData">
+    <div class="row">
+      <div class="col-12">
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-2 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Nama Barang" | translate }}</label>
+          </div>
+          <div class="col ps-1 p-0 d-flex">
+            <div class="col-2 pe-2">
+              <input type="text" class="form-control" id="kodeBarang" [(ngModel)]="selectedRowData.kodeBarang"
+                name="kodeBarang" disabled />
+            </div>
+            <div class="col-10 ps-2">
+              <input type="text" class="form-control" id="namaBarang" [(ngModel)]="selectedRowData.namaBarang"
+                name="namaBarang" disabled />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{
+              "Konversi" | translate
+              }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi" [value]="
+                g.formatToDecimal(selectedRowData.konversi)
+              " name="konversi" disabled />
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{
+              "Satuan Kecil" | translate
+              }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi" [value]="
+                selectedRowData.satuanKecil
+              " name="konversi" disabled />
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{
+              "Satuan Besar" | translate
+              }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi" [value]="
+                selectedRowData.satuanBesar
+              " name="konversi" disabled />
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{
+              "Flag Expired" | translate
+              }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi" [value]="
+                selectedRowData.flagExpired
+              " name="konversi" disabled />
+          </div>
+        </div>
+
+      </div>
+      <div class="col-6">
+        <div class="w-100 px-2 py-4 row">
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{
+              "Qty Pesan - Besar" | translate
+              }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi" [value]="
+                g.formatToDecimal(selectedRowData.qtyPesanBesar)
+              " name="konversi" disabled />
+          </div>
+        </div>
+
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{
+              "Qty Pesan - Kecil" | translate
+              }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi" [value]="
+                g.formatToDecimal(selectedRowData.qtyPesanKecil)
+              " name="konversi" disabled />
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{
+              "Total Qty Pesan" | translate
+              }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi" [value]="
+                g.formatToDecimal(selectedRowData.totalQtyPesan)
+              " name="konversi" disabled />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="row px-2">
+      <div class="col-6 gx-1">
+        <h6 class="p-2 text-center border border-1 border-dark rounded" style="background-color: #ffcf69e3;">QTY KIRIM
+        </h6>
+
+        <div class="p-2 border border-1 border-dark rounded-bottom" style="background-color: #ffcf6952;">
+          <div class="row px-2">
+            <div class="w-100 px-2 py-1 row">
+              <div class="col-6 d-flex align-items-center">
+                <label for="nomorPesanan">{{
+                  "QTY KIRIM - BESAR" | translate
+                  }}</label>
+              </div>
+              <div class="col-6 pe-0">
+                <input type="text" class="text-end form-control" id="konversi"
+                  [value]="g.formatToDecimal(selectedRowData.qtyBKirimOld)" name="konversi" disabled />
+              </div>
+            </div>
+
+            <div class="w-100 px-2 py-1 row">
+              <div class="col-6 d-flex align-items-center">
+                <label for="nomorPesanan">{{
+                  "QTY KIRIM - KECIL" | translate
+                  }}</label>
+              </div>
+              <div class="col-6 pe-0">
+                <input type="text" class="text-end form-control" id="konversi"
+                  [value]="g.formatToDecimal(selectedRowData.qtyKKirimOld)" name="konversi" disabled />
+              </div>
+            </div>
+
+            <div class="w-100 px-2 py-1 row">
+              <div class="col-6 d-flex align-items-center">
+                <label for="nomorPesanan">{{
+                  "TOTAL QTY KIRIM" | translate
+                  }}</label>
+              </div>
+              <div class="col-6 pe-0">
+                <input type="text" class="text-end form-control" id="konversi"
+                  [value]="g.formatToDecimal(selectedRowData.totalQtyKirim)" name="konversi" disabled />
+              </div>
+            </div>
+
+            <div class="w-100 px-2 py-1 row">
+              <div class="col-6 d-flex align-items-center">
+                <label for="nomorPesanan">{{
+                  "TOTAL QTY EXPIRED" | translate
+                  }}</label>
+              </div>
+              <div class="col-6 pe-0">
+                <input type="text" class="text-end form-control" id="konversi"
+                  [value]="g.formatToDecimal(selectedRowData.totalQtyKirim)" name="konversi" disabled />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 gx-1">
+        <h6 class="p-2 text-center border border-1 border-dark rounded" style="background-color: #ff6969e3;"><i
+            class="fa fa-chevron-down pe-2"></i>REVISI QTY
+          KIRIM<i class="fa fa-chevron-down ps-2"></i></h6>
+
+        <div class="p-2 border border-1 border-dark rounded-bottom" style="background-color: #ff696952;">
+          <div class="row px-2">
+            <div class="w-100 px-2 py-1 row">
+              <div class="col-6 d-flex align-items-center">
+                <label for="nomorPesanan">{{
+                  "QTY KIRIM - BESAR" | translate
+                  }}</label>
+              </div>
+              <div class="col-6 pe-0">
+                <input type="text" numberOnly max="{{selectedRowData.qtyBKirim}}" min="0"
+                  class="form-control text-end inputQty inputNumberSpace" [(ngModel)]="selectedRowData.qtyBKirim"
+                  (keypress)="g.conditionInput($event, 'numericDot')" autofocus
+                  (blur)="onBlurQtyPesan(selectedRowData.qtyBKirim, 'besar')" />
+              </div>
+            </div>
+
+            <div class="w-100 px-2 py-1 row">
+              <div class="col-6 d-flex align-items-center">
+                <label for="nomorPesanan">{{
+                  "QTY KIRIM - KECIL" | translate
+                  }}</label>
+              </div>
+              <div class="col-6 pe-0">
+                <input type="text" numberOnly max="{{selectedRowData.qtyKKirim}}" min="0"
+                  class="form-control text-end inputQty inputNumberSpace" [(ngModel)]="selectedRowData.qtyKKirim"
+                  (keypress)="g.conditionInput($event, 'numericDot')" autofocus
+                  (blur)="onBlurQtyPesan(selectedRowData.qtyKKirim, 'kecil')" />
+              </div>
+            </div>
+
+            <div class="w-100 px-2 py-1 row">
+              <div class="col-6 d-flex align-items-center">
+                <label for="nomorPesanan">{{
+                  "TOTAL QTY KIRIM" | translate
+                  }}</label>
+              </div>
+              <div class="col-6 pe-0">
+                <input type="text" class="text-end form-control" id="konversi"
+                  [value]="g.formatToDecimal(getTotalQtyRow())" name="konversi" readonly />
+              </div>
+            </div>
+
+            <div class="w-100 px-2 py-1 row">
+              <div class="col-6 d-flex align-items-center">
+                <label for="nomorPesanan">{{
+                  "TOTAL QTY EXPIRED" | translate
+                  }}</label>
+              </div>
+              <div class="col-6 pe-0">
+                <input type="text" class="text-end form-control" id="konversi"
+                  [value]="g.formatToDecimal(selectedRowData.totalQtyKirim)" name="konversi" readonly />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="gap-3 d-md-flex justify-content-end ms-2">
+      <button class="btn btn-secondary text-white btn-150" (click)="onCloseModal()">
+        <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
+      </button>
+      <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmitRevisi()" [disabled]="adding">
+        <i class="fa fa-check pe-2" *ngIf="!adding"></i>
+        <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
+        {{ "Proses" | translate }}
+      </button>
+    </div>
+  </c-modal-body>
+</c-modal>
+
+<c-modal #modalExpiredEdit alignment="center"
+  [style]="{'display': 'flex', 'align-items': 'center', 'justify-content': 'center'}" [fullscreen]="false"
+  [visible]="isShowModalExpiredEdit" backdrop="static" #modalLg size="xl" id="formModal"
+  [attr.aria-hidden]="!isShowModalExpiredEdit">
+  <c-modal-header>
+    <h5 cModalTitle>Rubah Data Expired</h5>
+    <button (click)="isShowModalExpiredEdit = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
+        class="fa fa-times"></i></button>
+  </c-modal-header>
+  <c-modal-body *ngIf="selectedRowData">
+    <div class="row">
+      <div class="col-12">
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-2 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Kode dan Nama Barang" | translate }}</label>
+          </div>
+          <div class="col ps-1 p-0 d-flex">
+            <div class="col-2 pe-2">
+              <input type="text" class="form-control" id="kodeBarang" [(ngModel)]="selectedRowData.kodeBarang"
+                name="kodeBarang" disabled />
+            </div>
+            <div class="col-10 ps-2">
+              <input type="text" class="form-control" id="namaBarang" [(ngModel)]="selectedRowData.namaBarang"
+                name="namaBarang" disabled />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{
+              "Konversi Barang" | translate
+              }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi"
+              [value]="
+                g.formatToDecimal(selectedRowData.konversi) + ' ' + selectedRowData.satuanKecil + '/' + selectedRowData.satuanBesar" name="konversi" disabled />
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{
+              "Kirim Besar" | translate
+              }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi" [value]="
+                selectedRowData.qtyBKirimOld + ' ' + selectedRowData.satuanBesar
+              " name="konversi" disabled />
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{
+              "Kirim Kecil" | translate
+              }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi" [value]="
+                selectedRowData.qtyKKirimOld + ' ' + selectedRowData.satuanKecil
+              " name="konversi" disabled />
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan" class="fw-semibold">{{
+              "TOTAL QTY KIRIM" | translate
+              }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi" [value]="
+                selectedRowData.totalQtyKirimOld + ' ' + selectedRowData.satuanKecil
+              " name="konversi" readonly />
+          </div>
+        </div>
+
+      </div>
+      <div class="col-6">
+        <div class="w-100 px-2 py-4 row">
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{
+              "Kirim Besar (Revisi)" | translate
+              }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi" [value]="
+                g.formatToDecimal(selectedRowData.qtyBKirim) + ' ' + selectedRowData.satuanBesar
+              " name="konversi" disabled />
+          </div>
+        </div>
+
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{
+              "Kirim Kecil (Revisi)" | translate
+              }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi" [value]="
+                g.formatToDecimal(selectedRowData.qtyKKirim) + ' ' + selectedRowData.satuanKecil
+              " name="konversi" disabled />
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan" class="fw-semibold">{{
+              "TOTAL QTY (REVISI)" | translate
+              }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi" [value]="
+                g.formatToDecimal(getTotalQtyRow()) + ' ' + selectedRowData.satuanKecil
+              " name="konversi" readonly />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="text-danger fw-semibold col-sm-12 d-flex flex-column justify-content-start align-items-center">
+      <span>
+        Isi tanggal expired dengan benar..!!
+      </span>
+      <span>
+        Pengisian tanggal expired tidak boleh sama (Duplikat)
+      </span>
+      <span>
+        Jumlah TOTAL QTY EXPIRED harus sama dengan TOTAL QTY KIRIM..!!
+      </span>
+    </div>
+    <div class="divider"></div>
+
+    <div class="table-responsive">
+      <ng-container>
+        <div *ngIf="loading">
+          <app-loading></app-loading>
+        </div>
+        <table bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
+          <thead>
+            <tr>
+              <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 20%;"
+                class="text-center align-items-start" rowspan="2">Tgl. Expired</th>
+              <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 20%;"
+                class="text-center align-items-start" rowspan="3">Keterangan Tanggal</th>
+              <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 124px;"
+                class="text-center align-items-start" rowspan="2">
+                Qty Besar</th>
+              <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 124px;"
+                class="text-center align-items-start" rowspan="2">Qty
+                Kecil</th> <!-- Masih sejajar -->
+              <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                class="text-center align-items-start" rowspan="2">
+                Total Qty</th>
+            </tr>
+            <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+              class="text-center align-items-start">
+              Action</th>
+
+          </thead>
+          <tbody *ngIf="!listEntryExpired || listEntryExpired.length === 0">
+            <tr>
+              <td colspan="9" scope="col" class="text-center">
+                No Data Found
+              </td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr *ngFor="let data of filteredListExpired; let i = index">
+              <td class="text-center">
+                <input type="text" id="tglTransaksi" class="form-control" aria-describedby="tglTransaksi"
+                  #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker autocomplete="off" [(ngModel)]="data.tglExpired"
+                  (ngModelChange)="updateKeteranganTanggal(data,$event,i)"
+                  placeholder="{{ 'Tanggal transaksi' | translate }}" />
+                <span style="font-size: 14px;" class="text-danger" *ngIf="data.validationExpiredMessageList">
+                  {{ data.validationExpiredMessageList}}
+                </span>
+              </td>
+
+              <td class="text-center">
+                {{ data.keteranganTanggal }}
+              </td>
+              <td class="text-center input-column">
+                <div class="d-flex justify-content-center" style="gap: 5px;">
+                  <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
+                    [(ngModel)]="data.qtyBKirim" (change)="onInputQtyBesarExpired($event,data.kodeBarang, i)"
+                    (keypress)="g.conditionInput($event, 'numericDot')" />
+                  <span class="d-flex align-items-center justify-content-center">
+                    / {{data.satuanBesar}}
+                  </span>
+                </div>
+              </td>
+
+              <td class="text-center input-column">
+                <div class="d-flex justify-content-center" style="gap: 5px;">
+                  <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
+                    [(ngModel)]="data.qtyKKirim" (change)="onInputQtyKecilExpired($event,data.kodeBarang, i)"
+                    (keypress)="g.conditionInput($event, 'numericDot')" />
+                  <span class="d-flex align-items-center justify-content-center">
+                    / {{data.satuanKecil}}
+                  </span>
+                </div>
+
+                <!-- Validation message area -->
+                <span style="font-size: 14px;" class="text-danger" *ngIf="data.validationQtyBesar">
+                  {{ data.validationQtyBesar }}
+                </span>
+              </td>
+
+              <td class="text-center">
+                {{
+                ((helper.sanitizedNumber(data.qtyBKirim) *
+                data.konversi) + helper.sanitizedNumber(data.qtyKKirim)).toFixed(2)
+                }}
+                {{data.satuanKecil}}
+
+                <!-- Validation message area -->
+                <br>
+                <span style="font-size: 14px;" class="text-danger" *ngIf="data.validationQtyKecil">
+                  {{ data.validationQtyKecil }}
+                </span>
+              </td>
+              <td class="text-center">
+                <button (click)="onModalDeleteRow(data.kodeBarang,i)" type="button" class="btn btn-secondary ms-2">
+                  <i class="fa fa-trash me-1"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+    </div>
+
+    <div class="row justify-content-between gap-3 mt-3">
+      <div class="col-4 d-flex">
+        <button (click)="onAddExpiredRow()" type="button" class="btn btn-primary"><i class="fa fa-plus ms-1"></i> Tambah
+        </button>
+      </div>
+      <div class="col-6 d-flex justify-content-end align-items-center gap-3">
+        <p class="mb-0"> Total: {{
+          totalFilteredExpired
+          }} {{ selectedExpProduct.satuanKecil }}
+        </p>
+        <button (click)="onSaveEntryExpired()" type="button" class="btn btn-primary ms-2">
+          <i class="fa fa-check me-1"></i>Simpan
+        </button>
+      </div>
+    </div>
+
+  </c-modal-body>
+</c-modal>
+
+<c-modal #modalKonfirmRevisi alignment="center"
+  [style]="{'display': 'flex', 'align-items': 'center', 'justify-content': 'center'}" [fullscreen]="false"
+  [visible]="isShowModalKonfirmRevisi" backdrop="static" #modalLg size="xl" id="formModal"
+  [attr.aria-hidden]="!isShowModalKonfirmRevisi">
+  <c-modal-header>
+    <h5 cModalTitle>Konfirmasi Simpan Data</h5>
+    <!-- <button (click)="isShowModalKonfirmRevisi = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
+        class="fa fa-times"></i></button> -->
+  </c-modal-header>
+  <c-modal-body *ngIf="selectedRowData">
+    <div class="row justify-content-center">
+      <div class="col"></div>
+
+      <div class="col-10">
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-2 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Alasan Revisi" | translate }}</label>
+          </div>
+          <div class="col">
+            <input type="text" class="form-control" id="kodeBarang" (keypress)="g.conditionInput($event, 'excludedSensitive')" maxlength="50" [(ngModel)]="selectedRowData.ket1" name="kodeBarang" />
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-2 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Keterangan Lain" | translate }}</label>
+          </div>
+          <div class="col">
+            <input type="text" class="form-control" (keypress)="g.conditionInput($event, 'excludedSensitive')" maxlength="50" id="kodeBarang" [(ngModel)]="selectedRowData.ket2" name="kodeBarang" />
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row justify-content-center text-danger fw-semibold">
+          Apakah Data Revisi D.O tersebut akan di SIMPAN..??
+        </div>
+      </div>
+      <div class="col"></div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="gap-3 d-md-flex justify-content-center">
+      <button class="btn btn-secondary text-white btn-150" (click)="onCloseModal()">
+        <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
+      </button>
+      <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()" [disabled]="adding">
+        <i class="fa fa-check pe-2" *ngIf="!adding"></i>
+        <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
+        {{ "Simpan" | translate }}
+      </button>
+    </div>
+
+  </c-modal-body>
+</c-modal>

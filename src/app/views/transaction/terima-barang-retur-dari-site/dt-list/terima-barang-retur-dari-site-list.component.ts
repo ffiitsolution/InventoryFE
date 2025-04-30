@@ -100,13 +100,48 @@ export class TerimaBarangReturDariSiteListComponent implements OnInit {
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'tglTransaksi', title: 'Tanggal Transaksi' },
+        { 
+          data: 'tglTransaksi', 
+          title: 'Tanggal Transaksi',
+          render: (data: any) => {
+            return data ? moment(data).format('DD/MM/YYYY') : '';
+          }
+        },
+    
         { data: 'nomorTransaksi', title: 'No. Transaksi' },
-        { data: 'namaPengirim', title: 'Pengirim' },
+    
+        { 
+          data: null, 
+          title: 'Pengirim',
+          render: (data: any) => {
+            if (data?.kodePengirim && data?.namaPengirim) {
+              return `${data.kodePengirim} - ${data.namaPengirim}`;
+            }
+            return data?.namaPengirim || '';
+          }
+        },
+    
         { data: 'keterangan', title: 'Keterangan' },
+    
         { data: 'userCreate', title: 'User Proses', searchable: true },
-        { data: 'dateCreate', title: 'Tanggal', searchable: true },
-        { data: 'timeCreate', title: 'Jam', searchable: true },
+    
+        { 
+          data: 'dateCreate', 
+          title: 'Tanggal', 
+          searchable: true,
+          render: (data: any) => {
+            return data ? moment(data).format('DD/MM/YYYY') : '';
+          }
+        },
+    
+        { 
+          data: 'timeCreate', 
+          title: 'Jam', 
+          searchable: true,
+          render: (data: any) => {
+            return data ? moment(data, 'HH:mm:ss').format('HH:mm:ss') : '';
+          }
+        },
         { data: 'namaPosting', title: 'Status Transaksi' },
         {
           title: 'Aksi',
@@ -119,7 +154,13 @@ export class TerimaBarangReturDariSiteListComponent implements OnInit {
         },
       ],
       searchDelay: 1000,
-      // delivery: [],
+      order: [
+        [6, 'desc'],
+        [7, 'desc'],
+        [2, 'desc'],
+        [1, 'desc'],
+      
+      ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
@@ -146,6 +187,7 @@ export class TerimaBarangReturDariSiteListComponent implements OnInit {
             kodeGudang: this.g.getUserLocationCode(),
             isDownloadCsv: false,
             reportName: 'cetak retur dari site',
+            confirmSelection: 'Ya',
           };
         });
         return row;
