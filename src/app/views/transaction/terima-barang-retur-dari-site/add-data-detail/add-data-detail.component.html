@@ -158,7 +158,7 @@
   [attr.aria-hidden]="!isShowModalExpired">
   <c-modal-header>
     <h5 cModalTitle>Entry Data Expired</h5>
-    <button (click)="onSaveEntryExpired()" type="button" class="btn btn-primary ms-2" cButtonClose><i
+    <button (click)="isShowModalExpired = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
         class="fa fa-times"></i></button>
   </c-modal-header>
   <c-modal-body>
