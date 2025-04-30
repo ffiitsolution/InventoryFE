@@ -1,0 +1,67 @@
+<!--<c-header class="mb-4 d-print-none" position="sticky">-->
+<ng-container>
+  <c-container [fluid]="true">
+    <!-- <button title="Menu" type="button" toggle="visible" cHeaderToggler [cSidebarToggle]="sidebarId" class="ps-1">
+      <svg cIcon name="cilMenu" size="lg"></svg>
+    </button> -->
+    <c-header-nav class="d-none d-lg-flex me-auto">
+      <c-nav-item>
+        <img [src]="'./assets/img/brand/logo_kfc.png'" alt="Logo" style="max-width: 48px" />
+      </c-nav-item>
+      <c-nav-item>
+        <a cNavLink class="ms-2 fw-bold fs-4 text-truncate">
+          MPCS PRODUCTION
+          <c-badge color="success" shape="rounded-pill" *ngIf="g.serverStatus == 'UP'"> ONLINE </c-badge>
+          <c-badge color="danger" shape="rounded-pill" *ngIf="g.serverStatus == 'DOWN'" class="blinking"> OFFLINE
+          </c-badge>
+        </a>
+      </c-nav-item>
+    </c-header-nav>
+
+    <c-header-nav class="d-none d-lg-flex">
+      <c-nav-item *ngIf="g.appInfo?.outletName">
+        <a cNavLink>
+          <c-avatar cTextColor="primary" shape="rounded-1" size="md" src="./assets/img/outlet.png">
+          </c-avatar>
+          {{ g.appInfo?.outletName }} ({{ g.appInfo?.outletCode }})
+        </a>
+      </c-nav-item>
+      <c-nav-item>
+        <a cNavLink>
+          <c-avatar cTextColor="primary" shape="rounded-1" size="md" src="./assets/img/schedule.png">
+          </c-avatar>
+          <span class="py-2">
+            {{ g.serverStatus == 'UP' ? g.currentDate : 'xx-xx-xxxx' }} {{ g.serverStatus == 'UP' ? g.currentTime :
+            'xx:xx:xx' }}
+          </span>
+        </a>
+      </c-nav-item>
+      <!-- <c-nav-item>
+        <a routerLink="./" cNavLink>
+          <svg cIcon name="cilBell" size="lg"></svg>
+        </a>
+      </c-nav-item> -->
+    </c-header-nav>
+    <c-header-nav *ngIf="appInfo">
+      <ng-container *ngTemplateOutlet="userDropdown"></ng-container>
+    </c-header-nav>
+  </c-container>
+  <!-- <c-header-divider></c-header-divider> -->
+  <!-- <c-container [fluid]="true">
+    <c-breadcrumb-router class="ms-2"></c-breadcrumb-router>
+  </c-container> -->
+</ng-container>
+<!--</c-header>-->
+
+<ng-template #userDropdown>
+  <c-dropdown alignment="end" variant="nav-item">
+    <button title="User" type="button" cButton color="" [caret]="false" cDropdownToggle class="py-0">
+      <c-avatar cTextColor="primary" shape="rounded-1" size="md" src="./assets/img/user.png"
+        [status]="g.serverStatus === 'UP' ? 'success' : 'danger'">
+      </c-avatar>
+      <span class="ps-2 text-truncate">
+        {{ appInfo.accessLevel }}
+      </span>
+    </button>
+  </c-dropdown>
+</ng-template>

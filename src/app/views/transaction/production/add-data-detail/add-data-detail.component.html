@@ -127,10 +127,10 @@
       <div class="col-9">
         <div class="w-100 px-2 py-1 row">
 
-          <div class="col-4 d-flex align-items-center">
-            <label for="nomorPesanan">{{ "Nama Barang" | translate }}</label>
+          <div class="col-3 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Kode Dan Nama Barang" | translate }}</label>
           </div>
-          <div class="col-8 pe-0 d-flex">
+          <div class="col-9 pe-0 d-flex">
             <div class="col-3 pe-2">
               <input type="text" class="form-control" id="kodeBarang" [(ngModel)]="selectedExpProduct.bahanBaku"
                 name="kodeBarang" readonly />
@@ -142,10 +142,10 @@
           </div>
         </div>
         <div class="w-100 px-2 py-1 row">
-          <div class="col-4 d-flex align-items-center">
+          <div class="col-3 d-flex align-items-center">
             <label for="nomorPesanan">{{ "Konversi Barang" | translate }}</label>
           </div>
-          <div class="col-8 pe-0">
+          <div class="col-9 pe-0">
             <input type="text" class="form-control" id="konversi"
               [value]="selectedExpProduct.konversi + ' ' + selectedExpProduct.satuanKecil + '/' + selectedExpProduct.satuanBesar"
               name="konversi" readonly />
@@ -155,10 +155,10 @@
         </div>
 
         <div class="w-100 px-2 py-1 row">
-          <div class="col-4 d-flex align-items-center">
+          <div class="col-3 d-flex align-items-center">
             <label class="fw-semibold" for="nomorPesanan">{{ "Total Pemakaian" | translate }}</label>
           </div>
-          <div class="col-5 pe-0">
+          <div class="col-6 pe-0">
             <input type="text" placeholder="Nomor pesanan" class="form-control" id="totalQtyProduksi"
               [value]="this.selectedExpProduct.totalQtyProduksi"
               name="totalQtyProduksi" readonly />
@@ -325,7 +325,7 @@
         }} {{ selectedExpProduct.satuanKecil }}
         </p>
         <button (click)="onSaveEntryExpired()" type="button" class="btn btn-primary ms-2">
-          <i class="fa fa-check me-1"></i>Simpan
+          <i class="fa fa-check me-1"></i>Keluar
         </button>
       </div>
     </div>

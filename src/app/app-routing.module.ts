@@ -7,6 +7,9 @@ import { Page500Component } from './views/pages/page500/page500.component';
 import { LoginComponent } from './views/pages/login/login.component';
 import { AccountSettingComponent } from './views/pages/account-setting';
 import { AuthGuard } from './service/auth.guard';
+import { MpcsProductionComponent } from './views/pages/mpcs-production/mpcs-production.component';
+import { MpcsLayoutComponent } from './views/pages/mpcs-production/mpcs-layout/mpcs-layout.component';
+import { MpcsListComponent } from './views/pages/mpcs-production/mpcs-list/mpcs-list.component';
 
 const routes: Routes = [
   {
@@ -148,6 +151,30 @@ const routes: Routes = [
       title: 'Login Page',
     },
   },
+  {
+      path: 'mpcs-production',
+      component: MpcsProductionComponent,
+      data: {
+        title: 'Mpcs Production'
+      }
+  },
+  {
+    path: 'mpcs',
+    component: MpcsLayoutComponent,
+    data: {
+      title: 'Mpcs Production'
+    },
+    children:[
+      {
+        path:'list',
+        component:MpcsListComponent
+      },
+      {
+        path:'add',
+        component:MpcsProductionComponent
+      }
+    ]
+},
   { path: '**', redirectTo: 'dashboard' },
 ];
 

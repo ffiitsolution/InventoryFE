@@ -139,7 +139,7 @@ export class DefaultHeaderComponent
     });
   }
 
-  checkTitleIfOffline(time: number) {
+  checkTitleIfOffline(time: number) { 
     const offlineText = 'OFFLINE - ';
     const title = this.g.getTitle();
     if (this.g.serverStatus === 'DOWN') {

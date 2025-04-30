@@ -39,13 +39,14 @@ export class GlobalService {
   listMonitoring: any = [];
   isFullscreen: boolean = false;
   audio: HTMLAudioElement = new Audio();
-
+  appInfo: any = {};
+  footerAlert: string = 'Silahkan entry kode resep.';
   // param global untuk tf data antar component
   paramCode: any;
   paramData: any;
   paramType: any;
   navbarVisibility: boolean = true;
-
+  fTransDate: string = '';
   selectedReportCategory: any = null;
   statusEndOfMonth: any = '';
   statusPlanningOrder: any = '';
@@ -470,5 +471,13 @@ export class GlobalService {
       return 0
     }
   }
+
+  formatNumberId(value: number): string {
+    return new Intl.NumberFormat('id-ID', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(value);
+  }
+  
 
 }

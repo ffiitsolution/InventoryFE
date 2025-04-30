@@ -425,7 +425,7 @@ export class AddPenerimaanBrgBksComponent
       serverSide: true,
       autoWidth: true,
       info: true,
-      pageLength: 5,
+      pageLength: 10,
       lengthMenu: [
         // Provide page size options
         [8, 10], // Available page sizes
@@ -447,22 +447,51 @@ export class AddPenerimaanBrgBksComponent
             this.config.BASE_URL_HQ + '/api/return-order/get-from-hq/dt',
             params
           )
-          .subscribe((resp: any) => {
-            const mappedData = resp.data.map((item: any, index: number) => {
-              // hapus rn dari data
-              const { rn, ...rest } = item;
-              const finalData = {
-                ...rest,
-                dtIndex: this.page.start + index + 1,
-              };
-              return finalData;
-            });
+          .subscribe(async (resp: any) => {
+            // const mappedData = resp.data.map((item: any, index: number) => {
+            //   // hapus rn dari data
+            //   const { rn, ...rest } = item;
+            //   const finalData = {
+            //     ...rest,
+            //     dtIndex: this.page.start + index + 1,
+            //   };
+            //   return finalData;
+            // });
+
+            const filteredData: any[] = [];
+
+            for (let index = 0; index < resp.data.length; index++) {
+              const item = resp.data[index];
+              const detailParam = { returnNo: item.returnNo };
+      
+              try {
+                const detailRes: any = await this.dataService
+                  .postData(this.config.BASE_URL_HQ + '/api/return-order/list-detail', detailParam)
+                  .toPromise();
+                
+                  console.log('detailres',detailRes.item)
+                const hasBekas = detailRes?.item?.some(
+                  (barang: any) => barang.flagBrgBekas === 'Y' && barang.status === 'K'
+                );
+      
+                if (hasBekas) {
+                  const { rn, ...rest } = item;
+                  filteredData.push({
+                    ...rest,
+                    dtIndex: filteredData.length + 1,
+                  });
+                }
+              } catch (err) {
+                console.error(`Error loading detail for returnNo ${item.returnNo}`, err);
+              }
+            }
+      
             this.page.recordsTotal = resp.recordsTotal;
             this.page.recordsFiltered = resp.recordsFiltered;
             callback({
               recordsTotal: resp.recordsTotal,
               recordsFiltered: resp.recordsFiltered,
-              data: mappedData,
+              data: filteredData,
             });
           });
       },

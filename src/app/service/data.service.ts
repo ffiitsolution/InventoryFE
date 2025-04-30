@@ -2,11 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { AppConfig } from '../config/app.config';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataService {
+  protected config = AppConfig.settings.apiServer;
+  
   saveDeliveryData(deliveryData: { orderNumber: string; deliveryDestination: string; destinationAddress: string; deliveryStatus: string; orderDate: string; deliveryDate: string; expirationDate: string; validatedDeliveryDate: string; notes: string; }) {
     throw new Error('Method not implemented.');
   }
@@ -105,5 +108,51 @@ export class DataService {
     return this.http.delete(url, { headers, body: params }).pipe(
       catchError(this.handleError)
     );
+  }
+
+  getAppInfo() {
+    let appInfo = this.getDataLocalstorage('appInfo');
+    const waitSecond = 5;
+    if (appInfo == null) {
+      let SERVER_URL = this.config.BASE_URL;
+      if (SERVER_URL) {
+        this.http
+          .post(SERVER_URL + '/get-info', {})
+          .pipe(
+            catchError((error) => {
+              console.error('Error getAppInfo:', error);
+              setTimeout(() => {
+                window.location.reload();
+              }, waitSecond * 1000);
+              return throwError(() => error);
+            })
+          )
+          .subscribe((appInfos: any) => {
+            this.setDataLocalstorage('appInfo', appInfos.data);
+            appInfo = appInfos.data;
+          });
+      } else {
+        setTimeout(() => {
+          window.location.reload();
+        }, waitSecond * 1000);
+      }
+    }
+    return appInfo;
+  }
+
+  setDataLocalstorage(key: string, value: any, type: string = 'json') {
+    if (type === 'json') {
+      value = JSON.stringify(value);
+    }
+    localStorage.setItem('mpcs_' + key, value);
+  }
+
+  getDataLocalstorage(key: string) {
+    let data = localStorage.getItem('mpcs_' + key);
+    if (data) {
+      return JSON.parse(data);
+    } else {
+      return null;
+    }
   }
 }

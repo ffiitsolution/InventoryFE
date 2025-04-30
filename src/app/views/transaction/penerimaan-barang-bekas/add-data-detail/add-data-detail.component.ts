@@ -184,6 +184,12 @@ export class AddDataDetailPenerimaanBrgBksComponent
           })),
       };
 
+      if(param.details.length <= 0){
+        this.toastr.error('Barang penerimaan tidak boleh kosong minimal 1!');
+        this.loadingSimpan = false;
+        return;
+      }
+
       Swal.fire({
         title:
           'Pastikan semua data sudah di input dengan benar, PERIKSA SEKALI LAGI...!!',

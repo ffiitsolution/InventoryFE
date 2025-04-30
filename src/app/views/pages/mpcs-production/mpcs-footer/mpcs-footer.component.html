@@ -1,0 +1,48 @@
+<!--<c-footer>-->
+<!-- <app-releasenote #releasenoteModal [title]="'Release Notes'">
+</app-releasenote> -->
+<!-- <c-modal id="diffCacheModal" [visible]="g.serverStatus === 'UP'" scrollable
+  (visibleChange)="diffCacheModalVisibleChange($event)" alignment="center">
+  <c-modal-header>
+    <h5 class="text-danger">Versi tidak sesuai!</h5>
+    <button title="Close" (click)="toggleDiffCacheModal()" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <br>
+    <p class="ps-3">
+      FE Version: {{ g.appVersion }}
+      <br>
+    </p>
+    <br>
+    <h5 class="text-danger">Silahkan scan "QUIT" untuk hapus cache.</h5>
+  </c-modal-body>
+  <c-modal-footer class="text-end">
+    <button type="button" class="btn btn-secondary text-white btn-block h-48 wh-100" (click)="hardResest()">
+      QUIT
+    </button>
+  </c-modal-footer>
+</c-modal> -->
+
+<div style="position: fixed; bottom: 0; width: 100%;" class="footer">
+  <div>
+    <!-- <c-input-group>
+      <button cButton color="primary" (click)="releasenoteModal?.toggleVisibility()">
+        <_ </button>
+          <input #inputCmd aria-describedby="command-input" aria-label="Command" cFormControl autofocus
+            (blur)="onInputCmdBlur()" [(ngModel)]="cmdValue" (ngModelChange)="onInputCmdChange()"
+            (keydown.enter)="onCmdEnter()" style="width: 150px" class="input-sm" />
+    </c-input-group> -->
+  </div>
+  <div class="ps-2 d-flex align-items-center fw-bold"
+    [ngClass]="{ 'text-danger': g.serverStatus !== 'UP' || g.footerAlert.includes('ERROR:') }">
+    <!-- <svg [cIcon]="icons.cilInfo" size="xl" title="List Icon"></svg>
+    <div class="ps-2 text-truncate">{{ g.serverStatus !== 'UP' ? 'OFFLINE - Silahkan scan QUIT untuk mencoba memuat ulang.' : g.footerAlert }}</div> -->
+  </div>
+  <div class="mx-2">
+    
+  </div>
+  <div class="ms-auto text-truncate" title="FE {{ g.appVersion }}">
+    Version {{ g.appVersion }} &copy; {{ yearText }} IT Department PT. Fast Food Indonesia, Tbk.
+  </div>
+</div>
+<!--</c-footer>-->
