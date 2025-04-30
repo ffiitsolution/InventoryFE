@@ -56,7 +56,7 @@ export class GlobalService {
     @Inject(DOCUMENT) private document: Document,
     private router: Router,
     private datePipe: DatePipe
-  ) {}
+  ) { }
 
   saveLocalstorage(key: string, value: any, type: string | boolean = 'json') {
     if (type === 'json' || type === true) {
@@ -82,6 +82,13 @@ export class GlobalService {
   getUserLocationCode() {
     return (
       this.getLocalstorage('inv_currentUser')?.defaultLocation?.kodeLocation ||
+      ''
+    );
+  }
+
+  getUserKodeSingkat() {
+    return (
+      this.getLocalstorage('inv_currentUser')?.defaultLocation?.kodeSingkat ||
       ''
     );
   }
@@ -399,7 +406,7 @@ export class GlobalService {
       search: search,
       height: '400px',
       placeholder: placeholder,
-      customComparator: () => {},
+      customComparator: () => { },
       limitTo: limit,
       moreText: 'lainnya...',
       noResultsFound: 'Tidak ditemukan!',
@@ -423,8 +430,15 @@ export class GlobalService {
       .replace(/\s+/g, '-');
   }
 
-  formatToDecimal(value: number): string {
-    return value.toFixed(2);
+  formatToDecimal(value: any): string {
+    const num = Number(value);
+    return isNaN(num) ? '' : num.toFixed(2);
+  }
+
+  sumTotalQtyItem(qtyBesar: number, qtyKecil: number, konversi: number): number {
+    return Number(qtyBesar) *
+      Number(konversi) +
+      Number(qtyKecil)
   }
 
   generateNumberRange(start: number, end: number): number[] {
@@ -463,10 +477,10 @@ export class GlobalService {
   }
 
   parseRupiahToNumber(formatted: string): number {
-    if(formatted){
+    if (formatted) {
       const cleaned = formatted.replace(/[^\d]/g, ''); // hapus semua selain angka
       return parseInt(cleaned, 10) || 0;
-    } else{
+    } else {
       return 0
     }
   }

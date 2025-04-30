@@ -45,6 +45,7 @@
                       name="noReturnPengirim"
                       [(ngModel)]="formData.noReturnPengirim"
                       (keydown.enter)="handleEnterPemesan($event)"
+                      (input)="onNoDocumentInput($event)"
                     />
                     <button
                       *ngIf="!isShowModal"
@@ -181,6 +182,7 @@
                       formControlName="satuanHasilProduksi"
                       name="satuanHasilProduksi"
                       [(ngModel)]="formData.statusTujuan"
+                      [value]="getStatusAktifText(myForm.controls['satuanHasilProduksi'].value)"
                       [readOnly]="true"
                     />
                   </div>

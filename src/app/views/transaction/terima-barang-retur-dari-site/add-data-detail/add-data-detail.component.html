@@ -64,7 +64,7 @@
               <tr *ngFor="let data of listProductData; let i = index">
                 <td class="text-center">
                   <div class="input-group">
-                    <input type="text" autofocus  class="form-control text-center" [(ngModel)]="data.bahanBaku"
+                    <input type="text" autofocus  class="form-control text-center" [(ngModel)]="data.kodeBarang"
                     (keydown.enter)="handleEnter($event, i)" (keyup.enter)="nextInput.focus()" [disabled]="data.isFromRetur"/>
                     <button class="btn btn-outline-secondary" type="button" 
                     [disabled]="data.isFromRetur"
@@ -114,7 +114,7 @@
 
                 <td class="text-center">
                   {{
-                    getTotalExpiredData(data.bahanBaku,data.konversi) 
+                    getTotalExpiredData(data.kodeBarang,data.konversi) 
                   }} {{data.satuanKecil}}
                 </td>
 
@@ -163,7 +163,7 @@
           </div>
           <div class="col-8 pe-0 d-flex">
             <div class="col-3 pe-2">
-              <input type="text" class="form-control" id="kodeBarang" [(ngModel)]="selectedExpProduct.bahanBaku"
+              <input type="text" class="form-control" id="kodeBarang" [(ngModel)]="selectedExpProduct.kodeBarang"
                 name="kodeBarang" readonly />
             </div>
             <div class="col-9">

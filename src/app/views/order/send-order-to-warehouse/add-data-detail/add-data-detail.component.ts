@@ -188,6 +188,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
   }
 
   onSubmit() {
+    this.isShowModalOnSubmit = false;
     if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() === "") {
       this.listOrderData.splice(this.listOrderData.length - 1, 1);
     }
@@ -623,6 +624,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
 
 
   onFilterTextChange(newValue: string) {
+    this.listCurrentPage = 1;
     if (newValue.length >= 3) {
       this.totalLength = 1;
     } else {

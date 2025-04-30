@@ -406,5 +406,19 @@ export class AppService {
       payload
     );
   }
- 
+
+  getProductReturnList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/product-return/dt`,
+      payload
+    );
+  }
+
+  checkNoReturFromSiteExist(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/whrtchd/check-nodoc`,
+      payload
+    );
+  }
+
 }

@@ -168,6 +168,7 @@ export class DetailTerimaBarangReturDariSiteComponent
             kodeGudang: this.g.getUserLocationCode(),
             isDownloadCsv: false,
             reportName: 'cetak retur dari site',
+            confirmSelection: 'Ya',
           };
 
           this.paramUpdatePrintStatus = {

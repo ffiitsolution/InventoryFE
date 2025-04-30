@@ -25,7 +25,7 @@
                 <div class="col-8 pe-0 d-flex">
                   <input type="text" class="form-control" id="nomorSuratJalanGudang" [(ngModel)]="formData.noSuratJalan"
                     name="nomorSuratJalanGudang" readonly />
-                  <button *ngIf="!isShowModal" type="button" class="btn btn-info ms-2"
+                  <button *ngIf="!isShowDetail" type="button" class="btn btn-info ms-2"
                     [cModalToggle]="staticBackdropModal.id" (click)="onShowModal()" readonly>
                     <i class="fa fa-search text-white"></i>
                   </button>
@@ -140,7 +140,7 @@
           </div>
           <div class="p-2" *ngIf="!isShowDetail">
             <div class="w-100 px-2 fst-italic">
-              <span class="text-danger d-block">Kondisi:</span>
+              <span class="text-danger d-block fw-semibold">Kondisi:</span>
               <span class="d-block ms-2">- Program Revisi dijalankan, jika ada jumlah/qty yang dikirim tidak sesuai dengan
                 fisik barang yang diterima oleh pemesan.</span>
               <span class="d-block ms-2">- Hanya bisa dilakukan, jika tanggal Surat Jalan (tanggal pengiriman dari gudang),

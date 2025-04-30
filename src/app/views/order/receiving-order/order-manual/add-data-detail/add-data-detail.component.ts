@@ -206,6 +206,8 @@ export class AddDataDetailOrderManualComponent
   }
 
   onSubmit() {
+    this.isShowModalOnSubmit = false;
+    this.adding = true
     if (this.listOrderData[this.listOrderData.length - 1].namaBarang.trim() === "") {
       this.listOrderData.splice(this.listOrderData.length - 1, 1);
     }
@@ -231,6 +233,7 @@ export class AddDataDetailOrderManualComponent
         next: (res) => {
           if (!res.success) {
             this.service.handleErrorResponse(res);
+            this.adding = false;
           } else {
             this.toastr.success('Berhasil!');
             setTimeout(() => {
@@ -238,7 +241,6 @@ export class AddDataDetailOrderManualComponent
             }, DEFAULT_DELAY_TIME);
 
           }
-          this.adding = false;
         },
       });
 
@@ -626,6 +628,7 @@ export class AddDataDetailOrderManualComponent
     });
   }
   onFilterTextChange(newValue: string) {
+    this.listCurrentPage = 1;
     if (newValue.length >= 3) {
       this.totalLength = 1;
     } else {
