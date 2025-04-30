@@ -318,13 +318,13 @@ export class DetailBarangUntukPemakaianSendiriComponent
       };
   
       this.appService
-        .getExpiredData(payload)
+        .getExpiredPemakaian(payload)
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe({
   
           next: (res) => {
             if (res.item) {
-              this.selectedOrder = res.item;
+              this.listDataExpired = res.item;
               this.isShowModalExpired = true;
             }
           },

@@ -43,7 +43,11 @@ export class AddDataPemakaianBarangSendiriComponent implements OnInit, AfterView
   isShowDetail: boolean = false;
   charCount: number = 0;
   isKeteranganInvalid: boolean = false;
-
+  paramGenerateReport: any = {};
+  isShowModalReport: boolean = false;
+  disabledPrintButton: boolean = false;
+  alreadyPrint: boolean = false;
+  
   @ViewChild('formModal') formModal: any;
   // Form data object
   today: Date = new Date();
@@ -93,6 +97,34 @@ export class AddDataPemakaianBarangSendiriComponent implements OnInit, AfterView
   
     // Cek apakah ada karakter tidak valid
     this.isKeteranganInvalid = !allowedRegex.test(currentValue);
+  }
+  onBatalPressed(newItem: any): void {
+    console.log("newItem",newItem)
+    this.isShowDetail = false;
+    if(newItem) this.onShowModalPrint(newItem);
+  }
+
+  onShowModalPrint(data: any) {
+    console.log("ini data",data)
+    
+    this.paramGenerateReport = {
+      nomorTransaksi: data.nomorTransaksi,
+      userEntry: '',
+      jamEntry: '',
+      tglEntry: '',
+      outletBrand: 'KFC',
+      kodeGudang: this.globalService.getUserLocationCode(),
+      isDownloadCsv: false,
+      reportName: 'cetak-pemakaian-barang-sendiri',
+      confirmSelection: 'Ya',
+    };
+    this.isShowModalReport = true;
+  
+  }
+
+  closeModal(){
+    this.isShowModalReport = false;
+    this.disabledPrintButton = false;
   }
 
   onAddDetail() {

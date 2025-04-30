@@ -7,6 +7,9 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class DataService {
+  getFile(arg0: string, param: { nomorTransaksi: any; }) {
+    throw new Error('Method not implemented.');
+  }
   saveDeliveryData(deliveryData: { orderNumber: string; deliveryDestination: string; destinationAddress: string; deliveryStatus: string; orderDate: string; deliveryDate: string; expirationDate: string; validatedDeliveryDate: string; notes: string; }) {
     throw new Error('Method not implemented.');
   }
