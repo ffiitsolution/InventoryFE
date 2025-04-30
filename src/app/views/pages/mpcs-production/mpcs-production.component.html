@@ -1,0 +1,488 @@
+<!-- <div class="wrapper d-flex flex-column min-vh-100 bg-light dark:bg-transparent">
+  <app-mpcs-header
+    class="mb-2 d-print-none header header-sticky"
+    position="sticky"
+    sidebarId="sidebar"
+  />
+
+  <div class="w-100"> -->
+    <c-container class="container-fluid my-container m-0">
+      <c-row class="d-flex justify-content-start g-2" *ngIf="!isShowRecipe">
+        <c-col md="5">
+          <c-card>
+            <c-card-header>
+              <div
+                class=" gap-3 d-flex justify-content-between align-items-center"
+              >
+                <div class="d-flex align-items-center">
+                  <h5 class="mb-0">Barang Produksi</h5>
+                </div>
+                <div class=" gap-3 d-flex justify-content-end">
+                  <button
+                    class="btn btn-secondary text-white btn-150"
+                    (click)="onBack()"
+                  >
+                    <i class="fa fa-times pe-1"></i> {{ "Kembali" | translate }}
+                  </button>
+                </div>
+              </div>
+            </c-card-header>
+            <c-card-body>
+              <form [formGroup]="myForm">
+                <div class="row py-1">
+                  <div class="col-12 col-md-3 mb-1 mb-md-0 d-none d-md-block">
+                    <button
+                      class="btn btn-light fw-bold w-100 h-100 text-truncate"
+                    >
+                      Kode Barang
+                    </button>
+                  </div>
+                  <div class="col-12 col-md-9 ps-md-1">
+                    <button
+                      type="button"
+                      [disabled]="isShowDetail"
+                      (click)="showRecipe()"
+                      class="btn btn-info fw-bold text-white w-100 h-48 text-truncate"
+                    >
+                      {{ myForm.get("kodeBarang")?.value || "Pilih Barang" }}
+                    </button>
+                  </div>
+                </div>
+
+                <div class="row py-1">
+                  <div class="col-12 col-md-3 mb-1 mb-md-0 d-none d-md-block">
+                    <button
+                      class="btn btn-light fw-bold w-100 h-100 text-truncate"
+                    >
+                      Nama Barang
+                    </button>
+                  </div>
+                  <div class="col-12 col-md-9 mb-1 mb-md-0 ps-md-1">
+                    <button
+                      class="btn btn-light fw-bold text-white w-100 h-48 text-black text-truncate"
+                    >
+                      {{ myForm.get("namaBarang")?.value || "  Nama Barang" }}
+                    </button>
+                  </div>
+                </div>
+                <!-- <div class="row py-1"> -->
+
+                <!-- <div class="col-4 col-md-3 mb-1 mb-md-0">
+                  <button class="btn btn-light fw-bold w-100 text-truncate h-48" >
+                    Qty
+                  </button>
+                </div> -->
+                <!-- <div class="col-2 col-md-1 mb-1 mb-md-0 d-flex justify-content-center">
+                  <button class="btn btn-info fw-bold text-white d-flex justify-content-center  h-100
+                  
+                  " >+</button>
+                </div> -->
+                <!-- <div class="col-6 col-md-3 ps-md-1">
+                  <input
+                      type="number"
+                      placeholder="Jumlah Produksi"
+                      class="form-control h-48"
+                      id="jumlahHasilProduksi"
+                      formControlName="jumlahHasilProduksi"
+                      name="jumlahHasilProduksi"
+                     
+                    />
+                </div> -->
+                <!-- <div class="col-2 col-md-1 ps-1">
+                  <button class="btn btn-info fw-bold text-white w-100 d-flex justify-content-center   h-100
+                  
+                   " >-</button>
+                </div> -->
+                <!-- </div> -->
+                <div class="divider mt-4"></div>
+                <div class="row py-1">
+                  <div class="col-12 col-md-3 mb-1 mb-md-0 d-none d-md-block">
+                    <button
+                      class="btn btn-light fw-bold w-100 text-truncate h-48"
+                    >
+                      Qty
+                    </button>
+                  </div>
+                  <!-- <div class="col-2 col-md-1 mb-1 mb-md-0 d-flex justify-content-center">
+                  <button class="btn btn-info fw-bold text-white d-flex justify-content-center  h-100
+                  
+                  " >+</button>
+                </div> -->
+                  <div class="col-12 col-md-3 ps-md-1 mb-1 md-mb-0">
+                    <input
+                      type="number"
+                      placeholder="Jumlah Produksi"
+                      class="form-control h-48"
+                      id="jumlahHasilProduksi"
+                      formControlName="jumlahHasilProduksi"
+                      name="jumlahHasilProduksi"
+                    />
+                  </div>
+                  <div class="col-12 col-md-3 mb-1 mb-md-0 d-none d-md-block">
+                    <button
+                      class="btn btn-light fw-bold w-100 h-100 text-truncate"
+                    >
+                      Hasil Produksi
+                    </button>
+                  </div>
+                  <div class="col-12 col-md-3 ps-md-1 mb-0 md-mb-0">
+                    <button
+                      class="btn btn-light fw-bold text-white w-100 h-48 text-truncate text-black"
+                    >
+                      {{
+                        myForm.get("totalHasilProduksi")?.value ||
+                          "Hasil Produksi"
+                      }}
+                    </button>
+                  </div>
+                </div>
+                <div class="row py-0 md-py-1">
+                  <div class="col-12 col-md-3 mb-1 mb-md-0 d-none d-md-block">
+                    <button
+                      class="btn btn-light fw-bold w-100 h-100 text-truncate h-48"
+                    >
+                      Satuan Hasil
+                    </button>
+                  </div>
+
+                  <div class="col-12 col-md-3 mb-1 mb-md-0 ps-md-1">
+                    <button
+                      class="btn btn-light fw-bold text-white w-100 h-48 text-black text-truncate"
+                    >
+                      {{ myForm.get("satuanHasilProduksi")?.value }}
+                      {{
+                        myForm.get("labelSatuanHasilProduksi")?.value ||
+                          "Satuan Hasil"
+                      }}
+                    </button>
+                  </div>
+
+                  <div class="col-12 col-md-3 mb-1 mb-md-0 d-none d-md-block">
+                    <button
+                      class="btn btn-light fw-bold w-100 h-48 text-truncate"
+                    >
+                      Tgl Expired
+                    </button>
+                  </div>
+                  <div class="col-12 col-md-3 ps-md-1">
+                    <input
+                      type="text"
+                      readonly="true"
+                      id="tglExp"
+                      class="form-control h-48"
+                      aria-describedby="tglExp"
+                      #dp="bsDatepicker"
+                      [bsConfig]="dpConfig"
+                      bsDatepicker
+                      autocomplete="off"
+                      formControlName="tglExp"
+                      placeholder="{{
+                        'Tgl. Expired Hasil Produksi' | translate
+                      }}"
+                      (keydown)="blockTyping($event)"
+                      (paste)="blockTyping($event)"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="w-100 row"
+                  *ngIf="
+                    myForm.get('jumlahHasilProduksi')?.invalid &&
+                    myForm.get('jumlahHasilProduksi')?.touched
+                  "
+                >
+                  <div class="col-4 d-flex align-items-center"></div>
+                  <div class="col-8 pe-0 d-flex">
+                    <small
+                      class="text-danger"
+                      *ngIf="myForm.get('jumlahHasilProduksi')?.hasError('min')"
+                      >Jumlah Hasil Produksi must be greater than or equal to
+                      1</small
+                    >
+                    <small
+                      class="text-danger"
+                      *ngIf="
+                        myForm.get('jumlahHasilProduksi')?.hasError('required')
+                      "
+                      >Jumlah Hasil Produksi is required</small
+                    >
+                  </div>
+                </div>
+                <div class="row py-1">
+                  <div class="col-12 col-md-3 mb-1 mb-md-0 d-none d-md-block">
+                    <button
+                      class="btn btn-light fw-bold w-100 h-48 text-truncate"
+                    >
+                      Catatan
+                    </button>
+                  </div>
+                  <div class="col-12 col-md-9 ps-md-1">
+                    <textarea
+                      placeholder="Catatan"
+                      type="text"
+                      maxlength="50"
+                      class="form-control"
+                      id="keterangan"
+                      formControlName="keterangan"
+                      name="keterangan"
+                    ></textarea>
+                  </div>
+                </div>
+                <div class="row py-1">
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      myForm
+                        .get('keterangan')
+                        ?.hasError('specialCharNotAllowed')
+                    "
+                    >Special Char Not Allowed</small
+                  >
+                </div>
+                <div class="divider mt-4"></div>
+                <div class="row py-1">
+                  <div class="col-12 mb-md-0">
+                    <button
+                      [disabled]="myForm.invalid || isShowDetail"
+                      (click)="loadBahanBaku()"
+                      class="shadow-sm btn w-100 btn-primary text-white"
+                    >
+                      <i class="fa fa-check pe-2"></i>
+                      {{ "Detail Transaksi" | translate }}
+                    </button>
+                  </div>
+                </div>
+              </form>
+              <!-- Content -->
+            </c-card-body>
+          </c-card>
+        </c-col>
+        <c-col md="7">
+          <c-card>
+            <c-card-header>
+              <div
+                class="d-grid gap-3 d-md-flex justify-content-between align-items-center"
+              >
+                <div class="d-flex align-items-center gap-3">
+                  <h5 class="mb-1">Resep Produksi</h5>
+                </div>
+                <div class="d-grid gap-3 d-md-flex justify-content-end">
+                  <button
+                    class="btn btn-info text-white btn-150 pe-3"
+                    [disabled]="loadingSimpan"
+                  >
+                    <i class="fa fa-check pe-2" *ngIf="!loadingSimpan"></i>
+                    <i class="fa fa-spinner fa-spin" *ngIf="loadingSimpan"></i>
+                    {{ "Proses Simpan Data" | translate }}
+                  </button>
+
+                  <button
+                    class="btn btn-secondary text-white btn-150"
+                    (click)="onBatalPressed()"
+                  >
+                    <i class="fa fa-times pe-1"></i>
+                    {{ "Batal Produksi" | translate }}
+                  </button>
+                </div>
+              </div>
+            </c-card-header>
+            <c-card-body>
+              <div class="resep-body row">
+                <div
+                  class="col-12 col-md-4 mb-2"
+                  *ngFor="let item of listProductData"
+                >
+                  <c-card>
+                    <c-card-header class="header-all">
+                      <div
+                        class="d-grid gap-3 d-md-flex justify-content-between align-items-center detail-header"
+                      >
+                        <div
+                          class="d-flex align-items-center justify-content-center"
+                        >
+                          <h6 class="mb-0">
+                            {{ item.bahanBaku }} - {{ item.namaBarang }}
+                          </h6>
+                        </div>
+                      </div>
+                    </c-card-header>
+                    <c-card-body>
+                      <div class="d-flex flex-column">
+                        <!--                           
+                          <div class="d-flex align-items-center justify-content-center">
+                            <h6 class="mb-0">Qty Pemakaian</h6>
+                          </div> -->
+                        <div
+                          class="d-flex align-items-center justify-content-start mb-2"
+                        >
+                          <div class="col-6 col-md-6">
+                            <h6 class="mb-0">Konversi</h6>
+                            <label>{{ item.konversi }}</label>
+                          </div>
+                        </div>
+                        <div
+                          class="d-flex align-items-center justify-content-start row mb-2"
+                        >
+                          <div class="col-6 col-md-6">
+                            <h6 class="mb-0">Pemakaian Besar</h6>
+                            <label
+                              >{{ item.qtyPemakaianBesar }}
+                              {{ item.satuanBesar }}</label
+                            >
+                          </div>
+                          <div class="col-6 col-md-6">
+                            <h6 class="mb-0">Pemakaian Kecil</h6>
+                            <label
+                              >{{ item.qtyPemakaianKecil }}
+                              {{ item.satuanKecil }}</label
+                            >
+                          </div>
+                        </div>
+                        <div
+                          class="d-flex align-items-center justify-content-start mb-2"
+                        >
+                          <div class="col-6 col-md-6">
+                            <h6 class="mb-0">Total Pemakaian</h6>
+                            <label
+                              >{{ item.totalQtyPemakaian }}
+                              {{ item.satuanKecil }}</label
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </c-card-body>
+                    <c-card-footer>
+                      <div class="d-flex justify-content-between gap-2">
+                        <div class="d-flex flex-column">
+                          <h6 class="mb-0">Total Qty Expired</h6>
+                          <label>
+                            {{
+                              getTotalExpiredData(item.bahanBaku, item.konversi)
+                            }}
+                            {{ item.satuanKecil }}</label
+                          >
+                        </div>
+                        <div class="d-flex flex-column justify-content-center">
+                          <button
+                            class="btn btn-success btn-sm text-white btn-150"
+                            [disabled]="!item.isConfirmed"
+                          >
+                            <i class="fa fa-check pe-1"></i>
+                            {{ "Exp." | translate }}
+                          </button>
+                        </div>
+                      </div>
+                    </c-card-footer>
+                  </c-card>
+                </div>
+              </div>
+            </c-card-body>
+          </c-card>
+        </c-col>
+      </c-row>
+
+      <c-row class="d-flex justify-content-start g-2" *ngIf="isShowRecipe">
+        <c-col md="12">
+          <c-card>
+            <c-card-header>
+              <div
+                class="d-grid gap-3 d-md-flex justify-content-between align-items-center"
+              >
+                <div class="d-flex align-items-center gap-3">
+                  <h5 class="mb-1">List Barang</h5>
+                  <div class="d-flex align-items-center p-1 gap-2">
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Search..."
+                      [(ngModel)]="searchText"
+                      (ngModelChange)="getDataRecipe()"
+                    />
+                  </div>
+                </div>
+                <div class="d-grid gap-3 d-md-flex justify-content-end">
+                  <button
+                    class="btn btn-secondary text-white btn-150"
+                    (click)="onBackPressed()"
+                  >
+                    <i class="fa fa-times pe-1"></i> {{ "Kembali" | translate }}
+                  </button>
+                </div>
+              </div>
+            </c-card-header>
+            <c-card-body>
+              <div class="row">
+                <div
+                  class="col-12 col-md-4"
+                  *ngFor="let item of listRecipeData"
+                >
+                  <ng-container>
+                    <c-widget-stat-e
+                      [title]="item.kodeBarang"
+                      class="my-2 mx-2 pointer"
+                      text=""
+                      value="{{ item.namaBarang }}"
+                      (click)="pilihBarang(item)"
+                      [ngStyle]="{
+                        'min-height': '125px',
+                        border:
+                          item.kodeBarang === myForm.get('kodeBarang')?.value
+                            ? '2px solid blue'
+                            : '1px solid gray '
+                      }"
+                    >
+                      <i class="fa fa-cutlery mr-3"></i>
+                    </c-widget-stat-e>
+                  </ng-container>
+                </div>
+              </div>
+              <div class="row">
+                <nav *ngIf="totalItems > 0">
+                  <ul class="pagination justify-content-center">
+                    <li
+                      class="page-item p-2"
+                      [class.disabled]="currentPage === 0"
+                    >
+                      <button
+                        class="page-link"
+                        (click)="changePage(currentPage - 1)"
+                        [disabled]="currentPage === 0"
+                      >
+                        Previous
+                      </button>
+                    </li>
+
+                    <li
+                      class="page-item p-2"
+                      *ngFor="let page of pages"
+                      [class.active]="page === currentPage + 1"
+                    >
+                      <button class="page-link" (click)="changePage(page - 1)">
+                        {{ page }}
+                      </button>
+                    </li>
+
+                    <li
+                      class="page-item p-2"
+                      [class.disabled]="currentPage + 1 === totalPages"
+                    >
+                      <button
+                        class="page-link"
+                        (click)="changePage(currentPage + 1)"
+                        [disabled]="currentPage + 1 === totalPages"
+                      >
+                        Next
+                      </button>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </c-card-body>
+          </c-card>
+        </c-col>
+      </c-row>
+    </c-container>
+  <!-- </div>
+
+  <app-mpcs-footer class="p-0" />
+</div> -->

@@ -142,7 +142,15 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
             return data ? moment(data, 'HH:mm:ss').format('HH:mm:ss') : '';
           }
         },
-        { data: 'namaPosting', title: 'Status Transaksi' },
+        
+        {
+          data: 'namaPosting',
+          title: 'Status Transaksi',
+          render: (data: any) => {
+            return `<span class="badge bg-success">${data}</span>`;
+          }
+        },
+
         {
           title: 'Aksi',
           render: () => {

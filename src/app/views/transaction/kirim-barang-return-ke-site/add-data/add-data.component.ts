@@ -519,7 +519,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
       ],
       searchDelay: 1500,
       order: [
-        [1, 'asc'],
+        [1, 'asc']
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-select', row).on('click', () => this.actionBtnClickBranch(data));

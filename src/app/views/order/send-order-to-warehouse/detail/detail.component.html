@@ -114,10 +114,10 @@
                   Barang</th>
                 <th scope="col" style="vertical-align: middle;" class="text-center align-items-start th-blue-background" rowspan="2">Nama
                   Barang</th>
+                  <th scope="col" style="vertical-align: middle;" class="text-center align-items-start th-blue-background" rowspan="2">
+                    Konversi</th>
                 <th scope="col" style="vertical-align: middle;" class="text-center align-items-start th-red-background" colspan="2">
                   Qty Pesan</th> <!-- Masih sejajar -->
-                <th scope="col" style="vertical-align: middle;" class="text-center align-items-start th-blue-background" rowspan="2">
-                  Konversi Gudang</th>
                 <th scope="col" style="vertical-align: middle;" class="text-center align-items-start th-blue-background" rowspan="2">
                   Total Qty Pesan
                 </th>
@@ -156,7 +156,7 @@
                 <td class="text-center">{{ data.kodeBarang }}</td>
                 <td class="text-center">{{ data.namaBarang }}</td>
                   <!-- <td class="text-center">{{ data.qtyPesanBesar }} {{ data.satuanBesar }}</td> -->
-
+                <td class="text-center">{{ data?.konversi?.toFixed(2) }} {{data?.satuanKecil}} / {{data?.satuanBesar}}</td>
                 <td class="text-center input-column">
                   <div class="d-flex" style="gap: 5px;">
                     <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
@@ -176,7 +176,6 @@
                   </div>
                 </td>
 
-                <td class="text-center">{{ data?.konversi?.toFixed(2) }} {{data?.satuanKecil}} / {{data?.satuanBesar}}</td>
                 <td class="text-center">{{((helper.sanitizedNumber(data.qtyPesanBesar) *
                   data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil)).toFixed(2) }} {{data.satuanKecil}}
                 </td>   

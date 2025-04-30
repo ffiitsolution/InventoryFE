@@ -127,7 +127,7 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
         namaBarang: '',
         qtyPesanBesar: 0,
         qtyPesanKecil: 0,
-        konversi: 1,
+        konversi: '',
         satuanBesar: '',
         satuanKecil: '',
         isFromRetur: false,
@@ -1008,9 +1008,8 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
       ],
       searchDelay: 1500,
       order: [
-        [1, 'asc'],
         [7, 'asc'],
-       
+        [1, 'asc'],
       ],
       lengthMenu: [ 
         [5, 10],
@@ -1170,5 +1169,14 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
     this.isShowModal = false;
   }
   
+  getJumlahItem(): number {
+    if (this.listProductData.length === 0) {
+      return 0;
+    }
+    if (this.listProductData[this.listProductData.length - 1].namaBarang.trim() === "") {
+      return this.listProductData.length - 1;
+    }
+    return this.listProductData.length;
+  }
   
 }    

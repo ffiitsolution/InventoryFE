@@ -1,0 +1,60 @@
+.bg-warehouse {
+    position: relative; /* Needed for absolute positioning of ::before */
+    z-index: 0; /* Ensure the main content remains above */
+}
+
+.bg-warehouse::before {
+    content: ""; /* Required for ::before to render */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(../../../../../assets/img/others/warehouse.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.5; /* Apply transparency only to the background */
+    z-index: -1; /* Push behind content */
+}
+
+.kfc-logo{
+    height: 90px;
+    margin-bottom: 20px !important;
+}
+
+.h-48{
+    height: 48px;
+}
+
+.my-container {
+    max-width: 100% !important;
+}
+
+.resep-body{
+    min-height: 425px;
+}
+
+.text-black{
+    color: grey !important;
+    font-size: small;
+}
+
+.ml-4{
+    margin-left: 4px;
+}
+
+.ml-6{
+    margin-left: 6px;
+}
+
+.detail-header{
+  height: 50px;
+  text-overflow: ellipsis;
+  
+}
+
+.header-all{
+    background-color: #262693;
+    color: white;
+}

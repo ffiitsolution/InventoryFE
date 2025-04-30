@@ -1034,9 +1034,8 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
       ],
       searchDelay: 1500,
       order: [
-        [1, 'asc'],
         [7, 'asc'],
-       
+        [1, 'asc'],
       ],
       lengthMenu: [ 
         [5, 10],
@@ -1194,6 +1193,16 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
     console.log('this.listProductData:', this.listProductData);
   
     this.isShowModal = false;
+  }
+
+  getJumlahItem(): number {
+    if (this.listProductData.length === 0) {
+      return 0;
+    }
+    if (this.listProductData[this.listProductData.length - 1].namaBarang.trim() === "") {
+      return this.listProductData.length - 1;
+    }
+    return this.listProductData.length;
   }
   
   

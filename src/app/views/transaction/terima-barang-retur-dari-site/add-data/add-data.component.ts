@@ -242,18 +242,17 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
           }else{
             console.log('gagal', resp)
             this.selectedRowRetur = JSON.stringify(data);
+            this.formData.kodeTujuan = data?.outletCode;
+            this.formData.tglTransaksi = data?.dateReturn ? new Date(data.dateReturn) : undefined;
+            this.formData.namaTujuan = data?.namaPengirim;
+            this.formData.alamatTujuan = data?.alamatPengirim;
+            this.formData.statusTujuan = this.convertStatusAktif(data?.statusAktif); // ✅ Gunakan function ini
+            this.formData.noReturnPengirim = data?.returnNo;
             this.isShowModal = false;
             this.mappingDataPemesan(data);
+
           }
       });
-
-    this.formData.kodeTujuan = data?.outletCode;
-    this.formData.tglTransaksi = data?.dateReturn ? new Date(data.dateReturn) : undefined;
-    this.formData.namaTujuan = data?.namaPengirim;
-    this.formData.alamatTujuan = data?.alamatPengirim;
-    this.formData.statusTujuan = this.convertStatusAktif(data?.statusAktif); // ✅ Gunakan function ini
-    this.formData.noReturnPengirim = data?.returnNo;
-    this.isShowModal = false;
   }
   
   actionBtnClickBranch(data: any = null) {
