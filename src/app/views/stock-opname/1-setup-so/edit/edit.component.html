@@ -37,7 +37,7 @@
           <div class="row">
             <div class="col-4 ps-4">Tanggal SO</div>
             <div class="col">
-              <input type="text" class="form-control" disabled [value]="selectedSo.tanggalSo">
+              <input type="text" class="form-control form-control-sm" disabled [value]="selectedSo.tanggalSo">
             </div>
           </div>
         </div>
@@ -45,7 +45,7 @@
           <div class="row">
             <div class="col-4 ps-4">Nomor SO</div>
             <div class="col">
-              <input type="text" class="form-control" disabled [value]="selectedSo.nomorSo">
+              <input type="text" class="form-control form-control-sm" disabled [value]="selectedSo.nomorSo">
             </div>
           </div>
         </div>
@@ -53,12 +53,12 @@
           <div class="row">
             <div class="col-4 ps-4">Keterangan</div>
             <div class="col">
-              <input type="text" class="form-control" disabled [value]="selectedSo.keterangan">
+              <input type="text" class="form-control form-control-sm" disabled [value]="selectedSo.keterangan">
             </div>
           </div>
         </div>
         <div class="col-sm-6 col-lg-2">
-          <input type="text" class="form-control" placeholder="Cari ..." [(ngModel)]="searchText"
+          <input type="text" class="form-control form-control-sm" placeholder="Cari ..." [(ngModel)]="searchText"
             (keypress)="currentPage = 1">
         </div>
       </div>
@@ -138,14 +138,17 @@
                     {{data.satuanKecil}} / {{data.satuanBesar}}
                   </td>
                   <td>
-                    <ng-container *ngIf="!loadingUpdateQtyBesar[i]; else loadingInput">
-                      <input id="inputQtyBesar{{i}}" type="text" min="0" class="form-control text-end"
-                        [(ngModel)]="data.qtyBesarSo" (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
+                    <ng-container *ngIf="!loadingUpdateQtyBesar[data.idx]; else loadingInput">
+                      <input id="inputQtyBesar{{data.idx}}" type="text" min="0"
+                        class="form-control form-control-sm text-end" [(ngModel)]="data.qtyBesarSo"
+                        (input)="onInputValueItemDetail($event, data.idx, 'numeric', 'besar')"
                         (keypress)="g.conditionInput($event, 'numericDot')" (keydown.arrowup)="focusPrevInput($event)"
                         (keydown.arrowdown)="focusNextInput($event)"
-                        [ngClass]="{'form-invalid': validationMessageListSatuanBesar[i]}" (blur)="onBlurQtyBesar(i)" />
-                      <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageListSatuanBesar[i]">
-                        {{ validationMessageListSatuanBesar[i] }}
+                        [ngClass]="{'form-invalid': validationMessageListSatuanBesar[data.idx]}"
+                        (blur)="onBlurQtyBesar(data.idx)" (paste)="$event.preventDefault()" />
+                      <span style="font-size: 14px;" class="text-danger"
+                        *ngIf="validationMessageListSatuanBesar[data.idx]">
+                        {{ validationMessageListSatuanBesar[data.idx] }}
                       </span>
                     </ng-container>
                   </td>
@@ -154,14 +157,17 @@
                   </td>
 
                   <td class="text-end">
-                    <ng-container *ngIf="!loadingUpdateQtyKecil[i]; else loadingInput">
-                      <input id="inputQtyKecil{{i}}" type="text" min="0" class="form-control text-end"
-                        [(ngModel)]="data.qtyKecilSo" (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')"
+                    <ng-container *ngIf="!loadingUpdateQtyKecil[data.idx]; else loadingInput">
+                      <input id="inputQtyKecil{{data.idx}}" type="text" min="0"
+                        class="form-control form-control-sm text-end" [(ngModel)]="data.qtyKecilSo"
+                        (input)="onInputValueItemDetail($event, data.idx, 'numeric', 'kecil')"
                         (keypress)="g.conditionInput($event, 'numericDot')" (keydown.arrowup)="focusPrevInput($event)"
                         (keydown.arrowdown)="focusNextInput($event)"
-                        [ngClass]="{'form-invalid': validationMessageListSatuanKecil[i]}" (blur)="onBlurQtyKecil(i)" />
-                      <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageListSatuanKecil[i]">
-                        {{ validationMessageListSatuanKecil[i] }}
+                        [ngClass]="{'form-invalid': validationMessageListSatuanKecil[data.idx]}"
+                        (blur)="onBlurQtyKecil(data.idx)" (paste)="$event.preventDefault()" />
+                      <span style="font-size: 14px;" class="text-danger"
+                        *ngIf="validationMessageListSatuanKecil[data.idx]">
+                        {{ validationMessageListSatuanKecil[data.idx] }}
                       </span>
                     </ng-container>
                   </td>
@@ -169,7 +175,8 @@
                     {{ data.satuanKecil }}
                   </td>
 
-                  <td class="text-end fw-bold {{ data.totalQtySo > 0 ? 'text-white bg-primary' : '' }}">
+                  <td
+                    class="text-end fw-bold {{ data.totalQtySo > 9999999999.99 ? 'text-white bg-danger' : ( data.totalQtySo > 0 ? 'text-white bg-primary' : '') }}">
                     {{ data.totalQtySo === 0 ? '' : data.totalQtySo | number:'1.2-2' }}
                   </td>
                   <td class="text-start">
@@ -177,11 +184,12 @@
                   </td>
 
                   <td>
-                    <button class="btn btn-success btn-sm text-white w-90" (click)="onShowModalExpired($event, i)"
-                      *ngIf="data.flagExpired === 'Y' && !loadingExpired[i]">
+                    <button class="btn btn-success btn-sm text-white w-90"
+                      (click)="onShowModalExpired($event, data.idx)"
+                      *ngIf="data.flagExpired === 'Y' && !loadingExpired[data.idx]">
                       <i class="fa fa-check pe-1"></i> {{ "Exp." | translate }}
                     </button>
-                    <ng-container *ngIf="loadingExpired[i]">
+                    <ng-container *ngIf="loadingExpired[data.idx]">
                       <ng-container *ngTemplateOutlet="loadingInput; context: { label: 'Loading...' }">
                       </ng-container>
                     </ng-container>
@@ -205,7 +213,7 @@
               <div class="row text-end align-items-center">
                 <div class="col">Halaman</div>
                 <div class="col">
-                  <select name="pageSelect" class="form-select text-end ms-4 w-90"
+                  <select name="pageSelect" class="form-select form-select-sm text-end w-90"
                     *ngIf="searchText.length == 0 && listDetail && listDetail.length > 0" [(ngModel)]="currentPage">
                     <option *ngFor="let i of listPages" [value]="i">{{i}}</option>
                   </select>
@@ -241,12 +249,12 @@
             </div>
             <div class="col-8 pe-0 d-flex">
               <div class="col-3 pe-2">
-                <input type="text" class="form-control" id="kodeBarang" [(ngModel)]="selectedExpProduct.kodeBarang"
-                  name="kodeBarang" disabled />
+                <input type="text" class="form-control form-control-sm" id="kodeBarang"
+                  [(ngModel)]="selectedExpProduct.kodeBarang" name="kodeBarang" disabled />
               </div>
               <div class="col-9">
-                <input type="text" class="form-control" id="namaBarang" [(ngModel)]="selectedExpProduct.namaBarang"
-                  name="namaBarang" disabled />
+                <input type="text" class="form-control form-control-sm" id="namaBarang"
+                  [(ngModel)]="selectedExpProduct.namaBarang" name="namaBarang" disabled />
               </div>
             </div>
           </div>
@@ -255,7 +263,7 @@
               <label for="nomorPesanan">{{ "Konversi Barang" | translate }}</label>
             </div>
             <div class="col-8 pe-0">
-              <input type="text" class="form-control" id="konversi"
+              <input type="text" class="form-control form-control-sm" id="konversi"
                 [value]="selectedExpProduct.konversi + ' ' + selectedExpProduct.satuanKecil + '/' + selectedExpProduct.satuanBesar"
                 name="konversi" disabled />
 
@@ -268,7 +276,7 @@
               <label class="fw-semibold" for="nomorPesanan">{{ "Total Qty S.O" | translate }}</label>
             </div>
             <div class="col-5 pe-0">
-              <input type="text" placeholder="Nomor pesanan" class="form-control" id="totalQtySo"
+              <input type="text" placeholder="Nomor pesanan" class="form-control form-control-sm" id="totalQtySo"
                 [value]="selectedExpProduct.totalQtySo" name="totalQtySo" disabled />
             </div>
             <div class="col-3 d-flex align-items-start">
@@ -283,8 +291,8 @@
               <label for="nomorPesanan">{{ "Quantity Besar" | translate }}</label>
             </div>
             <div class="col-5 pe-0">
-              <input type="text" class="form-control" id="qtyPemakaianBesar" [value]="selectedExpProduct.qtyBesarSo"
-                name="qtyPemakaianBesar" disabled />
+              <input type="text" class="form-control form-control-sm" id="qtyPemakaianBesar"
+                [value]="selectedExpProduct.qtyBesarSo" name="qtyPemakaianBesar" disabled />
             </div>
             <div class="col-3 d-flex align-items-start">
               <label for="qtyPemakaianBesar">{{ selectedExpProduct.satuanBesar }}</label>
@@ -296,7 +304,7 @@
               <label for="nomorPesanan">{{ "Quantity Kecil" | translate }}</label>
             </div>
             <div class="col-5 pe-0">
-              <input type="text" class="form-control" id="qtyPemakaianKecil"
+              <input type="text" class="form-control form-control-sm" id="qtyPemakaianKecil"
                 [value]="selectedExpProduct.qtyKecilSo || 0" name="qtyPemakaianKecil" disabled />
             </div>
             <div class="col-3 d-flex align-items-start">
@@ -361,9 +369,10 @@
             <tbody>
               <tr *ngFor="let data of listEntryExpired; let i = index">
                 <td class="text-center w-120">
-                  <input type="text" id="tglTransaksi" class="form-control" aria-describedby="tglTransaksi"
-                    #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker autocomplete="off"
-                    [(ngModel)]="data.tglExpired" (ngModelChange)="updateKeteranganTanggal(data,$event,i)"
+                  <input type="text" id="tglTransaksi" class="form-control form-control-sm"
+                    aria-describedby="tglTransaksi" #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker
+                    autocomplete="off" [(ngModel)]="data.tglExpired"
+                    (ngModelChange)="updateKeteranganTanggal(data,$event,i)"
                     placeholder="{{ 'Tanggal transaksi' | translate }}" />
                   <span style="font-size: 14px;" class="text-danger" *ngIf="data.validationExpiredMessageList">
                     {{ data.validationExpiredMessageList}}
@@ -375,8 +384,8 @@
                 </td>
                 <td class="text-center input-column">
                   <div class="d-flex justify-content-center" style="gap: 5px;">
-                    <input type="text" min="0" class="form-control text-center w-180" [(ngModel)]="data.qtyBesarSo"
-                      (change)="onInputQtyBesarExpired($event,data.kodeBarang, i)" />
+                    <input type="text" min="0" class="form-control form-control-sm text-center w-180"
+                      [(ngModel)]="data.qtyBesarSo" (change)="onInputQtyBesarExpired($event,data.kodeBarang, i)" />
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanBesar}}
                     </span>
@@ -385,8 +394,8 @@
 
                 <td class="text-center">
                   <div class="d-flex justify-content-center" style="gap: 5px;">
-                    <input type="text" min="0" class="form-control text-center w-180" [(ngModel)]="data.qtyKecilSo"
-                      (change)="onInputQtyKecilExpired($event,data.kodeBarang, i)" />
+                    <input type="text" min="0" class="form-control form-control-sm text-center w-180"
+                      [(ngModel)]="data.qtyKecilSo" (change)="onInputQtyKecilExpired($event,data.kodeBarang, i)" />
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanKecil}}
                     </span>
@@ -435,7 +444,7 @@
             Total: {{ totalFilteredExpired | number:'1.2-2' }} {{ selectedExpProduct.satuanKecil }}
           </p>
           <button (click)="onSaveEntryExpired(selectedExpProduct.idx)" type="button" class="btn btn-primary ms-2"
-            [disabled]="listEntryExpired.length === 0 || expiredHasZeroTotalQty()">
+            [disabled]="selectedExpProduct.totalQtySo !== 0 && (listEntryExpired.length === 0 || expiredHasZeroTotalQty())">
             <i class="fa fa-check me-1"></i>
             Simpan
           </button>
