@@ -1,63 +1,105 @@
 <div class="fade-in">
   <c-card class="mb-4">
-    <c-card-header>
+    <c-card-header class="py-1">
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        
+        <!-- Jumlah Item -->
         <div class="d-flex align-items-center gap-2">
-          <label for="jabatanSaksi" class="mb-0">{{ "Jumlah Item" | translate }}</label>
-          <input type="text" class="form-control text-center input-disabled" [value]="getJumlahItem()" readonly style="width: 120px;" />
+          <label for="jabatanSaksi" class="mb-0 small">{{ "Jumlah Item" | translate }}</label>
+          <input type="text"
+                class="form-control form-control-sm text-center input-disabled"
+                [value]="getJumlahItem()"
+                readonly
+                style="width: 100px;" />
         </div>
-      
+    
+        <!-- Tombol Aksi -->
         <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-info text-white btn-150 pe-3"
-            [disabled]="loadingSimpan"
-            (click)="onSubmit()">
+          <button class="btn btn-info btn-sm text-white pe-3"
+                  [disabled]="loadingSimpan"
+                  (click)="onSubmit()">
             <i class="fa fa-check pe-2" *ngIf="!loadingSimpan"></i>
             <i class="fa fa-spinner fa-spin" *ngIf="loadingSimpan"></i>
             {{ "Proses Simpan Data" | translate }}
           </button>
-      
-          <button class="btn btn-secondary text-white btn-150" (click)="onBackPressed()">
+    
+          <button class="btn btn-secondary btn-sm text-white" (click)="onBackPressed()">
             <i class="fa fa-times pe-1"></i> {{ "Batal Transaksi" | translate }}
           </button>
         </div>
-      </div>      
+    
+      </div>
     </c-card-header>
+
     <c-card-body>
+      
+      <div class="row align-items-center mb-2">
+        <!-- Tombol Tambah Data -->
+        <div class="col-auto">
+          <button class="btn btn-success text-white btn-sm pe-3" (click)="onAdd()">
+            <i class="fa fa-plus pe-2" *ngIf="!adding"></i>
+            {{ "Tambah" | translate }}
+          </button>
+        </div>
+      
+        <!-- Input Search -->
+        <div class="col-12 col-md-6 col-lg-4 ms-auto">
+          <c-input-group>
+            <span cInputGroupText><i class="fa fa-search"></i></span>
+            <input #listViewOrders 
+                  id="appendedInputButton" 
+                  [(ngModel)]="searchListViewOrder" 
+                  class="form-control form-control-sm"
+                  type="text" 
+                  placeholder="Search..." 
+                  (ngModelChange)="onFilterTextChange($event)">
+          </c-input-group>
+        </div>
+      </div>
+
       <div class="table-responsive">
         <ng-container>
           <div *ngIf="loading">
             <app-loading></app-loading>
           </div>
           <table bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
-            <thead>
-              <tr>
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 32%"
-                  class="text-center align-items-start" rowspan="2">Kode Barang</th>
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 20%;"
-                  class="text-center align-items-start" rowspan="3">Nama Barang</th>
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
-                  class="text-center align-items-start" rowspan="2">Konversi</th>
-                <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle;"
-                  class="text-center align-items-start btn-danger" colspan="2">Qty Retur</th>
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
-                  class="text-center align-items-start" rowspan="2">Total Qty Retur</th>
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 8%;"
-                  class="text-center align-items-start" rowspan="2">Isi Qty Expired
+            <thead class="small">
+              <tr class="py-1">
+                <th scope="col" class="text-center align-middle" style="background-color: #3c4b64; color: white;" rowspan="2">
+                  Kode Barang
                 </th>
-                <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle; width: 10%;"
-                  class="text-center align-items-start" rowspan="2">Total Qty Expired</th>
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
-                  class="text-center align-items-start" rowspan="2">
+                <th scope="col" class="text-center align-middle" style="background-color: #3c4b64; color: white;" rowspan="2">
+                  Nama Barang
+                </th>
+                <th scope="col" class="text-center align-middle" style="background-color: #3c4b64; color: white;" rowspan="2">
+                  Konversi
+                </th>
+                <th scope="col" class="text-center align-middle" style="background-color: #e55353; color: white;" colspan="2">
+                  Qty Retur
+                </th>
+                <th scope="col" class="text-center align-middle" style="background-color: #3c4b64; color: white;" rowspan="2">
+                  Total Qty Retur
+                </th>
+                <th scope="col" class="text-center align-middle" style="background-color: #3c4b64; color: white;" rowspan="2">
+                  Isi Qty Expired
+                </th>
+                <th scope="col" class="text-center align-middle" style="background-color: #e55353; color: white;" rowspan="2">
+                  Total Qty Expired
+                </th>
+                <th scope="col" class="text-center align-middle" style="background-color: #3c4b64; color: white;" rowspan="2">
                   Action
                 </th>
               </tr>
-              <tr>
-                <th scope="col" class="text-center"
-                  style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle; ">Besar</th>
-                <th scope="col" class="text-center"
-                  style="width:160px;background-color: #3c4b64; color:white; vertical-align: middle;">Kecil</th>
+              <tr class="py-1">
+                <th scope="col" class="text-center align-middle" style="background-color: #3c4b64; color: white;">
+                  Besar
+                </th>
+                <th scope="col" class="text-center align-middle" style="background-color: #3c4b64; color: white;">
+                  Kecil
+                </th>
               </tr>
             </thead>
+                        
 
             <tbody *ngIf="!listProductData || listProductData.length === 0">
               <tr>
@@ -67,88 +109,107 @@
               </tr>
             </tbody>
             
-            <tbody>
-              <tr *ngFor="let data of listProductData; let i = index">
-                <td class="text-center">
-                  <div class="input-group">
-                    <input type="text" autofocus  class="form-control text-center" [(ngModel)]="data.kodeBarang"
-                    (keydown.enter)="handleEnter($event, i)" (keyup.enter)="nextInput.focus()" [disabled]="data.isFromRetur"/>
-                    <button class="btn btn-outline-secondary" type="button" 
-                    [disabled]="data.isFromRetur"
-                    (click)="onShowModal(i)">
+            <tbody class="small">
+              <tr *ngFor="let data of filteredListViewOrder | paginate: {
+                itemsPerPage: itemsPerPage,
+                currentPage: listCurrentPage,
+                totalItems: totalListViewOrderLength,
+                id: 'dataTableDetail'
+              }; let i = index" class="py-1 align-middle">
+            
+                <!-- Kode Barang -->
+                <td class="text-center align-middle">
+                  <div class="input-group input-group-sm">
+                    <input type="text" autofocus class="form-control form-control-sm text-center"
+                           [(ngModel)]="data.kodeBarang"
+                           (keydown.enter)="handleEnter($event, i)"
+                           (keyup.enter)="nextInput.focus()"
+                           [disabled]="data.isFromRetur" />
+                    <button class="btn btn-outline-secondary btn-sm"
+                            type="button"
+                            (click)="onShowModal(i)"
+                            [disabled]="data.isFromRetur">
                       <i class="fa fa-search"></i>
                     </button>
                   </div>
                 </td>
-
-                <td class="text-center">
+            
+                <!-- Nama Barang -->
+                <td class="text-center align-middle">
                   {{ data.namaBarang }}
                 </td>
-
-                <td class="text-center">{{ data.konversi }}
+            
+                <!-- Konversi -->
+                <td class="text-center align-middle">
+                  {{ data.konversi }}
                 </td>
-
-                <td class="text-center input-column">
-                  <div class="d-flex gap-2 justify-content-center align-items-center">
-                    <input type="text" min="0" #nextInput class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.qtyPemakaianBesar"
-                    (change)="onInputQtyBesar($event,data.kodeBarang, i)"
-                    /> 
+            
+                <!-- Qty Besar -->
+                <td class="text-center align-middle">
+                  <div class="d-flex justify-content-center align-items-center gap-2">
+                    <input type="text" min="0" #nextInput
+                           class="form-control form-control-sm text-center inputQty inputNumberSpace"
+                           [(ngModel)]="data.qtyPemakaianBesar"
+                           (change)="onInputQtyBesar($event, data.kodeBarang, i)" />
                     {{ data.satuanBesar }}
                   </div>
                 </td>
-
-                <td class="text-center input-column">
-                  <div class="d-flex gap-2 justify-content-center align-items-center">
-                    <input type="text" min="0" #nextInput2 class="form-control text-center inputQty inputNumberSpace"
-                      [(ngModel)]="data.qtyPemakaianKecil"
-                      (change)="onInputQtyKecil($event,data.kodeBarang, i)"
-                    /> 
+            
+                <!-- Qty Kecil -->
+                <td class="text-center align-middle">
+                  <div class="d-flex justify-content-center align-items-center gap-2">
+                    <input type="text" min="0" #nextInput2
+                           class="form-control form-control-sm text-center inputQty inputNumberSpace"
+                           [(ngModel)]="data.qtyPemakaianKecil"
+                           (change)="onInputQtyKecil($event, data.kodeBarang, i)" />
                     {{ data.satuanKecil }}
                   </div>
                 </td>
-
-                <td class="text-center">
-                  {{ data.totalQtyPemakaian}} {{ data.satuanKecil || '' }}
+            
+                <!-- Total Qty Retur -->
+                <td class="text-center align-middle">
+                  {{ data.totalQtyPemakaian }} {{ data.satuanKecil || '' }}
                 </td>
-
-                <td>
-                  <button class="btn btn-success btn-sm text-white btn-150" (click)="onShowModalExpired($event, i)"
-                    [disabled]="!data.isConfirmed">
+            
+                <!-- Tombol Expired -->
+                <td class="text-center align-middle">
+                  <button class="btn btn-success btn-sm text-white"
+                          (click)="onShowModalExpired($event, i)"
+                          [disabled]="!data.isConfirmed">
                     <i class="fa fa-check pe-1"></i> {{ "Exp." | translate }}
                   </button>
                 </td>
-
-                <td class="text-center">
-                  {{
-                    getTotalExpiredData(data.kodeBarang,data.konversi) 
-                  }} {{data.satuanKecil}}
+            
+                <!-- Total Expired -->
+                <td class="text-center align-middle">
+                  {{ getTotalExpiredData(data.kodeBarang, data.konversi) }} {{ data.satuanKecil }}
                 </td>
-
-                <td class="text-center">
-                  <button (click)="onDeleteRow(i,data)" type="button" class="btn btn-secondary ms-2">
+            
+                <!-- Tombol Delete -->
+                <td class="text-center align-middle">
+                  <button (click)="onDeleteRow(i, data)" type="button" class="btn btn-secondary btn-sm">
                     <i class="fa fa-trash me-1"></i>
                   </button>
                 </td>
-
+            
               </tr>
             </tbody>
+            
           </table>
         </ng-container>
       </div>
+      
     </c-card-body>
 
-    <c-card-footer>
-      <div class="d-md-flex justify-content-end">
-        <div class="d-grid gap-3 d-md-flex justify-content-end">
-          <button class="btn btn-success text-white btn-150 pe-3" (click)="onAdd()">
-            <i class="fa fa-plus pe-2" *ngIf="!adding"></i>
-            {{ "Tambah Data" | translate }}
-          </button>
-        </div>
-      
-      </div>
+    <c-card-footer class="py-1 px-2">
+        <c-pagination class="mb-0 w-auto">
+          <pagination-controls 
+            (pageChange)="listCurrentPage = $event" 
+            id="dataTableDetail">
+          </pagination-controls>
+        </c-pagination>
     </c-card-footer>
+
   </c-card>
 </div>
 

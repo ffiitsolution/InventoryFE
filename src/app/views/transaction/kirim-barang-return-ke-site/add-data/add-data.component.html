@@ -1,19 +1,14 @@
 <div class="fade-in">
-  <c-card class="mb-4">
-    <c-card-body>
-      <c-row>
-        <div
-          class="d-grid gap-3 d-md-flex justify-content-start align-items-center"
-        >
-          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
-            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
-            {{ "Kembali" | translate }}
-          </button>
-          <h5>{{ "Tambah Data" | translate }}</h5>
-        </div>
-      </c-row>
+  <c-card class="p-1 mb-1">
+    <c-card-body class="p-2">
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-sm btn-light" (click)="onPreviousPressed()">
+          <i class="fa fa-chevron-left icon-12"></i> {{ "Kembali" | translate }}
+        </button>
+        <h6 class="mb-0 fs-6">{{ "Tambah Data" | translate }}</h6>
+      </div>
     </c-card-body>
-  </c-card>
+  </c-card>  
 
   <c-card class="mb-4">
     <c-card-body>
@@ -24,7 +19,7 @@
         >
           <div class="w-100">
             <div class="p-2">
-              <h5 class="mb-2 p-2" style="color: #3c4b64">
+              <h5 class="mb-1 p-1" style="color: #3c4b64">
                 {{ "Isi Format" | translate }}
               </h5>
               <form [formGroup]="myForm">

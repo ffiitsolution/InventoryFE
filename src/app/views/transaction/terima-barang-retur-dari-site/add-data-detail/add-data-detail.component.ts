@@ -88,6 +88,10 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
 
   selectedRowData: any;
 
+  listCurrentPage: number = 1;
+  itemsPerPage: number = 5;
+  searchListViewOrder: string = '';
+
   constructor(
     public g: GlobalService,
     private translation: TranslationService,
@@ -291,15 +295,26 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'OK',
         });
-        return; 
+        return;
       }
   
-      const invalidQtyItems = this.listProductData.filter(item => !item.qtyPemakaianBesar || item.qtyPemakaianBesar == 0);
+      // Menambahkan pengecekan untuk kodeBarang dan namaBarang yang kosong
+      const invalidItems = this.listProductData.filter(item => 
+        !item.qtyPemakaianBesar || item.qtyPemakaianBesar == 0 ||
+        !item.kodeBarang || !item.namaBarang
+      );
   
-      if (invalidQtyItems.length > 0) {
+      if (invalidItems.length > 0) {
+        const invalidItemsList = invalidItems.map(item => `
+          <li>
+            ${item.kodeBarang} - ${item.namaBarang}
+          </li>
+        `).join('');
+  
         Swal.fire({
           title: 'Pesan Error',
-          html: `<div>Ada data dengan <b>Quantity kosong atau 0</b>.</div>`,
+          html: `<div>Ada data dengan <b>Quantity kosong atau 0</b></div>
+                <ul>${invalidItemsList}</ul>`,
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'OK',
         });
@@ -446,13 +461,6 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
     }
   }
 
-  get filteredList() {
-    return this.listEntryExpired.filter(item => item.kodeBarang === this.selectedExpProduct.kodeBarang);
-  }
-
-
-
-
   onPreviousPressed(): void {
     this.router.navigate(['/transaction/terima-barang-retur-dari-site/list-dt']);
   }
@@ -521,10 +529,6 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
     return dataInvalid;
   }
   
-  
-  
-  
-
   listProductData: any[] = [
     { kodeBarang: '', namaBarang: '', konversi: '', satuanKecil: '', satuanBesar: '', qtyWasteBesar: '', qtyWasteKecil: '', isConfirmed: false }
   ];
@@ -1199,11 +1203,47 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
     if (this.listProductData.length === 0) {
       return 0;
     }
-    if (this.listProductData[this.listProductData.length - 1].namaBarang.trim() === "") {
-      return this.listProductData.length - 1;
-    }
-    return this.listProductData.length;
+  
+    // Menghitung jumlah item yang memiliki namaBarang tidak kosong
+    const validItems = this.listProductData.filter(item => item.namaBarang.trim() !== "");
+    return validItems.length;
   }
   
   
+  onFilterTextChange(newValue: string) {
+    this.listCurrentPage = 1;
+    if (newValue.length >= 3) {
+      this.totalLength = 1;
+    } else {
+      this.totalLength = this.listProductData.length;
+    }
+    this.listCurrentPage = this.listCurrentPage;
+  }
+
+  getPaginationIndex(i: number): number {
+    return (this.listCurrentPage - 1) * this.itemsPerPage + i;
+  }
+
+  get listProductDataLength(): number {
+    return this.filteredListViewOrder.length;
+  }
+
+  get totalListViewOrderLength(): number {
+    return this.filteredListViewOrder.length;
+  }
+  
+
+  get filteredListViewOrder() {
+    if (!this.searchListViewOrder || this.searchListViewOrder.length < 3) {
+      return this.listProductData;
+    }
+    const searchText = this.searchListViewOrder.toLowerCase();
+    return this.listProductData.filter(item =>
+      JSON.stringify(item).toLowerCase().includes(searchText)
+    );
+  }
+
+  get filteredList() {
+    return this.listEntryExpired.filter(item => item.kodeBarang === this.selectedExpProduct.kodeBarang);
+  }
 }    
