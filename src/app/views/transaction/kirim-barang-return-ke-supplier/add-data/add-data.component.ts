@@ -27,13 +27,13 @@ import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
-  selector: 'app-add-kirim-barang-return-ke-site',
+  selector: 'app-add-kirim-barang-return-ke-supplier',
   templateUrl: './add-data.component.html',
   styleUrls: ['./add-data.component.scss'],
   providers: [DatePipe]
 
 })
-export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AddKirimBarangReturnKeSupplierComponent implements OnInit, AfterViewInit, OnDestroy {
   nomorPesanan: any;
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
@@ -332,7 +332,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
 
 
   onPreviousPressed(): void {
-    this.router.navigate(['/transaction/kirim-barang-ke-site/list-dt']);
+    this.router.navigate(['/transaction/kirim-barang-ke-supplier/list-dt']);
   }
 
   onShowModal() {
@@ -458,7 +458,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
         };
   
         this.dataService
-          .postData(this.config.BASE_URL + '/api/branch/dt', params)
+          .postData(this.config.BASE_URL + '/api/supplier/dt', params)
           .subscribe((resp: any) => {
             console.log('Response from backend:', resp);
   

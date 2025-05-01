@@ -65,6 +65,12 @@ import { KirimBarangReturnKeSiteListComponent } from './kirim-barang-return-ke-s
 import { AddKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/add-data/add-data.component';
 import { AddDataDetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/add-data-detail/add-data-detail.component';
 import { DetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/detail/detail.component';
+
+import { KirimBarangReturnKeSupplierListComponent } from './kirim-barang-return-ke-supplier/dt-list/kirim-barang-return-ke-supplier-list.component';
+import { AddKirimBarangReturnKeSupplierComponent } from './kirim-barang-return-ke-supplier/add-data/add-data.component';
+import { AddDataDetailKirimBarangReturnKeSupplierComponent } from './kirim-barang-return-ke-supplier/add-data-detail/add-data-detail.component';
+import { DetailKirimBarangReturnKeSupplierComponent } from './kirim-barang-return-ke-supplier/detail/detail.component';
+
 import { SelectDropDownModule } from 'ngx-select-dropdown';
 
 //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 START
@@ -156,6 +162,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     AddKirimBarangReturnKeSiteComponent,
     AddDataDetailKirimBarangReturnKeSiteComponent,
     DetailKirimBarangReturnKeSiteComponent,    
+    KirimBarangReturnKeSupplierListComponent,
+    AddKirimBarangReturnKeSupplierComponent,
+    AddDataDetailKirimBarangReturnKeSupplierComponent,
+    DetailKirimBarangReturnKeSupplierComponent,    
     //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 START
     TerimaBarangReturDariSiteListComponent,
     AddTerimaBarangReturDariSiteComponent,

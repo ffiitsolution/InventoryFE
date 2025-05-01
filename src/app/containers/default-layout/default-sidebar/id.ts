@@ -96,7 +96,7 @@ export const menu_id: any = [
       },
       {
         name: 'Kirim Barang Retur Ke Supplier',
-        url: '/transaction/retur-ke-supplier/list-barang-retur',
+        url: '/transaction/kirim-barang-return-ke-supplier/list-dt',
         iconComponent: {
           name: 'cib-minutemailer',
         },
