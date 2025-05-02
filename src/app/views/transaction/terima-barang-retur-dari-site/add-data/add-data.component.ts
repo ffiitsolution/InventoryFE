@@ -287,20 +287,53 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
   handleEnterPemesan(event: any) {
     event.preventDefault(); // Prevents the form from submitting
 
-    this.dataService
-    .postData(this.config.BASE_URL_HQ + '/api/return-order/list-search',
-      {"returnNo":  event.target.value, 
-        "kodeGudang" : this.globalService.getUserLocationCode(),
-        "status" : 'K'
-      }
-    )
-    .subscribe((resp: any) => {
-      if(resp.length > 0) {
-        this.mappingDataPemesan(this.globalService.convertKeysToCamelCase(resp[0]))
-      }
-      else
-        this.resetDataPemesan();
-    });
+    const params = {
+      noDoc:  event.target.value,
+    };
+
+    const paramUpdate = {
+      returnNo: event.target.value,
+      status: 'T',
+      user: this.globalService.getLocalstorage('inv_currentUser').kodeUser,
+      flagBrgBekas: 'T',
+    };
+
+    this.appService.checkNoReturFromSiteExist(params)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((resp: any) => {
+        console.log('on going', resp)
+          if(resp){
+            console.log('berhasil', resp)
+            this.toastr.error(`No retur tersebut sudah di input secara manual!`);
+            this.appService
+                    .updateWarehouse('/api/return-order/update', paramUpdate)
+                    .pipe(takeUntil(this.ngUnsubscribe))
+                    .subscribe({
+                      next: (res2) => {
+                      
+                        const currentUrl = this.router.url;
+                        this.router.navigateByUrl('/empty', { skipLocationChange: true }).then(() => {
+                          this.router.navigate([currentUrl]);
+                        });
+                      },
+                    });
+          }else{
+            this.dataService
+            .postData(this.config.BASE_URL_HQ + '/api/return-order/list-search',
+              {"returnNo":  event.target.value, 
+                "kodeGudang" : this.globalService.getUserLocationCode(),
+                "status" : 'K'
+              }
+            )
+            .subscribe((resp: any) => {
+              if(resp.length > 0) {
+                this.mappingDataPemesan(this.globalService.convertKeysToCamelCase(resp[0]))
+              }
+              else
+                this.resetDataPemesan();
+            });
+          }
+      });
   }
   
 
@@ -390,9 +423,9 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
       
       columns: [
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
-        { data: 'returnNo', title: 'Tipe', searchable: true },
+        { data: 'returnNo', title: 'No. Retur', searchable: true },
         { data: 'outletCode', title: 'Kode', searchable: true },
-        { data: 'namaPengirim', title: 'Inisial', searchable: true },
+        { data: 'namaPengirim', title: 'Pengirim', searchable: true },
         {
           data: 'statusAktif',
           title: 'Status',
