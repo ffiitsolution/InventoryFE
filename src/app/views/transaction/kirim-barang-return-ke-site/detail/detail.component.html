@@ -43,7 +43,7 @@
             </div>
             <div class="detail-item">
               <span class="label">{{ "Status Transaksi" | translate }}</span>
-              <span class="value">: {{ selectedProduction.namaPosting }}</span>
+              <span class="value">: <span class="badge bg-success">{{ selectedProduction.namaPosting }}</span></span>
             </div>
           </div>
         </div>
@@ -212,7 +212,7 @@
           placeholder="Nomor pesanan"
           class="form-control"
           id="totalQtyProduksi"
-          [value]="formExpiredData.totalQty"
+          [value]="formExpiredData.totalExpiredQty"
           name="totalQtyProduksi"
           readonly
         />

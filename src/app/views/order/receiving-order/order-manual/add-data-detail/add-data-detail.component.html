@@ -62,7 +62,7 @@
                   class="text-center align-items-start btn-danger" colspan="2">Qty Pesan</th> <!-- Masih sejajar -->
                 <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
                 class="text-center align-items-start" rowspan="2">
-                  Konversi Gudang</th>
+                  Konversi</th>
                 <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
                 class="text-center align-items-start" rowspan="2">
                   Total Quantity Pesan
@@ -144,9 +144,12 @@
                 </td>
 
                 <td class="text-center">{{ data?.konversi?.toFixed(2) }}</td>
-                <td class="text-center">{{((helper.sanitizedNumber(data.qtyPesanBesar) *
-                  data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil)).toFixed(2) }} {{data.satuanKecil}}
-
+                <td class="text-center">
+                  {{
+                    (data.qtyPesanBesar != null && data.konversi != null && data.qtyPesanKecil != null)
+                      ? ((helper.sanitizedNumber(data.qtyPesanBesar) * data.konversi) + helper.sanitizedNumber(data.qtyPesanKecil)).toFixed(2)
+                      : ''
+                  }} {{ data.satuanKecil }}           
                   <!-- Validation message area -->
                    <br>
                   <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageQtyPesanList [ getPaginationIndex(i)]">

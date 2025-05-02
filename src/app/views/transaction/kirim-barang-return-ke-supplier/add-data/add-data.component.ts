@@ -27,13 +27,13 @@ import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
-  selector: 'app-add-terima-barang-retur-dari-site',
+  selector: 'app-add-kirim-barang-return-ke-supplier',
   templateUrl: './add-data.component.html',
   styleUrls: ['./add-data.component.scss'],
   providers: [DatePipe]
 
 })
-export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AddKirimBarangReturnKeSupplierComponent implements OnInit, AfterViewInit, OnDestroy {
   nomorPesanan: any;
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
@@ -101,7 +101,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
 
   formData: {
     kodeTujuan: string;
-    noReturnPengirim : string;
+    // noReturnPengirim : string;
     namaTujuan: string;
     alamatTujuan: string;
     statusTujuan: string;
@@ -109,7 +109,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     tglTransaksi?: Date;
   } = {
     kodeTujuan: '',
-    noReturnPengirim: '',
+    // noReturnPengirim: '',
     namaTujuan: '',
     alamatTujuan: '',
     statusTujuan: '',
@@ -135,7 +135,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
           kodeBarang: ['', [Validators.required]],
           namaBarang: ['', [Validators.required]],
           alamatPengirim: ['', [Validators.required]],
-          noReturnPengirim:['', [Validators.required]],
+          // noReturnPengirim:['', [Validators.required]],
           satuanHasilProduksi: ['', [Validators.required]],
           tglTransaksi: [this.defaultDate, [Validators.required]],
           // jumlahHasilProduksi: ['', [Validators.required,Validators.min(1)]],
@@ -216,7 +216,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     const paramUpdate = {
       returnNo: data.returnNo,
       status: 'T',
-      user: this.globalService.getLocalstorage('inv_currentUser').kodeUser,
+      user: this.globalService.getLocalstorage('inv_currentUser').namaUser,
       flagBrgBekas: 'T',
     };
 
@@ -242,23 +242,24 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
           }else{
             console.log('gagal', resp)
             this.selectedRowRetur = JSON.stringify(data);
-            this.formData.kodeTujuan = data?.outletCode;
-            this.formData.tglTransaksi = data?.dateReturn ? new Date(data.dateReturn) : undefined;
-            this.formData.namaTujuan = data?.namaPengirim;
-            this.formData.alamatTujuan = data?.alamatPengirim;
-            this.formData.statusTujuan = this.convertStatusAktif(data?.statusAktif); // ✅ Gunakan function ini
-            this.formData.noReturnPengirim = data?.returnNo;
             this.isShowModal = false;
             this.mappingDataPemesan(data);
-
           }
       });
+
+    this.formData.kodeTujuan = data?.outletCode;
+    this.formData.tglTransaksi = data?.dateReturn ? new Date(data.dateReturn) : undefined;
+    this.formData.namaTujuan = data?.namaPengirim;
+    this.formData.alamatTujuan = data?.alamatPengirim;
+    this.formData.statusTujuan = this.convertStatusAktif(data?.statusAktif); // ✅ Gunakan function ini
+    // this.formData.noReturnPengirim = data?.returnNo;
+    this.isShowModal = false;
   }
   
   actionBtnClickBranch(data: any = null) {
-    this.formData.kodeTujuan = data?.kodeCabang;
-    this.formData.namaTujuan = data?.namaCabang;
-    this.formData.alamatTujuan = data?.alamat1;
+    this.formData.kodeTujuan = data?.kodeSupplier;
+    this.formData.namaTujuan = data?.namaSupplier;
+    this.formData.alamatTujuan = data?.alamat;
     this.formData.statusTujuan = this.convertStatusAktif(data?.statusAktif); // ✅ Gunakan function ini
     this.isShowModalBranch = false;
   }
@@ -308,7 +309,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     this.myForm.controls['kodeBarang'].setValue("");
     this.myForm.controls['namaBarang'].setValue("");
     this.myForm.controls['alamatPengirim'].setValue("");
-    this.myForm.controls['noReturnPengirim'].setValue("");   
+    // this.myForm.controls['noReturnPengirim'].setValue("");   
     this.myForm.controls['satuanHasilProduksi'].setValue("");  
     this.myForm.controls['keterangan'].setValue("");  
   }
@@ -326,12 +327,12 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
       }
     this.myForm.controls['satuanHasilProduksi'].setValue(statusValue);
     this.myForm.controls['alamatPengirim'].setValue(data.alamatPengirim);  
-    this.myForm.controls['noReturnPengirim'].setValue(data.returnNo);      
+    // this.myForm.controls['noReturnPengirim'].setValue(data.returnNo);      
   }
 
 
   onPreviousPressed(): void {
-    this.router.navigate(['/transaction/terima-barang-retur-dari-site/list-dt']);
+    this.router.navigate(['/transaction/kirim-barang-return-ke-supplier/list-dt']);
   }
 
   onShowModal() {
@@ -457,7 +458,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
         };
   
         this.dataService
-          .postData(this.config.BASE_URL + '/api/branch/dt', params)
+          .postData(this.config.BASE_URL + '/api/supplier/dt', params)
           .subscribe((resp: any) => {
             console.log('Response from backend:', resp);
   
@@ -483,11 +484,18 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
       },
       columns: [
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
-        { data: 'kodeCabang', title: 'Kode', searchable: true },
-        { data: 'namaCabang', title: 'Nama', searchable: true },
-        { data: 'keteranganRsc', title: 'RSC', searchable: true },
-        { data: 'kota', title: 'Kota', searchable: true },
-        { data: 'deskripsiGroup', title: 'Group', searchable: true },
+        { data: 'kodeSupplier', title: 'Kode', searchable: true },
+        { data: 'namaSupplier', title: 'Nama Supplier', searchable: true },
+        {
+          data: null,
+          title: 'Alamat',
+          searchable: true,
+          render: (data, type, row) => {
+            const alamatGabungan = [row.alamat1, row.alamat2].filter(Boolean).join(', ');
+            return `<div>${alamatGabungan}</div>`;
+          }
+        },
+        { data: 'keteranganKota', title: 'Kota', searchable: true },
         {
           data: 'statusAktif',
           title: 'Status',
@@ -518,7 +526,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
       ],
       searchDelay: 1500,
       order: [
-        [1, 'asc'],
+        [1, 'asc']
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-select', row).on('click', () => this.actionBtnClickBranch(data));
@@ -604,16 +612,16 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
         }
       }
 
-      onNoDocumentInput(event: Event): void {
-        const input = event.target as HTMLTextAreaElement;
-        const originalValue = input.value;
-        const filteredValue = originalValue.replace(/[^a-zA-Z0-9\-]/g, '');
+      // onNoDocumentInput(event: Event): void {
+      //   const input = event.target as HTMLTextAreaElement;
+      //   const originalValue = input.value;
+      //   const filteredValue = originalValue.replace(/[^a-zA-Z0-9\-]/g, '');
         
-        if (originalValue !== filteredValue) {
-          input.value = filteredValue;
-          this.myForm.get('noReturnPengirim')?.setValue(filteredValue);
-        }
-      }
+      //   if (originalValue !== filteredValue) {
+      //     input.value = filteredValue;
+      //     this.myForm.get('noReturnPengirim')?.setValue(filteredValue);
+      //   }
+      // }
 
 
       showWarningModal(message: string) {

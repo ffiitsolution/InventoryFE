@@ -19,11 +19,11 @@ import { AppConfig } from '../../../../config/app.config';
 import moment from 'moment';
 
 @Component({
-  selector: 'app-detail-kirim-barang-return-ke-site',
+  selector: 'app-detail-kirim-barang-return-ke-supplier',
   templateUrl: './detail.component.html',
   styleUrl: './detail.component.scss',
 })
-export class DetailKirimBarangReturnKeSiteComponent
+export class DetailKirimBarangReturnKeSupplierComponent
   implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(DataTableDirective, { static: false }) datatableElement!: DataTableDirective;
   @ViewChild('tableIdExpired', { static: false }) tableExpired: any;
@@ -167,7 +167,7 @@ export class DetailKirimBarangReturnKeSiteComponent
             outletBrand: 'KFC',
             kodeGudang: this.g.getUserLocationCode(),
             isDownloadCsv: false,
-            reportName: 'cetak retur ke site',
+            reportName: 'cetak retur ke supplier',
             confirmSelection: 'Ya',
           };
 
@@ -340,7 +340,7 @@ export class DetailKirimBarangReturnKeSiteComponent
   }
 
   onBackPressed(): void {
-    this.router.navigate(['/transaction/kirim-barang-return-ke-site/list-dt']);
+    this.router.navigate(['/transaction/kirim-barang-return-ke-supplier/list-dt']);
   }
 
   getPrintStatus(): string {

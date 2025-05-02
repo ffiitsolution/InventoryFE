@@ -143,13 +143,17 @@
                  class="text-center align-items-start" rowspan="2">
                    Nama Barang</th>
                  <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle; width: 10%;"
-                 class="text-center align-items-start btn-danger" colspan="2">Konversi Pemesan</th> <!-- Masih sejajar -->
+                 class="text-center align-items-start btn-danger" colspan="2">Konversi Supplier</th> <!-- Masih sejajar -->
 
-                <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle; width: 10%;"
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
                   class="text-center align-items-start btn-danger" colspan="2">Qty Pesan</th> <!-- Masih sejajar -->
-                  <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                  <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 5%;"
                   class="text-center align-items-start" rowspan="2">
                     Total Pesanan
+                  </th>
+                  <th scope="col" style="background-color: black; color:white; vertical-align: middle; width: 5%;"
+                  class="text-center align-items-start" rowspan="2">
+                    Total Qty Diterima
                   </th>
                   <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle; width: 10%;"
                   class="text-center align-items-start btn-danger" colspan="2">Konversi Gudang</th> <!-- Masih sejajar -->
@@ -202,6 +206,7 @@
                 <td class="text-center">{{((helper.sanitizedNumber(data.qtyPesanBesar) *
                   data.konversi) +  helper.sanitizedNumber(data.qtyPesanKecil)).toFixed(2) }}
                 </td>
+                <td></td>
                 <td class="text-center">{{ data?.konversiProduct?.toFixed(2) }}</td>
                 <td class="text-center">{{ data?.satuanKecilProduct}}/{{data?.satuanBesarProduct}}</td> 
                 <td class="text-center">

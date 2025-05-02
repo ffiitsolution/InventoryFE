@@ -27,11 +27,11 @@ import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-add-data-detail-kirim-barang-return-ke-site',
+  selector: 'app-add-data-detail-kirim-barang-return-ke-supplier',
   templateUrl: './add-data-detail.component.html',
   styleUrl: './add-data-detail.component.scss',
 })
-export class AddDataDetailKirimBarangReturnKeSiteComponent
+export class AddDataDetailKirimBarangReturnKeSupplierComponent
   implements OnInit, OnDestroy, AfterViewInit {
   columns: any;
   orders: any[] = [];
@@ -177,12 +177,12 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
   
     const param = {
       kodeGudang: this.g.getUserLocationCode(),
-      tipeTujuan: 'D',
+      tipeTujuan: 'S',
       tipeTransaksi: 6,
       kodeTujuan: this.headerProduction.kodeBarang,
       tglTransaksi: moment(this.headerProduction.tglTransaksi, 'DD-MM-YYYY').format('D MMM YYYY'),
       statusPosting: 'P',
-      keterangan: `~${this.headerProduction.keterangan}`,
+      keterangan: `${this.headerProduction.keterangan}`,
       userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
       statusSync: 'Y',
       details: this.listProductData
@@ -252,7 +252,7 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
               this.loadingSimpan = false;
             },
             error: () => {
-              this.toastr.error('Gagal posting data Kirim ke Site!');
+              this.toastr.error('Gagal posting data Kirim ke Supplier!');
               this.loadingSimpan = false;
             }
           });
@@ -292,7 +292,7 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
           Swal.fire({
             title: 'Pesan Error',
             html: `<div>Ada data dengan <b>Quantity kosong atau 0</b></div>
-                  <ul>${invalidItemsList}</ul>`,
+                  <ul style="padding-left: 20px; margin: 0;>${invalidItemsList}</ul>`,
             confirmButtonColor: '#3085d6',
             confirmButtonText: 'OK',
           });
@@ -444,7 +444,7 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
   }
 
   onPreviousPressed(): void {
-    this.router.navigate(['/transaction/kirim-barang-return-ke-site/list-dt']);
+    this.router.navigate(['/transaction/kirim-barang-return-ke-supplier/list-dt']);
   }
 
   isDataInvalid() {

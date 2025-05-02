@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { DataService } from '../../../../service/data.service';
 import { GlobalService } from '../../../../service/global.service';
@@ -38,9 +39,15 @@ export class ListBarangReturComponent implements OnInit {
   currentPage: number = 1;
   page = new Page();
   dtColumns: any = [];
-  showFilterSection: boolean = false;
   buttonCaptionView: String = 'Lihat';
+  buttonCaptionPrint: String = 'Cetak';
   selectedStatusFilter: string = '';
+  selectedData: any;
+  isShowModalReport: boolean = false;
+  showFilterSection: boolean = false;
+  confirmSelection: string = 'semua';
+  paramGenerateReport: any = {};
+
   orders: any[] = [];
   totalRecords: number = 0;
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
@@ -55,6 +62,7 @@ export class ListBarangReturComponent implements OnInit {
     )
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
+  alreadyPrint: boolean = false;
 
   constructor(
     private dataService: DataService,
@@ -62,7 +70,8 @@ export class ListBarangReturComponent implements OnInit {
     private transaltionService: TranslationService,
     private router: Router,
     private globalService: GlobalService,
-    private appService: AppService
+    private appService: AppService,
+    private toastr: ToastrService
   ) {
     this.dtOptions = {
       language:
@@ -163,9 +172,10 @@ export class ListBarangReturComponent implements OnInit {
           orderable: false,
           searchable: false,
           render: (data, type, row) => {
-            return `<button class="btn btn-sm btn-primary action-view" data-nomor-transaksi="${row.NOMOR_TRANSAKSI}">
-                      <i class="fa fa-eye"></i> Lihat Detail
-                    </button>`;
+            return ` <div class="btn-group" role="group" aria-label="Action">
+                <button class="btn btn-sm action-view btn-outline-primary btn-60">${this.buttonCaptionView}</button>
+                <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>           
+              </div>`;
           },
         },
       ],
@@ -278,6 +288,10 @@ export class ListBarangReturComponent implements OnInit {
   cetakJesper() {}
 
   selectedRows: string[] = [];
+  generateReportParam: any; 
+  downloadURL: string = '';
+  selectedRowCetak: any; 
+  disabledPrintButton: boolean = false; 
 
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
@@ -312,7 +326,30 @@ export class ListBarangReturComponent implements OnInit {
       console.log('Selected Rows:', this.selectedRows);
     });
   }
+  headerPlanningOrder = {
+    selectedYear: new Date().getFullYear().toString(),
+    selectedMonth: (new Date().getMonth() + 1).toString().padStart(2, '0'),
+  };
 
+  downloadCsv(res: any) {
+    var blob = new Blob([res], { type: 'text/csv' });
+    this.downloadURL = window.URL.createObjectURL(blob);
+
+    if (this.downloadURL.length) {
+      var link = document.createElement('a');
+      link.href = this.downloadURL;
+      link.download = `ORDER${this.headerPlanningOrder.selectedYear}${this.headerPlanningOrder.selectedMonth}.csv`;
+      link.click();
+      this.toastr.success('Berhasil Dicetak!');
+      this.isShowModalReport = false;
+    } else
+      this.g.alertError('Maaf, Ada kesalahan!', 'File tidak dapat terunduh.');
+  }
+  closeModal(){
+    this.isShowModalReport = false;
+    this.selectedRowCetak = null;
+    this.disabledPrintButton = false;
+  }
   // renderDataTables(): void {
   //     this.dtOptionsModal = {
   //       language:

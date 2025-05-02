@@ -12,11 +12,11 @@ import moment from 'moment';
 import { AppConfig } from '../../../../config/app.config';
 
 @Component({
-  selector: 'app-kirim-barang-return-ke-site-list',
-  templateUrl: './kirim-barang-return-ke-site-list.component.html',
-  styleUrls: ['./kirim-barang-return-ke-site-list.component.scss'],
+  selector: 'app-kirim-barang-return-ke-supplier-list',
+  templateUrl: './kirim-barang-return-ke-supplier-list.component.html',
+  styleUrls: ['./kirim-barang-return-ke-supplier-list.component.scss'],
 })
-export class KirimBarangReturnKeSiteListComponent implements OnInit {
+export class KirimBarangReturnKeSupplierListComponent implements OnInit {
   orderNoFilter: string = '';
   orderDateFilter: string = '';
   expiredFilter: string = '';
@@ -72,11 +72,11 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
           kodeGudang: this.g.getUserLocationCode(),
           startDate: moment(this.dateRangeFilter[0]).format('DD MMM yyyy' ),
           endDate: moment(this.dateRangeFilter[1]).format('DD MMM yyyy' ),
-          tipeTujuan: 'D'
+          tipeTujuan: 'S'
         };
         setTimeout(() => {
           this.dataService
-            .postData(this.config.BASE_URL + '/api/send-return-to-site/dt', params)
+            .postData(this.config.BASE_URL + '/api/send-return-to-supplier/dt', params)
             .subscribe((resp: any) => {
               const mappedData = resp.data.map((item: any, index: number) => {
                 // hapus rn dari data
@@ -113,7 +113,7 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
     
         { 
           data: null, 
-          title: 'Tujuan',
+          title: 'Supplier Tujuan',
           render: (data: any) => {
             if (data?.kodeTujuan && data?.namaTujuan) {
               return `${data.kodeTujuan} - ${data.namaTujuan}`;
@@ -214,7 +214,7 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
   }
 
   onAddPressed(): void {
-    const route = this.router.createUrlTree(['/transaction/kirim-barang-return-ke-site/add-data']);
+    const route = this.router.createUrlTree(['/transaction/kirim-barang-return-ke-supplier/add-data']);
     this.router.navigateByUrl(route);
   }
 
@@ -224,7 +224,7 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
         'selectedProduction',
         JSON.stringify(data)
       );
-      this.router.navigate(['/transaction/kirim-barang-return-ke-site/detail']); this
+      this.router.navigate(['/transaction/kirim-barang-return-ke-supplier/detail']); this
     }
   }
 
@@ -237,7 +237,7 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
   }
 
   refreshData(): void {
-    const route = this.router.createUrlTree(['/transaction/kirim-barang-return-ke-site/detail']);
+    const route = this.router.createUrlTree(['/transaction/kirim-barang-return-ke-supplier/detail']);
     this.router.navigateByUrl(route);
   }
   onFilterStatusChange(event: Event): void {
