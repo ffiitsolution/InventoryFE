@@ -150,14 +150,10 @@ export class ReceivingOrderComponent
           title: 'Status Pesanan',
           searchable: true,
           render: (data) => {
-            const isCancel = data == CANCEL_STATUS;
-            const label = this.g.getStatusReceivingOrderLabel(data);
-            if (isCancel) {
-              return `<span class="text-center text-danger">${label}</span>`;
-            }
-            return label;
+            return this.g.getStatusReceivingOrderBadge(data);
           },
         },
+        
         {
           data: 'statusCetak',
           title: 'Status Cetak',

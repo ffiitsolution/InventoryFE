@@ -14,7 +14,8 @@ import {
   STATUS_RESULT,
   TIPE_PEMBAYARAN,
   STATUS_PESANAN_TERIMA_PESANAN,
-  STATUS_PESANAN_TERIMA_PO
+  STATUS_PESANAN_TERIMA_PO,
+  STATUS_KIRIM_PESANAN_KE_GUDANG 
 } from '../../constants';
 import moment from 'moment';
 
@@ -345,6 +346,26 @@ export class GlobalService {
     // return `(${status}) ${found?.label}` || status;
     return `${found?.label?.toUpperCase()}` || status;
   }
+  getStatusReceivingOrderBadge(status: string): string {
+    console.log('status', status);
+    const data = STATUS_PESANAN_TERIMA_PESANAN;
+    const found = data.find(item => item.value === status);
+    if (!found) return status;
+  
+    return `
+      <span style="
+        background-color: ${found.color}; 
+        color: ${found.textColor}; 
+        padding: 4px 10px; 
+        border-radius: 4px; 
+        font-weight: 500;
+        font-size: 0.85rem;
+        display: inline-block;
+      ">
+        ${found.label}
+      </span>`;
+  }
+  
   getStatusReceivingPOLabel(status: string, isPrintStatus: boolean = false) {
     const data = STATUS_PESANAN_TERIMA_PO
     const found = data.find((item) => item.value == status);
@@ -354,6 +375,54 @@ export class GlobalService {
     // return `(${status}) ${found?.label}` || status;
     return `${found?.label?.toUpperCase()}` || status;
   }
+
+  getStatusReceivingPOBadge(status: string): string {
+    console.log('status', status);
+    const data = STATUS_PESANAN_TERIMA_PO;
+    const found = data.find(item => item.value === status);
+    if (!found) return status;
+  
+    return `
+      <span style="
+        background-color: ${found.color}; 
+        color: ${found.textColor}; 
+        padding: 4px 10px; 
+        border-radius: 4px; 
+        font-weight: 500;
+        font-size: 0.85rem;
+        display: inline-block;
+      ">
+        ${found.label}
+      </span>`;
+  }
+  
+  getStatusKirimPesananGudangLabel(status: string, isPrintStatus: boolean = false): string {
+    const data = STATUS_KIRIM_PESANAN_KE_GUDANG;
+    const found = data.find((item) => item.value === status);
+    if (!found) {
+      return '-';
+    }
+    return `${found.label.toUpperCase()}` || status;
+  }
+  getStatusKirimPesananGudangBadge(status: string): string {
+    const data = STATUS_KIRIM_PESANAN_KE_GUDANG;
+    const found = data.find(item => item.value === status);
+    if (!found) return status;
+  
+    return `
+      <span style="
+        background-color: ${found.color}; 
+        color: ${found.textColor}; 
+        padding: 4px 10px; 
+        border-radius: 4px; 
+        font-weight: 500;
+        font-size: 0.85rem;
+        display: inline-block;
+      ">
+        ${found.label}
+      </span>`;
+  }
+  
   trimOutletCode(label: string) {
     const numberPattern = /\d+/g;
     const result = label.match(numberPattern);

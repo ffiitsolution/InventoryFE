@@ -150,12 +150,7 @@ export class ReceivingPoSupplierComponent
           title: 'Status P.O',
           searchable: true,
           render: (data) => {
-            const isCancel = data == CANCEL_STATUS;
-            const label = this.g.getStatusReceivingPOLabel(data);
-            if (isCancel) {
-              return `<span class="text-center text-danger">${label}</span>`;
-            }
-            return label;
+            return this.g.getStatusReceivingPOBadge(data);
           },
         },
         {
