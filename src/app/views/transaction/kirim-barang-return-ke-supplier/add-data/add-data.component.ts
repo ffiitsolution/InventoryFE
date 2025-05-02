@@ -257,9 +257,9 @@ export class AddKirimBarangReturnKeSupplierComponent implements OnInit, AfterVie
   }
   
   actionBtnClickBranch(data: any = null) {
-    this.formData.kodeTujuan = data?.kodeCabang;
-    this.formData.namaTujuan = data?.namaCabang;
-    this.formData.alamatTujuan = data?.alamat1;
+    this.formData.kodeTujuan = data?.kodeSupplier;
+    this.formData.namaTujuan = data?.namaSupplier;
+    this.formData.alamatTujuan = data?.alamat;
     this.formData.statusTujuan = this.convertStatusAktif(data?.statusAktif); // ✅ Gunakan function ini
     this.isShowModalBranch = false;
   }
@@ -332,7 +332,7 @@ export class AddKirimBarangReturnKeSupplierComponent implements OnInit, AfterVie
 
 
   onPreviousPressed(): void {
-    this.router.navigate(['/transaction/kirim-barang-ke-supplier/list-dt']);
+    this.router.navigate(['/transaction/kirim-barang-return-ke-supplier/list-dt']);
   }
 
   onShowModal() {
@@ -484,11 +484,18 @@ export class AddKirimBarangReturnKeSupplierComponent implements OnInit, AfterVie
       },
       columns: [
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
-        { data: 'kodeCabang', title: 'Kode', searchable: true },
-        { data: 'namaCabang', title: 'Nama', searchable: true },
-        { data: 'keteranganRsc', title: 'RSC', searchable: true },
-        { data: 'kota', title: 'Kota', searchable: true },
-        { data: 'deskripsiGroup', title: 'Group', searchable: true },
+        { data: 'kodeSupplier', title: 'Kode', searchable: true },
+        { data: 'namaSupplier', title: 'Nama Supplier', searchable: true },
+        {
+          data: null,
+          title: 'Alamat',
+          searchable: true,
+          render: (data, type, row) => {
+            const alamatGabungan = [row.alamat1, row.alamat2].filter(Boolean).join(', ');
+            return `<div>${alamatGabungan}</div>`;
+          }
+        },
+        { data: 'keteranganKota', title: 'Kota', searchable: true },
         {
           data: 'statusAktif',
           title: 'Status',

@@ -182,7 +182,7 @@ export class AddDataDetailKirimBarangReturnKeSupplierComponent
       kodeTujuan: this.headerProduction.kodeBarang,
       tglTransaksi: moment(this.headerProduction.tglTransaksi, 'DD-MM-YYYY').format('D MMM YYYY'),
       statusPosting: 'P',
-      keterangan: `~${this.headerProduction.keterangan}`,
+      keterangan: `${this.headerProduction.keterangan}`,
       userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
       statusSync: 'Y',
       details: this.listProductData
@@ -292,7 +292,7 @@ export class AddDataDetailKirimBarangReturnKeSupplierComponent
           Swal.fire({
             title: 'Pesan Error',
             html: `<div>Ada data dengan <b>Quantity kosong atau 0</b></div>
-                  <ul>${invalidItemsList}</ul>`,
+                  <ul style="padding-left: 20px; margin: 0;>${invalidItemsList}</ul>`,
             confirmButtonColor: '#3085d6',
             confirmButtonText: 'OK',
           });

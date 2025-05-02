@@ -76,7 +76,7 @@ export class KirimBarangReturnKeSupplierListComponent implements OnInit {
         };
         setTimeout(() => {
           this.dataService
-            .postData(this.config.BASE_URL + '/api/send-return-to-site/dt', params)
+            .postData(this.config.BASE_URL + '/api/send-return-to-supplier/dt', params)
             .subscribe((resp: any) => {
               const mappedData = resp.data.map((item: any, index: number) => {
                 // hapus rn dari data

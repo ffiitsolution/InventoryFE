@@ -125,13 +125,10 @@
 
                 <div class="w-100 row">
                   <div class="col-4 d-flex align-items-center">
-                    <label for="namaBarang"
-                      >{{ "Nama Supplier" | translate }}
-                    </label>
+                    <label for="namaBarang">{{ "Nama Supplier" | translate }}</label>
                   </div>
                   <div class="col-8 mb-1 d-flex">
-                    <input
-                      type="text"
+                    <textarea
                       placeholder="Nama Supplier"
                       class="form-control"
                       id="namaBarang"
@@ -139,11 +136,32 @@
                       [(ngModel)]="formData.namaTujuan"
                       name="namaBarang"
                       [readOnly]="true"
-                    />
+                      rows="2"
+                      style="resize: none;"
+                    ></textarea>
+                  </div>
+                </div>
+                
+                <div class="w-100 row">
+                  <div class="col-4 d-flex align-items-center">
+                    <label for="namaBarang">{{ "Nama Supplier" | translate }}</label>
+                  </div>
+                  <div class="col-8 mb-1 d-flex">
+                    <textarea
+                      placeholder="Alamat Supplier"
+                      class="form-control"
+                      id="alamatPengirim"
+                      formControlName="alamatPengirim"
+                      [(ngModel)]="formData.alamatTujuan"
+                      name="alamatPengirim"
+                      [readOnly]="true"
+                      rows="2"
+                      style="resize: none;"
+                    ></textarea>
                   </div>
                 </div>
 
-                <div class="w-100 mb-1 row">
+                <!-- <div class="w-100 mb-1 row">
                   <div class="col-4 d-flex align-items-center">
                     <label for="kodeBarang"
                       >{{ "Alamat Supplier" | translate }}
@@ -161,7 +179,7 @@
                       [(ngModel)]="formData.alamatTujuan"
                     />
                   </div>
-                </div>
+                </div> -->
 
                 <div class="w-100 mb-1 row">
                   <div class="col-4 d-flex align-items-center">
