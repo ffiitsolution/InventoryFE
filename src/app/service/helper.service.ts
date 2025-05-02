@@ -116,5 +116,24 @@ export class HelperService {
   abs(value: number): number {
     return Math.abs(value);
   }
+
+  sanitizedNumberWithoutComa(source: string): number {
+    if (!source) return 0;
+
+    source = String(source).trim();
+
+    // If it uses a comma as decimal separator (e.g., "1.234,56"), normalize it
+    if (source.includes(',')) {
+      // Remove all dots (as they are likely thousand separators)
+      source = source.replace(/\./g, '');
+      // Replace comma with dot (decimal)
+      source = source.replace(',', '.');
+    }
+
+    const num = parseFloat(source);
+
+    return isNaN(num) ? 0 : num;
+  }
+  
   
 }

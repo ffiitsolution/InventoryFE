@@ -383,6 +383,8 @@ export class AddDataDetailProductionComponent
 
   onSaveEntryExpired() {
     let totalQtyExpired = 0;
+    let validationExpiredMessageList='';
+    let totalQtyEmpty = 0;
 
     const totalQtyPemakaian =
       this.helper.sanitizedNumber(this.selectedExpProduct.qtyPemakaianBesar) *
@@ -390,20 +392,30 @@ export class AddDataDetailProductionComponent
       this.helper.sanitizedNumber(this.selectedExpProduct.qtyPemakaianKecil);
 
     this.listEntryExpired.forEach((item: any) => {
-      if (item.kodeBarang === this.selectedExpProduct.kodeBarang) {
+      if (item.kodeBarang === this.selectedExpProduct.bahanBaku) {
         item.totalQty =
           this.helper.sanitizedNumber(item.qtyPemakaianBesar) * item.konversi +
           this.helper.sanitizedNumber(item.qtyPemakaianKecil);
-        item.kodeBarang = this.selectedExpProduct.kodeBarang;
+        item.kodeBarang = this.selectedExpProduct.bahanBaku;
         totalQtyExpired += item.totalQty;
+
+        if(item.totalQty <= 0){
+          totalQtyEmpty++;
+        }
+        validationExpiredMessageList = item.validationExpiredMessageList;
       }
     });
 
-    if (totalQtyExpired > totalQtyPemakaian) {
+    if (totalQtyExpired != totalQtyPemakaian) {
       this.toastr.error('Total Qty Expired harus sama dengan Qty Pemakaian');
+    } else if(validationExpiredMessageList){
+      this.toastr.error(validationExpiredMessageList);
+    }else if(totalQtyEmpty > 0){
+      this.toastr.error('Total Qty Expired tidak boleh 0 !');
     } else {
       this.isShowModalExpired = false;
     }
+   
   }
 
   get filteredList() {
@@ -653,7 +665,7 @@ export class AddDataDetailProductionComponent
             parseFloat(value) +
               parseFloat(this.listEntryExpired[realIndex].qtyPemakaianKecil) <=
             0
-              ? 'Quantity tidak boleh < 0'
+              ? 'Quantity tidak boleh <= 0'
               : '',
         };
       }
@@ -692,7 +704,7 @@ export class AddDataDetailProductionComponent
             parseFloat(this.listEntryExpired[realIndex].qtyPemakaianBesar) <=
           0
         ) {
-          messageValidation = 'Quantity tidak boleh < 0';
+          messageValidation = 'Quantity tidak boleh <= 0';
         } else if (
           Math.round(value) >=
           Math.round(this.listEntryExpired[realIndex].konversi)
@@ -721,6 +733,10 @@ export class AddDataDetailProductionComponent
         ),
       0
     );
+
+    if(this.totalFilteredExpired == 0){
+        this.toastr.error(`Total Qty tidak boleh 0!`);
+    }
 
     this.totalFilteredExpired = parseFloat(this.totalFilteredExpired).toFixed(
       2

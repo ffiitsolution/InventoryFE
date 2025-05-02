@@ -119,8 +119,8 @@
   [attr.aria-hidden]="!isShowModalExpired">
   <c-modal-header>
     <h5 cModalTitle>Entry Data Expired</h5>
-    <button (click)="isShowModalExpired = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
-        class="fa fa-times"></i></button>
+    <!-- <button (click)="isShowModalExpired = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
+        class="fa fa-times"></i></button> -->
   </c-modal-header>
   <c-modal-body>
     <div class="row">
@@ -265,7 +265,7 @@
                 <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
                     [(ngModel)]="data.qtyPemakaianBesar" 
-                    (change)="onInputQtyBesarExpired($event,data.kodeBarang, i)"
+                    (blur)="onInputQtyBesarExpired($event,data.kodeBarang, i)"
                     />
                   <span class="d-flex align-items-center justify-content-center">
                     / {{data.satuanBesar}}
@@ -277,7 +277,7 @@
                 <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
                     [(ngModel)]="data.qtyPemakaianKecil"
-                    (change)="onInputQtyKecilExpired($event,data.kodeBarang, i)"
+                    (blur)="onInputQtyKecilExpired($event,data.kodeBarang, i)"
                     />
                   <span class="d-flex align-items-center justify-content-center">
                     / {{data.satuanKecil}}
