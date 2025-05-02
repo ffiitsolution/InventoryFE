@@ -3,7 +3,7 @@
     <c-card-body>
       <div class="row">
         <div class="col">
-          <h5>{{ "Retur Barang Ke Supplier" | translate }}</h5>
+          <h5>{{ "Kirim Barang Retur Ke Supplier" | translate }}</h5>
         </div>
         <div class="col text-end">
           <button
@@ -21,9 +21,8 @@
             (click)="onAddPressed()"
           >
             <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
-            {{ "Tambah Data" | translate }}
+            {{ "Tambah" | translate }}
           </button>
-          <!-- <button class="btn btn-primary" (click)="cetakJesper()">Cetak</button> -->
         </div>
       </div>
       <div [visible]="showFilterSection" cCollapse>
@@ -33,7 +32,7 @@
             <c-row>
               <c-col>
                 <label class="col-form-label">{{
-                  "Tanggal Pemakaian" | translate
+                  "Tanggal Transaksi" | translate
                 }}</label>
                 <input
                   type="text"
@@ -44,7 +43,7 @@
                   aria-describedby="dateFilter"
                   [(ngModel)]="dateRangeFilter"
                   #dp="bsDaterangepicker"
-                  placeholder="{{ 'Tanggal Pesan' | translate }}"
+                  placeholder="{{ 'Tanggal Transaksi' | translate }}"
                 />
               </c-col>
               <c-col
@@ -74,8 +73,8 @@
           datatable
           [dtOptions]="dtOptions"
           (page.dt)="dtPageChange($event)"
-          class="datatable row-border hover stripe"
-          ></table>
+          class="row-border hover stripe w-100"
+        ></table>
       </div>
     </c-card-body>
   </c-card>
@@ -85,7 +84,7 @@
   <app-modal-print-list
     [alreadyPrint]="alreadyPrint"
     [disabledPrintButton]="disabledPrintButton"
-    [generatePdfUrl]="'/cetak-retur-supplier'"
+    [generatePdfUrl]="'/cetak-send-return-to-supplier-jasper'"
     [updateStatusUrl]="''"
     [updatePrintStatusParam]="''"
     [generateReportParam]="paramGenerateReport"

@@ -95,14 +95,14 @@
                 <div class="w-100 row">
                   <div class="col-4 d-flex align-items-center">
                     <label for="kodeBarang"
-                      >{{ "Kode Tujuan" | translate
+                      >{{ "Kode Supplier" | translate
                       }}<span class="text-danger">* </span>
                     </label>
                   </div>
                   <div class="col-8 mb-1 d-flex">
                     <input
                       type="text"
-                      placeholder="Kode Tujuan"
+                      placeholder="Kode Supplier"
                       class="form-control"
                       id="kodeBarang"
                       [(ngModel)]="formData.kodeTujuan"
@@ -126,13 +126,13 @@
                 <div class="w-100 row">
                   <div class="col-4 d-flex align-items-center">
                     <label for="namaBarang"
-                      >{{ "Nama Tujuan" | translate }}
+                      >{{ "Nama Supplier" | translate }}
                     </label>
                   </div>
                   <div class="col-8 mb-1 d-flex">
                     <input
                       type="text"
-                      placeholder="Nama Tujuan"
+                      placeholder="Nama Supplier"
                       class="form-control"
                       id="namaBarang"
                       formControlName="namaBarang"
@@ -146,13 +146,13 @@
                 <div class="w-100 mb-1 row">
                   <div class="col-4 d-flex align-items-center">
                     <label for="kodeBarang"
-                      >{{ "Alamat Tujuan" | translate }}
+                      >{{ "Alamat Supplier" | translate }}
                     </label>
                   </div>
                   <div class="col-8 d-flex">
                     <input
                       type="text"
-                      placeholder="Alamat Tujuan"
+                      placeholder="Alamat Supplier"
                       class="form-control"
                       id="alamatPengirim"
                       formControlName="alamatPengirim"
@@ -233,10 +233,10 @@
 
         <div class="ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
           <div class="p-2" *ngIf="isShowDetail">
-            <app-add-data-detail-kirim-barang-return-ke-site
+            <app-add-data-detail-kirim-barang-return-ke-supplier
               (onBatalPressed)="onBatalPressed($event)"
               (jumlahBahanbaku)="addJumlahBahanBaku($event)"
-            ></app-add-data-detail-kirim-barang-return-ke-site>
+            ></app-add-data-detail-kirim-barang-return-ke-supplier>
           </div>
         </div>
       </c-row>
@@ -252,7 +252,7 @@
     size="xl"
   >
     <c-modal-header>
-      <h5 cModalTitle>Daftar Retur From Site</h5>
+      <h5 cModalTitle>Daftar Retur ke Supplier</h5>
       <button
         (click)="isShowModal = false"
         type="button"
@@ -286,7 +286,7 @@
 
   <c-modal #staticBackdropModalBranch [visible]="isShowModalBranch" backdrop="static" id="staticBackdropModalBranch" #modalLg size="xl">
     <c-modal-header>
-      <h5 cModalTitle>Pilih Site</h5>
+      <h5 cModalTitle>Pilih Supplier</h5>
       <button (click)="isShowModalBranch = false" type="button" class="btn btn-info ms-1"
         [cModalToggle]="staticBackdropModalBranch.id"><i class="fa fa-times text-white"></i></button>
     </c-modal-header>

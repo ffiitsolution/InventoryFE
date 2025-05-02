@@ -420,5 +420,11 @@ export class AppService {
       payload
     );
   }
+  listReturSupplier(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/retur-supplier/list`,
+      payload
+    );
+  }
 
 }

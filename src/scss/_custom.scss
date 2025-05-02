@@ -111,3 +111,12 @@ c-modal[backdrop="static"] {
 .fs-8 {
   font-size: 0.8em !important;
 }
+
+.ngx-pagination {
+  display: flex;
+  justify-content: center; /* Memastikan kontrol pagination berada di tengah */
+  padding: 0.25rem 0.25rem;  /* Memberikan padding kecil untuk kontrol pagination */
+  margin: 0 !important;   /* Menghilangkan margin default */
+  font-size: 0.875rem; /* Ukuran font kecil untuk pagination */
+}
+
