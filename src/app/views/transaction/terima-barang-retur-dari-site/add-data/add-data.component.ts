@@ -360,7 +360,8 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.globalService.getUserLocationCode(),
-          status: 'K'
+          status: 'K',
+          flagBrgBekas : 'T'
         };
         this.dataService
           .postData(
