@@ -195,7 +195,7 @@ export class KirimBarangReturnKeSupplierListComponent implements OnInit {
             outletBrand: 'KFC',
             kodeGudang: this.g.getUserLocationCode(),
             isDownloadCsv: false,
-            reportName: 'cetak retur ke site',
+            reportName: 'cetak retur ke Supplier',
             confirmSelection: 'Ya',
           };
         });
