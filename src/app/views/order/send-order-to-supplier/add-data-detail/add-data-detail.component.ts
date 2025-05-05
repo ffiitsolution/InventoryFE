@@ -283,22 +283,7 @@ export class AddDataDetailSendOrderToSupplierComponent
 
   onShowModalOnSubmit() {
        Swal.fire({
-          title: '<div style="color: white; background: #c0392b; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Simpan Data</div>',
-          html: `
-       <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">
-          <p>Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
-          <p class="text-danger" style="font-weight: bold;">DATA YANG SUDAH DI SIMPAN TIDAK DAPAT DIPERBAIKI ..!!</p>
-        </div>
-        <div class="divider my-3"></div>
-        <div class="d-flex justify-content-center gap-3 mt-3">
-          <button class="btn btn-info text-white btn-150 pe-3" id="btn-submit">
-            <i class="fa fa-check pe-2"></i> Proses Simpan
-          </button>
-          <button class="btn btn-secondary text-white btn-150" id="btn-cancel">
-            <i class="fa fa-times pe-1"></i> Batal Proses
-          </button>
-        </div>
-      `,
+        ...this.g.componentKonfirmasiSimpan,
           showConfirmButton: false,
           showCancelButton: false,
           width: '600px',
