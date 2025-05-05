@@ -23,7 +23,7 @@
               <h5 class="mb-2 p-2" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5>
               <div class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
-                  <label for="tglTransaksi">{{ "Tgl. Transaksi" | translate }} <span class="text-danger">*</span></label>
+                  <label for="tglTransaksi">{{ "Tanggal Transaksi" | translate }} <span class="text-danger">*</span></label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <input
@@ -67,7 +67,7 @@
 
               <div class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
-                  <label for="keterangan">{{ "Catatan" | translate }}</label>
+                  <label for="keterangan">{{ "Keteranan Pemakaian Brg" | translate }}</label>
                 </div>
 
                 <div class="col-8 pe-0 d-flex flex-column">
@@ -92,6 +92,24 @@
                   </div>
                 </div>
               </div>
+              
+              <!-- <div *ngIf="selectedKodeBarang" class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="totalQty">{{ "Total Qty for Selected KodeBarang" | translate }}</label>
+                </div>
+              
+                <div class="col-8 pe-0 d-flex">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="totalQty"
+                    [value]="getTotalQtyForSelectedKodeBarang() | number : '1.2-2'"
+                    readonly
+                  />
+                </div>
+              </div> -->
+
+              <!-- //if kodeBarang ada yang di pilih maka tampilkan label baru yang berisi sum kodeBarang yang di pilih hanya number sum dari kodeBarang yang di pilih saja jangan hitung yang lain -->
               <div style="width: 96%;" class="p-2">
                 <button class="shadow-sm btn w-100 btn-info text-white" *ngIf="!isShowDetail" [disabled]="isFormInvalid"
                   (click)="onAddDetail()">

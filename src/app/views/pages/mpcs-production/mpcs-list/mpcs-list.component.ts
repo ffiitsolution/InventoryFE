@@ -63,6 +63,8 @@ export class MpcsListComponent implements OnInit {
     )
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
+  selectedStatusFilter: any = '';
+  isFilterShown: boolean = false;
   constructor(
     translate: TranslateService,
     private route: ActivatedRoute,
@@ -127,7 +129,8 @@ export class MpcsListComponent implements OnInit {
       ...this.paramaters ,
       draw:this.draw,
       kodeGudang: this.g.getUserLocationCode(),
-       startDate: moment(this.dateRangeFilter[0]).set({
+      statusPosting: this.selectedStatusFilter,
+      startDate: moment(this.dateRangeFilter[0]).set({
                   hours: 0,
                   minutes: 0,
                   seconds: 0,
@@ -198,13 +201,23 @@ export class MpcsListComponent implements OnInit {
     this.isShowRecipe = false;
   }
 
-  onDateRangeChange(newValue: any) {
+  onFilterChange() {
     this.getDataProduction();
   }
   
   onAddPressed(): void {
     const route = this.router.createUrlTree(['/mpcs/add']);
     this.router.navigateByUrl(route);
+  }
+
+  
+  actionBtnClick(data: any = null) {
+      this.g.saveLocalstorage('headerMpcsProduksi', JSON.stringify(data));
+      this.router.navigate(['/mpcs/add']);
+  }
+
+  toggleFilter(): void {
+    this.isFilterShown = !this.isFilterShown;
   }
  
 }

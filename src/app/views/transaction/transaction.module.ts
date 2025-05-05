@@ -16,6 +16,7 @@ import {
   TableModule,
   TextColorDirective,
   UtilitiesModule,
+  
 } from '@coreui/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -91,6 +92,8 @@ import { DetailPenerimaanBrgBksComponent } from './penerimaan-barang-bekas/detai
 import { PenerimaanBrgBksListComponent } from './penerimaan-barang-bekas/dt-list/penerimaan-brg-bks-list.component';
 import { PenerimaanBrgBksListNoreturComponent } from './penerimaan-barang-bekas/dt-list-noretur/penerimaan-brg-bks-list-noretur.component';
 import { DetailPenerimaanBrgBksReturComponent } from './penerimaan-barang-bekas/detail-retur/detail-retur.component';
+import { ProductionListForPostingComponent } from './production/dt-list-for-posting/production-list-for-posting.component';
+import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -119,7 +122,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     TableModule,
     SharedComponentModule,
     PaginationModule,
-    SelectDropDownModule
+    SelectDropDownModule,
+    TimepickerModule.forRoot()
   ],
   declarations: [
     DeliveryItemComponent,
@@ -184,7 +188,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     AddDataDetailPenerimaanBrgBksComponent,
     PenerimaanBrgBksListComponent,
     PenerimaanBrgBksListNoreturComponent,
-    DetailPenerimaanBrgBksReturComponent
+    DetailPenerimaanBrgBksReturComponent,
+
+    ProductionListForPostingComponent
 
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],

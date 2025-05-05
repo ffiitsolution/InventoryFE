@@ -36,9 +36,7 @@
               <div class="col-12 col-md-9 ps-md-1">
                 <button
                   type="button"
-                  [disabled]="
-                    isShowDetail || headerMpcsProduksi?.nomorTransaksi
-                  "
+                  [disabled]="isShowDetail"
                   (click)="showRecipe()"
                   class="btn btn-info fw-bold text-white w-100 h-48 text-truncate"
                 >
@@ -240,7 +238,6 @@
             <div class="row py-1">
               <div class="col-12 mb-md-0">
                 <button
-                  *ngIf="!headerMpcsProduksi?.nomorTransaksi"
                   [disabled]="myForm.invalid || isShowDetail"
                   (click)="loadBahanBaku()"
                   class="shadow-sm btn w-100 btn-primary text-white"
@@ -266,7 +263,6 @@
             </div>
             <div class="d-grid gap-3 d-md-flex justify-content-end">
               <button
-                *ngIf="!headerMpcsProduksi?.nomorTransaksi"
                 class="btn btn-info text-white btn-150 pe-3"
                 [disabled]="loadingSimpan"
                 (click)="onSubmit()"
@@ -277,19 +273,6 @@
               </button>
 
               <button
-                *ngIf="headerMpcsProduksi?.nomorTransaksi 
-                && headerMpcsProduksi?.statusPosting!=='P'"
-                class="btn btn-info text-white btn-150 pe-3"
-                [disabled]="loadingSimpan"
-                (click)="onUpdate()"
-              >
-                <i class="fa fa-check pe-2" *ngIf="!loadingSimpan"></i>
-                <i class="fa fa-spinner fa-spin" *ngIf="loadingSimpan"></i>
-                {{ "Proses Update Data" | translate }}
-              </button>
-
-              <button
-                *ngIf="!headerMpcsProduksi?.nomorTransaksi"
                 class="btn btn-secondary text-white btn-150"
                 (click)="onBatalPressed()"
               >
@@ -305,7 +288,7 @@
               class="col-12 col-md-4 mb-2"
               *ngFor="let item of listProductData; let i = index"
             >
-              <c-card *ngIf="item.bahanBaku">
+              <c-card>
                 <c-card-header class="header-all">
                   <div
                     class="d-grid gap-3 d-md-flex justify-content-between align-items-center detail-header"
@@ -392,13 +375,13 @@
       </c-card>
       <c-card *ngIf="isShowExpired">
         <c-card-header>
-          <div class="gap-3 d-flex justify-content-between align-items-center">
+          <div
+            class=" gap-3 d-flex justify-content-between align-items-center"
+          >
             <div class="d-flex align-items-center gap-3">
               <h5 class="mb-1">ENTRY DATA EXPIRED</h5>
             </div>
-            <div
-              class="d-grid gap-3 d-md-flex justify-content-center justify-content-md-end"
-            >
+            <div class="d-grid gap-3 d-md-flex justify-content-center justify-content-md-end">
               <button
                 class="btn btn-secondary text-white btn-150"
                 (click)="onSaveEntryExpired()"
@@ -418,6 +401,7 @@
                   {{ selectedExpProduct.namaBarang }}</label
                 >
               </div>
+             
             </div>
             <div class="d-flex align-items-center justify-content-start mb-2">
               <div class="col-6 col-md-4">
@@ -428,6 +412,7 @@
             <div
               class="d-flex align-items-center justify-content-start row mb-2"
             >
+             
               <div class="col-4 col-md-4">
                 <h6 class="mb-0">Pemakaian Besar</h6>
                 <label
@@ -470,7 +455,6 @@
                       <div class="col-6 col-md-6">
                         <input
                           type="text"
-                          [disabled]="this.headerMpcsProduksi.statusPosting==='P'"
                           id="tglTransaksi"
                           class="form-control"
                           aria-describedby="tglTransaksi"
@@ -500,24 +484,13 @@
                         <label>Qty Besar :</label>
                       </div>
                       <div class="col-6 col-md-6">
-                        <div
-                          class="d-flex justify-content-center"
-                          style="gap: 5px"
-                        >
-                          <input
-                            type="text"
-                            min="0"
-                            [disabled]="this.headerMpcsProduksi.statusPosting==='P'"
-                            class="form-control text-center inputQty inputNumberSpace"
-                            [(ngModel)]="item.qtyPemakaianBesar"
-                            (blur)="
-                              onInputQtyBesarExpired($event, item.kodeBarang, i)
-                            "
-                          />
-                          <span
-                            class="d-flex align-items-center justify-content-center"
-                          >
-                            / {{ item.satuanBesar }}
+                        <div class="d-flex justify-content-center" style="gap: 5px;">
+                          <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
+                            [(ngModel)]="item.qtyPemakaianBesar" 
+                            (blur)="onInputQtyBesarExpired($event,item.kodeBarang, i)"
+                            />
+                          <span class="d-flex align-items-center justify-content-center">
+                            / {{item.satuanBesar}}
                           </span>
                         </div>
                       </div>
@@ -529,24 +502,13 @@
                         <label>Qty Kecil :</label>
                       </div>
                       <div class="col-6 col-md-6">
-                        <div
-                          class="d-flex justify-content-center"
-                          style="gap: 5px"
-                        >
-                          <input
-                            type="text"
-                            [disabled]="this.headerMpcsProduksi.statusPosting==='P'"
-                            min="0"
-                            class="form-control text-center inputQty inputNumberSpace"
-                            [(ngModel)]="item.qtyPemakaianKecil"
-                            (blur)="
-                              onInputQtyKecilExpired($event, item.kodeBarang, i)
-                            "
-                          />
-                          <span
-                            class="d-flex align-items-center justify-content-center"
-                          >
-                            / {{ item.satuanKecil }}
+                        <div class="d-flex justify-content-center" style="gap: 5px;">
+                          <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
+                            [(ngModel)]="item.qtyPemakaianKecil" 
+                            (blur)="onInputQtyKecilExpired($event,item.kodeBarang, i)"
+                            />
+                          <span class="d-flex align-items-center justify-content-center">
+                            / {{item.satuanKecil}}
                           </span>
                         </div>
                       </div>
@@ -559,26 +521,14 @@
                       <h6 class="mb-0">Total Qty Expired</h6>
                       <label>
                         {{
-                          (
-                            helperService.sanitizedNumber(
-                              item.qtyPemakaianBesar
-                            ) *
-                              item.konversi +
-                            helperService.sanitizedNumber(
-                              item.qtyPemakaianKecil
-                            )
-                          ).toFixed(2)
-                        }}
-                        {{ item.satuanKecil }}
+                          ((helperService.sanitizedNumber(item.qtyPemakaianBesar) *
+                          item.konversi) + helperService.sanitizedNumber(item.qtyPemakaianKecil)).toFixed(2) 
+                          }} 
+                          {{item.satuanKecil}}
                       </label>
                     </div>
                     <div class="d-flex flex-column justify-content-center">
-                      <button
-                        *ngIf="this.headerMpcsProduksi.statusPosting!=='P'"
-                        (click)="onExpiredDeleteRow(item.kodeBarang, i)"
-                        type="button"
-                        class="btn btn-secondary ms-2"
-                      >
+                      <button (click)="onExpiredDeleteRow(item.kodeBarang,i)" type="button" class="btn btn-secondary ms-2">
                         <i class="fa fa-trash me-1"></i>
                       </button>
                     </div>
@@ -593,23 +543,12 @@
             <div class="d-flex flex-column">
               <h6 class="mb-0">Total Qty Expired</h6>
               <label>
-                {{
-                  getTotalExpiredData(
-                    selectedExpProduct.bahanBaku,
-                    selectedExpProduct.konversi
-                  )
-                }}
+                {{ getTotalExpiredData(selectedExpProduct.bahanBaku, selectedExpProduct.konversi) }}
                 {{ selectedExpProduct.satuanKecil }}
               </label>
             </div>
             <div class="d-flex flex-column justify-content-center">
-              <button
-              *ngIf="this.headerMpcsProduksi.statusPosting!=='P'"
-                (click)="onAddExpiredRow()"
-                type="button"
-                class="btn btn-primary"
-              >
-                <i class="fa fa-plus ms-1"></i> Tambah
+              <button (click)="onAddExpiredRow()" type="button" class="btn btn-primary"><i class="fa fa-plus ms-1"></i> Tambah
               </button>
             </div>
           </div>

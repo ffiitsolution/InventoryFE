@@ -12,11 +12,11 @@ import moment from 'moment';
 import { AppConfig } from '../../../../config/app.config';
 
 @Component({
-  selector: 'app-production-list',
-  templateUrl: './production-list.component.html',
-  styleUrls: ['./production-list.component.scss'],
+  selector: 'app-production-list-for-posting',
+  templateUrl: './production-list-for-posting.component.html',
+  styleUrls: ['./production-list-for-posting.component.scss'],
 })
-export class ProductionListComponent implements OnInit {
+export class ProductionListForPostingComponent implements OnInit {
   orderNoFilter: string = '';
   orderDateFilter: string = '';
   expiredFilter: string = '';
@@ -50,6 +50,12 @@ export class ProductionListComponent implements OnInit {
   isShowModalReport: boolean = false;
   alreadyPrint: boolean = false;
   disabledPrintButton: boolean = false;
+  // selectedTime: Date = new Date();
+  // selectedTimeEnd: Date = new Date();
+  startTime: string = '09:00';
+  endTime: string = '18:00';
+
+
 
   constructor(
     private dataService: DataService,
@@ -62,29 +68,31 @@ export class ProductionListComponent implements OnInit {
         translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
       processing: true,
       serverSide: true,
-      autoWidth: true,
+      autoWidth: false,
       info: true,
       order: [[1,'desc'],[2,'desc']],
       drawCallback: () => { },
       ajax: (dataTablesParameters: any, callback) => {
+        const [startHour, startMinute] = this.startTime.split(':').map(Number);
+        const [endHour, endMinute] = this.endTime.split(':').map(Number);  
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.g.getUserLocationCode(),
           startDate: moment(this.dateRangeFilter[0]).set({
-            hours: 0,
-            minutes: 0,
+            hours: startHour,
+            minutes: startMinute,
             seconds: 0,
             milliseconds: 0,
           }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
           endDate: moment(this.dateRangeFilter[1]).set({
-            hours: 23,
-            minutes: 59,
+            hours: endHour,
+            minutes: endMinute,
             seconds: 59,
             milliseconds: 999,
           }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
-          statusPosting:''
+          statusPosting:'B'
         };
         setTimeout(() => {
           this.dataService
@@ -151,14 +159,11 @@ export class ProductionListComponent implements OnInit {
         //   searchable: true,
         // },
         {
-          data: 'statusPosting',
-          title: 'Status Transaksi',
-          render:function(data, type, row) {return 'POSTED'} ,
-        },
-        {
           title: 'Aksi',
+          width: '180px',
           render: () => {
-            return ` <div class="btn-group" role="group" aria-label="Action">
+            return ` <div class="btn-group" role="group" aria-label="Action" style="width: 100%">
+                <button class="btn btn-sm action-posting btn-outline-primary btn-60">Posting</button>
                 <button class="btn btn-sm action-view btn-outline-primary btn-60">${this.buttonCaptionView}</button>
                 <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>           
               </div>`;
@@ -288,4 +293,6 @@ export class ProductionListComponent implements OnInit {
     this.selectedRowCetak = null;
     this.disabledPrintButton = false;
   }
+
+
 }
