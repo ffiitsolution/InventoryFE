@@ -217,10 +217,12 @@
 
     <c-modal #formModalOnSubmit [fullscreen]="false" [visible]="isShowModalOnSubmit" backdrop="static" #modalLg
     id="formModalOnSubmit"    [attr.aria-hidden]="!isShowModalOnSubmit">
-      <c-modal-header>
-        <h5 cModalTitle>Konfirmasi Simpan  </h5>
-        <button (click)="isShowModalOnSubmit = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalOnSubmit.id"
-          cButtonClose><i class="fa fa-times"></i></button>
+      <c-modal-header style="justify-content: center;">
+        <div>
+          <h5>  
+            <div style="color: white; background: #c0392b; padding: 12px 20px; font-size: 18px; ">Konfirmasi Proses Posting Data</div>
+          </h5>
+        </div>
       </c-modal-header>
       <c-modal-body>
         <p class="text-center">Apakah anda ingin menyimpan data?</p>
