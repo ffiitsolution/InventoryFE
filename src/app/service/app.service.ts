@@ -427,4 +427,11 @@ export class AppService {
     );
   }
 
+  detailProductionAndExpired(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/details`,
+      payload
+    );
+  }
+
 }

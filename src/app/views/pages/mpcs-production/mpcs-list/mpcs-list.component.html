@@ -6,39 +6,70 @@
           <c-card>
             <c-card-header>
               <div class=" gap-3 row align-items-center">
-                <div class="d-flex align-items-center gap-2 row col-12 col-md-6">
-                  <h5 class="mb-1 align-items-end col-12 col-md-6">List Production</h5>
-                  <div class="d-flex align-items-end justify-content-end gap-1 ml-0 md-ml-2 col-12 col-md-6">
-                    <label class="col-form-label text-end d-none d-md-block" >{{
-                      "Tanggal Transaksi :" | translate
-                    }}</label>
-                    <div class="flex-grow-1 text-end" >
-                      <input
-                        type="text"
-                        id="dateFilter"
-                        class="form-control "
-                        bsDaterangepicker
-                        [bsConfig]="dpConfig"
-                        aria-describedby="dateFilter"
-                        [(ngModel)]="dateRangeFilter"
-                        (ngModelChange)="onDateRangeChange($event)"
-                        #dp="bsDaterangepicker"
-                        placeholder="{{ 'Tanggal Pesan' | translate }}"
-                      />
-                    </div>
-                  </div>        
+                <div class="gap-2 row col-12 col-md-6">
+                  <h5 class="mb-1 align-items-end col-12 col-md-6">List Production</h5>    
                 </div>
                 <div class="d-grid gap-3 d-md-flex  justify-content-center justify-content-md-end col-12 col-md-6">
+                  <button
+                    type="button"
+                    class="w-120 btn btn-secondary text-white me-2"
+                    style="height: min-content"
+                    (click)="toggleFilter()"
+                  >
+                    {{ "Filter" | translate }}
+                  </button>
                   <button class="btn btn-info text-white btn-150" (click)="onAddPressed()">
                     <i class="fa fa-plus pe-1"></i> {{ "Tambah" | translate }}
                   </button>
+                </div>
+                <div [visible]="isFilterShown" cCollapse>
+                  <c-card class="mb-3">
+                    <c-card-body class="gap-2">
+                      <div class="row mb-1">
+                        <div class="col-12 col-md-3">
+                          <label cLabel for="dateFilter">{{
+                            "Tanggal Transaksi :" | translate
+                          }}</label>
+                          <div class="flex-grow-1 text-end" >
+                            <input
+                              type="text"
+                              id="dateFilter"
+                              class="form-control "
+                              bsDaterangepicker
+                              [bsConfig]="dpConfig"
+                              aria-describedby="dateFilter"
+                              [(ngModel)]="dateRangeFilter"
+                              (ngModelChange)="onFilterChange()"
+                              #dp="bsDaterangepicker"
+                              placeholder="{{ 'Tanggal Pesan' | translate }}"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                          <label cLabel for="selectStatusFilter">
+                            {{ "Status" | translate }}:
+                          </label>
+                          <select
+                            aria-label="Status"
+                            class="custom-select"
+                            [(ngModel)]="selectedStatusFilter"
+                            (ngModelChange)="onFilterChange()"
+                          >
+                            <option value="">{{ "SEMUA" | translate }}</option>
+                            <option value="P">{{ "POSTED" | translate }}</option>
+                            <option value="B">{{ "BELUM POSTED" | translate }}</option>
+                          </select>
+                        </div>
+                      </div>      
+                    </c-card-body>
+                  </c-card>
                 </div>
               </div>
             </c-card-header>
             <c-card-body>
               <div class="row mx-n2">
                 <div class="col-12 col-md-4 px-2 mb-3" *ngFor="let item of listProductionData">
-                  <div class="card-list h-100">
+                  <div class="card-list h-100" (click)="actionBtnClick(item)"> 
                     <div class="d-flex flex-column">
                       <div class="d-flex justify-content-between mb-1">
                         <label>{{item.dateCreateFormat2}}</label>
@@ -64,7 +95,8 @@
                       <div class="divider mt-2"></div>
                       <div class="d-flex justify-content-between">
                         <label >Tgl Expired : {{ g.formatStrDateMMM(item.tglExp)}}</label>
-                        <label *ngIf="item.statusPosting == 'P'">POSTED</label>
+                        <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px" *ngIf="item.statusPosting == 'P'">POSTED</span>
+                        <span class="badge badge-info py-2" style="background-color:#b51823; " *ngIf="item.statusPosting == 'B'">BELUM POSTED</span>
                       </div>
                     </div>
                   </div>

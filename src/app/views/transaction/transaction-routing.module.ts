@@ -60,6 +60,7 @@ import { AddDataDetailPenerimaanBrgBksComponent } from './penerimaan-barang-beka
 import { DetailPenerimaanBrgBksComponent } from './penerimaan-barang-bekas/detail/detail.component';
 import { PenerimaanBrgBksListNoreturComponent } from './penerimaan-barang-bekas/dt-list-noretur/penerimaan-brg-bks-list-noretur.component';
 import { DetailPenerimaanBrgBksReturComponent } from './penerimaan-barang-bekas/detail-retur/detail-retur.component';
+import { ProductionListForPostingComponent } from './production/dt-list-for-posting/production-list-for-posting.component';
 
 const routes: Routes = [
   {
@@ -274,6 +275,10 @@ const routes: Routes = [
         path: 'detail',
         component: DetailProductionComponent,
       },
+      {
+        path:'list-dt-for-posting',
+        component: ProductionListForPostingComponent,
+      }
     ],
   },
   //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 START

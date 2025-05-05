@@ -7,7 +7,7 @@ import { RegisterComponent } from './register/register.component';
 import { Page404Component } from './page404/page404.component';
 import { Page500Component } from './page500/page500.component';
 import { DividerComponent, LoadingComponent } from '../../component';
-import { AvatarModule, BadgeModule, ButtonModule, CardModule, DropdownModule, FormModule, GridModule, HeaderModule, ModalModule, NavModule, PaginationModule, SpinnerModule, TemplateIdDirective, WidgetStatBComponent, WidgetStatEComponent, WidgetStatFComponent } from '@coreui/angular';
+import { AvatarModule, BadgeModule, ButtonModule, CardModule, CollapseModule, DropdownModule, FormModule, GridModule, HeaderModule, ModalModule, NavModule, PaginationModule, SpinnerModule, TemplateIdDirective, WidgetStatBComponent, WidgetStatEComponent, WidgetStatFComponent } from '@coreui/angular';
 import { IconModule } from '@coreui/icons-angular';
 import { HttpClient } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -61,7 +61,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReactiveFormsModule,
     FormsModule,
     SharedComponentModule,
-   
+    CollapseModule,
+    CardModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

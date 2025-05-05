@@ -78,6 +78,7 @@ export class MpcsProductionComponent implements OnInit {
   isShowExpired: boolean = false;
   selectedExpProduct: any = {};
   totalFilteredExpired: any = '0.0';
+  headerMpcsProduksi: any ={};
 
   constructor(
     translate: TranslateService,
@@ -89,7 +90,7 @@ export class MpcsProductionComponent implements OnInit {
     private el: ElementRef,
     private form: FormBuilder,
     public helperService: HelperService,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {
     translate.use(g.getLocalstorage('inv_language') || 'id');
     this.dpConfig.containerClass = 'theme-dark-blue';
@@ -102,6 +103,11 @@ export class MpcsProductionComponent implements OnInit {
   myForm: FormGroup;
 
   ngOnInit(): void {
+   this.headerMpcsProduksi= this.g.getLocalstorage('headerMpcsProduksi');
+    if(this.headerMpcsProduksi){
+      this.headerMpcsProduksi = JSON.parse(this.headerMpcsProduksi)
+    }
+   console.log( this.headerMpcsProduksi)
     const todayDate = new Date();
     this.defaultDate = this.helperService.formatDate(todayDate);
 
@@ -126,6 +132,9 @@ export class MpcsProductionComponent implements OnInit {
       ?.valueChanges.pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => {
         this.calculateTotalHasilProduksi();
+        if (this.headerMpcsProduksi.nomorTransaksi) {
+          this.refreshBahanBaku();
+        }
       });
 
     this.myForm
@@ -136,6 +145,11 @@ export class MpcsProductionComponent implements OnInit {
       });
 
     this.getDataRecipe();
+
+    if (this.headerMpcsProduksi?.nomorTransaksi) {
+
+      this.loadDetailData();
+    }
   }
 
   calculateTotalHasilProduksi(): void {
@@ -151,7 +165,6 @@ export class MpcsProductionComponent implements OnInit {
   }
 
   showRecipe() {
-    console.log('masukkk');
     setTimeout(() => {
       this.isShowRecipe = true;
     }, 10);
@@ -277,6 +290,7 @@ export class MpcsProductionComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
+    this.g.removeLocalstorage('headerMpcsProduksi');
     // clean subsribe rxjs
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
@@ -291,7 +305,6 @@ export class MpcsProductionComponent implements OnInit {
   }
 
   pilihBarang(data: any): void {
-    console.log(data, 'data');
     this.myForm.patchValue({
       kodeBarang: data.kodeBarang,
       namaBarang: data.namaBarang,
@@ -352,7 +365,7 @@ export class MpcsProductionComponent implements OnInit {
     });
   }
 
-  getTotalExpiredData(kodeBarang: string, konversi: number) {
+  getTotalExpiredData(kodeBarang: string, konversi: any) {
     const filtered = this.listEntryExpired.filter(
       (item) => item.kodeBarang === kodeBarang
     );
@@ -360,13 +373,17 @@ export class MpcsProductionComponent implements OnInit {
     const totalExpired = filtered.reduce(
       (acc, item) => {
         acc.qtyPemakaianBesar +=
-          (this.helperService.sanitizedNumberWithoutComa(item.qtyPemakaianBesar) || 0) * konversi; // Multiply qtyPemakaianBesar by konversi
-        acc.qtyPemakaianKecil += this.helperService.sanitizedNumberWithoutComa(item.qtyPemakaianKecil) || 0;
+          (this.helperService.sanitizedNumberWithoutComa(
+            item.qtyPemakaianBesar
+          ) || 0) * this.helperService.sanitizedNumberWithoutComa(konversi); // Multiply qtyPemakaianBesar by konversi
+        acc.qtyPemakaianKecil +=
+          this.helperService.sanitizedNumberWithoutComa(
+            item.qtyPemakaianKecil
+          ) || 0;
         return acc;
       },
       { qtyPemakaianBesar: 0, qtyPemakaianKecil: 0 }
     );
-    // console.log('totalExpired', totalExpired);
     return (
       totalExpired.qtyPemakaianBesar + totalExpired.qtyPemakaianKecil
     ).toFixed(2);
@@ -478,7 +495,6 @@ export class MpcsProductionComponent implements OnInit {
       /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
     if (event == 'Invalid Date' && !dateFormatRegex.test(item.tglExpired)) {
       // Reset if invalid format
-      console.log('zzz');
       item.tglExpired = null; // Reset model value
       item.validationExpiredMessageList = 'Invalid date format!';
     } else {
@@ -492,462 +508,754 @@ export class MpcsProductionComponent implements OnInit {
 
   isValidQtyExpired: boolean = true;
 
-
   get filteredList() {
     return this.listEntryExpired.filter(
       (item) => item.kodeBarang === this.selectedExpProduct.bahanBaku
     );
   }
 
-   validateDate(event: any, kodeBarang: string, index: number) {
-      let inputDate: any = '';
-      let source: string;
-      let validationMessage = '';
-  
-      if (event?.target?.value) {
-        inputDate = event.target.value;
-        source = 'manual input';
-      } else {
-        inputDate = event;
-        source = 'datepicker';
-      }
-  
-      const expiredDate = moment(inputDate, 'DD/MM/YYYY').startOf('day').toDate();
-      const today = moment().startOf('day').toDate();
-  
-      console.log('today', today);
-      console.log('expiredDate', expiredDate);
-  
-      if (expiredDate < today) {
-        validationMessage = `Tanggal kadaluarsa tidak boleh lebih < dari sekarang!`;
-      }
-  
-      // ✅ Get only the filtered list of entries for the same `kodeBarang`
-      const filteredEntries = this.listEntryExpired.filter(
-        (entry) => entry.kodeBarang === kodeBarang
+  validateDate(event: any, kodeBarang: string, index: number) {
+    let inputDate: any = '';
+    let source: string;
+    let validationMessage = '';
+
+    if (event?.target?.value) {
+      inputDate = event.target.value;
+      source = 'manual input';
+    } else {
+      inputDate = event;
+      source = 'datepicker';
+    }
+
+    const expiredDate = moment(inputDate, 'DD/MM/YYYY').startOf('day').toDate();
+    const today = moment().startOf('day').toDate();
+
+    console.log('today', today);
+    console.log('expiredDate', expiredDate);
+
+    if (expiredDate < today) {
+      validationMessage = `Tanggal kadaluarsa tidak boleh lebih < dari sekarang!`;
+    }
+
+    // ✅ Get only the filtered list of entries for the same `kodeBarang`
+    const filteredEntries = this.listEntryExpired.filter(
+      (entry) => entry.kodeBarang === kodeBarang
+    );
+    console.log('tgllist', filteredEntries);
+
+    // ✅ Validate empty input
+    if (!inputDate) {
+      validationMessage = 'Tanggal tidak boleh kosong!';
+    } else {
+      // ✅ Check if the item is expired
+      const expiredData = this.listEntryExpired.find(
+        (exp) => exp.kodeBarang === kodeBarang
       );
-      console.log('tgllist', filteredEntries);
-  
-      // ✅ Validate empty input
-      if (!inputDate) {
-        validationMessage = 'Tanggal tidak boleh kosong!';
-      } else {
-        // ✅ Check if the item is expired
-        const expiredData = this.listEntryExpired.find(
-          (exp) => exp.kodeBarang === kodeBarang
-        );
-  
-        // ✅ Check for duplicate expiration dates within the same kodeBarang
-        const isDuplicate = filteredEntries.some(
-          (otherEntry, otherIndex) =>
-            otherIndex !== index &&
-            moment(otherEntry.tglExpired).format('YYYY-MM-DD') ===
-              moment(expiredDate).format('YYYY-MM-DD')
-        );
-  
-        if (isDuplicate) {
-          validationMessage = 'Tanggal ini sudah ada dalam daftar!';
-        }
-      }
-  
-      const realIndex = this.listEntryExpired.findIndex(
-        (entry) =>
-          entry.kodeBarang === kodeBarang &&
-          entry.tglExpired === filteredEntries[index].tglExpired
+
+      // ✅ Check for duplicate expiration dates within the same kodeBarang
+      const isDuplicate = filteredEntries.some(
+        (otherEntry, otherIndex) =>
+          otherIndex !== index &&
+          moment(otherEntry.tglExpired).format('YYYY-MM-DD') ===
+            moment(expiredDate).format('YYYY-MM-DD')
       );
-  
+
+      if (isDuplicate) {
+        validationMessage = 'Tanggal ini sudah ada dalam daftar!';
+      }
+    }
+
+    const realIndex = this.listEntryExpired.findIndex(
+      (entry) =>
+        entry.kodeBarang === kodeBarang &&
+        entry.tglExpired === filteredEntries[index].tglExpired
+    );
+
+    if (realIndex !== -1) {
+      // ✅ Update the correct entry in the original list
+      this.listEntryExpired[realIndex] = {
+        ...this.listEntryExpired[realIndex],
+        tglExpired: expiredDate, // Update the date in the list
+        validationExpiredMessageList: validationMessage,
+      };
+
+      console.log('Updated Validation:', this.listEntryExpired[realIndex]);
+    }
+  }
+
+  onBatalExpired() {
+    this.isShowExpired = false;
+  }
+
+  onInputQtyBesarExpired(event: any, kodeBarang: string, index: number) {
+    let value = event.target.value;
+
+    if (value !== null && value !== undefined) {
+      let numericValue = parseFloat(value.toString().replace(',', '.'));
+      if (isNaN(numericValue)) {
+        numericValue = 0;
+      }
+      value = numericValue.toFixed(2);
+    } else {
+      value = '0.00'; // Default if empty
+    }
+
+    // ✅ Find all entries with the same kodeBarang
+    const filteredEntries = this.listEntryExpired.filter(
+      (entry) => entry.kodeBarang === kodeBarang
+    );
+
+    if (filteredEntries.length > index) {
+      // ✅ Get the real index in listEntryExpired
+      const realIndex = this.listEntryExpired.indexOf(filteredEntries[index]);
+
       if (realIndex !== -1) {
-        // ✅ Update the correct entry in the original list
         this.listEntryExpired[realIndex] = {
           ...this.listEntryExpired[realIndex],
-          tglExpired: expiredDate, // Update the date in the list
-          validationExpiredMessageList: validationMessage,
+          qtyPemakaianBesar: value,
+          validationQty:
+            parseFloat(value) +
+              parseFloat(this.listEntryExpired[realIndex].qtyPemakaianKecil) <=
+            0
+              ? 'Quantity tidak boleh < 0'
+              : '',
         };
-  
-        console.log('Updated Validation:', this.listEntryExpired[realIndex]);
       }
     }
 
-    onBatalExpired(){
+    this.updateTotalExpired();
+  }
+
+  onInputQtyKecilExpired(event: any, kodeBarang: string, index: number) {
+    let value = event.target.value;
+
+    if (value !== null && value !== undefined) {
+      let numericValue = parseFloat(value.toString().replace(',', '.'));
+      if (isNaN(numericValue)) {
+        numericValue = 0;
+      }
+      value = numericValue.toFixed(2);
+    } else {
+      value = '0.00'; // Default if empty
+    }
+
+    // ✅ Find all entries with the same kodeBarang
+    const filteredEntries = this.listEntryExpired.filter(
+      (entry) => entry.kodeBarang === kodeBarang
+    );
+
+    if (filteredEntries.length > index) {
+      // ✅ Get the real index in listEntryExpired
+      const realIndex = this.listEntryExpired.indexOf(filteredEntries[index]);
+
+      if (realIndex !== -1) {
+        let messageValidation = '';
+
+        if (
+          parseFloat(value) +
+            parseFloat(this.listEntryExpired[realIndex].qtyPemakaianBesar) <=
+          0
+        ) {
+          messageValidation = 'Quantity tidak boleh < 0';
+        } else if (
+          Math.round(value) >=
+          Math.round(this.listEntryExpired[realIndex].konversi)
+        ) {
+          messageValidation = 'Quantity kecil tidak boleh >= konversi';
+          value = '0.0';
+        }
+
+        this.listEntryExpired[realIndex] = {
+          ...this.listEntryExpired[realIndex],
+          qtyPemakaianKecil: value,
+          validationQtyKecil: messageValidation,
+        };
+      }
+    }
+    this.updateTotalExpired();
+  }
+
+  updateTotalExpired() {
+    this.totalFilteredExpired = this.filteredList.reduce(
+      (sum, data) =>
+        Number(sum) +
+        Number(
+          Number(data.qtyPemakaianBesar) * Number(data.konversi) +
+            Number(data.qtyPemakaianKecil)
+        ),
+      0
+    );
+
+    this.totalFilteredExpired = parseFloat(this.totalFilteredExpired).toFixed(
+      2
+    );
+  }
+
+  onSaveEntryExpired() {
+    let totalQtyExpired = 0;
+    let validationExpiredMessageList = '';
+    let totalQtyEmpty = 0;
+
+    console.log('selected', this.selectedExpProduct);
+    console.log(
+      'sanitizedNumberWithoutComa',
+      this.helperService.sanitizedNumberWithoutComa(
+        this.selectedExpProduct.qtyPemakaianBesar
+      )
+    );
+    console.log(
+      'sanitizedNumberWithoutComa2',
+      this.helperService.sanitizedNumberWithoutComa(
+        this.selectedExpProduct.qtyPemakaianKecil
+      )
+    );
+
+    const totalQtyPemakaian =
+      this.helperService.sanitizedNumberWithoutComa(
+        this.selectedExpProduct.qtyPemakaianBesar
+      ) *
+        this.selectedExpProduct.konversi +
+      this.helperService.sanitizedNumberWithoutComa(
+        this.selectedExpProduct.qtyPemakaianKecil
+      );
+
+    this.listEntryExpired.forEach((item: any) => {
+      if (item.kodeBarang === this.selectedExpProduct.bahanBaku) {
+        item.totalQty =
+          this.helperService.sanitizedNumberWithoutComa(
+            item.qtyPemakaianBesar
+          ) *
+            item.konversi +
+          this.helperService.sanitizedNumberWithoutComa(item.qtyPemakaianKecil);
+        item.kodeBarang = this.selectedExpProduct.bahanBaku;
+        totalQtyExpired += item.totalQty;
+
+        if (item.totalQty <= 0) {
+          totalQtyEmpty++;
+        }
+        validationExpiredMessageList = item.validationExpiredMessageList;
+      }
+    });
+
+    console.log('totalQtyPemakaian', totalQtyPemakaian);
+    console.log('totalQtyExpired', totalQtyExpired);
+    if (totalQtyExpired != totalQtyPemakaian) {
+      this.toastr.error('Total Qty Expired harus sama dengan Qty Pemakaian');
+    } else if (validationExpiredMessageList) {
+      this.toastr.error(validationExpiredMessageList);
+    } else if (totalQtyEmpty > 0) {
+      this.toastr.error('Total Qty Expired tidak boleh 0 !');
+    } else {
       this.isShowExpired = false;
     }
+  }
 
-    onInputQtyBesarExpired(event: any, kodeBarang: string, index: number) {
-      let value = event.target.value;
-  
-      if (value !== null && value !== undefined) {
-        let numericValue = parseFloat(value.toString().replace(',', '.'));
-        if (isNaN(numericValue)) {
-          numericValue = 0;
-        }
-        value = numericValue.toFixed(2);
-      } else {
-        value = '0.00'; // Default if empty
-      }
-  
-      // ✅ Find all entries with the same kodeBarang
-      const filteredEntries = this.listEntryExpired.filter(
-        (entry) => entry.kodeBarang === kodeBarang
-      );
-  
-      if (filteredEntries.length > index) {
-        // ✅ Get the real index in listEntryExpired
-        const realIndex = this.listEntryExpired.indexOf(filteredEntries[index]);
-  
-        if (realIndex !== -1) {
-          this.listEntryExpired[realIndex] = {
-            ...this.listEntryExpired[realIndex],
-            qtyPemakaianBesar: value,
-            validationQty:
-              parseFloat(value) +
-                parseFloat(this.listEntryExpired[realIndex].qtyPemakaianKecil) <=
-              0
-                ? 'Quantity tidak boleh < 0'
-                : '',
-          };
-        }
-      }
-  
-      this.updateTotalExpired();
-    }
-  
-    onInputQtyKecilExpired(event: any, kodeBarang: string, index: number) {
-      let value = event.target.value;
-  
-      if (value !== null && value !== undefined) {
-        let numericValue = parseFloat(value.toString().replace(',', '.'));
-        if (isNaN(numericValue)) {
-          numericValue = 0;
-        }
-        value = numericValue.toFixed(2);
-      } else {
-        value = '0.00'; // Default if empty
-      }
-  
-      // ✅ Find all entries with the same kodeBarang
-      const filteredEntries = this.listEntryExpired.filter(
-        (entry) => entry.kodeBarang === kodeBarang
-      );
-  
-      if (filteredEntries.length > index) {
-        // ✅ Get the real index in listEntryExpired
-        const realIndex = this.listEntryExpired.indexOf(filteredEntries[index]);
-  
-        if (realIndex !== -1) {
-          let messageValidation = '';
-  
-          if (
-            parseFloat(value) +
-              parseFloat(this.listEntryExpired[realIndex].qtyPemakaianBesar) <=
-            0
-          ) {
-            messageValidation = 'Quantity tidak boleh < 0';
-          } else if (
-            Math.round(value) >=
-            Math.round(this.listEntryExpired[realIndex].konversi)
-          ) {
-            messageValidation = 'Quantity kecil tidak boleh >= konversi';
-            value = '0.0';
-          }
-  
-          this.listEntryExpired[realIndex] = {
-            ...this.listEntryExpired[realIndex],
-            qtyPemakaianKecil: value,
-            validationQtyKecil: messageValidation,
-          };
-        }
-      }
-      this.updateTotalExpired();
-    }
-  
-    updateTotalExpired() {
-      this.totalFilteredExpired = this.filteredList.reduce(
-        (sum, data) =>
-          Number(sum) +
-          Number(
-            Number(data.qtyPemakaianBesar) * Number(data.konversi) +
-              Number(data.qtyPemakaianKecil)
-          ),
-        0
-      );
-  
-      this.totalFilteredExpired = parseFloat(this.totalFilteredExpired).toFixed(
-        2
-      );
+  onExpiredDeleteRow(kodeBarang: string, index: number) {
+    const filteredEntries = this.listEntryExpired.filter(
+      (entry) => entry.kodeBarang === kodeBarang
+    );
+
+    // Step 2: Find the actual index in the original list
+    const realIndex = this.listEntryExpired.findIndex(
+      (entry) =>
+        entry.kodeBarang === kodeBarang &&
+        entry.tglExpired === filteredEntries[index].tglExpired
+    );
+
+    // Step 3: Remove the entry only if realIndex is valid
+    if (realIndex !== -1) {
+      this.listEntryExpired.splice(realIndex, 1);
     }
 
-    onSaveEntryExpired() {
-      let totalQtyExpired = 0;
-      let validationExpiredMessageList='';
-      let totalQtyEmpty = 0;
-      
-      console.log('selected', this.selectedExpProduct);
-      console.log('sanitizedNumberWithoutComa', this.helperService.sanitizedNumberWithoutComa(this.selectedExpProduct.qtyPemakaianBesar));
-      console.log('sanitizedNumberWithoutComa2', this.helperService.sanitizedNumberWithoutComa(this.selectedExpProduct.qtyPemakaianKecil));
+    this.updateTotalExpired();
+  }
 
-      const totalQtyPemakaian =
-        this.helperService.sanitizedNumberWithoutComa(this.selectedExpProduct.qtyPemakaianBesar) *
-          this.selectedExpProduct.konversi +
-        this.helperService.sanitizedNumberWithoutComa(this.selectedExpProduct.qtyPemakaianKecil);
-  
-      this.listEntryExpired.forEach((item: any) => {
-        if (item.kodeBarang === this.selectedExpProduct.bahanBaku) {
-          item.totalQty =
-            this.helperService.sanitizedNumberWithoutComa(item.qtyPemakaianBesar) * item.konversi +
-            this.helperService.sanitizedNumberWithoutComa(item.qtyPemakaianKecil);
-          item.kodeBarang = this.selectedExpProduct.bahanBaku;
-          totalQtyExpired += item.totalQty;
-  
-          if(item.totalQty <= 0){
-            totalQtyEmpty++;
-          }
-          validationExpiredMessageList = item.validationExpiredMessageList;
-        }
-      });
-  
-      console.log('totalQtyPemakaian', totalQtyPemakaian);
-      console.log('totalQtyExpired', totalQtyExpired);
-      if (totalQtyExpired != totalQtyPemakaian) {
-        this.toastr.error('Total Qty Expired harus sama dengan Qty Pemakaian');
-      } else if(validationExpiredMessageList){
-        this.toastr.error(validationExpiredMessageList);
-      }else if(totalQtyEmpty > 0){
-        this.toastr.error('Total Qty Expired tidak boleh 0 !');
-      } else {
-        this.isShowExpired = false;
-      }
-     
-    }
+  onSubmit() {
+    if (!this.isDataInvalid()) {
+      this.loadingSimpan = true;
+      // param for order Header
 
-    onExpiredDeleteRow(kodeBarang: string, index: number) {
-      const filteredEntries = this.listEntryExpired.filter(
-        (entry) => entry.kodeBarang === kodeBarang
-      );
-  
-      // Step 2: Find the actual index in the original list
-      const realIndex = this.listEntryExpired.findIndex(
-        (entry) =>
-          entry.kodeBarang === kodeBarang &&
-          entry.tglExpired === filteredEntries[index].tglExpired
-      );
-  
-      // Step 3: Remove the entry only if realIndex is valid
-      if (realIndex !== -1) {
-        this.listEntryExpired.splice(realIndex, 1);
-      }
-  
-      this.updateTotalExpired();
-    }
+      const extraItem = {
+        kodeGudang: this.g.getUserLocationCode(),
+        tglTransaksi: moment(
+          this.myForm.get('tglTransaksi')?.value,
+          'DD-MM-YYYY'
+        ).format('D MMM YYYY'),
+        tipeTransaksi: 12,
+        kodeBarang: this.myForm.get('kodeBarang')?.value,
+        tglExpired: moment(
+          this.myForm.get('tglExp')?.value,
+          'DD-MM-YYYY'
+        ).format('D MMM YYYY'),
+        konversi: this.myForm.get('satuanHasilProduksi')?.value,
+        satuanKecil: this.myForm.get('satuanKecil')?.value,
+        satuanBesar: this.myForm.get('satuanBesar')?.value,
+        qtyBesar: this.myForm.get('jumlahHasilProduksi')?.value,
+        qtyKecil: '0.00',
+        totalQty: this.myForm.get('totalHasilProduksi')?.value,
+        totalQtyExpired: this.myForm.get('totalHasilProduksi')?.value,
+        flagExpired: 'Y',
+        tipeProduksi: 'F',
+        hargaSatuan: this.myForm.get('hargaSatuan')?.value,
+      };
 
-      onSubmit() {
-        if (!this.isDataInvalid()) {
-          this.loadingSimpan = true;
-          // param for order Header
-    
-          const extraItem = {
+      const param = {
+        kodeGudang: this.g.getUserLocationCode(),
+        tglTransaksi: moment(
+          this.myForm.get('tglTransaksi')?.value,
+          'DD-MM-YYYY'
+        ).format('D MMM YYYY'),
+        statusPosting: 'B',
+        keterangan: this.myForm.get('keterangan')?.value,
+        kodeResep: this.myForm.get('kodeBarang')?.value,
+        tglExp: moment(this.myForm.get('tglExp')?.value, 'DD-MM-YYYY').format(
+          'D MMM YYYY'
+        ),
+        jumlahResep: this.myForm.get('jumlahHasilProduksi')?.value,
+        userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+        details: [
+          ...this.listProductData
+            .filter(
+              (item: any) => item.bahanBaku && item.bahanBaku.trim() !== ''
+            )
+            .map((item) => ({
+              kodeGudang: this.g.getUserLocationCode(),
+              tglTransaksi: moment(
+                this.myForm.get('tglTransaksi')?.value,
+                'DD-MM-YYYY'
+              ).format('D MMM YYYY'),
+              tipeTransaksi: 12,
+              kodeBarang: item.bahanBaku,
+              konversi: item.konversi,
+              satuanKecil: item.satuanKecil,
+              satuanBesar: item.satuanBesar,
+              qtyBesar:
+                this.helperService.sanitizedNumberWithoutComa(
+                  item.qtyPemakaianBesar
+                ) || 0,
+              qtyKecil:
+                this.helperService.sanitizedNumberWithoutComa(
+                  item.qtyPemakaianKecil
+                ) || 0,
+              flagExpired: item.isConfirmed ? 'Y' : 'T',
+              tipeProduksi: 'R',
+              totalQty:
+                this.helperService.sanitizedNumberWithoutComa(
+                  item.qtyPemakaianBesar
+                ) *
+                  item.konversi +
+                this.helperService.sanitizedNumberWithoutComa(
+                  item.qtyPemakaianKecil
+                ),
+              totalQtyExpired:
+                this.helperService.sanitizedNumberWithoutComa(
+                  this.getExpiredData(item.bahanBaku).qtyPemakaianBesar
+                ) *
+                  item.konversi +
+                this.helperService.sanitizedNumberWithoutComa(
+                  this.getExpiredData(item.bahanBaku).qtyPemakaianKecil
+                ),
+              hargaSatuan: 0,
+              userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+            })),
+          extraItem,
+        ],
+
+        detailsExpired: [
+          ...this.listEntryExpired?.map((expiredItem) => ({
             kodeGudang: this.g.getUserLocationCode(),
             tglTransaksi: moment(
               this.myForm.get('tglTransaksi')?.value,
               'DD-MM-YYYY'
             ).format('D MMM YYYY'),
             tipeTransaksi: 12,
-            kodeBarang: this.myForm.get('kodeBarang')?.value,
-            tglExpired: moment(this.myForm.get('tglExp')?.value, 'DD-MM-YYYY').format(
+            kodeBarang: expiredItem.kodeBarang,
+            tglExpired: moment(expiredItem.tglExpired, 'DD-MM-YYYY').format(
               'D MMM YYYY'
             ),
-            konversi: this.myForm.get('satuanHasilProduksi')?.value,
-            satuanKecil: this.myForm.get('satuanKecil')?.value,
-            satuanBesar: this.myForm.get('satuanBesar')?.value,
-            qtyBesar: this.myForm.get('jumlahHasilProduksi')?.value,
-            qtyKecil: '0.00',
-            totalQty: this.myForm.get('totalHasilProduksi')?.value,
-            totalQtyExpired: this.myForm.get('totalHasilProduksi')?.value,
-            flagExpired: 'Y',
-            tipeProduksi: 'F',
-            hargaSatuan: this.myForm.get('hargaSatuan')?.value,
-          };
-    
-          const param = {
+            konversi: Math.abs(expiredItem.konversi).toFixed(2),
+            qtyBesar:
+              -Math.abs(parseFloat(expiredItem.qtyPemakaianBesar)).toFixed(2) ||
+              0,
+            qtyKecil:
+              -Math.abs(parseFloat(expiredItem.qtyPemakaianKecil)).toFixed(2) ||
+              0,
+            totalQty: -parseFloat(
+              (
+                Number(expiredItem.qtyPemakaianBesar) *
+                  Number(expiredItem.konversi) +
+                Number(expiredItem.qtyPemakaianKecil)
+              ).toFixed(2)
+            ).toFixed(2),
+          })),
+          extraItem,
+        ],
+      };
+
+      Swal.fire({
+        title: 'Pastikan semua data sudah di input dengan benar!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Proses Simpan',
+        cancelButtonText: 'Batal Simpan',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.appService
+            .insert('/api/production/insert', param)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe({
+              next: (res) => {
+                if (!res.success) {
+                  this.toastr.error(res.message);
+                } else {
+                  // this.onBackPressed(res.data);
+                  setTimeout(() => {
+                    this.toastr.success('Data production berhasil disimpan!');
+                    this.onBack();
+                  }, DEFAULT_DELAY_TIME);
+                }
+                this.loadingSimpan = false;
+              },
+              error: () => {
+                this.loadingSimpan = false;
+              },
+            });
+        } else {
+          this.toastr.info('Simpan dibatalkan');
+          this.loadingSimpan = false;
+        }
+      });
+    }
+  }
+
+  getExpiredData(kodeBarang: string) {
+    const filtered = this.listEntryExpired.filter(
+      (item) => item.kodeBarang === kodeBarang
+    );
+
+    const totalExpired = filtered.reduce(
+      (acc, item) => {
+        acc.qtyPemakaianBesar += Number(item.qtyPemakaianBesar) || 0;
+        acc.qtyPemakaianKecil += Number(item.qtyPemakaianKecil) || 0;
+        return acc;
+      },
+      { qtyPemakaianBesar: 0, qtyPemakaianKecil: 0 }
+    );
+
+    return totalExpired;
+  }
+
+  isDataInvalid() {
+    let dataInvalid = false;
+
+    const invalidItems = this.listProductData.filter(
+      (item) =>
+        this.helperService.sanitizedNumberWithoutComa(
+          item.totalQtyPemakaian
+        ) !==
+          this.helperService.sanitizedNumberWithoutComa(
+            this.getTotalExpiredData(item.bahanBaku, item.konversi)
+          ) && item.isConfirmed === true
+    );
+
+    const invalidExpired = this.listEntryExpired.filter(
+      (item) => item.validationExpiredMessageList !== ''
+    );
+
+    if (invalidItems.length > 0) {
+      dataInvalid = true;
+      this.toastr.error('Data Qty Pemakaian harus sama dengan Qty Expired');
+    }
+
+    if (invalidExpired.length > 0) {
+      dataInvalid = true;
+      this.toastr.error(
+        `Data tgl expired tidak sesuai di kode barang ${invalidExpired[0].kodeBarang} !`
+      );
+    }
+
+    return dataInvalid;
+  }
+
+  loadDetailData() {
+
+    if(this.headerMpcsProduksi.statusPosting === 'P'){
+        this.myForm.get('jumlahHasilProduksi')?.disable();
+        this.myForm.get('tglExp')?.disable();
+        this.myForm.get('keterangan')?.disable();
+        this.isShowDetail = true;
+    }
+ 
+    this.myForm.get('kodeBarang')?.disable();
+    let param = {
+      nomorTransaksi: this.headerMpcsProduksi?.nomorTransaksi,
+      kodeGudang: this.g.getUserLocationCode(),
+    };
+
+    this.appService.detailProductionAndExpired(param).subscribe({
+      next: (res) => {
+        this.myForm.patchValue({
+          kodeBarang: res.data.kodeResep,
+          namaBarang: res.data.namaResep,
+          satuanHasilProduksi: res.data.konversi,
+          labelSatuanHasilProduksi:
+            res.data.satuanKecil + '/' + res.data.satuanBesar,
+          hargaSatuan: 0,
+          satuanKecil: res.data.satuanKecil,
+          satuanBesar: res.data.satuanBesar,
+          jumlahHasilProduksi: res.data.jumlahResep,
+          tglTransaksi: moment(res.data.tglTransaksi).format('DD/MM/YYYY'),
+          keterangan: res.data.keterangan,
+        });
+
+        this.listProductData = res.data.detail.map((item: any) => ({
+          jumlahHasilProduksi: this.myForm.get('jumlahHasilProduksi')?.value,
+          bahanBaku: item.kodeBarang,
+          namaBarang: item.namaBarang,
+          konversi: this.g.formatNumberId(item.konversi),
+          qtyPemakaian: parseFloat(item.qtyPemakaian).toFixed(2),
+          satuanKecil: item.satuanKecil,
+          satuanBesar: item.satuanBesar,
+          tipeProduksi: 'R',
+          qtyPemakaianBesar: this.g.formatNumberId(item.qtyBesar),
+          qtyPemakaianKecil: this.g.formatNumberId(item.qtyKecil),
+          totalQtyPemakaian: this.g.formatNumberId(item.totalQty),
+          isConfirmed: item.flagExpired == 'Y' ? true : false,
+        }));
+
+        this.listEntryExpired = res.data.expired.map((item: any) => ({
+          tglExpired: moment(item.tglExpired).toDate(),
+          keteranganTanggal: moment(item.tglExpired)
+            .locale('id')
+            .format('DD MMM YYYY'),
+          qtyPemakaianBesar: Math.abs(item.qtyBesar).toFixed(2),
+          qtyPemakaianKecil: Math.abs(item.qtyKecil).toFixed(2),
+          satuanKecil: item.satuanKecil,
+          satuanBesar: item.satuanBesar,
+          konversi: parseFloat(item.konversi).toFixed(2),
+          totalQty: Math.abs(item.totalQty).toFixed(2),
+          kodeBarang: item.kodeBarang,
+          namaBarang: item.namaBarang,
+          validationExpiredMessageList: '',
+          validationQty: '',
+        }));
+
+        this.myForm.patchValue({
+          totalBahanBaku: this.listProductData.length,
+        });
+      },
+    });
+  }
+
+  refreshBahanBaku() {
+    // this.isShowDetail = true;
+    // this.myForm.get('jumlahHasilProduksi')?.disable();
+    // this.myForm.get('tglExp')?.disable();
+    // this.myForm.get('keterangan')?.disable();
+    let param = this.myForm.get('kodeBarang')?.value;
+
+    this.appService.getBahanBakuByResep(param).subscribe({
+      next: (res) => {
+        this.listProductData = res.data.map((item: any) => ({
+          jumlahHasilProduksi: this.myForm.get('jumlahHasilProduksi')?.value,
+          bahanBaku: item.bahanBaku,
+          namaBarang: item.namaBarang,
+          konversi: this.g.formatNumberId(item.konversi),
+          qtyPemakaian: parseFloat(item.qtyPemakaian).toFixed(2),
+          satuanKecil: item.satuanKecil,
+          satuanBesar: item.satuanBesar,
+          tipeProduksi: 'R',
+          qtyPemakaianBesar: this.g.formatNumberId(
+            Math.floor(
+              (item.qtyPemakaian *
+                this.myForm.get('jumlahHasilProduksi')?.value) /
+                item.konversi
+            )
+          ),
+          qtyPemakaianKecil: this.g.formatNumberId(
+            item.qtyPemakaian * this.myForm.get('jumlahHasilProduksi')?.value -
+              Math.floor(
+                (item.qtyPemakaian *
+                  this.myForm.get('jumlahHasilProduksi')?.value) /
+                  item.konversi
+              ) *
+                item.konversi
+          ),
+          totalQtyPemakaian: this.g.formatNumberId(
+            item.qtyPemakaian * this.myForm.get('jumlahHasilProduksi')?.value
+          ),
+          isConfirmed: item.flagExpired == 'Y' ? true : false,
+        }));
+
+        this.myForm.patchValue({
+          totalBahanBaku: this.listProductData.length,
+        });
+      },
+    });
+  }
+
+  onUpdate() {
+    if (!this.isDataInvalid()) {
+      this.loadingSimpan = true;
+      // param for order Header
+
+      const extraItem = {
+        kodeGudang: this.g.getUserLocationCode(),
+        tglTransaksi: moment(
+          this.myForm.get('tglTransaksi')?.value,
+          'DD-MM-YYYY'
+        ).format('D MMM YYYY'),
+        tipeTransaksi: 12,
+        kodeBarang: this.myForm.get('kodeBarang')?.value,
+        tglExpired: moment(
+          this.myForm.get('tglExp')?.value,
+          'DD-MM-YYYY'
+        ).format('D MMM YYYY'),
+        konversi: this.myForm.get('satuanHasilProduksi')?.value,
+        satuanKecil: this.myForm.get('satuanKecil')?.value,
+        satuanBesar: this.myForm.get('satuanBesar')?.value,
+        qtyBesar: this.myForm.get('jumlahHasilProduksi')?.value,
+        qtyKecil: '0.00',
+        totalQty: this.myForm.get('totalHasilProduksi')?.value,
+        totalQtyExpired: this.myForm.get('totalHasilProduksi')?.value,
+        flagExpired: 'Y',
+        tipeProduksi: 'F',
+        hargaSatuan: this.myForm.get('hargaSatuan')?.value,
+      };
+
+      const param = {
+        kodeGudang: this.g.getUserLocationCode(),
+        nomorTransaksi: this.headerMpcsProduksi.nomorTransaksi,
+        tglTransaksi: moment(
+          this.myForm.get('tglTransaksi')?.value,
+          'DD-MM-YYYY'
+        ).format('D MMM YYYY'),
+        statusPosting: 'B',
+        keterangan: this.myForm.get('keterangan')?.value,
+        kodeResep: this.myForm.get('kodeBarang')?.value,
+        tglExp: moment(this.myForm.get('tglExp')?.value, 'DD-MM-YYYY').format(
+          'D MMM YYYY'
+        ),
+        jumlahResep: this.myForm.get('jumlahHasilProduksi')?.value,
+        userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+        details: [
+          ...this.listProductData
+            .filter(
+              (item: any) => item.bahanBaku && item.bahanBaku.trim() !== ''
+            )
+            .map((item) => ({
+              kodeGudang: this.g.getUserLocationCode(),
+              tglTransaksi: moment(
+                this.myForm.get('tglTransaksi')?.value,
+                'DD-MM-YYYY'
+              ).format('D MMM YYYY'),
+              tipeTransaksi: 12,
+              kodeBarang: item.bahanBaku,
+              konversi: item.konversi,
+              satuanKecil: item.satuanKecil,
+              satuanBesar: item.satuanBesar,
+              qtyBesar:
+                this.helperService.sanitizedNumberWithoutComa(
+                  item.qtyPemakaianBesar
+                ) || 0,
+              qtyKecil:
+                this.helperService.sanitizedNumberWithoutComa(
+                  item.qtyPemakaianKecil
+                ) || 0,
+              flagExpired: item.isConfirmed ? 'Y' : 'T',
+              tipeProduksi: 'R',
+              totalQty:
+                this.helperService.sanitizedNumberWithoutComa(
+                  item.qtyPemakaianBesar
+                ) *
+                  item.konversi +
+                this.helperService.sanitizedNumberWithoutComa(
+                  item.qtyPemakaianKecil
+                ),
+              totalQtyExpired:
+                this.helperService.sanitizedNumberWithoutComa(
+                  this.getExpiredData(item.bahanBaku).qtyPemakaianBesar
+                ) *
+                  item.konversi +
+                this.helperService.sanitizedNumberWithoutComa(
+                  this.getExpiredData(item.bahanBaku).qtyPemakaianKecil
+                ),
+              hargaSatuan: 0,
+              userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+            })),
+          extraItem,
+        ],
+
+        detailsExpired: [
+          ...this.listEntryExpired?.map((expiredItem) => ({
             kodeGudang: this.g.getUserLocationCode(),
             tglTransaksi: moment(
               this.myForm.get('tglTransaksi')?.value,
               'DD-MM-YYYY'
             ).format('D MMM YYYY'),
-            statusPosting: 'B',
-            keterangan: this.myForm.get('keterangan')?.value,
-            kodeResep: this.myForm.get('kodeBarang')?.value,
-            tglExp: moment(this.myForm.get('tglExp')?.value, 'DD-MM-YYYY').format(
+            tipeTransaksi: 12,
+            kodeBarang: expiredItem.kodeBarang,
+            tglExpired: moment(expiredItem.tglExpired, 'DD-MM-YYYY').format(
               'D MMM YYYY'
             ),
-            jumlahResep: this.myForm.get('jumlahHasilProduksi')?.value,
-            userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
-            details: [
-              ...this.listProductData
-                .filter((item: any) => item.bahanBaku && item.bahanBaku.trim() !== '')
-                .map((item) => ({
-                  kodeGudang: this.g.getUserLocationCode(),
-                  tglTransaksi: moment(
-                    this.myForm.get('tglTransaksi')?.value,
-                    'DD-MM-YYYY'
-                  ).format('D MMM YYYY'),
-                  tipeTransaksi: 12,
-                  kodeBarang: item.bahanBaku,
-                  konversi: item.konversi,
-                  satuanKecil: item.satuanKecil,
-                  satuanBesar: item.satuanBesar,
-                  qtyBesar:  this.helperService.sanitizedNumberWithoutComa(item.qtyPemakaianBesar) || 0,
-                  qtyKecil:  this.helperService.sanitizedNumberWithoutComa(item.qtyPemakaianKecil) || 0,
-                  flagExpired: item.isConfirmed ? 'Y' : 'T',
-                  tipeProduksi: 'R',
-                  totalQty:
-                    this.helperService.sanitizedNumberWithoutComa(item.qtyPemakaianBesar) *
-                      item.konversi +
-                    this.helperService.sanitizedNumberWithoutComa(item.qtyPemakaianKecil),
-                  totalQtyExpired:
-                    this.helperService.sanitizedNumberWithoutComa(
-                      this.getExpiredData(item.bahanBaku).qtyPemakaianBesar
-                    ) *
-                      item.konversi +
-                    this.helperService.sanitizedNumberWithoutComa(
-                      this.getExpiredData(item.bahanBaku).qtyPemakaianKecil
-                    ),
-                  hargaSatuan: 0,
-                  userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
-                })),
-              extraItem,
-            ],
-    
-            detailsExpired: [
-              ...this.listEntryExpired?.map((expiredItem) => ({
-                kodeGudang: this.g.getUserLocationCode(),
-                tglTransaksi: moment(
-                  this.myForm.get('tglTransaksi')?.value,
-                  'DD-MM-YYYY'
-                ).format('D MMM YYYY'),
-                tipeTransaksi: 12,
-                kodeBarang: expiredItem.kodeBarang,
-                tglExpired: moment(expiredItem.tglExpired, 'DD-MM-YYYY').format(
-                  'D MMM YYYY'
-                ),
-                konversi: Math.abs(expiredItem.konversi).toFixed(2),
-                qtyBesar:
-                  -Math.abs(parseFloat(expiredItem.qtyPemakaianBesar)).toFixed(2) ||
-                  0,
-                qtyKecil:
-                  -Math.abs(parseFloat(expiredItem.qtyPemakaianKecil)).toFixed(2) ||
-                  0,
-                totalQty: -parseFloat(
-                  (
-                    Number(expiredItem.qtyPemakaianBesar) *
-                      Number(expiredItem.konversi) +
-                    Number(expiredItem.qtyPemakaianKecil)
-                  ).toFixed(2)
-                ).toFixed(2),
-              })),
-              extraItem,
-            ],
-          };
-    
-          Swal.fire({
-            title: 'Pastikan semua data sudah di input dengan benar!',
-            text: 'DATA YANG SUDAH DIPOSTING TIDAK DAPAT DIPERBAIKI..!!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Proses Posting',
-            cancelButtonText: 'Batal Posting',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              this.appService
-                .insert('/api/production/insert', param)
-                .pipe(takeUntil(this.ngUnsubscribe))
-                .subscribe({
-                  next: (res) => {
-                    if (!res.success) {
-                      this.toastr.error(res.message);
-                    } else {
-                      // this.onBackPressed(res.data);
-                      setTimeout(() => {
-                        this.toastr.success('Data production berhasil diposting!');
-                        this.onBack();
-                      }, DEFAULT_DELAY_TIME);
-                    }
-                    this.loadingSimpan = false;
-                  },
-                  error: () => {
-                    this.loadingSimpan = false;
-                  },
-                });
-            } else {
-              this.toastr.info('Posting dibatalkan');
-              this.loadingSimpan = false;
-            }
-          });
-        }
-      }
+            konversi: Math.abs(expiredItem.konversi).toFixed(2),
+            qtyBesar:
+              -Math.abs(parseFloat(expiredItem.qtyPemakaianBesar)).toFixed(2) ||
+              0,
+            qtyKecil:
+              -Math.abs(parseFloat(expiredItem.qtyPemakaianKecil)).toFixed(2) ||
+              0,
+            totalQty: -parseFloat(
+              (
+                Number(expiredItem.qtyPemakaianBesar) *
+                  Number(expiredItem.konversi) +
+                Number(expiredItem.qtyPemakaianKecil)
+              ).toFixed(2)
+            ).toFixed(2),
+          })),
+          extraItem,
+        ],
+      };
 
-      getExpiredData(kodeBarang: string) {
-        const filtered = this.listEntryExpired.filter(
-          (item) => item.kodeBarang === kodeBarang
-        );
-    
-        const totalExpired = filtered.reduce(
-          (acc, item) => {
-            acc.qtyPemakaianBesar += Number(item.qtyPemakaianBesar) || 0;
-            acc.qtyPemakaianKecil += Number(item.qtyPemakaianKecil) || 0;
-            return acc;
-          },
-          { qtyPemakaianBesar: 0, qtyPemakaianKecil: 0 }
-        );
-    
-        return totalExpired;
-      }
-
-      isDataInvalid() {
-        let dataInvalid = false;
-        
-       
-       
-        
-        const invalidItems = this.listProductData.filter(
-          (item) =>
-            this.helperService.sanitizedNumberWithoutComa(item.totalQtyPemakaian) !==
-          this.helperService.sanitizedNumberWithoutComa(this.getTotalExpiredData(item.bahanBaku, item.konversi)) &&
-            item.isConfirmed === true
-        );
-
-        console.log('Invalid Items:', invalidItems);
-        invalidItems.forEach((item) => {
-          console.log('Bahan Baku:', item.bahanBaku);
-          console.log('Total Pemakaian (raw):', item.totalQtyPemakaian);
-          console.log(
-            'Total Pemakaian (sanitized):',
-            this.helperService.sanitizedNumberWithoutComa(item.totalQtyPemakaian)
-          );
-          console.log(
-            'Total Expired (Expected):',
-            this.helperService.sanitizedNumberWithoutComa(this.getTotalExpiredData(item.bahanBaku, item.konversi))
-          );
-          console.log('---');
-        });
-    
-        const invalidExpired = this.listEntryExpired.filter(
-          (item) => item.validationExpiredMessageList !== ''
-        );
-    
-        if (invalidItems.length > 0) {
-          dataInvalid = true;
-          this.toastr.error('Data Qty Pemakaian harus sama dengan Qty Expired');
+      Swal.fire({
+        title: 'Pastikan semua data sudah di input dengan benar!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Proses Update',
+        cancelButtonText: 'Batal Update',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.appService
+            .insert('/api/production/update', param)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe({
+              next: (res) => {
+                if (!res.success) {
+                  this.toastr.error(res.message);
+                } else {
+                  // this.onBackPressed(res.data);
+                  setTimeout(() => {
+                    this.toastr.success('Data production berhasil diupdate!');
+                    this.onBack();
+                  }, DEFAULT_DELAY_TIME);
+                }
+                this.loadingSimpan = false;
+              },
+              error: () => {
+                this.loadingSimpan = false;
+              },
+            });
+        } else {
+          this.toastr.info('Update dibatalkan');
+          this.loadingSimpan = false;
         }
-    
-        if (invalidExpired.length > 0) {
-          dataInvalid = true;
-          this.toastr.error(
-            `Data tgl expired tidak sesuai di kode barang ${invalidExpired[0].kodeBarang} !`
-          );
-        }
-    
-        return dataInvalid;
-      }
+      });
+    }
+  }
+
+
 }
