@@ -540,7 +540,7 @@ export class AddDataDetailBarangComponent
         this.validationMessageList.push('');
         this.validationMessageQtyPesanList.push('Quantity Pesan tidak Boleh 0');
       } else {
-        errorMessage = 'Beberapa barang sudah ditambahkan';
+        errorMessage = 'Barang Baru Berhasil Ditambahkan';
       }
     }
     if (errorMessage) this.toastr.error(errorMessage);
