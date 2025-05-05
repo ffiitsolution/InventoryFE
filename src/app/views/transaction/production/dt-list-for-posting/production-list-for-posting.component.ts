@@ -5,11 +5,20 @@ import { GlobalService } from '../../../../service/global.service';
 import { TranslationService } from '../../../../service/translation.service';
 import { Subject } from 'rxjs';
 import { Page } from '../../../../model/page';
-import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
+import {
+  ACTION_VIEW,
+  CANCEL_STATUS,
+  DEFAULT_DATE_RANGE_RECEIVING_ORDER,
+  DEFAULT_DELAY_TABLE,
+  LS_INV_SELECTED_DELIVERY_ORDER,
+} from '../../../../../constants';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { DataTableDirective } from 'angular-datatables';
 import moment from 'moment';
 import { AppConfig } from '../../../../config/app.config';
+import { AppService } from '../../../../service/app.service';
+import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-production-list-for-posting',
@@ -22,8 +31,8 @@ export class ProductionListForPostingComponent implements OnInit {
   expiredFilter: string = '';
   tujuanFilter: string = '';
   dtOptions: DataTables.Settings = {};
-    protected config = AppConfig.settings.apiServer;
-  
+  protected config = AppConfig.settings.apiServer;
+
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
   dtColumns: any = [];
@@ -54,14 +63,16 @@ export class ProductionListForPostingComponent implements OnInit {
   // selectedTimeEnd: Date = new Date();
   startTime: string = '09:00';
   endTime: string = '18:00';
-
-
+  loadingSimpan: boolean = false;
+  loadingDetail: { [key: number]: boolean } = {};
 
   constructor(
     private dataService: DataService,
     private g: GlobalService,
     private translation: TranslationService,
-    private router: Router
+    private router: Router,
+    private appService: AppService,
+    private toastr: ToastrService
   ) {
     this.dtOptions = {
       language:
@@ -70,29 +81,36 @@ export class ProductionListForPostingComponent implements OnInit {
       serverSide: true,
       autoWidth: false,
       info: true,
-      order: [[1,'desc'],[2,'desc']],
-      drawCallback: () => { },
+      order: [
+        [1, 'desc'],
+        [2, 'desc'],
+      ],
+      drawCallback: () => {},
       ajax: (dataTablesParameters: any, callback) => {
         const [startHour, startMinute] = this.startTime.split(':').map(Number);
-        const [endHour, endMinute] = this.endTime.split(':').map(Number);  
+        const [endHour, endMinute] = this.endTime.split(':').map(Number);
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.g.getUserLocationCode(),
-          startDate: moment(this.dateRangeFilter[0]).set({
-            hours: startHour,
-            minutes: startMinute,
-            seconds: 0,
-            milliseconds: 0,
-          }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
-          endDate: moment(this.dateRangeFilter[1]).set({
-            hours: endHour,
-            minutes: endMinute,
-            seconds: 59,
-            milliseconds: 999,
-          }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
-          statusPosting:'B'
+          startDate: moment(this.dateRangeFilter[0])
+            .set({
+              hours: startHour,
+              minutes: startMinute,
+              seconds: 0,
+              milliseconds: 0,
+            })
+            .format('YYYY-MM-DD HH:mm:ss.SSS'),
+          endDate: moment(this.dateRangeFilter[1])
+            .set({
+              hours: endHour,
+              minutes: endMinute,
+              seconds: 59,
+              milliseconds: 999,
+            })
+            .format('YYYY-MM-DD HH:mm:ss.SSS'),
+          statusPosting: 'B',
         };
         setTimeout(() => {
           this.dataService
@@ -127,22 +145,32 @@ export class ProductionListForPostingComponent implements OnInit {
         { data: 'nomorTransaksi', title: 'No. Transaksi' },
         { data: 'kodeProduksi', title: 'Kode Produksi' },
         { data: 'barangProduksi', title: 'Barang Produksi' },
-        { 
-          data: 'konversi', 
-          title: 'Konversi', 
-          render: function(data, type, row) {
-            return Number(data).toFixed(2)+" "+row.satuanKecil+"/"+row.satuanBesar; // Ensures two decimal places
-          }
+        {
+          data: 'konversi',
+          title: 'Konversi',
+          render: function (data, type, row) {
+            return (
+              Number(data).toFixed(2) +
+              ' ' +
+              row.satuanKecil +
+              '/' +
+              row.satuanBesar
+            ); // Ensures two decimal places
+          },
         },
-        { data: 'jumlahResep', title: 'Jumlah Produksi', 
-          render: function(data, type, row) {
-            return Number(data).toFixed(2) +" "+row.satuanBesar; // Ensures two decimal places
-          } 
+        {
+          data: 'jumlahResep',
+          title: 'Jumlah Produksi',
+          render: function (data, type, row) {
+            return Number(data).toFixed(2) + ' ' + row.satuanBesar; // Ensures two decimal places
+          },
         },
-        { data: 'totalProduksi', title: 'Total Produksi',
-          render: function(data, type, row) {
-            return Number(data).toFixed(2)+" "+row.satuanKecil; // Ensures two decimal places
-          } 
+        {
+          data: 'totalProduksi',
+          title: 'Total Produksi',
+          render: function (data, type, row) {
+            return Number(data).toFixed(2) + ' ' + row.satuanKecil; // Ensures two decimal places
+          },
         },
         { data: 'tglExp', title: 'Tgl Expired' },
         // { data: 'userCreate', title: 'User Proses', searchable: true },
@@ -185,10 +213,10 @@ export class ProductionListForPostingComponent implements OnInit {
             this.selectedRowData = undefined;
           }
         });
-        $('.action-print', row).on('click', () =>{
+        $('.action-print', row).on('click', () => {
           // this.onClickPrint(data)
           this.selectedRowCetak = data;
-          this.isShowModalReport=true;
+          this.isShowModalReport = true;
 
           this.paramGenerateReport = {
             noTransaksi: this.selectedRowCetak.nomorTransaksi,
@@ -201,38 +229,38 @@ export class ProductionListForPostingComponent implements OnInit {
             reportName: 'cetak_production',
             confirmSelection: 'Ya',
           };
-        }
-        );
+        });
+        $('.action-posting', row).on('click', () => {
+            this.onPosting(data,index);
+        });
         return row;
       },
     };
     this.dtColumns = this.dtOptions.columns;
 
     this.dpConfig.containerClass = 'theme-red';
-    this.dpConfig.customTodayClass='today-highlight';
+    this.dpConfig.customTodayClass = 'today-highlight';
     this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
   }
 
-  ngOnInit(): void {
-  
-  }
+  ngOnInit(): void {}
 
   toggleFilter(): void {
     this.showFilterSection = !this.showFilterSection;
   }
 
   onAddPressed(): void {
-    const route = this.router.createUrlTree(['/transaction/production/add-data']);
+    const route = this.router.createUrlTree([
+      '/transaction/production/add-data',
+    ]);
     this.router.navigateByUrl(route);
   }
 
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
-      this.g.saveLocalstorage(
-        'selectedProduction',
-        JSON.stringify(data)
-      );
-      this.router.navigate(['/transaction/production/detail']); this
+      this.g.saveLocalstorage('selectedProduction', JSON.stringify(data));
+      this.router.navigate(['/transaction/production/detail']);
+      this;
     }
   }
 
@@ -288,11 +316,60 @@ export class ProductionListForPostingComponent implements OnInit {
     console.log('Page changed', event);
   }
 
-  closeModal(){
+  closeModal() {
     this.isShowModalReport = false;
     this.selectedRowCetak = null;
     this.disabledPrintButton = false;
   }
 
 
+  onPosting(data:any,index:number) {
+    this.loadingSimpan = true;
+    this.loadingDetail[index] = true;
+    const requestBody = {
+      nomorTransaksi: [data.nomorTransaksi],
+      kodeGudang: this.g.getUserLocationCode(),
+    };
+
+    Swal.fire({
+      ...this.g.componentKonfirmasiPosting,
+      showConfirmButton: false,
+      showCancelButton: false,
+      width: '600px',
+      customClass: {
+        popup: 'custom-popup',
+      },
+      didOpen: () => {
+        const submitBtn = document.getElementById('btn-submit');
+        const cancelBtn = document.getElementById('btn-cancel');
+
+        submitBtn?.addEventListener('click', () => {
+          this.appService.postingProduction(requestBody).subscribe({
+            next: (res: any) => {
+              if (!res.success) {
+                this.appService.handleErrorResponse(res);
+              } else {
+                this.toastr.success('Berhasil Posting!');
+              }
+      
+              this.loadingSimpan = false;
+              this.loadingDetail[index] = false;
+              Swal.close();
+            },
+            error: (err: any) => {
+              console.log('An error occurred while updating the profile.');
+              this.loadingSimpan = false;
+              this.loadingDetail[index] = false;
+              Swal.close();
+            },
+          });
+        });
+
+        cancelBtn?.addEventListener('click', () => {
+          Swal.close();
+          this.toastr.info('Posting dibatalkan');
+        });
+      },
+    });
+  }
 }

@@ -434,4 +434,11 @@ export class AppService {
     );
   }
 
+  postingProduction(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/posting`,
+      payload
+    );
+  }
+
 }
