@@ -286,7 +286,7 @@ export class AddDataDetailOrderManualComponent
           html: `
         <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">
           <p>Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
-          <p class="text-danger" style="font-weight: bold;">DATA YANG SUDAH DI POSTING TIDAK DAPAT DIPERBAIKI ..!!</p>
+          <p class="text-danger" style="font-weight: bold;">DATA YANG SUDAH DI SIMPAN TIDAK DAPAT DIPERBAIKI ..!!</p>
         </div>
         <div class="divider my-3"></div>
         <div class="d-flex justify-content-center gap-3 mt-3">
