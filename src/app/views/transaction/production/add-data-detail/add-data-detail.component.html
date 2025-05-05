@@ -4,7 +4,7 @@
       <div class="d-grid gap-3 d-md-flex justify-content-end">
         <button class="btn btn-info text-white btn-150 pe-3"
          [disabled]="loadingSimpan"
-         (click)="onShowModalOnSubmit()">
+         (click)="onSubmit()">
           <i class="fa fa-check pe-2" *ngIf="!loadingSimpan"></i>
           <i class="fa fa-spinner fa-spin" *ngIf="loadingSimpan"></i>
           {{ "Proses Simpan Data" | translate }}

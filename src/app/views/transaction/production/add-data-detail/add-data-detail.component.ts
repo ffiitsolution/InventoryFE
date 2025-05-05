@@ -242,43 +242,50 @@ export class AddDataDetailProductionComponent
         ],
       };
 
-      // Swal.fire({
-      //   title: 'Pastikan semua data sudah di input dengan benar!',
-      //   text: 'DATA YANG SUDAH DIPOSTING TIDAK DAPAT DIPERBAIKI..!!',
-      //   icon: 'warning',
-      //   showCancelButton: true,
-      //   confirmButtonColor: '#3085d6',
-      //   cancelButtonColor: '#d33',
-      //   confirmButtonText: 'Proses Posting',
-      //   cancelButtonText: 'Batal Posting',
-      // }).then((result) => {
-      //   if (result.isConfirmed) {
-          this.service
-            .insert('/api/production/insert', param)
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe({
-              next: (res) => {
-                if (!res.success) {
-                  this.toastr.error(res.message);
-                } else {
-                  this.onBackPressed(res.data);
-                  // setTimeout(() => {
-                  //   this.toastr.success('Data production berhasil diposting!');
-                  //   this.onPreviousPressed();
-                  // }, DEFAULT_DELAY_TIME);
-                }
-                this.adding = false;
-                this.loadingSimpan = false;
-              },
-              error: () => {
-                this.loadingSimpan = false;
-              },
+      Swal.fire({
+        ...this.g.componentKonfirmasiPosting,
+         showConfirmButton: false,
+         showCancelButton: false,
+         width: '600px',
+         customClass: {
+           popup: 'custom-popup'
+         },
+         didOpen: () => {
+          const submitBtn = document.getElementById('btn-submit');
+          const cancelBtn = document.getElementById('btn-cancel');
+  
+          submitBtn?.addEventListener('click', () => {
+            this.service
+              .insert('/api/production/insert', param)
+              .pipe(takeUntil(this.ngUnsubscribe))
+              .subscribe({
+                next: (res) => {
+                  if (!res.success) {
+                    this.toastr.error(res.message);
+                  } else {
+                    this.onBackPressed(res.data);
+                    // setTimeout(() => {
+                    //   this.toastr.success('Data production berhasil diposting!');
+                    //   this.onPreviousPressed();
+                    // }, DEFAULT_DELAY_TIME);
+                  }
+                  this.adding = false;
+                  this.loadingSimpan = false;
+                },
+                error: () => {
+                  this.loadingSimpan = false;
+                },
+              });
+              Swal.close();
             });
-        // } else {
-        //   this.toastr.info('Posting dibatalkan');
-        //   this.loadingSimpan = false;
-        // }
-      // });
+    
+            cancelBtn?.addEventListener('click', () => {
+              Swal.close();
+              this.loadingSimpan = false;
+              this.toastr.info('Posting dibatalkan');
+            });
+          }
+      });
     }
   }
 
@@ -741,33 +748,5 @@ export class AddDataDetailProductionComponent
     this.totalFilteredExpired = parseFloat(this.totalFilteredExpired).toFixed(
       2
     );
-  }
-
-  onShowModalOnSubmit() {
-   
-    Swal.fire({
-      ...this.g.componentKonfirmasiPosting,
-       showConfirmButton: false,
-       showCancelButton: false,
-       width: '600px',
-       customClass: {
-         popup: 'custom-popup'
-       },
-       didOpen: () => {
-         const submitBtn = document.getElementById('btn-submit');
-         const cancelBtn = document.getElementById('btn-cancel');
- 
-         submitBtn?.addEventListener('click', () => {
-           this.onSubmit()
-           Swal.close();
-         });
- 
-         cancelBtn?.addEventListener('click', () => {
-           Swal.close();
-           this.toastr.info('Posting dibatalkan');
-         });
-       }
-     })
-     
   }
 }
