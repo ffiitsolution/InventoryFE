@@ -151,41 +151,84 @@ export const STATUS_RESULT = [
     value: 'R',
   },
 ];
-
 export const STATUS_PESANAN_TERIMA_PESANAN = [
   {
     label: 'BARU',
     value: '1',
+    color: '#0d6efd',    // Blue
+    textColor: '#ffffff',
   },
   {
     label: 'SISA',
     value: '2',
+    color: '#ffc107',    // Yellow
+    textColor: '#000000',
   },
   {
     label: 'SELESAI',
     value: '3',
+    color: '#198754',    // Green
+    textColor: '#ffffff',
   },
   {
     label: 'BATAL',
     value: '4',
+    color: '#dc3545',    // Red
+    textColor: '#ffffff',
   },
 ];
+
 
 export const STATUS_PESANAN_TERIMA_PO = [
   {
     label: 'P.O BARU',
     value: '1',
+    color: '#0d6efd',    // Blue
+    textColor: '#ffffff',
   },
   {
     label: 'SISA PESANAN',
     value: '2',
+    color: '#ffc107',    // Yellow
+    textColor: '#000000',
   },
   {
     label: 'SELESAI',
     value: '3',
+    color: '#198754',    // Green
+    textColor: '#ffffff',
   },
   {
     label: 'P.O DIBATALKAN',
     value: '4',
+    color: '#dc3545',    // Red
+    textColor: '#ffffff',
+  },
+];
+
+export const STATUS_KIRIM_PESANAN_KE_GUDANG = [
+  {
+    value: '1',
+    label: 'Baru',
+    color: '#0d6efd',       // Biru
+    textColor: '#ffffff',
+  },
+  {
+    value: '2',
+    label: 'Sisa',
+    color: '#ffc107',       // Kuning
+    textColor: '#000000',
+  },
+  {
+    value: '3',
+    label: 'Selesai',
+    color: '#198754',       // Hijau
+    textColor: '#ffffff',
+  },
+  {
+    value: '4',
+    label: 'Batal',
+    color: '#dc3545',       // Merah
+    textColor: '#ffffff',
   },
 ];

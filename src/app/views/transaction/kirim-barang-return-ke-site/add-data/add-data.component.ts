@@ -361,7 +361,8 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.globalService.getUserLocationCode(),
-          status: 'K'
+          status: 'K',
+          flagBrgBekas : 'T'
         };
         this.dataService
           .postData(

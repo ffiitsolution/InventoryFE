@@ -60,6 +60,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
   paramGenerateReport = {};
   paramUpdatePrintStatus = {};
   cekPrint: any;
+  data: any;
   printData: any;
   listDataExpired: any[] = [];
   isShowModalExpired: boolean = false;
@@ -476,6 +477,10 @@ export class DetailBarangUntukPemakaianSendiriComponent
       return this.listDataExpired.reduce((sum, data) => {
         return sum + Math.abs(Number(data.TOTAL_QTY));
       }, 0);
+    }
+    getQtyKecil(): { satuanKecil: string } {
+      const satuanKecil = this.listDataExpired.length > 0 ? this.listDataExpired[0].SATUAN_KECIL : '';
+      return { satuanKecil: satuanKecil };
     }
 }
 // function takeUntil(ngUnsubscribe: any): any {

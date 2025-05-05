@@ -361,7 +361,8 @@ export class AddKirimBarangReturnKeSupplierComponent implements OnInit, AfterVie
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.globalService.getUserLocationCode(),
-          status: 'K'
+          status: 'K',
+          flagBrgBekas : 'T'
         };
         this.dataService
           .postData(
@@ -455,6 +456,7 @@ export class AddKirimBarangReturnKeSupplierComponent implements OnInit, AfterVie
   
         const params = {
           ...dataTablesParameters,
+          status :''
         };
   
         this.dataService
