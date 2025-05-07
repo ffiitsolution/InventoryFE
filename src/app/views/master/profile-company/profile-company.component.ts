@@ -58,6 +58,7 @@ export class ProfileCompanyComponent implements OnInit,OnDestroy {
 
   ngOnInit(): void {
     this.roleId = this.g.getLocalstorage('inv_currentUser')?.roleId;
+    console.log(this.roleId,'role');
     this.configRsc = this.g.dropdownConfig('description');
     this.detail = JSON.parse(this.g.getLocalstorage(LS_INV_SELECTED_USER));
     this.myForm = this.form.group({
@@ -93,6 +94,14 @@ export class ProfileCompanyComponent implements OnInit,OnDestroy {
       statusConnection: ['']
     });
 
+    if (this.roleId != 3) {
+      this.myForm.disable(); // disables the whole form
+    } else {
+      this.myForm.enable(); 
+      this.myForm.get('kodePerusahaan')?.disable();
+      this.myForm.get('namaPerusahaan1')?.disable();
+      this.myForm.get('namaPerusahaan2')?.disable(); // enables form if roleId == 3
+    }
     this.loadData();
     this.getListRsc();
   }

@@ -14,7 +14,8 @@ import {
   STATUS_RESULT,
   TIPE_PEMBAYARAN,
   STATUS_PESANAN_TERIMA_PESANAN,
-  STATUS_PESANAN_TERIMA_PO
+  STATUS_PESANAN_TERIMA_PO,
+  STATUS_KIRIM_PESANAN_KE_GUDANG,
 } from '../../constants';
 import moment from 'moment';
 
@@ -39,24 +40,64 @@ export class GlobalService {
   listMonitoring: any = [];
   isFullscreen: boolean = false;
   audio: HTMLAudioElement = new Audio();
-
+  appInfo: any = {};
+  footerAlert: string = 'Silahkan entry kode resep.';
   // param global untuk tf data antar component
   paramCode: any;
   paramData: any;
   paramType: any;
   navbarVisibility: boolean = true;
-
+  fTransDate: string = '';
   selectedReportCategory: any = null;
   statusEndOfMonth: any = '';
   statusPlanningOrder: any = '';
   statusBackupDb: any = '';
+  componentKonfirmasiPosting: any = {
+    title:
+      '<div style="color: white; background: #c0392b; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
+    html: `
+       <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">
+         <p>Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
+         <p class="text-danger" style="font-weight: bold;">DATA YANG SUDAH DI POSTING TIDAK DAPAT DIPERBAIKI ..!!</p>
+       </div>
+       <div class="divider my-3"></div>
+       <div class="d-flex justify-content-center gap-3 mt-3">
+         <button class="btn btn-info text-white btn-150 pe-3" id="btn-submit">
+           <i class="fa fa-check pe-2"></i> Proses Posting
+         </button>
+         <button class="btn btn-secondary text-white btn-150" id="btn-cancel">
+           <i class="fa fa-times pe-1"></i> Batal Proses
+         </button>
+       </div>
+     `,
+  };
+
+  componentKonfirmasiSimpan: any = {
+    title:
+      '<div style="color: white; background: #c0392b; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Simpan Data</div>',
+    html: `
+    <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">
+      <p>Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
+      <p class="text-danger" style="font-weight: bold;">DATA YANG SUDAH DI POSTING TIDAK DAPAT DIPERBAIKI ..!!</p>
+    </div>
+    <div class="divider my-3"></div>
+    <div class="d-flex justify-content-center gap-3 mt-3">
+      <button class="btn btn-info text-white btn-150 pe-3" id="btn-submit">
+        <i class="fa fa-check pe-2"></i> Proses Simpan
+      </button>
+      <button class="btn btn-secondary text-white btn-150" id="btn-cancel">
+        <i class="fa fa-times pe-1"></i> Batal Proses
+      </button>
+    </div>
+  `,
+  };
 
   constructor(
     private titleService: Title,
     @Inject(DOCUMENT) private document: Document,
     private router: Router,
     private datePipe: DatePipe
-  ) { }
+  ) {}
 
   saveLocalstorage(key: string, value: any, type: string | boolean = 'json') {
     if (type === 'json' || type === true) {
@@ -364,7 +405,7 @@ export class GlobalService {
     return `${found?.label}` || status;
   }
   getStatusReceivingOrderLabel(status: string, isPrintStatus: boolean = false) {
-    const data = STATUS_PESANAN_TERIMA_PESANAN
+    const data = STATUS_PESANAN_TERIMA_PESANAN;
     const found = data.find((item) => item.value == status);
     if (!found) {
       return '-';
@@ -372,8 +413,28 @@ export class GlobalService {
     // return `(${status}) ${found?.label}` || status;
     return `${found?.label?.toUpperCase()}` || status;
   }
+  getStatusReceivingOrderBadge(status: string): string {
+    console.log('status', status);
+    const data = STATUS_PESANAN_TERIMA_PESANAN;
+    const found = data.find((item) => item.value === status);
+    if (!found) return status;
+
+    return `
+      <span style="
+        background-color: ${found.color}; 
+        color: ${found.textColor}; 
+        padding: 4px 10px; 
+        border-radius: 4px; 
+        font-weight: 500;
+        font-size: 0.85rem;
+        display: inline-block;
+      ">
+        ${found.label}
+      </span>`;
+  }
+
   getStatusReceivingPOLabel(status: string, isPrintStatus: boolean = false) {
-    const data = STATUS_PESANAN_TERIMA_PO
+    const data = STATUS_PESANAN_TERIMA_PO;
     const found = data.find((item) => item.value == status);
     if (!found) {
       return '-';
@@ -381,6 +442,57 @@ export class GlobalService {
     // return `(${status}) ${found?.label}` || status;
     return `${found?.label?.toUpperCase()}` || status;
   }
+
+  getStatusReceivingPOBadge(status: string): string {
+    console.log('status', status);
+    const data = STATUS_PESANAN_TERIMA_PO;
+    const found = data.find((item) => item.value === status);
+    if (!found) return status;
+
+    return `
+      <span style="
+        background-color: ${found.color}; 
+        color: ${found.textColor}; 
+        padding: 4px 10px; 
+        border-radius: 4px; 
+        font-weight: 500;
+        font-size: 0.85rem;
+        display: inline-block;
+      ">
+        ${found.label}
+      </span>`;
+  }
+
+  getStatusKirimPesananGudangLabel(
+    status: string,
+    isPrintStatus: boolean = false
+  ): string {
+    const data = STATUS_KIRIM_PESANAN_KE_GUDANG;
+    const found = data.find((item) => item.value === status);
+    if (!found) {
+      return '-';
+    }
+    return `${found.label.toUpperCase()}` || status;
+  }
+  getStatusKirimPesananGudangBadge(status: string): string {
+    const data = STATUS_KIRIM_PESANAN_KE_GUDANG;
+    const found = data.find((item) => item.value === status);
+    if (!found) return status;
+
+    return `
+      <span style="
+        background-color: ${found.color}; 
+        color: ${found.textColor}; 
+        padding: 4px 10px; 
+        border-radius: 4px; 
+        font-weight: 500;
+        font-size: 0.85rem;
+        display: inline-block;
+      ">
+        ${found.label}
+      </span>`;
+  }
+
   trimOutletCode(label: string) {
     const numberPattern = /\d+/g;
     const result = label.match(numberPattern);
@@ -396,20 +508,20 @@ export class GlobalService {
       type === 'numberPlusMinusDot'
         ? /^[0-9.+-]$/
         : type == 'alphanumeric'
-          ? /^[a-zA-Z0-9]$/
-          : type == 'numeric'
-            ? /^[0-9]$/
-            : type == 'numericDot'
-              ? /^[0-9.]$/
-              : type == 'phone'
-                ? /^[0-9-]$/
-                : type == 'email'
-                  ? /^[a-zA-Z0-9@._-]$/
-                  : type == 'excludedSensitive'
-                    ? /^[a-zA-Z0-9 .,_@-]*$/
-                    : type == 'kodeSingkat'
-                      ? /^[a-zA-Z]+$/
-                      : /^[a-zA-Z.() ,\-]*$/;
+        ? /^[a-zA-Z0-9]$/
+        : type == 'numeric'
+        ? /^[0-9]$/
+        : type == 'numericDot'
+        ? /^[0-9.]$/
+        : type == 'phone'
+        ? /^[0-9-]$/
+        : type == 'email'
+        ? /^[a-zA-Z0-9@._-]$/
+        : type == 'excludedSensitive'
+        ? /^[a-zA-Z0-9 .,_@-]*$/
+        : type == 'kodeSingkat'
+        ? /^[a-zA-Z]+$/
+        : /^[a-zA-Z.() ,\-]*$/;
 
     if (temp_regex.test(inp)) {
       // ⭐ Tambahkan ini:
@@ -434,7 +546,7 @@ export class GlobalService {
       search: search,
       height: '400px',
       placeholder: placeholder,
-      customComparator: () => { },
+      customComparator: () => {},
       limitTo: limit,
       moreText: 'lainnya...',
       noResultsFound: 'Tidak ditemukan!',
@@ -463,10 +575,12 @@ export class GlobalService {
     return isNaN(num) ? '' : num.toFixed(2);
   }
 
-  sumTotalQtyItem(qtyBesar: number, qtyKecil: number, konversi: number): number {
-    return Number(qtyBesar) *
-      Number(konversi) +
-      Number(qtyKecil)
+  sumTotalQtyItem(
+    qtyBesar: number,
+    qtyKecil: number,
+    konversi: number
+  ): number {
+    return Number(qtyBesar) * Number(konversi) + Number(qtyKecil);
   }
 
   generateNumberRange(start: number, end: number): number[] {
@@ -501,7 +615,13 @@ export class GlobalService {
     if (isNaN(numericValue)) {
       return '';
     }
-    return 'Rp. ' + numericValue.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return (
+      'Rp. ' +
+      numericValue.toLocaleString('id-ID', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+    );
   }
 
   parseRupiahToNumber(formatted: string): number {
@@ -509,8 +629,14 @@ export class GlobalService {
       const cleaned = formatted.replace(/[^\d]/g, ''); // hapus semua selain angka
       return parseInt(cleaned, 10) || 0;
     } else {
-      return 0
+      return 0;
     }
   }
 
+  formatNumberId(value: number): string {
+    return new Intl.NumberFormat('id-ID', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
+  }
 }

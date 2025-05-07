@@ -281,7 +281,29 @@ export class AddDataDetailOrderManualComponent
   }
 
   onShowModalOnSubmit() {
-    this.isShowModalOnSubmit = true;
+       Swal.fire({
+          ...this.g.componentKonfirmasiSimpan,
+          showConfirmButton: false,
+          showCancelButton: false,
+          width: '600px',
+          customClass: {
+            popup: 'custom-popup'
+          },
+          didOpen: () => {
+            const submitBtn = document.getElementById('btn-submit');
+            const cancelBtn = document.getElementById('btn-cancel');
+    
+            submitBtn?.addEventListener('click', () => {
+              this.onSubmit()
+              Swal.close();
+            });
+    
+            cancelBtn?.addEventListener('click', () => {
+              Swal.close();
+              this.adding = false
+            });
+          }
+        })
   }
   onShowModalCancel() {
     this.isShowModalCancel= true;

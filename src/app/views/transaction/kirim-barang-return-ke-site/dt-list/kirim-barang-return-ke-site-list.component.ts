@@ -72,6 +72,7 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
           kodeGudang: this.g.getUserLocationCode(),
           startDate: moment(this.dateRangeFilter[0]).format('DD MMM yyyy' ),
           endDate: moment(this.dateRangeFilter[1]).format('DD MMM yyyy' ),
+          tipeTujuan: 'D'
         };
         setTimeout(() => {
           this.dataService
@@ -142,7 +143,15 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
             return data ? moment(data, 'HH:mm:ss').format('HH:mm:ss') : '';
           }
         },
-        { data: 'namaPosting', title: 'Status Transaksi' },
+        
+        {
+          data: 'namaPosting',
+          title: 'Status Transaksi',
+          render: (data: any) => {
+            return `<span class="badge bg-success">${data}</span>`;
+          }
+        },
+
         {
           title: 'Aksi',
           render: () => {
@@ -186,7 +195,7 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
             outletBrand: 'KFC',
             kodeGudang: this.g.getUserLocationCode(),
             isDownloadCsv: false,
-            reportName: 'cetak retur dari site',
+            reportName: 'cetak retur ke site',
             confirmSelection: 'Ya',
           };
         });

@@ -332,7 +332,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
 
 
   onPreviousPressed(): void {
-    this.router.navigate(['/transaction/terima-barang-retur-dari-site/list-dt']);
+    this.router.navigate(['/transaction/kirim-barang-ke-site/list-dt']);
   }
 
   onShowModal() {
@@ -361,7 +361,8 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.globalService.getUserLocationCode(),
-          status: 'K'
+          status: 'K',
+          flagBrgBekas : 'T'
         };
         this.dataService
           .postData(
@@ -519,7 +520,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
       ],
       searchDelay: 1500,
       order: [
-        [1, 'asc'],
+        [1, 'asc']
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-select', row).on('click', () => this.actionBtnClickBranch(data));

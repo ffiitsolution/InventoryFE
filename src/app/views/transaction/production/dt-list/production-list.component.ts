@@ -84,6 +84,7 @@ export class ProductionListComponent implements OnInit {
             seconds: 59,
             milliseconds: 999,
           }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
+          statusPosting:''
         };
         setTimeout(() => {
           this.dataService

@@ -167,27 +167,8 @@ export class SendOrderToWarehouseComponent
         {
           data: 'statusPesanan',
           title: 'Status Pesanan',
-          render: function (data) {
-            let statusLabel = "";
-
-            // Map statusPesanan values to labels
-            switch (data) {
-              case "1":
-                statusLabel = "Baru";
-                break;
-              case "2":
-                statusLabel = "Sisa";
-                break;
-              case "3":
-                statusLabel = "Dikirim";
-                break;
-              case "4":
-                statusLabel = "Batal";
-                break;
-              default:
-                statusLabel = "Tidak Diketahui"; // Default label for undefined values
-            }
-            return statusLabel;
+          render: (data) => {
+            return  this.g.getStatusKirimPesananGudangBadge(data);
           }
         },
 

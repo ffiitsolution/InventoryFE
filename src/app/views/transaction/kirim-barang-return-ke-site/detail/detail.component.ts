@@ -167,7 +167,7 @@ export class DetailKirimBarangReturnKeSiteComponent
             outletBrand: 'KFC',
             kodeGudang: this.g.getUserLocationCode(),
             isDownloadCsv: false,
-            reportName: 'cetak retur dari site',
+            reportName: 'cetak retur ke site',
             confirmSelection: 'Ya',
           };
 

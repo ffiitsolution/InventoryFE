@@ -393,6 +393,13 @@ export class AppService {
     );
   }
 
+  getExpiredPemakaian(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/exp-sendiri/list`,
+      payload
+    );
+  }
+
   checkNoReturExistPenerimaanBrgBks(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/whbkshd/check-nodoc`,
@@ -410,6 +417,26 @@ export class AppService {
   checkNoReturFromSiteExist(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/whrtchd/check-nodoc`,
+      payload
+    );
+  }
+  listReturSupplier(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/retur-supplier/list`,
+      payload
+    );
+  }
+
+  detailProductionAndExpired(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/details`,
+      payload
+    );
+  }
+
+  postingProduction(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/posting`,
       payload
     );
   }

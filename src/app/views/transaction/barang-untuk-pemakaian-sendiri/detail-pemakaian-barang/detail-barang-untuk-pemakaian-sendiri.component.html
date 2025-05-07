@@ -136,7 +136,7 @@
       <div class="col-9">
         <div class="w-100 px-2 py-1 row">
           <div class="col-4 d-flex align-items-center">
-            <label for="nomorPesanan">{{ "Nama Barang" | translate }}</label>
+            <label for="nomorPesanan">{{ "Kode Dan Nama Barang" | translate }}</label>
           </div>
           <div class="col-8 pe-0 d-flex">
             <div class="col-3 pe-2">
@@ -149,7 +149,7 @@
                 readonly
               />
             </div>
-            <div class="col-9">
+            <div class="col-12">
               <input
                 type="text"
                 class="form-control"
@@ -187,34 +187,9 @@
 
         <div class="w-100 px-2 py-1 row">
           <div class="col-4 d-flex align-items-center">
-            <label class="fw-semibold" for="nomorPesanan">{{
-              "Total Qty" | translate
-            }}</label>
-          </div>
-          <div class="col-5 pe-0">
-            <input
-              type="text"
-              placeholder="Nomor pesanan"
-              class="form-control"
-              id="totalQtyProduksi"
-              [value]="this.selectedRowData.totalQty | number : '1.2-2'"
-              name="totalQtyProduksi"
-              readonly
-            />
-          </div>
-          <div class="col-3 d-flex align-items-start">
-            <label for="totalQtyProduksi">{{
-              selectedRowData.satuanKecil
-            }}</label>
-          </div>
-        </div>
-      </div>
-      <div class="col-3">
-        <div class="w-100 px-2 py-1 row">
-          <div class="col-4 d-flex align-items-center">
             <label for="nomorPesanan">{{ "Quantity Besar" | translate }}</label>
           </div>
-          <div class="col-5 pe-0">
+          <div class="col-4 pe-0">
             <input
               type="text"
               class="form-control"
@@ -235,7 +210,7 @@
           <div class="col-4 d-flex align-items-center">
             <label for="nomorPesanan">{{ "Quantity Kecil" | translate }}</label>
           </div>
-          <div class="col-5 pe-0">
+          <div class="col-4 pe-0">
             <input
               type="text"
               class="form-control"
@@ -251,7 +226,32 @@
             }}</label>
           </div>
         </div>
+
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label class="fw-semibold" for="nomorPesanan">{{
+              "Total Qty" | translate
+            }}</label>
+          </div>
+          <div class="col-4 pe-0">
+            <input
+              type="text"
+              placeholder="Nomor pesanan"
+              class="form-control"
+              id="totalQtyProduksi"
+              [value]="this.selectedRowData.totalQty | number : '1.2-2'"
+              name="totalQtyProduksi"
+              readonly
+            />
+          </div>
+          <div class="col-3 d-flex align-items-start">
+            <label for="totalQtyProduksi">{{
+              selectedRowData.satuanKecil
+            }}</label>
+          </div>
+        </div>
       </div>
+     
     </div>
     <div class="divider"></div>
     <div class="table-responsive">
@@ -334,7 +334,7 @@
                 class="text-center align-items-start"
                 rowspan="2"
               >
-                Total Qty Expired
+                Total Qty
               </th>
             </tr>
           </thead>
@@ -346,37 +346,37 @@
           <tbody>
             <tr *ngFor="let data of listDataExpired; let i = index">
               <td class="text-center">
-                {{ data.tglExpired | date : "dd MMM yyyy" }}
+                {{ data.TGL_EXPIRED | date : "dd MMM yyyy" }}
               </td>
 
               <td class="text-center">
-                {{ data.tglExpired | date : "dd MMM yyyy" }}
+                {{ data.TGL_EXPIRED | date : "dd MMM yyyy" }}
               </td>
               <td class="text-center input-column">
                 <div class="d-flex justify-content-center" style="gap: 5px">
-                  {{ helper.abs(data.qtyBesar) | number : "1.2-2" }}
+                  {{ helper.abs(data.QTY_BESAR) | number : "1.2-2" }}
                   <span
                     class="d-flex align-items-center justify-content-center"
                   >
-                    / {{ data.satuanBesar }}
+                    / {{ data.SATUAN_BESAR }}
                   </span>
                 </div>
               </td>
 
               <td class="text-center">
                 <div class="d-flex justify-content-center" style="gap: 5px">
-                  {{ helper.abs(data.qtyKecil) | number : "1.2-2" }}
+                  {{ helper.abs(data.QTY_KECIL) | number : "1.2-2" }}
                   <span
                     class="d-flex align-items-center justify-content-center"
                   >
-                    / {{ data.satuanKecil }}
+                    / {{ data.SATUAN_KECIL }}
                   </span>
                 </div>
               </td>
 
               <td class="text-center">
-                {{ helper.abs(data.totalQty) | number : "1.2-2" }}
-                {{ data.satuanKecil }}
+                {{ helper.abs(data.TOTAL_QTY) | number : "1.2-2" }}
+                {{ data.SATUAN_KECIL }}
               </td>
             </tr>
           </tbody>
@@ -386,15 +386,15 @@
 
     <div
       class="row justify-content-between gap-3 mt-3"
-      *ngIf="selectedRowData"
+      *ngIf="getTotalQty"
       style="margin-right: 20px"
     >
       <div class="col-4 d-flex"></div>
       <div class="col-6 d-flex justify-content-end align-items-center gap-3">
         <p class="mb-0">
           <strong>TOTAL QTY EXPIRED:</strong>
-          {{ getTotalQty() | number : "1.2-2" }}
-          {{ selectedRowData.satuanKecil }}
+          {{ getTotalQty() | number : '1.2-2' }}
+          {{ getQtyKecil().satuanKecil }}
         </p>
       </div>
       <div class="col-2"></div>

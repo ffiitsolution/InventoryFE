@@ -88,6 +88,10 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
 
   selectedRowData: any;
 
+  listCurrentPage: number = 1;
+  itemsPerPage: number = 5;
+  searchListViewOrder: string = '';
+
   constructor(
     public g: GlobalService,
     private translation: TranslationService,
@@ -127,7 +131,7 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
         namaBarang: '',
         qtyPesanBesar: 0,
         qtyPesanKecil: 0,
-        konversi: 1,
+        konversi: '',
         satuanBesar: '',
         satuanKecil: '',
         isFromRetur: false,
@@ -261,32 +265,43 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
   
 
   onSubmit() {
-    if (!this.isDataInvalid()) {
-      if (!this.listProductData || this.listProductData.length === 0) {
-        Swal.fire({
-          title: 'Pesan Error',
-          html: 'Belum ada data produk yang diinput. Mohon cek kembali!',
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: 'OK',
-        });
-        return; 
-      }
-  
-      const invalidQtyItems = this.listProductData.filter(item => !item.qtyPemakaianBesar || item.qtyPemakaianBesar == 0);
-  
-      if (invalidQtyItems.length > 0) {
-        Swal.fire({
-          title: 'Pesan Error',
-          html: `<div>Ada data dengan <b>Quantity kosong atau 0</b>.</div>`,
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: 'OK',
-        });
-        return;
-      } else {
-        this.proceedPosting();
+      if (!this.isDataInvalid()) {
+        if (!this.listProductData || this.listProductData.length === 0) {
+          Swal.fire({
+            title: 'Pesan Error',
+            html: 'Belum ada data produk yang diinput. Mohon cek kembali!',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK',
+          });
+          return;
+        }
+    
+        // Menambahkan pengecekan untuk kodeBarang dan namaBarang yang kosong
+        const invalidItems = this.listProductData.filter(item => 
+          !item.qtyPemakaianBesar || item.qtyPemakaianBesar == 0 ||
+          !item.kodeBarang || !item.namaBarang
+        );
+    
+        if (invalidItems.length > 0) {
+          const invalidItemsList = invalidItems.map(item => `
+            <li>
+              ${item.kodeBarang} - ${item.namaBarang}
+            </li>
+          `).join('');
+    
+          Swal.fire({
+            title: 'Pesan Error',
+            html: `<div>Ada data dengan <b>Quantity kosong atau 0</b></div>
+                  <ul>${invalidItemsList}</ul>`,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK',
+          });
+          return;
+        } else {
+          this.proceedPosting();
+        }
       }
     }
-  }
 
     onShowModal(index:number) {
       this.isShowModal = true;
@@ -428,9 +443,6 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
     return this.listEntryExpired.filter(item => item.kodeBarang === this.selectedExpProduct.kodeBarang);
   }
 
-
-
-
   onPreviousPressed(): void {
     this.router.navigate(['/transaction/kirim-barang-return-ke-site/list-dt']);
   }
@@ -504,7 +516,6 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
   ];
   tempKodeBarang: string = '';
 
-  
   loadBahanBaku() {
     let param = { returnNo: this.headerProduction?.noReturnPengirim };
     console.log('testing header production : ', this.headerProduction);
@@ -1008,9 +1019,8 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
       ],
       searchDelay: 1500,
       order: [
-        [1, 'asc'],
         [7, 'asc'],
-       
+        [1, 'asc'],
       ],
       lengthMenu: [ 
         [5, 10],
@@ -1170,5 +1180,46 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
     this.isShowModal = false;
   }
   
+  getJumlahItem(): number {
+    if (this.listProductData.length === 0) {
+      return 0;
+    }
+  
+    // Menghitung jumlah item yang memiliki namaBarang tidak kosong
+    const validItems = this.listProductData.filter(item => item.namaBarang.trim() !== "");
+    return validItems.length;
+  }
+
+  onFilterTextChange(newValue: string) {
+    this.listCurrentPage = 1;
+    if (newValue.length >= 3) {
+      this.totalLength = 1;
+    } else {
+      this.totalLength = this.listProductData.length;
+    }
+    this.listCurrentPage = this.listCurrentPage;
+  }
+
+  getPaginationIndex(i: number): number {
+    return (this.listCurrentPage - 1) * this.itemsPerPage + i;
+  }
+
+  get listProductDataLength(): number {
+    return this.filteredListViewOrder.length;
+  }
+
+  get totalListViewOrderLength(): number {
+    return this.filteredListViewOrder.length;
+  }
+  
+  get filteredListViewOrder() {
+    if (!this.searchListViewOrder || this.searchListViewOrder.length < 3) {
+      return this.listProductData;
+    }
+    const searchText = this.searchListViewOrder.toLowerCase();
+    return this.listProductData.filter(item =>
+      JSON.stringify(item).toLowerCase().includes(searchText)
+    );
+  }
   
 }    

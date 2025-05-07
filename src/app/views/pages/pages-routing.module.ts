@@ -5,6 +5,7 @@ import { Page500Component } from './page500/page500.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { AccountSettingComponent } from './account-setting';
+import { MpcsProductionComponent } from './mpcs-production/mpcs-production.component';
 
 const routes: Routes = [
   {
@@ -38,7 +39,15 @@ const routes: Routes = [
     data: {
       title: 'Register Page'
     }
-  }
+  },
+  {
+    path: 'mpcs-production',
+    component: MpcsProductionComponent,
+    data: {
+      title: 'Mpcs Production'
+    }
+  },
+  
 ];
 
 @NgModule({

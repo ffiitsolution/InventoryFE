@@ -384,6 +384,12 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
             konversi: parseFloat(item.konversi),
           },
         })),
+        header: {
+          kodeGudang: this.userData.defaultLocation.kodeLocation,
+          nomorTransaksi: this.selectedSo?.nomorSo,
+          kodeBarang: this.selectedExpProduct.kodeBarang,
+          deleteExpired: true,
+        }
       })
       .subscribe({
         next: (res) => {
@@ -463,10 +469,10 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
     );
 
     this.listEntryExpired[index].totalStockExpired =
-      (Number(this.listEntryExpired[index].qtyBesarSo) > 0
-        ? Number(this.listEntryExpired[index].qtyBesarSo) *
-          Number(this.listEntryExpired[index].konversi)
-        : 0) + Number(this.listEntryExpired[index].qtyKecilSo);
+      (Number(this.listEntryExpired[index]?.qtyBesarSo) > 0
+        ? Number(this.listEntryExpired[index]?.qtyBesarSo) *
+          Number(this.listEntryExpired[index]?.konversi)
+        : 0) + Number(this.listEntryExpired[index]?.qtyKecilSo);
   }
 
   onInputQtyBesarExpired(event: any, kodeBarang: string, index: number) {
@@ -884,19 +890,33 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
     const value3 = this.listDetail[index].konversi;
     let valKonversi = Number(value3);
 
-    this.listDetail[index].totalQtySo =
-      (valBesar > 0 ? valBesar * valKonversi : 0) + valKecil;
+    const totalQtySo = (valBesar > 0 ? valBesar * valKonversi : 0) + valKecil;
 
-    this.listDetail[index].selisihQty =
-      this.listDetail[index].totalQtySystem - this.listDetail[index].totalQtySo;
-
-    if (
-      !this.validationMessageListSatuanKecil[index] &&
-      !this.validationMessageListSatuanBesar[index]
-    ) {
-      this.updateQtyDbDetail(index, input);
+    if (totalQtySo > 9999999999.99) {
+      this.toastr.error(
+        'Mohon cek kembali Qty dan Konversi.',
+        'Melampaui nilai maximal Total Qty.'
+      );
+      if (input === 'kecil') {
+        this.validationMessageListSatuanKecil[index] =
+          'Melampaui nilai max Total Qty.';
+      } else {
+        this.validationMessageListSatuanBesar[index] =
+          'Melampaui nilai max Total Qty.';
+      }
     } else {
-      console.log('false');
+      this.listDetail[index].totalQtySo = totalQtySo;
+
+      this.listDetail[index].selisihQty =
+        this.listDetail[index].totalQtySystem -
+        this.listDetail[index].totalQtySo;
+
+      if (
+        !this.validationMessageListSatuanKecil[index] &&
+        !this.validationMessageListSatuanBesar[index]
+      ) {
+        this.updateQtyDbDetail(index, input);
+      }
     }
   }
 

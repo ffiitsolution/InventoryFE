@@ -243,41 +243,48 @@ export class AddDataDetailProductionComponent
       };
 
       Swal.fire({
-        title: 'Pastikan semua data sudah di input dengan benar!',
-        text: 'DATA YANG SUDAH DIPOSTING TIDAK DAPAT DIPERBAIKI..!!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Proses Posting',
-        cancelButtonText: 'Batal Posting',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.service
-            .insert('/api/production/insert', param)
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe({
-              next: (res) => {
-                if (!res.success) {
-                  this.toastr.error(res.message);
-                } else {
-                  this.onBackPressed(res.data);
-                  // setTimeout(() => {
-                  //   this.toastr.success('Data production berhasil diposting!');
-                  //   this.onPreviousPressed();
-                  // }, DEFAULT_DELAY_TIME);
-                }
-                this.adding = false;
-                this.loadingSimpan = false;
-              },
-              error: () => {
-                this.loadingSimpan = false;
-              },
+        ...this.g.componentKonfirmasiPosting,
+         showConfirmButton: false,
+         showCancelButton: false,
+         width: '600px',
+         customClass: {
+           popup: 'custom-popup'
+         },
+         didOpen: () => {
+          const submitBtn = document.getElementById('btn-submit');
+          const cancelBtn = document.getElementById('btn-cancel');
+  
+          submitBtn?.addEventListener('click', () => {
+            this.service
+              .insert('/api/production/insert', param)
+              .pipe(takeUntil(this.ngUnsubscribe))
+              .subscribe({
+                next: (res) => {
+                  if (!res.success) {
+                    this.toastr.error(res.message);
+                  } else {
+                    this.onBackPressed(res.data);
+                    // setTimeout(() => {
+                    //   this.toastr.success('Data production berhasil diposting!');
+                    //   this.onPreviousPressed();
+                    // }, DEFAULT_DELAY_TIME);
+                  }
+                  this.adding = false;
+                  this.loadingSimpan = false;
+                },
+                error: () => {
+                  this.loadingSimpan = false;
+                },
+              });
+              Swal.close();
             });
-        } else {
-          this.toastr.info('Posting dibatalkan');
-          this.loadingSimpan = false;
-        }
+    
+            cancelBtn?.addEventListener('click', () => {
+              Swal.close();
+              this.loadingSimpan = false;
+              this.toastr.info('Posting dibatalkan');
+            });
+          }
       });
     }
   }
@@ -383,6 +390,8 @@ export class AddDataDetailProductionComponent
 
   onSaveEntryExpired() {
     let totalQtyExpired = 0;
+    let validationExpiredMessageList='';
+    let totalQtyEmpty = 0;
 
     const totalQtyPemakaian =
       this.helper.sanitizedNumber(this.selectedExpProduct.qtyPemakaianBesar) *
@@ -390,20 +399,30 @@ export class AddDataDetailProductionComponent
       this.helper.sanitizedNumber(this.selectedExpProduct.qtyPemakaianKecil);
 
     this.listEntryExpired.forEach((item: any) => {
-      if (item.kodeBarang === this.selectedExpProduct.kodeBarang) {
+      if (item.kodeBarang === this.selectedExpProduct.bahanBaku) {
         item.totalQty =
           this.helper.sanitizedNumber(item.qtyPemakaianBesar) * item.konversi +
           this.helper.sanitizedNumber(item.qtyPemakaianKecil);
-        item.kodeBarang = this.selectedExpProduct.kodeBarang;
+        item.kodeBarang = this.selectedExpProduct.bahanBaku;
         totalQtyExpired += item.totalQty;
+
+        if(item.totalQty <= 0){
+          totalQtyEmpty++;
+        }
+        validationExpiredMessageList = item.validationExpiredMessageList;
       }
     });
 
-    if (totalQtyExpired > totalQtyPemakaian) {
+    if (totalQtyExpired != totalQtyPemakaian) {
       this.toastr.error('Total Qty Expired harus sama dengan Qty Pemakaian');
+    } else if(validationExpiredMessageList){
+      this.toastr.error(validationExpiredMessageList);
+    }else if(totalQtyEmpty > 0){
+      this.toastr.error('Total Qty Expired tidak boleh 0 !');
     } else {
       this.isShowModalExpired = false;
     }
+   
   }
 
   get filteredList() {
@@ -653,7 +672,7 @@ export class AddDataDetailProductionComponent
             parseFloat(value) +
               parseFloat(this.listEntryExpired[realIndex].qtyPemakaianKecil) <=
             0
-              ? 'Quantity tidak boleh < 0'
+              ? 'Quantity tidak boleh <= 0'
               : '',
         };
       }
@@ -692,7 +711,7 @@ export class AddDataDetailProductionComponent
             parseFloat(this.listEntryExpired[realIndex].qtyPemakaianBesar) <=
           0
         ) {
-          messageValidation = 'Quantity tidak boleh < 0';
+          messageValidation = 'Quantity tidak boleh <= 0';
         } else if (
           Math.round(value) >=
           Math.round(this.listEntryExpired[realIndex].konversi)
@@ -721,6 +740,10 @@ export class AddDataDetailProductionComponent
         ),
       0
     );
+
+    if(this.totalFilteredExpired == 0){
+        this.toastr.error(`Total Qty tidak boleh 0!`);
+    }
 
     this.totalFilteredExpired = parseFloat(this.totalFilteredExpired).toFixed(
       2

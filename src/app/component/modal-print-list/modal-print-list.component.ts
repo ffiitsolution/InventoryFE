@@ -33,7 +33,11 @@ export class ModalPrintListComponent {
     private dataService: DataService,
     private toastr: ToastrService,
     private g: GlobalService
-  ) { }
+  ) { 
+
+    console.log('ModalPrintListComponent constructor called');
+    console.log(this.generateReportParam);
+  }
 
   closeModal() {
     this.closeModalEvent.emit();

@@ -124,3 +124,289 @@
     transition: background-color 0.3s ease-in-out;
   }
   
+  .text-color {
+    &-title {
+        color: #B51823;
+        font-weight: 700;
+        font-size: 30px;
+        line-height: 30px
+    }
+}
+
+.btn-order {
+    &-information {
+        padding: 8px 24px;
+        width: 225px;
+        height: 44px;
+        border: 2px solid hsl(356, 77%, 40%);
+        border-radius: 16px;
+        color: #B51823;
+        font-weight: bold;
+    }
+
+    &-item {
+        padding: 0px 15px;
+        width: 175px;
+        height: 40px;
+        border: 1px solid gray;
+        border-radius: 16px;
+        color: gray;
+        font-weight: bold;
+    }
+
+    &-information:hover {
+        color: white;
+        background-color: #B51823;
+    }
+
+    &-item:hover {
+        color: white;
+        background-color: gray;
+    }
+}
+
+.alokasi-text {
+    font-weight: 600;
+    color: #B51823;
+}
+
+.mt-5 {
+    margin-top: 5rem;
+}
+
+.text-tracking {
+    font-weight: bold;
+    display: flex;
+    font-size: 24px;
+    color: #B51823;
+}
+
+.tb-color {
+    background: #B51823;
+    color: white;
+}
+
+.btn-xlsx {
+    align-items: center;
+    padding: 8px 24px;
+
+    width: 143px;
+    height: 44px;
+    left: 1275px;
+    top: 389px;
+
+    /* Active */
+    color: white;
+
+    background: #2CB620;
+    /* Active */
+
+    border: 2px solid #2CB620;
+    border-radius: 16px;
+}
+
+.head-menu-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+  
+    .menu-purpose {
+      padding: 12px;
+      border: 2px solid #b51823;
+      border-radius: 10px;
+      max-width: 850px;
+      text-align: right;
+  
+      span {
+        color: #B51823;
+        font-size: 10px;
+        font-weight: 600;
+      }
+    }
+  }
+
+// Overlay untuk menutup latar belakang saat modal aktif
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+  }
+  
+  // Kontainer utama modal
+//   .modal-container {
+//     background: white;
+//     width: 450px;
+//     padding: 20px;
+//     border-radius: 8px;
+//     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+//     text-align: center;
+//     animation: fadeIn 0.3s ease-in-out;
+//   }
+  
+  // Animasi fade-in untuk modal
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  // Header modal dengan tombol close
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #f1f1f1;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+  
+    h3 {
+      margin: 0;
+      color: #333;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  
+    .btn-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #333;
+  
+      &:hover {
+        color: red;
+      }
+    }
+  }
+  
+  // Input Form Styling
+  .form-group {
+    margin: 15px 0;
+    text-align: left;
+  
+    label {
+      display: block;
+      font-weight: bold;
+      color: #555;
+      margin-bottom: 5px;
+    }
+  
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  
+    textarea.form-control {
+      height: 60px;
+      resize: none;
+    }
+  }
+  
+  // Tujuan Kirim - Format input dengan tombol pencarian
+  .tujuan-kirim {
+    display: flex;
+    align-items: center;
+  
+    input {
+      flex: 1;
+    }
+  
+    .search-button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 10px;
+      cursor: pointer;
+      margin-left: 5px;
+      border-radius: 4px;
+      transition: 0.3s;
+  
+      &:hover {
+        background: #0056b3;
+      }
+    }
+  }
+  
+  // Catatan di bawah form
+  .note {
+    font-size: 12px;
+    color: #777;
+    margin-top: 10px;
+  }
+  
+  // Footer Modal - Tombol aksi
+  .modal-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  
+    .btn {
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+  
+    .btn-warning {
+      background: #f39c12;
+      color: white;
+  
+      &:hover {
+        background: #d68910;
+      }
+    }
+  
+    .btn-primary {
+      background: #007bff;
+      color: white;
+  
+      &:hover {
+        background: #0056b3;
+      }
+    }
+  
+    .btn-danger {
+      background: #dc3545;
+      color: white;
+  
+      &:hover {
+        background: #a71d2a;
+      }
+    }
+  }
+  
+  .modal-bg-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    /* Transparansi dan warna hitam */
+    z-index: 1040;
+    /* Pastikan berada di belakang modal */
+    transition: all 0.3s ease-in-out;
+    /* Smooth transition untuk opacity */
+  }
+  .titel-header{
+    margin-left: 50px;
+}

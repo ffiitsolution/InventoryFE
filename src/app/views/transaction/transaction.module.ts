@@ -16,6 +16,7 @@ import {
   TableModule,
   TextColorDirective,
   UtilitiesModule,
+  
 } from '@coreui/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -65,6 +66,12 @@ import { KirimBarangReturnKeSiteListComponent } from './kirim-barang-return-ke-s
 import { AddKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/add-data/add-data.component';
 import { AddDataDetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/add-data-detail/add-data-detail.component';
 import { DetailKirimBarangReturnKeSiteComponent } from './kirim-barang-return-ke-site/detail/detail.component';
+
+import { KirimBarangReturnKeSupplierListComponent } from './kirim-barang-return-ke-supplier/dt-list/kirim-barang-return-ke-supplier-list.component';
+import { AddKirimBarangReturnKeSupplierComponent } from './kirim-barang-return-ke-supplier/add-data/add-data.component';
+import { AddDataDetailKirimBarangReturnKeSupplierComponent } from './kirim-barang-return-ke-supplier/add-data-detail/add-data-detail.component';
+import { DetailKirimBarangReturnKeSupplierComponent } from './kirim-barang-return-ke-supplier/detail/detail.component';
+
 import { SelectDropDownModule } from 'ngx-select-dropdown';
 
 //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 START
@@ -85,6 +92,8 @@ import { DetailPenerimaanBrgBksComponent } from './penerimaan-barang-bekas/detai
 import { PenerimaanBrgBksListComponent } from './penerimaan-barang-bekas/dt-list/penerimaan-brg-bks-list.component';
 import { PenerimaanBrgBksListNoreturComponent } from './penerimaan-barang-bekas/dt-list-noretur/penerimaan-brg-bks-list-noretur.component';
 import { DetailPenerimaanBrgBksReturComponent } from './penerimaan-barang-bekas/detail-retur/detail-retur.component';
+import { ProductionListForPostingComponent } from './production/dt-list-for-posting/production-list-for-posting.component';
+import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -113,7 +122,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     TableModule,
     SharedComponentModule,
     PaginationModule,
-    SelectDropDownModule
+    SelectDropDownModule,
+    TimepickerModule.forRoot()
   ],
   declarations: [
     DeliveryItemComponent,
@@ -156,6 +166,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     AddKirimBarangReturnKeSiteComponent,
     AddDataDetailKirimBarangReturnKeSiteComponent,
     DetailKirimBarangReturnKeSiteComponent,    
+    KirimBarangReturnKeSupplierListComponent,
+    AddKirimBarangReturnKeSupplierComponent,
+    AddDataDetailKirimBarangReturnKeSupplierComponent,
+    DetailKirimBarangReturnKeSupplierComponent,    
     //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 START
     TerimaBarangReturDariSiteListComponent,
     AddTerimaBarangReturDariSiteComponent,
@@ -174,7 +188,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     AddDataDetailPenerimaanBrgBksComponent,
     PenerimaanBrgBksListComponent,
     PenerimaanBrgBksListNoreturComponent,
-    DetailPenerimaanBrgBksReturComponent
+    DetailPenerimaanBrgBksReturComponent,
+
+    ProductionListForPostingComponent
 
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
