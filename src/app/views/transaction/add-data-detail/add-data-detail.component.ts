@@ -67,7 +67,7 @@ export class AddDataDetailDeliveryComponent
   filteredListTypeOrder: any[] = [];
   validationMessages: { [key: number]: string } = {};
   validationQtyKecilKonversi: { [key: number]: string } = {};
-  validationTotalStock:{ [key: number]: string } = {};
+  validationTotalStock: { [key: number]: string } = {};
   dtColumns: any = [];
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
@@ -305,10 +305,17 @@ export class AddDataDetailDeliveryComponent
       return;
     }
 
+    if (this.listEntryExpired.length !== this.listOrderData.length) {
+      this.toastr.warning( 'Qty expired belum dilengkapi!'
+      );
+      this.adding = false;
+      return;
+    }
+
     const self = this;
 
     Swal.fire({
-      title: '<div style="color: white; background: #c0392b; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
+      title: '<div style="color: white; background: #e55353; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
       html: `
     <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">
       <p>Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
@@ -783,10 +790,10 @@ export class AddDataDetailDeliveryComponent
         });
         this.loading = false;
         let validationStock = '';
-              
+
         if (this.selectedStockExp.qtyBesar <= 10) {
           validationStock = 'STOCK SEDIKIT'
-          this.validationTotalStock[index] = validationStock ;
+          this.validationTotalStock[index] = validationStock;
         }
         paramDtExpired.kodeBarang = this.selectedStockExp.kodeBarang,
           paramDtExpired.startDate = this.g.transformDate(startDate),
@@ -831,8 +838,8 @@ export class AddDataDetailDeliveryComponent
               const mappedData = resp.data.map((item: any, index: number) => {
                 const { rn, ...rest } = item;
 
-                const konversi = rest.konversi || 1; 
-                const totalQty = rest.totalQty; 
+                const konversi = rest.konversi || 1;
+                const totalQty = rest.totalQty;
                 const qtyBesar = Math.floor(totalQty / konversi);
                 const qtyKecil = totalQty % konversi;
 

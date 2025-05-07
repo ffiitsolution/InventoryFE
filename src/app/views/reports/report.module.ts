@@ -38,6 +38,7 @@ import { StockReportComponent } from './stock/stock-report.component';
 import { TransactionReportComponent } from './transaction/transaction-report.component';
 import { QueryStockReportComponent } from './query-stock/query-stock-report.component';
 import { SharedCustomPipeModule } from '../../pipes/shared-pipe.module';
+import { ActivityLogComponent } from './activity-log/activity-log.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -79,6 +80,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     StockReportComponent,
     TransactionReportComponent,
     QueryStockReportComponent,
+    ActivityLogComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

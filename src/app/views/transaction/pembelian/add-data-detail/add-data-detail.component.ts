@@ -142,8 +142,8 @@ export class AddDataDetailPembelianComponent
       (res) => {
         this.listOrderData = res.data.map((data: any) => ({
           ...data,
-          qtyTerimaBesar: data.qtyPesanBesar,
-          qtyTerimaKecil: data.qtyPesanKecil,
+          qtyTerimaBesar: Number(data.qtyPesanBesar).toFixed(2),
+          qtyTerimaKecil: Number(data.qtyPesanKecil).toFixed(2),
         }));
         this.filteredListTypeOrder = this.listOrderData;
         this.totalLength = res?.data?.length;
@@ -189,6 +189,26 @@ export class AddDataDetailPembelianComponent
 
     // Simpan pesan validasi berdasarkan index
     this.validationMessages[index] = validationMessage;
+  }
+
+  onBlurQtyTerimaBesar(index: number) {
+    const value = this.listOrderData[index].qtyTerimBesar;
+    let parsed = Number(value);
+    if (!isNaN(parsed)) {
+      this.listOrderData[index].qtyTerimBesar = parsed.toFixed(2);
+    } else {
+      this.listOrderData[index].qtyTerimBesar = '0.00';
+    }
+  }
+
+  onBlurQtyTerimaKecil(index: number) {
+    const value = this.listOrderData[index].qtyTerimaKecil;
+    let parsed = Number(value);
+    if (!isNaN(parsed)) {
+      this.listOrderData[index].qtyTerimaKecil = parsed.toFixed(2); // will be a string like "4.00"
+    } else {
+      this.listOrderData[index].qtyTerimaKecil = '0.00'; // fallback if input is not a number
+    }
   }
 
   onFilterSearch(

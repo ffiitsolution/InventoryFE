@@ -289,15 +289,43 @@ export class GlobalService {
       myForm.controls?.[fieldName]?.errors
     );
   }
-  getStatusOrderLabel(status: string, isPrintStatus: boolean = false) {
+  getStatusOrderLabel(status: string, isPrintStatus: boolean = false, isShowBadge: boolean = false): string {
     const data = isPrintStatus ? PRINT_STATUS : STATUS_RESULT;
-    const found = data.find((item) => item.value == status);
+    const found = data.find((item) => item.value === status);
     if (!found) {
-      return '-';
+      return '';
     }
-    // return `(${status}) ${found?.label}` || status;
-    return `${found?.label?.toUpperCase()}` || status;
+
+    let badgeClass = 'bg-secondary';
+
+    switch (found.value) {
+      case 'S':
+      case '2':
+      case 'P':
+        badgeClass = 'bg-success';
+        break;
+      case '1':
+        badgeClass = 'bg-info';
+        break;
+      case 'B':
+        badgeClass = 'bg-secondary';
+        break;
+      case 'I':
+        badgeClass = 'bg-warning';
+        break;
+      // Tambahkan case lainnya jika ada
+    }
+
+    let labelStatus = '';
+    if (isShowBadge) {
+      labelStatus = `<span class="badge ${badgeClass}">${found.label.toUpperCase()}</span>`;
+    } else {
+      labelStatus = `${found?.label?.toUpperCase()}` || status;
+    }
+    return labelStatus;
+
   }
+
   getsatusDeliveryOrderLabel(status: string, isPrintStatus: boolean = false) {
     const data = isPrintStatus ? PRINT_STATUS : STATUS_RESULT;
     const found = data.find((item) => item.value == status);

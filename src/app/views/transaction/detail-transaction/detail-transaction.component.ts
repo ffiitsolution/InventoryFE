@@ -148,7 +148,8 @@ export class DetailTransactionComponent
               kodeTujuan: this.selectedOrder.kodeTujuan,
               namaTujuan: this.selectedOrder.namaTujuan,
               keterangan: this.selectedOrder.keterangan,
-              alamatTujuan: this.selectedOrder.alamatTujuan
+              alamatTujuan: this.selectedOrder.alamatTujuan,
+              cetakSuratJalan: this.selectedOrder.cetakSuratJalan
             };
             this.paramUpdatePrintStatus = {
               noSuratJalan: this.selectedOrder.noSuratJalan

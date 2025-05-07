@@ -54,7 +54,7 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private router: Router,
     private dataService: DataService,
-    private globalService: GlobalService,
+    public globalService: GlobalService,
     private translationService: TranslationService,
     private deliveryDataService: DeliveryDataService,
     private appService: AppService
@@ -102,8 +102,8 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
       });
       return;
     }
-  
-    const regex = /^[a-zA-Z0-9-]+$/;  
+
+    const regex = /^[a-zA-Z0-9-]+$/;
     if (!regex.test(this.formData.nomorDokumen)) {
       Swal.fire({
         title: 'Nomor Dokumen Salah!',
@@ -115,23 +115,23 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     if (this.invalidNotes) {
-      return; 
+      return;
     }
 
     if (!this.formData.notes || this.formData.notes.trim() === '') {
       alert('Catatan (Keterangan Lain) tidak boleh kosong');
       return;
     }
-  
+
     this.isShowDetail = true;
-  
+
     this.globalService.saveLocalstorage(
       'headerPembelian',
       JSON.stringify(this.formData)
     );
   }
-  
-  
+
+
 
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
@@ -173,6 +173,7 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
       drawCallback: (drawCallback) => {
         this.selectedRowData = undefined;
       },
+      order: [[0, 'desc']],
       ajax: (dataTablesParameters: any, callback) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
@@ -206,8 +207,8 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
       columns: [
         { data: 'nomorPesanan', title: 'No. Pesanan' },
         { data: 'tglPesanan', title: 'Tgl. Pesan', render: (data) => this.globalService.transformDate(data) },
-        { data: 'tglKirimBrg', title: 'Tgl. Kirim', render: (data) => this.globalService.transformDate(data)  },
-        { data: 'tglBatalExp', title: 'Tgl. Expired', render: (data) => this.globalService.transformDate(data)  },
+        { data: 'tglKirimBrg', title: 'Tgl. Kirim', render: (data) => this.globalService.transformDate(data) },
+        { data: 'tglBatalExp', title: 'Tgl. Expired', render: (data) => this.globalService.transformDate(data) },
         { data: 'supplier', title: 'Supplier', },
         { data: 'namaSupplier', title: 'Nama Supplier', },
         { data: 'alamatSupplier', title: 'Alamat', },
@@ -216,7 +217,7 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
           title: 'Status Pesanan',
           render: (data) => {
             const isCancel = data == CANCEL_STATUS;
-            const label = this.globalService.getsatusDeliveryOrderLabel(data);
+            const label = this.globalService.getStatusOrderLabel(data, false, true);
             if (isCancel) {
               return `<span class="text-center text-danger">${label}</span>`;
             }
@@ -226,7 +227,7 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
         {
           data: 'statusCetak',
           title: 'Status Cetak',
-          render: (data) => this.globalService.getsatusDeliveryOrderLabel(data, true),
+          render: (data) => this.globalService.getStatusOrderLabel(data, true, true),
         },
         {
           title: 'Action',
@@ -279,7 +280,7 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
 
   updateCharCount() {
     this.charCount = this.formData.notes ? this.formData.notes.length : 0;
-    this.invalidNotes = false; 
+    this.invalidNotes = false;
   }
 
   validateNotes() {
@@ -288,6 +289,40 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
       this.invalidNotes = true;
     }
   }
+
+  validationTglTerimaBrg: any = null;
+  getValidationTglTerimaBrg(isFormatted: boolean = false): any {
+      let validationText = '';
+      let tempDateTerimaBrg;
+      const tempDatePermintaanTerima = this.formData.tglTerimaBrg;
+  
+      if (isFormatted) {
+        tempDateTerimaBrg = this.formData.tglTerimaBrg;
+      } else {
+        let validatedDate = this.formData.tglTerimaBrg;
+        if (typeof validatedDate === 'string') {
+          // Coba parse string, tentukan format input string-nya
+          validatedDate = moment(validatedDate, 'DD-MM-YYYY').isValid()
+            ? moment(validatedDate, 'DD-MM-YYYY')
+            : moment(validatedDate);
+        } else {
+          validatedDate = moment(validatedDate);
+        }
+        tempDateTerimaBrg = validatedDate.format('DD-MM-YYYY');
+      }
+  
+      const today = moment().format('DD-MM-YYYY');
+  
+      if (tempDateTerimaBrg !== tempDatePermintaanTerima) {
+        validationText += '** TANGGAL Terima TIDAK SESUAI DENGAN PERMINTAAN Terima..!!';
+      }
+  
+      if (tempDateTerimaBrg !== today) {
+        validationText += "** TANGGAL Terima 'TIDAK SESUAI' DENGAN TGL. HARI INI, PERIKSA KEMBALI..!!";
+      }
+  
+      this.validationTglTerimaBrg = validationText;
+    }
 }
 
 
@@ -296,11 +331,6 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
 })
 export class DeliveryDataService {
   constructor(private http: HttpClient) { }
-
-  saveDeliveryData(data: any): Observable<any> {
-    const apiUrl = 'http://localhost:8093/inventory/api/delivery-order/status-descriptions';
-    return this.http.post<any>(apiUrl, data);
-  }
 }
 
 

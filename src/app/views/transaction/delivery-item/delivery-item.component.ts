@@ -137,19 +137,19 @@ export class DeliveryItemComponent implements OnInit {
         {
           data: 'cetakSuratJalan',
           title: 'Status Cetak Surat Jalan',
-          render: (data) => this.g.getsatusDeliveryOrderLabel(data, true),
+          render: (data) => this.g.getStatusOrderLabel(data, true, true),
         },
         {
           data: 'statusDoBalik',
           title: 'Status DO Balik',
-          render: (data) => this.g.getsatusDeliveryOrderLabel(data, true),
+          render: (data) => this.g.getStatusOrderLabel(data, true, true),
         },
         {
           data: 'statusPosting',
           title: 'Status Pengiriman',
           render: (data) => {
             const isCancel = data == CANCEL_STATUS;
-            const label = this.g.getStatusOrderLabel(data);
+            const label = this.g.getStatusOrderLabel(data, false, true);
             if (isCancel) {
               return `<span class="text-center text-danger">${label}</span>`;
             }
@@ -159,6 +159,7 @@ export class DeliveryItemComponent implements OnInit {
         {
           title: 'Aksi',
           className: 'text-center',
+
           render: () => {
             return `<div class="d-flex px-2 gap-1"> 
               <button style="width: 74px" class="btn btn-sm action-view btn-outline-info btn-60 pe-2">

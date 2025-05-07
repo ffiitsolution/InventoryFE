@@ -414,4 +414,11 @@ export class AppService {
     );
   }
 
+    // Activity Log
+    listActivityLogFiles(payload: any): Observable<any> {
+      return this.dataService.postData(
+        `${this.config.BASE_URL}/list-log`,
+        payload
+      );
+    }
 }

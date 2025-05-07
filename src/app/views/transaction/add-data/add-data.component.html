@@ -92,7 +92,6 @@
                     [(ngModel)]="formData.tglBrgDikirim" placeholder="{{ 'Tanggal permintaan kirim' | translate }}"
                     [minDate]="minDate" [maxDate]="maxDate" style="pointer-events: none; " />
                 </div>
-
               </div>
 
               <div class="w-100 px-2 py-1 row">
@@ -100,7 +99,7 @@
                   <label for="tglKadaluarsa">{{ "Tgl. Kadaluarsa Pesanan" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <input type="text" id="tglKadaluarsa" class="form-control" aria-describedby="tglK adaluarsa"
+                  <input type="text" id="tglKadaluarsa" class="form-control" aria-describedby="tglKadaluarsa"
                     #dp="bsDatepicker" [bsConfig]="dpConfig" disabled bsDatepicker autocomplete="off"
                     [(ngModel)]="formData.tglKadaluarsa" placeholder="{{ 'Tanggal kadaluarsa' | translate }}"
                     [minDate]="minDate" [maxDate]="maxDate" style="pointer-events: none; " />
@@ -152,8 +151,8 @@
 
               <div style="width: 96%;" class="p-2">
                 <button class="shadow-sm btn w-100 btn-info text-white" *ngIf="!isShowDetail"
-                  [disabled]="formData.nomorPesanan === '' || formData.validatedDeliveryDate === ''"
-                  (click)="onAddDetail()">
+                [disabled]="formData.nomorPesanan === '' || formData.validatedDeliveryDate === null"
+                (click)="onAddDetail()">
                   <i class="fa fa-check pe-2"></i>
                   {{ "Detail Transaksi" | translate }}
                 </button>

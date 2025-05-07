@@ -107,17 +107,17 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
         {
           data: 'cetakSuratJalan',
           title: 'Status Cetak Surat Jalan',
-          render: (data: string) => this.g.getStatusOrderLabel(data, true),
+          render: (data: string) => this.g.getStatusOrderLabel(data, true, true),
         },
         {
           data: 'statusDoBalik',
           title: 'Status DO Balik',
-          render: (data: string) => this.g.getStatusOrderLabel(data, true),
+          render: (data: string) => this.g.getStatusOrderLabel(data, true, true),
         },
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render: (data: string) => this.g.getStatusOrderLabel(data),
+          render: (data: string) => this.g.getStatusOrderLabel(data, false, true),
         },
         {
           title: 'Opsi',
@@ -138,7 +138,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
         );
 
         $('.action-posting', row).on('click', () => {
-          this.onShowModalPosting(data);
+          this.actionBtnClick('POSTING', data)
         });
 
         return row;
@@ -222,22 +222,12 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
       this;
     }
     if (action === 'POSTING') {
-      const param = {
-        kodeGudang: data.kodeGudang,
-        noSuratJalan: data.noSuratJalan,
-        userPosted: JSON.parse(localStorage.getItem('inv_currentUser') || '')
-          .namaUser,
-        datePosted: this.g.getLocalDateTime(new Date()),
-      };
-      this.appService.updateDeliveryOrderPostingStatus(param).subscribe({
-        next: (response) => {
-          this.toastr.success('Berhasil Posting DO Balik');
-          this.search();
-        },
-        error: (error) => {
-          this.toastr.error('Gagal Posting DO Balik');
-        },
-      });
+      if(data.cetakSuratJalan !== 'S'){
+        this.toastr.warning( 'DO BALIK TIDAK DAPAT DIPROSES, SURAT JALAN BELUM DICETAK..!!'
+        );
+      } else if (data.cetakSuratJalan === 'S'){
+        this.onShowModalPosting(data)
+      }
     }
   }
 
