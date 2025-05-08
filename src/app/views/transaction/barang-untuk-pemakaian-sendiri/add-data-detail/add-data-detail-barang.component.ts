@@ -531,7 +531,7 @@ export class AddDataDetailBarangComponent
           data: 'statusAktif',
           title: 'Status Aktif',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             if (data === 'A') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }

@@ -496,7 +496,7 @@
         <i class="fa fa-times"></i>
       </button> -->
     </c-modal-header>
-    <c-modal-body>
+    <!-- <c-modal-body>
       <div class="row">
         <div class="col-6">
           <div class="w-100 px-2 py-1 row">
@@ -611,7 +611,94 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
+      
+      <c-modal-body>
+        <div class="row">
+          <div class="col-9">
+            <div class="w-100 px-2 py-1 row">
+    
+              <div class="col-3 d-flex align-items-center">
+                <label for="nomorPesanan">{{ "Nama Barang" | translate }}</label>
+              </div>
+              <div class="col-9 pe-0 d-flex">
+                <div class="col-3 pe-2">
+                  <input type="text" class="form-control" id="kodeBarang" [(ngModel)]="selectedExpProduct.kodeBarang"
+                    name="kodeBarang" readonly />
+                </div>
+                <div class="col-9">
+                  <input type="text" class="form-control" id="namaBarang" [(ngModel)]="selectedExpProduct.namaBarang"
+                    name="namaBarang" readonly />
+                </div>
+              </div>
+            </div>
+            <div class="w-100 px-2 py-1 row">
+              <div class="col-3 d-flex align-items-center">
+                <label for="nomorPesanan">{{ "Konversi Barang" | translate }}</label>
+              </div>
+              <div class="col-9 pe-0">
+                <input type="text" class="form-control" id="konversi"
+                [value]="
+                selectedExpProduct.konversi +
+                ' ' +
+                selectedExpProduct.satuanKecil +
+                '/' +
+                selectedExpProduct.satuanBesar
+              "
+                  name="konversi" readonly />
+    
+              </div>
+    
+            </div>
+    
+            <div class="w-100 px-2 py-1 row">
+              <div class="col-3 d-flex align-items-center">
+                <label class="fw-semibold" for="nomorPesanan">{{ "TOTAL QTY USED" | translate }}</label>
+              </div>
+              <div class="col-6 pe-0">
+                <input type="text" placeholder="Nomor pesanan" class="form-control" id="totalQtyProduksi"
+                  [value]=" helper.sanitizedNumber(selectedExpProduct.qtyWasteBesar) *
+                  selectedExpProduct.konversi +
+                  helper.sanitizedNumber(selectedExpProduct.qtyWasteKecil) +
+                  ' ' +
+                  selectedExpProduct.satuanKecil"
+                  name="totalQtyProduksi" readonly />
+              </div>
+              <div class="col-3 d-flex align-items-start">
+                <label for="totalQtyProduksi">{{ selectedExpProduct.satuanKecil }}</label>
+              </div>
+            </div>
+    
+          </div>
+          <div class="col-3">
+            <div class="w-100 px-2 py-1 row">
+              <div class="col-4 d-flex align-items-center">
+                <label for="nomorPesanan">{{ "Quantity Besar" | translate }}</label>
+              </div>
+              <div class="col-5 pe-0">
+                <input type="text" class="form-control" id="qtyPemakaianBesar" [value]="selectedExpProduct.qtyWasteBesar"
+                  name="qtyPemakaianBesar" readonly />
+              </div>
+              <div class="col-3 d-flex align-items-start">
+                <label for="qtyPemakaianBesar">{{ selectedExpProduct.satuanBesar }}</label>
+              </div>
+            </div>
+    
+            <div class="w-100 px-2 py-1 row">
+              <div class="col-4 d-flex align-items-center">
+                <label for="nomorPesanan">{{ "Quantity Kecil" | translate }}</label>
+              </div>
+              <div class="col-5 pe-0">
+                <input type="text" class="form-control" id="qtyPemakaianKecil" [value]="selectedExpProduct.qtyWasteKecil || 0"
+                  name="qtyPemakaianKecil" readonly />
+              </div>
+              <div class="col-3 d-flex align-items-start">
+                <label for="qtyPemakaianKecil">{{ selectedExpProduct.satuanKecil }}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
 
       <div class="divider"></div>
       <div class="alert-expired col-sm-12 d-flex flex-column justify-content-start align-items-center">
@@ -821,13 +908,13 @@
             <i class="fa fa-plus ms-1"></i> Tambah
           </button>
 
-          <button
+          <!-- <button
             (click)="undoLastAddedRow()"
             type="button"
             class="btn btn-secondary ms-2"
           >
             <i class="fa fa-times me-1"></i> Hapus
-          </button>
+          </button> -->
         </div>
         <div class="col-6 d-flex justify-content-end mt-3">
           <p class="mb-0">
