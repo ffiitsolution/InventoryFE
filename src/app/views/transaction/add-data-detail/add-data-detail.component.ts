@@ -67,9 +67,9 @@ export class AddDataDetailDeliveryComponent
   filteredListTypeOrder: any[] = [];
   validationMessages: { [key: number]: string } = {};
   validationQtyKecilKonversi: { [key: number]: string } = {};
-  validationTotalStock:{ [key: number]: string } = {};
+  validationTotalStock: { [key: number]: string } = {};
   dtColumns: any = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -305,10 +305,17 @@ export class AddDataDetailDeliveryComponent
       return;
     }
 
+    if (this.listEntryExpired.length !== this.listOrderData.length) {
+      this.toastr.warning( 'Qty expired belum dilengkapi!'
+      );
+      this.adding = false;
+      return;
+    }
+
     const self = this;
 
     Swal.fire({
-      title: '<div style="color: white; background: #c0392b; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
+      title: '<div style="color: white; background: #e55353; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
       html: `
     <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">
       <p>Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
@@ -783,10 +790,10 @@ export class AddDataDetailDeliveryComponent
         });
         this.loading = false;
         let validationStock = '';
-              
+
         if (this.selectedStockExp.qtyBesar <= 10) {
           validationStock = 'STOCK SEDIKIT'
-          this.validationTotalStock[index] = validationStock ;
+          this.validationTotalStock[index] = validationStock;
         }
         paramDtExpired.kodeBarang = this.selectedStockExp.kodeBarang,
           paramDtExpired.startDate = this.g.transformDate(startDate),
@@ -811,7 +818,7 @@ export class AddDataDetailDeliveryComponent
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.pageDt.start = dataTablesParameters.start;
         this.pageDt.length = dataTablesParameters.length;
         const params = {
@@ -831,8 +838,8 @@ export class AddDataDetailDeliveryComponent
               const mappedData = resp.data.map((item: any, index: number) => {
                 const { rn, ...rest } = item;
 
-                const konversi = rest.konversi || 1; 
-                const totalQty = rest.totalQty; 
+                const konversi = rest.konversi || 1;
+                const totalQty = rest.totalQty;
                 const qtyBesar = Math.floor(totalQty / konversi);
                 const qtyKecil = totalQty % konversi;
 
@@ -865,22 +872,22 @@ export class AddDataDetailDeliveryComponent
         { data: 'tglExpired', title: 'Tgl. Expired' },
         {
           data: 'tglExpired', title: 'Keterangan Tanggal',
-          render: (data, type, row) => moment(data)
+            render: (data: any, _: any, row: any) => moment(data)
             .add(1, 'days')
             .locale('id')
             .format('DD MMM YYYY')
         },
         {
           data: 'qtyBesar', title: 'Qty Besar',
-          render: (data, type, row) => `${data} ${row.satuanBesar}`
+            render: (data: any, _: any, row: any) => `${data} ${row.satuanBesar}`
         },
         {
           data: 'qtyKecil', title: 'Qty Kecil',
-          render: (data, type, row) => `${data} ${row.satuanKecil}`
+            render: (data: any, _: any, row: any) => `${data} ${row.satuanKecil}`
         },
         {
           data: 'totalQty', title: 'Total Qty Expired',
-          render: (data, type, row) => `${data} ${row.satuanKecil}`
+            render: (data: any, _: any, row: any) => `${data} ${row.satuanKecil}`
         },
       ],
       searchDelay: 1000,
@@ -889,7 +896,7 @@ export class AddDataDetailDeliveryComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }

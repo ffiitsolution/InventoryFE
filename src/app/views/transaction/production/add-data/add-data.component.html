@@ -49,7 +49,6 @@
                       autocomplete="off"
                       formControlName="tglTransaksi"
                       placeholder="{{ 'Tanggal transaksi' | translate }}"
-                      [readOnly]="isShowDetail"
                     />
                     <input
                       type="text"
@@ -60,7 +59,6 @@
                       aria-describedby="tglTransaksi"
                       autocomplete="off"
                       placeholder="{{ 'Tanggal transaksi' | translate }}"
-                      [readOnly]="true"
                       formControlName="tglTransaksi"
                     />
                   </div>
@@ -109,7 +107,6 @@
                       id="kodeBarang"
                       formControlName="namaBarang"
                       name="kodeBarang"
-                      [readOnly]="true"
                     >
                     </textarea>
                   </div>
@@ -172,7 +169,7 @@
                       id="jumlahHasilProduksi"
                       formControlName="jumlahHasilProduksi"
                       name="jumlahHasilProduksi"
-                      [readonly]="isShowDetail"
+                     
                     />
                   </div>
                 </div>
@@ -231,7 +228,6 @@
                   <div class="col-8 pe-0 d-flex">
                     <input
                       type="text"
-                      *ngIf="!isShowDetail"
                       id="tglExp"
                       class="form-control"
                       aria-describedby="tglExp"
@@ -244,7 +240,7 @@
                         'Tgl. Expired Hasil Produksi' | translate
                       }}"
                     />
-                    <input
+                    <!-- <input
                       type="text"
                       *ngIf="isShowDetail"
                       id="tglExp"
@@ -257,7 +253,7 @@
                       placeholder="{{
                         'Tgl. Expired Hasil Produksi' | translate
                       }}"
-                    />
+                    /> -->
                   </div>
                 </div>
 
@@ -275,7 +271,6 @@
                       maxlength="50"
                       class="form-control"
                       id="keterangan"
-                      [readonly]="isShowDetail"
                       formControlName="keterangan"
                       name="keterangan"
                     >
@@ -334,6 +329,10 @@
             <app-add-data-detail-production
               (onBatalPressed)="onBatalPressed($event)"
               (jumlahBahanbaku)="addJumlahBahanBaku($event)"
+              [dataProduct]="listProductData"
+              [dataExired]="listExpiredData"
+              [dataUpdate]="isUpdate"
+              [dataHeader]="formData"
             ></app-add-data-detail-production>
           </div>
         </div>

@@ -427,4 +427,44 @@ export class AppService {
     );
   }
 
+  detailProductionAndExpired(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/details`,
+      payload
+    );
+  }
+
+  postingProduction(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/posting`,
+      payload
+    );
+  }
+  getSummaryKirimProduction(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/summary-kirim`,
+      payload
+    );
+  }
+
+  kirimProduction(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/kirim`,
+      payload
+    );
+  }
+  
+  getSummaryPostingProduction(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/summary-posting`,
+      payload
+    );
+  }
+  // Activity Log
+  listActivityLogFiles(payload: any): Observable<any> {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/list-log`,
+      payload
+    );
+  }
 }

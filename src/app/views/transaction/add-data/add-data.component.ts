@@ -31,7 +31,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   isShowModal: boolean = false;
   dtTrigger: Subject<any> = new Subject();
   bsConfig: Partial<BsDatepickerConfig>;
@@ -55,7 +55,8 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
     tglKadaluarsa: '',
     keterangan: '',
     codeDestination: '',
-    kodeGudang: ''
+    kodeGudang: '',
+    validatedDeliveryDate: null,
   };
 
   // [alreadyPrint]="alreadyPrint"
@@ -200,11 +201,11 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
       order: [[0, 'desc']],
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -236,15 +237,15 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
       columns: [
         { data: 'dtIndex', title: '#' },
         { data: 'nomorPesanan', title: 'No. Pesanan' },
-        { data: 'tglPesan', title: 'Tgl. Pesan', render: (data) => this.globalService.transformDate(data) },
-        { data: 'tglBrgDikirim', title: 'Tgl. Dikirim', render: (data) => this.globalService.transformDate(data) },
-        { data: 'tglKadaluarsa', title: 'Tgl. Expired', render: (data) => this.globalService.transformDate(data) },
+        { data: 'tglPesan', title: 'Tgl. Pesan', render: (data:any) => this.globalService.transformDate(data) },
+        { data: 'tglBrgDikirim', title: 'Tgl. Dikirim', render: (data:any) => this.globalService.transformDate(data) },
+        { data: 'tglKadaluarsa', title: 'Tgl. Expired', render: (data:any) => this.globalService.transformDate(data) },
         { data: 'kodePemesan', title: 'Pemesan' },
         { data: 'namaCabang', title: 'Nama Pemesan' },
         // {
         //   data: 'statusRecieve',
         //   title: 'Status Penerimaan',
-        //   render: (data) => {
+        //   render: (data:any) => {
         //     const isCancel = data == CANCEL_STATUS;
         //     const label = this.globalService.getsatusDeliveryOrderLabel(data);
         //     if (isCancel) {
@@ -256,7 +257,7 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
         {
           data: 'statusCetak',
           title: 'Status Cetak',
-          render: (data) => this.globalService.getsatusDeliveryOrderLabel(data, true),
+          render: (data:any) => this.globalService.getsatusDeliveryOrderLabel(data, true),
         },
         {
           title: 'Action',

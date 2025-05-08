@@ -7,6 +7,7 @@ import { OrderReportComponent } from './order/order-report.component';
 import { MasterReportComponent } from './master/master-report.component';
 import { AnalysisReportComponent } from './analysis/analysis-report.component';
 import { QueryStockReportComponent } from './query-stock/query-stock-report.component';
+import { ActivityLogComponent } from './activity-log/activity-log.component';
 
 const routes: Routes = [
   {
@@ -39,6 +40,10 @@ const routes: Routes = [
       {
         path: 'query-stock',
         component: QueryStockReportComponent,
+      },
+      {
+        path: 'activity-log',
+        component: ActivityLogComponent,
       },
     ],
   },

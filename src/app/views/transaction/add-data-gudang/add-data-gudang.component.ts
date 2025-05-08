@@ -33,7 +33,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   isShowModal: boolean = false;
   dtTrigger: Subject<any> = new Subject();
   bsConfig: Partial<BsDatepickerConfig>;
@@ -46,7 +46,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
 
   @ViewChild('formModal') formModal: any;
   // Form data object
-  
+
   formData: any = {
     nomorPesanan: '',
     codeDestination: '',
@@ -57,7 +57,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     notes: '',
     nomorSuratJan: '',
   };
-  
+
 
   constructor(
     private router: Router,
@@ -163,7 +163,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
       ordering: true,
       paging: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         let page = Math.floor(dataTablesParameters.start / dataTablesParameters.length);
         let limit = dataTablesParameters.length || 5;
         let offset = page * limit;
@@ -175,7 +175,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
           tipePesanan : 'I',
           // limit : this.page.length,
           // offset : this.page.start,
-          limit: limit, 
+          limit: limit,
           offset: offset,
         };
         this.appService.getNewReceivingOrderGudang(params)
@@ -191,9 +191,9 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
               return finalData;
             });
             // this.page.recordsTotal = resp.recordsTotal || mappedData.length;
-            // this.page.recordsFiltered = resp.recordsFiltered || mappedData.length;  
-            const totalRecords = resp.totalRecords !== undefined && !isNaN(resp.totalRecords) 
-              ? resp.totalRecords 
+            // this.page.recordsFiltered = resp.recordsFiltered || mappedData.length;
+            const totalRecords = resp.totalRecords !== undefined && !isNaN(resp.totalRecords)
+              ? resp.totalRecords
               : mappedData.length;
             callback({
               // recordsTotal: resp.recordsTotal,
@@ -205,16 +205,16 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
           });
       },
       columns: [
-        { data: 'dtIndex', title: 'No.', render: (data) => `<strong>${data || '-'}</strong>` },
+        { data: 'dtIndex', title: 'No.', render: (data:any) => `<strong>${data || '-'}</strong>` },
         { data: 'NOMOR_PESANAN', title: 'Nomor Pesanan' },
         { data: 'SUPPLIER', title: 'Kode Gudang' },
         { data: 'NAMA_CABANG', title: 'Alamat Gudang' },
         { data: 'ALAMAT1', title: 'Alamat Pengirim' },
         { data: 'TGL_KIRIM_BRG', title: 'Tanggal Surat Jalan',
-          render: (data) => this.globalService.transformDate(data),
+          render: (data:any) => this.globalService.transformDate(data),
         },
-        { data: 'KETERANGAN1', title: 'Keterangan', render: (data) => data ? data : '-' },
-        { data: 'NO_SURAT_JALAN', title: 'Nomor Surat Jalan', render: (data) => data ? data : '-'},
+        { data: 'KETERANGAN1', title: 'Keterangan', render: (data:any) => data ? data : '-' },
+        { data: 'NO_SURAT_JALAN', title: 'Nomor Surat Jalan', render: (data:any) => data ? data : '-'},
         {
           data: 'ALAMAT1',
           title: 'Status Penerimaan',
@@ -222,13 +222,13 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
         {
           data: 'STATUS_CETAK',
           title: 'Status Cetak',
-          render: (data) => {
+          render: (data:any) => {
             if (data === 'B') {
-              return '<span class="badge bg-warning">Belum</span>'; 
+              return '<span class="badge bg-warning">Belum</span>';
             } else if (data === 'S') {
-              return '<span class="badge bg-success">Sudah</span>'; 
+              return '<span class="badge bg-success">Sudah</span>';
             } else {
-              return '<span class="badge bg-secondary">Tidak Diketahui</span>'; 
+              return '<span class="badge bg-secondary">Tidak Diketahui</span>';
             }
           },
         },
@@ -238,7 +238,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
             return `<button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>`;
           },
         },
-      ],      
+      ],
       searchDelay: 1000,
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-select', row).on('click', () =>
@@ -246,7 +246,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
         );
         if (index === 0 && !this.selectedRowData) {
           setTimeout(() => {
-            $(row).trigger('td'); 
+            $(row).trigger('td');
           }, 0);
         }
         $('td', row).on('click', () => {

@@ -64,7 +64,7 @@ export class AddDataDetailOrderManualComponent
   public loading: boolean = false;
   page: number = 1;
   isShowModal: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   selectedRow:  any = {};
   pageModal = new Page();
   dataUser: any = {};
@@ -281,7 +281,29 @@ export class AddDataDetailOrderManualComponent
   }
 
   onShowModalOnSubmit() {
-    this.isShowModalOnSubmit = true;
+       Swal.fire({
+          ...this.g.componentKonfirmasiSimpan,
+          showConfirmButton: false,
+          showCancelButton: false,
+          width: '600px',
+          customClass: {
+            popup: 'custom-popup'
+          },
+          didOpen: () => {
+            const submitBtn = document.getElementById('btn-submit');
+            const cancelBtn = document.getElementById('btn-cancel');
+
+            submitBtn?.addEventListener('click', () => {
+              this.onSubmit()
+              Swal.close();
+            });
+
+            cancelBtn?.addEventListener('click', () => {
+              Swal.close();
+              this.adding = false
+            });
+          }
+        })
   }
   onShowModalCancel() {
     this.isShowModalCancel= true;
@@ -349,7 +371,7 @@ export class AddDataDetailOrderManualComponent
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.pageModal.start = dataTablesParameters.start;
         this.pageModal.length = dataTablesParameters.length;
         const params = {
@@ -384,7 +406,7 @@ export class AddDataDetailOrderManualComponent
           data: 'dtIndex',
           title: 'Pilih Barang  ',
           className: 'text-center',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             let isChecked = this.barangTemp.some(item => item.kodeBarang === row.kodeBarang) ? 'checked' : '';
             if(row.statusAktif === 'T'){
               return `<input type="checkbox" class="row-checkbox" data-id="${row.kodeBarang}" ${isChecked} disabled>`;
@@ -402,7 +424,7 @@ export class AddDataDetailOrderManualComponent
         { data: 'defaultGudang', title: 'Default Gudang', orderable: true },
         { data: 'flagConversion',
           title: 'Conversion Factor',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             if (data === 'T')
               return "Tidak";
             else if (data === 'Y')
@@ -415,7 +437,7 @@ export class AddDataDetailOrderManualComponent
         },
         { data: 'statusAktif',
           title: 'Status Aktif',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             if (data === 'T')
               return "Inactive";
             else if (data === 'A')
@@ -659,7 +681,7 @@ export class AddDataDetailOrderManualComponent
     }
     return this.filteredList.length;
   }
-  
+
 
 
 }

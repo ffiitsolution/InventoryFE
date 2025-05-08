@@ -265,43 +265,27 @@ export class RevisiDoEditComponent
       return;
     }
 
-    Swal.fire({
-      title: 'Apa Anda Sudah Yakin?',
-      text: 'Pastikan data yang dimasukkan sudah benar!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Ya, Simpan!',
-      cancelButtonText: 'Batal',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.appService.revisiQtyDo(param).subscribe({
-          next: (res) => {
-            if (!res.success) {
-              this.appService.handleErrorResponse(res);
-            } else {
-              this.toastr.success("Berhasil!");
-              this.getDeliveryItemDetails();
-
-              this.isShowModalExpired = false;
-              this.isShowModalExpiredEdit = false
-              this.isShowModalRevisi = false;
-              this.isShowModalKonfirmRevisi = false;
-            }
-            this.adding = false;
-          },
-          error: (err) => {
-            console.error("Error saat insert:", err);
-            this.adding = false;
-          },
-        });
-      } else {
-        this.toastr.info('Penyimpanan dibatalkan');
+    this.appService.revisiQtyDo(param).subscribe({
+      next: (res) => {
+        if (!res.success) {
+          this.appService.handleErrorResponse(res);
+        } else {
+          this.toastr.success("Berhasil!");
+          this.getDeliveryItemDetails();
+    
+          this.isShowModalExpired = false;
+          this.isShowModalExpiredEdit = false;
+          this.isShowModalRevisi = false;
+          this.isShowModalKonfirmRevisi = false;
+        }
         this.adding = false;
-      }
+      },
+      error: (err) => {
+        console.error("Error saat insert:", err);
+        this.adding = false;
+      },
     });
-  }
+      }
 
   getTotalQtyRow() {
     return this.g.sumTotalQtyItem(Number.parseInt(this.selectedRowData.qtyBKirim), Number.parseInt(this.selectedRowData.qtyKKirim), Number.parseInt(this.selectedRowData.konversi));

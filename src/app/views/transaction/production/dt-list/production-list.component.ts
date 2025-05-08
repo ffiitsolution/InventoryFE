@@ -21,9 +21,9 @@ export class ProductionListComponent implements OnInit {
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
     protected config = AppConfig.settings.apiServer;
-  
+
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
   dtColumns: any = [];
@@ -66,7 +66,7 @@ export class ProductionListComponent implements OnInit {
       info: true,
       order: [[1,'desc'],[2,'desc']],
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -84,6 +84,7 @@ export class ProductionListComponent implements OnInit {
             seconds: 59,
             milliseconds: 999,
           }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
+          statusPosting:['P']
         };
         setTimeout(() => {
           this.dataService
@@ -118,22 +119,22 @@ export class ProductionListComponent implements OnInit {
         { data: 'nomorTransaksi', title: 'No. Transaksi' },
         { data: 'kodeProduksi', title: 'Kode Produksi' },
         { data: 'barangProduksi', title: 'Barang Produksi' },
-        { 
-          data: 'konversi', 
-          title: 'Konversi', 
-          render: function(data, type, row) {
+        {
+          data: 'konversi',
+          title: 'Konversi',
+           render:function(data:any, type:any, row:any) {
             return Number(data).toFixed(2)+" "+row.satuanKecil+"/"+row.satuanBesar; // Ensures two decimal places
           }
         },
-        { data: 'jumlahResep', title: 'Jumlah Produksi', 
-          render: function(data, type, row) {
+        { data: 'jumlahResep', title: 'Jumlah Produksi',
+           render:function(data:any, type:any, row:any) {
             return Number(data).toFixed(2) +" "+row.satuanBesar; // Ensures two decimal places
-          } 
+          }
         },
         { data: 'totalProduksi', title: 'Total Produksi',
-          render: function(data, type, row) {
+          render: function(data:any, type:any, row:any) {
             return Number(data).toFixed(2)+" "+row.satuanKecil; // Ensures two decimal places
-          } 
+          }
         },
         { data: 'tglExp', title: 'Tgl Expired' },
         // { data: 'userCreate', title: 'User Proses', searchable: true },
@@ -152,14 +153,14 @@ export class ProductionListComponent implements OnInit {
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render:function(data, type, row) {return 'POSTED'} ,
+          render:function(data:any, type:any, row:any) {return 'POSTED'} ,
         },
         {
           title: 'Aksi',
           render: () => {
             return ` <div class="btn-group" role="group" aria-label="Action">
                 <button class="btn btn-sm action-view btn-outline-primary btn-60">${this.buttonCaptionView}</button>
-                <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>           
+                <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>
               </div>`;
           },
         },
@@ -208,7 +209,7 @@ export class ProductionListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-  
+
   }
 
   toggleFilter(): void {
@@ -273,7 +274,7 @@ export class ProductionListComponent implements OnInit {
   }
 
   onFilterPressed(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
     console.log('filter pressed');
@@ -286,5 +287,9 @@ export class ProductionListComponent implements OnInit {
     this.isShowModalReport = false;
     this.selectedRowCetak = null;
     this.disabledPrintButton = false;
+  }
+
+  onPreviousPressed(): void {
+    this.router.navigate(['/transaction/production/']);
   }
 }

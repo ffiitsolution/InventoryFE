@@ -28,7 +28,7 @@ export class DisplayDataGudangComponent implements OnInit {
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   config: any = {
     BASE_URL: 'http://localhost:8093/inventory/api/delivery-order',
   };
@@ -77,7 +77,7 @@ export class DisplayDataGudangComponent implements OnInit {
       autoWidth: true,
       info: true,
       drawCallback: () => {},
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         let page = Math.floor(
           dataTablesParameters.start / dataTablesParameters.length
         );
@@ -242,7 +242,7 @@ export class DisplayDataGudangComponent implements OnInit {
   }
 
   onFilterPressed(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
     console.log('filter pressed');

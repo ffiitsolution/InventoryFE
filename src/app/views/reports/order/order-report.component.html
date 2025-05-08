@@ -57,12 +57,12 @@
         </div>
         <div class="col">
           <c-button-group role="group">
-            <input class="btn-check" type="radio" [(ngModel)]="paramTipeListing" name="tipeListing"
-              id="tipeListingRekap" value="rekap" />
+            <input class="btn-check" type="radio" [(ngModel)]="paramStatusPesanan" name="tipeListing"
+              id="tipeListingRekap" value="1" />
             <label cButton cFormCheckLabel class="w-240" variant="outline" for="tipeListingRekap">Pesanan Baru</label>
 
-            <input class="btn-check" type="radio" [(ngModel)]="paramTipeListing" name="tipeListing"
-              id="tipeListingDetail" value="detail" />
+            <input class="btn-check" type="radio" [(ngModel)]="paramStatusPesanan" name="tipeListing"
+              id="tipeListingDetail" value="3" />
             <label cButton cFormCheckLabel class="w-240" variant="outline" for="tipeListingDetail">Pesanan Yang Sudah Diterima</label>
           </c-button-group>
         </div>

@@ -171,7 +171,7 @@ export const menu_id: any = [
       },
       {
         name: 'Produksi',
-        url: '/transaction/production/list-dt',
+        url: '/transaction/production/',
         iconComponent: {
           name: 'cil-industry',
         },
@@ -247,6 +247,13 @@ export const menu_id: any = [
     url: '/sync-data/all',
     iconComponent: {
       name: 'cil-swap-vertical',
+    },
+  },
+  {
+    name: 'Activity Log Report',
+    url: '/reports/activity-log',
+    iconComponent: {
+      name: 'cil-sync',
     },
   },
 ];

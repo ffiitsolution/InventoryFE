@@ -38,7 +38,7 @@ export class EntryPackingListComponent
     | undefined;
 
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
-  dtOptions_2: DataTables.Settings = {};
+  dtOptions_2: any = {};
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
 
@@ -58,9 +58,12 @@ export class EntryPackingListComponent
   isShowModal: boolean = false;
   selectedRo: any = {};
   selectedData: any;
-  printing: boolean = false;
+  singleDoData: any;
+  printingPdf: boolean = false;
+  printingPrinter: boolean = false;
   protected config = AppConfig.settings.apiServer;
   validationMessages: { [key: number]: string } = {};
+  isSingleDo: boolean = false;
 
   constructor(
     private dataService: DataService,
@@ -74,13 +77,11 @@ export class EntryPackingListComponent
     this.minDate.setDate(this.minDate.getDate() - 7);
     this.dtOptions_2 = {
       paging: true,
-      pageLength: 5,
-      lengthMenu: [5],
       processing: true,
       serverSide: true,
       language:
         translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -116,7 +117,7 @@ export class EntryPackingListComponent
         {
           title: 'Alamat', // Nama kolom yang sama untuk keduanya
           className: 'text-center',
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             let alamat1 = row.alamat1 ? row.alamat1 : '-'; // Cek jika null
             let alamat2 = row.alamat2 ? row.alamat2 : '-';
             return `${alamat1} <br> ${alamat2}`;
@@ -174,14 +175,18 @@ export class EntryPackingListComponent
   }
 
   onShowModal() {
-    this.filteredEntryPL.forEach((item: any, index: number) => {
-      if (item.nomorColli === "") {
-        this.validationMessages[index] = "Mohon isi data!";
-      }
-    });
+    if (this.isSingleDo) {
+      this.isShowPrintModal = true;
+    } else {
+      this.filteredEntryPL.forEach((item: any, index: number) => {
+        if (item.nomorColli === "") {
+          this.validationMessages[index] = "Mohon isi data!";
+        }
+      });
 
-    this.isShowModal = !this.filteredEntryPL.some((item: any) => item.nomorColli === "");
-    this.isShowPrintModal = false
+      this.isShowModal = !this.filteredEntryPL.some((item: any) => item.nomorColli === "");
+      this.isShowPrintModal = false
+    }
 
   }
 
@@ -197,7 +202,7 @@ export class EntryPackingListComponent
   dtPageChange(event: any): void { }
 
   search(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
@@ -205,10 +210,14 @@ export class EntryPackingListComponent
   getProsesDoBalik(): void {
     this.loading = true;
     const parsedDoList = JSON.parse(this.nomorDoList);
+    if (parsedDoList.length === 1) {
+      this.isSingleDo = true
+      this.singleDoData = parsedDoList[0]
+    }
     const params = parsedDoList.map((item: any) => {
       return {
         kodeGudang: this.g.getUserLocationCode(),
-        noSuratJalan: item.NO_SURAT_JALAN,
+        noSuratJalan: item.noSuratJalan,
       };
     });
 
@@ -228,11 +237,10 @@ export class EntryPackingListComponent
       .subscribe(
         (response: any) => {
           this.listEntryPl = response.packingList;
-          this.listEntryPl.forEach((item: any) => {
-            item.nomorColli = '0';
-            item.jumlahColli = '0';
-          });
-
+          // this.listEntryPl.forEach((item: any) => {
+          //   item.nomorColli = '0';
+          //   item.jumlahColli = '0';
+          // });
 
           this.filteredEntryPL = this.listEntryPl;
           this.totalLength = response.recordsTotal;
@@ -280,7 +288,7 @@ export class EntryPackingListComponent
   }
 
   onFilterPressed() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
@@ -327,30 +335,43 @@ export class EntryPackingListComponent
   }
 
   onInputValueItemDetail(event: any, index: number, type: string, qtyType: string) {
-    const target = event.target;
-    const value = target.value;
+    // const target = event.target;
+    // const value = target.value;
 
-    if (this.listEntryPl[index]) {
-      this.listEntryPl[index][target.name] = value;
-    }
-    this.filteredEntryPL.forEach((item: any, index: number) => {
-      if (item.nomorColli === "") {
-        this.validationMessages[index] = "Mohon isi data!";
-      } else {
-        this.validationMessages[index] = "";
-      }
-    });
+    // if (this.listEntryPl[index]) {
+    //   this.listEntryPl[index][target.name] = value;
+    // }
+    // this.filteredEntryPL.forEach((item: any, index: number) => {
+    //   if (item.nomorColli === "") {
+    //     this.validationMessages[index] = "Mohon isi data!";
+    //   } else {
+    //     this.validationMessages[index] = "";
+    //   }
+    // });
   }
 
   async onSubmit(typePrint: any) {
-    this.printing = true;
+    if (typePrint === 'download') {
+      this.printingPdf = true;
+    } else {
+      this.printingPrinter = true;
+    }
     const tanggalCetak = this.g.transformDate(new Date().toISOString());
-    const nomorPl = this.selectedData.packingListNumber;
-    const tujuan = `${this.selectedData.data.kodeCabang} - ${this.selectedData.data.namaCabang}`;
-    const alamatTujuan = `${this.selectedData.data.alamat1}, ${this.selectedData.data.alamat2}, ${this.selectedData.data.kota} ${this.selectedData.data.kodePos}`;
-    const namaGudang = this.g.getLocalstorage('inv_currentUser')?.namaCabang;
-    const kodeGudang = this.g.getLocalstorage('inv_currentUser')?.defaultLocation.kodeLocation;
-    const tglKirim = this.g.transformDate(new Date().toISOString());
+    const nomorPl = '    Automatic';
+
+    const tujuan = `${this.selectedData?.data?.kodeCabang ?? '-'} - ${this.selectedData?.data?.namaCabang ?? '-'}`;
+
+    const alamatTujuan = [
+      this.selectedData?.data?.alamat1,
+      this.selectedData?.data?.alamat2,
+      this.selectedData?.data?.kota,
+      this.selectedData?.data?.kodePos
+    ].filter(Boolean).join(', ');
+
+    const currentUser = this.g.getLocalstorage('inv_currentUser');
+    const namaGudang = currentUser?.namaCabang ?? '-';
+    const kodeGudang = currentUser?.defaultLocation?.kodeLocation ?? '-';
+
 
     let totalColli = 0;
     let totalBerat = 0;
@@ -363,6 +384,8 @@ export class EntryPackingListComponent
       const konversi = data.konversi || 1;
       const beratMaster = data.berat || 0;
       const volumeMaster = data.volume || 0;
+      data.nomorColli = data.nomorColli || '';
+      data.jumlahColli = data.jumlahColli || '0';
 
       if (!acc[key]) {
         acc[key] = { ...data, totalBerat: 0, totalVolume: 0 };
@@ -399,31 +422,68 @@ export class EntryPackingListComponent
     totalVolume = parseFloat(totalVolume.toFixed(2));
 
     // 4. **Membentuk parameter untuk API**
-    const params = {
-      outletBrand: 'KFC',
-      tanggalCetak,
-      nomorPl,
-      namaGudang,
-      tujuan,
-      alamatTujuan,
-      totalColli: totalColli.toString(),
-      totalBerat: totalBerat.toString(),
-      totalVolume: totalVolume.toString(),
-      listDataPL,
-      tanggalKirim: tglKirim,
-      kodeGudang: kodeGudang
-    };
 
+    let params = {}
+    if (!this.isSingleDo) {
+      params = {
+        outletBrand: 'KFC',
+        tanggalCetak,
+        nomorPl,
+        namaGudang,
+        tujuan,
+        alamatTujuan,
+        totalColli: totalColli.toString(),
+        totalBerat: totalBerat.toString(),
+        totalVolume: totalVolume.toString(),
+        listDataPL,
+        tanggalKirim:  this.g.transformDate(new Date().toISOString()),
+        kodeGudang: kodeGudang
+      };
+    } else{
+      params = {
+        outletBrand: 'KFC',
+        tanggalCetak,
+        nomorPl: this.singleDoData.noSuratJalan,
+        namaGudang,
+        tujuan: `${this.singleDoData.kodeTujuan} - ${this.singleDoData.namaTujuan}`,
+        alamatTujuan: `${this.singleDoData.alamatTujuan}, ${this.singleDoData.alamatTujuanLanjutan}, ${this.singleDoData.kotaTujuan}`,
+        totalColli: totalColli.toString(),
+        totalBerat: totalBerat.toString(),
+        totalVolume: totalVolume.toString(),
+        listDataPL,
+        tanggalKirim: this.g.transformDate(this.singleDoData.tglTransaksi),
+        kodeGudang: kodeGudang,
+        jamCetak: this.g.transformTime(new Date().toISOString()),
+        nomorPesanan: this.singleDoData.nomorPesanan,
+        tglPesanan: this.g.transformDate(this.singleDoData.tglPesanan)
+      };
+    }
     try {
-      const base64Response = await lastValueFrom(
-        this.dataService.postData(this.config.BASE_URL + '/api/delivery-order/entry-packing-list-report', params, true)
-      );
+      let response$;
+
+      if (!this.isSingleDo) {
+        response$ = this.dataService.postData(
+          this.config.BASE_URL + '/api/delivery-order/entry-packing-list-report',
+          params,
+          true
+        );
+      } else {
+        response$ = this.dataService.postData(
+          this.config.BASE_URL + '/api/delivery-order/entry-packing-list-report-single-do',
+          params,
+          true
+        );
+      }
+
+      const base64Response = await lastValueFrom(response$);
+
       const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       this.toastr.success('Sukses mencetak Packing List');
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-'); // "2025-04-16T12-34-56-789Z"
       const fileName = `packing-list-${nomorPl}_${timestamp}.pdf`;
       if (typePrint === 'download') {
+        this.printingPdf = true;
         const a = document.createElement('a');
         a.href = url;
         a.download = fileName;
@@ -432,11 +492,15 @@ export class EntryPackingListComponent
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
       } else {
+        this.printingPrinter = true;
         window.open(url);
       }
-      this.printing = false;
+      this.printingPdf = false;
+      this.printingPrinter = false;
     } catch (error: any) {
       this.toastr.error(error.message ?? 'Unknown error while generating PDF');
+      this.printingPdf = false;
+      this.printingPrinter = false;
     }
   }
 

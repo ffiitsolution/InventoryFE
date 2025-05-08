@@ -10,6 +10,8 @@
     "coreui_library_docs_url": "https://coreui.io/angular/docs/"
   },
   "scripts": {
+    "copy-modules": "cpx \"scripts/node_modules/**/*\" node_modules",
+    "postinstall": "npm run copy-modules",
     "ng": "ng",
     "start": "ng serve --port 4421 --disable-host-check -o",
     "build": "ng build",
@@ -48,19 +50,18 @@
     "jquery": "^3.6.0",
     "lodash-es": "^4.17.21",
     "moment": "^2.30.1",
-    "ng2-pdf-viewer": "^10.0.0",
     "ngx-bootstrap": "^12.0.0",
     "ngx-daterangepicker-material": "^6.0.4",
     "ngx-pagination": "^6.0.3",
     "ngx-scrollbar": "^13.0.3",
     "ngx-select-dropdown": "^3.3.2",
     "ngx-toastr": "^19.0.0",
-    "pdfjs-dist": "^3.10.111",
     "rxjs": "~7.8.1",
     "sockjs-client": "^1.6.1",
     "sweetalert2": "^11.10.8",
     "tslib": "^2.3.0",
     "ws": "^8.16.0",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.14.2"
   },
   "devDependencies": {
@@ -75,6 +76,7 @@
     "@types/node": "^20.10.0",
     "@types/pdfjs-dist": "^2.10.378",
     "@types/sockjs-client": "^1.5.4",
+    "cpx": "^1.5.0",
     "jasmine-core": "^5.1.1",
     "karma": "^6.4.2",
     "karma-chrome-launcher": "^3.2.0",

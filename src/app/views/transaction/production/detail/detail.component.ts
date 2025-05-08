@@ -12,7 +12,7 @@ import { lastValueFrom, Subject, takeUntil } from 'rxjs';
 import { Page } from 'src/app/model/page';
 import { DataService } from 'src/app/service/data.service';
 import { GlobalService } from 'src/app/service/global.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 // import { AppConfig } from 'src/app/config/app.config.ts';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
@@ -39,7 +39,7 @@ export class DetailProductionComponent
 
   orders: any[] = [];
   dtColumns: any = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -97,7 +97,7 @@ export class DetailProductionComponent
         autoWidth: true,
         info: true,
         drawCallback: () => {},
-        ajax: (dataTablesParameters: any, callback) => {
+        ajax: (dataTablesParameters: any, callback:any) => {
           this.page.start = dataTablesParameters.start;
           this.page.length = dataTablesParameters.length;
           const params = {
@@ -163,30 +163,30 @@ export class DetailProductionComponent
           {
             data: 'konversi',
             title: 'Konversi',
-            render: (data, type, row) =>
+            render: (data:any, type:any, row:any) =>
               `${Number(data).toFixed(2)} ${row.satuanKecil}`,
           },
           {
             data: 'qtyBesar',
             title: 'Qty Besar',
-            render: (data, type, row) =>
+            render: (data:any, type:any, row:any) =>
               `${Number(data).toFixed(2)} ${row.satuanBesar}`,
           },
           {
             data: 'qtyKecil',
             title: 'Qty Kecil',
-            render: (data, type, row) =>
+            render: (data:any, type:any, row:any) =>
               `${Number(data).toFixed(2)} ${row.satuanKecil}`,
           },
           {
             data: 'totalQty',
             title: 'Total Qty',
-            render: (data, type, row) =>
+            render: (data:any, type:any, row:any) =>
               `${Number(data).toFixed(2)} ${row.satuanKecil}`,
           },
           {
             title: 'Cek Quantity Expired',
-            render: (data, type, row) => {
+            render: (data:any, type:any, row:any) => {
               if (row.flagExpired === 'Y') {
                 return `<div class="d-flex justify-content-start">
                       <button class="btn btn-sm action-view btn-outline-success w-50"><i class="fa fa-check pe-1"></i> Cek</button>
@@ -211,7 +211,7 @@ export class DetailProductionComponent
   }
   reloadTable() {
     setTimeout(() => {
-      this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      this.datatableElement?.dtInstance.then((dtInstance: any) => {
         dtInstance.ajax.reload();
       });
     }, DEFAULT_DELAY_TABLE);
@@ -262,7 +262,7 @@ export class DetailProductionComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }
@@ -277,7 +277,13 @@ export class DetailProductionComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/transaction/production/list-dt']);
+
+    if (this.selectedProduction.statusPosting!=='P') {
+      this.router.navigate(['/transaction/production/list-dt-for-posting']);
+    }else{
+      this.router.navigate(['/transaction/production/list-dt']);
+    }
+
   }
 
   onDelete() {

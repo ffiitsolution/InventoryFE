@@ -31,7 +31,7 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   isShowModal: boolean = false;
   dtTrigger: Subject<any> = new Subject();
   bsConfig: Partial<BsDatepickerConfig>;
@@ -172,12 +172,12 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedSupplierData = undefined;
       },
       order: [[2, 'desc']],
       pageLength: 5,
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -210,7 +210,7 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
         { data: 'kota', title: 'Kota', searchable: true, orderable: true },
         {
           data: 'statusAktif', title: 'Status',
-          render: (data) => this.globalService.getStatusAktifLabel(data)
+          render: (data:any) => this.globalService.getStatusAktifLabel(data)
         },
         {
           title: 'Action',

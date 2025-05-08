@@ -195,23 +195,6 @@
         </c-modal-body>
     </c-modal>
 
-    <c-modal #formModalOnSubmit [fullscreen]="false" [visible]="isShowModalOnSubmit" backdrop="static" #modalLg
-    id="formModalOnSubmit"    [attr.aria-hidden]="!isShowModalOnSubmit">
-      <c-modal-header>
-        <h5 cModalTitle>Konfirmasi Simpan  </h5>
-        <button (click)="isShowModalOnSubmit = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalOnSubmit.id"
-          cButtonClose><i class="fa fa-times"></i></button>
-      </c-modal-header>
-      <c-modal-body>
-        <p class="text-center">Apakah anda ingin menyimpan data?</p>
-        <div class="d-flex justify-center py-2">
-          <button class="btn btn-light  w-90 me-3"  (click)="isShowModalOnSubmit = false">Tidak</button>
-          &nbsp;
-          <button class="btn btn-primary text-white  w-90" (click)="onSubmit()">Iya</button>
-
-        </div>
-      </c-modal-body>
-  </c-modal>
   <c-modal #formModalCancel [fullscreen]="false" [visible]="isShowModalCancel" backdrop="static" #modalLg
     id="formModalCancel"    [attr.aria-hidden]="!isShowModalCancel">
       <c-modal-header>

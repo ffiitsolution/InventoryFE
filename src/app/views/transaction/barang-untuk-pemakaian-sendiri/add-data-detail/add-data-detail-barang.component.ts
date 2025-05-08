@@ -65,7 +65,7 @@ export class AddDataDetailBarangComponent
   public loading: boolean = false;
   page: number = 1;
   isShowModal: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   selectedRow: any[] = [];
   pageModal = new Page();
   dataUser: any = {};
@@ -316,6 +316,21 @@ export class AddDataDetailBarangComponent
         cancelButtonText: 'Batal',
       }).then((result) => {
         if (result.isConfirmed) {
+          this.service.insert('/api/delivery-order/simpan-data-pemakaian-barang', param).subscribe({
+
+            next: (res) => {
+              if (!res) {
+                this.toastr.error(res.message);
+              } else {
+                setTimeout(() => {
+                  this.toastr.success(res.message);
+                  this.onBackPressedE(res);
+                  // this.onShowModalPrint(this.headerWastage);
+                }, DEFAULT_DELAY_TIME);
+              }
+              this.adding = false;
+            },
+          });
           this.service
             .insert('/api/delivery-order/simpan-data-pemakaian-barang', param)
             .subscribe({
@@ -460,7 +475,7 @@ export class AddDataDetailBarangComponent
       info: true,
       pageLength: 5,
       drawCallback: () => {},
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.pageModal.start = dataTablesParameters.start;
         this.pageModal.length = dataTablesParameters.length;
         const params = {
@@ -492,7 +507,7 @@ export class AddDataDetailBarangComponent
         {
           title: 'Pilih Barang  ',
           className: 'text-center',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             let isChecked = this.selectedRow.some(
               (item) => item.kodeBarang === row.kodeBarang
             )
@@ -510,7 +525,7 @@ export class AddDataDetailBarangComponent
         {
           data: 'flagConversion',
           title: 'Conversion Factor',
-          render: (data) => (data === 'Y' ? 'YA' : 'TIDAK'),
+          render: (data:any) => (data === 'Y' ? 'YA' : 'TIDAK'),
         },
         {
           data: 'statusAktif',

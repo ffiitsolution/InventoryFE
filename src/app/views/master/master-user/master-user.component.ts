@@ -30,7 +30,7 @@ export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
   data: any;
   loadingIndicator = true;
   orders: any[] = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   buttonCaptionView: String = 'Lihat';
   buttonCaptionEdit: String = 'Ubah';
   dtTrigger: Subject<any> = new Subject();
@@ -82,22 +82,22 @@ export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onStatusFilterChange() {
-    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
   onLokasiFilterChange() {
-    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
   onJabatanFilterChange() {
-    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
   onRoleFilterChange() {
-    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
@@ -116,10 +116,10 @@ export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const requestData = {
@@ -167,7 +167,7 @@ export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
           data: 'statusAktif',
           title: 'Status',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             if (data === 'A') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
@@ -219,7 +219,7 @@ export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }

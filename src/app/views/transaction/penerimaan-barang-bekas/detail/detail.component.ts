@@ -31,7 +31,7 @@ export class DetailPenerimaanBrgBksComponent
 
   orders: any[] = [];
   dtColumns: any = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -75,7 +75,7 @@ export class DetailPenerimaanBrgBksComponent
         autoWidth: true,
         info: true,
         drawCallback: () => { },
-        ajax: (dataTablesParameters: any, callback) => {
+        ajax: (dataTablesParameters: any, callback:any) => {
           this.page.start = dataTablesParameters.start;
           this.page.length = dataTablesParameters.length;
           const params = {
@@ -139,19 +139,19 @@ export class DetailPenerimaanBrgBksComponent
           { data: 'namaBarang', title: 'Nama Barang' },
           {
             data: 'konversi', title: 'Konversi',
-            render: (data, type, row) => `${Number(data).toFixed(2)} ${row.satuanKecil}`
+            render: (data:any, type:any, row:any) => `${Number(data).toFixed(2)} ${row.satuanKecil}`
           },
           {
             data: 'qtyBesar', title: 'Qty Besar',
-            render: (data, type, row) => `${Number(data).toFixed(2)} ${row.satuanBesar}`
+            render: (data:any, type:any, row:any) => `${Number(data).toFixed(2)} ${row.satuanBesar}`
           },
           {
             data: 'qtyKecil', title: 'Qty Kecil',
-            render: (data, type, row) => `${Number(data).toFixed(2)} ${row.satuanKecil}`
+            render: (data:any, type:any, row:any) => `${Number(data).toFixed(2)} ${row.satuanKecil}`
           },
           {
             data: 'totalQty', title: 'Total Qty',
-            render: (data, type, row) => `${Number(data).toFixed(2)} ${row.satuanKecil}`
+            render: (data:any, type:any, row:any) => `${Number(data).toFixed(2)} ${row.satuanKecil}`
           },
         ],
         searchDelay: 1000,
@@ -160,7 +160,7 @@ export class DetailPenerimaanBrgBksComponent
           $('.action-view', row).on('click', () =>
             this.actionBtnClick(ACTION_VIEW, data)
           );
-         
+
           return row;
         },
       };
@@ -168,7 +168,7 @@ export class DetailPenerimaanBrgBksComponent
   }
   reloadTable() {
     setTimeout(() => {
-      this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      this.datatableElement?.dtInstance.then((dtInstance: any) => {
         dtInstance.ajax.reload();
       });
     }, DEFAULT_DELAY_TABLE);
@@ -194,7 +194,7 @@ export class DetailPenerimaanBrgBksComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }

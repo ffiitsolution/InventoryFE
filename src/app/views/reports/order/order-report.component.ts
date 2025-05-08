@@ -55,6 +55,7 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
   paramStatusAktif: string = '';
   // paramTipeListing: string = 'header';
   paramTipeListing: string = 'rekap';
+  paramStatusPesanan = '1';//pesann baru
 
   constructor(
     private service: AppService,
@@ -149,6 +150,7 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
         tipeListing: this.paramTipeListing,
         startDate: this.g.transformDate(this.dateRangeFilter[0]),
         endDate: this.g.transformDate(this.dateRangeFilter[1]),
+        statusPesanan:this.paramStatusPesanan,
       };
     }
 

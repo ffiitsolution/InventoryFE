@@ -61,7 +61,7 @@ export class AddDataDetailPenjualanBrgBekasComponent
   public loading: boolean = false;
   page: number = 1;
   isShowModal: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   selectedRow: any[] = [];
   pageModal = new Page();
   dataUser: any = {};
@@ -508,7 +508,7 @@ export class AddDataDetailPenjualanBrgBekasComponent
       lengthMenu: [5, 10, 25, 50, 100],
       pageLength: 5,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
 
         this.pageModal.start = dataTablesParameters.start;
         this.pageModal.length = dataTablesParameters.length;
@@ -549,7 +549,7 @@ export class AddDataDetailPenjualanBrgBekasComponent
         {
           title: 'Pilih Barang  ',
           className: 'text-center',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             let isChecked = this.selectedRow.some(item => item.kodeBarang === row.kodeBarang) ? 'checked' : '';
             return `<input type="checkbox" class="row-checkbox" data-id="${row.kodeBarang}" ${isChecked}>`;
           }
@@ -560,7 +560,7 @@ export class AddDataDetailPenjualanBrgBekasComponent
         { data: 'satuanKecil', title: 'Satuan Kecil' },
         { data: 'satuanBesar', title: 'Satuan Besar' },
         { data: 'defaultGudang', title: 'Default Gudang' },
-        { data: 'statusAktif', title: 'Status Aktif', render: (data) => this.g.getStatusAktifLabel(data) },
+        { data: 'statusAktif', title: 'Status Aktif', render: (data:any) => this.g.getStatusAktifLabel(data) },
       ],
       searchDelay: 1000,
       // delivery: [],

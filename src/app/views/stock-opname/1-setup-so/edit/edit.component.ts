@@ -19,6 +19,7 @@ import {
   ACTION_SELECT,
   CANCEL_STATUS,
   DEFAULT_DELAY_TABLE,
+  DEFAULT_DELAY_TIME,
   LS_INV_SELECTED_DELIVERY_ORDER,
   LS_INV_SELECTED_SO,
 } from '../../../../../constants';
@@ -42,7 +43,7 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
   public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   isShowModal: boolean = false;
   dtTrigger: Subject<any> = new Subject();
   bsConfig: Partial<BsDatepickerConfig>;
@@ -217,7 +218,7 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
 
   reloadTable() {
     setTimeout(() => {
-      this.dtElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      this.dtElement?.dtInstance.then((dtInstance: any) => {
         dtInstance.ajax.reload();
       });
     }, DEFAULT_DELAY_TABLE);
@@ -389,7 +390,7 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
           nomorTransaksi: this.selectedSo?.nomorSo,
           kodeBarang: this.selectedExpProduct.kodeBarang,
           deleteExpired: true,
-        }
+        },
       })
       .subscribe({
         next: (res) => {
@@ -420,6 +421,10 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
       validationQty: '',
       totalStockExpired: '0.00',
     });
+
+    setTimeout(() => {
+      this.checkDateExpired();
+    }, 400);
   }
 
   expiredHasZeroTotalQty(): boolean {
@@ -591,9 +596,9 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
     const expiredDate = moment(inputDate, 'DD/MM/YYYY').startOf('day').toDate();
     const today = moment().startOf('day').toDate();
 
-    if (expiredDate < today) {
-      validationMessage = `Tanggal kadaluarsa tidak boleh lebih < dari sekarang!`;
-    }
+    // if (expiredDate < today) {
+    //   validationMessage = `Tanggal kadaluarsa tidak boleh lebih < dari sekarang!`;
+    // }
 
     const filteredEntries = this.listEntryExpired.filter(
       (entry) => entry.kodeBarang === kodeBarang
@@ -631,6 +636,8 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
         validationExpiredMessageList: validationMessage,
       };
     }
+
+    this.checkDateExpired();
   }
 
   getTotalExpiredData(kodeBarang: string, konversi: number) {
@@ -640,7 +647,7 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const totalExpired = filtered.reduce(
       (acc, item) => {
-        acc.qtyBesarSo += (Number(item.qtyBesarSo) || 0) * konversi; // Multiply qtyBesarSo by konversi
+        acc.qtyBesarSo += (Number(item.qtyBesarSo) || 0) * konversi;
         acc.qtyKecilSo += Number(item.qtyKecilSo) || 0;
         return acc;
       },
@@ -695,42 +702,12 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
           this.selectedExpProduct.qtyKecilSo = parseFloat(
             this.selectedExpProduct.qtyKecilSo
           ).toFixed(2);
-
-          // let totalQtySum = parseFloat(
-          //   (
-          //     Number(this.selectedExpProduct.qtyBesarSo) *
-          //       Number(this.selectedExpProduct.konversi) +
-          //     Number(this.selectedExpProduct.qtyKecilSo)
-          //   ).toFixed(2)
-          // ).toFixed(2);
-
-          // this.totalFilteredExpired = totalQtySum;
           if (
             !this.listEntryExpired.some(
               (item: any) =>
                 item.kodeBarang === this.selectedExpProduct.kodeBarang
             )
           ) {
-            // this.listEntryExpired.push({
-            //   tglExpired: moment().add(1, 'days').toDate(),
-            //   keteranganTanggal: moment()
-            //     .add(1, 'days')
-            //     .locale('id')
-            //     .format('DD MMM YYYY'),
-            //   qtyBesarSo: parseFloat(
-            //     this.selectedExpProduct.qtyBesarSo
-            //   ).toFixed(2),
-            //   qtyKecilSo: parseFloat(
-            //     this.selectedExpProduct.qtyKecilSo
-            //   ).toFixed(2),
-            //   satuanKecil: this.selectedExpProduct.satuanKecil,
-            //   satuanBesar: this.selectedExpProduct.satuanBesar,
-            //   konversi: parseFloat(this.selectedExpProduct.konversi).toFixed(2),
-            //   totalQty: parseFloat(totalQtySum).toFixed(2),
-            //   kodeBarang: this.selectedExpProduct.kodeBarang,
-            //   validationExpiredMessageList: '',
-            //   validationQty: '',
-            // });
             this.onAddExpiredRow();
           } else {
             setTimeout(() => {
@@ -762,83 +739,157 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onSubmit() {
-    if (!this.isDataInvalid()) {
-      this.loadingSimpan = true;
-      // param for order Header
+    const mismatchItems = this.listDetail.filter(
+      (item: any) =>
+        item.totalQtySo !== item.totalQtyExp && item.flagExpired === 'Y'
+    );
 
-      const param = {
-        kodeGudang: this.userData.defaultLocation.kodeLocation,
-        nomorSo: this.selectedSo.nomorSo,
-      };
+    const zeroQtyItems = this.listDetail.filter(
+      (item: any) => item.totalQtySo === 0
+    );
 
-      Swal.fire({
-        title: 'Pastikan semua data sudah di input dengan benar!',
-        text: 'DATA YANG SUDAH DIPOSTING TIDAK DAPAT DIPERBAIKI..!!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Proses Posting',
-        cancelButtonText: 'Batal Posting',
-      }).then((result) => {
-        if (result.isConfirmed) {
+    if (mismatchItems.length > 0) {
+      this.showWarningDialog(
+        mismatchItems,
+        '<b>Quantity Expired tidak sesuai dengan Quantity Total!</b>',
+        false,
+        'BATAL, RUBAH',
+        `<div class="col-12"><div class="border border-danger rounded text-center">
+          <strong>PERHATIAN</strong>: Mohon isi quantity Expired <b>sesuai</b> dengan <b>total quantity fisik</b>.
+        </div></div>`
+      );
+      return;
+    }
+
+    if (zeroQtyItems.length > 0) {
+      this.showWarningDialog(
+        zeroQtyItems,
+        'Ada ' +
+          zeroQtyItems.length +
+          '  item dengan <b>Quantity kosong atau nol</b>',
+        true,
+        'BATAL, RUBAH',
+        `<div class="col-12"><div class="border border-danger rounded text-center">
+          <strong>PERHATIAN</strong>: Klik "LANJUT PROSES" <strong>HANYA</strong> jika anda sudah yakin bahwa <strong>jumlah dari item tersebut secara fisik adalah 0</strong>.
+        </div></div>`,
+        () => {
+          this.postingSO();
+        }
+      );
+    } else {
+      this.postingSO();
+    }
+  }
+
+  postingSO() {
+    Swal.fire({
+      ...this.g.componentKonfirmasiSimpan,
+      showConfirmButton: false,
+      showCancelButton: false,
+      width: '600px',
+      customClass: {
+        popup: 'custom-popup',
+      },
+      didOpen: () => {
+        const submitBtn = document.getElementById('btn-submit');
+        const cancelBtn = document.getElementById('btn-cancel');
+        submitBtn?.addEventListener('click', () => {
+          this.loadingSimpan = true;
+          const param = {
+            kodeGudang: this.userData.defaultLocation.kodeLocation,
+            nomorSo: this.selectedSo.nomorSo,
+            keterangan: this.selectedSo.keterangan,
+            tglTransaksi: this.selectedSo.tanggalSo,
+          };
           this.appService
             .insert('/api/stock-opname/posting', param)
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe({
               next: (res) => {
-                console.log(JSON.stringify(res));
                 if (!res.success) {
-                  this.toastr.error(res.message);
+                  console.log(JSON.stringify(res));
+                  this.appService.handleErrorResponse(res);
                 } else {
                   this.onBackPressed(res.data);
-                  // setTimeout(() => {
-                  //   this.toastr.success('Data production berhasil diposting!');
-                  //   this.onPreviousPressed();
-                  // }, DEFAULT_DELAY_TIME);
+                  setTimeout(() => {
+                    this.toastr.success(
+                      'Data Stock Opname berhasil diposting!'
+                    );
+                    this.onPreviousPressed();
+                  }, DEFAULT_DELAY_TIME);
                 }
                 this.adding = false;
                 this.loadingSimpan = false;
+                Swal.close();
               },
               error: () => {
                 this.loadingSimpan = false;
+                Swal.close();
               },
             });
-        } else {
-          this.toastr.info('Posting dibatalkan');
-          this.loadingSimpan = false;
-        }
-      });
-    }
+        });
+        cancelBtn?.addEventListener('click', () => {
+          Swal.close();
+          this.adding = false;
+        });
+      },
+    });
   }
 
-  isDataInvalid() {
-    let dataInvalid = false;
-
-    const invalidItems = this.listDetail.filter(
-      (item: any) =>
-        item.totalQtyPemakaian !==
-          this.getTotalExpiredData(item.kodeBarang, item.konversi) &&
-        item.isConfirmed === true
+  private showWarningDialog(
+    items: any[],
+    title: string,
+    showConfirm: boolean,
+    cancelText: string,
+    footerHtml: string,
+    onConfirm?: () => void
+  ): void {
+    const descriptions = items.map((item) =>
+      item.namaBarang
+        ? `${item.kodeBarang} | ${item.namaBarang}`
+        : item.kodeBarang
     );
 
-    const invalidExpired = this.listEntryExpired.filter(
-      (item: any) => item.validationExpiredMessageList !== ''
-    );
+    const table = this.generateTable(descriptions, 3);
 
-    if (invalidItems.length > 0) {
-      dataInvalid = true;
-      this.toastr.error('Data Qty Pemakaian harus sama dengan Qty Expired');
+    Swal.fire({
+      title,
+      html: table,
+      width: '100vw',
+      showCancelButton: true,
+      showConfirmButton: showConfirm,
+      confirmButtonText: 'LANJUT PROSES',
+      cancelButtonText: cancelText,
+      customClass: {
+        title: 'text-danger border border-danger rounded p-2 m-2 mb-0',
+        confirmButton: 'btn btn-primary bg-primary w-180',
+        cancelButton: 'btn btn-secondary w-180',
+      },
+      footer: footerHtml,
+    }).then((result) => {
+      if (result.isConfirmed && onConfirm) {
+        onConfirm();
+      }
+    });
+  }
+
+  private generateTable(data: string[], columns: number): HTMLTableElement {
+    const rows = Math.ceil(data.length / columns);
+    const table = document.createElement('table');
+    table.classList.add('table', 'table-sm', 'text-start');
+
+    for (let i = 0; i < rows; i++) {
+      const row = table.insertRow();
+      for (let j = 0; j < columns; j++) {
+        const index = j * rows + i;
+        const cell = row.insertCell();
+        if (index < data.length) {
+          cell.textContent = data[index].trim();
+        }
+      }
     }
 
-    if (invalidExpired.length > 0) {
-      dataInvalid = true;
-      this.toastr.error(
-        `Data tgl expired tidak sesuai di kode barang ${invalidExpired[0].kodeBarang} !`
-      );
-    }
-
-    return dataInvalid;
+    return table;
   }
 
   getExpiredData(kodeBarang: string) {
@@ -918,6 +969,19 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
         this.updateQtyDbDetail(index, input);
       }
     }
+  }
+
+  checkDateExpired() {
+    const setTglExpired = new Set();
+    this.listEntryExpired.map((row: any, idx: number) => {
+      if (row.tglExpiredFormatted) {
+        if (setTglExpired.has(row.tglExpiredFormatted)) {
+          row.validationExpiredMessageList = 'Tanggal Expired sudah ada!';
+        } else {
+          setTglExpired.add(row.tglExpiredFormatted);
+        }
+      }
+    });
   }
 
   onInputValueItemDetail(
@@ -1104,7 +1168,7 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
       lengthMenu: [5, 10, 25, 50, 100],
       pageLength: 10,
       drawCallback: () => {},
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback: any) => {
         this.pageModal.start = dataTablesParameters.start;
         this.pageModal.length = dataTablesParameters.length;
         const params = {
@@ -1141,7 +1205,7 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
         {
           title: 'Pilih Barang  ',
           className: 'text-center',
-          render: (data, type, row) => {
+          render: (data: any, _: any, row: any) => {
             // let isChecked = true;
             let isChecked = this.selectedRowAddProduct?.some(
               (item: any) => item.kodeBarang === row.kodeBarang
@@ -1156,7 +1220,7 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
         {
           data: 'konversi',
           title: 'Konversi',
-          render: (data) => {
+          render: (data: any) => {
             return data;
           },
         },
@@ -1166,7 +1230,7 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
         // { data: 'flagConversion', title: 'Conversion Factor' },
         {
           title: 'Status Aktif',
-          render: (data, type, row) => {
+          render: (data: any, _: any, row: any) => {
             return row.statusAktif === 'A'
               ? '<span class="rounded p-2 text-white bg-success">Aktif</span>'
               : row.statusAktif === 'T'

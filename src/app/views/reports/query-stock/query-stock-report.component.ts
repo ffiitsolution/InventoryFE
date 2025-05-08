@@ -27,7 +27,7 @@ import { DataTableDirective } from 'angular-datatables';
 export class QueryStockReportComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject<any>();
   @ViewChild(DataTableDirective, { static: false })
   dtElement!: DataTableDirective;

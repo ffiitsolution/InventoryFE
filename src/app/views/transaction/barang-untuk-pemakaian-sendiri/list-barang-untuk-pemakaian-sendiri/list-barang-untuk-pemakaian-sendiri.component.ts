@@ -30,11 +30,11 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
-  dtOptions: DataTables.Settings = {};
-  dtOptionsModal: DataTables.Settings = {};
+  dtOptions: any = {};
+  dtOptionsModal: any = {};
   protected config = AppConfig.settings.apiServer;
   isShowModal: boolean = false;
-  pageSize: number = 10; 
+  pageSize: number = 10;
   dtTrigger: Subject<any> = new Subject();
   currentPage: number = 1;
   page = new Page();
@@ -82,7 +82,7 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
       autoWidth: true,
       info: true,
       drawCallback: () => {},
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -125,7 +125,7 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
         {
           data: 'tglTransaksi',
           title: 'Tanggal Transaksi',
-          render: (data) => this.g.transformDate(data),
+          render: (data:any) => this.g.transformDate(data),
         },
         { data: 'nomorTransaksi', title: 'No. Transaksi' },
         { data: 'keterangan', title: 'Keterangan Pemakaian', searchable: true },
@@ -133,14 +133,14 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
         {
           data: 'tglTransaksi',
           title: 'Tanggal Proses',
-          render: (data) => this.g.transformDate(data),
+          render: (data:any) => this.g.transformDate(data),
         },
         {
           data: 'timeCreate',
           title: 'Jam Proses',
           orderable: true,
           searchable: true,
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             if (type === 'display' && data) {
               const time = data.toString();
               const hours = time.slice(0, 2).padStart(2, '0');
@@ -155,14 +155,14 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render: (data) => this.g.getStatusOrderLabel(data),
+          render: (data:any) => this.g.getStatusOrderLabel(data),
         },
         {
           title: 'Aksi',
           render: () => {
             return ` <div class="btn-group" role="group" aria-label="Action">
                 <button class="btn btn-sm action-view btn-outline-primary btn-60">${this.buttonCaptionView}</button>
-                <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>           
+                <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>
               </div>`;
           },
         },
@@ -271,7 +271,7 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
   }
 
   onFilterPressed(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
     console.log('filter pressed');
@@ -369,7 +369,7 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
   //       autoWidth: true,
   //       info: true,
   //       drawCallback: () => { },
-  //       ajax: (dataTablesParameters: any, callback) => {
+  //       ajax: (dataTablesParameters: any, callback:any) => {
   //         this.page.start = dataTablesParameters.start;
   //         this.page.length = dataTablesParameters.length;
   //         const params = {
