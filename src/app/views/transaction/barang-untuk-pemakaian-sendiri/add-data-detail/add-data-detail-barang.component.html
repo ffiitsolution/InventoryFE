@@ -5,14 +5,69 @@
     Barang Yang Ditambahkan.
   </div>
   <c-card class="mb-4">
+    <c-card-header class="py-1">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        
+        <!-- Jumlah Item -->
+        <div class="d-flex align-items-center gap-2">
+          <label for="pemakaian barang sendiri">{{ "Jumlah Item" | translate }}</label>
+          <input type="text"
+                class="form-control form-control-sm text-center input-disabled"
+                [value]="getJumlahItem()"
+                readonly
+                style="width: 100px;" />
+        </div>
+    
+        <div class="d-grid gap-3 d-md-flex justify-content-end">
+          <button class="btn btn-info btn-sm text-white pe-3"
+                  (click)="onSubmit()">
+            <!-- <i class="fa fa-check pe-2" *ngIf="!loadingSimpan"></i>
+            <i class="fa fa-spinner fa-spin" *ngIf="loadingSimpan"></i> -->
+            {{ "Proses Simpan Data" | translate }}
+          </button>
+      
+          <button
+            class="btn btn-secondary text-white btn-150"
+            (click)="onBackPressed()"
+          >
+            <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
+          </button>
+        </div>
+  
+      </div>
+    </c-card-header>
     <c-card-body>
+
+      <div class="row align-items-center mb-2">
+        <!-- Tombol Tambah Data -->
+        <div class="col-auto">
+          <button class="btn btn-success text-white btn-sm pe-3" (click)="onAdd()">
+            <i class="fa fa-plus pe-2" *ngIf="!adding"></i>
+            {{ "Tambah" | translate }}
+          </button>
+        </div>
+      
+        <!-- Input Search -->
+        <div class="col-12 col-md-6 col-lg-4 ms-auto">
+          <c-input-group>
+            <span cInputGroupText><i class="fa fa-search"></i></span>
+            <input #listViewOrders 
+                  id="appendedInputButton" 
+                  [(ngModel)]="searchListViewOrder" 
+                  class="form-control form-control-sm"
+                  type="text" 
+                  placeholder="Search..." 
+                  (ngModelChange)="onFilterTextChange($event)">
+          </c-input-group>
+        </div>
+      </div>
+
       <div class="table-responsive">
         <ng-container>
           <div *ngIf="loading">
             <app-loading></app-loading>
           </div>
-          <table
-            bordered
+          <table bordered
             [hover]="true"
             [responsive]="true"
             [striped]="true"
@@ -112,6 +167,9 @@
                 >
                   Total Qty Expired
                 </th>
+                <th scope="col" class="text-center align-middle" style="background-color: #3c4b64; color: white;" rowspan="2">
+                  Action
+                </th>
               </tr>
               <tr>
                 <th
@@ -147,6 +205,7 @@
                 </td>
               </tr>
             </tbody>
+            
             <tbody>
               <tr *ngFor="let data of listProductData; let i = index">
                 <td class="text-center">
@@ -278,13 +337,17 @@
                     {{ validationMessageQtyPesanList[i] }}
                   </span>
                 </td>
+                <!-- Tombol Delete -->
+                <td class="text-center align-middle">
+                  <button (click)="onDeleteRow(i, data)" type="button" class="btn btn-secondary btn-sm">
+                    <i class="fa fa-trash me-1"></i>
+                  </button>
+                </td>
+
               </tr>
             </tbody>
+
           </table>
-          <!-- 
-          <c-pagination class="text-right">
-            <pagination-controls (pageChange)="onPageChange(1)" id="dataTable"></pagination-controls>
-          </c-pagination> -->
         </ng-container>
       </div>
     </c-card-body>
@@ -312,6 +375,7 @@
           <i class="fa fa-times"></i>
         </button>
       </c-modal-header>
+  
       <c-modal-body>
         <div class="table-responsive">
           <table
@@ -325,12 +389,28 @@
             class="btn btn-info text-white btn-150 pe-3"
             (click)="onAddListDataBarang()"
           >
-            <i class="fa fa-check pe-2"></i> {{ "Tambah" | translate }}
+            <i class="fa fa-check pe-2"></i> {{ "Pilih" | translate }}
             {{ "Data" | translate }}
           </button>
         </div>
       </c-modal-body>
     </c-modal>
+
+    <!-- <c-modal-body>
+      <c-card class="mb-4">
+        <c-card-body>
+          <div class="table-responsive">
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              class="datatable row-border hover stripe w-100 h-65"
+              >
+            </table>
+          </div>
+        </c-card-body>
+      </c-card>
+    </c-modal-body>
+    </c-modal> -->
 
     <c-modal
       #formModalDelete
@@ -368,21 +448,11 @@
     </c-modal>
   </c-card>
 
-  <div class="d-grid gap-3 d-md-flex justify-content-end">
-    <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
-      <i class="fa fa-check pe-2" *ngIf="!adding"></i>
-      <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
-      {{ "Proses Simpan Data" | translate }}
-    </button>
-
-    <button
-      class="btn btn-secondary text-white btn-150"
-      (click)="onBackPressed()"
-    >
-      <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
-    </button>
-  </div>
+  
 </div>
+
+
+
 <c-modal
   #modalExpired
   alignment="center"
@@ -417,14 +487,14 @@
   >
     <c-modal-header>
       <h5 cModalTitle>Entry Data Expired</h5>
-      <button
+      <!-- <button
         (click)="isShowModalExpired = false"
         type="button"
         class="btn btn-primary ms-2"
         cButtonClose
       >
         <i class="fa fa-times"></i>
-      </button>
+      </button> -->
     </c-modal-header>
     <c-modal-body>
       <div class="row">
@@ -444,7 +514,7 @@
                   readonly
                 />
               </div>
-              <div class="col-9">
+              <div class="col-12">
                 <input
                   type="text"
                   class="form-control"
@@ -482,32 +552,6 @@
 
           <div class="w-100 px-2 py-1 row">
             <div class="col-4 d-flex align-items-center">
-              <label class="fw-semibold" for="nomorPesanan">{{
-                "TOTAL QTY USED" | translate
-              }}</label>
-            </div>
-            <div class="col-8 pe-0">
-              <input
-                type="text"
-                placeholder="Nomor pesanan"
-                class="form-control"
-                id="konversi"
-                [value]="
-                  helper.sanitizedNumber(selectedExpProduct.qtyWasteBesar) *
-                    selectedExpProduct.konversi +
-                  helper.sanitizedNumber(selectedExpProduct.qtyWasteKecil) +
-                  ' ' +
-                  selectedExpProduct.satuanKecil
-                "
-                name="konversi"
-                readonly
-              />
-            </div>
-          </div>
-        </div>
-        <div class="col-6">
-          <div class="w-100 px-2 py-1 row">
-            <div class="col-4 d-flex align-items-center">
               <label for="nomorPesanan">{{
                 "Quantity Besar" | translate
               }}</label>
@@ -536,6 +580,31 @@
                 class="form-control"
                 id="konversi"
                 [value]="selectedExpProduct.qtyWasteKecil || 0"
+                name="konversi"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="w-100 px-2 py-1 row">
+            <div class="col-4 d-flex align-items-center">
+              <label class="fw-semibold" for="nomorPesanan">{{
+                "TOTAL QTY USED" | translate
+              }}</label>
+            </div>
+            <div class="col-8 pe-0">
+              <input
+                type="text"
+                placeholder="Nomor pesanan"
+                class="form-control"
+                id="konversi"
+                [value]="
+                  helper.sanitizedNumber(selectedExpProduct.qtyWasteBesar) *
+                    selectedExpProduct.konversi +
+                  helper.sanitizedNumber(selectedExpProduct.qtyWasteKecil) +
+                  ' ' +
+                  selectedExpProduct.satuanKecil
+                "
                 name="konversi"
                 readonly
               />
@@ -638,7 +707,10 @@
                 >
                   Total Qty Expired
                 </th>
-              </tr>
+                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+                  class="text-center align-items-start">
+                Action
+              </th>
             </thead>
             <tbody *ngIf="!listEntryExpired || listEntryExpired.length === 0">
               <tr>
@@ -728,12 +800,17 @@
                     {{ validationMessageQtyPesanList[i] }}
                   </span>
                 </td>
+                <td class="text-center">
+                  <button (click)="onModalDeleteRow(data.kodeBarang,i)" type="button" class="btn btn-secondary ms-2">
+                    <i class="fa fa-trash me-1"></i>
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
         </ng-container>
       </div>
-
+      
       <div class="row justify-content-between gap-3 mt-3">
         <div class="col-4 d-flex">
           <button
@@ -753,6 +830,12 @@
           </button>
         </div>
         <div class="col-6 d-flex justify-content-end mt-3">
+          <p class="mb-0">
+            Total: {{
+              (helper.sanitizedNumber(selectedExpProduct.qtyWasteBesar) * selectedExpProduct.konversi +
+              helper.sanitizedNumber(selectedExpProduct.qtyWasteKecil)) | number: '1.2-2'
+            }} {{ selectedExpProduct.satuanKecil }}
+          </p>          
           <button
             (click)="simpanDataExpired()"
             type="button"
