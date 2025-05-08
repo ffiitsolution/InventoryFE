@@ -15,7 +15,8 @@ import { DataService } from '../../../../service/data.service';
 import { AppConfig } from '../../../../config/app.config';
 import moment from 'moment';
 import { DEFAULT_DATE_RANGE_RECEIVING_ORDER } from '../../../../../constants';
-
+import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-mpcs-list',
   templateUrl: './mpcs-list.component.html',
@@ -54,6 +55,7 @@ export class MpcsListComponent implements OnInit {
   totalPages = 0;
   pages: number[] = [];
   listProductionData: any = [];
+  listSummaryData: any = [];
   protected config = AppConfig.settings.apiServer;
   currentDate: Date = new Date();
   selectedRowData: any;
@@ -63,8 +65,13 @@ export class MpcsListComponent implements OnInit {
     )
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
-  selectedStatusFilter: any = '';
-  isFilterShown: boolean = false;
+  selectedStatusFilter: any = 'B';
+  isFilterShown: boolean = true;
+  startTime: string = '09:00';
+  endTime: string = '18:00';
+  isShowModalKirim: boolean = false;
+  totalTransSummary: number = 0;
+  loadingKirim: boolean = false;
   constructor(
     translate: TranslateService,
     private route: ActivatedRoute,
@@ -76,6 +83,7 @@ export class MpcsListComponent implements OnInit {
     private form: FormBuilder,
     private dataService: DataService,
     private helperService: HelperService,
+    private toastr: ToastrService
   ) {
     translate.use(g.getLocalstorage('inv_language') || 'id');
     this.dpConfig.containerClass = 'theme-dark-blue';
@@ -121,6 +129,8 @@ export class MpcsListComponent implements OnInit {
   }
 
   getDataProduction(){
+    const [startHour, startMinute] = this.startTime.split(':').map(Number);
+    const [endHour, endMinute] = this.endTime.split(':').map(Number);
     const params = {
       start: this.currentPage*this.itemsPerPage || 0,
       search: { value: this.searchText,regex:false },
@@ -129,16 +139,16 @@ export class MpcsListComponent implements OnInit {
       ...this.paramaters ,
       draw:this.draw,
       kodeGudang: this.g.getUserLocationCode(),
-      statusPosting: this.selectedStatusFilter,
+      statusPosting: [this.selectedStatusFilter],
       startDate: moment(this.dateRangeFilter[0]).set({
-                  hours: 0,
-                  minutes: 0,
+                  hours: startHour,
+                  minutes: startMinute,
                   seconds: 0,
                   milliseconds: 0,
                 }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
       endDate: moment(this.dateRangeFilter[1]).set({
-                  hours: 23,
-                  minutes: 59,
+                  hours: endHour,
+                  minutes: endMinute,
                   seconds: 59,
                   milliseconds: 999,
                 }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
@@ -218,6 +228,117 @@ export class MpcsListComponent implements OnInit {
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
+  }
+
+  getSummaryData() {
+    const [startHour, startMinute] = this.startTime.split(':').map(Number);
+    const [endHour, endMinute] = this.endTime.split(':').map(Number);
+    const params = {
+      kodeGudang: this.g.getUserLocationCode(),
+      startDate: moment(this.dateRangeFilter[0]).set({
+                  hours: startHour,
+                  minutes: startMinute,
+                  seconds: 0,
+                  milliseconds: 0,
+                }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
+      endDate: moment(this.dateRangeFilter[1]).set({
+                  hours: endHour,
+                  minutes: endMinute,
+                  seconds: 59,
+                  milliseconds: 999,
+                }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
+    };
+    this.appService
+    .getSummaryKirimProduction(params)
+    .subscribe((resp) => {
+      this.listSummaryData = resp.data.data;
+      this.totalTransSummary = resp.data.totalData;
+    });
+  }
+
+  formatStartDate(): string {
+    const [startHour, startMinute] = this.startTime.split(':').map(Number);
+  
+    return moment(this.dateRangeFilter[0]).set({
+      hours: startHour,
+      minutes: startMinute,
+      seconds: 0,
+      milliseconds: 0,
+    }).format('YYYY-MM-DD HH:mm');
+  }
+
+  formatEndDate(): string {
+    const [endHour, endMinute] = this.endTime.split(':').map(Number);
+  
+    return moment(this.dateRangeFilter[1]).set({
+      hours: endHour,
+      minutes: endMinute,
+      seconds: 0,
+      milliseconds: 0,
+    }).format('YYYY-MM-DD HH:mm');
+  }
+  
+  formatToday(): string {
+    const [endHour, endMinute] = this.endTime.split(':').map(Number);
+  
+    return moment().format('YYYY-MMM-DD');
+  }
+
+  showModalKirim() {
+    this.getSummaryData();
+    this.isShowModalKirim = true;
+  }
+
+  onKirimData(){
+      this.loadingKirim = true;
+    
+        const requestBody = {
+          kodeGudang: this.g.getUserLocationCode(),
+        };
+    
+        Swal.fire({
+          ...this.g.componentKonfirmasiKirim,
+          showConfirmButton: false,
+          showCancelButton: false,
+          width: '600px',
+          customClass: {
+            popup: 'custom-popup',
+          },
+          didOpen: () => {
+            const submitBtn = document.getElementById('btn-submit');
+            const cancelBtn = document.getElementById('btn-cancel');
+    
+            submitBtn?.addEventListener('click', () => {
+              this.appService.kirimProduction(requestBody).subscribe({
+                next: (res: any) => {
+                  if (!res.success) {
+                    this.appService.handleErrorResponse(res);
+                  } else {
+                    this.toastr.success('Berhasil Kirim!');
+                  }
+                  this.loadingKirim = false;
+                  Swal.close();
+                  const currentUrl = this.router.url;
+                  this.router.navigateByUrl('/empty', { skipLocationChange: true }).then(() => {
+                    this.router.navigate([currentUrl]);
+                  });
+                },
+                error: (err: any) => {
+                  console.log('An error occurred while Kirim Data.');
+                  this.loadingKirim = false;
+               
+                  Swal.close();
+                },
+              });
+            });
+    
+            cancelBtn?.addEventListener('click', () => {
+              Swal.close();
+              this.toastr.info('Kirim dibatalkan');
+              this.loadingKirim = false;
+            });
+          },
+        });
   }
  
 }

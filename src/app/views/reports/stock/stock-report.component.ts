@@ -16,6 +16,9 @@ import {
 import { AppService } from '../../../service/app.service';
 import { DatePipe } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import moment from 'moment';
+import { first, last } from 'rxjs';
 
 @Component({
   selector: 'app-stock-report',
@@ -40,10 +43,14 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
   listRegion: any = [];
 
   selectedRegion: any;
-
+  public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   paramStatusAktif: string = '';
   paramTipeListing: string = 'header';
-
+  paramPilihanCetak: string = 'mutasi';
+  dateRangeString: string;
+  startOfMonth : any;
+  endOfMonth : any;
+  paramTglTransaksi: any =new Date();
   constructor(
     private service: AppService,
     private g: GlobalService,
@@ -52,7 +59,21 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService
-  ) {}
+  ) {
+    
+    this.startOfMonth = moment().startOf('month').format('DD MMMM YYYY');
+    this.endOfMonth = moment().endOf('month').format('DD MMMM YYYY');
+    this.dateRangeString = `(Periode :${this.startOfMonth} - ${this.endOfMonth})`;
+
+
+    this.dpConfigtrans.containerClass = 'theme-dark-blue';
+    this.dpConfigtrans.dateInputFormat = 'DD/MM/YYYY';
+    this.dpConfigtrans.adaptivePosition = true;
+    this.dpConfigtrans.maxDate = new Date();
+    this.dpConfigtrans.minDate = moment().startOf('month').toDate();
+    this.dpConfigtrans.customTodayClass = 'today-highlight';
+
+  }
 
   ngOnInit(): void {
     this.g.changeTitle(
@@ -129,12 +150,17 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loadingState['submit'] = true;
 
     let param = {};
-    if (this.currentReport === 'Master Cabang') {
+    if (this.currentReport === 'Stock Barang') {
+      const previousMonth = moment(this.paramTglTransaksi).subtract(1, 'month');
+
       param = {
-        kodeGudang: '00072',
-        kodeRegion: this.selectedRegion['code'],
+        kodeGudang: this.g.getUserLocationCode(),
         status: this.paramStatusAktif,
-        tipeListing: this.paramTipeListing,
+        tipePilihanCetak: this.paramPilihanCetak,
+        firstDate:this.startOfMonth,
+        lastDate:moment(this.paramTglTransaksi).format('DD MMM YYYY'),
+        yearEom:previousMonth.format('YYYY'),
+        monthEom:previousMonth.format('MM'),
       };
     } else if (this.currentReport === 'Master Department') {
       param = {

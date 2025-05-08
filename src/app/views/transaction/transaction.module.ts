@@ -94,6 +94,7 @@ import { PenerimaanBrgBksListNoreturComponent } from './penerimaan-barang-bekas/
 import { DetailPenerimaanBrgBksReturComponent } from './penerimaan-barang-bekas/detail-retur/detail-retur.component';
 import { ProductionListForPostingComponent } from './production/dt-list-for-posting/production-list-for-posting.component';
 import { TimepickerModule } from 'ngx-bootstrap/timepicker';
+import { ProductionComponent } from './production/production/production';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -190,7 +191,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     PenerimaanBrgBksListNoreturComponent,
     DetailPenerimaanBrgBksReturComponent,
 
-    ProductionListForPostingComponent
+    ProductionListForPostingComponent,
+    ProductionComponent
 
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],

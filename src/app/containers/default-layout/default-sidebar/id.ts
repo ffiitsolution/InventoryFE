@@ -171,7 +171,7 @@ export const menu_id: any = [
       },
       {
         name: 'Produksi',
-        url: '/transaction/production/list-dt',
+        url: '/transaction/production/',
         iconComponent: {
           name: 'cil-industry',
         },

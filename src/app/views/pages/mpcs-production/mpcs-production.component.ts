@@ -107,7 +107,6 @@ export class MpcsProductionComponent implements OnInit {
     if(this.headerMpcsProduksi){
       this.headerMpcsProduksi = JSON.parse(this.headerMpcsProduksi)
     }
-   console.log( this.headerMpcsProduksi)
     const todayDate = new Date();
     this.defaultDate = this.helperService.formatDate(todayDate);
 
@@ -331,19 +330,19 @@ export class MpcsProductionComponent implements OnInit {
           jumlahHasilProduksi: this.myForm.get('jumlahHasilProduksi')?.value,
           bahanBaku: item.bahanBaku,
           namaBarang: item.namaBarang,
-          konversi: this.g.formatNumberId(item.konversi),
+          konversi: item.konversi,
           qtyPemakaian: parseFloat(item.qtyPemakaian).toFixed(2),
           satuanKecil: item.satuanKecil,
           satuanBesar: item.satuanBesar,
           tipeProduksi: 'R',
-          qtyPemakaianBesar: this.g.formatNumberId(
+          qtyPemakaianBesar: (
             Math.floor(
               (item.qtyPemakaian *
                 this.myForm.get('jumlahHasilProduksi')?.value) /
                 item.konversi
             )
-          ),
-          qtyPemakaianKecil: this.g.formatNumberId(
+          ).toFixed(2),
+          qtyPemakaianKecil: (
             item.qtyPemakaian * this.myForm.get('jumlahHasilProduksi')?.value -
               Math.floor(
                 (item.qtyPemakaian *
@@ -351,10 +350,10 @@ export class MpcsProductionComponent implements OnInit {
                   item.konversi
               ) *
                 item.konversi
-          ),
-          totalQtyPemakaian: this.g.formatNumberId(
+          ).toFixed(2),
+          totalQtyPemakaian: (
             item.qtyPemakaian * this.myForm.get('jumlahHasilProduksi')?.value
-          ),
+          ).toFixed(2),
           isConfirmed: item.flagExpired == 'Y' ? true : false,
         }));
 
@@ -826,7 +825,7 @@ export class MpcsProductionComponent implements OnInit {
               ).format('D MMM YYYY'),
               tipeTransaksi: 12,
               kodeBarang: item.bahanBaku,
-              konversi: item.konversi,
+              konversi: this.helperService.sanitizedNumberWithoutComa(item.konversi),
               satuanKecil: item.satuanKecil,
               satuanBesar: item.satuanBesar,
               qtyBesar:
@@ -1014,14 +1013,14 @@ export class MpcsProductionComponent implements OnInit {
           jumlahHasilProduksi: this.myForm.get('jumlahHasilProduksi')?.value,
           bahanBaku: item.kodeBarang,
           namaBarang: item.namaBarang,
-          konversi: this.g.formatNumberId(item.konversi),
+          konversi: parseFloat(item.konversi).toFixed(2),
           qtyPemakaian: parseFloat(item.qtyPemakaian).toFixed(2),
           satuanKecil: item.satuanKecil,
           satuanBesar: item.satuanBesar,
           tipeProduksi: 'R',
-          qtyPemakaianBesar: this.g.formatNumberId(item.qtyBesar),
-          qtyPemakaianKecil: this.g.formatNumberId(item.qtyKecil),
-          totalQtyPemakaian: this.g.formatNumberId(item.totalQty),
+          qtyPemakaianBesar: parseFloat(item.qtyBesar).toFixed(2),
+          qtyPemakaianKecil: parseFloat(item.qtyKecil).toFixed(2),
+          totalQtyPemakaian:parseFloat(item.totalQty).toFixed(2),
           isConfirmed: item.flagExpired == 'Y' ? true : false,
         }));
 
@@ -1062,19 +1061,19 @@ export class MpcsProductionComponent implements OnInit {
           jumlahHasilProduksi: this.myForm.get('jumlahHasilProduksi')?.value,
           bahanBaku: item.bahanBaku,
           namaBarang: item.namaBarang,
-          konversi: this.g.formatNumberId(item.konversi),
+          konversi: parseFloat(item.konversi).toFixed(2),
           qtyPemakaian: parseFloat(item.qtyPemakaian).toFixed(2),
           satuanKecil: item.satuanKecil,
           satuanBesar: item.satuanBesar,
           tipeProduksi: 'R',
-          qtyPemakaianBesar: this.g.formatNumberId(
+          qtyPemakaianBesar: (
             Math.floor(
               (item.qtyPemakaian *
                 this.myForm.get('jumlahHasilProduksi')?.value) /
                 item.konversi
             )
-          ),
-          qtyPemakaianKecil: this.g.formatNumberId(
+          ).toFixed(2),
+          qtyPemakaianKecil: (
             item.qtyPemakaian * this.myForm.get('jumlahHasilProduksi')?.value -
               Math.floor(
                 (item.qtyPemakaian *
@@ -1082,10 +1081,10 @@ export class MpcsProductionComponent implements OnInit {
                   item.konversi
               ) *
                 item.konversi
-          ),
-          totalQtyPemakaian: this.g.formatNumberId(
+          ).toFixed(2),
+          totalQtyPemakaian: (
             item.qtyPemakaian * this.myForm.get('jumlahHasilProduksi')?.value
-          ),
+          ).toFixed(2),
           isConfirmed: item.flagExpired == 'Y' ? true : false,
         }));
 
