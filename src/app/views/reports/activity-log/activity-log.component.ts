@@ -119,7 +119,7 @@ export class ActivityLogComponent {
         (response) => {
           this.loading = false;
           const res = response.body;
-          this.listLog = res.item;
+          this.listLog = response.item;
         },
         (err) => {
           this.loading = false;
