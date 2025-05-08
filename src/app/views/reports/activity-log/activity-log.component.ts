@@ -8,10 +8,10 @@ import Swal from 'sweetalert2';
 import moment from 'moment';
 import { GlobalService } from 'src/app/service/global.service';
 import { DataService } from 'src/app/service/data.service';
-import { lastValueFrom } from 'rxjs';
 import { AppConfig } from '../../../config/app.config';
 import * as XLSX from 'xlsx';
 import { DatePipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-activity-log',
@@ -32,7 +32,8 @@ export class ActivityLogComponent {
     private service: AppService,
     public globalService: GlobalService,
     private dataService: DataService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private http: HttpClient,
   ) { }
 
   @ViewChild('selectDropdownDate')
@@ -140,7 +141,7 @@ export class ActivityLogComponent {
       if (res.isConfirmed) {
         this.page = 1;
         Swal.close();
-        this.dataService.getData('/tomcat-logs/download/' + fileName + '/true')
+        this.dataService.getData(AppConfig.settings.apiServer.BASE_URL + '/tomcat-logs/download/' + fileName + '/true')
           .subscribe(
             (res) => {
               if (res.success) {
@@ -168,21 +169,30 @@ export class ActivityLogComponent {
       cancelButtonText: 'BATAL',
       confirmButtonText: 'YA, LANJUT',
       confirmButtonColor: '#B51823',
-    }).then(async (res) => {
+    }).then((res) => {
       if (res.isConfirmed) {
         Swal.close();
-        const responseUrl = this.dataService.getData('/tomcat-logs/download/' +
-          fileName +
-          '/false');
-        const base64Response = await lastValueFrom(responseUrl);
-        const blob = new Blob([base64Response as BlobPart], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-
-        window.open(url, '_blank');
-        this.toastr.success('Download Tomcat log.', 'Proses selesai.');
+  
+        const downloadUrl = AppConfig.settings.apiServer.BASE_URL + '/tomcat-logs/download/' + fileName + '/false';
+  
+        this.http.get(downloadUrl, { responseType: 'blob' }).subscribe({
+          next: (blob) => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            window.URL.revokeObjectURL(url); // Optional: untuk membebaskan memori
+            this.toastr.success('Download Tomcat log.', 'Proses selesai.');
+          },
+          error: () => {
+            this.toastr.error('Gagal mengunduh file.', 'Terjadi kesalahan.');
+          }
+        });
       }
     });
   }
+  
 
   formatTime(timestamp: string) {
     return moment(timestamp).format('YYYY-MM-DD hh:mm:ss');
