@@ -8,7 +8,7 @@
         <div class="col col-md-8">
           <div class="menu-purpose col-sm-12 d-flex justify-content-end align-items-center">
             <span>
-              Fitur ini digunakan untuk melihat log aktivitas aplikasi            
+              Fitur ini digunakan untuk melihat log aktivitas aplikasi
             </span>
           </div>
         </div>
@@ -179,7 +179,6 @@
 <c-modal #modalListBackup backdrop="static" #modalLg size="lg" id="modalListBackup" scrollable>
   <c-modal-header>
     <h5 cModalTitle>Tomcat Logs</h5>
-    <button title="Close" [cModalToggle]="modalListBackup.id" cButtonClose></button>
   </c-modal-header>
   <c-modal-body>
     <c-row *ngIf="loading">
@@ -202,8 +201,7 @@
           </tr>
         </tbody>
         <tbody *ngIf="listLog.length > 0">
-          <tr
-            *ngFor="let item of listLog; let i = index">
+          <tr *ngFor="let item of listLog; let i = index">
             <td>{{ page > 1 ? (((page-1)*10) + i + 1) : i + 1}}</td>
             <td>{{item.fileName}}</td>
             <td>{{formatTime(item.lastModified)}}</td>
@@ -213,8 +211,8 @@
                 [cModalToggle]="modalListBackup.id">
                 Download
               </button>
-              <button *ngIf="dataUser?.groupId === 'IT'" class="btn-warning btn btn-sm text-white" (click)="confirmDelete(item.fileName)"
-                [cModalToggle]="modalListBackup.id">
+              <button *ngIf="dataUser?.groupId === 'IT'" class="btn-warning btn btn-sm text-white"
+                (click)="confirmDelete(item.fileName)" [cModalToggle]="modalListBackup.id">
                 Delete
               </button>
             </td>
@@ -231,7 +229,7 @@
     </c-row>
   </c-modal-body>
   <c-modal-footer>
-    <button #closeModal id="closeModal" [cModalToggle]="modalListBackup.id" cButton color="danger"><i
-        class="fa fa-times" aria-hidden="true"></i> Close</button>
+    <button #closeModal class="btn btn-info text-white btn-150 pe-3" id="closeModal" [cModalToggle]="modalListBackup.id" cButton><i
+        class="fa fa-times pe-2" aria-hidden="true"></i> Close</button>
   </c-modal-footer>
 </c-modal>

@@ -249,4 +249,11 @@ export const menu_id: any = [
       name: 'cil-swap-vertical',
     },
   },
+  {
+    name: 'Activity Log Report',
+    url: '/reports/activity-log',
+    iconComponent: {
+      name: 'cil-sync',
+    },
+  },
 ];

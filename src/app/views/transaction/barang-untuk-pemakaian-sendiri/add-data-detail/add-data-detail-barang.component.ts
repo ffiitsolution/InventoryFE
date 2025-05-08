@@ -252,6 +252,7 @@ export class AddDataDetailBarangComponent
       }).then((result) => {
         if (result.isConfirmed) {
           this.service.insert('/api/delivery-order/simpan-data-pemakaian-barang', param).subscribe({
+
             next: (res) => {
               if (!res) {
                 this.toastr.error(res.message);

@@ -58,7 +58,9 @@ export class ActivityLogComponent {
   today = new Date();
   dataUser: any;
 
-  configSelectFile: any = [];
+  configSelectFile: any = {
+    height: '200px', // Dropdown height
+  };
   listFile: any[] = [];
   selectedFile: object;
 
