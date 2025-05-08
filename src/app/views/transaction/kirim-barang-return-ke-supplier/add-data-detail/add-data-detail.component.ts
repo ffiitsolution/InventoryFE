@@ -112,7 +112,7 @@ export class AddDataDetailKirimBarangReturnKeSupplierComponent
 
   ngOnInit(): void {
     this.g.changeTitle(
-      this.translation.instant('Detail Production') + ' - ' + this.g.tabTitle
+      this.translation.instant('Detail kirim barang retur ke Supplier') + ' - ' + this.g.tabTitle
     );
     this.dataUser = this.g.getLocalstorage('inv_currentUser');
 
@@ -157,8 +157,8 @@ export class AddDataDetailKirimBarangReturnKeSupplierComponent
     this.ngUnsubscribe.complete();  
   }
 
-  onBackPressed() {
-    this.onBatalPressed.emit('');
+  onBackPressed(data: any = '') {
+    this.onBatalPressed.emit(data);
   }
 
   onPageChange(event: number) {
@@ -224,9 +224,9 @@ export class AddDataDetailKirimBarangReturnKeSupplierComponent
     };
   
     Swal.fire({
-      title: 'Konfirmasi Proses Posting Data',
+      title: '<div style="color: white; background: #c0392b; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
       html: `
-        <div>Pastikan semua data sudah di input dengan benar!</div>
+        <div>Pastikan semua data sudah di input dengan benar!, <strong>PERIKSA SEKALI LAGI...!!</strong></div>
         <div style="color: red; font-weight: bold; margin-top: 10px;">
           DATA YANG SUDAH DIPOSTING TIDAK DAPAT DIPERBAIKI..!!
         </div>
@@ -234,8 +234,8 @@ export class AddDataDetailKirimBarangReturnKeSupplierComponent
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Proses Posting',
-      cancelButtonText: 'Batal Posting',
+      confirmButtonText: '<i class="fa fa-check pe-2"></i> Proses Posting',
+      cancelButtonText: '<i class="fa fa-times pe-1"></i> Batal Posting',
     }).then(result => {
       if (result.isConfirmed) {
         this.service.insert('/api/send-return-to-site/insert', param)
@@ -248,8 +248,11 @@ export class AddDataDetailKirimBarangReturnKeSupplierComponent
                 this.toastr.success('Data berhasil diposting!');
                 this.adding = false;
                 this.onPreviousPressed();
+                console.log('res Data : ', res.data)
+                this.onBackPressed(res.data);
+                this.adding = false;
+                this.loadingSimpan = false;
               }
-              this.loadingSimpan = false;
             },
             error: () => {
               this.toastr.error('Gagal posting data Kirim ke Supplier!');

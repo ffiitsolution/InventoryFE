@@ -66,6 +66,11 @@ export class AddKirimBarangReturnKeSupplierComponent implements OnInit, AfterVie
   selectedRowDataBranch: any;
   pageBranch = new Page();
   selectedRowRetur: any = {};
+
+  paramGenerateReport = {};
+  isShowModalReport: boolean = false;
+  disabledPrintButton: boolean = false;
+  alreadyPrint: boolean = false;
   
 
   @ViewChild('formModal') formModal: any;
@@ -574,6 +579,8 @@ export class AddKirimBarangReturnKeSupplierComponent implements OnInit, AfterVie
         totalBahanBaku: 0,
       });
       this.isShowDetail = false;
+      console.log('newItem :', newItem)
+      if (newItem) this.onShowModalPrint(newItem);
     }
 
     addJumlahBahanBaku($event:any): void {
@@ -632,6 +639,26 @@ export class AddKirimBarangReturnKeSupplierComponent implements OnInit, AfterVie
           text: message,
           confirmButtonText: 'OK'
         });
+      }
+
+      closeModal() {
+        this.isShowModalReport = false;
+        this.disabledPrintButton = false;
+      }
+
+      onShowModalPrint(data: any) {
+        this.paramGenerateReport = {
+          noTransaksi: data.nomorTransaksi,
+          userEntry: data.userCreate,
+          jamEntry: this.globalService.transformTime(data.timeCreate),
+          tglEntry: this.globalService.transformDate(data.dateCreate),
+          outletBrand: 'KFC',
+          kodeGudang: this.globalService.getUserLocationCode(),
+          isDownloadCsv: false,
+          reportName: 'Cetak kirim barang retur ke Supplier',
+          confirmSelection: 'Ya',
+        };
+        this.isShowModalReport = true;
       }
       
 

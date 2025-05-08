@@ -310,4 +310,18 @@
   </c-modal>
 </div>
 
+<div class="fade-in">
+  <app-modal-print-list
+    [alreadyPrint]="alreadyPrint"
+    [disabledPrintButton]="disabledPrintButton"
+    [generatePdfUrl]="'/cetak-send-return-to-site-jasper'"
+    [updateStatusUrl]="''"
+    [updatePrintStatusParam]="''"
+    [generateReportParam]="paramGenerateReport"
+    [isShowSelection]="true"
+    (closeModalEvent)="closeModal()"
+  >
+  </app-modal-print-list>
+</div>
+
 
