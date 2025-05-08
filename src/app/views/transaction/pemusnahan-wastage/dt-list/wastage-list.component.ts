@@ -22,8 +22,8 @@ export class WastageListComponent implements OnInit {
   expiredFilter: string = '';
   tujuanFilter: string = '';
   dtOptions: DataTables.Settings = {};
-    protected config = AppConfig.settings.apiServer;
-  
+  protected config = AppConfig.settings.apiServer;
+
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
   dtColumns: any = [];
@@ -72,13 +72,13 @@ export class WastageListComponent implements OnInit {
             minutes: 0,
             seconds: 0,
             milliseconds: 0,
-          }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
+          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
           endDate: moment(this.dateRangeFilter[1]).set({
             hours: 23,
             minutes: 59,
             seconds: 59,
             milliseconds: 999,
-          }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
+          }).format('YYYY-MM-DD HH:mm:ss.SSS'),
         };
         setTimeout(() => {
           this.dataService

@@ -73,13 +73,16 @@ export class PageAwalDoBalikComponent implements OnInit, AfterViewInit, OnDestro
     note: '',
     nomorSuratJan: '',
     statusPosting: '',
+    kota: '',
+    alamatTujuan: '',
+    alamat2: ''
   };
 
 
   constructor(
     private router: Router,
     private dataService: DataService,
-    private globalService: GlobalService,
+    public globalService: GlobalService,
     private translationService: TranslationService,
     private appService: AppService
   ) {

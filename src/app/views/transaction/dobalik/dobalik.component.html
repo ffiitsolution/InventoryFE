@@ -147,7 +147,7 @@
 <c-modal #formModalKirim [fullscreen]="false" [visible]="isShowModalPosting" backdrop="static" #modalLg  size="lg"
 id="formModalKirim"    [attr.aria-hidden]="!isShowModalPosting" *ngIf="isShowModalPosting">
   <c-modal-header>
-    <h5 cModalTitle>Konfirmasi Kirim Data Pesanan</h5>
+    <h5 cModalTitle>PROSES POSTING - DO BALIK</h5>
     <button (click)="isShowModalPosting = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalKirim.id"
       cButtonClose><i class="fa fa-times"></i></button>
   </c-modal-header>
@@ -226,7 +226,7 @@ id="formModalKirim"    [attr.aria-hidden]="!isShowModalPosting" *ngIf="isShowMod
       </div>
     </c-modal-body>
     <c-modal-footer class="justify-center">
-      <button type="button" class="btn btn-success text-white  w-180" (click)="onProsesDoBalik(selectedRowData)"><i class ="fa fa-check pe-2"></i>Proses Posting</button>
+      <button type="button" class="btn btn-info text-white  w-180" (click)="onProsesDoBalik(selectedRowData)"><i class ="fa fa-check pe-2"></i>Proses Posting</button>
       <button type="button" class="btn btn-light w-180 me-3" data-bs-dismiss="modal" (click)="isShowModalPosting = false">Batal Proses</button>
     </c-modal-footer>
 </c-modal>

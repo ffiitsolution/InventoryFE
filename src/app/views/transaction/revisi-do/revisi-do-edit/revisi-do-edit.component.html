@@ -318,7 +318,7 @@
     display: 'flex',
     'align-items': 'center',
     'justify-content': 'center'
-  }" [fullscreen]="false" [visible]="isShowModalRevisi" backdrop="static" #modalLg size="xl" id="formModal"
+  }" [fullscreen]="false" [visible]="isShowModalRevisi" backdrop="static" #modalLg size="lg" id="formModal"
   [attr.aria-hidden]="!isShowModalRevisi">
   <c-modal-header>
     <h5 cModalTitle>Rubah Qty Kirim</h5>
@@ -361,24 +361,24 @@
         <div class="w-100 px-2 py-1 row">
           <div class="col-4 d-flex align-items-center">
             <label for="nomorPesanan">{{
-              "Satuan Kecil" | translate
-              }}</label>
-          </div>
-          <div class="col-8 pe-0">
-            <input type="text" class="form-control" id="konversi" [value]="
-                selectedRowData.satuanKecil
-              " name="konversi" disabled />
-          </div>
-        </div>
-        <div class="w-100 px-2 py-1 row">
-          <div class="col-4 d-flex align-items-center">
-            <label for="nomorPesanan">{{
               "Satuan Besar" | translate
               }}</label>
           </div>
           <div class="col-8 pe-0">
             <input type="text" class="form-control" id="konversi" [value]="
                 selectedRowData.satuanBesar
+              " name="konversi" disabled />
+          </div>
+        </div>
+        <div class="w-100 px-2 py-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{
+              "Satuan Kecil" | translate
+              }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi" [value]="
+                selectedRowData.satuanKecil
               " name="konversi" disabled />
           </div>
         </div>
@@ -400,12 +400,12 @@
         <div class="w-100 px-2 py-4 row">
         </div>
         <div class="w-100 px-2 py-1 row">
-          <div class="col-4 d-flex align-items-center">
+          <div class="col-5 d-flex align-items-center">
             <label for="nomorPesanan">{{
               "Qty Pesan - Besar" | translate
               }}</label>
           </div>
-          <div class="col-8 pe-0">
+          <div class="col-7 pe-0">
             <input type="text" class="form-control" id="konversi" [value]="
                 g.formatToDecimal(selectedRowData.qtyPesanBesar)
               " name="konversi" disabled />
@@ -413,24 +413,24 @@
         </div>
 
         <div class="w-100 px-2 py-1 row">
-          <div class="col-4 d-flex align-items-center">
+          <div class="col-5 d-flex align-items-center">
             <label for="nomorPesanan">{{
               "Qty Pesan - Kecil" | translate
               }}</label>
           </div>
-          <div class="col-8 pe-0">
+          <div class="col-7 pe-0">
             <input type="text" class="form-control" id="konversi" [value]="
                 g.formatToDecimal(selectedRowData.qtyPesanKecil)
               " name="konversi" disabled />
           </div>
         </div>
         <div class="w-100 px-2 py-1 row">
-          <div class="col-4 d-flex align-items-center">
+          <div class="col-5 d-flex align-items-center">
             <label for="nomorPesanan">{{
               "Total Qty Pesan" | translate
               }}</label>
           </div>
-          <div class="col-8 pe-0">
+          <div class="col-7 pe-0">
             <input type="text" class="form-control" id="konversi" [value]="
                 g.formatToDecimal(selectedRowData.totalQtyPesan)
               " name="konversi" disabled />
@@ -575,7 +575,7 @@
 
 <c-modal #modalExpiredEdit alignment="center"
   [style]="{'display': 'flex', 'align-items': 'center', 'justify-content': 'center'}" [fullscreen]="false"
-  [visible]="isShowModalExpiredEdit" backdrop="static" #modalLg size="xl" id="formModal"
+  [visible]="isShowModalExpiredEdit" backdrop="static" #modalLg size="lg" id="formModal"
   [attr.aria-hidden]="!isShowModalExpiredEdit">
   <c-modal-header>
     <h5 cModalTitle>Rubah Data Expired</h5>
@@ -870,7 +870,8 @@
       <button class="btn btn-secondary text-white btn-150" (click)="onCloseModal()">
         <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
       </button>
-      <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()" [disabled]="adding">
+      <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()" [disabled]="!selectedRowData.ket1 || !selectedRowData.ket2"
+      >
         <i class="fa fa-check pe-2" *ngIf="!adding"></i>
         <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
         {{ "Simpan" | translate }}

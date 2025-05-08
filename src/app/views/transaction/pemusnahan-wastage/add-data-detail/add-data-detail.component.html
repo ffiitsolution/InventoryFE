@@ -20,7 +20,7 @@
                   Konversi</th>
                 <th scope="col" style="background-color: #e55353; color:white; vertical-align: middle;"
                   class="text-center align-items-start btn-danger" colspan="2">Qty
-                  Waste</th> <!-- Masih sejajar --> 
+                  Waste</th> <!-- Masih sejajar -->
                 <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
                   class="text-center align-items-start" rowspan="2">
                   Total Qty Waste</th>
@@ -56,7 +56,8 @@
                 <td class="text-center">
                   <div class="input-group">
                     <input type="text" autofocus class="form-control text-center" [(ngModel)]="data.kodeBarang"
-                      (keydown.enter)="handleEnter($event, i)"  (keyup.enter)="nextInput.focus()" [disabled]="!!data?.namaBarang"/>
+                      (keydown.enter)="handleEnter($event, i)" (keyup.enter)="nextInput.focus()"
+                      [disabled]="!!data?.namaBarang" />
                     <button class="btn btn-outline-secondary" type="button" (click)="onShowModal()">
                       <i class="fa fa-search"></i>
                     </button>
@@ -72,9 +73,8 @@
                   <div class="d-flex" style="gap: 5px;">
                     <input #nextInput type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
                       [(ngModel)]="data.qtyWasteBesar" (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
-                      [readonly]="!data.isConfirmed" 
-                      (keypress)="g.conditionInput($event, 'numericDot')"
-                      (blur)="onBlurQtyWasteBesar(i)"/>
+                      [readonly]="!data.isConfirmed" (keypress)="g.conditionInput($event, 'numericDot')"
+                      (blur)="onBlurQtyWasteBesar(i)" />
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanBesar}}
                     </span>
@@ -87,8 +87,8 @@
                       [ngClass]="{'form-invalid': validationMessageList[i]}"
                       class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyWasteKecil"
                       (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')"
-                      (keypress)="g.conditionInput($event, 'numericDot')"
-                      (blur)="onBlurQtyWasteKecil(i)" [readonly]="!data.isConfirmed" />
+                      (keypress)="g.conditionInput($event, 'numericDot')" (blur)="onBlurQtyWasteKecil(i)"
+                      [readonly]="!data.isConfirmed" />
 
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanKecil}}
@@ -118,7 +118,7 @@
                 </td>
                 <td class="text-center">
                   {{
-                    getTotalExpiredData(data.kodeBarang,data.konversi) 
+                  getTotalExpiredData(data.kodeBarang,data.konversi)
                   }} {{data.satuanKecil}}
 
                   <!-- Validation message area -->
@@ -140,25 +140,26 @@
 
     </c-card-body>
 
-    <c-modal #formModal [fullscreen]="false" [visible]="isShowModal" backdrop="static" #modalLg size="xl" id="formModal"
-      [attr.aria-hidden]="!isShowModal">
+    <c-modal #formModal [fullscreen]="false" [visible]="isShowModal" backdrop="static" #modalLg size="xl"
+    id="formModal"    [attr.aria-hidden]="!isShowModal">
       <c-modal-header>
-        <h5 cModalTitle>Tambah Data Barang</h5>
-        <button (click)="isShowModal = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
-            class="fa fa-times"></i></button>
+        <h5 cModalTitle>Tambah Barang</h5>
+        <button (click)="isShowModal = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModal.id"
+          cButtonClose><i class="fa fa-times"></i></button>
       </c-modal-header>
       <c-modal-body>
+        <div class="table-responsive">
+          <table datatable [dtOptions]=" dtOptions" class="row-border hover stripe w-100" id="listBarangTable"></table>
+        </div>
         <div class="d-grid gap-3 d-md-flex justify-content-end mt-3">
           <button class="btn btn-info text-white btn-150 pe-3" (click)="onAddListDataBarang()">
             <i class="fa fa-check pe-2"></i> {{ "Tambah" | translate }} {{ "Data" | translate }}
           </button>
-  
-        </div>     
-        <div class="table-responsive">
-          <table datatable [dtOptions]=" dtOptions" class="row-border hover stripe w-100"></table>
+
         </div>
       </c-modal-body>
-    </c-modal>
+  </c-modal>
+
 
     <c-modal #formModalDelete [fullscreen]="false" [visible]="isShowModalDelete" backdrop="static" #modalLg
       id="formModalDelete" [attr.aria-hidden]="!isShowModalDelete">
@@ -280,14 +281,14 @@
               <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 124px;"
                 class="text-center align-items-start btn-danger" rowspan="2">Qty
                 Kecil</th> <!-- Masih sejajar -->
-                <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
-                  class="text-center align-items-start" rowspan="2">
-                  Total Qty Expired</th>
-              </tr>
               <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
-                  class="text-center align-items-start">
-                 Action</th>
-              
+                class="text-center align-items-start" rowspan="2">
+                Total Qty Expired</th>
+            </tr>
+            <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
+              class="text-center align-items-start">
+              Action</th>
+
           </thead>
           <tbody *ngIf="!listEntryExpired || listEntryExpired.length === 0">
             <tr>
@@ -303,9 +304,9 @@
                   #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker autocomplete="off" [(ngModel)]="data.tglExpired"
                   (ngModelChange)="updateKeteranganTanggal(data,$event,i)"
                   placeholder="{{ 'Tanggal transaksi' | translate }}" />
-                  <span style="font-size: 14px;" class="text-danger" *ngIf="data.validationExpiredMessageList">
-                    {{ data.validationExpiredMessageList}}
-                  </span>
+                <span style="font-size: 14px;" class="text-danger" *ngIf="data.validationExpiredMessageList">
+                  {{ data.validationExpiredMessageList}}
+                </span>
               </td>
 
               <td class="text-center">
@@ -314,9 +315,7 @@
               <td class="text-center input-column">
                 <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.qtyWasteBesar" 
-                    (change)="onInputQtyBesarExpired($event,data.kodeBarang, i)"
-                    />
+                    [(ngModel)]="data.qtyWasteBesar" (change)="onInputQtyBesarExpired($event,data.kodeBarang, i)" />
                   <span class="d-flex align-items-center justify-content-center">
                     / {{data.satuanBesar}}
                   </span>
@@ -326,9 +325,7 @@
               <td class="text-center">
                 <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.qtyWasteKecil"
-                    (change)="onInputQtyKecilExpired($event,data.kodeBarang, i)"
-                    />
+                    [(ngModel)]="data.qtyWasteKecil" (change)="onInputQtyKecilExpired($event,data.kodeBarang, i)" />
                   <span class="d-flex align-items-center justify-content-center">
                     / {{data.satuanKecil}}
                   </span>
@@ -343,8 +340,8 @@
               <td class="text-center">
                 {{
                 ((helper.sanitizedNumber(data.qtyWasteBesar) *
-                data.konversi) + helper.sanitizedNumber(data.qtyWasteKecil)).toFixed(2) 
-                }} 
+                data.konversi) + helper.sanitizedNumber(data.qtyWasteKecil)).toFixed(2)
+                }}
                 {{data.satuanKecil}}
 
                 <!-- Validation message area -->
@@ -370,9 +367,9 @@
         </button>
       </div>
       <div class="col-6 d-flex justify-content-end align-items-center gap-3">
-       <p class="mb-0"> Total: {{
+        <p class="mb-0"> Total: {{
           totalFilteredExpired
-        }} {{ selectedExpProduct.satuanKecil }}
+          }} {{ selectedExpProduct.satuanKecil }}
         </p>
         <button (click)="onSaveEntryExpired()" type="button" class="btn btn-primary ms-2">
           <i class="fa fa-check me-1"></i>Simpan

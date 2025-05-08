@@ -68,41 +68,43 @@ export class PackagingListComponent
   ngOnInit(): void {
     this.dtOptions = {
       paging: true,
-      pageLength: 5,
-      lengthMenu: [5],
+      pageLength: 10,
       processing: true,
+      lengthMenu: [5, 10, 25, 50, 100],
+      ordering: true,
       ajax: (dataTablesParameters: any, callback) => {
-        this.getProsesDoBalik(callback);
+        this.getProsesDoBalik(dataTablesParameters, callback);
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
       },
       autoWidth: true,
+      serverSide: true,
       columns: [
+        { data: 'dtIndex', title: '#' },
         {
-          data: null,
           title: 'Pilih Data',
           className: 'text-center',
           orderable: false,
           render: (data: any, type: any, row: any) => {
-            let isChecked = this.selectedRows.some(item => item.NO_SURAT_JALAN === row.NO_SURAT_JALAN) ? 'checked' : '';
-            return `<input type="checkbox" class="select-row action-select-data" data-id="${row.NO_SURAT_JALAN}" ${isChecked}>`;
+            let isChecked = this.selectedRows.some(item => item.noSuratJalan === row.noSuratJalan) ? 'checked' : '';
+            return `<input type="checkbox" class="select-row action-select-data" data-id="${row.noSuratJalan}" ${isChecked}>`;
           },
         },
-        { data: 'NO_SURAT_JALAN', title: 'NO. Surat Jalan (D.O)' },
+        { data: 'noSuratJalan', title: 'No. Surat Jalan (D.O)' },
         {
-          data: 'TGL_TRANSAKSI',
+          data: 'tglTransaksi',
           title: 'Tanggal Kirim',
           render: (data, type, row) => this.g.transformDate(data),
         },
         {
-          data: 'TGL_PESANAN',
+          data: 'tglPesanan',
           title: 'Tanggal Pesanan',
           render: (data, type, row) => this.g.transformDate(data),
         },
-        { data: 'NOMOR_PESANAN', title: 'Nomor Pesanan' },
-        { data: 'KODE_TUJUAN', title: 'Kode Tujuan' },
-        { data: 'NAMA_TUJUAN', title: 'Keterangan Tujuan' },
-        { data: 'KOTA_TUJUAN', title: 'Kota' },
+        { data: 'nomorPesanan', title: 'Nomor Pesanan' },
+        { data: 'kodeTujuan', title: 'Kode Tujuan' },
+        { data: 'namaTujuan', title: 'Keterangan Tujuan' },
+        { data: 'kotaTujuan', title: 'Kota' },
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $(row).find('.select-row').off('change').on('change', (event: JQuery.ChangeEvent<HTMLElement>) => {
@@ -129,7 +131,7 @@ export class PackagingListComponent
 
         return row;
       },
-      order: [[1, 'desc']],
+      order: [[2, 'desc']],
     };
 
   }
@@ -139,12 +141,12 @@ export class PackagingListComponent
     console.log("isChecked",isChecked)
     if (isChecked) {
         // Add kodeBarang if checked
-        if (! this.selectedRows.some(item => item.NO_SURAT_JALAN === data.NO_SURAT_JALAN)) {
+        if (! this.selectedRows.some(item => item.noSuratJalan === data.noSuratJalan)) {
             this.selectedRows.push(data);
         }
     } else {
-        // Remove NO_SURAT_JALAN if unchecked
-        this.selectedRows = this.selectedRows.filter(item => item.NO_SURAT_JALAN !== data.kodeBarang);
+        // Remove noSuratJalan if unchecked
+        this.selectedRows = this.selectedRows.filter(item => item.noSuratJalan !== data.kodeBarang);
         console.log("this.selectedRows else",this.selectedRows)
     }
     console.log("selectedRows",this.selectedRows)
@@ -180,7 +182,7 @@ export class PackagingListComponent
     });
   }
 
-  getProsesDoBalik(callback: any): void {
+  getProsesDoBalik(dataTablesParameters: any,callback: any): void {
     this.loading = true;
 
     // Format tanggal menjadi 'dd MM yyyy' sebelum dikirim ke backend
@@ -188,6 +190,7 @@ export class PackagingListComponent
     const formattedEndDate = moment(this.endDate).format('DD MMM yyyy');
 
     const params = {
+      ...dataTablesParameters,
       kodeGudang: this.g.getUserLocationCode(),
       statusPosting: 'I',
       fromDate: moment(
@@ -206,18 +209,27 @@ export class PackagingListComponent
       .postData(this.config.BASE_URL + '/api/delivery-order/packing-list', params)
       .subscribe(
         (response: any) => {
-          let index = 0;
-          dtIndex: this.page.start + index + 1;
-          this.reportProposeData = response.packingList;
+          const mappedData = response.data.map((item: any, index: number) => {
+            const { rn, ...rest } = item;
+            const finalData = {
+              ...rest,
+              dtIndex: this.page.start + index + 1,
+            };
+            return finalData;
+          })
+          this.reportProposeData = response.data;
           this.reportProposeData.forEach((item) => {
-            this.listNoDO.push({ noSuratJalan: item.NO_SURAT_JALAN });
+            this.listNoDO.push({ noSuratJalan: item.noSuratJalan });
           });
 
           this.totalLength = response.recordsTotal;
+          this.page.recordsTotal = response.recordsTotal;
+          this.page.recordsFiltered = response.recordsFiltered;
+          this.showFilterSection = false;
           callback({
             recordsTotal: response.recordsTotal,
             recordsFiltered: response.recordsFiltered,
-            data: this.reportProposeData,
+            data: mappedData,
           });
           this.loading = false;
         },
@@ -244,7 +256,7 @@ export class PackagingListComponent
   navigateToEntryPackingList(): void {
 
     if (!this.selectedRows || this.selectedRows.length === 0) {
-      this.toastr.error('Harap Pilih Data!', 'Peringatan');
+      this.toastr.warning('Harap Pilih Data!', 'Peringatan');
       return;
     }
 

@@ -1,0 +1,237 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>{{ "Activity Log" | translate }}</h5>
+        </div>
+        <div class="col col-md-8">
+          <div class="menu-purpose col-sm-12 d-flex justify-content-end align-items-center">
+            <span>
+              Fitur ini digunakan untuk melihat log aktivitas aplikasi            
+            </span>
+          </div>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div>
+  <c-card class="mt-2">
+    <div *ngIf="loading">
+      <app-loading></app-loading>
+    </div>
+    <c-card-header>
+      <div class="row">
+        <div class="col"><strong>PERIODE</strong></div>
+        <div class="col text-end">
+          <button class="btn btn-info" type="button" data-toggle="modal" [cModalToggle]="modalListBackup.id"
+            (click)="getListLog()">Tomcat Logs</button>
+        </div>
+      </div>
+    </c-card-header>
+    <c-card-body>
+      <div class="row">
+        <div class="col col-md-6 py-0">
+          <!-- list file -->
+          <table id="datatable" cTable stripped class="my-0">
+            <thead>
+              <tr>
+                <th>NO</th>
+                <th>PERIODE</th>
+                <th>SIZE</th>
+                <th>LAST UPDATE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let item of listFile; let i = index">
+                <tr (click)="selectFile(item)" class="cursor-pointer">
+                  <td [ngClass]="{'blue': isFileSelected(item)}">{{i+1}}</td>
+                  <td [ngClass]="{'blue': isFileSelected(item)}">{{item.filename.toString().replace('.logger','')}}</td>
+                  <td [ngClass]="{'blue': isFileSelected(item)}">{{item.fileSizeMB}} MB</td>
+                  <td [ngClass]="{'blue': isFileSelected(item)}">{{transformDateTime(item.lastModified)}}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <div class="col col-md-6">
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+  <c-card *ngIf="loadingDetail">
+    <c-card-body>
+      <ng-container>
+        <div>
+          <app-loading></app-loading>
+        </div>
+      </ng-container>
+    </c-card-body>
+  </c-card>
+  <c-card class="mt-2" *ngIf="!loadingDetail && listDetail.length > 0">
+    <c-card-header>
+      <div class="row">
+        <div class="col"><strong>DETAIL</strong></div>
+        <div class="col text-end"><button (click)="exportToExcel()"
+            class="btn btn-sm btn-outline-secondary">Export</button></div>
+      </div>
+    </c-card-header>
+    <c-card-body>
+      <!-- list detail -->
+      <div class="scrollable">
+        <table cTable [responsive]="true" [striped]="true" hover class="my-0">
+          <thead class="sticky-top">
+            <tr>
+              <th>NO</th>
+              <th>DATE</th>
+              <th>TIME</th>
+              <th>MODULE</th>
+              <th>ACTION</th>
+              <th>STAFF CODE</th>
+              <th>REMARK</th>
+              <th>SUCCESS</th>
+              <th>URL</th>
+            </tr>
+            <tr>
+              <th>
+                <button type="button" title="Reset filter" class="btn btn-sm btn-secondary" (click)="resetFilters()">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </th>
+              <th>
+                <ngx-select-dropdown #selectDropdownDate *ngIf="!loading" [multiple]="false" [config]="configSelectFile"
+                  (change)="selectFilter('date', $event.value)" [options]="columnOptions.date">
+                </ngx-select-dropdown>
+              </th>
+              <th>
+                <ngx-select-dropdown #selectDropdownTime *ngIf="!loading" [multiple]="false" [config]="configSelectFile"
+                  (change)="selectFilter('time', $event.value)" [options]="columnOptions.time">
+                </ngx-select-dropdown>
+              </th>
+              <th>
+                <ngx-select-dropdown #selectDropdownModule *ngIf="!loading" [multiple]="false"
+                  [config]="configSelectFile" (change)="selectFilter('module', $event.value)"
+                  [options]="columnOptions.module">
+                </ngx-select-dropdown>
+              </th>
+              <th>
+                <ngx-select-dropdown #selectDropdownAction *ngIf="!loading" [multiple]="false"
+                  [config]="configSelectFile" (change)="selectFilter('action', $event.value)"
+                  [options]="columnOptions.action">
+                </ngx-select-dropdown>
+              </th>
+              <th>
+                <ngx-select-dropdown #selectDropdownStaffCode *ngIf="!loading" [multiple]="false"
+                  [config]="configSelectFile" (change)="selectFilter('staffCode', $event.value)"
+                  [options]="columnOptions.staffCode">
+                </ngx-select-dropdown>
+              </th>
+              <th>
+                <ngx-select-dropdown #selectDropdownRemark *ngIf="!loading" [multiple]="false"
+                  [config]="configSelectFile" (change)="selectFilter('remark', $event.value)"
+                  [options]="columnOptions.remark">
+                </ngx-select-dropdown>
+              </th>
+              <th>
+                <ngx-select-dropdown #selectDropdownSuccess *ngIf="!loading" [multiple]="false"
+                  [config]="configSelectFile" (change)="selectFilter('success', $event.value)"
+                  [options]="columnOptions.success">
+                </ngx-select-dropdown>
+              </th>
+              <th>
+                <ngx-select-dropdown #selectDropdownUrl *ngIf="!loading" [multiple]="false" [config]="configSelectFile"
+                  (change)="selectFilter('url', $event.value)" [options]="columnOptions.url">
+                </ngx-select-dropdown>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="loadingFilter">
+              <div>
+                <app-loading></app-loading>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="!loadingFilter">
+              <tr *ngFor="let item of filteredListDetail; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ item.dateUpd }}</td>
+                <td>{{ item.time }}</td>
+                <td>{{ item.module }}</td>
+                <td>{{ item.action }}</td>
+                <td [title]="item.staffName">
+                  {{ item.staffCode }}
+                </td>
+                <td>{{ item.remark }}</td>
+                <td>{{ item.success }}</td>
+                <td [title]="formatParams(item.params)">
+                  {{ item.url }}
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<c-modal #modalListBackup backdrop="static" #modalLg size="lg" id="modalListBackup" scrollable>
+  <c-modal-header>
+    <h5 cModalTitle>Tomcat Logs</h5>
+    <button title="Close" [cModalToggle]="modalListBackup.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <c-row *ngIf="loading">
+      <app-loading></app-loading>
+    </c-row>
+    <c-row *ngIf="!loading">
+      <table responsive [hover]="true" cTable *ngIf="listLog">
+        <thead>
+          <tr>
+            <th>NO</th>
+            <th>NAME</th>
+            <th>LAST UPDATE</th>
+            <th>SIZE (MB)</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="listLog.length === 0">
+          <tr>
+            <td colspan="6" class="text-center">No log found.</td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="listLog.length > 0">
+          <tr
+            *ngFor="let item of listLog; let i = index">
+            <td>{{ page > 1 ? (((page-1)*10) + i + 1) : i + 1}}</td>
+            <td>{{item.fileName}}</td>
+            <td>{{formatTime(item.lastModified)}}</td>
+            <td>{{item.fileSizeMB}}</td>
+            <td>
+              <button class="btn-success bg-success btn btn-sm text-white me-2" (click)="confirmDownload(item.fileName)"
+                [cModalToggle]="modalListBackup.id">
+                Download
+              </button>
+              <button *ngIf="dataUser?.groupId === 'IT'" class="btn-warning btn btn-sm text-white" (click)="confirmDelete(item.fileName)"
+                [cModalToggle]="modalListBackup.id">
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </c-row>
+    <c-row>
+      <c-col *ngIf="totalLength > 10">
+        <c-pagination class="text-right" *ngIf="!filterText">
+          <pagination-controls (pageChange)="page = $event" id="itemBackup"></pagination-controls>
+        </c-pagination>
+      </c-col>
+    </c-row>
+  </c-modal-body>
+  <c-modal-footer>
+    <button #closeModal id="closeModal" [cModalToggle]="modalListBackup.id" cButton color="danger"><i
+        class="fa fa-times" aria-hidden="true"></i> Close</button>
+  </c-modal-footer>
+</c-modal>

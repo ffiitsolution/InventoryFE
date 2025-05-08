@@ -323,35 +323,60 @@ export class AddDataDetailWastageComponent
       };
 
       Swal.fire({
-        title: 'Apa Anda Sudah Yakin?',
-        text: 'Pastikan data yang dimasukkan sudah benar!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ya, Simpan!',
-        cancelButtonText: 'Batal',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.service.insert('/api/wastage/insert', param).subscribe({
-            next: (res) => {
-              if (!res.success) {
-                this.toastr.error(res.message);
-              } else {
-                setTimeout(() => {
-                  this.toastr.success("Data wastage berhasil dibuat");
-                  this.onPreviousPressed();
-                }, DEFAULT_DELAY_TIME);
-
-              }
-              this.adding = false;
-            },
+        title: '<div style="color: white; background: #e55353; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
+        html: `
+      <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">
+        <p>Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
+        <p class="text-danger" style="font-weight: bold;">DATA YANG SUDAH DI POSTING TIDAK DAPAT DIPERBAIKI ..!!</p>
+      </div>
+      <div class="divider my-3"></div>
+      <div class="d-flex justify-content-center gap-3 mt-3">
+        <button class="btn btn-info text-white btn-150 pe-3" id="btn-submit">
+          <i class="fa fa-check pe-2"></i> Proses Pengiriman
+        </button>
+        <button class="btn btn-secondary text-white btn-150" id="btn-cancel">
+          <i class="fa fa-times pe-1"></i> Batal
+        </button>
+      </div>
+    `,
+        showConfirmButton: false,
+        showCancelButton: false,
+        width: '600px',
+        customClass: {
+          popup: 'custom-popup'
+        },
+        didOpen: () => {
+          const submitBtn = document.getElementById('btn-submit');
+          const cancelBtn = document.getElementById('btn-cancel');
+  
+          submitBtn?.addEventListener('click', () => {
+            this.service.insert('/api/wastage/insert', param).subscribe({  
+              next: (res) => {
+                if (!res.success) {
+                  this.toastr.error(res.message);
+                } else {
+                  setTimeout(() => {
+                    this.toastr.success("Data wastage berhasil dibuat");
+                    this.onPreviousPressed();
+                  }, DEFAULT_DELAY_TIME);
+  
+                }
+                this.adding = false;
+              },
+              error: (err) => {
+                console.error("Error saat insert:", err);
+                this.adding = false;
+              },
+            }); // 👈 bukan onSubmit lagi
+            Swal.close();
           });
-        } else {
-          this.toastr.info('Penyimpanan dibatalkan');
+  
+          cancelBtn?.addEventListener('click', () => {
+            Swal.close();
+            this.adding = false
+          });
         }
-      });
-
+      })
     }
 
     else {
@@ -604,9 +629,10 @@ export class AddDataDetailWastageComponent
       serverSide: true,
       autoWidth: true,
       info: true,
-      lengthMenu: [5, 10, 25, 50, 100],
-      pageLength: 5,
       drawCallback: () => { },
+      order: [
+        [8, 'asc'], [1, 'asc'],
+      ],
       ajax: (dataTablesParameters: any, callback) => {
 
         this.pageModal.start = dataTablesParameters.start;
@@ -646,6 +672,7 @@ export class AddDataDetailWastageComponent
       },
       columns: [
         {
+          data: 'dtIndex',
           title: 'Pilih Barang  ',
           className: 'text-center',
           render: (data, type, row) => {
@@ -656,11 +683,35 @@ export class AddDataDetailWastageComponent
         { data: 'kodeBarang', title: 'Kode Barang' },
         { data: 'namaBarang', title: 'Nama Barang' },
         { data: 'konversi', title: 'Konversi' },
-        { data: 'satuanKecil', title: 'Satuan Kecil' },
         { data: 'satuanBesar', title: 'Satuan Besar' },
+        { data: 'satuanKecil', title: 'Satuan Kecil' },
         { data: 'defaultGudang', title: 'Default Gudang' },
-        { data: 'flagConversion', title: 'Conversion Factor' },
-        { data: 'statusAktif', title: 'Status Aktif' },
+        { data: 'flagConversion',
+          title: 'Conversion Factor',
+          render: (data, type, row) => {
+            if (data === 'T')
+              return "Tidak";
+            else if (data === 'Y')
+              return "Ya";
+
+            else
+              return data
+          },
+          orderable: true
+        },
+        { data: 'statusAktif',
+          title: 'Status Aktif',
+          render: (data, type, row) => {
+            if (data === 'T')
+              return "Inactive";
+            else if (data === 'A')
+              return "Active";
+
+            else
+              return data
+          },
+          orderable: true
+         },
       ],
       searchDelay: 1000,
       // delivery: [],
@@ -718,19 +769,19 @@ export class AddDataDetailWastageComponent
       if (!this.listProductData.some(order => order.kodeBarang === barang.kodeBarang)) {
         const productData = {
           totalQtyPesan: 0,
-          qtyWasteBesar: null,
+          qtyWasteBesar: '0.00',
           namaBarang: barang?.namaBarang,
           satuanKecil: barang?.satuanKecil,
           kodeBarang: barang?.kodeBarang,
           satuanBesar: barang?.satuanBesar,
           konversi: barang?.konversi,
-          qtyWasteKecil: null,
+          qtyWasteKecil: '0.00',
           isConfirmed: true,
           ...barang
         }
         this.listProductData.splice(this.listProductData.length - 1, 0, productData);
         this.validationMessageList.push("")
-        this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
+        // this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
         // this.mapOrderData(data);
         // this.onSaveData();
       }
@@ -800,9 +851,6 @@ export class AddDataDetailWastageComponent
         this.adding = false;
       },
     });
-
-
-
   }
 
   onPreviousPressed(): void {

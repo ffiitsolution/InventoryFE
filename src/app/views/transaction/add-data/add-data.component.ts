@@ -55,7 +55,8 @@ export class AddDataComponent implements OnInit, AfterViewInit, OnDestroy {
     tglKadaluarsa: '',
     keterangan: '',
     codeDestination: '',
-    kodeGudang: ''
+    kodeGudang: '',
+    validatedDeliveryDate: null,
   };
 
   // [alreadyPrint]="alreadyPrint"
