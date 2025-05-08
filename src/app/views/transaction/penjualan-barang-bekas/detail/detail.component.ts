@@ -38,7 +38,7 @@ export class DetailPenjualanBrgBekasComponent
 
   orders: any[] = [];
   dtColumns: any = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -79,7 +79,7 @@ export class DetailPenjualanBrgBekasComponent
         autoWidth: true,
         info: true,
         drawCallback: () => { },
-        ajax: (dataTablesParameters: any, callback) => {
+        ajax: (dataTablesParameters: any, callback:any) => {
           this.page.start = dataTablesParameters.start;
           this.page.length = dataTablesParameters.length;
           const params = {
@@ -142,26 +142,26 @@ export class DetailPenjualanBrgBekasComponent
           { data: 'namaBarang', title: 'Nama Barang' },
           {
             data: 'konversi', title: 'Konversi',
-            render: (data, type, row) => `${data}  ${row.satuanKecil}/${row.satuanBesar}`
+            render: (data:any, type:any, row:any) => `${data}  ${row.satuanKecil}/${row.satuanBesar}`
           },
           {
             data: 'qtyBesar', title: 'Qty Besar',
-            render: (data, type, row) => `${data} ${row.satuanBesar}`
+            render: (data:any, type:any, row:any) => `${data} ${row.satuanBesar}`
           },
           {
             data: 'qtyKecil', title: 'Qty Kecil',
-            render: (data, type, row) => `${data}  ${row.satuanKecil}/${row.satuanBesar}`
+            render: (data:any, type:any, row:any) => `${data}  ${row.satuanKecil}/${row.satuanBesar}`
           },
           {
             data: 'totalQty', title: 'Total Quantity', searchable: true,
-            render: (data, type, row) => `${data}  ${row.satuanKecil}`
+            render: (data:any, type:any, row:any) => `${data}  ${row.satuanKecil}`
           },
           {
             data: 'hargaSatuan',
             title: 'Harga Satuan',
             orderable: true,
             searchable: true,
-            render: (data) => {
+            render: (data:any) => {
               return this.g.convertToRupiah(data);
             }
           },
@@ -170,7 +170,7 @@ export class DetailPenjualanBrgBekasComponent
             title: 'Total Penjualan',
             orderable: true,
             searchable: true,
-            render: (data) => {
+            render: (data:any) => {
               return this.g.convertToRupiah(data);
             }
           }
@@ -188,7 +188,7 @@ export class DetailPenjualanBrgBekasComponent
   }
   reloadTable() {
     setTimeout(() => {
-      this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      this.datatableElement?.dtInstance.then((dtInstance: any) => {
         dtInstance.ajax.reload();
       });
     }, DEFAULT_DELAY_TABLE);
@@ -214,7 +214,7 @@ export class DetailPenjualanBrgBekasComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }

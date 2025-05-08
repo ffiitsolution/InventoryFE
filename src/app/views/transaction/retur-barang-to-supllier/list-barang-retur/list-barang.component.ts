@@ -30,8 +30,8 @@ export class ListBarangReturComponent implements OnInit {
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
-  dtOptions: DataTables.Settings = {};
-  dtOptionsModal: DataTables.Settings = {};
+  dtOptions: any = {};
+  dtOptionsModal: any = {};
   protected config = AppConfig.settings.apiServer;
   isShowModal: boolean = false;
   pageSize: number = 10;
@@ -90,18 +90,18 @@ export class ListBarangReturComponent implements OnInit {
         [5, 10, 20, 50],
       ],
       drawCallback: () => {},
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
-          search: dataTablesParameters.search.value || "", 
+          search: dataTablesParameters.search.value || "",
           kodeGudang: this.g.getUserLocationCode(),
-          tipeTransaksi: "6", 
+          tipeTransaksi: "6",
           startDate: moment(this.dateRangeFilter[0]).format("YYYY-MM-DD"),
           endDate: moment(this.dateRangeFilter[1]).format("YYYY-MM-DD"),
-          page: Math.floor(this.currentPage),  
-          size: this.pageSize, 
+          page: Math.floor(this.currentPage),
+          size: this.pageSize,
         };
         setTimeout(() => {
           this.dataService
@@ -133,14 +133,14 @@ export class ListBarangReturComponent implements OnInit {
       },
       columns: [
         // { data: 'dtIndex', title: 'No.' },
-        { data: 'TGL_TRANSAKSI', title: 'Tanggal Transaksi', 
-          render: (data) => this.g.transformDate(data),
+        { data: 'TGL_TRANSAKSI', title: 'Tanggal Transaksi',
+          render: (data:any) => this.g.transformDate(data),
         },
         { data: 'NOMOR_TRANSAKSI', title: 'No. Transaksi' },
         {
           title: 'Supplier Tujuan',
-          data: null, 
-          render: function (data, type, row) {
+          data: null,
+          render: function (data:any, type:any, row:any) {
             return row.KODE_TUJUAN && row.NAMA_SUPPLIER
               ? `${row.KODE_TUJUAN} - ${row.NAMA_SUPPLIER}`
               : "-";
@@ -148,13 +148,13 @@ export class ListBarangReturComponent implements OnInit {
         },
         { data: 'KETERANGAN', title: 'Keterangan' },
         { data: 'USER_CREATE', title: 'User Proses' },
-        { data: 'TGL_TRANSAKSI', title: 'Tanggal', 
-          render: (data) => this.g.transformDate(data),
+        { data: 'TGL_TRANSAKSI', title: 'Tanggal',
+          render: (data:any) => this.g.transformDate(data),
         },
         {
           data: 'TIME_CREATE',
           title: 'Jam',
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             if (data && data.length === 6) {
               let formattedTime = `${data.substring(0, 2)}:${data.substring(2, 4)}:${data.substring(4, 6)}`;
               return formattedTime;
@@ -164,17 +164,17 @@ export class ListBarangReturComponent implements OnInit {
         },
         {
           data: 'STATUS_POSTING',
-          render: (data) => (data === 'P' ? 'Posted' : 'Belum Posting'),
+          render: (data:any) => (data === 'P' ? 'Posted' : 'Belum Posting'),
           title: 'Status Transaksi',
         },
         {
           title: 'Aksi',
           orderable: false,
           searchable: false,
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             return ` <div class="btn-group" role="group" aria-label="Action">
                 <button class="btn btn-sm action-view btn-outline-primary btn-60">${this.buttonCaptionView}</button>
-                <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>           
+                <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>
               </div>`;
           },
         },
@@ -262,7 +262,7 @@ export class ListBarangReturComponent implements OnInit {
   }
 
   onFilterPressed(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
     console.log('filter pressed');
@@ -288,10 +288,10 @@ export class ListBarangReturComponent implements OnInit {
   cetakJesper() {}
 
   selectedRows: string[] = [];
-  generateReportParam: any; 
+  generateReportParam: any;
   downloadURL: string = '';
-  selectedRowCetak: any; 
-  disabledPrintButton: boolean = false; 
+  selectedRowCetak: any;
+  disabledPrintButton: boolean = false;
 
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
@@ -359,7 +359,7 @@ export class ListBarangReturComponent implements OnInit {
   //       autoWidth: true,
   //       info: true,
   //       drawCallback: () => { },
-  //       ajax: (dataTablesParameters: any, callback) => {
+  //       ajax: (dataTablesParameters: any, callback:any) => {
   //         this.page.start = dataTablesParameters.start;
   //         this.page.length = dataTablesParameters.length;
   //         const params = {

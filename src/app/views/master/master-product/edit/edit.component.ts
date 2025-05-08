@@ -98,7 +98,7 @@ export class MasterProductEditComponent implements OnInit {
   defaultValue = 0;
   isSubmitting: boolean = false;
 
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   selectedSupplier: any;
 
   page = new Page();
@@ -314,7 +314,7 @@ export class MasterProductEditComponent implements OnInit {
       autoWidth: true,
       info: true,
 
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const requestData = {
@@ -373,7 +373,7 @@ export class MasterProductEditComponent implements OnInit {
           data: 'statusAktif',
           title: 'Status',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             if (data === 'A') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
@@ -382,7 +382,7 @@ export class MasterProductEditComponent implements OnInit {
         },
         {
           title: 'Action',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             return `<button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>`;
           },
         },

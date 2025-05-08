@@ -44,7 +44,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
   loadingIndicator: boolean = false;
   showFilterSection: boolean = false;
   searchTriggered: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -91,7 +91,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
       autoWidth: true,
       info: true,
       drawCallback: () => {},
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -134,7 +134,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
         {
           data: 'tglPesanan',
           title: 'Tgl. Pesan',
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
           }
@@ -142,7 +142,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
         {
           data: 'tglKirimBrg',
           title: 'Tgl. Di Kirim' ,
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
           }
@@ -150,7 +150,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
         {
           data: 'tglBatalExp',
           title: 'Tgl. Batal',
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
           }
@@ -159,14 +159,14 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
         {
           data: 'supplier',
           title: 'Kode Tujuan',
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             return row.supplier && row.namaSupplier ? `${row.supplier} - ${row.namaSupplier}` : row.supplier || row.namaSupplier || "";
           }
         },
         {
           data: 'statusPesanan',
           title: 'Status Pesanan',
-          render: (data) => {
+          render: (data:any) => {
             return  this.g.getStatusKirimPesananGudangBadge(data);
           }
         },
@@ -174,7 +174,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
         {
           data: 'statusCetak',
           title: 'Status Cetak Pesanan' ,
-          render: function (data) {
+          render: function (data: any) {
             let statusLabel = "";
 
             // Map statusPesanan values to labels
@@ -195,7 +195,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
         {
           data: 'statusKirim',
           title: 'Status Kirim Data' ,
-          render: function (data) {
+          render: function (data: any) {
             let statusLabel = "";
 
             // Map statusPesanan values to labels
@@ -216,7 +216,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
 
         {
           title: 'Opsi',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             const isDisabled = row?.statusKirim=="S"; // Set to true to disable the button
             const isDisabledCetak = row?.statusCetak=="S"; // Set to true to disable the button
             const htmlString = `
@@ -317,7 +317,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }
@@ -330,7 +330,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
   }
 
   onFilterPressed() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }

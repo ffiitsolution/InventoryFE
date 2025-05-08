@@ -21,7 +21,7 @@ export class RevisiDoComponent implements OnInit {
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   protected config = AppConfig.settings.apiServer;
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
@@ -64,7 +64,7 @@ export class RevisiDoComponent implements OnInit {
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -131,17 +131,17 @@ export class RevisiDoComponent implements OnInit {
         {
           data: 'cetakSuratJalan',
           title: 'Status Cetak Surat Jalan',
-          render: (data) => this.g.getsatusDeliveryOrderLabel(data, true),
+          render: (data:any) => this.g.getsatusDeliveryOrderLabel(data, true),
         },
         {
           data: 'statusDoBalik',
           title: 'Status DO Balik',
-          render: (data) => this.g.getsatusDeliveryOrderLabel(data, true),
+          render: (data:any) => this.g.getsatusDeliveryOrderLabel(data, true),
         },
         {
           data: 'statusPosting',
           title: 'Status Pengiriman',
-          render: (data) => {
+          render: (data:any) => {
             const isCancel = data == CANCEL_STATUS;
             const label = this.g.getStatusOrderLabel(data);
             if (isCancel) {
@@ -240,7 +240,7 @@ export class RevisiDoComponent implements OnInit {
   }
 
   onFilterPressed(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
     console.log('filter pressed');

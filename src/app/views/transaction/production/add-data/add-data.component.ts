@@ -46,7 +46,7 @@ export class AddProductionComponent
   public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   isShowModal: boolean = false;
   dtTrigger: Subject<any> = new Subject();
   bsConfig: Partial<BsDatepickerConfig>;
@@ -146,7 +146,7 @@ export class AddProductionComponent
     this.myForm.get('satuanHasilProduksi')?.disable();
     this.myForm.get('totalHasilProduksi')?.disable();
     this.myForm.get('totalBahanBaku')?.disable();
-   
+
 
     this.myForm
       .get('jumlahHasilProduksi')
@@ -159,13 +159,13 @@ export class AddProductionComponent
           return; // skip execution
         }else{
           this.calculateTotalHasilProduksi();
-    
+
           if (this.headerMpcsProduksi.nomorTransaksi) {
             this.refreshBahanBaku();
           }
         }
-    
-       
+
+
       });
 
     this.myForm
@@ -182,7 +182,7 @@ export class AddProductionComponent
 
       this.myForm.valueChanges.subscribe(() => this.updateFormData());
       this.myForm.statusChanges.subscribe(() => this.updateFormData())
-      
+
     }
     this.renderDataTables();
   }
@@ -255,7 +255,7 @@ export class AddProductionComponent
     }else{
       this.router.navigate(['/transaction/production/list-dt']);
     }
-   
+
   }
 
   onShowModal() {
@@ -285,10 +285,10 @@ export class AddProductionComponent
         [8, 10], // Available page sizes
         ['8', '10'], // Displayed page size labels
       ],
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -322,7 +322,7 @@ export class AddProductionComponent
         {
           data: 'konversi',
           title: 'Konversi',
-          render: (data, type, row) =>
+            render: (data: any, _: any, row: any) =>
             `${Number(data).toFixed(2)} ${row.satuanKecil}`,
         },
         { data: 'satuanBesar', title: 'Satuan Besar' },
@@ -332,7 +332,7 @@ export class AddProductionComponent
           data: 'status',
           title: 'Status',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             if (data === 'Aktif') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
@@ -475,7 +475,7 @@ export class AddProductionComponent
           const qtyPemakaianKecil = parseFloat(
             (totalQty - (qtyPemakaianBesarRaw * item.konversi)).toFixed(2)
           );
-                  
+
           return {
             jumlahHasilProduksi: jumlahHasil,
             bahanBaku: item.bahanBaku,
@@ -491,33 +491,33 @@ export class AddProductionComponent
             isConfirmed: item.flagExpired === 'Y',
           };
         });
-        
+
 
         this.myForm.patchValue({
           totalBahanBaku: this.listProductData.length,
         });
 
-        
+
       },
     });
   }
 
     loadDetailData() {
-    
-     
+
+
       if(this.headerMpcsProduksi.statusPosting === 'P'){
           this.myForm.get('jumlahHasilProduksi')?.disable();
           this.myForm.get('tglExp')?.disable();
           this.myForm.get('keterangan')?.disable();
           this.isShowDetail = true;
       }
-   
+
       this.myForm.get('kodeBarang')?.disable();
       let param = {
         nomorTransaksi: this.headerMpcsProduksi?.nomorTransaksi,
         kodeGudang: this.globalService.getUserLocationCode(),
       };
-  
+
       this.appService.detailProductionAndExpired(param).subscribe({
         next: (res) => {
           this.isFirstChange =true;
@@ -553,7 +553,7 @@ export class AddProductionComponent
             totalQtyPemakaian: parseFloat(item.totalQty).toFixed(2),
             isConfirmed: item.flagExpired == 'Y' ? true : false,
           }));
-          
+
           console.log(this.listProductData, 'data listProductData');
           this.listExpiredData = res.data.expired.map((item: any) => ({
             tglExpired: moment(item.tglExpired).toDate(),
@@ -571,7 +571,7 @@ export class AddProductionComponent
             validationExpiredMessageList: '',
             validationQty: '',
           }));
-  
+
           this.myForm.patchValue({
             totalBahanBaku: this.listProductData.length,
           });
@@ -590,4 +590,4 @@ export class AddProductionComponent
     // get formData() {
     //   return this.myForm.getRawValue(); // includes disabled fields
     // }
-  }    
+  }

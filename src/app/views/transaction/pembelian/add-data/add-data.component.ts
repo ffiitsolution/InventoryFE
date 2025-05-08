@@ -32,7 +32,7 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   isShowModal: boolean = false;
   dtTrigger: Subject<any> = new Subject();
   bsConfig: Partial<BsDatepickerConfig>;
@@ -170,11 +170,11 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
       order: [[0, 'desc']],
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -206,16 +206,16 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       columns: [
         { data: 'nomorPesanan', title: 'No. Pesanan' },
-        { data: 'tglPesanan', title: 'Tgl. Pesan', render: (data) => this.globalService.transformDate(data) },
-        { data: 'tglKirimBrg', title: 'Tgl. Kirim', render: (data) => this.globalService.transformDate(data) },
-        { data: 'tglBatalExp', title: 'Tgl. Expired', render: (data) => this.globalService.transformDate(data) },
+        { data: 'tglPesanan', title: 'Tgl. Pesan', render: (data:any) => this.globalService.transformDate(data) },
+        { data: 'tglKirimBrg', title: 'Tgl. Kirim', render: (data:any) => this.globalService.transformDate(data) },
+        { data: 'tglBatalExp', title: 'Tgl. Expired', render: (data:any) => this.globalService.transformDate(data) },
         { data: 'supplier', title: 'Supplier', },
         { data: 'namaSupplier', title: 'Nama Supplier', },
         { data: 'alamatSupplier', title: 'Alamat', },
         {
           data: 'statusPesanan',
           title: 'Status Pesanan',
-          render: (data) => {
+          render: (data:any) => {
             const isCancel = data == CANCEL_STATUS;
             const label = this.globalService.getStatusOrderLabel(data, false, true);
             if (isCancel) {
@@ -227,7 +227,7 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
         {
           data: 'statusCetak',
           title: 'Status Cetak',
-          render: (data) => this.globalService.getStatusOrderLabel(data, true, true),
+          render: (data:any) => this.globalService.getStatusOrderLabel(data, true, true),
         },
         {
           title: 'Action',
@@ -295,7 +295,7 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
       let validationText = '';
       let tempDateTerimaBrg;
       const tempDatePermintaanTerima = this.formData.tglTerimaBrg;
-  
+
       if (isFormatted) {
         tempDateTerimaBrg = this.formData.tglTerimaBrg;
       } else {
@@ -310,17 +310,17 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         tempDateTerimaBrg = validatedDate.format('DD-MM-YYYY');
       }
-  
+
       const today = moment().format('DD-MM-YYYY');
-  
+
       if (tempDateTerimaBrg !== tempDatePermintaanTerima) {
         validationText += '** TANGGAL Terima TIDAK SESUAI DENGAN PERMINTAAN Terima..!!';
       }
-  
+
       if (tempDateTerimaBrg !== today) {
         validationText += "** TANGGAL Terima 'TIDAK SESUAI' DENGAN TGL. HARI INI, PERIKSA KEMBALI..!!";
       }
-  
+
       this.validationTglTerimaBrg = validationText;
     }
 }

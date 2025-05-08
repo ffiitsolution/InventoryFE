@@ -53,7 +53,7 @@ export class AddDataDetailPenerimaanBrgBksComponent
   public loading: boolean = false;
   page = new Page();
   isShowModal: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   selectedRow: any[] = [];
   pageModal = new Page();
   dataUser: any = {};
@@ -497,10 +497,10 @@ export class AddDataDetailPenerimaanBrgBksComponent
         [6, 'desc'],
         [0, 'asc'],
       ],
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -535,7 +535,7 @@ export class AddDataDetailPenerimaanBrgBksComponent
         {
           data: 'konversi',
           title: 'Konversi',
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             return Number(data).toFixed(2); // Ensures two decimal places
           },
         },
@@ -546,7 +546,7 @@ export class AddDataDetailPenerimaanBrgBksComponent
           data: 'status',
           title: 'Status',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             if (data === 'Aktif') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
@@ -556,7 +556,7 @@ export class AddDataDetailPenerimaanBrgBksComponent
         {
           title: 'Action',
           orderable: false,
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             const disabled = row.status !== 'Aktif' ? 'disabled' : '';
             return `<button class="btn btn-sm action-select btn-info btn-80 text-white" ${disabled}>Pilih</button>`;
           },

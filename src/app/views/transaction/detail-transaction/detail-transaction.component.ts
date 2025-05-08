@@ -40,7 +40,7 @@ export class DetailTransactionComponent
 
   orders: any[] = [];
   dtColumns: any = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -86,7 +86,7 @@ export class DetailTransactionComponent
         autoWidth: true,
         info: true,
         drawCallback: () => { },
-        ajax: (dataTablesParameters: any, callback) => {
+        ajax: (dataTablesParameters: any, callback:any) => {
           this.page.start = dataTablesParameters.start;
           this.page.length = dataTablesParameters.length;
           const params = {
@@ -162,27 +162,27 @@ export class DetailTransactionComponent
           { data: 'namaBarang', title: 'Nama Barang' },
           {
             data: 'totalQtyPesan', title: 'Total Qty Pesan',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
+            render: (data:any, type:any, row:any) => `${data} ${row.satuanKecil}`
           },
           {
             data: 'qtyBKirim', title: 'Qty Kirim Besar',
-            render: (data, type, row) => `${data} ${row.satuanBesar}`
+            render: (data:any, type:any, row:any) => `${data} ${row.satuanBesar}`
           },
           {
             data: 'qtyKKirim', title: 'Qty Kirim Kecil',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
+            render: (data:any, type:any, row:any) => `${data} ${row.satuanKecil}`
           },
           {
             data: 'konversi', title: 'Konversi',
-            render: (data, type, row) => `${data} `
+            render: (data:any, type:any, row:any) => `${data} `
           },
           {
             data: 'totalQtyKirim', title: 'Total Qty Kirim',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
+            render: (data:any, type:any, row:any) => `${data} ${row.satuanKecil}`
           },
           {
             title: 'Cek Quantity Expired',
-            render: (data, type, row) => {
+            render: (data:any, type:any, row:any) => {
               if (row.flagExpired === 'Y') {
                 return `<div class="d-flex justify-content-start">
                     <button class="btn btn-sm action-view btn-outline-success w-50"><i class="fa fa-check pe-1"></i> Cek</button>
@@ -206,7 +206,7 @@ export class DetailTransactionComponent
   }
   reloadTable() {
     setTimeout(() => {
-      this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      this.datatableElement?.dtInstance.then((dtInstance: any) => {
         dtInstance.ajax.reload();
       });
     }, DEFAULT_DELAY_TABLE);
@@ -261,7 +261,7 @@ export class DetailTransactionComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }

@@ -61,7 +61,7 @@ export class AddDataDetailWastageComponent
   public loading: boolean = false;
   page: number = 1;
   isShowModal: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   selectedRow: any[] = [];
   pageModal = new Page();
   dataUser: any = {};
@@ -348,9 +348,9 @@ export class AddDataDetailWastageComponent
         didOpen: () => {
           const submitBtn = document.getElementById('btn-submit');
           const cancelBtn = document.getElementById('btn-cancel');
-  
+
           submitBtn?.addEventListener('click', () => {
-            this.service.insert('/api/wastage/insert', param).subscribe({  
+            this.service.insert('/api/wastage/insert', param).subscribe({
               next: (res) => {
                 if (!res.success) {
                   this.toastr.error(res.message);
@@ -359,7 +359,7 @@ export class AddDataDetailWastageComponent
                     this.toastr.success("Data wastage berhasil dibuat");
                     this.onPreviousPressed();
                   }, DEFAULT_DELAY_TIME);
-  
+
                 }
                 this.adding = false;
               },
@@ -370,7 +370,7 @@ export class AddDataDetailWastageComponent
             }); // 👈 bukan onSubmit lagi
             Swal.close();
           });
-  
+
           cancelBtn?.addEventListener('click', () => {
             Swal.close();
             this.adding = false
@@ -633,7 +633,7 @@ export class AddDataDetailWastageComponent
       order: [
         [8, 'asc'], [1, 'asc'],
       ],
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
 
         this.pageModal.start = dataTablesParameters.start;
         this.pageModal.length = dataTablesParameters.length;
@@ -675,7 +675,7 @@ export class AddDataDetailWastageComponent
           data: 'dtIndex',
           title: 'Pilih Barang  ',
           className: 'text-center',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             let isChecked = this.selectedRow.some(item => item.kodeBarang === row.kodeBarang) ? 'checked' : '';
             return `<input type="checkbox" class="row-checkbox" data-id="${row.kodeBarang}" ${isChecked}>`;
           }
@@ -688,7 +688,7 @@ export class AddDataDetailWastageComponent
         { data: 'defaultGudang', title: 'Default Gudang' },
         { data: 'flagConversion',
           title: 'Conversion Factor',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             if (data === 'T')
               return "Tidak";
             else if (data === 'Y')
@@ -701,7 +701,7 @@ export class AddDataDetailWastageComponent
         },
         { data: 'statusAktif',
           title: 'Status Aktif',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             if (data === 'T')
               return "Inactive";
             else if (data === 'A')

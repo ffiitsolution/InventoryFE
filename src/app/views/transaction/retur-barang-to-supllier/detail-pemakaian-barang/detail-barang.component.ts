@@ -38,7 +38,7 @@ export class DetailBarangReturComponent
 
   orders: any[] = [];
   dtColumns: any = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -95,7 +95,7 @@ export class DetailBarangReturComponent
           [10, 25, 50, 100],
         ],
         drawCallback: () => {},
-        ajax: (dataTablesParameters: any, callback) => {
+        ajax: (dataTablesParameters: any, callback:any) => {
           this.page.start = dataTablesParameters.start || 0;
           this.page.length = dataTablesParameters.length || 10;
           const {
@@ -170,36 +170,36 @@ export class DetailBarangReturComponent
           {
             data: 'KONVERSI',
             title: 'Konversi',
-            render: function (data, type, row) {
+            render: function (data:any, type:any, row:any) {
               return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_KECIL;  // Menambahkan .00
             },
           },
           {
             data: 'ABS_QTY_BESAR',
             title: 'Quantity Besar',
-            render: function (data, type, row) {
+            render: function (data:any, type:any, row:any) {
               return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_BESAR;  // Menambahkan .00
             },
           },
           {
             data: 'QTY_KECIL',
             title: 'Quantity Kecil',
-            render: function (data, type, row) {
+            render: function (data:any, type:any, row:any) {
               return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_KECIL;  // Menambahkan .00
             },
           },
           {
             data: 'TOTAL_QTY',
             title: 'Total Quantity',
-            render: function (data, type, row) {
+            render: function (data:any, type:any, row:any) {
               return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_KECIL;  // Menambahkan .00
             },
           },
           { data: 'TGL_EXPIRED', title: 'Tanggal Expired',
-            render: (data) => this.g.transformDate(data),
+            render: (data:any) => this.g.transformDate(data),
           },
           // { data: 'KETERANGAN_TANGGAL', title: 'Tanggal Expired',
-          //   render: (data) => this.g.transformDate(data),
+          //   render: (data:any) => this.g.transformDate(data),
           // },
         ],
         searchDelay: 1000,
@@ -215,7 +215,7 @@ export class DetailBarangReturComponent
   }
   reloadTable() {
     setTimeout(() => {
-      this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      this.datatableElement?.dtInstance.then((dtInstance: any) => {
         dtInstance.ajax.reload();
       });
     }, DEFAULT_DELAY_TABLE);
@@ -241,7 +241,7 @@ export class DetailBarangReturComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }

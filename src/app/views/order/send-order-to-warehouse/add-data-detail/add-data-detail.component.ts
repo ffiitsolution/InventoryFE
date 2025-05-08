@@ -12,7 +12,6 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { TranslationService } from 'src/app/service/translation.service';
 import {
   ACTION_VIEW,
   CANCEL_STATUS,
@@ -26,9 +25,6 @@ import {
 } from '../../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
 import { lastValueFrom, Subject } from 'rxjs';
-import { Page } from 'src/app/model/page';
-import { DataService } from 'src/app/service/data.service';
-import { GlobalService } from 'src/app/service/global.service';
 import { Router } from '@angular/router';
 // import { AppConfig } from 'src/app/config/app.config.ts';
 import { ToastrService } from 'ngx-toastr';
@@ -39,6 +35,10 @@ import { HelperService } from '../../../../service/helper.service';
 import { AppService } from '../../../../service/app.service';
 import moment from 'moment';
 import { data } from 'jquery';
+import { DataService } from '../../../../service/data.service';
+import { GlobalService } from '../../../../service/global.service';
+import { Page } from '../../../../model/page';
+import { TranslationService } from '../../../../service/translation.service';
 
 @Component({
   selector: 'app-add-data-detail-send-order-to-warehouse',
@@ -64,7 +64,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
   public loading: boolean = false;
   page: number = 1;
   isShowModal: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   selectedRow:  any = {};
   pageModal = new Page();
   dataUser: any = {};
@@ -276,12 +276,12 @@ export class AddDataDetailSendOrderToWarehouseComponent
           didOpen: () => {
             const submitBtn = document.getElementById('btn-submit');
             const cancelBtn = document.getElementById('btn-cancel');
-    
+
             submitBtn?.addEventListener('click', () => {
               this.onSubmit()
               Swal.close();
             });
-    
+
             cancelBtn?.addEventListener('click', () => {
               Swal.close();
               this.adding = false
@@ -355,7 +355,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.pageModal.start = dataTablesParameters.start;
         this.pageModal.length = dataTablesParameters.length;
         const params = {
@@ -403,7 +403,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
  */
 
 /******  a1b4e543-9620-4dcc-a7df-c90362bb4476  *******/
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             let isChecked = this.barangTemp.some(item => item.kodeBarang === row.kodeBarang) ? 'checked' : '';
             if(row.statusAktif === 'T'){
               return `<input type="checkbox" class="row-checkbox" data-id="${row.kodeBarang}" ${isChecked} disabled>`;
@@ -421,7 +421,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
         { data: 'defaultGudang', title: 'Default Gudang', orderable: true },
         { data: 'flagConversion',
           title: 'Conversion Factor',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             if (data === 'T')
               return "Tidak";
             else if (data === 'Y')
@@ -434,7 +434,7 @@ export class AddDataDetailSendOrderToWarehouseComponent
         },
         { data: 'statusAktif',
           title: 'Status Aktif',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             if (data === 'T')
               return "Inactive";
             else if (data === 'A')
@@ -678,6 +678,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
     }
     return this.filteredList.length;
   }
-  
-  
+
+
 }

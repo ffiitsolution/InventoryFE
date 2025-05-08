@@ -21,7 +21,7 @@ export class WastageListComponent implements OnInit {
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   protected config = AppConfig.settings.apiServer;
 
   dtTrigger: Subject<any> = new Subject();
@@ -61,7 +61,7 @@ export class WastageListComponent implements OnInit {
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -117,7 +117,7 @@ export class WastageListComponent implements OnInit {
           title: 'Tgl. Proses',
           orderable: true,
           searchable: true,
-          render: (data) => this.g.transformDate(data),
+          render: (data:any) => this.g.transformDate(data),
 
         },
         {
@@ -125,12 +125,12 @@ export class WastageListComponent implements OnInit {
           title: 'Jam Proses',
           orderable: true,
           searchable: true,
-          render: (data) => this.g.transformTime(data),
+          render: (data:any) => this.g.transformTime(data),
         },
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render: (data) => this.g.getStatusOrderLabel(data),
+          render: (data:any) => this.g.getStatusOrderLabel(data),
         },
         {
           title: 'Aksi',
@@ -223,7 +223,7 @@ export class WastageListComponent implements OnInit {
   }
 
   onFilterPressed(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
     console.log('filter pressed');

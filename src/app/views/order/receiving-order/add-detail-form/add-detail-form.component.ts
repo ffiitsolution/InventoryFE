@@ -25,7 +25,7 @@ export class ReceivingOrderAddDetailFormComponent
 {
   showFilterSection: boolean = false;
   savingReceive: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   page = new Page();
   dtColumns: any = [];
   selectedOrder: any = JSON.parse(
@@ -53,7 +53,7 @@ export class ReceivingOrderAddDetailFormComponent
       autoWidth: true,
       info: true,
       drawCallback: () => {},
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -83,7 +83,7 @@ export class ReceivingOrderAddDetailFormComponent
                   qtyPesanKecil: this.g.formatToDecimal(rest.qtyPesanKecil),
                 };
                 return finalData;
-              });            
+              });
               this.page.recordsTotal = resp.recordsTotal;
               this.page.recordsFiltered = resp.recordsFiltered;
               this.showFilterSection = false;
@@ -108,7 +108,7 @@ export class ReceivingOrderAddDetailFormComponent
         {
           data: 'keterangan',
           title: 'Keterangan',
-          render: (data) => {
+          render: (data:any) => {
             if (data.toUpperCase() == STATUS_SAME_CONVERSION) {
               return `
                 <span class="text-center text-success">${data}</span>
@@ -142,7 +142,7 @@ export class ReceivingOrderAddDetailFormComponent
     this.rerenderDatatable();
   }
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }

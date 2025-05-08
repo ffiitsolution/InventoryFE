@@ -42,7 +42,7 @@ export class ReceivingOrderComponent
   loadingIndicator: boolean = false;
   showFilterSection: boolean = false;
   searchTriggered: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -88,7 +88,7 @@ export class ReceivingOrderComponent
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -143,21 +143,21 @@ export class ReceivingOrderComponent
         {
           data: 'tipeData',
           title: 'Tipe Pesanan',
-          render: (data) => this.g.getStatusOrderLabel(data),
+          render: (data:any) => this.g.getStatusOrderLabel(data),
         },
         {
           data: 'statusPesanan',
           title: 'Status Pesanan',
           searchable: true,
-          render: (data) => {
+          render: (data:any) => {
             return this.g.getStatusReceivingOrderBadge(data);
           },
         },
-        
+
         {
           data: 'statusCetak',
           title: 'Status Cetak',
-          render: (data) => this.g.getStatusOrderLabel(data, true),
+          render: (data:any) => this.g.getStatusOrderLabel(data, true),
         },
         {
           title: 'Opsi',
@@ -165,7 +165,7 @@ export class ReceivingOrderComponent
             const htmlString = `
               <div class="btn-group" role="group" aria-label="Action">
                 <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
-                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>           
+                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>
               </div>
             `;
             return htmlString;
@@ -229,7 +229,7 @@ export class ReceivingOrderComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }
@@ -242,7 +242,7 @@ export class ReceivingOrderComponent
   }
 
   onFilterPressed() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
@@ -276,7 +276,7 @@ export class ReceivingOrderComponent
       dateKirim: moment().format("DD-MM-YYYY"),
       timeKirim: moment().format("HHmmss"),
       nomorPesanan: selectedOrder.nomorPesanan,
-    }    
+    }
     this.isShowModalReport = true;
   }
   closeModal(){
@@ -284,17 +284,17 @@ export class ReceivingOrderComponent
     this.disabledPrintButton = false;
     window.location.reload();
   }
-  
+
 
   refreshDatabase() {
     console.log("refresh database");
     const paramGetHeaderDetailAllHQ={
       kodeTujuan: this.g.getUserLocationCode(),
       startDate: this.g.transformDate(this.dateRangeRefresh[0]),
-      endDate: this.g.transformDate(this.dateRangeRefresh[1]),          
-      user: this.g.getUserCode() 
+      endDate: this.g.transformDate(this.dateRangeRefresh[1]),
+      user: this.g.getUserCode()
     }
-  
+
     this.dataService.postData(
       this.g.urlServer + '/api/receiving-order/get-header-and-detail-all-hq',paramGetHeaderDetailAllHQ
     ).subscribe((respGetHeaderDetail: any) => {
@@ -303,10 +303,10 @@ export class ReceivingOrderComponent
       // ✅ Call API 2 inside this block
       this.dataService.postData(
         this.g.urlServer + '/api/receiving-order/insert-receiving-from-warehouse-all',
-        { 
-          header: respGetHeaderDetail.item[0].header, 
-          detail: respGetHeaderDetail.item[0].detail, 
-          user: this.g.getUserCode() 
+        {
+          header: respGetHeaderDetail.item[0].header,
+          detail: respGetHeaderDetail.item[0].detail,
+          user: this.g.getUserCode()
         }
       ).subscribe((respInsertFromWarehouse: any) => {
           console.log("respInsertFromWarehouse", respInsertFromWarehouse);
@@ -323,12 +323,12 @@ export class ReceivingOrderComponent
       }, error => {
         console.error("API 2 failed", error);
       });
-  
+
     }, error => {
       console.error("API 1 failed", error);
     });
   }
-  
+
 
   onClickModalPesananMasuk(){
     window.location.reload();

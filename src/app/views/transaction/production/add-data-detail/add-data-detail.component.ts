@@ -54,7 +54,7 @@ export class AddDataDetailProductionComponent
   public loading: boolean = false;
   page: number = 1;
   isShowModal: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   selectedRow: any[] = [];
   pageModal = new Page();
   dataUser: any = {};
@@ -259,7 +259,7 @@ export class AddDataDetailProductionComponent
          didOpen: () => {
           const submitBtn = document.getElementById('btn-submit');
           const cancelBtn = document.getElementById('btn-cancel');
-  
+
           submitBtn?.addEventListener('click', () => {
             this.service
               .insert('/api/production/insert', param)
@@ -284,7 +284,7 @@ export class AddDataDetailProductionComponent
               });
               Swal.close();
             });
-    
+
             cancelBtn?.addEventListener('click', () => {
               Swal.close();
               this.loadingSimpan = false;
@@ -328,7 +328,7 @@ export class AddDataDetailProductionComponent
       ).toFixed(2)
     ).toFixed(2);
 
-    
+
     if (
       !this.listEntryExpired.some(
         (item) => item.kodeBarang === this.selectedExpProduct.bahanBaku
@@ -434,7 +434,7 @@ export class AddDataDetailProductionComponent
     } else {
       this.isShowModalExpired = false;
     }
-   
+
   }
 
   get filteredList() {
@@ -776,18 +776,18 @@ export class AddDataDetailProductionComponent
 
   @Input()
   set dataUpdate(value: any) {
-    this.isUpdate = value; 
+    this.isUpdate = value;
   }
 
-  
+
 
   @Input()
   set dataHeader(value: any) {
     console.log(value,'dataHeader')
-    this.headerData = value; 
+    this.headerData = value;
   }
 
-  
+
   onUpdate() {
     if (!this.isDataInvalid()) {
       this.loadingSimpan = true;
@@ -909,7 +909,7 @@ export class AddDataDetailProductionComponent
          didOpen: () => {
           const submitBtn = document.getElementById('btn-submit');
           const cancelBtn = document.getElementById('btn-cancel');
-  
+
           submitBtn?.addEventListener('click', () => {
             this.service
               .insert('/api/production/update', param)
@@ -934,7 +934,7 @@ export class AddDataDetailProductionComponent
               });
               Swal.close();
             });
-    
+
             cancelBtn?.addEventListener('click', () => {
               Swal.close();
               this.loadingSimpan = false;
