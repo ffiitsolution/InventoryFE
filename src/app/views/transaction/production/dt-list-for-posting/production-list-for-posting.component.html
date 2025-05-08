@@ -2,7 +2,11 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="row">
-        <div class="col">
+        <div class="col d-flex  gap-2 justify-content-start align-items-center">
+          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button>
           <h5>{{ "List Produksi Belum Posting" | translate }}</h5>
         </div>
         <div class="col text-end">
@@ -18,7 +22,7 @@
             type="button"
             class="btn btn-info text-white me-2 btn-240"
             data-toggle="modal"
-            (click)="onAddPressed()"
+            (click)="showModalPosting()"
           >
           <i class="fa fa-check pe-2"></i>
             {{ "Posting All" | translate }}
@@ -107,6 +111,7 @@
           datatable
           [dtOptions]="dtOptions"
           (page.dt)="dtPageChange($event)"
+          [dtTrigger]="dtTrigger"
           class="row-border hover stripe w-100"
         ></table>
       </div>
@@ -167,3 +172,92 @@
   >
   </app-modal-print-list>
 </div>
+
+<c-modal #formModalPosting [fullscreen]="false" [visible]="isShowModalPosting" backdrop="static"  [size]="'xl'"
+id="formModalPosting"    [attr.aria-hidden]="!isShowModalPosting">
+  <c-modal-header>
+    <h5 cModalTitle>Konfirmasi Posting Data Production</h5>
+    <button (click)="isShowModalPosting = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalPosting.id"
+      cButtonClose><i class="fa fa-times"></i></button>
+  </c-modal-header>
+  <c-modal-body>
+    <div >
+      <div class="card shadow-sm mb-3">
+        <div class="card-body">
+          <div class=" d-flex gap-1 flex-column justify-content-center align-items-center mb-3">
+            <div class="fw-bold">
+              <i class="bi bi-calendar-range me-2 text-black "></i> <!-- Bootstrap Icons -->
+              <h4>{{ "Summary Produksi" | translate }}</h4>
+            </div>
+            <!-- <div class="fw-bold">
+              <span class="badge bg-primary fs-6"> -->
+                <!-- {{formatToday()}} -->
+                <!-- {{ formatStartDate() }} &nbsp;–&nbsp; {{ formatEndDate() }} -->
+              <!-- </span>
+            </div> -->
+            
+            <div class="alert-kirim col-sm-12 d-flex flex-column justify-content-start align-items-center">
+              <span>
+               Semua data production yang statusnya  KIRIM (BELUM POSTING) !
+              </span>
+              <span>
+              Akan di POSTING , data yang sudah di POSTING tidak dapat diubah !
+              </span>
+              <span>
+              Silahkan periksa kembali data yang akan diposting !
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+     
+     
+      <div class="card shadow-sm mb-3" >
+      
+        <div class="card-body body-kirim">
+          <div class="row align-items-center mx-1 my-2" *ngFor="let item of listSummaryData">
+            <div class="col-12 col-md-6 fw-semibold mb-2 mb-md-0">
+              <!-- <i class="bi bi-calendar-range me-2 text-black"></i> -->
+              {{ item.kodeBarang }} - {{ item.namaBarang }}
+            </div>
+            <div class="col-6 col-md-2 mb-2 mb-md-0">
+              <span class="badge bg-primary fs-6 w-100 text-center">
+                {{ item.konversi }} {{ item.satuanKecil }}/{{ item.satuanBesar }}
+              </span>
+            </div>
+            <div class="col-6 col-md-2 mb-2 mb-md-0">
+              <span class="badge bg-primary fs-6 w-100 text-center">
+                {{ item.jumlahProduksi }} {{ item.satuanBesar }}
+              </span>
+            </div>
+            <div class="col-6 col-md-2 mb-2 mb-md-0">
+              <span class="badge bg-primary fs-6 w-100 text-center">
+                {{ item.totalProduksi }} {{ item.satuanKecil }}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+
+      <div class="d-flex justify-content-center align-items-center flex-column">
+        <span class="fw-bold text-center">Total Transaksi ({{totalTransSummary}})</span>
+      </div>
+      
+      </div>
+    </c-modal-body>
+    <c-modal-footer class="justify-center">
+      <button
+      class="btn btn-success text-white btn-150 w-180 me-3"
+      [disabled]="loadingPosting || listSummaryData.length == 0"
+      (click)="onPostingData()"
+    >
+      <i class="fa fa-send pe-1"  *ngIf="!loadingPosting"></i> 
+      <i class="fa fa-spinner fa-spin" *ngIf="loadingPosting"></i>
+      {{ "Posting" | translate }}
+    </button>
+      <button type="button" class="btn btn-light w-180 me-3" data-bs-dismiss="modal" (click)="isShowModalPosting = false">Batal</button>
+      <!-- <button type="button" class="btn btn-success text-white  w-180" (click)="refreshDatabase()">Proses Terima Data</button> -->
+    </c-modal-footer>
+</c-modal>

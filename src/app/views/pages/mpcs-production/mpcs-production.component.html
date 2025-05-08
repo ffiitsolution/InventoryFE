@@ -470,7 +470,7 @@
                       <div class="col-6 col-md-6">
                         <input
                           type="text"
-                          [disabled]="this.headerMpcsProduksi.statusPosting==='P'"
+                          [disabled]="this.headerMpcsProduksi?.statusPosting==='P'"
                           id="tglTransaksi"
                           class="form-control"
                           aria-describedby="tglTransaksi"
@@ -507,7 +507,7 @@
                           <input
                             type="text"
                             min="0"
-                            [disabled]="this.headerMpcsProduksi.statusPosting==='P'"
+                            [disabled]="this.headerMpcsProduksi?.statusPosting==='P'"
                             class="form-control text-center inputQty inputNumberSpace"
                             [(ngModel)]="item.qtyPemakaianBesar"
                             (blur)="
@@ -535,7 +535,7 @@
                         >
                           <input
                             type="text"
-                            [disabled]="this.headerMpcsProduksi.statusPosting==='P'"
+                            [disabled]="this.headerMpcsProduksi?.statusPosting==='P'"
                             min="0"
                             class="form-control text-center inputQty inputNumberSpace"
                             [(ngModel)]="item.qtyPemakaianKecil"
@@ -574,7 +574,7 @@
                     </div>
                     <div class="d-flex flex-column justify-content-center">
                       <button
-                        *ngIf="this.headerMpcsProduksi.statusPosting!=='P'"
+                        *ngIf="this.headerMpcsProduksi?.statusPosting!=='P'"
                         (click)="onExpiredDeleteRow(item.kodeBarang, i)"
                         type="button"
                         class="btn btn-secondary ms-2"
@@ -604,7 +604,7 @@
             </div>
             <div class="d-flex flex-column justify-content-center">
               <button
-              *ngIf="this.headerMpcsProduksi.statusPosting!=='P'"
+              *ngIf="this.headerMpcsProduksi?.statusPosting!=='P'"
                 (click)="onAddExpiredRow()"
                 type="button"
                 class="btn btn-primary"

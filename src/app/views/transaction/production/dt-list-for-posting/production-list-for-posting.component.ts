@@ -33,7 +33,6 @@ export class ProductionListForPostingComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
   protected config = AppConfig.settings.apiServer;
 
-  dtTrigger: Subject<any> = new Subject();
   page = new Page();
   dtColumns: any = [];
   showFilterSection: boolean = false;
@@ -65,7 +64,14 @@ export class ProductionListForPostingComponent implements OnInit {
   endTime: string = '18:00';
   loadingSimpan: boolean = false;
   loadingDetail: { [key: number]: boolean } = {};
-
+  dtTrigger: Subject<DataTables.Settings> = new Subject<DataTables.Settings>();
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  listSummaryData: any[] = [];
+  totalTransSummary: number = 0;
+  isShowModalPosting : boolean = false;
+  loadingPosting: boolean = false;
+  listNotrans: any[] = [];
   constructor(
     private dataService: DataService,
     private g: GlobalService,
@@ -74,9 +80,25 @@ export class ProductionListForPostingComponent implements OnInit {
     private appService: AppService,
     private toastr: ToastrService
   ) {
+    this.dtColumns = this.dtOptions.columns;
+
+    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.customTodayClass = 'today-highlight';
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
+  }
+
+  ngOnInit(): void {}
+
+  toggleFilter(): void {
+    this.showFilterSection = !this.showFilterSection;
+  }
+
+  renderDatatable(): void {
     this.dtOptions = {
       language:
-        translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
+        this.translation.getCurrentLanguage() == 'id'
+          ? this.translation.idDatatable
+          : {},
       processing: true,
       serverSide: true,
       autoWidth: false,
@@ -110,7 +132,7 @@ export class ProductionListForPostingComponent implements OnInit {
               milliseconds: 999,
             })
             .format('YYYY-MM-DD HH:mm:ss.SSS'),
-          statusPosting: 'B',
+            statusPosting:['B','K']
         };
         setTimeout(() => {
           this.dataService
@@ -188,12 +210,32 @@ export class ProductionListForPostingComponent implements OnInit {
         // },
         {
           title: 'Aksi',
-          width: '180px',
-          render: () => {
-            return ` <div class="btn-group" role="group" aria-label="Action" style="width: 100%">
-                <button class="btn btn-sm action-posting btn-outline-primary btn-60">Posting</button>
-                <button class="btn btn-sm action-view btn-outline-primary btn-60">${this.buttonCaptionView}</button>
-                <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>           
+          width: '250px',
+          render: (data: any, type: any, row: any, meta: any) => {
+            const index = meta.row; // get the row index
+            const isLoading = this.loadingDetail[index];
+            const statusPosting = row.statusPosting;
+            // If loading, show spinner, otherwise show the buttons
+            return isLoading
+              ? `
+              <div class="d-flex justify-content-center">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            `
+              : `
+              <div class="btn-group" role="group" aria-label="Action" style="width: 100%">
+                <button class="btn btn-sm action-posting btn-outline-primary btn-60" ${statusPosting === 'B' ? 'disabled' : ''}>Posting</button>
+                  <button class="btn btn-sm  action-view btn-outline-success btn-60">
+                   Lihat
+                </button>
+                <button class="btn btn-sm action-ubah btn-outline-primary btn-60" ${statusPosting === 'B' ? 'disabled' : ''}>
+                  Ubah
+                </button>
+                <button class="btn btn-sm action-print btn-outline-primary btn-60">
+                  ${this.buttonCaptionPrint}
+                </button>           
               </div>`;
           },
         },
@@ -201,8 +243,11 @@ export class ProductionListForPostingComponent implements OnInit {
       searchDelay: 1000,
       // delivery: [],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        $('.action-view', row).on('click', () =>
+        $('.action-ubah', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
+        );
+        $('.action-view', row).on('click', () =>
+          this.actionLihatClick(ACTION_VIEW, data)
         );
         $('td', row).on('click', () => {
           $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
@@ -231,24 +276,12 @@ export class ProductionListForPostingComponent implements OnInit {
           };
         });
         $('.action-posting', row).on('click', () => {
-            this.onPosting(data,index);
+          this.onPosting(data, index);
         });
         return row;
       },
     };
-    this.dtColumns = this.dtOptions.columns;
-
-    this.dpConfig.containerClass = 'theme-red';
-    this.dpConfig.customTodayClass = 'today-highlight';
-    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
   }
-
-  ngOnInit(): void {}
-
-  toggleFilter(): void {
-    this.showFilterSection = !this.showFilterSection;
-  }
-
   onAddPressed(): void {
     const route = this.router.createUrlTree([
       '/transaction/production/add-data',
@@ -257,6 +290,17 @@ export class ProductionListForPostingComponent implements OnInit {
   }
 
   actionBtnClick(action: string, data: any = null) {
+    // if (action === ACTION_VIEW) {
+    //   this.g.saveLocalstorage('selectedProduction', JSON.stringify(data));
+    //   this.router.navigate(['/transaction/production/detail']);
+    //   this;
+    // }
+
+    this.g.saveLocalstorage('headerMpcsProduksi', JSON.stringify(data));
+    this.router.navigate(['/transaction/production/add-data']);
+  }
+
+  actionLihatClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage('selectedProduction', JSON.stringify(data));
       this.router.navigate(['/transaction/production/detail']);
@@ -265,7 +309,8 @@ export class ProductionListForPostingComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.dtTrigger.next(null);
+    this.renderDatatable();
+    this.dtTrigger.next(this.dtOptions);
   }
 
   ngOnDestroy(): void {
@@ -293,7 +338,7 @@ export class ProductionListForPostingComponent implements OnInit {
   }
 
   rerenderDatatable(): void {
-    this.dtTrigger.next(null);
+    this.dtTrigger.next(this.dtOptions);
   }
 
   onFilterExpiredChange(): void {
@@ -322,10 +367,10 @@ export class ProductionListForPostingComponent implements OnInit {
     this.disabledPrintButton = false;
   }
 
-
-  onPosting(data:any,index:number) {
+  onPosting(data: any, index: number) {
     this.loadingSimpan = true;
     this.loadingDetail[index] = true;
+    this.getDataOnline();
     const requestBody = {
       nomorTransaksi: [data.nomorTransaksi],
       kodeGudang: this.g.getUserLocationCode(),
@@ -351,15 +396,17 @@ export class ProductionListForPostingComponent implements OnInit {
               } else {
                 this.toastr.success('Berhasil Posting!');
               }
-      
+
               this.loadingSimpan = false;
               this.loadingDetail[index] = false;
+              this.getDataOnline();
               Swal.close();
             },
             error: (err: any) => {
               console.log('An error occurred while updating the profile.');
               this.loadingSimpan = false;
               this.loadingDetail[index] = false;
+              this.getDataOnline();
               Swal.close();
             },
           });
@@ -368,8 +415,109 @@ export class ProductionListForPostingComponent implements OnInit {
         cancelBtn?.addEventListener('click', () => {
           Swal.close();
           this.toastr.info('Posting dibatalkan');
+          this.loadingSimpan = false;
+          this.loadingDetail[index] = false;
+          this.getDataOnline();
         });
       },
     });
   }
+
+  getDataOnline(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.destroy(); // destroy the old DataTable
+      this.renderDatatable();
+      this.dtTrigger.next(this.dtOptions);
+      // re-render with new data
+    });
+  }
+
+    getSummaryData() {
+      const [startHour, startMinute] = this.startTime.split(':').map(Number);
+      const [endHour, endMinute] = this.endTime.split(':').map(Number);
+      const params = {
+        kodeGudang: this.g.getUserLocationCode(),
+        startDate: moment(this.dateRangeFilter[0]).set({
+                    hours: startHour,
+                    minutes: startMinute,
+                    seconds: 0,
+                    milliseconds: 0,
+                  }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
+        endDate: moment(this.dateRangeFilter[1]).set({
+                    hours: endHour,
+                    minutes: endMinute,
+                    seconds: 59,
+                    milliseconds: 999,
+                  }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
+      };
+      this.appService
+      .getSummaryPostingProduction(params)
+      .subscribe((resp) => {
+        this.listSummaryData = resp.data.data;
+        this.totalTransSummary = resp.data.totalData;
+        this.listNotrans = resp.data.listNotrans;
+      });
+    }
+
+    onPostingData() {
+       this.loadingPosting = true;
+          
+        const requestBody = {
+          kodeGudang: this.g.getUserLocationCode(),
+          nomorTransaksi: this.listNotrans,
+        };
+    
+        Swal.fire({
+          ...this.g.componentKonfirmasiPosting,
+          showConfirmButton: false,
+          showCancelButton: false,
+          width: '600px',
+          customClass: {
+            popup: 'custom-popup',
+          },
+          didOpen: () => {
+            const submitBtn = document.getElementById('btn-submit');
+            const cancelBtn = document.getElementById('btn-cancel');
+    
+            submitBtn?.addEventListener('click', () => {
+              this.appService.postingProduction(requestBody).subscribe({
+                next: (res: any) => {
+                  if (!res.success) {
+                    this.appService.handleErrorResponse(res);
+                  } else {
+                    this.toastr.success('Berhasil Posting!');
+                  }
+                  this.loadingPosting = false;
+                  Swal.close();
+                  const currentUrl = this.router.url;
+                  this.router.navigateByUrl('/empty', { skipLocationChange: true }).then(() => {
+                    this.router.navigate([currentUrl]);
+                  });
+                },
+                error: (err: any) => {
+                  console.log('An error occurred while Kirim Data.');
+                  this.loadingPosting = false;
+                
+                  Swal.close();
+                },
+              });
+            });
+    
+            cancelBtn?.addEventListener('click', () => {
+              Swal.close();
+              this.toastr.info('Posting dibatalkan');
+              this.loadingPosting = false;
+            });
+          },
+        });
+    }
+
+    showModalPosting() {
+      this.getSummaryData();
+      this.isShowModalPosting = true;
+    }
+
+    onPreviousPressed(): void {
+      this.router.navigate(['/transaction/production/']);
+    }
 }

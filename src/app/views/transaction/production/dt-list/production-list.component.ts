@@ -84,7 +84,7 @@ export class ProductionListComponent implements OnInit {
             seconds: 59,
             milliseconds: 999,
           }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
-          statusPosting:''
+          statusPosting:['P']
         };
         setTimeout(() => {
           this.dataService
@@ -287,5 +287,9 @@ export class ProductionListComponent implements OnInit {
     this.isShowModalReport = false;
     this.selectedRowCetak = null;
     this.disabledPrintButton = false;
+  }
+
+  onPreviousPressed(): void {
+    this.router.navigate(['/transaction/production/']);
   }
 }

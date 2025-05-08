@@ -440,5 +440,24 @@ export class AppService {
       payload
     );
   }
+  getSummaryKirimProduction(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/summary-kirim`,
+      payload
+    );
+  }
 
+  kirimProduction(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/kirim`,
+      payload
+    );
+  }
+  
+  getSummaryPostingProduction(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/summary-posting`,
+      payload
+    );
+  }
 }

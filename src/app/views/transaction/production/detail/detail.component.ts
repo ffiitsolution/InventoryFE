@@ -12,7 +12,7 @@ import { lastValueFrom, Subject, takeUntil } from 'rxjs';
 import { Page } from 'src/app/model/page';
 import { DataService } from 'src/app/service/data.service';
 import { GlobalService } from 'src/app/service/global.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 // import { AppConfig } from 'src/app/config/app.config.ts';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
@@ -277,7 +277,13 @@ export class DetailProductionComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/transaction/production/list-dt']);
+   
+    if (this.selectedProduction.statusPosting!=='P') {
+      this.router.navigate(['/transaction/production/list-dt-for-posting']);
+    }else{
+      this.router.navigate(['/transaction/production/list-dt']);
+    }
+   
   }
 
   onDelete() {

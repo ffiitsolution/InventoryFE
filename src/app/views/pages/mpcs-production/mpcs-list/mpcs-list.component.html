@@ -1,136 +1,320 @@
-
-
-    <c-container class="container-fluid my-container m-0">
-      <c-row class="d-flex justify-content-start g-2" >
-        <c-col md="12">
-          <c-card>
-            <c-card-header>
-              <div class=" gap-3 row align-items-center">
-                <div class="gap-2 row col-12 col-md-6">
-                  <h5 class="mb-1 align-items-end col-12 col-md-6">List Production</h5>    
-                </div>
-                <div class="d-grid gap-3 d-md-flex  justify-content-center justify-content-md-end col-12 col-md-6">
-                  <button
+<c-container class="container-fluid my-container m-0">
+  <c-row class="d-flex justify-content-start g-2">
+    <c-col md="12">
+      <c-card>
+        <c-card-header>
+          <div class="gap-3 row align-items-center">
+            <div class="gap-2 row col-12 col-md-6">
+              <h5 class="mb-1 align-items-end col-12 col-md-6">
+                List Production
+              </h5>
+            </div>
+            <div
+              class="d-grid gap-3 d-md-flex justify-content-center justify-content-md-end col-12 col-md-6"
+            >
+              <!-- <button
                     type="button"
                     class="w-120 btn btn-secondary text-white me-2"
                     style="height: min-content"
                     (click)="toggleFilter()"
                   >
                     {{ "Filter" | translate }}
-                  </button>
-                  <button class="btn btn-info text-white btn-150" (click)="onAddPressed()">
-                    <i class="fa fa-plus pe-1"></i> {{ "Tambah" | translate }}
-                  </button>
-                </div>
-                <div [visible]="isFilterShown" cCollapse>
-                  <c-card class="mb-3">
-                    <c-card-body class="gap-2">
-                      <div class="row mb-1">
-                        <div class="col-12 col-md-3">
-                          <label cLabel for="dateFilter">{{
-                            "Tanggal Transaksi :" | translate
-                          }}</label>
-                          <div class="flex-grow-1 text-end" >
-                            <input
-                              type="text"
-                              id="dateFilter"
-                              class="form-control "
-                              bsDaterangepicker
-                              [bsConfig]="dpConfig"
-                              aria-describedby="dateFilter"
-                              [(ngModel)]="dateRangeFilter"
-                              (ngModelChange)="onFilterChange()"
-                              #dp="bsDaterangepicker"
-                              placeholder="{{ 'Tanggal Pesan' | translate }}"
-                            />
-                          </div>
-                        </div>
-                        <div class="col-12 col-md-3">
-                          <label cLabel for="selectStatusFilter">
-                            {{ "Status" | translate }}:
-                          </label>
-                          <select
-                            aria-label="Status"
-                            class="custom-select"
-                            [(ngModel)]="selectedStatusFilter"
-                            (ngModelChange)="onFilterChange()"
-                          >
-                            <option value="">{{ "SEMUA" | translate }}</option>
-                            <option value="P">{{ "POSTED" | translate }}</option>
-                            <option value="B">{{ "BELUM POSTED" | translate }}</option>
-                          </select>
-                        </div>
-                      </div>      
-                    </c-card-body>
-                  </c-card>
-                </div>
-              </div>
-            </c-card-header>
-            <c-card-body>
-              <div class="row mx-n2">
-                <div class="col-12 col-md-4 px-2 mb-3" *ngFor="let item of listProductionData">
-                  <div class="card-list h-100" (click)="actionBtnClick(item)"> 
-                    <div class="d-flex flex-column">
-                      <div class="d-flex justify-content-between mb-1">
-                        <label>{{item.dateCreateFormat2}}</label>
-                        <label>{{item.nomorTransaksi}}</label>
-                      </div>
-                      <div class="d-flex justify-content-between">
-                        <label>{{item.kodeProduksi}}</label>
-                        <label>{{item.barangProduksi}}</label>
-                      </div>
-                      <div class="divider mt-2"></div>
-                      <div class="d-flex justify-content-start">
-                        <label>Konversi   : {{item.konversi}} {{item.satuanKecil}}/{{item.satuanBesar}}</label>
-                        <label></label>
-                      </div>
-                      <div class="d-flex justify-content-start">
-                        <label>Jumlah Produksi   : {{item.jumlahResep}} {{item.satuanBesar}}</label>
-                        <label></label>
-                      </div>
-                      <div class="d-flex justify-content-start">
-                        <label>Total Produksi : {{item.totalProduksi}} {{item.satuanKecil}} </label>
-                        <label>  </label>
-                      </div>
-                      <div class="divider mt-2"></div>
-                      <div class="d-flex justify-content-between">
-                        <label >Tgl Expired : {{ g.formatStrDateMMM(item.tglExp)}}</label>
-                        <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px" *ngIf="item.statusPosting == 'P'">POSTED</span>
-                        <span class="badge badge-info py-2" style="background-color:#b51823; " *ngIf="item.statusPosting == 'B'">BELUM POSTED</span>
+                  </button> -->
+              <button
+                class="btn btn-success text-white btn-150"
+                (click)="showModalKirim()"
+              >
+                <i class="fa fa-send pe-1"></i> {{ "Kirim Data" | translate }}
+              </button>
+              <button
+                class="btn btn-info text-white btn-150"
+                (click)="onAddPressed()"
+              >
+                <i class="fa fa-plus pe-1"></i> {{ "Tambah" | translate }}
+              </button>
+            </div>
+            <div [visible]="isFilterShown" cCollapse>
+              <c-card class="mb-3">
+                <c-card-body class="gap-2">
+                  <div class="row mb-1">
+                    <div class="col-12 col-md-3">
+                      <label cLabel for="dateFilter">{{
+                        "Tanggal Transaksi :" | translate
+                      }}</label>
+                      <div class="flex-grow-1 text-end">
+                        <input
+                          type="text"
+                          id="dateFilter"
+                          class="form-control"
+                          bsDaterangepicker
+                          [bsConfig]="dpConfig"
+                          aria-describedby="dateFilter"
+                          [(ngModel)]="dateRangeFilter"
+                          (ngModelChange)="onFilterChange()"
+                          #dp="bsDaterangepicker"
+                          placeholder="{{ 'Tanggal Pesan' | translate }}"
+                        />
                       </div>
                     </div>
-                  </div>
+                    <div class="col-12 col-md-2">
+                      <label class="col-form-label">{{
+                        "Waktu Produksi" | translate
+                      }}</label>
 
+                      <div class="d-flex gap-1">
+                        <div class="custom-time-picker">
+                          <input
+                            type="time"
+                            [(ngModel)]="startTime"
+                            name="startTime"
+                            min="09:00"
+                            max="18:00"
+                            required
+                          />
+                        </div>
+                        <span>-</span>
+                        <div class="custom-time-picker">
+                          <input
+                            type="time"
+                            [(ngModel)]="endTime"
+                            name="endTime"
+                            min="09:00"
+                            max="18:00"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                      <label cLabel for="selectStatusFilter">
+                        {{ "Status" | translate }}:
+                      </label>
+                      <select
+                        aria-label="Status"
+                        class="custom-select"
+                        [(ngModel)]="selectedStatusFilter"
+                        (ngModelChange)="onFilterChange()"
+                      >
+                        <option value="">{{ "SEMUA" | translate }}</option>
+                        <option value="P">{{ "POSTED" | translate }}</option>
+                        <option value="K">{{ "TERKIRIM" | translate }}</option>
+                        <option value="B">
+                          {{ "BELUM KIRIM" | translate }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </c-card-body>
+              </c-card>
+            </div>
+          </div>
+        </c-card-header>
+        <c-card-body>
+          <div class="row mx-n2">
+            <div
+              class="col-12 col-md-4 px-2 mb-3"
+              *ngFor="let item of listProductionData"
+            >
+              <div class="card-list h-100" (click)="actionBtnClick(item)">
+                <div class="d-flex flex-column">
+                  <div class="d-flex justify-content-between mb-1">
+                    <label>{{ item.dateCreateFormat2 }}</label>
+                    <label>{{ item.nomorTransaksi }}</label>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <label>{{ item.kodeProduksi }}</label>
+                    <label>{{ item.barangProduksi }}</label>
+                  </div>
+                  <div class="divider mt-2"></div>
+                  <div class="d-flex justify-content-start">
+                    <label
+                      >Konversi : {{ item.konversi }} {{ item.satuanKecil }}/{{
+                        item.satuanBesar
+                      }}</label
+                    >
+                    <label></label>
+                  </div>
+                  <div class="d-flex justify-content-start">
+                    <label
+                      >Jumlah Produksi : {{ item.jumlahResep }}
+                      {{ item.satuanBesar }}</label
+                    >
+                    <label></label>
+                  </div>
+                  <div class="d-flex justify-content-start">
+                    <label
+                      >Total Produksi : {{ item.totalProduksi }}
+                      {{ item.satuanKecil }}
+                    </label>
+                    <label> </label>
+                  </div>
+                  <div class="divider mt-2"></div>
+                  <div class="d-flex justify-content-between">
+                    <label
+                      >Tgl Expired :
+                      {{ g.formatStrDateMMM(item.tglExp) }}</label
+                    >
+                    <span
+                      class="badge badge-success py-2"
+                      style="
+                        color: white;
+                        background-color: #2eb85c;
+                        width: 60px;
+                      "
+                      *ngIf="item.statusPosting == 'P'"
+                      >POSTED</span
+                    >
+                    <span
+                    class="badge badge-success py-2"
+                    style="
+                      color: white;
+                      background-color: #3f1dd7;
+                      width: 80px;
+                    "
+                    *ngIf="item.statusPosting == 'K'"
+                    >TERKIRIM</span
+                  >
+                    <span
+                      class="badge badge-info py-2"
+                      style="background-color: #b51823"
+                      *ngIf="item.statusPosting == 'B'"
+                      >BELUM KIRIM</span
+                    >
+                  </div>
                 </div>
               </div>
-              <div class="row">
-                <nav *ngIf="totalItems > 0">
-                  <ul class="pagination justify-content-center">
-                    <li class="page-item p-2" [class.disabled]="currentPage === 0">
-                      <button class="page-link" (click)="changePage(currentPage-1 )" [disabled]="currentPage === 0">
-                        Previous
-                      </button>
-                    </li>
-                
-                    <li class="page-item p-2" *ngFor="let page of pages" [class.active]="page === currentPage+1">
-                      <button class="page-link" (click)="changePage(page-1)">
-                        {{ page }}
-                      </button>
-                    </li>
-                
-                    <li class="page-item p-2" [class.disabled]="currentPage+1 === totalPages">
-                      <button class="page-link" (click)="changePage(currentPage+1)" [disabled]="currentPage+1 === totalPages">
-                        Next
-                      </button>
-                    </li>
-                  </ul>
-                </nav>
-                
-              </div>
-            </c-card-body>
-          </c-card>        
-        </c-col>
-      </c-row>
-    </c-container>
+            </div>
+          </div>
+          <div class="row">
+            <nav *ngIf="totalItems > 0">
+              <ul class="pagination justify-content-center">
+                <li class="page-item p-2" [class.disabled]="currentPage === 0">
+                  <button
+                    class="page-link"
+                    (click)="changePage(currentPage - 1)"
+                    [disabled]="currentPage === 0"
+                  >
+                    Previous
+                  </button>
+                </li>
+
+                <li
+                  class="page-item p-2"
+                  *ngFor="let page of pages"
+                  [class.active]="page === currentPage + 1"
+                >
+                  <button class="page-link" (click)="changePage(page - 1)">
+                    {{ page }}
+                  </button>
+                </li>
+
+                <li
+                  class="page-item p-2"
+                  [class.disabled]="currentPage + 1 === totalPages"
+                >
+                  <button
+                    class="page-link"
+                    (click)="changePage(currentPage + 1)"
+                    [disabled]="currentPage + 1 === totalPages"
+                  >
+                    Next
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+</c-container>
 
 
+<c-modal #formModalKirim [fullscreen]="false" [visible]="isShowModalKirim" backdrop="static"  [size]="'xl'"
+id="formModalKirim"    [attr.aria-hidden]="!isShowModalKirim">
+  <c-modal-header>
+    <h5 cModalTitle>Konfirmasi Kirim Data Production</h5>
+    <button (click)="isShowModalKirim = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalKirim.id"
+      cButtonClose><i class="fa fa-times"></i></button>
+  </c-modal-header>
+  <c-modal-body>
+    <div >
+      <div class="card shadow-sm mb-3">
+        <div class="card-body">
+          <div class=" d-flex gap-1 flex-column justify-content-center align-items-center mb-3">
+            <div class="fw-bold">
+              <i class="bi bi-calendar-range me-2 text-black "></i> <!-- Bootstrap Icons -->
+              <h4>{{ "Summary Produksi" | translate }}</h4>
+            </div>
+            <!-- <div class="fw-bold">
+              <span class="badge bg-primary fs-6"> -->
+                <!-- {{formatToday()}} -->
+                <!-- {{ formatStartDate() }} &nbsp;–&nbsp; {{ formatEndDate() }} -->
+              <!-- </span>
+            </div> -->
+            
+            <div class="alert-kirim col-sm-12 d-flex flex-column justify-content-start align-items-center">
+              <span>
+               Semua data production yang statusnya BELUM KIRIM !
+              </span>
+              <span>
+              Akan dikirm ke ADMIN untuk diperiksa dan di POSTING !
+              </span>
+              <span>
+              Silahkan periksa kembali data yang akan dikirim !
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+     
+     
+      <div class="card shadow-sm mb-3" >
+      
+        <div class="card-body body-kirim">
+          <div class="row align-items-center mx-1 my-2" *ngFor="let item of listSummaryData">
+            <div class="col-12 col-md-6 fw-semibold mb-2 mb-md-0">
+              <!-- <i class="bi bi-calendar-range me-2 text-black"></i> -->
+              {{ item.kodeBarang }} - {{ item.namaBarang }}
+            </div>
+            <div class="col-6 col-md-2 mb-2 mb-md-0">
+              <span class="badge bg-primary fs-6 w-100 text-center">
+                {{ item.konversi }} {{ item.satuanKecil }}/{{ item.satuanBesar }}
+              </span>
+            </div>
+            <div class="col-6 col-md-2 mb-2 mb-md-0">
+              <span class="badge bg-primary fs-6 w-100 text-center">
+                {{ item.jumlahProduksi }} {{ item.satuanBesar }}
+              </span>
+            </div>
+            <div class="col-6 col-md-2 mb-2 mb-md-0">
+              <span class="badge bg-primary fs-6 w-100 text-center">
+                {{ item.totalProduksi }} {{ item.satuanKecil }}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+
+      <div class="d-flex justify-content-center align-items-center flex-column">
+        <span class="fw-bold text-center">Total Transaksi ({{totalTransSummary}})</span>
+      </div>
+      
+      </div>
+    </c-modal-body>
+    <c-modal-footer class="justify-center">
+      <button
+      class="btn btn-success text-white btn-150 w-180 me-3"
+      [disabled]="loadingKirim || listSummaryData.length == 0"
+      (click)="onKirimData()"
+    >
+      <i class="fa fa-send pe-1"  *ngIf="!loadingKirim"></i> 
+      <i class="fa fa-spinner fa-spin" *ngIf="loadingKirim"></i>
+      {{ "Kirim" | translate }}
+    </button>
+      <button type="button" class="btn btn-light w-180 me-3" data-bs-dismiss="modal" (click)="isShowModalKirim = false">Batal</button>
+      <!-- <button type="button" class="btn btn-success text-white  w-180" (click)="refreshDatabase()">Proses Terima Data</button> -->
+    </c-modal-footer>
+</c-modal>
