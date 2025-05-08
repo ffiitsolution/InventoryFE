@@ -63,7 +63,7 @@ export class AddDataDetailBarangComponent
   public loading: boolean = false;
   page: number = 1;
   isShowModal: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   selectedRow: any[] = [];
   pageModal = new Page();
   dataUser: any = {};
@@ -272,7 +272,7 @@ export class AddDataDetailBarangComponent
       });
     } else {
       this.toastr.error('Data tidak valid');
-    } 
+    }
   }
 
   onShowModal() {
@@ -396,7 +396,7 @@ export class AddDataDetailBarangComponent
       lengthMenu: [5, 10, 25, 50, 100],
       pageLength: 5,
       drawCallback: () => {},
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.pageModal.start = dataTablesParameters.start;
         this.pageModal.length = dataTablesParameters.length;
         const params = {
@@ -428,7 +428,7 @@ export class AddDataDetailBarangComponent
         {
           title: 'Pilih Barang  ',
           className: 'text-center',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             let isChecked = this.selectedRow.some(
               (item) => item.kodeBarang === row.kodeBarang
             )
@@ -446,12 +446,12 @@ export class AddDataDetailBarangComponent
         {
           data: 'flagConversion',
           title: 'Conversion Factor',
-          render: (data) => (data === 'Y' ? 'YA' : 'TIDAK'),
+          render: (data:any) => (data === 'Y' ? 'YA' : 'TIDAK'),
         },
         {
           data: 'statusAktif',
           title: 'Status Aktif',
-          render: (data) => (data === 'A' ? 'AKTIF' : 'TIDAK AKTIF'),
+          render: (data:any) => (data === 'A' ? 'AKTIF' : 'TIDAK AKTIF'),
         },
       ],
       searchDelay: 1000,
@@ -888,5 +888,5 @@ export class AddDataDetailBarangComponent
       this.disabledPrintButton = false;
     }
 
-    
+
 }

@@ -53,7 +53,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
   public loading: boolean = false;
   page: number = 1;
   isShowModal: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   selectedRow: any[] = [];
   pageModal = new Page();
   dataUser: any = {};
@@ -80,7 +80,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
   validationMessageListSatuanBesar: any[] = [];
   validationMessageListSatuanKecil: any[] = [];
   listOrderData: any[] = [];
-  barangTemp: any[] = []; 
+  barangTemp: any[] = [];
   newOrhdk: any = (localStorage.getItem('TEMP_ORDHDK') || '{}'  );
   totalFilteredExpired: any = '0.0';
   currentSelectedForModal: number;
@@ -154,7 +154,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
 
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();  
+    this.ngUnsubscribe.complete();
   }
 
   onBackPressed(data: any = '') {
@@ -171,10 +171,10 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
 
   proceedPosting() {
     this.loadingSimpan = true;
-  
+
     console.log('this.headerProduction Insert :', this.headerProduction);
     console.log('this.listProductData Insert : ', this.listProductData);
-  
+
     const param = {
       kodeGudang: this.g.getUserLocationCode(),
       tipeTransaksi: 9,
@@ -220,14 +220,14 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
         )).toFixed(2),
       })) || [],
     };
-  
+
     const paramUpdate = {
       returnNo: this.headerProduction.noReturnPengirim,
       status: 'T',
       user: this.g.getLocalstorage('inv_currentUser').kodeUser,
       flagBrgBekas: 'T'
     };
-  
+
     Swal.fire({
       title: '<div style="color: white; background: #c0392b; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
       html: `
@@ -288,7 +288,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
       }
     });
   }
-  
+
 
   onSubmit() {
     if (!this.isDataInvalid()) {
@@ -301,20 +301,20 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
         });
         return;
       }
-  
+
       // Menambahkan pengecekan untuk kodeBarang dan namaBarang yang kosong
-      const invalidItems = this.listProductData.filter(item => 
+      const invalidItems = this.listProductData.filter(item =>
         !item.qtyPemakaianBesar || item.qtyPemakaianBesar == 0 ||
         !item.kodeBarang || !item.namaBarang
       );
-  
+
       if (invalidItems.length > 0) {
         const invalidItemsList = invalidItems.map(item => `
           <li>
             ${item.kodeBarang} - ${item.namaBarang}
           </li>
         `).join('');
-  
+
         Swal.fire({
           title: 'Pesan Error',
           html: `<div>Ada data dengan <b>Quantity kosong atau 0</b></div>
@@ -344,7 +344,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
     this.selectedExpProduct.totalQtyProduksi=
     parseFloat(
         (
-            (Number(this.selectedExpProduct.qtyPemakaianBesar) * Number(this.selectedExpProduct.konversi)) + 
+            (Number(this.selectedExpProduct.qtyPemakaianBesar) * Number(this.selectedExpProduct.konversi)) +
             Number(this.selectedExpProduct.qtyPemakaianKecil)
         ).toFixed(2)
     ).toFixed(2);
@@ -353,7 +353,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
 
     let totalQtySum =  parseFloat(
           (
-              (Number(this.selectedExpProduct.qtyPemakaianBesar) * Number(this.selectedExpProduct.konversi)) + 
+              (Number(this.selectedExpProduct.qtyPemakaianBesar) * Number(this.selectedExpProduct.konversi)) +
               Number(this.selectedExpProduct.qtyPemakaianKecil)
           ).toFixed(2)
       ).toFixed(2);
@@ -393,20 +393,20 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
       validationQty: '',
     });
   }
-  
+
 
   updateKeteranganTanggal(item: any, event: any, index: number): void {
     if (!item) {
       console.error('Item is null or undefined');
       return;
     }
-  
+
     const dateFormatRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
-  
-    const inputDate = typeof event === 'string' 
-      ? event 
+
+    const inputDate = typeof event === 'string'
+      ? event
       : moment(event).format('DD/MM/YYYY'); // pastikan dalam format string
-  
+
     if (inputDate === 'Invalid Date' || !dateFormatRegex.test(inputDate)) {
       // Jika format salah
       item.tglExpired = null;
@@ -416,24 +416,24 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
       item.keteranganTanggal = moment(inputDate, 'DD/MM/YYYY')
         .locale('id')
         .format('D MMMM YYYY');
-  
+
       this.validateDate(inputDate, item.kodeBarang, index);
       console.log('Item updated successfully:', item);
     }
   }
-  
+
   isValidQtyExpired: boolean = true;
 
   onSaveEntryExpired() {
     let totalQtyExpired = 0;
-  
+
     const totalQtyPemakaian =
       this.helper.sanitizedNumber(this.selectedExpProduct.qtyPemakaianBesar) *
         this.selectedExpProduct.konversi +
       this.helper.sanitizedNumber(this.selectedExpProduct.qtyPemakaianKecil);
-  
+
     console.log('listEntryExpired', this.listEntryExpired);
-  
+
     // Validasi data kosong
     const isInvalid = this.listEntryExpired.some((item: any) => {
       return (
@@ -441,12 +441,12 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
         (!item.tglExpired || item.qtyPemakaianBesar === '' || item.keteranganTanggal === '' || item.qtyPemakaianBesar === '0.00')
       );
     });
-  
+
     if (isInvalid) {
       this.toastr.error('Tanggal expired, Qty Pemakaian Besar, dan Keterangan Tanggal tidak boleh kosong.');
       return;
     }
-  
+
     this.listEntryExpired.forEach((item: any) => {
       console.log('item expired', item);
       if (item.kodeBarang === this.selectedExpProduct.kodeBarang) {
@@ -457,7 +457,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
         totalQtyExpired += item.totalQty;
       }
     });
-  
+
     if (totalQtyExpired > totalQtyPemakaian) {
       this.toastr.error('Total Qty Expired harus sama dengan Qty Pemakaian');
     } else {
@@ -471,33 +471,33 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
 
   isDataInvalid() {
     let dataInvalid = false;
-  
+
     // Validasi qty retur vs expired
     const invalidItems = this.listProductData.filter(
       item =>
         item.totalQtyPemakaian !== this.getTotalExpiredData(item.kodeBarang || item.kodeBarang, item.konversi) &&
         (item.isConfirmed === true || item.isConfirmed === 'Y')
     );
-  
+
     // Validasi expired error
     const invalidExpired = this.listEntryExpired.filter(
       item => item.validationExpiredMessageList !== ''
     );
-  
+
     const bahanBakuList = invalidItems.map(item => `
       <li><strong>${item.kodeBarang || item.kodeBarang}</strong> - ${item.namaBarang}</li>
     `).join('');
-  
+
     const expiredList = invalidExpired.map(item => `
       <li><strong>${item.kodeBarang}</strong> - ${item.namaBarang || ''}</li>
     `).join('');
-  
+
     // Gabungkan semua error menjadi satu Swal (jika mau)
     if (invalidItems.length > 0 || invalidExpired.length > 0) {
       dataInvalid = true;
-  
+
       let htmlContent = '';
-  
+
       if (invalidItems.length > 0) {
         htmlContent += `
           <div>TOTAL QTY RETUR TIDAK SAMA DENGAN TOTAL QTY EXPIRED... PERIKSA KEMBALI..!!!</div>
@@ -508,7 +508,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
           </div>
         `;
       }
-  
+
       if (invalidExpired.length > 0) {
         htmlContent += `
           <div style="margin-top: 20px;">Data tanggal expired tidak sesuai:</div>
@@ -522,23 +522,23 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
           </div>
         `;
       }
-  
+
       Swal.fire({
         title: 'Pesan Error',
         html: htmlContent,
         confirmButtonText: 'OK'
       });
     }
-  
+
     return dataInvalid;
   }
-  
+
   listProductData: any[] = [
     { kodeBarang: '', namaBarang: '', konversi: '', satuanKecil: '', satuanBesar: '', qtyWasteBesar: '', qtyWasteKecil: '', isConfirmed: false }
   ];
   tempKodeBarang: string = '';
 
-  
+
   loadBahanBaku() {
     let param = { returnNo: this.headerProduction?.noReturnPengirim };
     console.log('testing header production : ', this.headerProduction);
@@ -567,7 +567,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
                 flagExpired : item.flagExpired
               }));
 
-              
+
               console.log('listProductData : ', this.listProductData)
 
               this.jumlahBahanbaku.emit(this.listProductData.length);
@@ -580,27 +580,27 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
 
   getExpiredData(kodeBarang: string) {
     const filtered = this.listEntryExpired.filter(item => item.kodeBarang === kodeBarang);
-   
+
     const totalExpired = filtered.reduce((acc, item) => {
       acc.qtyPemakaianBesar += Number(item.qtyPemakaianBesar) || 0;
       acc.qtyPemakaianKecil += Number(item.qtyPemakaianKecil) || 0;
       return acc;
     }, { qtyPemakaianBesar: 0, qtyPemakaianKecil: 0 });
-    
+
     return totalExpired;
-    
+
   }
 
 
   getTotalExpiredData(kodeBarang: string, konversi: number) {
     const filtered = this.listEntryExpired.filter(item => item.kodeBarang === kodeBarang);
-    
+
     const totalExpired = filtered.reduce((acc, item) => {
       acc.qtyPemakaianBesar += (Number(item.qtyPemakaianBesar) || 0) * konversi;  // Multiply qtyPemakaianBesar by konversi
       acc.qtyPemakaianKecil += Number(item.qtyPemakaianKecil) || 0;
       return acc;
     }, { qtyPemakaianBesar: 0, qtyPemakaianKecil: 0 });
-  
+
     return (totalExpired.qtyPemakaianBesar + totalExpired.qtyPemakaianKecil).toFixed(2);
   }
 
@@ -623,60 +623,60 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
 
     this.updateTotalExpired();
   }
-  
+
 
   validateDate(inputDateString: string, kodeBarang: string, index: number): void {
     if (!inputDateString) {
       console.error('Input date string is null or empty');
       return;
     }
-  
+
     const inputDate = moment(inputDateString, 'DD/MM/YYYY').toDate();
     const today = new Date();
     let validationMessage = '';
-  
+
     console.log('Validating date:', inputDateString, 'for kodeBarang:', kodeBarang);
-  
+
     // if (inputDate < today) {
     //   validationMessage = 'Tanggal kadaluarsa tidak boleh lebih kecil atau sama dengan hari ini!';
     // }
-  
+
     const filteredEntries = this.listEntryExpired.filter(
       entry => entry.kodeBarang === kodeBarang
     );
-  
+
     if (!inputDateString) {
       validationMessage = 'Tanggal tidak boleh kosong!';
     } else {
-      const isDuplicate = filteredEntries.some((entry, idx) => 
+      const isDuplicate = filteredEntries.some((entry, idx) =>
         idx !== index &&
         moment(entry.tglExpired).format('YYYY-MM-DD') === moment(inputDate).format('YYYY-MM-DD')
       );
-  
+
       if (isDuplicate) {
         validationMessage = 'Tanggal ini sudah ada dalam daftar!';
       }
     }
-  
-    const realIndex = this.listEntryExpired.findIndex(entry => 
+
+    const realIndex = this.listEntryExpired.findIndex(entry =>
       entry.kodeBarang === kodeBarang &&
-      moment(entry.tglExpired).format('YYYY-MM-DD') === 
+      moment(entry.tglExpired).format('YYYY-MM-DD') ===
       moment(filteredEntries[index]?.tglExpired).format('YYYY-MM-DD')
     );
-  
+
     if (realIndex !== -1) {
       this.listEntryExpired[realIndex] = {
         ...this.listEntryExpired[realIndex],
         tglExpired: inputDate,
         validationExpiredMessageList: validationMessage
       };
-  
+
       console.log('Validation updated at index:', realIndex, this.listEntryExpired[realIndex]);
     } else {
       console.warn('Real index not found for validation update.');
     }
   }
-  
+
 
   onInputQtyBesarExpired(event: any, kodeBarang: string, index: number) {
     let value = event.target.value;
@@ -796,7 +796,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
     if (this.isNotNumber(this.listProductData[index].qtyPesanKecil)) {
       this.validationMessageListSatuanKecil[index] = "QTY kecil harus angka";
     }
-    
+
     else if(this.listProductData[index].qtyPesanKecil > this.listProductData[index].konversi  ){
       this.validationMessageListSatuanKecil[index] = "QTY kecil harus < Konversi";
     }
@@ -827,7 +827,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
       this.getProductRow(kodeBarang, index);
     }
   }
-  
+
 
   getProductRow(kodeBarang: string, index: number) {
     let errorMessage
@@ -853,7 +853,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
 
             this.listProductData[index].isConfirmed = true;
             this.listProductData[index].isLoading = false;
-            
+
             this.listProductData[index].totalQtyPesan = (0).toFixed(2);
             this.listProductData[index].qtyPesanKecil = (0).toFixed(2);
             this.listProductData[index].qtyPesanBesar = (0).toFixed(2);
@@ -861,7 +861,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
             // Add new properties to the object
             this.listProductData[index] = {
               ...this.listProductData[index],
-              ...res  
+              ...res
             };
 
 
@@ -877,7 +877,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
               // this.mapOrderData(data);
               // this.onSaveData();
 
-       
+
           }
         },
       });
@@ -916,7 +916,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
         this.listProductData.splice(this.listProductData.length - 1, 1);
       }
     }
-    
+
     for (let barang of this.barangTemp) {
 
       if(!this.listProductData.some(order => order.kodeBarang === barang.kodeBarang)){
@@ -944,12 +944,12 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
     if(errorMessage)
       this.toastr.error(errorMessage);
 
-    
-    if (this.listProductData[this.listProductData.length - 1].namaBarang.trim() !== "") { 
+
+    if (this.listProductData[this.listProductData.length - 1].namaBarang.trim() !== "") {
       this.listProductData.push({
         kodeBarang: '',
         namaBarang: '',
-      });    
+      });
     }
   }
 
@@ -974,10 +974,10 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback: any) => {
         this.pageModal.start = dataTablesParameters.start;
         this.pageModal.length = dataTablesParameters.length;
         const params = {
@@ -1009,10 +1009,10 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
       columns: [
         { data: 'kodeBarang', title: 'Kode' },
         { data: 'namaBarang', title: 'Nama Barang' },
-        { 
-          data: 'konversi', 
-          title: 'Konversi', 
-          render: function(data, type, row) {
+        {
+          data: 'konversi',
+          title: 'Konversi',
+          render: function(data:any, type:any, row:any) {
             return Number(data).toFixed(2); // Ensures two decimal places
           }
         },
@@ -1023,7 +1023,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
           data: 'status',
           title: 'Status',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             if (data === 'Aktif') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
@@ -1033,7 +1033,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
         {
           title: 'Action',
           orderable: false,
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             const disabled = row.status !== 'Aktif' ? 'disabled' : '';
             return `<button class="btn btn-sm action-select btn-info btn-80 text-white" ${disabled}>Pilih</button>`;
           },
@@ -1045,7 +1045,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
         [7, 'asc'],
         [1, 'asc'],
       ],
-      lengthMenu: [ 
+      lengthMenu: [
         [5, 10],
         ['5', '10']
       ],
@@ -1053,7 +1053,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
         $('.action-select', row).on('click', () =>
           this.onPilihBarang(data)
         );
-        
+
         $('td', row).on('click', () => {
           $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
           if (this.selectedRowData !== data) {
@@ -1141,7 +1141,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
 
 
     this.listProductData[index].qtyPemakaianKecil = value;
-   
+
     this.listProductData[index].totalQtyPemakaian =
     (
     Number(this.listProductData[index].qtyPemakaianBesar) * Number(this.listProductData[index].konversi) +
@@ -1173,33 +1173,33 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
 
   onPilihBarang(data: any) {
     let errorMessage: string | undefined;
-  
+
     const existingItemIndex = this.listProductData.findIndex(
       (item) => item.kodeBarang === data.kodeBarang
     );
-  
+
     if (existingItemIndex !== -1) {
       errorMessage = 'Barang sudah ditambahkan!';
       this.toastr.error(errorMessage);
       return;
     }
-  
-    const resepData = { 
+
+    const resepData = {
       kodeBarang: data.kodeBarang,
-      namaBarang: data.namaBarang, 
-      konversi: parseFloat(data.konversi).toFixed(2), 
+      namaBarang: data.namaBarang,
+      konversi: parseFloat(data.konversi).toFixed(2),
       satuanKecil: data.satuanKecil,
-      satuanBesar: data.satuanBesar, 
+      satuanBesar: data.satuanBesar,
       qtyPemakaianBesar: '0.00',
       qtyPemakaianKecil: '0.00',
-      totalQtyPemakaian: '0.00', 
+      totalQtyPemakaian: '0.00',
       isFromRetur: false,
       isConfirmed: data.flagExpired
     };
-  
+
     this.listProductData[this.currentSelectedForModal] = resepData;
     console.log('this.listProductData:', this.listProductData);
-  
+
     this.isShowModal = false;
   }
 
@@ -1207,13 +1207,13 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
     if (this.listProductData.length === 0) {
       return 0;
     }
-  
+
     // Menghitung jumlah item yang memiliki namaBarang tidak kosong
     const validItems = this.listProductData.filter(item => item.namaBarang.trim() !== "");
     return validItems.length;
   }
-  
-  
+
+
   onFilterTextChange(newValue: string) {
     this.listCurrentPage = 1;
     if (newValue.length >= 3) {
@@ -1235,7 +1235,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
   get totalListViewOrderLength(): number {
     return this.filteredListViewOrder.length;
   }
-  
+
 
   get filteredListViewOrder() {
     if (!this.searchListViewOrder || this.searchListViewOrder.length < 3) {
@@ -1250,4 +1250,4 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
   get filteredList() {
     return this.listEntryExpired.filter(item => item.kodeBarang === this.selectedExpProduct.kodeBarang);
   }
-}    
+}

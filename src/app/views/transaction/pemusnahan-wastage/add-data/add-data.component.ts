@@ -31,7 +31,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   isShowModal: boolean = false;
   dtTrigger: Subject<any> = new Subject();
   bsConfig: Partial<BsDatepickerConfig>;
@@ -68,7 +68,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
     private translationService: TranslationService,
     private deliveryDataService: DeliveryDataService,
     private appService: AppService
-  ) { 
+  ) {
     this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
@@ -89,7 +89,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
     const today = new Date().toISOString().split('T')[0];
     this.minDate = new Date(today);
     this.maxDate = new Date(today);
-    
+
     this.getDropdownUser();
     this.configSelectUser = {
       ...this.baseConfig,

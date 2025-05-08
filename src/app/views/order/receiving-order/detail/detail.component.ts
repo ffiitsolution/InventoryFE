@@ -38,7 +38,7 @@ export class ReceivingOrderDetailComponent
 
   orders: any[] = [];
   dtColumns: any = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -84,7 +84,7 @@ export class ReceivingOrderDetailComponent
   }
   reloadTable() {
     setTimeout(() => {
-      this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      this.datatableElement?.dtInstance.then((dtInstance: any) => {
         dtInstance.ajax.reload();
       });
     }, DEFAULT_DELAY_TABLE);
@@ -203,7 +203,7 @@ export class ReceivingOrderDetailComponent
             user:  this.dataUser.kodeUser,
             nomorPesanan: this.selectedOrder.nomorPesanan,
             statusPesanan: this.selectedOrder.statusPesanan,
-            statusCetak: this.selectedOrder.statusCetak 
+            statusCetak: this.selectedOrder.statusCetak
           };
           const base64Response = await lastValueFrom(
             this.dataService.postData(
@@ -330,6 +330,6 @@ export class ReceivingOrderDetailComponent
     }
     return this.filteredList.length;
   }
-  
-  
+
+
 }

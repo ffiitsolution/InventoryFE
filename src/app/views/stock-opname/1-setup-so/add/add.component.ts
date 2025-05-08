@@ -14,6 +14,7 @@ import { GlobalService } from '../../../../service/global.service';
 import {
   DEFAULT_DELAY_TIME,
   LS_INV_SELECTED_SET_NUMBER,
+  LS_INV_SELECTED_SO,
 } from '../../../../../constants';
 import { DataService } from '../../../../service/data.service';
 import * as moment from 'moment';
@@ -142,11 +143,20 @@ export class StockSoAddComponent implements OnInit {
       this.service.insert('/api/stock-opname/insert', param).subscribe({
         next: (res) => {
           if (!res.success) {
-            this.service.handleErrorResponse(res);
+            const error = res.data.error ?? res.error ?? ' ';
+            if (error.toLowerCase().includes('selesaikan dulu')) {
+              this.toastr.error('Stock Opname di bulan tersebut sudah dibuat!');
+            } else {
+              this.service.handleErrorResponse(res);
+            }
           } else {
-            this.toastr.success('Berhasil!');
+            this.toastr.success('Silahkan Entry quantity fisik.','Stock Opname berhasil dibuat!');
             setTimeout(() => {
-              this.onPreviousPressed();
+              this.g.saveLocalstorage(
+                LS_INV_SELECTED_SO,
+                JSON.stringify(param)
+              );
+              this.router.navigate(['/stock-opname/edit']);
             }, DEFAULT_DELAY_TIME);
           }
           this.adding = false;

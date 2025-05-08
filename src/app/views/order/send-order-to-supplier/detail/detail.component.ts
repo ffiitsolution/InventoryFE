@@ -57,7 +57,7 @@ export class DetailSendOrderToSupplierComponent
   public loading: boolean = false;
   page: number = 1;
   isShowModal: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   selectedRow:  any = {};
   pageModal = new Page();
   detailDataSendToWarehouse: any = {};
@@ -281,7 +281,7 @@ export class DetailSendOrderToSupplierComponent
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.pageModal.start = dataTablesParameters.start;
         this.pageModal.length = dataTablesParameters.length;
         const params = {

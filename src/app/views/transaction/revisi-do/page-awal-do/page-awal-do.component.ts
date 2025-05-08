@@ -34,7 +34,7 @@ export class PageAwalDoBalikComponent implements OnInit, AfterViewInit, OnDestro
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   isShowModal: boolean = false;
   dtTrigger: Subject<any> = new Subject();
   bsConfig: Partial<BsDatepickerConfig>;
@@ -137,7 +137,7 @@ export class PageAwalDoBalikComponent implements OnInit, AfterViewInit, OnDestro
     return false
   }
 
-  onAddDetail() {  
+  onAddDetail() {
       this.isShowDetail = true;
       // this.router.navigate(['/transaction/receipt-from-warehouse/tambah-data/detail-add-data-gudang']);
       this.globalService.saveLocalstorage(
@@ -177,7 +177,7 @@ export class PageAwalDoBalikComponent implements OnInit, AfterViewInit, OnDestro
       ordering: true,
       paging: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         let page = Math.floor(dataTablesParameters.start / dataTablesParameters.length);
         let limit = dataTablesParameters.length || 5;
         // this.page.start = dataTablesParameters.start || 0;
@@ -221,13 +221,13 @@ export class PageAwalDoBalikComponent implements OnInit, AfterViewInit, OnDestro
       },
       columns: [
         {
-          data: 'tglTransaksi', title: 'Tgl. Kirim', 
-          render: (data) => {
+          data: 'tglTransaksi', title: 'Tgl. Kirim',
+          render: (data:any) => {
             return this.globalService.transformDate(data)
           }
         },
         { data: 'tglPesanan', title: 'Tgl. Pesan',
-          render: (data) => {
+          render: (data:any) => {
             return this.globalService.transformDate(data)
           }
          },

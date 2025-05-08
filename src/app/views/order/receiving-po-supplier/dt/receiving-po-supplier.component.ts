@@ -41,7 +41,7 @@ export class ReceivingPoSupplierComponent
   loadingIndicator: boolean = false;
   showFilterSection: boolean = false;
   searchTriggered: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -79,7 +79,7 @@ export class ReceivingPoSupplierComponent
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -89,7 +89,7 @@ export class ReceivingPoSupplierComponent
           endDate: this.g.transformDate(this.dateRangeFilter[1]),
         };
         setTimeout(() => {
-          this.dataService  
+          this.dataService
             .postData(this.config.BASE_URL + '/api/receiving-po-supplier/dt', params)
             .subscribe((resp: any) => {
               const mappedData = resp.data.map((item: any, index: number) => {
@@ -120,18 +120,18 @@ export class ReceivingPoSupplierComponent
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'tglPesanan', title: 'Tgl. P.O', 
-          render: (data, type, row) => {
+        { data: 'tglPesanan', title: 'Tgl. P.O',
+            render: (data: any, _: any, row: any) => {
             return this.g.formatStrDateMMM(data);
           }
         },
         { data: 'tglKirimBrg', title: 'Tgl. Kirim Brg',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             return this.g.formatStrDateMMM(data);
           }
         },
         { data: 'tglBatalExp', title: 'Tgl. Batal',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             return this.g.formatStrDateMMM(data);
           }
         },
@@ -141,7 +141,7 @@ export class ReceivingPoSupplierComponent
           title: 'Nama Supplier',
           orderable: true,
           searchable: true,
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             return data +"-"+row.namaSupplier
           },
         },
@@ -149,14 +149,14 @@ export class ReceivingPoSupplierComponent
           data: 'statusPesanan',
           title: 'Status P.O',
           searchable: true,
-          render: (data) => {
+          render: (data:any) => {
             return this.g.getStatusReceivingPOBadge(data);
           },
         },
         {
           data: 'statusCetak',
           title: 'Status Cetak P.O',
-          render: (data) => this.g.getStatusOrderLabel(data, true),
+          render: (data:any) => this.g.getStatusOrderLabel(data, true),
         },
         {
           title: 'Opsi',
@@ -164,7 +164,7 @@ export class ReceivingPoSupplierComponent
             return `
               <div class="btn-group" role="group" aria-label="Action">
                 <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
-                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>           
+                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>
               </div>
             `;
           },
@@ -227,7 +227,7 @@ export class ReceivingPoSupplierComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }
@@ -240,7 +240,7 @@ export class ReceivingPoSupplierComponent
   }
 
   onFilterPressed() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
@@ -257,7 +257,7 @@ export class ReceivingPoSupplierComponent
         user:  this.dataUser.kodeUser,
         nomorPesanan: selectedOrder.nomorPesanan,
         statusPesanan: selectedOrder.statusPesanan,
-        statusCetak: selectedOrder.statusCetak 
+        statusCetak: selectedOrder.statusCetak
     };
     this.isShowModalReport = true;
   }

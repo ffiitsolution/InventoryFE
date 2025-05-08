@@ -57,7 +57,7 @@ export class DetailSendOrderToWarehouseComponent
   public loading: boolean = false;
   page: number = 1;
   isShowModal: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   selectedRow:  any = {};
   pageModal = new Page();
   detailDataSendToWarehouse: any = {};
@@ -284,7 +284,7 @@ export class DetailSendOrderToWarehouseComponent
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.pageModal.start = dataTablesParameters.start;
         this.pageModal.length = dataTablesParameters.length;
         const params = {
@@ -415,7 +415,7 @@ export class DetailSendOrderToWarehouseComponent
     this.router.navigate(['order/send-order-to-warehouse']);
   }
 
-  
+
   onFilterTextChange(newValue: string) {
     this.listCurrentPage = 1;
     if (newValue.length >= 3) {
@@ -448,6 +448,6 @@ export class DetailSendOrderToWarehouseComponent
     }
     return this.filteredList.length;
   }
-  
+
 
 }

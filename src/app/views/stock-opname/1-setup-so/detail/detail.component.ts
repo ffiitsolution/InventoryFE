@@ -40,7 +40,7 @@ export class SetupSoDetailComponent
 
   orders: any[] = [];
   dtColumns: any = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -96,7 +96,7 @@ export class SetupSoDetailComponent
         autoWidth: true,
         info: true,
         drawCallback: () => {},
-        ajax: (dataTablesParameters: any, callback) => {
+        ajax: (dataTablesParameters: any, callback:any) => {
           this.page.start = dataTablesParameters.start;
           this.page.length = dataTablesParameters.length;
           const params = {
@@ -161,7 +161,7 @@ export class SetupSoDetailComponent
           {
             data: 'konversi',
             title: 'Konversi',
-            render: (data, type, row) =>
+            render: (data:any, type:any, row:any) =>
               `${Number(data).toFixed(2)} ${row.satuanKecil}/${
                 row.satuanBesar
               }`,
@@ -169,24 +169,24 @@ export class SetupSoDetailComponent
           {
             data: 'qtyBesarSo',
             title: 'Qty Besar',
-            render: (data, type, row) =>
+            render: (data:any, type:any, row:any) =>
               `${Number(data).toFixed(2)} ${row.satuanBesar}`,
           },
           {
             data: 'qtyKecilSo',
             title: 'Qty Kecil',
-            render: (data, type, row) =>
+            render: (data:any, type:any, row:any) =>
               `${Number(data).toFixed(2)} ${row.satuanKecil}`,
           },
           {
             data: 'totalQtySo',
             title: 'Total Qty',
-            render: (data, type, row) =>
+            render: (data:any, type:any, row:any) =>
               `${Number(data).toFixed(2)} ${row.satuanKecil}`,
           },
           {
             title: 'Cek Quantity Expired',
-            render: (data, type, row) => {
+            render: (data:any, type:any, row:any) => {
               if (row.flagExpired === 'Y') {
                 return `<div class="d-flex justify-content-start">
                       <button class="btn btn-sm action-view btn-outline-success w-50"><i class="fa fa-check pe-1"></i> Cek</button>
@@ -217,7 +217,7 @@ export class SetupSoDetailComponent
   }
   reloadTable() {
     setTimeout(() => {
-      this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      this.datatableElement?.dtInstance.then((dtInstance: any) => {
         dtInstance.ajax.reload();
       });
     }, DEFAULT_DELAY_TABLE);
@@ -271,7 +271,7 @@ export class SetupSoDetailComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }

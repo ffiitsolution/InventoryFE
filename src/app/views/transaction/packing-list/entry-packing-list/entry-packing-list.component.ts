@@ -38,7 +38,7 @@ export class EntryPackingListComponent
     | undefined;
 
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
-  dtOptions_2: DataTables.Settings = {};
+  dtOptions_2: any = {};
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
 
@@ -81,7 +81,7 @@ export class EntryPackingListComponent
       serverSide: true,
       language:
         translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -117,7 +117,7 @@ export class EntryPackingListComponent
         {
           title: 'Alamat', // Nama kolom yang sama untuk keduanya
           className: 'text-center',
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             let alamat1 = row.alamat1 ? row.alamat1 : '-'; // Cek jika null
             let alamat2 = row.alamat2 ? row.alamat2 : '-';
             return `${alamat1} <br> ${alamat2}`;
@@ -202,7 +202,7 @@ export class EntryPackingListComponent
   dtPageChange(event: any): void { }
 
   search(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
@@ -288,7 +288,7 @@ export class EntryPackingListComponent
   }
 
   onFilterPressed() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }

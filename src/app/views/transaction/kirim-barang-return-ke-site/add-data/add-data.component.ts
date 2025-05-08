@@ -39,7 +39,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
   public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   isShowModal: boolean = false;
   dtTrigger: Subject<any> = new Subject();
   bsConfig: Partial<BsDatepickerConfig>;
@@ -51,7 +51,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
   isShowDetailBranch: boolean = false;
   selectedRowData: any;
   defaultDate: any ;
-  someBoolean: boolean = true; 
+  someBoolean: boolean = true;
   private ngUnsubscribe: Subject<void> = new Subject<void>();
   buttonCaptionSelect: string = BUTTON_CAPTION_SELECT;
   currentDate: Date = new Date();
@@ -62,7 +62,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
     );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
   isShowModalBranch: boolean = false;
-  dtOptionsBranch: DataTables.Settings = {};
+  dtOptionsBranch: any = {};
   selectedRowDataBranch: any;
   pageBranch = new Page();
   selectedRowRetur: any = {};
@@ -70,7 +70,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
   paramGenerateReport = {};
   isShowModalReport: boolean = false;
   disabledPrintButton: boolean = false;
-  alreadyPrint: boolean = false;  
+  alreadyPrint: boolean = false;
 
   @ViewChild('formModal') formModal: any;
   // Form data object
@@ -99,7 +99,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
     this.dpConfigtrans.maxDate = new Date();
     this.dpConfigtrans.customTodayClass='today-highlight';
   }
-  
+
 
   myForm: FormGroup;
 
@@ -119,7 +119,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
     statusTujuan: '',
     keterangan: '',
   };
-  
+
 
   ngOnInit(): void {
 
@@ -198,7 +198,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
     this.someBoolean = false;
-    this.cdr.detectChanges(); 
+    this.cdr.detectChanges();
   }
 
   ngOnDestroy(): void {
@@ -208,8 +208,8 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
     );
     // clean subsribe rxjs
     this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();  
-    
+    this.ngUnsubscribe.complete();
+
   }
 
   actionBtnClick(data: any = null) {
@@ -236,7 +236,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
                     .pipe(takeUntil(this.ngUnsubscribe))
                     .subscribe({
                       next: (res2) => {
-                      
+
                         const currentUrl = this.router.url;
                         this.router.navigateByUrl('/empty', { skipLocationChange: true }).then(() => {
                           this.router.navigate([currentUrl]);
@@ -259,7 +259,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
     // this.formData.noReturnPengirim = data?.returnNo;
     this.isShowModal = false;
   }
-  
+
   actionBtnClickBranch(data: any = null) {
     this.formData.kodeTujuan = data?.kodeCabang;
     this.formData.namaTujuan = data?.namaCabang;
@@ -267,7 +267,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
     this.formData.statusTujuan = this.convertStatusAktif(data?.statusAktif); // ✅ Gunakan function ini
     this.isShowModalBranch = false;
   }
-  
+
   convertStatusAktif(statusAktif: string): string {
     const status = statusAktif?.trim().toUpperCase();
     if (status === 'AKTIF') {
@@ -279,7 +279,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
     }
     return '-'; // Atau default lainnya
   }
-  
+
 
   getStatusAktifText(statusAktif: string): string {
     const statusMap: { [key: string]: string } = {
@@ -294,7 +294,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
 
     this.dataService
     .postData(this.config.BASE_URL_HQ + '/api/return-order/list-search',
-      {"returnNo":  event.target.value, 
+      {"returnNo":  event.target.value,
         "kodeGudang" : this.globalService.getUserLocationCode(),
         "status" : 'K'
       }
@@ -307,20 +307,20 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
         this.resetDataPemesan();
     });
   }
-  
+
 
   resetDataPemesan() {
     this.myForm.controls['kodeBarang'].setValue("");
     this.myForm.controls['namaBarang'].setValue("");
     this.myForm.controls['alamatPengirim'].setValue("");
-    // this.myForm.controls['noReturnPengirim'].setValue("");   
-    this.myForm.controls['satuanHasilProduksi'].setValue("");  
-    this.myForm.controls['keterangan'].setValue("");  
+    // this.myForm.controls['noReturnPengirim'].setValue("");
+    this.myForm.controls['satuanHasilProduksi'].setValue("");
+    this.myForm.controls['keterangan'].setValue("");
   }
 
   mappingDataPemesan(data : any) {
     this.myForm.controls['kodeBarang'].setValue(data.outletCode);
-    this.myForm.controls['namaBarang'].setValue(data.namaPengirim);  
+    this.myForm.controls['namaBarang'].setValue(data.namaPengirim);
     let statusValue = '';
       if (data.statusAktif?.trim().toUpperCase() === 'AKTIF') {
         statusValue = 'A';
@@ -330,8 +330,8 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
         statusValue = data.statusAktif;
       }
     this.myForm.controls['satuanHasilProduksi'].setValue(statusValue);
-    this.myForm.controls['alamatPengirim'].setValue(data.alamatPengirim);  
-    // this.myForm.controls['noReturnPengirim'].setValue(data.returnNo);      
+    this.myForm.controls['alamatPengirim'].setValue(data.alamatPengirim);
+    // this.myForm.controls['noReturnPengirim'].setValue(data.returnNo);
   }
 
 
@@ -356,10 +356,10 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
         [8, 10],   // Available page sizes
         ['8', '10']  // Displayed page size labels
       ],
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -392,7 +392,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
             });
           });
       },
-      
+
       columns: [
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
         { data: 'returnNo', title: 'Tipe', searchable: true },
@@ -402,7 +402,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
           data: 'statusAktif',
           title: 'Status',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             if (data === 'Aktif') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
@@ -411,7 +411,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
         },
         {
           title: 'Action',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             if (row.statusAktif === 'Aktif') {
               return `
                 <div class="btn-group" role="group" aria-label="Action">
@@ -449,24 +449,24 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
       autoWidth: true,
       info: true,
       pageLength: 5,
-      drawCallback: (drawCallback) => {
-        
+      drawCallback: (drawCallback:any) => {
+
         this.selectedRowDataBranch = undefined;
       },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         console.log('Sending AJAX request...', dataTablesParameters);
         this.pageBranch.start = dataTablesParameters.start;
         this.pageBranch.length = dataTablesParameters.length;
-  
+
         const params = {
           ...dataTablesParameters,
         };
-  
+
         this.dataService
           .postData(this.config.BASE_URL + '/api/branch/dt', params)
           .subscribe((resp: any) => {
             console.log('Response from backend:', resp);
-  
+
             const mappedData = resp.data.map((item: any, index: number) => {
               const { rn, ...rest } = item;
               const finalData = {
@@ -476,10 +476,10 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
               };
               return finalData;
             });
-  
+
             this.pageBranch.recordsTotal = resp.recordsTotal;
             this.pageBranch.recordsFiltered = resp.recordsFiltered;
-  
+
             callback({
               recordsTotal: resp.recordsTotal,
               recordsFiltered: resp.recordsFiltered,
@@ -498,7 +498,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
           data: 'statusAktif',
           title: 'Status',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             return data === 'A'
               ? `<div class="d-flex justify-content-center"><span class="badge badge-success py-2" style="color:white; background-color:#2eb85c; width:60px">Active</span></div>`
               : `<div class="d-flex justify-content-center"><span class="badge badge-secondary py-2" style="background-color:grey; width:60px">Inactive</span></div>`;
@@ -506,7 +506,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
         },
         {
           title: 'Action',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             if (row.statusAktif === 'A') {
               return `
                 <div class="btn-group" role="group" aria-label="Action">
@@ -532,7 +532,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
       },
     };
   }
-  
+
     private mapOrderData(data: any): void {
       this.myForm.patchValue({
         kodeBarang: data.kodeBarang,
@@ -545,7 +545,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
     calculateTotalHasilProduksi(): void {
       const jumlahHasilProduksi = this.myForm.get('jumlahHasilProduksi')?.value;
       const satuanHasilProduksi = this.myForm.get('satuanHasilProduksi')?.value;
-  
+
       if (jumlahHasilProduksi && satuanHasilProduksi) {
         const totalHasilProduksi = jumlahHasilProduksi * satuanHasilProduksi;
         this.myForm.patchValue({
@@ -575,7 +575,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
 
     addJumlahBahanBaku($event:any): void {
         this.myForm.patchValue({
-          totalBahanBaku: $event  
+          totalBahanBaku: $event
         });
     }
 
@@ -590,7 +590,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
     onShowModalBranch() {
       this.isShowModalBranch= true;
     }
-    
+
     specialCharValidator(control: AbstractControl): ValidationErrors | null {
         const specialCharRegex = /[^a-zA-Z0-9&\-().\s]/;
         const value = control.value;
@@ -604,7 +604,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
         const input = event.target as HTMLTextAreaElement;
         const originalValue = input.value;
         const filteredValue = originalValue.replace(/[^a-zA-Z0-9\s\-]/g, '');
-        
+
         if (originalValue !== filteredValue) {
           input.value = filteredValue;
           this.myForm.get('keterangan')?.setValue(filteredValue);
@@ -615,7 +615,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
       //   const input = event.target as HTMLTextAreaElement;
       //   const originalValue = input.value;
       //   const filteredValue = originalValue.replace(/[^a-zA-Z0-9\-]/g, '');
-        
+
       //   if (originalValue !== filteredValue) {
       //     input.value = filteredValue;
       //     this.myForm.get('noReturnPengirim')?.setValue(filteredValue);
@@ -630,7 +630,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
           confirmButtonText: 'OK'
         });
       }
-      
+
       closeModal() {
         this.isShowModalReport = false;
         this.disabledPrintButton = false;

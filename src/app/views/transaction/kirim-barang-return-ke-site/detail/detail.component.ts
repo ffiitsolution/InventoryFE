@@ -43,8 +43,8 @@ export class DetailKirimBarangReturnKeSiteComponent
 
   dtTrigger: Subject<any> = new Subject();
   dtTriggerExpired: Subject<any> = new Subject();
-  dtOptions: DataTables.Settings = {};
-  dtOptionsExpired: DataTables.Settings | undefined;
+  dtOptions: any = {};
+  dtOptionsExpired: any | undefined;
   dtColumns: any = [];
 
   isShowModal = false;
@@ -124,7 +124,7 @@ export class DetailKirimBarangReturnKeSiteComponent
       info: true,
       searchDelay: 1000,
       order: [[1, 'asc']],
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const request = {
@@ -181,24 +181,24 @@ export class DetailKirimBarangReturnKeSiteComponent
         { data: 'namaBarang', title: 'Nama Barang' },
         {
           data: 'konversi', title: 'Konversi',
-          render: (data, type, row) => `${(parseFloat(data) || 0).toFixed(2)} ${row.satuanKecil}`
+            render: (data: any, _: any, row: any) => `${(parseFloat(data) || 0).toFixed(2)} ${row.satuanKecil}`
         },
         {
           data: 'qtyBesar', title: 'Quantity Besar',
-          render: (data, type, row) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanBesar}`
+            render: (data: any, _: any, row: any) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanBesar}`
         },
         {
           data: 'qtyKecil', title: 'Quantity Kecil',
-          render: (data, type, row) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanKecil}`
+            render: (data: any, _: any, row: any) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanKecil}`
         },
         {
           data: 'totalQty', title: 'Total Quantity',
-          render: (data, type, row) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanKecil}`
+            render: (data: any, _: any, row: any) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanKecil}`
         },
         {
           title: 'Cek Quantity Expired',
           orderable: false,
-          render: (data, type, row, meta) => {
+          render: (data: any, type: any, row: any, meta: any) => {
             return `
               <div class="d-flex justify-content-start w-100">
                 <button class="btn btn-sm btn-outline-success w-100 action-print">
@@ -206,15 +206,15 @@ export class DetailKirimBarangReturnKeSiteComponent
                 </button>
               </div>`;
           },
-        }        
+        }
       ],
       rowCallback: (row: Node, data: any, index: number) => {
         $('.action-print', row).on('click', () => {
           const rowData = data as any; // 👈 cast data biar bisa akses properti
-      
+
           this.selectedRowCetak = rowData;
           const kodeBarang = rowData?.kodeBarang;
-      
+
           if (kodeBarang) {
             this.formExpiredData = {
               kodeBarang: `${rowData.kodeBarang} `,
@@ -224,27 +224,27 @@ export class DetailKirimBarangReturnKeSiteComponent
               qtyKecil: `${Math.abs(rowData.qtyKecil).toFixed(2)}`,
               totalQty: `${Math.abs(rowData.totalQty).toFixed(2)}`,
               totalExpiredQty: `${Math.abs(rowData.totalQty).toFixed(2)} ${rowData.satuanKecil}`,
-            };      
+            };
             this.renderDataTables(kodeBarang);
             this.isShowModal = true;
           }
         });
         return row;
-      }                  
+      }
     };
   }
 
   renderDataTables(kodeBarang?: string): void {
     console.log('🔄 Memulai renderDataTables dengan kodeBarang:', kodeBarang);
-  
+
     if (!kodeBarang) {
       console.warn('❌ kodeBarang tidak valid saat renderDataTables');
       return;
     }
-  
+
     // Kosongkan dulu dtOptionsExpired agar *ngIf bisa unmount <table>
     this.dtOptionsExpired = undefined;
-  
+
     // Delay agar Angular sempat hapus elemen <table> dari DOM
     setTimeout(() => {
       // Atur ulang konfigurasi DataTable expired
@@ -260,18 +260,18 @@ export class DetailKirimBarangReturnKeSiteComponent
         drawCallback: () => {
           this.selectedRowData = undefined;
         },
-        ajax: (dataTablesParameters: any, callback) => {
+        ajax: (dataTablesParameters: any, callback:any) => {
           this.page.start = dataTablesParameters.start;
           this.page.length = dataTablesParameters.length;
-  
+
           const request = {
             ...dataTablesParameters,
             nomorTransaksi: this.selectedProduction.nomorTransaksi,
             kodeBarang: kodeBarang,
           };
-  
+
           console.log('📦 Request expired table:', request);
-  
+
           this.dataService
             .postData(`${this.config.BASE_URL}/api/expired/dt`, request)
             .subscribe((resp: any) => {
@@ -279,10 +279,10 @@ export class DetailKirimBarangReturnKeSiteComponent
                 ...item,
                 dtIndex: this.page.start + i + 1,
               }));
-  
+
               this.page.recordsTotal = resp.recordsTotal;
               this.page.recordsFiltered = resp.recordsFiltered;
-  
+
               callback({
                 recordsTotal: resp.recordsTotal,
                 recordsFiltered: resp.recordsFiltered,
@@ -291,32 +291,32 @@ export class DetailKirimBarangReturnKeSiteComponent
             });
         },
         columns: [
-          { data: 'tglExpired', title: 'Tgl. Expired', 
-            render: (data) => moment(data).format('DD/MM/YYYY') 
+          { data: 'tglExpired', title: 'Tgl. Expired',
+            render: (data:any) => moment(data).format('DD/MM/YYYY')
           },
           { data: 'ketTglExpired', title: 'Keterangan Tanggal' },
           {
             data: 'qtyBesar',
             title: 'Qty Besar',
-            render: (data, _, row) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanBesar}`,
+            render: (data: any, _: any, row: any) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanBesar}`,
           },
           {
             data: 'qtyKecil',
             title: 'Qty Kecil',
-            render: (data, _, row) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanKecil}`,
+            render: (data: any, _: any, row: any) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanKecil}`,
           },
           {
             data: 'totalQty',
             title: 'Total Qty',
-            render: (data, _, row) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanKecil}`,
+            render: (data: any, _: any, row: any) => `${(Math.abs(parseFloat(data)) || 0).toFixed(2)} ${row.satuanKecil}`,
           },
-        ]        
+        ]
       };
-  
+
       // Reset & Trigger datatable expired dengan delay DOM
       this.dtTriggerExpired.unsubscribe();
       this.dtTriggerExpired = new Subject();
-  
+
       // Delay agar *ngIf benar-benar selesai render ulang
       setTimeout(() => {
         this.dtTriggerExpired.next(null);
@@ -324,15 +324,15 @@ export class DetailKirimBarangReturnKeSiteComponent
         console.log('✅ Expired table ditampilkan, kodeBarang:', kodeBarang);
       }, 200); // Delay ini krusial
     });
-  }  
-  
+  }
+
   closeModal(event: Event): void {
     // Hapus fokus dari tombol (prevent aria-hidden warning)
     (event.target as HTMLElement).blur();
     this.isShowModal = false;
   }
 
-  
+
   reloadTable(): void {
     setTimeout(() => {
       this.datatableElement?.dtInstance.then((dt) => dt.ajax.reload());

@@ -59,7 +59,7 @@ export class DisplayDataBarangReturComponent
   public loading: boolean = false;
   page: number = 1;
   isShowModal: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   selectedRow: any = {};
   pageModal = new Page();
   dataUser: any = {};
@@ -273,7 +273,7 @@ export class DisplayDataBarangReturComponent
       lengthMenu: [5, 10, 25, 50, 100],
       pageLength: 5,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
 
         this.pageModal.start = dataTablesParameters.start;
         this.pageModal.length = dataTablesParameters.length;
@@ -316,7 +316,7 @@ export class DisplayDataBarangReturComponent
 
         {
           title: 'Action',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             return `<button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>`;
           },
         }

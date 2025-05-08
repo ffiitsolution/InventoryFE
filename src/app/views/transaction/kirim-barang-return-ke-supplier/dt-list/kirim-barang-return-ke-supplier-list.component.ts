@@ -21,9 +21,9 @@ export class KirimBarangReturnKeSupplierListComponent implements OnInit {
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
     protected config = AppConfig.settings.apiServer;
-  
+
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
   dtColumns: any = [];
@@ -64,7 +64,7 @@ export class KirimBarangReturnKeSupplierListComponent implements OnInit {
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -101,18 +101,18 @@ export class KirimBarangReturnKeSupplierListComponent implements OnInit {
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { 
-          data: 'tglTransaksi', 
+        {
+          data: 'tglTransaksi',
           title: 'Tanggal Transaksi',
           render: (data: any) => {
             return data ? moment(data).format('DD/MM/YYYY') : '';
           }
         },
-    
+
         { data: 'nomorTransaksi', title: 'No. Transaksi' },
-    
-        { 
-          data: null, 
+
+        {
+          data: null,
           title: 'Supplier Tujuan',
           render: (data: any) => {
             if (data?.kodeTujuan && data?.namaTujuan) {
@@ -121,29 +121,29 @@ export class KirimBarangReturnKeSupplierListComponent implements OnInit {
             return data?.namaTujuan || '';
           }
         },
-    
+
         { data: 'keterangan', title: 'Keterangan' },
-    
+
         { data: 'userCreate', title: 'User Proses', searchable: true },
-    
-        { 
-          data: 'dateCreate', 
-          title: 'Tanggal', 
+
+        {
+          data: 'dateCreate',
+          title: 'Tanggal',
           searchable: true,
           render: (data: any) => {
             return data ? moment(data).format('DD/MM/YYYY') : '';
           }
         },
-    
-        { 
-          data: 'timeCreate', 
-          title: 'Jam', 
+
+        {
+          data: 'timeCreate',
+          title: 'Jam',
           searchable: true,
           render: (data: any) => {
             return data ? moment(data, 'HH:mm:ss').format('HH:mm:ss') : '';
           }
         },
-        
+
         {
           data: 'namaPosting',
           title: 'Status Transaksi',
@@ -157,7 +157,7 @@ export class KirimBarangReturnKeSupplierListComponent implements OnInit {
           render: () => {
             return `<div class="btn-group" role="group" aria-label="Action">
                 <button class="btn btn-sm action-view btn-outline-primary btn-60">${this.buttonCaptionView}</button>
-                <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>           
+                <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>
               </div>`;
           },
         },
@@ -168,7 +168,7 @@ export class KirimBarangReturnKeSupplierListComponent implements OnInit {
         [7, 'desc'],
         [2, 'desc'],
         [1, 'desc'],
-      
+
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
@@ -206,7 +206,7 @@ export class KirimBarangReturnKeSupplierListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-  
+
   }
 
   toggleFilter(): void {
@@ -271,7 +271,7 @@ export class KirimBarangReturnKeSupplierListComponent implements OnInit {
   }
 
   onFilterPressed(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
     console.log('filter pressed');
