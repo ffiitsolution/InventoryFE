@@ -40,7 +40,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
 
   orders: any[] = [];
   dtColumns: any = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -100,7 +100,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
   pageLength: 10,
   lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
         drawCallback: () => {},
-        ajax: (dataTablesParameters: any, callback) => {
+        ajax: (dataTablesParameters: any, callback:any) => {
           this.page.start = dataTablesParameters.start;
           this.page.length = dataTablesParameters.length;
           const {
@@ -181,28 +181,28 @@ export class DetailBarangUntukPemakaianSendiriComponent
         //   {
         //     data: 'KONVERSI',
         //     title: 'Konversi',
-        //     render: function (data, type, row) {
+        //     render: function (data:any, type:any, row:any) {
         //       return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_KECIL;  // Menambahkan .00
         //     }
         //   },
         //   {
         //     data: 'ABS_EXPIRED_QTY_BESAR',
         //     title: 'Quantity Besar',
-        //     render: function (data, type, row) {
+        //     render: function (data:any, type:any, row:any) {
         //       return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_BESAR;  // Menambahkan .00
         //     }
         //   },
         //   {
         //     data: 'QTY_KECIL',
         //     title: 'Quantity Kecil',
-        //     render: function (data, type, row) {
+        //     render: function (data:any, type:any, row:any) {
         //       return parseFloat(data).toFixed(2) + ' ' + row.SATUAN_KECIL;  // Menambahkan .00
         //     }
         //   },
         //   {
         //     data: 'ABS_TOTAL_QTY_WE',
         //     title: 'Total Quantity',
-        //     render: function (data, type, row, meta) {
+        //     render: function (data: any, type: any, row: any, meta: any) {
         //       const rowsWithSameKodeBarang = meta.settings.data?.filter((item: any) => item.KODE_BARANG === row.KODE_BARANG) || [];
 
         //       if (rowsWithSameKodeBarang.length > 1) {
@@ -213,10 +213,10 @@ export class DetailBarangUntukPemakaianSendiriComponent
         //         return totalQtyWh.toFixed(2) + ' ' + row.SATUAN_KECIL;
         //       }
         //     }
-        //   }, 
+        //   },
         //   {
         //     title: 'Cek Quantity Expired',
-        //     render: (data, type, row) => {
+        //     render: (data:any, type:any, row:any) => {
         //       if (row.FLAG_EXPIRED === 'Y') {
         //         return `<div class="d-flex justify-content-start">
         //               <button class="btn btn-sm action-view btn-outline-success w-50"><i class="fa fa-check pe-1"></i> Cek</button>
@@ -225,7 +225,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
         //         return '';
         //       }
         //     },
-        //   },    
+        //   },
         // ],
         columns: [
           { data: 'kodeBarang', title: 'Kode Barang' },
@@ -233,28 +233,28 @@ export class DetailBarangUntukPemakaianSendiriComponent
           {
             data: 'konversi',
             title: 'Konversi',
-            render: function (data, type, row) {
+            render: function (data:any, type:any, row:any) {
               return parseFloat(data).toFixed(2) + ' ' + row.satuanKecil;  // Menambahkan .00
             }
           },
           {
             data: 'qtyBesar',
             title: 'Quantity Besar',
-            render: function (data, type, row) {
+            render: function (data:any, type:any, row:any) {
               return parseFloat(data).toFixed(2) + ' ' + row.satuanBesar;  // Menambahkan .00
             }
           },
           {
             data: 'qtyKecil',
             title: 'Quantity Kecil',
-            render: function (data, type, row) {
+            render: function (data:any, type:any, row:any) {
               return parseFloat(data).toFixed(2) + ' ' + row.satuanKecil;  // Menambahkan .00
             }
           },
           {
             data: 'totalQtyExpired',
             title: 'Total Quantity',
-            render: function (data, type, row, meta) {
+            render: function (data: any, type: any, row: any, meta: any) {
               const rowsWithSameKodeBarang = meta.settings.data?.filter((item: any) => item.KODE_BARANG === row.KODE_BARANG) || [];
 
               if (rowsWithSameKodeBarang.length > 1) {
@@ -265,10 +265,10 @@ export class DetailBarangUntukPemakaianSendiriComponent
                 return totalQtyWh.toFixed(2) + ' ' + row.satuanKecil;
               }
             }
-          }, 
+          },
           {
             title: 'Cek Quantity Expired',
-            render: (data, type, row) => {
+            render: (data:any, type:any, row:any) => {
               if (row.flagExpired === 'Y') {
                 return `<div class="d-flex justify-content-start">
                       <button class="btn btn-sm action-view btn-outline-success w-50"><i class="fa fa-check pe-1"></i> Cek</button>
@@ -277,7 +277,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
                 return '';
               }
             },
-          },    
+          },
         ],
         searchDelay: 1000,
         order: [[1, 'asc']],
@@ -292,7 +292,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
   }
   reloadTable() {
     setTimeout(() => {
-      this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      this.datatableElement?.dtInstance.then((dtInstance: any) => {
         dtInstance.ajax.reload();
       });
     }, DEFAULT_DELAY_TABLE);
@@ -317,12 +317,12 @@ export class DetailBarangUntukPemakaianSendiriComponent
         kodeBarang: data.kodeBarang,
         tipeTransaksi: '8',
       };
-  
+
       this.appService
         .getExpiredPemakaian(payload)
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe({
-  
+
           next: (res) => {
             if (res.item) {
               this.listDataExpired = res.item;
@@ -335,7 +335,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
           },
         });
     }
-  
+
   dtPageChange(event: any) {}
 
   ngAfterViewInit(): void {
@@ -343,7 +343,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }
@@ -472,7 +472,7 @@ export class DetailBarangUntukPemakaianSendiriComponent
           }
         );
     }
-    
+
     getTotalQty(): number {
       return this.listDataExpired.reduce((sum, data) => {
         return sum + Math.abs(Number(data.TOTAL_QTY));

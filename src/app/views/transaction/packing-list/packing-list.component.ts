@@ -33,7 +33,7 @@ export class PackagingListComponent
     | undefined;
 
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
 
@@ -72,7 +72,7 @@ export class PackagingListComponent
       processing: true,
       lengthMenu: [5, 10, 25, 50, 100],
       ordering: true,
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.getProsesDoBalik(dataTablesParameters, callback);
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
@@ -94,12 +94,12 @@ export class PackagingListComponent
         {
           data: 'tglTransaksi',
           title: 'Tanggal Kirim',
-          render: (data, type, row) => this.g.transformDate(data),
+            render: (data: any, _: any, row: any) => this.g.transformDate(data),
         },
         {
           data: 'tglPesanan',
           title: 'Tanggal Pesanan',
-          render: (data, type, row) => this.g.transformDate(data),
+            render: (data: any, _: any, row: any) => this.g.transformDate(data),
         },
         { data: 'nomorPesanan', title: 'Nomor Pesanan' },
         { data: 'kodeTujuan', title: 'Kode Tujuan' },
@@ -177,7 +177,7 @@ export class PackagingListComponent
   dtPageChange(event: any): void { }
 
   search(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
@@ -245,7 +245,7 @@ export class PackagingListComponent
   }
 
   onFilterPressed() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }

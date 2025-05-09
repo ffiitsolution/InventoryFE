@@ -33,7 +33,7 @@ export class AddResepComponent implements OnInit, OnDestroy {
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   isShowModal: boolean = false;
   bsConfig: Partial<BsDatepickerConfig>;
   page = new Page();
@@ -148,7 +148,7 @@ export class AddResepComponent implements OnInit, OnDestroy {
   //     drawCallback: (drawCallback) => {
   //       this.selectedRowData = undefined;
   //     },
-  //     ajax: (dataTablesParameters: any, callback) => {
+  //     ajax: (dataTablesParameters: any, callback:any) => {
   //       this.page.start = dataTablesParameters.start;
   //       this.page.length = dataTablesParameters.length;
   //       const params = {

@@ -53,10 +53,10 @@ export class AddPenerimaanBrgBksComponent
   @ViewChild(DataTableDirective, { static: false }) dtElement2: DataTableDirective;
 
   @ViewChild(DataTableDirective, { static: false }) dtElementRetur: DataTableDirective;
-  dtTriggerRetur: Subject<DataTables.Settings> = new Subject<DataTables.Settings>();
-  dtTrigger: Subject<DataTables.Settings> = new Subject<DataTables.Settings>();
-  dtOptions: DataTables.Settings = {};
-  dtOptionsRetur: DataTables.Settings = {};
+  dtTriggerRetur: Subject<any> = new Subject<any>();
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions: any = {};
+  dtOptionsRetur: any = {};
   isShowModal: boolean = false;
   isShowModalRetur: boolean = false;
   bsConfig: Partial<BsDatepickerConfig>;
@@ -154,7 +154,7 @@ export class AddPenerimaanBrgBksComponent
   }
 
   ngAfterViewInit(): void {
-   
+
     this.dtTriggerRetur.next(this.dtOptionsRetur);
     console.log(this.dtElementRetur?.dtInstance,'instance')
   }
@@ -190,7 +190,7 @@ export class AddPenerimaanBrgBksComponent
   }
 
   actionBtnClickRetur(data: any = null) {
-   
+
     const params = {
       noDoc:  data.returnNo,
     };
@@ -212,7 +212,7 @@ export class AddPenerimaanBrgBksComponent
                     .pipe(takeUntil(this.ngUnsubscribe))
                     .subscribe({
                       next: (res2) => {
-                      
+
                         const currentUrl = this.router.url;
                         this.router.navigateByUrl('/empty', { skipLocationChange: true }).then(() => {
                           this.router.navigate([currentUrl]);
@@ -225,8 +225,8 @@ export class AddPenerimaanBrgBksComponent
             this.mapReturData(data);
           }
       });
-      
-  
+
+
   }
 
   renderDataTables(): void {
@@ -245,10 +245,10 @@ export class AddPenerimaanBrgBksComponent
         [8, 10], // Available page sizes
         ['8', '10'], // Displayed page size labels
       ],
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -286,7 +286,7 @@ export class AddPenerimaanBrgBksComponent
           title: 'Alamat',
           searchable: false,
           width: '200px',
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             return `${row.alamat1 || ''}, ${row.alamat2 || ''}`.trim();
           },
         },
@@ -295,7 +295,7 @@ export class AddPenerimaanBrgBksComponent
           data: 'statusAktif',
           title: 'Status',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             if (data === 'A') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
@@ -304,7 +304,7 @@ export class AddPenerimaanBrgBksComponent
         },
         {
           title: 'Action',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             if (row.statusAktif === 'A') {
               return `
                 <div class="btn-group" role="group" aria-label="Action">
@@ -431,10 +431,10 @@ export class AddPenerimaanBrgBksComponent
         [8, 10], // Available page sizes
         ['8', '10'], // Displayed page size labels
       ],
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParametersRetur: any, callback) => {
+      ajax: (dataTablesParametersRetur: any, callback: any) => {
         this.page.start = dataTablesParametersRetur.start;
         this.page.length = dataTablesParametersRetur.length;
         const params = {
@@ -503,7 +503,7 @@ export class AddPenerimaanBrgBksComponent
         {
           data: 'dateReturn',
           title: 'Tgl Retur',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             return this.globalService.formatStrDateMMM(data);
           },
         },
@@ -513,7 +513,7 @@ export class AddPenerimaanBrgBksComponent
           data: 'statusAktif',
           title: 'Status',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             if (data === 'Aktif') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
@@ -522,7 +522,7 @@ export class AddPenerimaanBrgBksComponent
         },
         {
           title: 'Action',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             if (row.statusAktif === 'Aktif') {
               return `
                   <div class="btn-group" role="group" aria-label="Action">
@@ -595,13 +595,13 @@ export class AddPenerimaanBrgBksComponent
     // Reinitialize DataTable when data is updated
     console.log(this.dtElementRetur);
     if (this.dtElementRetur?.dtInstance) {
-      this.dtElementRetur.dtInstance.then((dtInstance: DataTables.Api) => {
+      this.dtElementRetur.dtInstance.then((dtInstance: any) => {
         console.log(dtInstance,'2');
         if (dtInstance) {
           dtInstance.clear();
           dtInstance.destroy();
         }
-     
+
         setTimeout(() => {
           this.renderDataTablesRetur();
           this.dtTriggerRetur.next(this.dtOptionsRetur);
@@ -610,7 +610,7 @@ export class AddPenerimaanBrgBksComponent
     } else {
       console.log('3');
       // If dtElementRetur is not available, just initialize it
-   
+
       setTimeout(() => {
         this.renderDataTablesRetur();
         this.dtTriggerRetur.next(this.dtOptionsRetur);
@@ -620,7 +620,7 @@ export class AddPenerimaanBrgBksComponent
   // getDataOnline(): void {
   //   // Get all DataTables
   //   const allTables = $.fn.dataTable.tables({ visible: true, api: true });
-  
+
   //   // If there are DataTables, we can loop over each table and destroy them
   //   if (allTables.length > 0) {
   //     // Loop through each table instance and destroy
@@ -632,15 +632,15 @@ export class AddPenerimaanBrgBksComponent
   //       }
   //     }
   //   }
-  
+
   //   // Reinitialize DataTable after destruction
   //   this.renderDataTablesRetur();  // Initialize or reinitialize the table
   //   setTimeout(() => {
   //     this.dtTriggerRetur.next(this.dtOptionsRetur);  // Trigger the data update
   //   }, 100); // Small delay to ensure Angular fully renders
   // }
-  
-  
-  
-  
+
+
+
+
 }

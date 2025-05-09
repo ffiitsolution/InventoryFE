@@ -31,7 +31,7 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
   data: any;
   loadingIndicator = true;
   orders: any[] = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -58,10 +58,10 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         dataTablesParameters['kodeGudang'] =
@@ -78,7 +78,7 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
               const finalData = {
                 ...rest,
                 dtIndex: this.page.start + index + 1,
-                statusProses: item.statusProses === 'P' ? 'PROSES' : 'BELUM',
+                statusProses: item.statusProses === 'S' ? 'SUDAH' : 'BELUM',
                 tanggalSo: this.g.transformDate(item.tanggalSo),
                 dateCreate: this.g.transformDate(item.dateCreate),
                 dateProses: this.g.transformDate(item.dateProses),
@@ -122,7 +122,7 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
           render: (data: any, type: any, row: any) => {
             let html =
               '<div class="btn-group" role="group" aria-label="Action">';
-            if (row.statusProses !== 'PROSES') {
+            if (row.statusProses !== 'SUDAH') {
               html += '<button class="btn btn-sm action-edit btn-info btn-60">';
               html += this.buttonCaptionEdit;
               html += '</button>';
@@ -172,7 +172,7 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }

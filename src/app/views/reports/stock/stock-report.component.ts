@@ -19,6 +19,9 @@ import { ToastrService } from 'ngx-toastr';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import moment from 'moment';
 import { first, last } from 'rxjs';
+import { DEFAULT_DATE_RANGE_RECEIVING_ORDER } from '../../../../constants';
+import { Subject, takeUntil } from 'rxjs';
+import { Page } from '../../../model/page';
 
 @Component({
   selector: 'app-stock-report',
@@ -51,6 +54,26 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
   startOfMonth : any;
   endOfMonth : any;
   paramTglTransaksi: any =new Date();
+
+  isShowModalBarang: boolean = false;
+  kodeBarang: string = '';
+  namaBarang: string = '';
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
+
+  dtOptions: any = {};
+  selectedRowData: any;
+  page = new Page();
+
+
+  public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+  currentDate: Date = new Date();
+  startDateFilter: Date = new Date(
+    this.currentDate.setDate(
+      this.currentDate.getDate() - DEFAULT_DATE_RANGE_RECEIVING_ORDER
+    )
+  );
+  dateRangeFilter: any = [this.startDateFilter, new Date()];
+
   constructor(
     private service: AppService,
     private g: GlobalService,
@@ -58,7 +81,8 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     private datePipe: DatePipe,
     private router: Router,
     private route: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    
   ) {
     
     this.startOfMonth = moment().startOf('month').format('DD MMMM YYYY');
@@ -94,9 +118,16 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     if (['Master Cabang'].includes(this.currentReport)) {
       this.getListParam('listRegion');
     }
+    if (['Transaksi Detail Barang Expired'].includes(this.currentReport)) {
+      this.renderDataTables()
+    }
+  
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 
   ngAfterViewInit(): void {}
 
@@ -243,4 +274,149 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       this.toastr.success('File sudah terunduh');
     } else this.toastr.error('File tidak dapat terunduh');
   }
+
+  onShowModalBarang() {
+    this.isShowModalBarang = true;
+  }
+
+  handleEnter(event: any) {
+    event.preventDefault();
+
+    let kodeBarang = this.kodeBarang?.trim();
+    if (kodeBarang !== '') {
+      this.getProductRow(kodeBarang);
+    }
+  }
+
+    getProductRow(kodeBarang: string) {
+
+      if (kodeBarang !== '') {
+   
+        this.service.getProductResep(kodeBarang)
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe({
+          next: (res:any) => {
+            if (res) {
+              this.namaBarang = res.namaBarang;
+            }
+          },
+          error: (err:any) => {
+            // Handle error case and show error toast
+            this.toastr.error('Kode barang tidak ditemukan!');
+          }
+        });
+      }
+    }
+
+    
+  renderDataTables(): void {
+    this.dtOptions = {
+      language:
+        this.translation.getCurrentLanguage() == 'id' ? this.translation.idDatatable : {},
+      processing: true,
+      serverSide: true,
+      autoWidth: true,
+      info: true,
+      pageLength:5,
+      lengthMenu: [  // Provide page size options
+        [8, 10],   // Available page sizes
+        ['8', '10']  // Displayed page size labels
+      ],
+      order: [
+        [6, 'asc']      ],
+      drawCallback: (drawCallback:any) => {
+        this.selectedRowData = undefined;
+      },
+      ajax: (dataTablesParameters: any, callback:any) => {
+        this.page.start = dataTablesParameters.start;
+        this.page.length = dataTablesParameters.length;
+        const params = {
+          ...dataTablesParameters,
+          kodeGudang: this.g.getUserLocationCode(),
+        };
+        this.service.getBahanBakuList(params)
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe((resp: any) => {
+            const mappedData = resp.data.map((item: any, index: number) => {
+              // hapus rn dari data
+              const { rn, ...rest } = item;
+              const finalData = {
+                ...rest,
+                dtIndex: this.page.start + index + 1,
+              };
+              return finalData;
+            });
+            this.page.recordsTotal = resp.recordsTotal;
+            this.page.recordsFiltered = resp.recordsFiltered;
+            callback({
+              recordsTotal: resp.recordsTotal,
+              recordsFiltered: resp.recordsFiltered,
+              data: mappedData,
+            });
+          });
+        },
+        columns: [
+          { data: 'kodeBarang', title: 'Kode' },
+          { data: 'namaBarang', title: 'Nama Barang' },
+          {
+            data: 'konversi',
+            title: 'Konversi',
+             render:function(data:any, type:any, row:any) {
+              return Number(data).toFixed(2); // Ensures two decimal places
+            }
+          },
+          { data: 'satuanBesar', title: 'Satuan Besar', },
+          { data: 'satuanKecil', title: 'Satuan Kecil' },
+          { data: 'defaultGudang', title: 'Default Gudang', },
+          {
+            data: 'status',
+            title: 'Status',
+            searchable: false,
+            render: (data:any) => {
+              if (data === 'Aktif') {
+                return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+              }
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
+            },
+          },
+          {
+            title: 'Action',
+            orderable: false,
+            render: (data:any, type:any, row:any) => {
+              const disabled = row.status !== 'Aktif' ? 'disabled' : '';
+              return `<button class="btn btn-sm action-select btn-info btn-80 text-white" ${disabled}>Pilih</button>`;
+            },
+          },
+
+        ],
+        searchDelay: 1000,
+        rowCallback: (row: Node, data: any[] | Object, index: number) => {
+          $('.action-select', row).on('click', () =>
+            this.onPilihBarang(data)
+          );
+
+          $('td', row).on('click', () => {
+            $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+            if (this.selectedRowData !== data) {
+              this.selectedRowData = data;
+              $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+            } else {
+              this.selectedRowData = undefined;
+            }
+          });
+
+
+          return row;
+
+        },
+      };
+    }
+
+    onPilihBarang(data: any) {
+      let errorMessage;
+      this.isShowModalBarang = false;
+      this.kodeBarang = data.kodeBarang;
+      this.namaBarang = data.namaBarang;
+    }
+
 }

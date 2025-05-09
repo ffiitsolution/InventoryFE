@@ -29,6 +29,7 @@ import { AllAppInfoComponent } from './index/index.component';
 import { ModulesComponent } from './modules/modules.component';
 import { ReleaseNoteComponent } from './release-note/release-note.component';
 import { AboutSoftwareComponent } from './about-software/about-software.component';
+// import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -55,6 +56,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SelectDropDownModule,
     ListGroupModule,
     TabsModule,
+    // PdfViewerModule,
   ],
   declarations: [
     AllAppInfoComponent,

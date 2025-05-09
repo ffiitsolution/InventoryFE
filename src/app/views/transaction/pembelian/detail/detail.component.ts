@@ -31,7 +31,7 @@ export class DetailPembelianComponent
 
   orders: any[] = [];
   dtColumns: any = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -72,7 +72,7 @@ export class DetailPembelianComponent
         autoWidth: true,
         info: true,
         drawCallback: () => { },
-        ajax: (dataTablesParameters: any, callback) => {
+        ajax: (dataTablesParameters: any, callback:any) => {
           this.page.start = dataTablesParameters.start;
           this.page.length = dataTablesParameters.length;
           const params = {
@@ -131,27 +131,27 @@ export class DetailPembelianComponent
           { data: 'namaBarang', title: 'Nama Barang' },
           {
             data: 'konversi', title: 'Konversi',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
+            render: (data:any, type:any, row:any) => `${data} ${row.satuanKecil}`
           },
           {
             data: 'qtyBesar', title: 'Qty Besar',
-            render: (data, type, row) => `${this.g.formatToDecimal(data)} ${row.satuanBesar}`
+            render: (data:any, type:any, row:any) => `${this.g.formatToDecimal(data)} ${row.satuanBesar}`
           },
           {
             data: 'qtyKecil', title: 'Qty Kecil',
-            render: (data, type, row) => `${this.g.formatToDecimal(data)} ${row.satuanKecil}`
+            render: (data:any, type:any, row:any) => `${this.g.formatToDecimal(data)} ${row.satuanKecil}`
           },
           {
             data: 'totalQty', title: 'Total Qty',
-            render: (data, type, row) => `${this.g.formatToDecimal(data)} ${row.satuanKecil}`
+            render: (data:any, type:any, row:any) => `${this.g.formatToDecimal(data)} ${row.satuanKecil}`
           },
           {
             data: 'qtyKgs', title: 'Total Berat(KGS)',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
+            render: (data:any, type:any, row:any) => `${data} ${row.satuanKecil}`
           },
           {
             data: 'jenisItem', title: 'Jenis',
-            render: (data) => {
+            render: (data:any) => {
               if (data === '1') {
                 return 'Fresh';
               } else if (data === '2') {
@@ -176,7 +176,7 @@ export class DetailPembelianComponent
   }
   reloadTable() {
     setTimeout(() => {
-      this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      this.datatableElement?.dtInstance.then((dtInstance: any) => {
         dtInstance.ajax.reload();
       });
     }, DEFAULT_DELAY_TABLE);
@@ -202,7 +202,7 @@ export class DetailPembelianComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }

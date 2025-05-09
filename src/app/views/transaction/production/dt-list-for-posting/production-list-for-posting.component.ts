@@ -30,7 +30,7 @@ export class ProductionListForPostingComponent implements OnInit {
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   protected config = AppConfig.settings.apiServer;
 
   page = new Page();
@@ -64,7 +64,7 @@ export class ProductionListForPostingComponent implements OnInit {
   endTime: string = '18:00';
   loadingSimpan: boolean = false;
   loadingDetail: { [key: number]: boolean } = {};
-  dtTrigger: Subject<DataTables.Settings> = new Subject<DataTables.Settings>();
+  dtTrigger: Subject<any> = new Subject<any>();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   listSummaryData: any[] = [];
@@ -244,7 +244,7 @@ export class ProductionListForPostingComponent implements OnInit {
                 </button>
                 <button class="btn btn-sm action-print btn-outline-primary btn-60">
                   ${this.buttonCaptionPrint}
-                </button>           
+                </button>
               </div>`;
           },
         },
@@ -362,7 +362,7 @@ export class ProductionListForPostingComponent implements OnInit {
   }
 
   onFilterPressed(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
     console.log('filter pressed');
@@ -434,7 +434,7 @@ export class ProductionListForPostingComponent implements OnInit {
   }
 
   getDataOnline(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.dtElement.dtInstance.then((dtInstance: any) => {
       dtInstance.destroy(); // destroy the old DataTable
       this.renderDatatable();
       this.dtTrigger.next(this.dtOptions);
@@ -471,12 +471,12 @@ export class ProductionListForPostingComponent implements OnInit {
 
     onPostingData() {
        this.loadingPosting = true;
-          
+
         const requestBody = {
           kodeGudang: this.g.getUserLocationCode(),
           nomorTransaksi: this.listNotrans,
         };
-    
+
         Swal.fire({
           ...this.g.componentKonfirmasiPosting,
           showConfirmButton: false,
@@ -488,7 +488,7 @@ export class ProductionListForPostingComponent implements OnInit {
           didOpen: () => {
             const submitBtn = document.getElementById('btn-submit');
             const cancelBtn = document.getElementById('btn-cancel');
-    
+
             submitBtn?.addEventListener('click', () => {
               this.appService.postingProduction(requestBody).subscribe({
                 next: (res: any) => {
@@ -507,12 +507,12 @@ export class ProductionListForPostingComponent implements OnInit {
                 error: (err: any) => {
                   console.log('An error occurred while Kirim Data.');
                   this.loadingPosting = false;
-                
+
                   Swal.close();
                 },
               });
             });
-    
+
             cancelBtn?.addEventListener('click', () => {
               Swal.close();
               this.toastr.info('Posting dibatalkan');

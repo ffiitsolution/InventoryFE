@@ -8,7 +8,7 @@
         <div class="col col-md-8">
           <div class="menu-purpose col-sm-12 d-flex justify-content-end align-items-center">
             <span>
-              Fitur ini digunakan untuk melihat log aktivitas aplikasi            
+              Fitur ini digunakan untuk melihat log aktivitas aplikasi
             </span>
           </div>
         </div>
@@ -73,8 +73,14 @@
     <c-card-header>
       <div class="row">
         <div class="col"><strong>DETAIL</strong></div>
-        <div class="col text-end"><button (click)="exportToExcel()"
-            class="btn btn-sm btn-outline-secondary">Export</button></div>
+        <div class="col d-flex justify-content-end">
+          <button (click)="exportToExcel()" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1"
+            style="transition: 0.3s;">
+            <i class="fa fa-file-excel-o"></i>
+            <span>Export to Excel</span>
+          </button>
+        </div>
+
       </div>
     </c-card-header>
     <c-card-body>
@@ -94,10 +100,24 @@
               <th>URL</th>
             </tr>
             <tr>
+
               <th>
-                <button type="button" title="Reset filter" class="btn btn-sm btn-secondary" (click)="resetFilters()">
-                  <i class="fa fa-trash"></i>
+                <!-- <button type="button" title="Reset filter" class="btn btn-sm btn-secondary" (click)="resetFilters()">
+                  <i class="fa fa-filter icon-gap"></i>
+                </button> -->
+
+                <button type="button" title="Reset filter" class="btn btn-outline-dark position-relative"
+                  (click)="resetFilters()">
+                  <i class="fa fa-filter" aria-hidden="true" style="font-size: 18px;"></i>
+                  <i class="fa fa-times text-danger" style="
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        font-size: 10px;
+      ">
+                  </i>
                 </button>
+
               </th>
               <th>
                 <ngx-select-dropdown #selectDropdownDate *ngIf="!loading" [multiple]="false" [config]="configSelectFile"
@@ -179,7 +199,6 @@
 <c-modal #modalListBackup backdrop="static" #modalLg size="lg" id="modalListBackup" scrollable>
   <c-modal-header>
     <h5 cModalTitle>Tomcat Logs</h5>
-    <button title="Close" [cModalToggle]="modalListBackup.id" cButtonClose></button>
   </c-modal-header>
   <c-modal-body>
     <c-row *ngIf="loading">
@@ -202,8 +221,7 @@
           </tr>
         </tbody>
         <tbody *ngIf="listLog.length > 0">
-          <tr
-            *ngFor="let item of listLog; let i = index">
+          <tr *ngFor="let item of listLog; let i = index">
             <td>{{ page > 1 ? (((page-1)*10) + i + 1) : i + 1}}</td>
             <td>{{item.fileName}}</td>
             <td>{{formatTime(item.lastModified)}}</td>
@@ -213,8 +231,8 @@
                 [cModalToggle]="modalListBackup.id">
                 Download
               </button>
-              <button *ngIf="dataUser?.groupId === 'IT'" class="btn-warning btn btn-sm text-white" (click)="confirmDelete(item.fileName)"
-                [cModalToggle]="modalListBackup.id">
+              <button *ngIf="dataUser?.groupId === 'IT'" class="btn-warning btn btn-sm text-white"
+                (click)="confirmDelete(item.fileName)" [cModalToggle]="modalListBackup.id">
                 Delete
               </button>
             </td>
@@ -231,7 +249,7 @@
     </c-row>
   </c-modal-body>
   <c-modal-footer>
-    <button #closeModal id="closeModal" [cModalToggle]="modalListBackup.id" cButton color="danger"><i
-        class="fa fa-times" aria-hidden="true"></i> Close</button>
+    <button #closeModal class="btn btn-info text-white btn-150 pe-3" id="closeModal" [cModalToggle]="modalListBackup.id"
+      cButton><i class="fa fa-times pe-2" aria-hidden="true"></i> Close</button>
   </c-modal-footer>
 </c-modal>

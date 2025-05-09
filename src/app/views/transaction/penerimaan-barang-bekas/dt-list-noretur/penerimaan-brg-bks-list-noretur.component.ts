@@ -42,8 +42,8 @@ export class PenerimaanBrgBksListNoreturComponent implements OnInit {
     | undefined;
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<DataTables.Settings> = new Subject<DataTables.Settings>();
+  dtOptions: any = {};
+  dtTrigger: Subject<any> = new Subject<any>();
 
   currentDate: Date = new Date();
   selectedRowData: any;
@@ -99,10 +99,10 @@ export class PenerimaanBrgBksListNoreturComponent implements OnInit {
         [8, 10], // Available page sizes
         ['8', '10'], // Displayed page size labels
       ],
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParametersRetur: any, callback) => {
+      ajax: (dataTablesParametersRetur: any, callback: any) => {
         this.page.start = dataTablesParametersRetur.start;
         this.page.length = dataTablesParametersRetur.length;
         const params = {
@@ -131,17 +131,17 @@ export class PenerimaanBrgBksListNoreturComponent implements OnInit {
             for (let index = 0; index < resp.data.length; index++) {
               const item = resp.data[index];
               const detailParam = { returnNo: item.returnNo };
-      
+
               try {
                 const detailRes: any = await this.dataService
                   .postData(this.config.BASE_URL_HQ + '/api/return-order/list-detail', detailParam)
                   .toPromise();
-                
+
                   console.log('detailres',detailRes.item)
                 const hasBekas = detailRes?.item?.some(
                   (barang: any) => barang.flagBrgBekas === 'Y'
                 );
-      
+
                 if (hasBekas) {
                   const { rn, ...rest } = item;
                   filteredData.push({
@@ -153,7 +153,7 @@ export class PenerimaanBrgBksListNoreturComponent implements OnInit {
                 console.error(`Error loading detail for returnNo ${item.returnNo}`, err);
               }
             }
-      
+
 
             this.page.recordsTotal = resp.recordsTotal;
             this.page.recordsFiltered = resp.recordsFiltered;
@@ -171,7 +171,7 @@ export class PenerimaanBrgBksListNoreturComponent implements OnInit {
         {
           data: 'dateReturn',
           title: 'Tgl Retur',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             return this.g.formatStrDateMMM(data);
           },
         },
@@ -181,7 +181,7 @@ export class PenerimaanBrgBksListNoreturComponent implements OnInit {
         { data: 'namaGudang', title: 'Gudang tujuan', searchable: true },
         {
           title: 'Action',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             if (row.statusAktif === 'Aktif') {
               return `
                   <div class="btn-group" role="group" aria-label="Action">
@@ -230,7 +230,7 @@ export class PenerimaanBrgBksListNoreturComponent implements OnInit {
     this.dtTrigger.next(this.dtOptions);
 
   }
-  
+
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
@@ -271,7 +271,7 @@ export class PenerimaanBrgBksListNoreturComponent implements OnInit {
   }
 
   onFilterPressed(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
     console.log('filter pressed');
@@ -291,7 +291,7 @@ export class PenerimaanBrgBksListNoreturComponent implements OnInit {
   }
 
   getDataOnline(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.dtElement.dtInstance.then((dtInstance: any) => {
       dtInstance.destroy(); // destroy the old DataTable
       this.renderDataTablesRetur(); // reinitialize dtOptions
       this.dtTrigger.next(this.dtOptions);

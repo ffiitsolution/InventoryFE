@@ -32,7 +32,7 @@ export class AddPlanningOrderComponent implements OnInit, AfterViewInit, OnDestr
   public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   isShowModal: boolean = false;
   dtTrigger: Subject<any> = new Subject();
   bsConfig: Partial<BsDatepickerConfig>;
@@ -74,13 +74,13 @@ export class AddPlanningOrderComponent implements OnInit, AfterViewInit, OnDestr
     this.dpConfigtrans.maxDate = new Date();
     this.dpConfigtrans.customTodayClass='today-highlight';
 
-  
+
   }
 
   myForm: FormGroup;
 
   ngOnInit(): void {
-   
+
     const currentDate = moment();
     this.selectedMonth = currentDate.month() + 1;
     this.selectedYear = currentDate.year();
@@ -88,7 +88,7 @@ export class AddPlanningOrderComponent implements OnInit, AfterViewInit, OnDestr
     this.myForm = this.form.group({
       bufferStock: ['0.00',[Validators.required,Validators.min(1)]],
       selectedMonth: [this.selectedMonth],
-      selectedYear: [this.selectedYear],  
+      selectedYear: [this.selectedYear],
     });
 
     console.log(this.selectedMonth, this.selectedYear, 'selectedMonth selectedYear')
@@ -97,7 +97,7 @@ export class AddPlanningOrderComponent implements OnInit, AfterViewInit, OnDestr
       this.selectedYear,
       this.selectedYear + 2
     );
-   
+
   }
 
   ngDoCheck() {
@@ -112,7 +112,7 @@ export class AddPlanningOrderComponent implements OnInit, AfterViewInit, OnDestr
       tglTransaksi: moment(this.myForm.value.tglTransaksi,'DD/MM/YYYY',true).format('DD/MM/YYYY'),
       tglExp: moment(this.myForm.value.tglExp, 'DD/MM/YYYY',true).format('DD/MM/YYYY')
   });
-  
+
     this.globalService.saveLocalstorage(
       'headerPlanningOrder',
       JSON.stringify(this.myForm.value)
@@ -137,8 +137,8 @@ export class AddPlanningOrderComponent implements OnInit, AfterViewInit, OnDestr
     );
     // clean subsribe rxjs
     this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();  
-    
+    this.ngUnsubscribe.complete();
+
   }
 
 
@@ -164,10 +164,10 @@ export class AddPlanningOrderComponent implements OnInit, AfterViewInit, OnDestr
         satuanHasilProduksi: parseFloat(data.konversi).toFixed(2),
         labelSatuanHasilProduksi: data.satuanKecil+"/"+data.satuanBesar,
       })
-     
+
     }
 
-   
+
 
     onBatalPressed(newItem: any): void {
       const todayDate = new Date();
@@ -175,14 +175,14 @@ export class AddPlanningOrderComponent implements OnInit, AfterViewInit, OnDestr
       this.myForm.reset({
         bufferStock: '0.00',
         selectedMonth: this.selectedMonth,
-        selectedYear: this.selectedYear,  
+        selectedYear: this.selectedYear,
       });
       this.isShowDetail = false;
     }
 
     addJumlahBahanBaku($event:any): void {
         this.myForm.patchValue({
-          totalBahanBaku: $event  
+          totalBahanBaku: $event
         });
     }
 
@@ -199,7 +199,7 @@ export class AddPlanningOrderComponent implements OnInit, AfterViewInit, OnDestr
      event:any
     ) {
 
-       
+
       let value=event.target.value;
         if (value !== null && value !== undefined) {
           let numericValue = parseFloat(value.toString().replace(',', '.'));

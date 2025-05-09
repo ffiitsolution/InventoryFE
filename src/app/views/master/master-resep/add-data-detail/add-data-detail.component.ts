@@ -54,7 +54,7 @@ export class AddDataDetailResepComponent
   public loading: boolean = false;
   page = new Page();
   isShowModal: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   selectedRow: any[] = [];
   pageModal = new Page();
   dataUser: any = {};
@@ -105,14 +105,14 @@ export class AddDataDetailResepComponent
     this.headerResep.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.listResepData = [
-      { 
+      {
         kodeBarang: '',
-        namaBarang: '', 
-        konversi: '', 
+        namaBarang: '',
+        konversi: '',
         satuanKecil: '',
-        satuanBesar: '', 
+        satuanBesar: '',
         qtyPemakaian: '',
-        status: '' 
+        status: ''
       }
     ];
 
@@ -120,7 +120,7 @@ export class AddDataDetailResepComponent
     this.renderDataTables()
 
   }
- 
+
   onFilterSearch(
     listData: any[],
     filterText: string,
@@ -134,7 +134,7 @@ export class AddDataDetailResepComponent
   ngOnDestroy(): void {
     this.g.navbarVisibility = true;
     this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();  
+    this.ngUnsubscribe.complete();
   }
 
   onBackPressed() {
@@ -191,7 +191,7 @@ export class AddDataDetailResepComponent
                       this.toastr.success("Data production berhasil disimpan!");
                       this.onPreviousPressed();
                     }, DEFAULT_DELAY_TIME);
-        
+
                   }
                   this.adding = false;
                   this.loadingSimpan = false;
@@ -220,9 +220,9 @@ export class AddDataDetailResepComponent
     }else{
       return true;
     }
-   
+
   }
-  
+
 
   onShowModal(index:number) {
     this.isShowModal = true;
@@ -234,12 +234,12 @@ export class AddDataDetailResepComponent
     this.isShowModalDelete = true;
   }
 
- 
+
 
   updateKeteranganTanggal(item: any) {
     item.keteranganTanggal = moment(item.tglExpired).locale('id').format('D MMMM YYYY');
   }
-  
+
 
   get filteredList() {
     return this.listEntryExpired.filter(item => item.kodeBarang === this.selectedExpProduct.bahanBaku);
@@ -250,7 +250,7 @@ export class AddDataDetailResepComponent
     this.router.navigate(['/master/master-resep']);
   }
 
-  
+
 
 
   loadResep() {
@@ -273,33 +273,33 @@ export class AddDataDetailResepComponent
             status: item.status
           }));
 
-        
-          
+
+
          if(this.listResepData.length === 0){
           this.listResepData = [
-            { 
+            {
               kodeBarang: '',
-              namaBarang: '', 
-              konversi: '', 
+              namaBarang: '',
+              konversi: '',
               satuanKecil: '',
-              satuanBesar: '', 
+              satuanBesar: '',
               qtyPemakaian: '1.00',
               status: ''
             }
           ];
-         }  
+         }
       },
     });
   }
 
   onAdd(){
     this.listResepData.push(
-      { 
+      {
         kodeBarang: '',
-        namaBarang: '', 
-        konversi: '', 
+        namaBarang: '',
+        konversi: '',
         satuanKecil: '',
-        satuanBesar: '', 
+        satuanBesar: '',
         qtyPemakaian: '1.00',
         status: ''
       }
@@ -321,10 +321,10 @@ export class AddDataDetailResepComponent
       ],
       order: [
         [6, 'asc']      ],
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -355,10 +355,10 @@ export class AddDataDetailResepComponent
         columns: [
           { data: 'kodeBarang', title: 'Kode' },
           { data: 'namaBarang', title: 'Nama Barang' },
-          { 
-            data: 'konversi', 
-            title: 'Konversi', 
-            render: function(data, type, row) {
+          {
+            data: 'konversi',
+            title: 'Konversi',
+             render:function(data:any, type:any, row:any) {
               return Number(data).toFixed(2); // Ensures two decimal places
             }
           },
@@ -369,7 +369,7 @@ export class AddDataDetailResepComponent
             data: 'status',
             title: 'Status',
             searchable: false,
-            render: (data) => {
+            render: (data:any) => {
               if (data === 'Aktif') {
                 return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
               }
@@ -379,19 +379,19 @@ export class AddDataDetailResepComponent
           {
             title: 'Action',
             orderable: false,
-            render: (data, type, row) => {
+            render: (data:any, type:any, row:any) => {
               const disabled = row.status !== 'Aktif' ? 'disabled' : '';
               return `<button class="btn btn-sm action-select btn-info btn-80 text-white" ${disabled}>Pilih</button>`;
             },
           },
-  
+
         ],
         searchDelay: 1000,
         rowCallback: (row: Node, data: any[] | Object, index: number) => {
           $('.action-select', row).on('click', () =>
             this.onPilihBarang(data)
           );
-          
+
           $('td', row).on('click', () => {
             $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
             if (this.selectedRowData !== data) {
@@ -401,10 +401,10 @@ export class AddDataDetailResepComponent
               this.selectedRowData = undefined;
             }
           });
-        
-      
+
+
           return row;
-  
+
         },
       };
     }
@@ -413,43 +413,43 @@ export class AddDataDetailResepComponent
       this.selectedRowData = JSON.stringify(data);
       this.renderDataTables();
       this.isShowModal = false;
-     
+
     }
 
     onPilihBarang(data: any) {
       let errorMessage;
       this.isShowModal = false;
-    
-  
+
+
       const existingItemIndex = this.listResepData.findIndex(
         (item) => item.kodeBarang === data.kodeBarang
       );
-    
+
       if (existingItemIndex === -1) {
-        const resepData = { 
+        const resepData = {
           kodeBarang: data.kodeBarang,
-          namaBarang: data.namaBarang, 
-          konversi: parseFloat(data.konversi).toFixed(2), 
+          namaBarang: data.namaBarang,
+          konversi: parseFloat(data.konversi).toFixed(2),
           satuanKecil: data.satuanKecil,
-          satuanBesar: data.satuanBesar, 
+          satuanBesar: data.satuanBesar,
           qtyPemakaian: '1.00',
           status: data.status,
         };
-    
-      
-        this.listResepData[this.currentSelectedForModal] = resepData; 
-      
+
+
+        this.listResepData[this.currentSelectedForModal] = resepData;
+
       } else {
         // If item already exists in the list
         errorMessage = 'Barang sudah ditambahkan';
       }
-    
+
       // Show error if there was an issue
       if (errorMessage) {
         this.toastr.error(errorMessage);
       }
     }
-    
+
 
     onInputValueItemDetail(
       event: any,
@@ -507,7 +507,7 @@ export class AddDataDetailResepComponent
                     // this.onPreviousPressed();
                     this.loadResep()
                   }, DEFAULT_DELAY_TIME);
-      
+
                 }
                 this.adding = false;
               },
@@ -521,38 +521,38 @@ export class AddDataDetailResepComponent
       }
 
       this.validationMessageList.splice(index,1)
-     
+
     }
 
     getProductRow(kodeBarang: string, index: number) {
-     
+
       if (kodeBarang !== '') {
         const isDuplicate = this.listResepData.some(
           (item, i) => item.kodeBarang === kodeBarang && i !== index
         );
-  
+
         if (isDuplicate) {
           this.toastr.error('Barang sudah ditambahkan');
           return;
         }
-  
+
         this.appService.getProductResep(kodeBarang)
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe({
           next: (res) => {
             if (res) {
-              const resepData = { 
+              const resepData = {
                 kodeBarang: res.kodeBarang,
-                namaBarang: res.namaBarang, 
-                konversi: res.konversi, 
+                namaBarang: res.namaBarang,
+                konversi: res.konversi,
                 satuanKecil: res.satuanKecil,
-                satuanBesar: res.satuanBesar, 
+                satuanBesar: res.satuanBesar,
                 qtyPemakaian: res.qtyPemakaian,
-                status: res.status, 
+                status: res.status,
               };
-          
-            
-              this.listResepData[index] = resepData; 
+
+
+              this.listResepData[index] = resepData;
             }
           },
           error: (err) => {
@@ -565,10 +565,10 @@ export class AddDataDetailResepComponent
 
     handleEnter(event: any, index: number) {
       event.preventDefault();
-  
+
       let kodeBarang = this.listResepData[index].kodeBarang?.trim();
       if (kodeBarang !== '') {
         this.getProductRow(kodeBarang, index);
       }
     }
-}    
+}

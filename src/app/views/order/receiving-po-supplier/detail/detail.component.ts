@@ -41,7 +41,7 @@ export class ReceivingPoSupplierDetailComponent
 
   orders: any[] = [];
   dtColumns: any = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -91,7 +91,7 @@ export class ReceivingPoSupplierDetailComponent
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -148,7 +148,7 @@ export class ReceivingPoSupplierDetailComponent
         { data: 'qtyPesanKecil', title: 'Qty Pesan Kcl' },
         { data: 'totalQtyPesan', title: 'Total Pesanan' },
         { data: 'totalQtyPesan', title: 'Total Qty Diterima',
-          render: (data) => {
+          render: (data:any) => {
             return '';
           }
         },
@@ -156,7 +156,7 @@ export class ReceivingPoSupplierDetailComponent
         {
           data: 'keterangan',
           title: 'Keterangan',
-          render: (data) => {
+          render: (data:any) => {
             if (data.toUpperCase() == STATUS_SAME_CONVERSION) {
               return `
                 <span class="text-center text-success">${data}</span>
@@ -182,7 +182,7 @@ export class ReceivingPoSupplierDetailComponent
   }
   reloadTable() {
     setTimeout(() => {
-      this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      this.datatableElement?.dtInstance.then((dtInstance: any) => {
         dtInstance.ajax.reload();
       });
     }, DEFAULT_DELAY_TABLE);
@@ -217,7 +217,7 @@ export class ReceivingPoSupplierDetailComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }
@@ -464,7 +464,7 @@ export class ReceivingPoSupplierDetailComponent
     }
   }
 
-  
+
   get filteredList() {
     if (!this.searchListViewOrder) {
       return this.listOrderData;
