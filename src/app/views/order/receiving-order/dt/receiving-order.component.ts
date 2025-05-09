@@ -292,7 +292,8 @@ export class ReceivingOrderComponent
       kodeTujuan: this.g.getUserLocationCode(),
       startDate: this.g.transformDate(this.dateRangeRefresh[0]),
       endDate: this.g.transformDate(this.dateRangeRefresh[1]),
-      user: this.g.getUserCode()
+      user: this.g.getUserCode(),
+      tipePesanan: "I"
     }
 
     this.dataService.postData(
