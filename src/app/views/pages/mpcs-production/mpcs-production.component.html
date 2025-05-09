@@ -8,7 +8,7 @@
   <div class="w-100"> -->
 <c-container class="container-fluid my-container m-0">
   <c-row class="d-flex justify-content-start g-2" *ngIf="!isShowRecipe">
-    <c-col md="5">
+    <c-col lg="5">
       <c-card>
         <c-card-header>
           <div class="gap-3 d-flex justify-content-between align-items-center">
@@ -255,7 +255,7 @@
         </c-card-body>
       </c-card>
     </c-col>
-    <c-col md="7">
+    <c-col lg="7">
       <c-card *ngIf="!isShowExpired">
         <c-card-header>
           <div
@@ -302,7 +302,7 @@
         <c-card-body>
           <div class="resep-body row">
             <div
-              class="col-12 col-md-4 mb-2"
+              class="col-12 col-md-6 mb-2"
               *ngFor="let item of listProductData; let i = index"
             >
               <c-card *ngIf="item.bahanBaku">
@@ -391,7 +391,7 @@
         </c-card-body>
       </c-card>
       <c-card *ngIf="isShowExpired">
-        <c-card-header>
+        <c-card-header class="header-all">
           <div class="gap-3 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-3">
               <h5 class="mb-1">ENTRY DATA EXPIRED</h5>
@@ -409,7 +409,7 @@
             </div>
           </div>
           <div class="divider mt-1"></div>
-          <div class="d-flex flex-column">
+          <div class="d-flex flex-column ">
             <div class="d-flex align-items-center justify-content-start mb-2">
               <div class="col-6 col-md-6">
                 <h6 class="mb-0">Barang</h6>
@@ -455,7 +455,7 @@
         <c-card-body>
           <div class="resep-body row">
             <div
-              class="col-12 col-md-4 mb-2"
+              class="col-12 col-md-6 mb-2"
               *ngFor="let item of filteredList; let i = index"
             >
               <c-card>
