@@ -246,12 +246,12 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
                 this.toastr.error(res.message);
               } else {
                 this.toastr.success('Data berhasil diposting!');
+                this.onBackPressed(res.data);
                 this.adding = false;
-                this.onPreviousPressed();
+                this.loadingSimpan = false;
+                // this.onPreviousPressed();
               }
-              this.onBackPressed(res.data);
-              this.adding = false;
-              this.loadingSimpan = false;
+              
             },
             error: () => {
               this.toastr.error('Gagal posting data Kirim ke Site!');
