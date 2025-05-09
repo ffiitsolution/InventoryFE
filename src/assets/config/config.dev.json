@@ -3,6 +3,6 @@
     "BASE_URL_": "http://172.16.12.180:8093/inventory",
     "BASE_URL_HQ_": "http://172.16.12.180:14026/warehouse",
 
-    "BASE_URL": "http://172.16.9.181:9292/inventory",
+    "BASE_URL": "http://localhost:8093/inventory",
     "BASE_URL_HQ": "http://192.168.10.28:7009/warehouse"  }
 }
