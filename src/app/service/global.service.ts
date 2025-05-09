@@ -16,6 +16,7 @@ import {
   STATUS_PESANAN_TERIMA_PESANAN,
   STATUS_PESANAN_TERIMA_PO,
   STATUS_KIRIM_PESANAN_KE_GUDANG,
+  STATUS_PRODUKSI,
 } from '../../constants';
 import moment from 'moment';
 
@@ -78,7 +79,6 @@ export class GlobalService {
     html: `
     <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">
       <p>Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
-      <p class="text-danger" style="font-weight: bold;">DATA YANG SUDAH DI POSTING TIDAK DAPAT DIPERBAIKI ..!!</p>
     </div>
     <div class="divider my-3"></div>
     <div class="d-flex justify-content-center gap-3 mt-3">
@@ -657,5 +657,20 @@ export class GlobalService {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(value);
+  }
+
+  getStatusProduksiLabel(
+    status: string,
+    isPrintStatus: boolean = false
+  ): string {
+    const data = STATUS_PRODUKSI;
+    const found = data.find((item) => item.value === status);
+    if (!found) {
+      return '-';
+    }
+    return `<span class="badge"
+                        style="background-color: ${found.color}; color: ${found.textColor}; padding: 4px 10px; border-radius: 4px; font-weight: 500; font-size: 0.85rem; display: inline-block;">
+                  ${found.label.toUpperCase()}</span>`;
+
   }
 }

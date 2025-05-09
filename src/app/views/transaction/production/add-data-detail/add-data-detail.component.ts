@@ -823,7 +823,7 @@ export class AddDataDetailProductionComponent
           this.headerProduction.tglTransaksi,
           'DD-MM-YYYY'
         ).format('D MMM YYYY'),
-        statusPosting: 'B',
+        statusPosting: 'K',
         keterangan: this.headerData.keterangan,
         kodeResep: this.headerProduction.kodeBarang,
         tglExp: moment(this.headerData.tglExp, 'DD-MM-YYYY').format(
@@ -899,7 +899,7 @@ export class AddDataDetailProductionComponent
       };
 
       Swal.fire({
-        ...this.g.componentKonfirmasiPosting,
+        ...this.g.componentKonfirmasiSimpan,
          showConfirmButton: false,
          showCancelButton: false,
          width: '600px',

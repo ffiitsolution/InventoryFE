@@ -441,6 +441,7 @@ export class AddPenerimaanBrgBksComponent
           ...dataTablesParametersRetur,
           kodeGudang: this.globalService.getUserLocationCode(),
           status: 'K',
+          flagBrgBekas: 'Y',
         };
         this.dataService
           .postData(
@@ -448,50 +449,50 @@ export class AddPenerimaanBrgBksComponent
             params
           )
           .subscribe(async (resp: any) => {
-            // const mappedData = resp.data.map((item: any, index: number) => {
-            //   // hapus rn dari data
-            //   const { rn, ...rest } = item;
-            //   const finalData = {
-            //     ...rest,
-            //     dtIndex: this.page.start + index + 1,
-            //   };
-            //   return finalData;
-            // });
+            const mappedData = resp.data.map((item: any, index: number) => {
+              // hapus rn dari data
+              const { rn, ...rest } = item;
+              const finalData = {
+                ...rest,
+                dtIndex: this.page.start + index + 1,
+              };
+              return finalData;
+            });
 
-            const filteredData: any[] = [];
+            // const filteredData: any[] = [];
 
-            for (let index = 0; index < resp.data.length; index++) {
-              const item = resp.data[index];
-              const detailParam = { returnNo: item.returnNo };
+            // for (let index = 0; index < resp.data.length; index++) {
+            //   const item = resp.data[index];
+            //   const detailParam = { returnNo: item.returnNo };
       
-              try {
-                const detailRes: any = await this.dataService
-                  .postData(this.config.BASE_URL_HQ + '/api/return-order/list-detail', detailParam)
-                  .toPromise();
+            //   try {
+            //     const detailRes: any = await this.dataService
+            //       .postData(this.config.BASE_URL_HQ + '/api/return-order/list-detail', detailParam)
+            //       .toPromise();
                 
-                  console.log('detailres',detailRes.item)
-                const hasBekas = detailRes?.item?.some(
-                  (barang: any) => barang.flagBrgBekas === 'Y' && barang.status === 'K'
-                );
+            //       console.log('detailres',detailRes.item)
+            //     const hasBekas = detailRes?.item?.some(
+            //       (barang: any) => barang.flagBrgBekas === 'Y' && barang.status === 'K'
+            //     );
       
-                if (hasBekas) {
-                  const { rn, ...rest } = item;
-                  filteredData.push({
-                    ...rest,
-                    dtIndex: filteredData.length + 1,
-                  });
-                }
-              } catch (err) {
-                console.error(`Error loading detail for returnNo ${item.returnNo}`, err);
-              }
-            }
+            //     if (hasBekas) {
+            //       const { rn, ...rest } = item;
+            //       filteredData.push({
+            //         ...rest,
+            //         dtIndex: filteredData.length + 1,
+            //       });
+            //     }
+            //   } catch (err) {
+            //     console.error(`Error loading detail for returnNo ${item.returnNo}`, err);
+            //   }
+            // }
       
             this.page.recordsTotal = resp.recordsTotal;
             this.page.recordsFiltered = resp.recordsFiltered;
             callback({
               recordsTotal: resp.recordsTotal,
               recordsFiltered: resp.recordsFiltered,
-              data: filteredData,
+              data: mappedData,
             });
           });
       },
@@ -539,7 +540,9 @@ export class AddPenerimaanBrgBksComponent
       ],
       searchDelay: 1500,
       order: [
+        [5, 'asc'],
         [2, 'desc'],
+       
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-select', row).on('click', () =>

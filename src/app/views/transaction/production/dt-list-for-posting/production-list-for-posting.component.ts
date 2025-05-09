@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataService } from '../../../../service/data.service';
 import { GlobalService } from '../../../../service/global.service';
@@ -71,7 +71,9 @@ export class ProductionListForPostingComponent implements OnInit {
   totalTransSummary: number = 0;
   isShowModalPosting : boolean = false;
   loadingPosting: boolean = false;
+  isAdjusting = false;
   listNotrans: any[] = [];
+  resizeTimeout: any;
   constructor(
     private dataService: DataService,
     private g: GlobalService,
@@ -102,12 +104,23 @@ export class ProductionListForPostingComponent implements OnInit {
       processing: true,
       serverSide: true,
       autoWidth: false,
-      info: true,
       order: [
         [1, 'desc'],
         [2, 'desc'],
       ],
-      drawCallback: () => {},
+      drawCallback: () => {
+      
+        // if (!this.isAdjusting) {
+        //   this.isAdjusting = true;  // Set the flag to true to indicate adjusting in progress
+        //   setTimeout(() => {
+        //     const dtInstance = $('.dataTable').DataTable();
+        //     if (dtInstance) {
+        //       dtInstance.columns.adjust().draw(false);
+        //     }
+        //     this.isAdjusting = false;  // Reset the flag once adjustment is done
+        //   }, 100);
+        // }
+      },      
       ajax: (dataTablesParameters: any, callback) => {
         const [startHour, startMinute] = this.startTime.split(':').map(Number);
         const [endHour, endMinute] = this.endTime.split(':').map(Number);
@@ -162,14 +175,15 @@ export class ProductionListForPostingComponent implements OnInit {
         }, DEFAULT_DELAY_TABLE);
       },
       columns: [
-        { data: 'dtIndex', title: '#' },
-        { data: 'tglTransaksi', title: 'Tanggal Transaksi' },
-        { data: 'nomorTransaksi', title: 'No. Transaksi' },
-        { data: 'kodeProduksi', title: 'Kode Produksi' },
-        { data: 'barangProduksi', title: 'Barang Produksi' },
+        { data: 'dtIndex', title: '#', width: '10px' },
+        { data: 'tglTransaksi', title: 'Tanggal Transaksi', width: '80px' },
+        { data: 'nomorTransaksi', title: 'No. Transaksi', width: '120px' },
+        { data: 'kodeProduksi', title: 'Kode Produksi', width: '80px' },
+        { data: 'barangProduksi', title: 'Barang Produksi', width: '300px' },
         {
           data: 'konversi',
           title: 'Konversi',
+          width: '80px',
           render: function (data, type, row) {
             return (
               Number(data).toFixed(2) +
@@ -177,40 +191,35 @@ export class ProductionListForPostingComponent implements OnInit {
               row.satuanKecil +
               '/' +
               row.satuanBesar
-            ); // Ensures two decimal places
+            );
           },
         },
         {
           data: 'jumlahResep',
           title: 'Jumlah Produksi',
+          width: '100px',
           render: function (data, type, row) {
-            return Number(data).toFixed(2) + ' ' + row.satuanBesar; // Ensures two decimal places
+            return Number(data).toFixed(2) + ' ' + row.satuanBesar;
           },
         },
         {
           data: 'totalProduksi',
           title: 'Total Produksi',
+          width: '100px',
           render: function (data, type, row) {
-            return Number(data).toFixed(2) + ' ' + row.satuanKecil; // Ensures two decimal places
+            return Number(data).toFixed(2) + ' ' + row.satuanKecil;
           },
         },
-        { data: 'tglExp', title: 'Tgl Expired' },
-        // { data: 'userCreate', title: 'User Proses', searchable: true },
-        // {
-        //   data: 'dateCreate',
-        //   title: 'Tgl. Proses',
-        //   orderable: true,
-        //   searchable: true,
-        // },
-        // {
-        //   data: 'timeCreate',
-        //   title: 'Jam Proses',
-        //   orderable: true,
-        //   searchable: true,
-        // },
+        { data: 'tglExp', title: 'Tgl Expired', width: '80px' },
+        {
+          data: 'statusPosting',
+          title: 'Status Transaksi',
+          width: '80px',
+          render: (data) => this.g.getStatusProduksiLabel(data, false),
+        },
         {
           title: 'Aksi',
-          width: '250px',
+          width: '300px',
           render: (data: any, type: any, row: any, meta: any) => {
             const index = meta.row; // get the row index
             const isLoading = this.loadingDetail[index];
@@ -311,6 +320,7 @@ export class ProductionListForPostingComponent implements OnInit {
   ngAfterViewInit(): void {
     this.renderDatatable();
     this.dtTrigger.next(this.dtOptions);
+   
   }
 
   ngOnDestroy(): void {
@@ -520,4 +530,7 @@ export class ProductionListForPostingComponent implements OnInit {
     onPreviousPressed(): void {
       this.router.navigate(['/transaction/production/']);
     }
+
+   
+  
 }

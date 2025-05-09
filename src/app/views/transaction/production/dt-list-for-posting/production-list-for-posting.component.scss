@@ -32,9 +32,9 @@
     margin: 16px 0;
   }
   
-  .table-responsive {
-    overflow-x: auto;
-  }
+  // .table-responsive {
+  //   overflow-x: auto;
+  // }
   
   .row-border {
     border: 1px solid #dee2e6;
@@ -82,6 +82,52 @@
   height: 100%;
   margin:auto
 }
+
+/* Optional: Make the wrapper responsive */
+.dataTables_wrapper .dataTables_scroll {
+  overflow: auto;
+}
+
+/* Horizontal and vertical scroll inside table area */
+.dataTables_wrapper .dataTables_scrollBody {
+  overflow: auto !important;
+}
+
+/* Prevent header from misaligning with body on horizontal scroll */
+table.dataTable {
+  width: 100% !important;
+  table-layout: fixed;
+}
+
+/* Main table font size */
+table.dataTable {
+  font-size: 14px; /* or any size you want */
+}
+
+/* Adjust pagination, info text, and filter inputs if needed */
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_length {
+  font-size: 13px;
+}
+
+/* Optional: Adjust header font size */
+table.dataTable thead th {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Optional: Adjust body cell font size */
+table.dataTable tbody td {
+  font-size: 13px;
+}
+
+
+
+
+
+
   
   
   
