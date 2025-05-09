@@ -94,7 +94,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dpConfigtrans.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfigtrans.adaptivePosition = true;
     this.dpConfigtrans.maxDate = new Date();
-    this.dpConfigtrans.minDate = moment().startOf('month').toDate();
+    // this.dpConfigtrans.minDate = moment().startOf('month').toDate();
     this.dpConfigtrans.customTodayClass = 'today-highlight';
 
   }
@@ -418,5 +418,17 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       this.kodeBarang = data.kodeBarang;
       this.namaBarang = data.namaBarang;
     }
+
+    onTglTransaksiChange(value: Date): void {
+      if (value) {
+        this.startOfMonth = moment(value).startOf('month').format('DD MMMM YYYY');
+        this.endOfMonth = moment(value).endOf('month').format('DD MMMM YYYY');
+        console.log('Start:', this.startOfMonth, 'End:', this.endOfMonth);
+
+        this.dateRangeString = `(Periode :${this.startOfMonth} - ${this.endOfMonth})`;
+
+      }
+    }
+    
 
 }

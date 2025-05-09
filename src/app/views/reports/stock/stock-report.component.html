@@ -66,6 +66,7 @@
             bsDatepicker
             autocomplete="off"
             [(ngModel)]="paramTglTransaksi"
+            (ngModelChange)="onTglTransaksiChange($event)"
             placeholder="{{ 'Tanggal transaksi' | translate }}"
           
           />
