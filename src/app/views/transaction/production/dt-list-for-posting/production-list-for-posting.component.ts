@@ -214,7 +214,7 @@ export class ProductionListForPostingComponent implements OnInit {
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          width: '80px',
+          width: '100px',
           render: (data:any) => this.g.getStatusProduksiLabel(data, false),
         },
         {
