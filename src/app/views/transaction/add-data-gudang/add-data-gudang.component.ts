@@ -46,6 +46,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
 
   @ViewChild('formModal') formModal: any;
   // Form data object
+  today: Date = new Date();
 
   formData: any = {
     nomorPesanan: '',
@@ -56,6 +57,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     tglBrgDikirim: '',
     notes: '',
     nomorSuratJan: '',
+    keterangan1: '',
   };
 
 
@@ -68,8 +70,9 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     private appService: AppService
   ) {
     this.dpConfig.containerClass = 'theme-dark-blue';
-    this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
+    this.dpConfig.dateInputFormat = 'DD MMM YYYY';
     this.dpConfig.adaptivePosition = true;
+    this.dpConfig.customTodayClass = 'today-highlight';
   }
 
   isValidNomorSuratJalan: boolean = true;
@@ -84,18 +87,36 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  ngOnInit(): void {
-    this.bsConfig = Object.assign(
-      {},
-      {
-        containerClass: 'theme-default',
-        rangeInputFormat: 'dd/MMm/yyyy',
-      }
-    );
+  // ngOnInit(): void {
+  //   this.bsConfig = Object.assign(
+  //     {},
+  //     {
+  //       containerClass: 'theme-default',
+  //       rangeInputFormat: 'dd/MMm/yyyy',
+  //     }
+  //   );
 
-    this.renderDataTables();
+  //   this.renderDataTables();
+  //   const today = new Date().toISOString().split('T')[0];
+  //   this.minDate = new Date(today);
+  // }
+
+  ngOnInit(): void {
+    this.dpConfig = {
+      dateInputFormat: 'DD/MM/YYYY',
+      containerClass: 'theme-red',
+      customTodayClass: 'today-red',
+      // minDate: moment().subtract(7, 'days').toDate(),
+      maxDate: this.today,
+    };
     const today = new Date().toISOString().split('T')[0];
     this.minDate = new Date(today);
+    this.dpConfig.customTodayClass = 'today-highlight';
+
+    if (!this.formData.tglTransaksi) {
+      this.formData.tglTransaksi = moment().format('DD/MM/YYYY');
+    }
+    this.renderDataTables();
   }
 
   actionBtnClick(action: string, data: any = null) {
@@ -119,6 +140,16 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   onAddDetail() {
+    if (!this.formData.nomorSuratJan || this.formData.nomorSuratJan.trim() === '') {
+      Swal.fire({
+        title: 'Pesan Error',
+        html: 'NOMOR SURAT JALAN TIDAK BOLEH DIKOSONGKAN, PERIKSA KEMBALI..!!',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK',
+      });
+      return;  
+    }
+
     if (this.isDoNumberValid()) {
       Swal.fire('Error', 'Nomor Surat Jalan Salah', 'error');
       return;
@@ -296,8 +327,3 @@ export class DeliveryDataService {
     return this.http.post<any>(apiUrl, data);
   }
 }
-
-
-
-
-

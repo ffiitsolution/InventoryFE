@@ -1,0 +1,42 @@
+.order-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.label {
+  font-weight: bold;
+  width: 30%; /* Adjust width as needed */
+  text-align: left;
+  padding-right: 10px;
+}
+
+.value {
+  width: 70%; /* Adjust width as needed */
+  text-align: left;
+  padding-left: 10px;
+}
+
+table.dataTable {
+  font-size: 12px !important;
+}
+
+table.dataTable thead th {
+  font-size: 13px !important;
+  padding: 8px !important;
+}
+
+table.dataTable tbody td {
+  font-size: 12px !important;
+  padding: 6px !important;
+}
+
+table.dataTable tbody tr:hover {
+  background-color: #d9d9d9 !important;
+  transition: background-color 0.3s ease-in-out;
+}
