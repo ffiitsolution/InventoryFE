@@ -152,7 +152,7 @@
           <span class="float-end">:</span>
         </div>
         <div class="col">
-          <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
+          <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfigtrans"
           aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
           placeholder="{{ 'Tanggal Transaksi' | translate }}" />
         </div>
@@ -165,7 +165,7 @@
         Kode Barang
         <span class="float-end">:</span>
       </div>
-      <div class="col">
+      <div class="col-2">
         <div class="input-group">
           <input type="text" autofocus class="form-control text-center" [(ngModel)]="kodeBarang"
           (keydown.enter)="handleEnter($event)" />
@@ -175,6 +175,16 @@
           </button>
         </div>
       </div>
+      <div class="col-5">
+        <div class="input-group">
+          <input type="text" id="dateFilter" class="form-control input-disabled" [(ngModel)]="namaBarang"  disabled />
+          <button class="btn btn-outline-primary" type="button" 
+          (click)="deleteBarang()">
+            <i class="fa fa-trash"></i>
+          </button>
+        </div>
+      </div>
+     
     </div>
   </ng-container>
 
