@@ -121,7 +121,7 @@ export class ProductionListForPostingComponent implements OnInit {
         //   }, 100);
         // }
       },      
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         const [startHour, startMinute] = this.startTime.split(':').map(Number);
         const [endHour, endMinute] = this.endTime.split(':').map(Number);
         this.page.start = dataTablesParameters.start;
@@ -184,7 +184,7 @@ export class ProductionListForPostingComponent implements OnInit {
           data: 'konversi',
           title: 'Konversi',
           width: '80px',
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             return (
               Number(data).toFixed(2) +
               ' ' +
@@ -198,7 +198,7 @@ export class ProductionListForPostingComponent implements OnInit {
           data: 'jumlahResep',
           title: 'Jumlah Produksi',
           width: '100px',
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             return Number(data).toFixed(2) + ' ' + row.satuanBesar;
           },
         },
@@ -206,7 +206,7 @@ export class ProductionListForPostingComponent implements OnInit {
           data: 'totalProduksi',
           title: 'Total Produksi',
           width: '100px',
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             return Number(data).toFixed(2) + ' ' + row.satuanKecil;
           },
         },
@@ -215,7 +215,7 @@ export class ProductionListForPostingComponent implements OnInit {
           data: 'statusPosting',
           title: 'Status Transaksi',
           width: '80px',
-          render: (data) => this.g.getStatusProduksiLabel(data, false),
+          render: (data:any) => this.g.getStatusProduksiLabel(data, false),
         },
         {
           title: 'Aksi',

@@ -153,7 +153,7 @@ export class ProductionListComponent implements OnInit {
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render: (data) => this.g.getStatusOrderLabel(data,false,true),
+          render: (data:any) => this.g.getStatusOrderLabel(data,false,true),
         },
         {
           title: 'Aksi',
