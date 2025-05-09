@@ -144,7 +144,7 @@
                 
                 <div class="w-100 row">
                   <div class="col-4 d-flex align-items-center">
-                    <label for="namaBarang">{{ "Nama Supplier" | translate }}</label>
+                    <label for="namaBarang">{{ "Alamat Supplier" | translate }}</label>
                   </div>
                   <div class="col-8 mb-1 d-flex">
                     <textarea
@@ -154,7 +154,7 @@
                       formControlName="alamatPengirim"
                       [(ngModel)]="formData.alamatTujuan"
                       name="alamatPengirim"
-                      [readOnly]="true"
+                      [readOnly]="false"
                       rows="2"
                       style="resize: none;"
                     ></textarea>
