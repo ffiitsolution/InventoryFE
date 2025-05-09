@@ -96,7 +96,6 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dpConfigtrans.maxDate = new Date();
     this.dpConfigtrans.minDate = moment().startOf('month').toDate();
     this.dpConfigtrans.customTodayClass = 'today-highlight';
-
   }
 
   ngOnInit(): void {
@@ -193,12 +192,13 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
         yearEom:previousMonth.format('YYYY'),
         monthEom:previousMonth.format('MM'),
       };
-    } else if (this.currentReport === 'Master Department') {
+    } else if (this.currentReport === 'Transaksi Detail Barang Expired') {
       param = {
-        kodeRegion: this.selectedRegion['code'],
-        status: this.paramStatusAktif,
-        tipeListing: this.paramTipeListing,
+        startDate: this.g.transformDate(this.dateRangeFilter[0]),
+        endDate: this.g.transformDate(this.dateRangeFilter[1]),
+        kodeBarang: this.kodeBarang
       };
+
     }
 
     param = {
@@ -207,6 +207,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       isDownloadCsv: type === 'csv',
       reportName: this.currentReport,
       reportSlug: this.g.formatUrlSafeString(this.currentReport),
+      kodeGudang: this.userData.defaultLocation.kodeLocation,
     };
     this.service.getFile('/api/report/report-jasper', param).subscribe({
       next: (res) => {
@@ -319,11 +320,10 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       info: true,
       pageLength:5,
       lengthMenu: [  // Provide page size options
-        [8, 10],   // Available page sizes
-        ['8', '10']  // Displayed page size labels
+        [5, 10],   // Available page sizes
+        ['5', '10']  // Displayed page size labels
       ],
-      order: [
-        [6, 'asc']      ],
+      order: [[7, 'asc'] ,[1, 'asc']  ],
       drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
@@ -417,6 +417,11 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       this.isShowModalBarang = false;
       this.kodeBarang = data.kodeBarang;
       this.namaBarang = data.namaBarang;
+    }
+
+    deleteBarang() {
+      this.kodeBarang = '';
+      this.namaBarang = '';
     }
 
 }
