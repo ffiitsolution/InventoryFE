@@ -312,8 +312,8 @@ export class AddDataDetailBarangComponent
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Proses Pengiriman',
-        cancelButtonText: 'Batal',
+        confirmButtonText: 'Proses Posting',
+        cancelButtonText: 'Batal Proses',
       }).then((result) => {
         if (result.isConfirmed) {
           this.service.insert('/api/delivery-order/simpan-data-pemakaian-barang', param).subscribe({

@@ -18,6 +18,7 @@ import { AddDataDetailWastageComponent } from './pemusnahan-wastage/add-data-det
 import { DetailWastageComponent } from './pemusnahan-wastage/detail/detail.component';
 import { AddDataDetailGudangComponent } from './add-data-gudang/detail-add-data-gudang/detail-add-data-gudang.component';
 import { DisplayDataGudangComponent } from './add-data-gudang/display-data-dari-gudang/display-data-dari-gudang.component';
+import { DetailPenerimaanGudangComponent } from './add-data-gudang/detail-penerimaan-gudang/detail-penerimaan-gudang.component';
 import { PembelianListComponent } from './pembelian/dt/pembelian-list.component';
 import { AddPembelianComponent } from './pembelian/add-data/add-data.component';
 import { ListBarangUntukPemakaianSendiriComponent } from './barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri.component';
@@ -118,6 +119,10 @@ const routes: Routes = [
       {
         path: 'receipt-from-warehouse/display-data-dari-gudang',
         component: DisplayDataGudangComponent,
+      },
+      {
+        path: 'receipt-from-warehouse/display-data-dari-gudang/detail-penerimaan-gudang',
+        component: DetailPenerimaanGudangComponent,
       },
       {
         path: 'return-order',
