@@ -25,41 +25,39 @@ export class AppInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     try {
-      if (request.method === 'POST') {
-        const userDataStorage = localStorage.getItem('inv_currentUser');
-        const userData = JSON.parse(userDataStorage || '{}');
+      const userDataStorage = localStorage.getItem('inv_currentUser');
+      const userData = JSON.parse(userDataStorage || '{}');
 
-        const ipOutlet = localStorage.getItem('boffi_ipOutlet');
+      const ipOutlet = localStorage.getItem('boffi_ipOutlet');
 
-        if (userData) {
-          const currentUrl: string = window.location.href;
-          let url = '';
+      if (userData) {
+        const currentUrl: string = window.location.href;
+        let url = '';
 
-          const hashIndex = currentUrl.indexOf('/#/');
-          const hashIndex1 = currentUrl.indexOf('/boffi/');
+        const hashIndex = currentUrl.indexOf('/#/');
+        const hashIndex1 = currentUrl.indexOf('/boffi/');
 
-          if (hashIndex !== -1) {
-            url = currentUrl.substring(hashIndex + 2);
-          } else if (hashIndex1 !== -1) {
-            url = currentUrl.substring(hashIndex1 + 6);
-          }
+        if (hashIndex !== -1) {
+          url = currentUrl.substring(hashIndex + 2);
+        } else if (hashIndex1 !== -1) {
+          url = currentUrl.substring(hashIndex1 + 6);
+        }
 
-          if (request.body instanceof FormData) {
-            request.body.append('actUser', userData.kodeUser || '');
-            request.body.append('actName', userData.namaUser || '');
-            request.body.append('actUrl', url);
-            request.body.append('actLocation', userData.defaultLocation?.kodeLocation || '');
-          } else {
-            request = request.clone({
-              body: {
-                ...request.body,
-                actUser: userData.kodeUser || '',
-                actName: userData.namaUser || '',
-                actUrl: url,
-                actLocation: userData.defaultLocation?.kodeLocation || '',
-              }
-            });
-          }
+        if (request.body instanceof FormData) {
+          request.body.append('actUser', userData.kodeUser || '');
+          request.body.append('actName', userData.namaUser || '');
+          request.body.append('actUrl', url);
+          request.body.append('actLocation', userData.defaultLocation?.kodeLocation || '');
+        } else {
+          request = request.clone({
+            body: {
+              ...request.body,
+              actUser: userData.kodeUser || '',
+              actName: userData.namaUser || '',
+              actUrl: url,
+              actLocation: userData.defaultLocation?.kodeLocation || '',
+            }
+          });
         }
       }
     } catch (error) {

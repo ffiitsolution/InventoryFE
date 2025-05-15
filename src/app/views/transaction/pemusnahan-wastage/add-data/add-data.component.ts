@@ -120,7 +120,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onAddDetail() {
-    this.formData.tglTransaksi = moment(this.formData.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
+    // this.formData.tglTransaksi = moment(this.formData.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
 
     this.globalService.saveLocalstorage(
       'headerWastage',

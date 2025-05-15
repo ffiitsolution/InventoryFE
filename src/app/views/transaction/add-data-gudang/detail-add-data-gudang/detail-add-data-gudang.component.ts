@@ -151,10 +151,10 @@ export class AddDataDetailGudangComponent
     event.target.value = inputValue;
     this.listOrderData[index].QTY_TERIMA_BESAR = parseFloat(inputValue);
     this.listOrderData[index].TOTAL_QTY_TERIMA =
-    (
-      Number(inputValue) * Number(this.listOrderData[index].KONVERSI) +
-      Number(this.listOrderData[index].QTY_TERIMA_KECIL)
-    ).toFixed(2);
+      (
+        Number(inputValue) * Number(this.listOrderData[index].KONVERSI) +
+        Number(this.listOrderData[index].QTY_TERIMA_KECIL)
+      ).toFixed(2);
   }
 
   onInputValueItemDetailkecil(event: any, index: number): void {
@@ -179,10 +179,10 @@ export class AddDataDetailGudangComponent
 
     this.listOrderData[index].QTY_TERIMA_KECIL = parseFloat(inputValue);
     this.listOrderData[index].TOTAL_QTY_TERIMA =
-    (
-      Number(this.listOrderData[index].QTY_TERIMA_BESAR) * Number(this.listOrderData[index].KONVERSI) +
-      Number(inputValue)
-    ).toFixed(2);
+      (
+        Number(this.listOrderData[index].QTY_TERIMA_BESAR) * Number(this.listOrderData[index].KONVERSI) +
+        Number(inputValue)
+      ).toFixed(2);
 
   }
 
@@ -317,20 +317,11 @@ export class AddDataDetailGudangComponent
       return;
     }
 
-    fetch(
-      `${this.config.BASE_URL}/api/delivery-order/simpan-data-penerimaan-dari-gudang`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(param),
-      }
-    )
-      .then((response) => {
-        if (!response.ok)
-          throw new Error(`HTTP error! status: ${response.status}`);
-        return response.json();
-      })
-      .then((data) => {
+    this.appService.insert(
+      `/api/delivery-order/simpan-data-penerimaan-dari-gudang`,
+      param
+    ).subscribe((response) => {
+        const data = response.data;
         if (data.some((item: any) => item.message)) {
           this.toastr.success('Data penerimaan berhasil disimpan!');
           setTimeout(() => {
@@ -341,12 +332,6 @@ export class AddDataDetailGudangComponent
         } else if (data.some((item: any) => item.error)) {
           this.toastr.error('Gagal menyimpan: ' + data[0].error);
         }
-      })
-      .catch((error) => {
-        this.toastr.error('Terjadi kesalahan: ' + error.message);
-      })
-      .finally(() => {
-        this.adding = false;
       });
   }
 
@@ -610,22 +595,22 @@ export class AddDataDetailGudangComponent
     }
   }
 
-    onShowModalExpired(event: any, index: number) {
-      this.selectedExpProduct = this.listOrderData[index];
+  onShowModalExpired(event: any, index: number) {
+    this.selectedExpProduct = this.listOrderData[index];
 
-      const totalInputValue = parseFloat(this.selectedExpProduct.QTY_TERIMA_BESAR) + parseFloat(this.selectedExpProduct.QTY_TERIMA_KECIL);
+    const totalInputValue = parseFloat(this.selectedExpProduct.QTY_TERIMA_BESAR) + parseFloat(this.selectedExpProduct.QTY_TERIMA_KECIL);
 
-      const maxAllowedBesar = Number(this.selectedExpProduct.QTY_PESAN_BESAR);
-      const maxAllowedKecil = Number(this.selectedExpProduct.QTY_PESAN_KECIL);
+    const maxAllowedBesar = Number(this.selectedExpProduct.QTY_PESAN_BESAR);
+    const maxAllowedKecil = Number(this.selectedExpProduct.QTY_PESAN_KECIL);
 
-      if (totalInputValue > (maxAllowedBesar + maxAllowedKecil)) {
-        Swal.fire({
-          title: 'Error!',
-          text: 'QTY TERIMA TIDAK BOLEH LEBIH BESAR DARI QTY PESANAN... HARAP DIPERIKSA KEMBALI',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
-      } else {
+    if (totalInputValue > (maxAllowedBesar + maxAllowedKecil)) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'QTY TERIMA TIDAK BOLEH LEBIH BESAR DARI QTY PESANAN... HARAP DIPERIKSA KEMBALI',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    } else {
 
       this.selectedExpProduct.TOTAL_QTY_PESAN = parseFloat(
         (
@@ -640,7 +625,7 @@ export class AddDataDetailGudangComponent
       this.selectedExpProduct.QTY_PESAN_BESAR = parseFloat(
         this.selectedExpProduct.QTY_PESAN_BESAR
       ).toFixed(2);
-  
+
       let totalQtySum = parseFloat(
         (
           Number(this.selectedExpProduct.QTY_PESAN_BESAR) *
@@ -648,7 +633,7 @@ export class AddDataDetailGudangComponent
           Number(this.selectedExpProduct.QTY_PESAN_KECIL)
         ).toFixed(2)
       ).toFixed(2);
-  
+
       this.totalFilteredExpired = totalQtySum;
       if (
         !this.listEntryExpired.some(
@@ -661,7 +646,7 @@ export class AddDataDetailGudangComponent
             .add(1, 'days')
             .locale('id')
             .format('DD MMM YYYY'),
-            QTY_PESAN_BESAR: parseFloat(
+          QTY_PESAN_BESAR: parseFloat(
             this.selectedExpProduct.QTY_PESAN_BESAR
           ).toFixed(2),
           QTY_PESAN_KECIL: parseFloat(
@@ -682,28 +667,29 @@ export class AddDataDetailGudangComponent
           validationQty: '',
         });
       }
-  
-      this.isShowModalExpired = true;
-    }}
 
-    getTotalExpiredData(KODE_BARANG: string, KONVERSI: number) {
-      const filtered = this.listEntryExpired.filter(
-        (item) => item.KODE_BARANG === KODE_BARANG
-      );
-  
-      const totalExpired = filtered.reduce(
-        (acc, item) => {
-          acc.QTY_TERIMA_BESAR +=
-            (Number(item.QTY_TERIMA_BESAR) || 0) * KONVERSI; 
-          acc.QTY_PESAN_KECIL += Number(item.QTY_TERIMA_KECIL) || 0;
-          return acc;
-        },
-        { QTY_TERIMA_BESAR: 0, QTY_TERIMA_KECIL: 0 }
-      );
-  
-      return (
-        totalExpired.QTY_TERIMA_BESAR + totalExpired.QTY_TERIMA_KECIL
-      ).toFixed(2);
+      this.isShowModalExpired = true;
     }
-    
+  }
+
+  getTotalExpiredData(KODE_BARANG: string, KONVERSI: number) {
+    const filtered = this.listEntryExpired.filter(
+      (item) => item.KODE_BARANG === KODE_BARANG
+    );
+
+    const totalExpired = filtered.reduce(
+      (acc, item) => {
+        acc.QTY_TERIMA_BESAR +=
+          (Number(item.QTY_TERIMA_BESAR) || 0) * KONVERSI;
+        acc.QTY_PESAN_KECIL += Number(item.QTY_TERIMA_KECIL) || 0;
+        return acc;
+      },
+      { QTY_TERIMA_BESAR: 0, QTY_TERIMA_KECIL: 0 }
+    );
+
+    return (
+      totalExpired.QTY_TERIMA_BESAR + totalExpired.QTY_TERIMA_KECIL
+    ).toFixed(2);
+  }
+
 }

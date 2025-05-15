@@ -81,7 +81,7 @@ export class EntryPackingListComponent
       serverSide: true,
       language:
         translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
-      ajax: (dataTablesParameters: any, callback:any) => {
+      ajax: (dataTablesParameters: any, callback: any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -117,7 +117,7 @@ export class EntryPackingListComponent
         {
           title: 'Alamat', // Nama kolom yang sama untuk keduanya
           className: 'text-center',
-          render: function (data:any, type:any, row:any) {
+          render: function (data: any, type: any, row: any) {
             let alamat1 = row.alamat1 ? row.alamat1 : '-'; // Cek jika null
             let alamat2 = row.alamat2 ? row.alamat2 : '-';
             return `${alamat1} <br> ${alamat2}`;
@@ -214,25 +214,21 @@ export class EntryPackingListComponent
       this.isSingleDo = true
       this.singleDoData = parsedDoList[0]
     }
-    const params = parsedDoList.map((item: any) => {
+    const listParam = parsedDoList.map((item: any) => {
       return {
         kodeGudang: this.g.getUserLocationCode(),
         noSuratJalan: item.noSuratJalan,
       };
     });
 
-    this.dataService
-      .postData(this.config.BASE_URL + '/api/delivery-order/generate', params[0])
-      .subscribe((response: any) => {
-        this.selectedData = {
-          packingListNumber: response.packingListNumber,
-        };
-      });
+    const payload: any = {
+      listParam: listParam
+    };
 
     this.dataService
       .postData(
         this.config.BASE_URL + '/api/delivery-order/entry-packing-list',
-        params
+        payload
       )
       .subscribe(
         (response: any) => {
@@ -436,10 +432,10 @@ export class EntryPackingListComponent
         totalBerat: totalBerat.toString(),
         totalVolume: totalVolume.toString(),
         listDataPL,
-        tanggalKirim:  this.g.transformDate(new Date().toISOString()),
+        tanggalKirim: this.g.transformDate(new Date().toISOString()),
         kodeGudang: kodeGudang
       };
-    } else{
+    } else {
       params = {
         outletBrand: 'KFC',
         tanggalCetak,
