@@ -121,7 +121,7 @@ export class PenerimaanBrgBksListComponent implements OnInit {
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render:function(data:any, type:any, row:any) {return 'POSTED'} ,
+          render: (data:any) => this.g.getStatusOrderLabel(data,false,true),
         },
         {
           title: 'Aksi',

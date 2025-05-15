@@ -271,3 +271,23 @@ export const RANGE_BERAT_KGS = [
   }
 ];
 
+export const STATUS_PRODUKSI = [
+  {
+    label: 'BELUM KIRIM',
+    value: 'B',
+    color: '#dc3545',    // Red
+    textColor: '#ffffff',
+  },
+  {
+    label: 'BELUM POSTING',
+    value: 'K',
+    color: '#ffc107',    // Yellow
+    textColor: '#000000',
+  },
+  {
+    label: 'POSTED',
+    value: 'P',
+    color: '#198754',    // Green
+    textColor: '#ffffff',
+  },
+];

@@ -892,15 +892,18 @@ export class MpcsProductionComponent implements OnInit {
       };
 
       Swal.fire({
-        title: 'Pastikan semua data sudah di input dengan benar!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Proses Simpan',
-        cancelButtonText: 'Batal Simpan',
-      }).then((result) => {
-        if (result.isConfirmed) {
+        ...this.g.componentKonfirmasiSimpan,
+        showConfirmButton: false,
+        showCancelButton: false,
+        width: '600px',
+        customClass: {
+          popup: 'custom-popup'
+        },
+        didOpen: () => {
+          const submitBtn = document.getElementById('btn-submit');
+          const cancelBtn = document.getElementById('btn-cancel');
+  
+          submitBtn?.addEventListener('click', () => {
           this.appService
             .insert('/api/production/insert', param)
             .pipe(takeUntil(this.ngUnsubscribe))
@@ -921,9 +924,14 @@ export class MpcsProductionComponent implements OnInit {
                 this.loadingSimpan = false;
               },
             });
-        } else {
-          this.toastr.info('Simpan dibatalkan');
-          this.loadingSimpan = false;
+            Swal.close();
+          });
+
+          cancelBtn?.addEventListener('click', () => {
+            Swal.close();
+            this.loadingSimpan = false;
+            this.toastr.info('Posting dibatalkan');
+          });
         }
       });
     }
@@ -1218,16 +1226,19 @@ export class MpcsProductionComponent implements OnInit {
         ],
       };
 
-      Swal.fire({
-        title: 'Pastikan semua data sudah di input dengan benar!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Proses Update',
-        cancelButtonText: 'Batal Update',
-      }).then((result) => {
-        if (result.isConfirmed) {
+Swal.fire({
+      ...this.g.componentKonfirmasiSimpan,
+      showConfirmButton: false,
+      showCancelButton: false,
+      width: '600px',
+      customClass: {
+        popup: 'custom-popup'
+      },
+      didOpen: () => {
+        const submitBtn = document.getElementById('btn-submit');
+        const cancelBtn = document.getElementById('btn-cancel');
+
+        submitBtn?.addEventListener('click', () => {
           this.appService
             .insert('/api/production/update', param)
             .pipe(takeUntil(this.ngUnsubscribe))
@@ -1248,9 +1259,14 @@ export class MpcsProductionComponent implements OnInit {
                 this.loadingSimpan = false;
               },
             });
-        } else {
-          this.toastr.info('Update dibatalkan');
-          this.loadingSimpan = false;
+            Swal.close();
+          });
+
+          cancelBtn?.addEventListener('click', () => {
+            Swal.close();
+            this.loadingSimpan = false;
+            this.toastr.info('Simpan dibatalkan');
+          });
         }
       });
     }

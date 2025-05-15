@@ -42,6 +42,36 @@
         </a>
       </c-nav-item> -->
     </c-header-nav>
+
+    <!-- Mobile & Tablet Header -->
+    <c-header-nav class="d-flex d-lg-none justify-content-between align-items-center w-100 px-3 py-2">
+      <!-- Left side: Logo -->
+      <div class="d-flex align-items-center">
+        <img [src]="'./assets/img/brand/logo_kfc.png'" alt="Logo" style="max-width: 36px;" />
+        <div class="ms-2">
+          <div class="fw-bold text-truncate" style="max-width: 150px; font-size: 0.8rem;">MPCS PRODUCTION</div>
+          <c-badge color="success" shape="rounded-pill" *ngIf="g.serverStatus == 'UP'" class="mt-1">ONLINE</c-badge>
+          <c-badge color="danger" shape="rounded-pill blinking mt-1" *ngIf="g.serverStatus == 'DOWN'">OFFLINE</c-badge>
+        </div>
+      </div>
+
+        <!-- Right side: Outlet & Date -->
+        <div class="d-flex flex-column align-items-end text-end">
+          <div *ngIf="g.appInfo?.outletName" class="d-flex align-items-center mb-1">
+            <c-avatar cTextColor="primary" shape="rounded-1" size="sm" src="./assets/img/outlet.png"></c-avatar>
+            <span class="ms-1 small">
+              {{ g.appInfo?.outletName }} ({{ g.appInfo?.outletCode }})
+            </span>
+          </div>
+          <div class="d-flex align-items-center">
+            <c-avatar cTextColor="primary" shape="rounded-1" size="sm" src="./assets/img/schedule.png"></c-avatar>
+            <span class="ms-1 small">
+              {{ g.serverStatus == 'UP' ? g.currentDate : 'xx-xx-xxxx' }} {{ g.serverStatus == 'UP' ? g.currentTime : 'xx:xx:xx' }}
+            </span>
+          </div>
+        </div>
+      </c-header-nav>
+
     <c-header-nav *ngIf="appInfo">
       <ng-container *ngTemplateOutlet="userDropdown"></ng-container>
     </c-header-nav>

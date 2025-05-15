@@ -245,13 +245,12 @@ export class AddDataDetailKirimBarangReturnKeSupplierComponent
               if (!res.success) {
                 this.toastr.error(res.message);
               } else {
-                this.toastr.success('Data berhasil diposting!');
-                this.adding = false;
-                this.onPreviousPressed();
                 console.log('res Data : ', res.data)
                 this.onBackPressed(res.data);
                 this.adding = false;
                 this.loadingSimpan = false;
+                // this.onPreviousPressed();
+                this.toastr.success('Data berhasil diposting!');
               }
             },
             error: () => {

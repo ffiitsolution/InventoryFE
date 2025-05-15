@@ -84,7 +84,7 @@ export class AddDataPemakaianBarangSendiriComponent
       dateInputFormat: 'DD/MM/YYYY',
       containerClass: 'theme-red',
       customTodayClass: 'today-red',
-      minDate: this.today,
+      minDate: moment().subtract(7, 'days').toDate(),
       maxDate: this.today,
     };
     const today = new Date().toISOString().split('T')[0];

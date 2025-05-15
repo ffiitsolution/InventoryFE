@@ -11,7 +11,7 @@
   },
   "scripts": {
     "copy-modules": "cpx \"scripts/node_modules/**/*\" node_modules",
-    "postinstal": "npm run copy-modules",
+    "postinstall": "npm run copy-modules",
     "ng": "ng",
     "start": "ng serve --port 4421 --disable-host-check -o",
     "build": "ng build",

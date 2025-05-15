@@ -51,16 +51,18 @@ export class AddDataDetailGudangComponent
   RejectingOrder: boolean = false;
   alreadyPrint: Boolean = false;
   totalLength: number = 0;
+  validationMessageList: string[] = [];
   listOrderData: any[] = [];
   buttonCaptionView: String = 'Lihat';
   public loading: boolean = false;
+  listProductData: any[] = []; // Declare and initialize listProductData
   page: number = 1;
   cekPrint: any;
   printData: any;
   data: { qtyWasteKecil?: any } = {};
 
   protected config = AppConfig.settings.apiServer;
-
+  
   constructor(
     public g: GlobalService,
     private translation: TranslationService,
@@ -264,14 +266,31 @@ export class AddDataDetailGudangComponent
   }
 
   onSubmit() {
+    let hasInvalidData = false; // Tambahkan flag untuk mengecek validasi
+        if (!this.isDataInvalid()) {
+          if (this.listProductData.length === 1) {
+            Swal.fire({
+              title: 'Pesan Error',
+              html: 'TIDAK ADA QUANTITY YANG DIPAKAI, PERIKSA KEMBALI..!!',
+              confirmButtonColor: '#3085d6',
+              confirmButtonText: 'OK',
+            });
+            return;
+          }
     Swal.fire({
-      title: 'Apakah Anda yakin?',
-      text: 'Pastikan data sudah benar sebelum menyimpan!',
-      icon: 'warning',
+      title:
+        '<div style="color: white; background: #c0392b; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
+      html: `
+        <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">
+          <p>Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
+          <p class="text-danger" style="font-weight: bold;">DATA YANG SUDAH DI POSTING TIDAK DAPAT DIPERBAIKI ..!!</p>
+        </div>
+        <div class="divider my-3"></div>
+      `,
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Ya, Simpan!',
+      confirmButtonText: 'Proses Pengiriman',
       cancelButtonText: 'Batal',
     }).then((result) => {
       if (result.isConfirmed) {
@@ -279,6 +298,16 @@ export class AddDataDetailGudangComponent
       }
     });
   }
+}
+
+isDataInvalid() {
+  let dataInvalid = false;
+  dataInvalid =
+    this.validationMessageList.some((msg) => msg.trim() !== '') ||
+    this.validationMessageList.some((msg) => msg.trim() !== '');
+
+  return dataInvalid;
+}
 
   prosesSimpanData() {
     this.adding = true;
@@ -692,4 +721,15 @@ export class AddDataDetailGudangComponent
     ).toFixed(2);
   }
 
+  
+    getJumlahItem(): number {
+      if (this.listProductData.length === 0) {
+        return 0;
+      }
+  
+      // Menghitung jumlah item yang memiliki namaBarang tidak kosong
+      const validItems = this.listProductData.filter(item => item.namaBarang.trim() !== "");
+      return validItems.length;
+    }
+    
 }

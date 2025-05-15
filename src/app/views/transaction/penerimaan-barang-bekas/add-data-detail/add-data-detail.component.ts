@@ -190,18 +190,19 @@ export class AddDataDetailPenerimaanBrgBksComponent
         return;
       }
 
-      Swal.fire({
-        title:
-          'Pastikan semua data sudah di input dengan benar, PERIKSA SEKALI LAGI...!!',
-        text: 'DATA YANG SUDAH DIPOSTING TIDAK DAPAT DIPERBAIKI..!!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Proses Posting',
-        cancelButtonText: 'Batal Posting',
-      }).then((result) => {
-        if (result.isConfirmed) {
+Swal.fire({
+        ...this.g.componentKonfirmasiPosting,
+        showConfirmButton: false,
+        showCancelButton: false,
+        width: '600px',
+        customClass: {
+          popup: 'custom-popup'
+        },
+        didOpen: () => {
+          const submitBtn = document.getElementById('btn-submit');
+          const cancelBtn = document.getElementById('btn-cancel');
+  
+          submitBtn?.addEventListener('click', () => {
           this.service
             .insert('/api/receiving-product-wasted/insert', param)
             .pipe(takeUntil(this.ngUnsubscribe))
@@ -245,9 +246,14 @@ export class AddDataDetailPenerimaanBrgBksComponent
                 this.loadingSimpan = false;
               },
             });
-        } else {
-          this.toastr.info('Posting dibatalkan');
-          this.loadingSimpan = false;
+            Swal.close();
+          });
+  
+          cancelBtn?.addEventListener('click', () => {
+            Swal.close();
+            this.loadingSimpan = false;
+            this.toastr.info('Posting dibatalkan');
+          });
         }
       });
     }

@@ -74,6 +74,7 @@ export class ReceivingOrderAddFormComponent
           kodeTujuan: this.g.getUserLocationCode(),
           startDate: this.g.transformDate(this.dateRangeFilter[0]),
           endDate: this.g.transformDate(this.dateRangeFilter[1]),
+          tipePesanan: "I"
         };
         setTimeout(() => {
           this.dataService
@@ -150,6 +151,7 @@ export class ReceivingOrderAddFormComponent
     this.dtColumns = this.dtOptions.columns;
     this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.customTodayClass='today-highlight';
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
   }
 
   ngOnInit(): void {

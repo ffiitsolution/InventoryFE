@@ -36,35 +36,36 @@
             <div [visible]="isFilterShown" cCollapse>
               <c-card class="mb-3">
                 <c-card-body class="gap-2">
-                  <div class="row mb-1">
-                    <div class="col-12 col-md-3">
-                      <label cLabel for="dateFilter">{{
-                        "Tanggal Transaksi :" | translate
-                      }}</label>
-                      <div class="flex-grow-1 text-end">
-                        <input
-                          type="text"
-                          id="dateFilter"
-                          class="form-control"
-                          bsDaterangepicker
-                          [bsConfig]="dpConfig"
-                          aria-describedby="dateFilter"
-                          [(ngModel)]="dateRangeFilter"
-                          (ngModelChange)="onFilterChange()"
-                          #dp="bsDaterangepicker"
-                          placeholder="{{ 'Tanggal Pesan' | translate }}"
-                        />
-                      </div>
+                  <div class="row mb-1 g-2 align-items-end">
+                    <!-- Date Filter -->
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                      <label cLabel for="dateFilter">
+                        {{ "Tanggal Transaksi :" | translate }}
+                      </label>
+                      <input
+                        type="text"
+                        id="dateFilter"
+                        class="form-control"
+                        bsDaterangepicker
+                        [bsConfig]="dpConfig"
+                        aria-describedby="dateFilter"
+                        [(ngModel)]="dateRangeFilter"
+                        (ngModelChange)="onFilterChange()"
+                        #dp="bsDaterangepicker"
+                        placeholder="{{ 'Tanggal Pesan' | translate }}"
+                      />
                     </div>
-                    <div class="col-12 col-md-2">
-                      <label class="col-form-label">{{
-                        "Waktu Produksi" | translate
-                      }}</label>
-
-                      <div class="d-flex gap-1">
-                        <div class="custom-time-picker">
+                
+                    <!-- Time Picker -->
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                      <label class="col-form-label">
+                        {{ "Waktu Produksi" | translate }}
+                      </label>
+                      <div class="d-flex gap-1 flex-wrap">
+                        <div class="flex-fill">
                           <input
                             type="time"
+                            class="form-control"
                             [(ngModel)]="startTime"
                             name="startTime"
                             min="09:00"
@@ -72,10 +73,11 @@
                             required
                           />
                         </div>
-                        <span>-</span>
-                        <div class="custom-time-picker">
+                        <span class="align-self-center">-</span>
+                        <div class="flex-fill">
                           <input
                             type="time"
+                            class="form-control"
                             [(ngModel)]="endTime"
                             name="endTime"
                             min="09:00"
@@ -85,26 +87,28 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-12 col-md-3">
+                
+                    <!-- Status Filter -->
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                       <label cLabel for="selectStatusFilter">
                         {{ "Status" | translate }}:
                       </label>
                       <select
+                        id="selectStatusFilter"
                         aria-label="Status"
-                        class="custom-select"
+                        class="form-select"
                         [(ngModel)]="selectedStatusFilter"
                         (ngModelChange)="onFilterChange()"
                       >
                         <option value="">{{ "SEMUA" | translate }}</option>
                         <option value="P">{{ "POSTED" | translate }}</option>
                         <option value="K">{{ "TERKIRIM" | translate }}</option>
-                        <option value="B">
-                          {{ "BELUM KIRIM" | translate }}
-                        </option>
+                        <option value="B">{{ "BELUM KIRIM" | translate }}</option>
                       </select>
                     </div>
                   </div>
                 </c-card-body>
+                
               </c-card>
             </div>
           </div>
@@ -117,7 +121,7 @@
             >
               <div class="card-list h-100" (click)="actionBtnClick(item)">
                 <div class="d-flex flex-column">
-                  <div class="d-flex justify-content-between mb-1">
+                  <div class="d-flex flex-column flex-lg-row justify-content-between gap-1 mb-1">
                     <label>{{ item.dateCreateFormat2 }}</label>
                     <label>{{ item.nomorTransaksi }}</label>
                   </div>
@@ -149,38 +153,40 @@
                     <label> </label>
                   </div>
                   <div class="divider mt-2"></div>
-                  <div class="d-flex justify-content-between">
-                    <label
-                      >Tgl Expired :
-                      {{ g.formatStrDateMMM(item.tglExp) }}</label
-                    >
+                  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <!-- Label with date -->
+                    <label class="mb-0">
+                      Tgl Expired: {{ g.formatStrDateMMM(item.tglExp) }}
+                    </label>
+                  
+                    <!-- POSTED badge -->
                     <span
-                      class="badge badge-success py-2"
-                      style="
-                        color: white;
-                        background-color: #2eb85c;
-                        width: 60px;
-                      "
+                      class="badge text-white py-2 px-3"
+                      style="background-color: #2eb85c;"
                       *ngIf="item.statusPosting == 'P'"
-                      >POSTED</span
                     >
+                      POSTED
+                    </span>
+                  
+                    <!-- TERKIRIM badge -->
                     <span
-                    class="badge badge-success py-2"
-                    style="
-                      color: white;
-                      background-color: #3f1dd7;
-                      width: 80px;
-                    "
-                    *ngIf="item.statusPosting == 'K'"
-                    >TERKIRIM</span
-                  >
+                      class="badge text-white py-2 px-3"
+                      style="background-color: #3f1dd7;"
+                      *ngIf="item.statusPosting == 'K'"
+                    >
+                      TERKIRIM
+                    </span>
+                  
+                    <!-- BELUM KIRIM badge -->
                     <span
-                      class="badge badge-info py-2"
-                      style="background-color: #b51823"
+                      class="badge text-white py-2 px-3"
+                      style="background-color: #b51823;"
                       *ngIf="item.statusPosting == 'B'"
-                      >BELUM KIRIM</span
                     >
+                      BELUM KIRIM
+                    </span>
                   </div>
+                  
                 </div>
               </div>
             </div>
@@ -273,28 +279,39 @@ id="formModalKirim"    [attr.aria-hidden]="!isShowModalKirim">
       <div class="card shadow-sm mb-3" >
       
         <div class="card-body body-kirim">
-          <div class="row align-items-center mx-1 my-2" *ngFor="let item of listSummaryData">
-            <div class="col-12 col-md-6 fw-semibold mb-2 mb-md-0">
-              <!-- <i class="bi bi-calendar-range me-2 text-black"></i> -->
+          <div
+            class="row align-items-center mx-1 my-2"
+            *ngFor="let item of listSummaryData"
+          >
+           <!-- Item description -->
+            <div class="col-12 col-sm-12 col-lg-6 fw-semibold mb-2">
               {{ item.kodeBarang }} - {{ item.namaBarang }}
             </div>
-            <div class="col-6 col-md-2 mb-2 mb-md-0">
-              <span class="badge bg-primary fs-6 w-100 text-center">
+
+            <!-- Konversi -->
+            <div class="col-12 col-sm-4 col-lg-2  mb-2">
+              <span class="badge bg-primary fs-6 fs-sm-7 fs-md-6 w-100 d-flex justify-content-center">
                 {{ item.konversi }} {{ item.satuanKecil }}/{{ item.satuanBesar }}
               </span>
             </div>
-            <div class="col-6 col-md-2 mb-2 mb-md-0">
-              <span class="badge bg-primary fs-6 w-100 text-center">
+
+            <!-- Jumlah Produksi -->
+            <div class="col-12 col-sm-4 col-lg-2 mb-2">
+              <span class="badge bg-primary fs-6 fs-sm-7 fs-md-6 w-100 d-flex justify-content-center">
                 {{ item.jumlahProduksi }} {{ item.satuanBesar }}
               </span>
             </div>
-            <div class="col-6 col-md-2 mb-2 mb-md-0">
-              <span class="badge bg-primary fs-6 w-100 text-center">
+
+            <!-- Total Produksi -->
+            <div class="col-12 col-sm-4 col-lg-2 mb-2">
+              <span class="badge bg-primary fs-6 fs-sm-7 fs-md-6 w-100 d-flex justify-content-center">
                 {{ item.totalProduksi }} {{ item.satuanKecil }}
               </span>
             </div>
+
           </div>
         </div>
+        
         
       </div>
 

@@ -1,19 +1,22 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <c-row>
-        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
-          <button class="btn btn-light btn-120" (click)="onBackPressed()">
-            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
-            {{ "Kembali" | translate }}
-          </button>
+      <div class="row">
+        <div class="col">
           <h5>{{ "Detail Pesanan Ke Gudang" | translate }}</h5>
         </div>
-      </c-row>
-    </c-card-body>
-  </c-card>
-  <c-card class="mb-4">
-    <c-card-body>
+        <div class="col text-end">
+      
+          <button
+          type="button"
+          class="btn btn-outline-dark btn-120"
+          (click)="onBackPressed()"
+        >
+          <i class="fa fa-chevron-left icon-gap" aria-hidden="true"></i>
+          {{ "Kembali" | translate }}
+        </button>
+        </div>
+      </div>
 
       <div class="row">
         <div class="divider mt-4"></div>
