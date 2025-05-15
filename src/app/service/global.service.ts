@@ -53,6 +53,7 @@ export class GlobalService {
   statusEndOfMonth: any = '';
   statusPlanningOrder: any = '';
   statusBackupDb: any = '';
+  mpcsDefaultGudang: string='';
   componentKonfirmasiPosting: any = {
     title:
       '<div style="color: white; background: #c0392b; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',

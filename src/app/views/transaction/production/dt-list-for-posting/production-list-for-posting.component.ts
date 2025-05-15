@@ -83,7 +83,7 @@ export class ProductionListForPostingComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.dtColumns = this.dtOptions.columns;
-
+    this.g.navbarVisibility = false;
     this.dpConfig.containerClass = 'theme-red';
     this.dpConfig.customTodayClass = 'today-highlight';
     this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
@@ -178,8 +178,8 @@ export class ProductionListForPostingComponent implements OnInit {
         { data: 'dtIndex', title: '#', width: '10px' },
         { data: 'tglTransaksi', title: 'Tanggal Transaksi', width: '80px' },
         { data: 'nomorTransaksi', title: 'No. Transaksi', width: '120px' },
-        { data: 'kodeProduksi', title: 'Kode Produksi', width: '80px' },
-        { data: 'barangProduksi', title: 'Barang Produksi', width: '300px' },
+        { data: 'kodeProduksi', title: 'Kode Produksi', width: '70px' },
+        { data: 'barangProduksi', title: 'Barang Produksi', width: '200px' },
         {
           data: 'konversi',
           title: 'Konversi',
@@ -197,7 +197,7 @@ export class ProductionListForPostingComponent implements OnInit {
         {
           data: 'jumlahResep',
           title: 'Jumlah Produksi',
-          width: '100px',
+          width: '80px',
           render: function (data:any, type:any, row:any) {
             return Number(data).toFixed(2) + ' ' + row.satuanBesar;
           },
@@ -205,7 +205,7 @@ export class ProductionListForPostingComponent implements OnInit {
         {
           data: 'totalProduksi',
           title: 'Total Produksi',
-          width: '100px',
+          width: '80px',
           render: function (data:any, type:any, row:any) {
             return Number(data).toFixed(2) + ' ' + row.satuanKecil;
           },
@@ -219,7 +219,7 @@ export class ProductionListForPostingComponent implements OnInit {
         },
         {
           title: 'Aksi',
-          width: '300px',
+          width: '120px',
           render: (data: any, type: any, row: any, meta: any) => {
             const index = meta.row; // get the row index
             const isLoading = this.loadingDetail[index];
@@ -235,21 +235,23 @@ export class ProductionListForPostingComponent implements OnInit {
             `
               : `
               <div class="btn-group" role="group" aria-label="Action" style="width: 100%">
-                <button class="btn btn-sm action-posting btn-outline-primary btn-60" ${statusPosting === 'B' ? 'disabled' : ''}>Posting</button>
                   <button class="btn btn-sm  action-view btn-outline-success btn-60">
                    Lihat
                 </button>
                 <button class="btn btn-sm action-ubah btn-outline-primary btn-60" ${statusPosting === 'B' ? 'disabled' : ''}>
                   Ubah
                 </button>
-                <button class="btn btn-sm action-print btn-outline-primary btn-60">
-                  ${this.buttonCaptionPrint}
-                </button>
+             
               </div>`;
           },
         },
       ],
       searchDelay: 1000,
+      //  <button class="btn btn-sm action-print btn-outline-primary btn-60">
+      //           ${this.buttonCaptionPrint}
+      //         </button>
+    // <button class="btn btn-sm action-posting btn-outline-primary btn-60" ${statusPosting === 'B' ? 'disabled' : ''}>Posting</button>
+
       // delivery: [],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-ubah', row).on('click', () =>
@@ -384,6 +386,7 @@ export class ProductionListForPostingComponent implements OnInit {
     const requestBody = {
       nomorTransaksi: [data.nomorTransaksi],
       kodeGudang: this.g.getUserLocationCode(),
+      userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
     };
 
     Swal.fire({

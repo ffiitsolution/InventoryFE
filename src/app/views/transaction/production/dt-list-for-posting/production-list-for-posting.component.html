@@ -1,14 +1,20 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <div class="row">
-        <div class="col d-flex  gap-2 justify-content-start align-items-center">
-          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
-            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
-            {{ "Kembali" | translate }}
-          </button>
+     <div class="row">
+        <div class="col d-flex flex-column justify-content-start ">
+        
           <h5>{{ "List Produksi Belum Posting" | translate }}</h5>
+         
         </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+       <div class="row">
         <div class="col text-end">
           <button
             type="button"
@@ -26,6 +32,10 @@
           >
           <i class="fa fa-check pe-2"></i>
             {{ "Posting All" | translate }}
+          </button>
+             <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+          
+            {{ "Kembali" | translate }}
           </button>
         </div>
         
@@ -100,12 +110,7 @@
           </c-card-body>
         </div>
       </div>
-    </c-card-body>
-  </c-card>
-</div>
-<div class="fade-in">
-  <c-card class="mb-4">
-    <c-card-body>
+      <div class="divider"></div>
       <div class="table-responsive">
         <table
           datatable
@@ -216,6 +221,10 @@ id="formModalPosting"    [attr.aria-hidden]="!isShowModalPosting">
       <div class="card shadow-sm mb-3" >
       
         <div class="card-body body-kirim">
+          
+          <div *ngIf="listSummaryData.length ==0" class="alert alert-warning text-center" role="alert">
+              <strong> Tidak ada data yang bisa diposting, silahkan infokan user kirim data terlebih dahulu!. </strong>
+          </div>
           <div class="row align-items-center mx-1 my-2" *ngFor="let item of listSummaryData">
             <div class="col-12 col-md-6 fw-semibold mb-2 mb-md-0">
               <!-- <i class="bi bi-calendar-range me-2 text-black"></i> -->

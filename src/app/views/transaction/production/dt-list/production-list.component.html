@@ -2,13 +2,19 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="row">
-        <div class="col d-flex  gap-2 justify-content-start align-items-center">
-          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
-            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
-            {{ "Kembali" | translate }}
-          </button>
+        <div class="col d-flex flex-column  justify-content-start">
+         
           <h5>{{ "Produksi" | translate }}</h5>
         </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="row">
+       
         <div class="col text-end">
           <button
             type="button"
@@ -26,6 +32,9 @@
           >
             <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
             {{ "Tambah Produksi" | translate }}
+          </button>
+           <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+            {{ "Kembali" | translate }}
           </button>
         </div>
         
@@ -67,12 +76,7 @@
           </c-card-body>
         </div>
       </div>
-    </c-card-body>
-  </c-card>
-</div>
-<div class="fade-in">
-  <c-card class="mb-4">
-    <c-card-body>
+      <div class="divider"></div>
       <div class="table-responsive">
         <table
           datatable

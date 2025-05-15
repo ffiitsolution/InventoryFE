@@ -467,4 +467,11 @@ export class AppService {
       payload
     );
   }
+
+    mpcsDefaultGudang(payload:any): Observable<any> {
+    return this.dataService.postData(
+      this.config.BASE_URL + '/api/auth/mpcs-default-gudang',
+      payload
+    );
+  }
 }
