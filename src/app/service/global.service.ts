@@ -415,14 +415,34 @@ export class GlobalService {
     return `${found?.label}` || status;
   }
 
-  getStatusAktifLabel(status: string) {
+  getStatusAktifLabel(status: string, isShowBadge: boolean = false) {
     const data = STATUS_AKTIF;
     const found = data.find((item) => item.value == status);
     if (!found) {
       return '-';
     }
-    return `${found?.label}` || status;
+    let badgeClass = 'bg-secondary';
+
+    switch (found.value) {
+      case 'A':
+        badgeClass = 'bg-success';
+        break;
+      case 'T':
+        badgeClass = 'bg-danger';
+        break;
+      // Tambahkan case lainnya jika ada
+    }
+
+    let labelStatus = '';
+    if (isShowBadge) {
+      labelStatus = `<span class="badge ${badgeClass}">${found.label.toUpperCase()}</span>`;
+    } else {
+      labelStatus = `${found?.label?.toUpperCase()}` || status;
+    }
+    return labelStatus;
+
   }
+
   getStatusReceivingOrderLabel(status: string, isPrintStatus: boolean = false) {
     const data = STATUS_PESANAN_TERIMA_PESANAN;
     const found = data.find((item) => item.value == status);

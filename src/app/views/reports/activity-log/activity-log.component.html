@@ -45,7 +45,7 @@
             </thead>
             <tbody>
               <ng-container *ngFor="let item of listFile; let i = index">
-                <tr (click)="selectFile(item)" class="cursor-pointer">
+                <tr (click)="selectFile(item)" class="cursor-pointer" style="cursor: pointer;">
                   <td [ngClass]="{'blue': isFileSelected(item)}">{{i+1}}</td>
                   <td [ngClass]="{'blue': isFileSelected(item)}">{{item.filename.toString().replace('.logger','')}}</td>
                   <td [ngClass]="{'blue': isFileSelected(item)}">{{item.fileSizeMB}} MB</td>
@@ -231,7 +231,7 @@
                 [cModalToggle]="modalListBackup.id">
                 Download
               </button>
-              <button *ngIf="dataUser?.groupId === 'IT'" class="btn-warning btn btn-sm text-white"
+              <button *ngIf="dataUser?.roleId === '3'" class="btn-danger btn btn-sm text-white"
                 (click)="confirmDelete(item.fileName)" [cModalToggle]="modalListBackup.id">
                 Delete
               </button>

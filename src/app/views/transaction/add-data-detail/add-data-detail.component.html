@@ -85,7 +85,7 @@
             }; let i = index">
               <td class="text-center" style="width: 100px;">{{ data.kodeBarang }}</td>
               <td class="text-center">{{ data.namaBarang }}</td>
-              <td class="text-center">{{ data.totalQtyPesan }}.00 {{data.satuanKecil}}</td>
+              <td class="text-center">{{ data.totalQtyPesan }} {{data.satuanKecil}}</td>
               <!-- <td class="text-center">{{ data.qtyPesanBesar }} {{ data.satuanBesar }}</td> -->
 
               <td class="text-center input-column">
@@ -115,7 +115,7 @@
 
               </td>
 
-              <td class="text-center">{{ data.konversi }}.00</td>
+              <td class="text-center">{{ data.konversi }}</td>
               <td class="text-center">
                 <div>
                   {{(helper.sanitizedNumber(data.qtyPesanBesar) *

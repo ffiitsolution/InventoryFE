@@ -322,6 +322,24 @@ export class AddDataDetailWastageComponent
         })) || []
       };
 
+      
+      if (this.listProductData.length < 2) {
+        this.toastr.warning('Mohon pilih barang!');
+        this.adding = false;
+        return;
+      }
+
+      const expiredButNotEntered = this.listProductData.filter((data: any) =>
+        data.kodeBarang && // pastikan kodeBarang tidak kosong
+        !this.listEntryExpired.some((entry: any) => entry.kodeBarang === data.kodeBarang)
+      );
+
+      if (expiredButNotEntered.length > 0) {
+        this.toastr.warning('Qty expired belum dilengkapi!');
+        this.adding = false;
+        return;
+      }
+
       Swal.fire({
         title: '<div style="color: white; background: #e55353; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
         html: `
@@ -633,7 +651,7 @@ export class AddDataDetailWastageComponent
       order: [
         [8, 'asc'], [1, 'asc'],
       ],
-      ajax: (dataTablesParameters: any, callback:any) => {
+      ajax: (dataTablesParameters: any, callback: any) => {
 
         this.pageModal.start = dataTablesParameters.start;
         this.pageModal.length = dataTablesParameters.length;
@@ -675,7 +693,7 @@ export class AddDataDetailWastageComponent
           data: 'dtIndex',
           title: 'Pilih Barang  ',
           className: 'text-center',
-            render: (data: any, _: any, row: any) => {
+          render: (data: any, _: any, row: any) => {
             let isChecked = this.selectedRow.some(item => item.kodeBarang === row.kodeBarang) ? 'checked' : '';
             return `<input type="checkbox" class="row-checkbox" data-id="${row.kodeBarang}" ${isChecked}>`;
           }
@@ -686,9 +704,10 @@ export class AddDataDetailWastageComponent
         { data: 'satuanBesar', title: 'Satuan Besar' },
         { data: 'satuanKecil', title: 'Satuan Kecil' },
         { data: 'defaultGudang', title: 'Default Gudang' },
-        { data: 'flagConversion',
+        {
+          data: 'flagConversion',
           title: 'Conversion Factor',
-            render: (data: any, _: any, row: any) => {
+          render: (data: any, _: any, row: any) => {
             if (data === 'T')
               return "Tidak";
             else if (data === 'Y')
@@ -699,19 +718,14 @@ export class AddDataDetailWastageComponent
           },
           orderable: true
         },
-        { data: 'statusAktif',
+        {
+          data: 'statusAktif',
           title: 'Status Aktif',
-            render: (data: any, _: any, row: any) => {
-            if (data === 'T')
-              return "Inactive";
-            else if (data === 'A')
-              return "Active";
-
-            else
-              return data
+          render: (data: any, _: any, row: any) => {
+            return this.globalService.getStatusAktifLabel(data, true);
           },
           orderable: true
-         },
+        },
       ],
       searchDelay: 1000,
       // delivery: [],
