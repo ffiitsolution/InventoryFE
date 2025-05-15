@@ -165,6 +165,16 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
       };
     }
 
+    if (this.currentReport === 'Tanggal Pesan vs Tanggal Kirim') {
+      param = {
+        kodeGudang: this.userData.defaultLocation.kodeLocation,
+        tipeListing: this.paramTipeListing,
+        startDate: this.g.transformDate(this.dateRangeFilter[0]),
+        endDate: this.g.transformDate(this.dateRangeFilter[1]),
+        statusPesanan:this.paramStatusPesanan,
+      };
+    }
+
     param = {
       ...param,
       userData: this.userData,
