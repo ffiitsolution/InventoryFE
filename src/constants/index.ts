@@ -235,7 +235,7 @@ export const STATUS_KIRIM_PESANAN_KE_GUDANG = [
 
 export const STATUS_PRODUKSI = [
   {
-    label: 'BELUM KIRIM',
+    label: 'OPEN',
     value: 'B',
     color: '#dc3545',    // Red
     textColor: '#ffffff',

@@ -180,7 +180,7 @@ export class AddDataDetailProductionComponent
           'D MMM YYYY'
         ),
         jumlahResep: this.headerProduction.jumlahHasilProduksi,
-        userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+        userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
         details: [
           ...this.listProductData
             .filter((item) => item.bahanBaku && item.bahanBaku.trim() !== '')
@@ -376,7 +376,7 @@ export class AddDataDetailProductionComponent
       konversi: parseFloat(this.selectedExpProduct.konversi).toFixed(2),
       totalQty: '0.0',
       kodeBarang: this.selectedExpProduct.bahanBaku,
-      validationExpiredMessageList: 'Tanggal tidak boleh kosong!',
+      validationExpiredMessageList: 'Tanggal tidak boleh kosong, silahkan pilih tanggal! ',
       validationQty: '',
     });
   }
@@ -426,11 +426,11 @@ export class AddDataDetailProductionComponent
     });
 
     if (totalQtyExpired != totalQtyPemakaian) {
-      this.toastr.error('Total Qty Expired harus sama dengan Qty Pemakaian');
+      this.toastr.error('Total Qty Expired harus sama dengan Qty Pemakaian,  Tolong masukan Qty Expired dengan benar!');
     } else if(validationExpiredMessageList){
       this.toastr.error(validationExpiredMessageList);
     }else if(totalQtyEmpty > 0){
-      this.toastr.error('Total Qty Expired tidak boleh 0 !');
+      this.toastr.error('Total Qty Expired tidak boleh 0, Silahkan hapus data yg tidak terpakai atau isikan Qty dengan benar!');
     } else {
       this.isShowModalExpired = false;
     }
@@ -606,7 +606,7 @@ export class AddDataDetailProductionComponent
     console.log('expiredDate', expiredDate);
 
     if (expiredDate < today) {
-      validationMessage = `Tanggal kadaluarsa tidak boleh lebih < dari sekarang!`;
+      validationMessage = `Tanggal kadaluarsa tidak boleh lebih < dari sekarang, silahkan pilih tanggal lain!`;
     }
 
     // ✅ Get only the filtered list of entries for the same `kodeBarang`
@@ -617,7 +617,7 @@ export class AddDataDetailProductionComponent
 
     // ✅ Validate empty input
     if (!inputDate) {
-      validationMessage = 'Tanggal tidak boleh kosong!';
+      validationMessage = 'Tanggal tidak boleh kosong!, silahkan pilih tanggal!';
     } else {
       // ✅ Check if the item is expired
       const expiredData = this.listEntryExpired.find(
@@ -633,7 +633,7 @@ export class AddDataDetailProductionComponent
       );
 
       if (isDuplicate) {
-        validationMessage = 'Tanggal ini sudah ada dalam daftar!';
+        validationMessage = 'Tanggal ini sudah ada dalam daftar, silahkan pilih tanggal lain!';
       }
     }
 
@@ -830,7 +830,7 @@ export class AddDataDetailProductionComponent
           'D MMM YYYY'
         ),
         jumlahResep: this.headerData.jumlahHasilProduksi,
-        userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+        userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
         details: [
           ...this.listProductData
             .filter((item) => item.bahanBaku && item.bahanBaku.trim() !== '')

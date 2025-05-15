@@ -180,7 +180,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loadingState['submit'] = true;
 
     let param = {};
-    if (this.currentReport === 'Stock Barang') {
+    if (['Stock Barang','Stock Barang Dibawah Minimum','Stock Barang Diatas Maximum'].includes(this.currentReport )) {
       const previousMonth = moment(this.paramTglTransaksi).subtract(1, 'month');
 
       param = {

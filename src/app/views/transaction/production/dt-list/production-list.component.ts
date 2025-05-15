@@ -50,7 +50,7 @@ export class ProductionListComponent implements OnInit {
   isShowModalReport: boolean = false;
   alreadyPrint: boolean = false;
   disabledPrintButton: boolean = false;
-
+  
   constructor(
     private dataService: DataService,
     private g: GlobalService,

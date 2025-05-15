@@ -61,6 +61,8 @@ export class DetailProductionComponent
   protected config = AppConfig.settings.apiServer;
   isShowModalExpired: boolean = false;
   selectedRowData: any;
+  loadingPosting: boolean = false;
+  isShowModalReport: boolean = false;
   constructor(
     private dataService: DataService,
     public g: GlobalService,
@@ -97,7 +99,7 @@ export class DetailProductionComponent
         autoWidth: true,
         info: true,
         drawCallback: () => {},
-        ajax: (dataTablesParameters: any, callback:any) => {
+        ajax: (dataTablesParameters: any, callback: any) => {
           this.page.start = dataTablesParameters.start;
           this.page.length = dataTablesParameters.length;
           const params = {
@@ -163,30 +165,30 @@ export class DetailProductionComponent
           {
             data: 'konversi',
             title: 'Konversi',
-            render: (data:any, type:any, row:any) =>
+            render: (data: any, type: any, row: any) =>
               `${Number(data).toFixed(2)} ${row.satuanKecil}`,
           },
           {
             data: 'qtyBesar',
             title: 'Qty Besar',
-            render: (data:any, type:any, row:any) =>
+            render: (data: any, type: any, row: any) =>
               `${Number(data).toFixed(2)} ${row.satuanBesar}`,
           },
           {
             data: 'qtyKecil',
             title: 'Qty Kecil',
-            render: (data:any, type:any, row:any) =>
+            render: (data: any, type: any, row: any) =>
               `${Number(data).toFixed(2)} ${row.satuanKecil}`,
           },
           {
             data: 'totalQty',
             title: 'Total Qty',
-            render: (data:any, type:any, row:any) =>
+            render: (data: any, type: any, row: any) =>
               `${Number(data).toFixed(2)} ${row.satuanKecil}`,
           },
           {
             title: 'Cek Quantity Expired',
-            render: (data:any, type:any, row:any) => {
+            render: (data: any, type: any, row: any) => {
               if (row.flagExpired === 'Y') {
                 return `<div class="d-flex justify-content-start">
                       <button class="btn btn-sm action-view btn-outline-success w-50"><i class="fa fa-check pe-1"></i> Cek</button>
@@ -241,7 +243,6 @@ export class DetailProductionComponent
       .getExpiredData(payload)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
-
         next: (res) => {
           if (res) {
             this.listDataExpired = res;
@@ -277,13 +278,11 @@ export class DetailProductionComponent
   }
 
   onBackPressed() {
-
-    if (this.selectedProduction.statusPosting!=='P') {
+    if (this.selectedProduction.statusPosting !== 'P') {
       this.router.navigate(['/transaction/production/list-dt-for-posting']);
-    }else{
+    } else {
       this.router.navigate(['/transaction/production/list-dt']);
     }
-
   }
 
   onDelete() {
@@ -337,5 +336,80 @@ export class DetailProductionComponent
     return this.listDataExpired.reduce((sum, item) => {
       return sum + Math.abs(Number(item.totalQty));
     }, 0);
+  }
+
+  onPosting(data: any) {
+    this.loadingPosting = true;
+
+    const requestBody = {
+      nomorTransaksi: [data.nomorTransaksi],
+      kodeGudang: this.g.getUserLocationCode(),
+      userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
+    };
+
+    Swal.fire({
+      ...this.g.componentKonfirmasiPosting,
+      showConfirmButton: false,
+      showCancelButton: false,
+      width: '600px',
+      customClass: {
+        popup: 'custom-popup',
+      },
+      didOpen: () => {
+        const submitBtn = document.getElementById('btn-submit');
+        const cancelBtn = document.getElementById('btn-cancel');
+
+        submitBtn?.addEventListener('click', () => {
+          this.appService.postingProduction(requestBody).subscribe({
+            next: (res: any) => {
+              if (!res.success) {
+                this.appService.handleErrorResponse(res);
+              } else {
+                this.toastr.success('Berhasil Posting!');
+              }
+
+              this.loadingPosting = false;
+
+              Swal.close();
+              this.onBackPressed();
+            },
+            error: (err: any) => {
+              console.log('An error occurred while updating the profile.');
+              this.loadingPosting = false;
+
+              Swal.close();
+            },
+          });
+        });
+
+        cancelBtn?.addEventListener('click', () => {
+          Swal.close();
+          this.toastr.info('Posting dibatalkan');
+          this.loadingPosting = false;
+        });
+      },
+    });
+  }
+
+  onPrint(){
+    
+    this.isShowModalReport = true;
+
+    this.paramGenerateReport = {
+      noTransaksi: this.selectedProduction.nomorTransaksi,
+      userEntry: this.selectedProduction.userCreate,
+      jamEntry: this.g.transformTime(this.selectedProduction.timeCreate),
+      tglEntry: this.g.transformDate(this.selectedProduction.dateCreate),
+      outletBrand: 'KFC',
+      kodeGudang: this.g.getUserLocationCode(),
+      isDownloadCsv: false,
+      reportName: 'cetak_production',
+      confirmSelection: 'Ya',
+    };
+  }
+
+  closeModal() {
+    this.isShowModalReport = false;
+    this.disabledPrintButton = false;
   }
 }

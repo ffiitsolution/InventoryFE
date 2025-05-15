@@ -5,10 +5,10 @@
         <div
           class="d-grid gap-3 d-md-flex justify-content-start align-items-center"
         >
-          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+          <!-- <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
             <i class="fa fa-chevron-left icon-12 icon-gap"></i>
             {{ "Kembali" | translate }}
-          </button>
+          </button> -->
           <h5>{{ "Tambah Penerimaan Barang Bekas" | translate }}</h5>
         </div>
       </c-row>
@@ -248,17 +248,22 @@
                   </div>
                 </div>
 
-                <div style="width: 96%" class="p-2">
-                  <button
-                    class="shadow-sm btn w-100 btn-info text-white"
-                    *ngIf="!isShowDetail"
-                    [disabled]="myForm.invalid"
-                    (click)="onAddDetail()"
-                  >
-                    <i class="fa fa-check pe-2"></i>
-                    {{ "Detail Transaksi" | translate }}
-                  </button>
-                </div>
+                <div style="width: 98%;" class=" px-2 py-1 d-flex justify-content-end gap-2 align-items-center">
+                <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+                  <!-- <i class="fa fa-chevron-left icon-12 icon-gap"></i> -->
+                  {{ "Kembali" | translate }}
+                </button>
+
+                <button
+                  class="shadow-sm btn btn-primary text-white"
+                  *ngIf="!isShowDetail"
+                  [disabled]="myForm.invalid"
+                  (click)="onAddDetail()"
+                >
+                  <i class="fa fa-check pe-2"></i>
+                  {{ "Detail Transaksi" | translate }}
+                </button>
+              </div>
               </form>
             </div>
           </div>
