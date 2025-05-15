@@ -51,16 +51,18 @@ export class AddDataDetailGudangComponent
   RejectingOrder: boolean = false;
   alreadyPrint: Boolean = false;
   totalLength: number = 0;
+  validationMessageList: string[] = [];
   listOrderData: any[] = [];
   buttonCaptionView: String = 'Lihat';
   public loading: boolean = false;
+  listProductData: any[] = []; // Declare and initialize listProductData
   page: number = 1;
   cekPrint: any;
   printData: any;
   data: { qtyWasteKecil?: any } = {};
 
   protected config = AppConfig.settings.apiServer;
-
+  
   constructor(
     public g: GlobalService,
     private translation: TranslationService,
@@ -151,10 +153,10 @@ export class AddDataDetailGudangComponent
     event.target.value = inputValue;
     this.listOrderData[index].QTY_TERIMA_BESAR = parseFloat(inputValue);
     this.listOrderData[index].TOTAL_QTY_TERIMA =
-    (
-      Number(inputValue) * Number(this.listOrderData[index].KONVERSI) +
-      Number(this.listOrderData[index].QTY_TERIMA_KECIL)
-    ).toFixed(2);
+      (
+        Number(inputValue) * Number(this.listOrderData[index].KONVERSI) +
+        Number(this.listOrderData[index].QTY_TERIMA_KECIL)
+      ).toFixed(2);
   }
 
   onInputValueItemDetailkecil(event: any, index: number): void {
@@ -179,10 +181,10 @@ export class AddDataDetailGudangComponent
 
     this.listOrderData[index].QTY_TERIMA_KECIL = parseFloat(inputValue);
     this.listOrderData[index].TOTAL_QTY_TERIMA =
-    (
-      Number(this.listOrderData[index].QTY_TERIMA_BESAR) * Number(this.listOrderData[index].KONVERSI) +
-      Number(inputValue)
-    ).toFixed(2);
+      (
+        Number(this.listOrderData[index].QTY_TERIMA_BESAR) * Number(this.listOrderData[index].KONVERSI) +
+        Number(inputValue)
+      ).toFixed(2);
 
   }
 
@@ -264,14 +266,31 @@ export class AddDataDetailGudangComponent
   }
 
   onSubmit() {
+    let hasInvalidData = false; // Tambahkan flag untuk mengecek validasi
+        if (!this.isDataInvalid()) {
+          if (this.listProductData.length === 1) {
+            Swal.fire({
+              title: 'Pesan Error',
+              html: 'TIDAK ADA QUANTITY YANG DIPAKAI, PERIKSA KEMBALI..!!',
+              confirmButtonColor: '#3085d6',
+              confirmButtonText: 'OK',
+            });
+            return;
+          }
     Swal.fire({
-      title: 'Apakah Anda yakin?',
-      text: 'Pastikan data sudah benar sebelum menyimpan!',
-      icon: 'warning',
+      title:
+        '<div style="color: white; background: #c0392b; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
+      html: `
+        <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">
+          <p>Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
+          <p class="text-danger" style="font-weight: bold;">DATA YANG SUDAH DI POSTING TIDAK DAPAT DIPERBAIKI ..!!</p>
+        </div>
+        <div class="divider my-3"></div>
+      `,
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Ya, Simpan!',
+      confirmButtonText: 'Proses Pengiriman',
       cancelButtonText: 'Batal',
     }).then((result) => {
       if (result.isConfirmed) {
@@ -279,6 +298,16 @@ export class AddDataDetailGudangComponent
       }
     });
   }
+}
+
+isDataInvalid() {
+  let dataInvalid = false;
+  dataInvalid =
+    this.validationMessageList.some((msg) => msg.trim() !== '') ||
+    this.validationMessageList.some((msg) => msg.trim() !== '');
+
+  return dataInvalid;
+}
 
   prosesSimpanData() {
     this.adding = true;
@@ -317,20 +346,11 @@ export class AddDataDetailGudangComponent
       return;
     }
 
-    fetch(
-      `${this.config.BASE_URL}/api/delivery-order/simpan-data-penerimaan-dari-gudang`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(param),
-      }
-    )
-      .then((response) => {
-        if (!response.ok)
-          throw new Error(`HTTP error! status: ${response.status}`);
-        return response.json();
-      })
-      .then((data) => {
+    this.appService.insert(
+      `/api/delivery-order/simpan-data-penerimaan-dari-gudang`,
+      param
+    ).subscribe((response) => {
+        const data = response.data;
         if (data.some((item: any) => item.message)) {
           this.toastr.success('Data penerimaan berhasil disimpan!');
           setTimeout(() => {
@@ -341,12 +361,6 @@ export class AddDataDetailGudangComponent
         } else if (data.some((item: any) => item.error)) {
           this.toastr.error('Gagal menyimpan: ' + data[0].error);
         }
-      })
-      .catch((error) => {
-        this.toastr.error('Terjadi kesalahan: ' + error.message);
-      })
-      .finally(() => {
-        this.adding = false;
       });
   }
 
@@ -610,22 +624,22 @@ export class AddDataDetailGudangComponent
     }
   }
 
-    onShowModalExpired(event: any, index: number) {
-      this.selectedExpProduct = this.listOrderData[index];
+  onShowModalExpired(event: any, index: number) {
+    this.selectedExpProduct = this.listOrderData[index];
 
-      const totalInputValue = parseFloat(this.selectedExpProduct.QTY_TERIMA_BESAR) + parseFloat(this.selectedExpProduct.QTY_TERIMA_KECIL);
+    const totalInputValue = parseFloat(this.selectedExpProduct.QTY_TERIMA_BESAR) + parseFloat(this.selectedExpProduct.QTY_TERIMA_KECIL);
 
-      const maxAllowedBesar = Number(this.selectedExpProduct.QTY_PESAN_BESAR);
-      const maxAllowedKecil = Number(this.selectedExpProduct.QTY_PESAN_KECIL);
+    const maxAllowedBesar = Number(this.selectedExpProduct.QTY_PESAN_BESAR);
+    const maxAllowedKecil = Number(this.selectedExpProduct.QTY_PESAN_KECIL);
 
-      if (totalInputValue > (maxAllowedBesar + maxAllowedKecil)) {
-        Swal.fire({
-          title: 'Error!',
-          text: 'QTY TERIMA TIDAK BOLEH LEBIH BESAR DARI QTY PESANAN... HARAP DIPERIKSA KEMBALI',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
-      } else {
+    if (totalInputValue > (maxAllowedBesar + maxAllowedKecil)) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'QTY TERIMA TIDAK BOLEH LEBIH BESAR DARI QTY PESANAN... HARAP DIPERIKSA KEMBALI',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    } else {
 
       this.selectedExpProduct.TOTAL_QTY_PESAN = parseFloat(
         (
@@ -640,7 +654,7 @@ export class AddDataDetailGudangComponent
       this.selectedExpProduct.QTY_PESAN_BESAR = parseFloat(
         this.selectedExpProduct.QTY_PESAN_BESAR
       ).toFixed(2);
-  
+
       let totalQtySum = parseFloat(
         (
           Number(this.selectedExpProduct.QTY_PESAN_BESAR) *
@@ -648,7 +662,7 @@ export class AddDataDetailGudangComponent
           Number(this.selectedExpProduct.QTY_PESAN_KECIL)
         ).toFixed(2)
       ).toFixed(2);
-  
+
       this.totalFilteredExpired = totalQtySum;
       if (
         !this.listEntryExpired.some(
@@ -661,7 +675,7 @@ export class AddDataDetailGudangComponent
             .add(1, 'days')
             .locale('id')
             .format('DD MMM YYYY'),
-            QTY_PESAN_BESAR: parseFloat(
+          QTY_PESAN_BESAR: parseFloat(
             this.selectedExpProduct.QTY_PESAN_BESAR
           ).toFixed(2),
           QTY_PESAN_KECIL: parseFloat(
@@ -682,28 +696,40 @@ export class AddDataDetailGudangComponent
           validationQty: '',
         });
       }
-  
-      this.isShowModalExpired = true;
-    }}
 
-    getTotalExpiredData(KODE_BARANG: string, KONVERSI: number) {
-      const filtered = this.listEntryExpired.filter(
-        (item) => item.KODE_BARANG === KODE_BARANG
-      );
+      this.isShowModalExpired = true;
+    }
+  }
+
+  getTotalExpiredData(KODE_BARANG: string, KONVERSI: number) {
+    const filtered = this.listEntryExpired.filter(
+      (item) => item.KODE_BARANG === KODE_BARANG
+    );
+
+    const totalExpired = filtered.reduce(
+      (acc, item) => {
+        acc.QTY_TERIMA_BESAR +=
+          (Number(item.QTY_TERIMA_BESAR) || 0) * KONVERSI;
+        acc.QTY_PESAN_KECIL += Number(item.QTY_TERIMA_KECIL) || 0;
+        return acc;
+      },
+      { QTY_TERIMA_BESAR: 0, QTY_TERIMA_KECIL: 0 }
+    );
+
+    return (
+      totalExpired.QTY_TERIMA_BESAR + totalExpired.QTY_TERIMA_KECIL
+    ).toFixed(2);
+  }
+
   
-      const totalExpired = filtered.reduce(
-        (acc, item) => {
-          acc.QTY_TERIMA_BESAR +=
-            (Number(item.QTY_TERIMA_BESAR) || 0) * KONVERSI; 
-          acc.QTY_PESAN_KECIL += Number(item.QTY_TERIMA_KECIL) || 0;
-          return acc;
-        },
-        { QTY_TERIMA_BESAR: 0, QTY_TERIMA_KECIL: 0 }
-      );
+    getJumlahItem(): number {
+      if (this.listProductData.length === 0) {
+        return 0;
+      }
   
-      return (
-        totalExpired.QTY_TERIMA_BESAR + totalExpired.QTY_TERIMA_KECIL
-      ).toFixed(2);
+      // Menghitung jumlah item yang memiliki namaBarang tidak kosong
+      const validItems = this.listProductData.filter(item => item.namaBarang.trim() !== "");
+      return validItems.length;
     }
     
 }

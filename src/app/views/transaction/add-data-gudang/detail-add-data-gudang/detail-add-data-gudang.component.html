@@ -107,9 +107,9 @@
 
 <div class="fade-in">
   <c-card class="mb-4">
-    <c-card-body>
+    <!-- <c-card-body> -->
       <!-- Tombol Simpan & Cetak -->
-      <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
+      <!-- <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
         <button
           class="btn btn-info text-white btn-150 pe-3"
           (click)="onSubmit()"
@@ -146,8 +146,42 @@
             </li>
           </ul>
         </div>
-      </div>
+      </div> -->
 
+      <c-card-header class="py-1">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          
+          <!-- Jumlah Item -->
+          <div class="d-flex align-items-center gap-2">
+            <label for="pemakaian barang sendiri">{{ "Jumlah Item" | translate }}</label>
+            <input type="text"
+                  class="form-control form-control-sm text-center input-disabled"
+                  [value]="getJumlahItem()"
+                  readonly
+                  style="width: 100px;" />
+          </div>
+      
+          <div class="d-grid gap-3 d-md-flex justify-content-end">
+            <button class="btn btn-info btn-sm text-white pe-3"
+                    (click)="onSubmit()">
+              <!-- <i class="fa fa-check pe-2" *ngIf="!loadingSimpan"></i>
+              <i class="fa fa-spinner fa-spin" *ngIf="loadingSimpan"></i> -->
+              {{ "Proses Simpan Data" | translate }}
+            </button>
+        
+            <button
+              class="btn btn-secondary text-white btn-150"
+              (click)="onBackPressed()"
+            >
+              <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
+            </button>
+          </div>
+    
+        </div>
+      </c-card-header>
+      <c-card-body>
+  
+      
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
