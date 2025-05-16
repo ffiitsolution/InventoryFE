@@ -57,6 +57,18 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
   paramTipeListing: string = 'rekap';
   paramStatusPesanan = '1';//pesann baru
 
+  baseConfig: any = {
+    displayKey: 'name', // Key to display in the dropdown
+    search: true, // Enable search functionality
+    height: '200px', // Dropdown height
+    customComparator: () => {}, // Custom sorting comparator
+    moreText: 'lebih banyak', // Text for "more" options
+    noResultsFound: 'Tidak ada hasil', // Text when no results are found
+    searchOnKey: 'name' // Key to search
+  };
+  public dpConfigSinglePicker: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+  dateFilter: any = new Date();
+
   constructor(
     private service: AppService,
     private g: GlobalService,
@@ -69,6 +81,13 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.customTodayClass = 'today-highlight';
     this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
+
+    this.dpConfigSinglePicker.dateInputFormat = 'DD/MM/YYYY';
+    this.dpConfigSinglePicker.adaptivePosition = true;
+    this.dpConfigSinglePicker.minDate = new Date(new Date().setHours(0, 0, 0, 0));
+    this.dpConfigSinglePicker.containerClass =  'theme-dark-blue';
+    this.dpConfigSinglePicker.customTodayClass = 'today-highlight';
+
   }
 
   transformDate(date: any): string {
@@ -162,6 +181,24 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
         tipeListing: this.paramTipeListing,
         START_DATE: this.transformDate(this.dateRangeFilter[0]),
         END_DATE: this.transformDate(this.dateRangeFilter[1]),
+      };
+    }
+
+    if (this.currentReport === 'Tanggal Pesan vs Tanggal Kirim') {
+      param = {
+        kodeGudang: this.userData.defaultLocation.kodeLocation,
+        tipeListing: this.paramTipeListing,
+        startDate: this.g.transformDate(this.dateRangeFilter[0]),
+        endDate: this.g.transformDate(this.dateRangeFilter[1]),
+        statusPesanan:this.paramStatusPesanan,
+      };
+    }
+
+    if (this.currentReport === 'Estimasi Pengiriman Barang') {
+      param = {
+        kodeGudang: this.userData.defaultLocation.kodeLocation,
+        tipeListing: this.paramTipeListing,
+        tglBrgDiKirim: this.g.transformDate(this.dateFilter),
       };
     }
 

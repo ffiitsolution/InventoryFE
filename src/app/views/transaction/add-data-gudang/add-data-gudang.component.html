@@ -192,14 +192,25 @@
                   <label for="notes">{{ "Catatan (Keterangan Lain)" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                <textarea
-                placeholder=""
-                class="form-control w-100"
-                [(ngModel)]="formData.notes"
-                id="exampleFormControlTextarea1"
-                rows="1"
-                name="keterangan1">
+                  <textarea
+                  placeholder=""
+                  type="text"
+                  class="form-control"
+                  id="keterangan"
+                  name="keterangan"
+                  [(ngModel)]="formData.notes"
+                  (input)="onKeteranganInput()"
+                  [class.is-invalid]="isKeteranganInvalid"
+                  maxlength="50"
                 ></textarea>
+            
+                <div class="text-end text-muted mt-1">
+                  <small>{{ charCount }}/50 karakter</small>
+                </div>
+            
+                <div *ngIf="isKeteranganInvalid" class="text-danger mt-1 fw-bold">
+                 HARAP MASUKAN KARAKTER YANG VALID..!!!!
+                </div>
                 </div>
               </div>
 

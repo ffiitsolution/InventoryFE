@@ -1,8 +1,10 @@
 import {
   AfterViewInit,
   Component,
+  EventEmitter,
   OnDestroy,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { TranslationService } from '../../../../service/translation.service';
@@ -51,6 +53,7 @@ export class AddDataDetailGudangComponent
   RejectingOrder: boolean = false;
   alreadyPrint: Boolean = false;
   totalLength: number = 0;
+  @Output() jumlahItem = new EventEmitter<number>();
   validationMessageList: string[] = [];
   listOrderData: any[] = [];
   buttonCaptionView: String = 'Lihat';
@@ -62,7 +65,10 @@ export class AddDataDetailGudangComponent
   data: { qtyWasteKecil?: any } = {};
 
   protected config = AppConfig.settings.apiServer;
-  
+  listCurrentPage: number = 1;
+  itemsPerPage: number = 5;
+  searchListViewOrder: string = '';
+
   constructor(
     public g: GlobalService,
     private translation: TranslationService,
@@ -601,6 +607,35 @@ isDataInvalid() {
     })
   }
 
+  onAdd(){
+    this.listProductData.push({
+      KODE_BARANG: '',
+      NAMA_BARANG: '',
+      KONVERSI: '',
+      SATUAN_KECIL: '',
+      SATUAN_BESAR: '',
+      QTY_PESAN_BESAR: '0.00',
+      QTY_PESAN_KECIL: '0.00',
+      TOTAL_QTY_PESAN: '0.00',
+      isConfirmed: false,
+    });
+
+    this.jumlahItem.emit(this.listProductData.length);
+  }
+
+  onFilterTextChange(newValue: string) {
+    this.listCurrentPage = 1;
+    if (newValue.length >= 3) {
+      this.totalLength = 1;
+    } else {
+      this.totalLength = this.listProductData.length;
+    }
+    this.listCurrentPage = this.listCurrentPage;
+  }
+
+  getPaginationIndex(i: number): number {
+    return (this.listCurrentPage - 1) * this.itemsPerPage + i;
+  }
   onSaveEntryExpired() {
     let TOTAL_QTY_EXPIRED = 0;
 
@@ -723,12 +758,12 @@ isDataInvalid() {
 
   
     getJumlahItem(): number {
-      if (this.listProductData.length === 0) {
+      if (this.listOrderData.length === 0) {
         return 0;
       }
   
       // Menghitung jumlah item yang memiliki namaBarang tidak kosong
-      const validItems = this.listProductData.filter(item => item.namaBarang.trim() !== "");
+      const validItems = this.listOrderData.filter(item => item.KODE_BARANG.trim() !== "");
       return validItems.length;
     }
     

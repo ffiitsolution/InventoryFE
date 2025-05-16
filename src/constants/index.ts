@@ -273,7 +273,7 @@ export const RANGE_BERAT_KGS = [
 
 export const STATUS_PRODUKSI = [
   {
-    label: 'BELUM KIRIM',
+    label: 'OPEN',
     value: 'B',
     color: '#dc3545',    // Red
     textColor: '#ffffff',

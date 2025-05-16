@@ -24,6 +24,9 @@ import moment from 'moment';
   providedIn: 'root',
 })
 export class GlobalService {
+  getCurrentUser() {
+    throw new Error('Method not implemented.');
+  }
   tabTitle = 'Inventory Management System | PT FAST FOOD INDONESIA';
   protected config = AppConfig.settings.apiServer;
   urlServer = this.config.BASE_URL;
@@ -53,6 +56,7 @@ export class GlobalService {
   statusEndOfMonth: any = '';
   statusPlanningOrder: any = '';
   statusBackupDb: any = '';
+  mpcsDefaultGudang: string='';
   componentKonfirmasiPosting: any = {
     title:
       '<div style="color: white; background: #c0392b; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
