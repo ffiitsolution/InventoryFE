@@ -24,6 +24,9 @@ import moment from 'moment';
   providedIn: 'root',
 })
 export class GlobalService {
+  getCurrentUser() {
+    throw new Error('Method not implemented.');
+  }
   tabTitle = 'Inventory Management System | PT FAST FOOD INDONESIA';
   protected config = AppConfig.settings.apiServer;
   urlServer = this.config.BASE_URL;

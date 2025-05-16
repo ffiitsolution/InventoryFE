@@ -88,7 +88,11 @@ export class DisplayDataGudangComponent implements OnInit {
           search: dataTablesParameters.search?.value || '',
           limit: limit,
           offset: offset,
+          kodeCabang: this.g.getUserCabangCode(),
+          kodeKota: this.g.getUserCode(),
           kodeGudang: this.g.getUserLocationCode(),
+          
+
           startDate: moment(this.dateRangeFilter[0])
             .set({
               hours: 0,

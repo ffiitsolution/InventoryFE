@@ -42,6 +42,8 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
   minDate: Date;
   maxDate: Date;
   isShowDetail: boolean = false;
+  charCount: number = 0;
+  isKeteranganInvalid: boolean = false;
   selectedRowData: any;
 
   @ViewChild('formModal') formModal: any;
@@ -119,6 +121,16 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     this.renderDataTables();
   }
 
+  onKeteranganInput(): void {
+    const allowedRegex = /^[A-Za-z0-9\s-]*$/;
+    const currentValue = this.formData.notes || '';
+
+    this.charCount = currentValue.length;
+
+    // Cek apakah ada karakter tidak valid
+    this.isKeteranganInvalid = !allowedRegex.test(currentValue);
+  }
+
   actionBtnClick(action: string, data: any = null) {
     this.selectedRo = JSON.stringify(data);
     this.renderDataTables();
@@ -127,18 +139,33 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     this.onSaveData();
   }
 
-  isDoNumberValid(){
-    // dicek apakah  this.selectedRo.nosuratjalan ada
-    //
-    if (this.selectedRo.nomorSuratJan && this.selectedRo.nomorSuratJan != this.formData.nomorSuratJan)  {
+  // isDoNumberValid(){
+  //   // dicek apakah  this.selectedRo.nosuratjalan ada
+  //   //
+  //   if (this.selectedRo.nomorSuratJan && this.selectedRo.nomorSuratJan != this.formData.nomorSuratJan)  {
+  //     return false;
+  //   }
+  //   else if ((this.formData.nomorSuratJan?.length && !/^DO-\d+$/.test(this.formData.nomorSuratJan)) || this.formData.nomorSuratJan.length > 20) {
+  //     return true;
+  //   }
+  //   return false
+  // }
+
+  isDoNumberValid() {
+    if (this.selectedRo && this.selectedRo.nomorSuratJan && this.selectedRo.nomorSuratJan !== this.formData.nomorSuratJan) {
       return false;
     }
-    else if ((this.formData.nomorSuratJan?.length && !/^DO-\d+$/.test(this.formData.nomorSuratJan)) || this.formData.nomorSuratJan.length > 20) {
-      return true;
+  
+    if (this.formData.nomorSuratJan) {
+      // pastikan nomorSuratJan ada sebelum akses .length
+      if (!/^DO-\d+$/.test(this.formData.nomorSuratJan) || this.formData.nomorSuratJan.length > 20) {
+        return true;
+      }
     }
-    return false
+  
+    return false;
   }
-
+  
   onAddDetail() {
     if (!this.formData.nomorSuratJan || this.formData.nomorSuratJan.trim() === '') {
       Swal.fire({
@@ -195,74 +222,42 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
       paging: true,
       drawCallback: () => { },
       ajax: (dataTablesParameters: any, callback:any) => {
-        let page = Math.floor(dataTablesParameters.start / dataTablesParameters.length);
-        let limit = dataTablesParameters.length || 5;
-        let offset = page * limit;
-        // this.page.start = dataTablesParameters.start || 0;
-        // this.page.length = dataTablesParameters.length|| 10;
+        this.page.start = dataTablesParameters.start;
+        this.page.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.globalService.getUserLocationCode(),
           tipePesanan : 'I',
-          // limit : this.page.length,
-          // offset : this.page.start,
-          limit: limit,
-          offset: offset,
+          kodeGroup: 'G'
         };
-        this.appService.getNewReceivingOrderGudang(params)
-          .subscribe((resp: any) => {
-            const mappedData = resp.penerimaanGudangList.map((item: any, index: number) => {
-              // hapus rn dari data
-              const { rn, ...rest } = item;
-              const finalData = {
-                ...rest,
-                // dtIndex: this.page.start + index + 1,
-                dtIndex: offset + index + 1,
-              };
-              return finalData;
-            });
-            // this.page.recordsTotal = resp.recordsTotal || mappedData.length;
-            // this.page.recordsFiltered = resp.recordsFiltered || mappedData.length;
-            const totalRecords = resp.totalRecords !== undefined && !isNaN(resp.totalRecords)
-              ? resp.totalRecords
-              : mappedData.length;
-            callback({
-              // recordsTotal: resp.recordsTotal,
-              // recordsFiltered: resp.recordsFiltered,
-              recordsTotal: totalRecords,
-              recordsFiltered: totalRecords,
-              data: mappedData,
-            });
+        this.appService.getNewReceivingOrderGudang(params).subscribe((resp: any) => {
+          const mappedData = resp.data.map((item: any, index: number) => {
+            // hapus rn dari data
+            const { rn, ...rest } = item;
+            const finalData = {
+              ...rest,
+              dtIndex: this.page.start + index + 1,
+            };
+            return finalData;
           });
+          this.page.recordsTotal = resp.recordsTotal;
+          this.page.recordsFiltered = resp.recordsFiltered;
+          callback({
+            recordsTotal: resp.recordsTotal,
+            recordsFiltered: resp.recordsFiltered,
+            data: mappedData,
+          });
+        });
       },
       columns: [
         { data: 'dtIndex', title: 'No.', render: (data:any) => `<strong>${data || '-'}</strong>` },
-        { data: 'NOMOR_PESANAN', title: 'Nomor Pesanan' },
-        { data: 'SUPPLIER', title: 'Kode Gudang' },
-        { data: 'NAMA_CABANG', title: 'Alamat Gudang' },
-        { data: 'ALAMAT1', title: 'Alamat Pengirim' },
-        { data: 'TGL_KIRIM_BRG', title: 'Tanggal Surat Jalan',
-          render: (data:any) => this.globalService.transformDate(data),
-        },
-        { data: 'KETERANGAN1', title: 'Keterangan', render: (data:any) => data ? data : '-' },
-        { data: 'NO_SURAT_JALAN', title: 'Nomor Surat Jalan', render: (data:any) => data ? data : '-'},
-        {
-          data: 'ALAMAT1',
-          title: 'Status Penerimaan',
-        },
-        {
-          data: 'STATUS_CETAK',
-          title: 'Status Cetak',
-          render: (data:any) => {
-            if (data === 'B') {
-              return '<span class="badge bg-warning">Belum</span>';
-            } else if (data === 'S') {
-              return '<span class="badge bg-success">Sudah</span>';
-            } else {
-              return '<span class="badge bg-secondary">Tidak Diketahui</span>';
-            }
-          },
-        },
+        { data: 'nomorPesanan', title: 'No. Pesanan' },  
+        { data: 'tglPesanan', title: 'Tgl. Pesan', render: (data:any) => this.globalService.transformDate(data),},
+        { data: 'tglKirimBrg', title: 'Tgl. Kirim', render: (data:any) => this.globalService.transformDate(data),},
+        { data: 'tglBatalExp', title: 'Tgl. Expired', render: (data:any) => this.globalService.transformDate(data),},
+        { data: 'kodeCabang', title: 'Kode' },
+        { data: 'namaCabang', title: 'Nama Gudang' },
+        { data: 'alamat1', title: 'Status Pesanan' },
         {
           title: 'Action',
           render: () => {
@@ -296,17 +291,17 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private mapOrderData(orderData: any): void {
     console.log('Order data: ', orderData);
-    this.formData.nomorPesanan = orderData.NOMOR_PESANAN;
-    this.formData.tglPesan = moment(orderData.TGL_PESANAN, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.tglBrgDikirim = moment(orderData.TGL_KIRIM_BRG, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.tglTerimaBarang = moment(orderData.TGL_PESANAN, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.codeDestination = orderData.SUPPLIER;
-    this.formData.namaCabang = orderData.NAMA_CABANG;
-    this.formData.deliveryStatus = 'Aktif';
-    this.formData.alamat1 = orderData.ALAMAT1;
-    this.formData.notes = orderData.KETERANGAN1;
-    this.formData.validatedDeliveryDate = this.formData.TGL_BATAL_EXP;
-    this.formData.nomorSuratJan = orderData.NO_SURAT_JALAN;
+    this.formData.nomorPesanan = orderData.nomorPesanan;
+    this.formData.tglPesan = moment(orderData.tglPesanan, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
+    this.formData.tglBrgDikirim = moment(orderData.tglKirimBrg, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
+    this.formData.tglTerimaBarang = moment(orderData.tglPesanan, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
+    this.formData.codeDestination = orderData.supplier;
+    this.formData.namaCabang = orderData.namaCabang;
+      this.formData.deliveryStatus = orderData.statusAktif ? orderData.statusAktif : 'Aktif';
+    this.formData.alamat1 = orderData.alamat1;
+    // this.formData.notes = orderData.KETERANGAN1;
+    this.formData.validatedDeliveryDate = this.formData.tglBatalExp;
+    this.formData.nomorSuratJan = orderData.noSuratJalan;
   }
 
   onPreviousPressed(): void {

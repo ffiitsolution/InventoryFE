@@ -258,9 +258,16 @@ export class AppService {
     );
   }
 
+  // getNewReceivingOrderGudang(payload: any) {
+  //   return this.dataService.postData(
+  //     `${this.config.BASE_URL}/api/delivery-order/search-penerimaan-gudang`,
+  //     payload
+  //   );
+  // }
+
   getNewReceivingOrderGudang(payload: any) {
     return this.dataService.postData(
-      `${this.config.BASE_URL}/api/delivery-order/search-penerimaan-gudang`,
+      `${this.config.BASE_URL}/api/search-gudang/dt`,
       payload
     );
   }
