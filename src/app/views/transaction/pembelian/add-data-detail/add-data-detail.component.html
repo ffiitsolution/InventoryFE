@@ -6,16 +6,27 @@
           <app-loading></app-loading>
         </div>
 
-        <div class="row justify-content-end py-2">
-          <div class="w-25 pb-2">
+        <div class="row justify-content-between mb-2">
+          <div class="col-6 d-flex align-items-center">
+            <div class="col-4 ">
+              <label for="jabatanSaksi">{{ "Jumlah Item " | translate }}</label>
+            </div>
+            <div class="col-2 pe-0">
+              <input type="text" class="form-control text-center" [value]="listOrderData.length" disabled />
+            </div>
+            <div class="col"></div>
+    
+          </div>
+          <div class="col-2"></div>
+          <div class="col-4 d-flex justify-content-end">
             <c-input-group>
               <span cInputGroupText id="basic-addon1"><i class="fa fa-search"></i></span>
               <input id="appendedInputButton" (input)="onSearchDetail($event)" class="form-control" size="16"
                 type="text" placeholder="Search...">
             </c-input-group>
+
           </div>
         </div>
-
         <div style=" width: 100%;">
           <table *ngIf="filteredListTypeOrder as list" bordered cTable class="mb-0 border" [hover]="true"
             [responsive]="true" [striped]="true" style=" width: max-content; table-layout: auto;">
