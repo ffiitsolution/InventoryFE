@@ -30,6 +30,8 @@ import { StockSoAddComponent } from './1-setup-so/add/add.component';
 import { StockSoEditComponent } from './1-setup-so/edit/edit.component';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { SharedCustomPipeModule } from '../../pipes/shared-pipe.module';
+import { LaporanHasilSo } from './6-result-so/laporan-hasil-so.component';
+import { SharedComponentModule } from '../../component/shared.component.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -57,12 +59,14 @@ export function HttpLoaderFactory(http: HttpClient) {
     BsDatepickerModule.forRoot(),
     NgxPaginationModule,
     SharedCustomPipeModule,
+    SharedComponentModule
   ],
   declarations: [
     SetupSoComponent,
     SetupSoDetailComponent,
     StockSoAddComponent,
     StockSoEditComponent,
+    LaporanHasilSo
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

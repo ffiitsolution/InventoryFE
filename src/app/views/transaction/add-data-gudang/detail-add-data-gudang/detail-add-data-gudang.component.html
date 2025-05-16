@@ -180,8 +180,31 @@
         </div>
       </c-card-header>
       <c-card-body>
-  
-      
+
+        <div class="row align-items-center mb-2">
+          <!-- Tombol Tambah Data -->
+          <div class="col-auto">
+            <button class="btn btn-success text-white btn-sm pe-3" (click)="onAdd()">
+              <i class="fa fa-plus pe-2" *ngIf="!adding"></i>
+              {{ "Tambah" | translate }}
+            </button>
+          </div>
+        
+          <!-- Input Search -->
+          <div class="col-12 col-md-6 col-lg-4 ms-auto">
+            <c-input-group>
+              <span cInputGroupText><i class="fa fa-search"></i></span>
+              <input #listViewOrders 
+                    id="appendedInputButton" 
+                    [(ngModel)]="searchListViewOrder" 
+                    class="form-control form-control-sm"
+                    type="text" 
+                    placeholder="Search..." 
+                    (ngModelChange)="onFilterTextChange($event)">
+            </c-input-group>
+          </div>
+        </div>
+
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>

@@ -200,7 +200,7 @@ export const menu_id: any = [
       },
       {
         name: 'Laporan Hasil SO',
-        url: '/dashboard',
+        url: '/stock-opname/laporan-hasil-so',
         iconComponent: {
           name: 'cil-circle',
         },

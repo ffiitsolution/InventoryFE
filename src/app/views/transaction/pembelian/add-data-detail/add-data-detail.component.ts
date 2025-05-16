@@ -272,20 +272,21 @@ export class AddDataDetailPembelianComponent
     return moment(date, "YYYY-MM-DD").format("DD-MM-YYYY");
   }
 
+
   isDataInvalid() {
-    let dataInvalid = false;
-
-    const hasValidationMsg = Object.values(this.validationMsg).some(fieldErrors =>
-      Object.values(fieldErrors).some(msg => msg.trim() !== "")
+    const hasValidationMessageList =
+      this.validationMessageList?.some(msg => msg.trim() !== "") ?? false;
+  
+    const hasValidationMessageQtyPesanList =
+      this.validationMessageQtyPesanList?.some(msg => msg.trim() !== "") ?? false;
+  
+    const hasValidationMsg = Object.values(this.validationMsg).some(fieldMsgs =>
+      Object.values(fieldMsgs).some(msg => msg && msg.trim() !== "")
     );
-
-    dataInvalid =
-      this.validationMessageList.some(msg => msg.trim() !== "") ||
-      this.validationMessageQtyPesanList.some(msg => msg.trim() !== "") ||
-      hasValidationMsg;
-
-    return dataInvalid;
+  
+    return hasValidationMessageList || hasValidationMessageQtyPesanList || hasValidationMsg;
   }
+  
 
 
   onPreviousPressed(): void {
