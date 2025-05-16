@@ -72,6 +72,7 @@ export class MpcsListComponent implements OnInit {
   isShowModalKirim: boolean = false;
   totalTransSummary: number = 0;
   loadingKirim: boolean = false;
+  protected configGudang = '';
   constructor(
     translate: TranslateService,
     private route: ActivatedRoute,
@@ -92,7 +93,7 @@ export class MpcsListComponent implements OnInit {
     // this.dpConfig.minDate = new Date();
     this.dpConfig.customTodayClass='today-highlight';
     this.dpConfig.isDisabled = true;
-  
+    this.configGudang = this.g.mpcsDefaultGudang;
   }
   myForm: FormGroup;
 
@@ -100,13 +101,13 @@ export class MpcsListComponent implements OnInit {
     const todayDate = new Date();
     this.defaultDate = this.helperService.formatDate(todayDate);
 
-    
-
-    this.getDataProduction();
+    console.log(this.configGudang, 'configGudang');
+    this.getMpcsDefaultGudang();
+  
   }
 
   
-
+  
   blockTyping(event: Event) {
     const allowedKeys = ['Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Backspace'];
   
@@ -138,7 +139,7 @@ export class MpcsListComponent implements OnInit {
       order: [{column: 1, dir: "desc"}, {column: 2, dir: "desc"}],
       ...this.paramaters ,
       draw:this.draw,
-      kodeGudang: this.g.getUserLocationCode(),
+      kodeGudang: this.configGudang,
       statusPosting: [this.selectedStatusFilter],
       startDate: moment(this.dateRangeFilter[0]).set({
                   hours: startHour,
@@ -234,7 +235,7 @@ export class MpcsListComponent implements OnInit {
     const [startHour, startMinute] = this.startTime.split(':').map(Number);
     const [endHour, endMinute] = this.endTime.split(':').map(Number);
     const params = {
-      kodeGudang: this.g.getUserLocationCode(),
+      kodeGudang: this.configGudang,
       startDate: moment(this.dateRangeFilter[0]).set({
                   hours: startHour,
                   minutes: startMinute,
@@ -293,7 +294,8 @@ export class MpcsListComponent implements OnInit {
       this.loadingKirim = true;
     
         const requestBody = {
-          kodeGudang: this.g.getUserLocationCode(),
+          kodeGudang: this.configGudang,
+          userCreate:'system'
         };
     
         Swal.fire({
@@ -339,6 +341,17 @@ export class MpcsListComponent implements OnInit {
             });
           },
         });
+  }
+
+   getMpcsDefaultGudang() {
+  
+    this.appService
+    .mpcsDefaultGudang({})
+    .subscribe((resp) => {
+        this.g.mpcsDefaultGudang = resp.data.defaultGudang;
+        this.configGudang = this.g.mpcsDefaultGudang;
+        this.getDataProduction();
+    });
   }
  
 }

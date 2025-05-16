@@ -124,6 +124,8 @@ export class AddDataDetailDeliveryComponent
         this.listOrderData = res.data.map((data: any) => ({
           ...data,
           qtyBPesanOld: data.qtyPesanBesar,
+          totalQtyPesan: Number(data.totalQtyPesan).toFixed(2),
+          konversi: Number(data.konversi).toFixed(2),
           totalQtyPesanOld: data.totalQtyPesan,
           qtyPesanBesar: Number(data.qtyPesanBesar).toFixed(2),
           qtyPesanKecil: Number(data.qtyPesanKecil).toFixed(2),
@@ -305,9 +307,13 @@ export class AddDataDetailDeliveryComponent
       return;
     }
 
-    if (this.listEntryExpired.length !== this.listOrderData.length) {
-      this.toastr.warning( 'Qty expired belum dilengkapi!'
-      );
+    const expiredButNotEntered = this.listOrderData.filter((data: any) =>
+      data.flagExpired === 'Y' &&
+      !this.listEntryExpired.some((entry: any) => entry.kodeBarang === data.kodeBarang)
+    );
+
+    if (expiredButNotEntered.length > 0) {
+      this.toastr.warning('Qty expired belum dilengkapi!');
       this.adding = false;
       return;
     }
@@ -324,10 +330,10 @@ export class AddDataDetailDeliveryComponent
     <div class="divider my-3"></div>
     <div class="d-flex justify-content-center gap-3 mt-3">
       <button class="btn btn-info text-white btn-150 pe-3" id="btn-submit">
-        <i class="fa fa-check pe-2"></i> Proses Pengiriman
+        <i class="fa fa-check pe-2"></i> Proses Posting
       </button>
       <button class="btn btn-secondary text-white btn-150" id="btn-cancel">
-        <i class="fa fa-times pe-1"></i> Batal
+        <i class="fa fa-times pe-1"></i> Batal Posting
       </button>
     </div>
   `,
@@ -818,7 +824,7 @@ export class AddDataDetailDeliveryComponent
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback:any) => {
+      ajax: (dataTablesParameters: any, callback: any) => {
         this.pageDt.start = dataTablesParameters.start;
         this.pageDt.length = dataTablesParameters.length;
         const params = {
@@ -872,22 +878,22 @@ export class AddDataDetailDeliveryComponent
         { data: 'tglExpired', title: 'Tgl. Expired' },
         {
           data: 'tglExpired', title: 'Keterangan Tanggal',
-            render: (data: any, _: any, row: any) => moment(data)
+          render: (data: any, _: any, row: any) => moment(data)
             .add(1, 'days')
             .locale('id')
             .format('DD MMM YYYY')
         },
         {
           data: 'qtyBesar', title: 'Qty Besar',
-            render: (data: any, _: any, row: any) => `${data} ${row.satuanBesar}`
+          render: (data: any, _: any, row: any) => `${data} ${row.satuanBesar}`
         },
         {
           data: 'qtyKecil', title: 'Qty Kecil',
-            render: (data: any, _: any, row: any) => `${data} ${row.satuanKecil}`
+          render: (data: any, _: any, row: any) => `${data} ${row.satuanKecil}`
         },
         {
           data: 'totalQty', title: 'Total Qty Expired',
-            render: (data: any, _: any, row: any) => `${data} ${row.satuanKecil}`
+          render: (data: any, _: any, row: any) => `${data} ${row.satuanKecil}`
         },
       ],
       searchDelay: 1000,

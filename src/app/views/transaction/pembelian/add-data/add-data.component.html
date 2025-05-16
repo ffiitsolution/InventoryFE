@@ -189,7 +189,7 @@
         </div>
         <div class=" ps-0" [ngClass]="isShowDetail ? 'col-9' : 'col-7'">
           <div class="p-2" *ngIf="isShowDetail">
-            <app-add-data-detail-pembelian>
+            <app-add-data-detail-pembelian (dataCetak)="onResetForm($event)">
             </app-add-data-detail-pembelian>
           </div>
         </div>
@@ -197,7 +197,7 @@
     </c-card-body>
   </c-card>
 
-  <c-modal #staticBackdropModal [visible]="isShowModal" backdrop="static" id="staticBackdropModal" #modalLg size="xl">
+  <c-modal #staticBackdropModal [visible]="isShowModal" backdrop="static" id="staticBackdropModal" #modalXl size="xl">
     <c-modal-header>
       <h5 cModalTitle>Pilih pesanan</h5>
       <button (click)="isShowModal = false" type="button" class="btn btn-info ms-2"
@@ -247,4 +247,13 @@
   </c-modal>
   <div class="modal-bg-backdrop" *ngIf="isShowModal"></div>
 
+</div>
+
+<div class="fade-in">
+  <app-modal-print-list [alreadyPrint]="alreadyPrint" [disabledPrintButton]="disabledPrintButton"
+    [generatePdfUrl]="'/api/report/jasper-report-pembelian'"
+    [updateStatusUrl]="''" [updatePrintStatusParam]="''"
+    [generateReportParam]="paramGenerateReport" [isShowModalReport]="isShowModalReport" [isShowSelection]="false"
+    (closeModalEvent)="closeModal()">
+  </app-modal-print-list>
 </div>

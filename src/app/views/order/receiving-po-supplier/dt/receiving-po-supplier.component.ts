@@ -64,10 +64,15 @@ export class ReceivingPoSupplierComponent
   paramUpdatePrintStatus = {};
   state : any;
   dataUser: any;
+  isShowModalRefresh: boolean = false;
+  dateRangeRefresh: any = [this.startDateFilter, new Date()];
+  jumlahPesananMasuk: number;
+  isShowModalPesananMasuk: boolean = false;
+
 
   constructor(
     private dataService: DataService,
-    private g: GlobalService,
+    public g: GlobalService,
     private translation: TranslationService,
     private router: Router
   ) {
@@ -264,6 +269,54 @@ export class ReceivingPoSupplierComponent
   closeModal(){
     this.isShowModalReport = false;
     this.disabledPrintButton = false;
+    window.location.reload();
+  }
+
+  refreshDatabase() {
+    console.log("refresh database");
+    const paramGetHeaderDetailAllHQ={
+      kodeTujuan: this.g.getUserLocationCode(),
+      startDate: this.g.transformDate(this.dateRangeRefresh[0]),
+      endDate: this.g.transformDate(this.dateRangeRefresh[1]),
+      user: this.g.getUserCode(),
+      tipePesanan: "S"
+    }
+
+    this.dataService.postData(
+      this.g.urlServer + '/api/receiving-order/get-header-and-detail-all-hq',paramGetHeaderDetailAllHQ
+    ).subscribe((respGetHeaderDetail: any) => {
+      console.log("respGetHeaderDetail", respGetHeaderDetail);
+      this.jumlahPesananMasuk = respGetHeaderDetail.item[0].header.length;
+      // ✅ Call API 2 inside this block
+      this.dataService.postData(
+        this.g.urlServer + '/api/receiving-po-supplier/insert-receiving-from-warehouse-all',
+        {
+          header: respGetHeaderDetail.item[0].header,
+          detail: respGetHeaderDetail.item[0].detail,
+          user: this.g.getUserCode()
+        }
+      ).subscribe((respInsertFromWarehouse: any) => {
+          console.log("respInsertFromWarehouse", respInsertFromWarehouse);
+          // ✅ Call API 3 inside this block
+          this.dataService.postData(
+            this.g.urlServer + '/api/receiving-order/update-status-receiving-all-hq',paramGetHeaderDetailAllHQ
+          ).subscribe((respUpdateStatusReceiving: any) => {
+            console.log("respUpdateStatusReceiving", respUpdateStatusReceiving);
+            this.isShowModalRefresh = false;
+            this.isShowModalPesananMasuk = true;
+          }, error => {
+            console.error("API 3 failed", error);
+          });
+      }, error => {
+        console.error("API 2 failed", error);
+      });
+
+    }, error => {
+      console.error("API 1 failed", error);
+    });
+  }
+
+  onClickModalPesananMasuk(){
     window.location.reload();
   }
 }

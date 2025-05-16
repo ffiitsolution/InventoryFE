@@ -2,10 +2,10 @@
   <c-card class="p-1 mb-1">
     <c-card-body class="p-2">
       <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-sm btn-light" (click)="onPreviousPressed()">
+        <!-- <button class="btn btn-sm btn-light" (click)="onPreviousPressed()">
           <i class="fa fa-chevron-left icon-12"></i> {{ "Kembali" | translate }}
-        </button>
-        <h6 class="mb-0 fs-6">{{ "Tambah Data" | translate }}</h6>
+        </button> -->
+        <h6 class="mb-0 fs-6">{{ "Tambah Data Kirim Barang Retur Ke Supplier" | translate }}</h6>
       </div>
     </c-card-body>
   </c-card>  
@@ -18,8 +18,8 @@
           class="pe-0 d-flex red-line"
         >
           <div class="w-100">
-            <div class="p-2">
-              <h5 class="mb-1 p-1" style="color: #3c4b64">
+            <div>
+              <h5 class="mb-1" style="color: #3c4b64">
                 {{ "Isi Format" | translate }}
               </h5>
               <form [formGroup]="myForm">
@@ -90,7 +90,7 @@
                 </div>
                 
 
-                <div class="divider mt-2 mb-2"></div>
+                <div class="divider mt-2 mb-2" style="width: 95%;"></div>
 
                 <div class="w-100 row">
                   <div class="col-4 d-flex align-items-center">
@@ -208,7 +208,7 @@
                   </div>
                 </div>
 
-                <div class="divider mt-2 mb-2"></div>
+                <div class="divider mt-2 mb-2" style="width: 95%;"></div>
 
                 <div class="w-100 mb-1 row">
                   <div class="col-4 d-flex align-items-center">
@@ -233,17 +233,21 @@
                   </div>
                 </div>
 
-                <div style="width: 96%" class="p-2">
+                <div class="d-flex justify-content-end align-items-center flex-wrap gap-2 p-2" style="width: 96%;">
+                  <button class="btn btn-sm btn-light" (click)="onPreviousPressed()">
+                    <i class="fa fa-chevron-left icon-12"></i> {{ "Kembali" | translate }}
+                  </button>
+                
                   <button
-                    class="shadow-sm btn w-100 btn-info text-white"
+                    class="btn btn-sm btn-info text-white"
                     (click)="onAddDetail()"
-                    *ngIf="!isShowDetail" 
+                    *ngIf="!isShowDetail"
                     [disabled]="myForm.invalid"
                   >
-                    <i class="fa fa-check pe-2"></i>
-                    {{ "Detail Transaksi" | translate }}
+                    <i class="fa fa-check me-1"></i> {{ "Detail Transaksi" | translate }}
                   </button>
                 </div>
+                
               </form>
             </div>
           </div>

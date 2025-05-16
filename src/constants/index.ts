@@ -233,9 +233,47 @@ export const STATUS_KIRIM_PESANAN_KE_GUDANG = [
   },
 ];
 
+export const RANGE_BERAT_KGS = [
+  {
+    value: '01-1002',
+    label: 'KG_AYAM',
+    description: 'RANGE STANDARDNYA ANTARA: 0.87-1.30 KGS/PCS',
+    min: 0.87,
+    max: 1.30
+  },
+  {
+    value: '01-1003',
+    label: 'KG_AYAM',
+    description: 'RANGE STANDARDNYA ANTARA: 0.92-1.07 KGS/PCS',
+    min: 0.92,
+    max: 1.07
+  },
+  {
+    value: '01-2001',
+    label: 'KG_WING',
+    description: 'RANGE STANDARDNYA ANTARA: 0.08-0.13 KGS/PCS',
+    min: 0.08,
+    max: 0.13
+  },
+  {
+    value: '01-2004',
+    label: 'KG_WING',
+    description: 'RANGE STANDARDNYA ANTARA: 0.08-0.13 KGS/PCS',
+    min: 0.08,
+    max: 0.13
+  },
+  {
+    value: '01-2102',
+    label: 'KG_WING',
+    description: 'RANGE STANDARDNYA ANTARA: 1.60-2.10 KGS/PCS',
+    min: 1.60,
+    max: 2.10
+  }
+];
+
 export const STATUS_PRODUKSI = [
   {
-    label: 'BELUM KIRIM',
+    label: 'OPEN',
     value: 'B',
     color: '#dc3545',    // Red
     textColor: '#ffffff',

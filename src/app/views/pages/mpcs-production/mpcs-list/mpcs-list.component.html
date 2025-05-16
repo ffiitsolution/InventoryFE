@@ -103,7 +103,7 @@
                         <option value="">{{ "SEMUA" | translate }}</option>
                         <option value="P">{{ "POSTED" | translate }}</option>
                         <option value="K">{{ "TERKIRIM" | translate }}</option>
-                        <option value="B">{{ "BELUM KIRIM" | translate }}</option>
+                        <option value="B">{{ "OPEN" | translate }}</option>
                       </select>
                     </div>
                   </div>
@@ -183,7 +183,7 @@
                       style="background-color: #b51823;"
                       *ngIf="item.statusPosting == 'B'"
                     >
-                      BELUM KIRIM
+                      OPEN
                     </span>
                   </div>
                   
@@ -279,6 +279,9 @@ id="formModalKirim"    [attr.aria-hidden]="!isShowModalKirim">
       <div class="card shadow-sm mb-3" >
       
         <div class="card-body body-kirim">
+          <div *ngIf="listSummaryData.length ==0" class="alert alert-warning text-center" role="alert">
+              <strong> Tidak ada data yang bisa dikirim, silahkan input data!. </strong>
+          </div>
           <div
             class="row align-items-center mx-1 my-2"
             *ngFor="let item of listSummaryData"

@@ -336,7 +336,7 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
 
 
   onPreviousPressed(): void {
-    this.router.navigate(['/transaction/kirim-barang-ke-site/list-dt']);
+    this.router.navigate(['/transaction/kirim-barang-return-ke-site/list-dt']);
   }
 
   onShowModal() {

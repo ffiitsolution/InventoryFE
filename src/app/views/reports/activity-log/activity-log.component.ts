@@ -61,6 +61,8 @@ export class ActivityLogComponent {
 
   configSelectFile: any = {
     height: '200px', // Dropdown height
+    placeholder: "Pilih",
+
   };
   listFile: any[] = [];
   selectedFile: object;
@@ -81,7 +83,7 @@ export class ActivityLogComponent {
 
   ngOnInit() {
     // let userToken: any = this.globalService.getLocalstorage('inv_token');
-    // this.dataUser = userToken ? JSON.parse(userToken) : null;
+    this.dataUser = this.globalService.getLocalstorage('inv_currentUser');
 
     this.getListFiles();
   }
@@ -181,7 +183,7 @@ export class ActivityLogComponent {
             const a = document.createElement('a');
             a.href = url;
             a.download = fileName;
-            a.click();
+            a.click(); 
             window.URL.revokeObjectURL(url); // Optional: untuk membebaskan memori
             this.toastr.success('Download Tomcat log.', 'Proses selesai.');
           },
@@ -195,7 +197,7 @@ export class ActivityLogComponent {
   
 
   formatTime(timestamp: string) {
-    return moment(timestamp).format('YYYY-MM-DD hh:mm:ss');
+    return moment(timestamp).format('DD MMM yyyy hh:mm:ss');
   }
 
   isFileSelected(file: any): boolean {

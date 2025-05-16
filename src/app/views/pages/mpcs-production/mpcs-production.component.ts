@@ -21,6 +21,7 @@ import moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { DEFAULT_DELAY_TIME } from '../../../../constants';
+import { AppConfig } from '../../../config/app.config';
 @Component({
   selector: 'app-mpcs-production',
   templateUrl: './mpcs-production.component.html',
@@ -79,7 +80,7 @@ export class MpcsProductionComponent implements OnInit {
   selectedExpProduct: any = {};
   totalFilteredExpired: any = '0.0';
   headerMpcsProduksi: any ={};
-
+  protected configGudang ='';
   constructor(
     translate: TranslateService,
     private route: ActivatedRoute,
@@ -99,6 +100,7 @@ export class MpcsProductionComponent implements OnInit {
     this.dpConfig.minDate = new Date();
     this.dpConfig.customTodayClass = 'today-highlight';
     this.dpConfig.isDisabled = true;
+    this.configGudang = this.g.mpcsDefaultGudang;
   }
   myForm: FormGroup;
 
@@ -204,7 +206,7 @@ export class MpcsProductionComponent implements OnInit {
       order: [{ column: 0, dir: 'asc' }],
       ...this.paramaters,
       draw: this.draw,
-      kodeGudang: this.g.getUserLocationCode(),
+      kodeGudang: this.configGudang,
       columns: [
         {
           data: 'kodeBarang',
@@ -484,7 +486,7 @@ export class MpcsProductionComponent implements OnInit {
       konversi: parseFloat(this.selectedExpProduct.konversi).toFixed(2),
       totalQty: '0.0',
       kodeBarang: this.selectedExpProduct.bahanBaku,
-      validationExpiredMessageList: 'Tanggal tidak boleh kosong!',
+      validationExpiredMessageList: 'Tanggal tidak boleh kosong, silahkan pilih tanggal!',
       validationQty: '',
     });
   }
@@ -533,7 +535,7 @@ export class MpcsProductionComponent implements OnInit {
     console.log('expiredDate', expiredDate);
 
     if (expiredDate < today) {
-      validationMessage = `Tanggal kadaluarsa tidak boleh lebih < dari sekarang!`;
+      validationMessage = `Tanggal kadaluarsa tidak boleh lebih < dari sekarang, silahkan pilih tanggal lain!`;
     }
 
     // ✅ Get only the filtered list of entries for the same `kodeBarang`
@@ -544,7 +546,7 @@ export class MpcsProductionComponent implements OnInit {
 
     // ✅ Validate empty input
     if (!inputDate) {
-      validationMessage = 'Tanggal tidak boleh kosong!';
+      validationMessage = 'Tanggal tidak boleh kosong, silahkan pilih tanggal!';
     } else {
       // ✅ Check if the item is expired
       const expiredData = this.listEntryExpired.find(
@@ -560,7 +562,7 @@ export class MpcsProductionComponent implements OnInit {
       );
 
       if (isDuplicate) {
-        validationMessage = 'Tanggal ini sudah ada dalam daftar!';
+        validationMessage = 'Tanggal ini sudah ada dalam daftar, silahkan pilih tanggal lain!';
       }
     }
 
@@ -739,11 +741,11 @@ export class MpcsProductionComponent implements OnInit {
     console.log('totalQtyPemakaian', totalQtyPemakaian);
     console.log('totalQtyExpired', totalQtyExpired);
     if (totalQtyExpired != totalQtyPemakaian) {
-      this.toastr.error('Total Qty Expired harus sama dengan Qty Pemakaian');
+      this.toastr.error('Total Qty Expired harus sama dengan Qty Pemakaian, Tolong masukan Qty Expired dengan benar!');
     } else if (validationExpiredMessageList) {
       this.toastr.error(validationExpiredMessageList);
     } else if (totalQtyEmpty > 0) {
-      this.toastr.error('Total Qty Expired tidak boleh 0 !');
+      this.toastr.error('Total Qty Expired tidak boleh 0 , Silahkan hapus data yg tidak terpakai atau isikan Qty dengan benar!');
     } else {
       this.isShowExpired = false;
     }
@@ -775,7 +777,7 @@ export class MpcsProductionComponent implements OnInit {
       // param for order Header
 
       const extraItem = {
-        kodeGudang: this.g.getUserLocationCode(),
+        kodeGudang: this.configGudang,
         tglTransaksi: moment(
           this.myForm.get('tglTransaksi')?.value,
           'DD-MM-YYYY'
@@ -799,7 +801,7 @@ export class MpcsProductionComponent implements OnInit {
       };
 
       const param = {
-        kodeGudang: this.g.getUserLocationCode(),
+        kodeGudang: this.configGudang,
         tglTransaksi: moment(
           this.myForm.get('tglTransaksi')?.value,
           'DD-MM-YYYY'
@@ -811,14 +813,14 @@ export class MpcsProductionComponent implements OnInit {
           'D MMM YYYY'
         ),
         jumlahResep: this.myForm.get('jumlahHasilProduksi')?.value,
-        userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+        userCreate: 'system',
         details: [
           ...this.listProductData
             .filter(
               (item: any) => item.bahanBaku && item.bahanBaku.trim() !== ''
             )
             .map((item) => ({
-              kodeGudang: this.g.getUserLocationCode(),
+              kodeGudang: this.configGudang,
               tglTransaksi: moment(
                 this.myForm.get('tglTransaksi')?.value,
                 'DD-MM-YYYY'
@@ -855,14 +857,14 @@ export class MpcsProductionComponent implements OnInit {
                   this.getExpiredData(item.bahanBaku).qtyPemakaianKecil
                 ),
               hargaSatuan: 0,
-              userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+              userCreate: 'system',
             })),
           extraItem,
         ],
 
         detailsExpired: [
           ...this.listEntryExpired?.map((expiredItem) => ({
-            kodeGudang: this.g.getUserLocationCode(),
+            kodeGudang: this.configGudang,
             tglTransaksi: moment(
               this.myForm.get('tglTransaksi')?.value,
               'DD-MM-YYYY'
@@ -998,7 +1000,7 @@ export class MpcsProductionComponent implements OnInit {
     this.myForm.get('kodeBarang')?.disable();
     let param = {
       nomorTransaksi: this.headerMpcsProduksi?.nomorTransaksi,
-      kodeGudang: this.g.getUserLocationCode(),
+      kodeGudang: this.configGudang,
     };
 
     this.appService.detailProductionAndExpired(param).subscribe({
@@ -1109,7 +1111,7 @@ export class MpcsProductionComponent implements OnInit {
       // param for order Header
 
       const extraItem = {
-        kodeGudang: this.g.getUserLocationCode(),
+        kodeGudang: this.configGudang,
         tglTransaksi: moment(
           this.myForm.get('tglTransaksi')?.value,
           'DD-MM-YYYY'
@@ -1133,7 +1135,7 @@ export class MpcsProductionComponent implements OnInit {
       };
 
       const param = {
-        kodeGudang: this.g.getUserLocationCode(),
+        kodeGudang: this.configGudang,
         nomorTransaksi: this.headerMpcsProduksi.nomorTransaksi,
         tglTransaksi: moment(
           this.myForm.get('tglTransaksi')?.value,
@@ -1146,14 +1148,14 @@ export class MpcsProductionComponent implements OnInit {
           'D MMM YYYY'
         ),
         jumlahResep: this.myForm.get('jumlahHasilProduksi')?.value,
-        userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+        userCreate: 'system',
         details: [
           ...this.listProductData
             .filter(
               (item: any) => item.bahanBaku && item.bahanBaku.trim() !== ''
             )
             .map((item) => ({
-              kodeGudang: this.g.getUserLocationCode(),
+              kodeGudang: this.configGudang,
               tglTransaksi: moment(
                 this.myForm.get('tglTransaksi')?.value,
                 'DD-MM-YYYY'
@@ -1190,14 +1192,14 @@ export class MpcsProductionComponent implements OnInit {
                   this.getExpiredData(item.bahanBaku).qtyPemakaianKecil
                 ),
               hargaSatuan: 0,
-              userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+              userCreate: 'system',
             })),
           extraItem,
         ],
 
         detailsExpired: [
           ...this.listEntryExpired?.map((expiredItem) => ({
-            kodeGudang: this.g.getUserLocationCode(),
+            kodeGudang: this.configGudang,
             tglTransaksi: moment(
               this.myForm.get('tglTransaksi')?.value,
               'DD-MM-YYYY'

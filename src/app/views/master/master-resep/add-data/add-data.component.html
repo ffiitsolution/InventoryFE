@@ -2,11 +2,9 @@
   <c-card class="mb-4">
     <c-card-body>
       <c-row>
-        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
-          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
-            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
-            {{ "Kembali" | translate }}
-          </button>
+        <div
+          class="d-grid gap-3 d-md-flex justify-content-start align-items-center"
+        >
           <h5>{{ "Resep Produksi" | translate }}</h5>
         </div>
       </c-row>
@@ -16,150 +14,141 @@
   <c-card class="mb-4">
     <c-card-body>
       <c-row>
-        <div [ngClass]="isShowDetail ? 'col-4' : 'col-5'" class="pe-0 d-flex red-line">
+        <div
+          [ngClass]="isShowDetail ? 'col-4' : 'col-5'"
+          class="pe-0 d-flex red-line"
+        >
           <div class="w-100">
             <div class="p-2">
-              <h5 class="mb-2 p-2" style="color:#3c4b64;">{{ "Data Barang Produksi" | translate }}</h5>
-              <form [formGroup]="myForm" >
-            
-              <div class="w-100 px-2 py-1 row">
-                <div class="col-4 d-flex align-items-center">
-                  <label for="kodeBarang">{{
-                    "Kode Resep Produksi" | translate
-                  }}<span
-                      class="text-danger">*
-                    </span>
-                  </label>
-                </div>
-                <div class="col-8 pe-0 d-flex">
-                  <input
-                    type="text"
-                    placeholder="Kode Resep Produksi"
-                    class="form-control"
-                    id="kodeBarang"
-                    formControlName="kodeBarang"
-                    name="kodeBarang"
-                    [readOnly]="true"
-                  />
-                  
-                </div>
-              </div>
-
-              <div class="w-100 px-2 py-1 row">
-                <div class="col-4 d-flex align-items-center">
-                  <label for="kodeBarang">{{
-                    "Nama Barang" | translate
-                  }}
-                </label>
-                </div>
-                <div class="col-8 pe-0 d-flex">
-                  <textarea
-                   
-                    placeholder="Nama Barang"
-                    class="form-control"
-                    id="kodeBarang"
-                    formControlName="namaBarang"
-                    name="kodeBarang"
-                    [readOnly]="true"
-                  >
-                  </textarea>
-                </div>
-              </div>
-              
-              <div class="w-100 px-2 py-1 row" *ngIf="isShowDetail">
-                <div class="col-4 d-flex align-items-center">
-                  <label for="totalHasilProduksi">{{
-                    "Hasil Produksi" | translate
-                  }}</label>
-                </div>
-                <div class="col-8 pe-0 d-flex">
-                  <input
-                    type="number"
-                    placeholder="Hasil Produksi"
-                    class="form-control"
-                    id="hasilProduksi"
-                    value="1"
-                    name="hasilProduksi"
-                    [readOnly]="true"
-                  />
-                </div>
-              </div>
-
-              <div class="w-100 px-2 py-1 row">
-                <div class="col-4 d-flex align-items-center">
-                  <label for="satuanHasilProduksi">{{
-                    "Satuan Besar" | translate
-                  }}
-              
-                </label>
-                </div>
-                <div class="col-8 pe-0 d-flex">
-                  <input
-                    type="text"
-                    placeholder="Satuan Besar"
-                    class="form-control"
-                    id="satuanBesar"
-                    formControlName="satuanBesar"
-                    name="satuanBesar"
-                    [readOnly]="true"
-                  />
-                </div>
-              </div>
-
-              <div class="w-100 px-2 py-1 row">
-                <div class="col-4 d-flex align-items-center">
-                  <label for="satuanHasilProduksi">{{
-                    "Satuan Kecil" | translate
-                  }}
-              
-                </label>
-                </div>
-                <div class="col-8 pe-0 d-flex">
-                  <input
-                    type="text"
-                    placeholder="Satuan Hasil"
-                    class="form-control"
-                    id="satuanKecil"
-                    formControlName="satuanKecil"
-                    name="satuanKecil"
-                    [readOnly]="true"
-                  />
-                </div>
-              </div>
-              
-             
-
-              <div class="w-100 px-2 py-1 row">
-                <div class="col-4 d-flex align-items-center">
-                  <label for="satuanHasilProduksi">
-                  {{
-                    "Default gudang" | translate
-                  }}
-                </label>
-                </div>
-                <div class="col-8 pe-0 d-flex">
-                  <input
-                    type="text"
-                    placeholder="Default gudang"
-                    class="form-control"
-                    id="defaultGudang"
-                    formControlName="defaultGudang"
-                    name="defaultGudang"
-                    [readOnly]="true"
-                  />
-                </div>
-              </div>
-
-              <div class="w-100 px-2 py-1 row">
-                <div class="col-4 d-flex align-items-center">
-                  <label for="statusBarang">
-                    {{
-                      "Status Barang" | translate
-                    }}
+              <h5 class="mb-2 p-2" style="color: #3c4b64">
+                {{ "Data Barang Produksi" | translate }}
+              </h5>
+              <form [formGroup]="myForm">
+                <div class="w-100 px-2 py-1 row">
+                  <div class="col-4 d-flex align-items-center">
+                    <label for="kodeBarang"
+                      >{{ "Kode Resep Produksi" | translate
+                      }}<span class="text-danger">* </span>
                     </label>
+                  </div>
+                  <div class="col-8 pe-0 d-flex">
+                    <input
+                      type="text"
+                      placeholder="Kode Resep Produksi"
+                      class="form-control"
+                      id="kodeBarang"
+                      formControlName="kodeBarang"
+                      name="kodeBarang"
+                      [readOnly]="true"
+                    />
+                  </div>
                 </div>
-                <div class="col-8 d-flex align-items-end justify-content-start">
-                  <!-- <button 
+
+                <div class="w-100 px-2 py-1 row">
+                  <div class="col-4 d-flex align-items-center">
+                    <label for="kodeBarang"
+                      >{{ "Nama Barang" | translate }}
+                    </label>
+                  </div>
+                  <div class="col-8 pe-0 d-flex">
+                    <textarea
+                      placeholder="Nama Barang"
+                      class="form-control"
+                      id="kodeBarang"
+                      formControlName="namaBarang"
+                      name="kodeBarang"
+                      [readOnly]="true"
+                    >
+                    </textarea>
+                  </div>
+                </div>
+
+                <div class="w-100 px-2 py-1 row" *ngIf="isShowDetail">
+                  <div class="col-4 d-flex align-items-center">
+                    <label for="totalHasilProduksi">{{
+                      "Hasil Produksi" | translate
+                    }}</label>
+                  </div>
+                  <div class="col-8 pe-0 d-flex">
+                    <input
+                      type="number"
+                      placeholder="Hasil Produksi"
+                      class="form-control"
+                      id="hasilProduksi"
+                      value="1"
+                      name="hasilProduksi"
+                      [readOnly]="true"
+                    />
+                  </div>
+                </div>
+
+                <div class="w-100 px-2 py-1 row">
+                  <div class="col-4 d-flex align-items-center">
+                    <label for="satuanHasilProduksi"
+                      >{{ "Satuan Besar" | translate }}
+                    </label>
+                  </div>
+                  <div class="col-8 pe-0 d-flex">
+                    <input
+                      type="text"
+                      placeholder="Satuan Besar"
+                      class="form-control"
+                      id="satuanBesar"
+                      formControlName="satuanBesar"
+                      name="satuanBesar"
+                      [readOnly]="true"
+                    />
+                  </div>
+                </div>
+
+                <div class="w-100 px-2 py-1 row">
+                  <div class="col-4 d-flex align-items-center">
+                    <label for="satuanHasilProduksi"
+                      >{{ "Satuan Kecil" | translate }}
+                    </label>
+                  </div>
+                  <div class="col-8 pe-0 d-flex">
+                    <input
+                      type="text"
+                      placeholder="Satuan Hasil"
+                      class="form-control"
+                      id="satuanKecil"
+                      formControlName="satuanKecil"
+                      name="satuanKecil"
+                      [readOnly]="true"
+                    />
+                  </div>
+                </div>
+
+                <div class="w-100 px-2 py-1 row">
+                  <div class="col-4 d-flex align-items-center">
+                    <label for="satuanHasilProduksi">
+                      {{ "Default gudang" | translate }}
+                    </label>
+                  </div>
+                  <div class="col-8 pe-0 d-flex">
+                    <input
+                      type="text"
+                      placeholder="Default gudang"
+                      class="form-control"
+                      id="defaultGudang"
+                      formControlName="defaultGudang"
+                      name="defaultGudang"
+                      [readOnly]="true"
+                    />
+                  </div>
+                </div>
+
+                <div class="w-100 px-2 py-1 row">
+                  <div class="col-4 d-flex align-items-center">
+                    <label for="statusBarang">
+                      {{ "Status Barang" | translate }}
+                    </label>
+                  </div>
+                  <div
+                    class="col-8 d-flex align-items-end justify-content-start"
+                  >
+                    <!-- <button 
                   [ngClass]="myForm.get('statusBarang')?.value == 'A' ? 'btn btn-success btn-150 pe-3' : 'btn  btn-info btn-150 pe-3'"
                   class=" text-white btn-150 pe-3"
                   [disabled]="loadingSimpan"
@@ -170,26 +159,50 @@
                    {{ myForm.get('statusBarang')?.value == 'A' ? "Active" : "Inactive" | translate }}
                  </button> -->
 
-                 <div  class="d-flex justify-content-center"> 
-                  <span *ngIf="myForm.get('statusBarang')?.value == 'A'" class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span>
-                  <span *ngIf="myForm.get('statusBarang')?.value == 'T'" class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span>
+                    <div class="d-flex justify-content-center">
+                      <span
+                        *ngIf="myForm.get('statusBarang')?.value == 'A'"
+                        class="badge badge-success py-2"
+                        style="
+                          color: white;
+                          background-color: #2eb85c;
+                          width: 60px;
+                        "
+                        >Active</span
+                      >
+                      <span
+                        *ngIf="myForm.get('statusBarang')?.value == 'T'"
+                        class="badge badge-secondary py-2"
+                        style="background-color: #b51823; width: 60px"
+                        >Inactive</span
+                      >
+                    </div>
+                  </div>
                 </div>
-                </div>
-              
+
+                <div class="w-100 px-2 py-1 row flex justify-content-end">
+                  <button
+                    class="btn btn-light btn-120 w-120"
+                    (click)="onPreviousPressed()"
+                  >
+                    <!-- <i class="fa fa-chevron-left icon-12 icon-gap"></i> -->
+                    {{ "Kembali" | translate }}
+                  </button>
                 </div>
               </form>
             </div>
           </div>
         </div>
 
-        <div class=" ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
+        <div class="ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
           <div class="p-2" *ngIf="isShowDetail">
-            <app-add-data-detail-resep (onBatalPressed)="onBatalPressed($event)" (jumlahBahanbaku)="addJumlahBahanBaku($event)"></app-add-data-detail-resep>
+            <app-add-data-detail-resep
+              (onBatalPressed)="onBatalPressed($event)"
+              (jumlahBahanbaku)="addJumlahBahanBaku($event)"
+            ></app-add-data-detail-resep>
           </div>
         </div>
-
       </c-row>
     </c-card-body>
   </c-card>
-
 </div>

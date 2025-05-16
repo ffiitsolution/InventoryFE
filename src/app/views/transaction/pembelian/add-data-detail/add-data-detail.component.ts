@@ -1,8 +1,10 @@
 import {
   AfterViewInit,
   Component,
+  EventEmitter,
   OnDestroy,
   OnInit,
+  Output,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -15,7 +17,8 @@ import {
   OUTLET_BRAND_KFC,
   SEND_PRINT_STATUS_SUDAH,
   STATUS_SAME_CONVERSION,
-  ACTION_SELECT
+  ACTION_SELECT,
+  RANGE_BERAT_KGS
 } from '../../../../../constants';
 import { DataTableDirective } from 'angular-datatables';
 import { lastValueFrom, Subject } from 'rxjs';
@@ -75,6 +78,9 @@ export class AddDataDetailPembelianComponent
   };
   validationMessageList: any[] = [];
   validationMessageQtyPesanList: any[] = [];
+  validationMsg: { [index: number]: { [field: string]: string } } = {};
+
+  @Output() dataCetak = new EventEmitter<any>();
 
   baseConfig: any = {
     displayKey: 'name', // Key to display in the dropdown
@@ -191,24 +197,45 @@ export class AddDataDetailPembelianComponent
     this.validationMessages[index] = validationMessage;
   }
 
-  onBlurQtyTerimaBesar(index: number) {
-    const value = this.listOrderData[index].qtyTerimBesar;
+  onBlurParsed(index: number, field: string) {
+    const value = this.listOrderData[index][field];
+    const kodeBarang = this.listOrderData[index].kodeBarang;
+    const qtyTerima = this.listOrderData[index].qtyTerimaBesar;
     let parsed = Number(value);
-    if (!isNaN(parsed)) {
-      this.listOrderData[index].qtyTerimBesar = parsed.toFixed(2);
+    if (!isNaN(parsed) && value !== 'jenis') {
+      this.listOrderData[index][field] = parsed.toFixed(2); // will be a string like "4.00"
     } else {
-      this.listOrderData[index].qtyTerimBesar = '0.00';
+      this.listOrderData[index][field] = '0.00'; // fallback if input is not a number
     }
-  }
 
-  onBlurQtyTerimaKecil(index: number) {
-    const value = this.listOrderData[index].qtyTerimaKecil;
-    let parsed = Number(value);
-    if (!isNaN(parsed)) {
-      this.listOrderData[index].qtyTerimaKecil = parsed.toFixed(2); // will be a string like "4.00"
-    } else {
-      this.listOrderData[index].qtyTerimaKecil = '0.00'; // fallback if input is not a number
+
+    if (field === 'qtyKgs') {
+      const rangeInfo = RANGE_BERAT_KGS.find((item) => item.value === kodeBarang);
+
+      if (rangeInfo) {
+        const min = rangeInfo.min;
+        const max = rangeInfo.max;
+        const averagePerPcs = parsed / (qtyTerima || 1); // hindari pembagian dengan 0
+
+        if (averagePerPcs < min || averagePerPcs > max) {
+          Swal.fire({
+            title: 'Pesan Error!',
+            text: `ITEM ${kodeBarang} ${rangeInfo.description}`,
+            confirmButtonText: 'OK'
+          });
+          this.listOrderData[index][field] = '';
+          this.validationMsg[index][field] = 'Wajib diisi!';
+        }
+      }
     }
+
+    if (this.listOrderData[index][field] === '' || this.listOrderData[index][field] === '0.00') {
+      this.validationMsg[index] = this.validationMsg[index] || {};
+      this.validationMsg[index][field] = 'Wajib diisi!';
+    } else {
+      this.validationMsg[index][field] = '';
+    }
+
   }
 
   onFilterSearch(
@@ -247,19 +274,26 @@ export class AddDataDetailPembelianComponent
 
   isDataInvalid() {
     let dataInvalid = false;
+
+    const hasValidationMsg = Object.values(this.validationMsg).some(fieldErrors =>
+      Object.values(fieldErrors).some(msg => msg.trim() !== "")
+    );
+
     dataInvalid =
       this.validationMessageList.some(msg => msg.trim() !== "") ||
-      this.validationMessageQtyPesanList.some(msg => msg.trim() !== "");
+      this.validationMessageQtyPesanList.some(msg => msg.trim() !== "") ||
+      hasValidationMsg;
 
-    return dataInvalid
+    return dataInvalid;
   }
+
 
   onPreviousPressed(): void {
     this.router.navigate(['/transaction/pembelian/list-dt']);
   }
 
 
- onSubmit() {
+  onSubmit() {
     if (!this.isDataInvalid()) {
       // param for order Header
       const param = {
@@ -308,41 +342,71 @@ export class AddDataDetailPembelianComponent
       };
 
       Swal.fire({
-            title: 'Apa Anda Sudah Yakin?',
-            text: 'Pastikan data yang dimasukkan sudah benar!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, Simpan!',
-            cancelButtonText: 'Batal',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              this.appService.insert('/api/pembelian/insert', param).subscribe({
-                next: (res) => {
-                  if (!res.success) {
-                    this.toastr.error(res.message);
-                  } else {
+        title: '<div style="color: white; background: #e55353; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
+        html: `
+          <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">
+            <p>Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
+            <p class="text-danger" style="font-weight: bold;">DATA YANG SUDAH DI POSTING TIDAK DAPAT DIPERBAIKI ..!!</p>
+          </div>
+          <div class="divider my-3"></div>
+          <div class="d-flex justify-content-center gap-3 mt-3">
+            <button class="btn btn-info text-white btn-150 pe-3" id="btn-submit">
+              <i class="fa fa-check pe-2"></i> Proses Posting
+            </button>
+            <button class="btn btn-secondary text-white btn-150" id="btn-cancel">
+              <i class="fa fa-times pe-1"></i> Batal Proses
+            </button>
+          </div>
+        `,
+        showConfirmButton: false,
+        showCancelButton: false,
+        width: '600px',
+        customClass: {
+          popup: 'custom-popup'
+        },
+        didOpen: () => {
+          const submitBtn = document.getElementById('btn-submit');
+          const cancelBtn = document.getElementById('btn-cancel');
+
+          submitBtn?.addEventListener('click', () => {
+            this.adding = false;
+            this.appService.insert('/api/pembelian/insert', param).subscribe({
+              next: (res) => {
+                if (!res.success) {
+                  this.toastr.error(res.message);
+                } else {
+                  setTimeout(() => {
+                    const paramGenerateReport = {
+                      outletBrand: 'KFC',
+                      isDownloadCsv: true,
+                      nomorTransaksi: res.message,
+                      kodeGudang: this.g.getUserLocationCode(),
+                    };
+                    this.toastr.success("Data pembelian berhasil dibuat");
+                    this.dataCetak.emit(paramGenerateReport);
                     setTimeout(() => {
-                      this.toastr.success("Data wastage berhasil dibuat");
-                      this.onPreviousPressed();
+                      this.router.navigate(["/transaction/pembelian/add-data"]);
                     }, DEFAULT_DELAY_TIME);
-        
-                  }
-                  this.adding = false;
-                },
-              });
-            } else {
-              this.toastr.info('Penyimpanan dibatalkan');
-            }
+                  }, DEFAULT_DELAY_TIME);
+                }
+                this.adding = false;
+              },
+              error: (err) => {
+                console.error("Error saat insert:", err);
+                this.adding = false;
+              },
+            }); // 👈 bukan onSubmit lagi
+            Swal.close();
           });
 
-    }
+          cancelBtn?.addEventListener('click', () => {
+            Swal.close();
+          });
+        }
+      });
 
-    else {
-      this.toastr.error("Data tidak valid")
-    }
 
+    }
   }
 
   onSearchDetail(event: any) {
@@ -385,8 +449,8 @@ export class AddDataDetailPembelianComponent
       this.listEntryExpired.push({
         tglExpired: new Date(),
         keteranganTanggal: moment(new Date()).locale('id').format('D MMMM YYYY'),
-        qtyTerimaBesar: this.selectedExpProduct.qtyTerimaBesar,
-        qtyTerimaKecil: this.selectedExpProduct.qtyTerimaKecil,
+        qtyTerimaBesar: this.selectedExpProduct.qtyTerimaBesar.toFixed(2),
+        qtyTerimaKecil: this.selectedExpProduct.qtyTerimaKecil.toFixed(2),
         satuanKecil: this.selectedExpProduct.satuanKecil,
         satuanBesar: this.selectedExpProduct.satuanBesar,
         konversi: this.selectedExpProduct.konversi,
@@ -424,20 +488,20 @@ export class AddDataDetailPembelianComponent
   onSaveEntryExpired() {
     const totalQtyWaste = (this.helper.sanitizedNumber(this.selectedExpProduct.qtyTerimaBesar) *
       this.selectedExpProduct.konversi) + this.helper.sanitizedNumber(this.selectedExpProduct.qtyTerimaKecil);
-  
+
     // Reset totalQtyExpired untuk kodeBarang yang sedang diproses
     this.totalQtyExpired[this.selectedExpProduct.kodeBarang] = 0;
-  
+
     this.listEntryExpired.forEach((item: any) => {
       if (item.kodeBarang === this.selectedExpProduct.kodeBarang) {
         item.totalQty = (this.helper.sanitizedNumber(item.qtyTerimaBesar) * item.konversi) + this.helper.sanitizedNumber(item.qtyTerimaKecil);
         item.kodeBarang = this.selectedExpProduct.kodeBarang;
-  
+
         // Pastikan nilai tidak undefined sebelum menambahkan
         this.totalQtyExpired[this.selectedExpProduct.kodeBarang] += item.totalQty ?? 0;
       }
     });
-  
+
     // Validasi perhitungan total qty expired
     if (this.totalQtyExpired[this.selectedExpProduct.kodeBarang] > totalQtyWaste) {
       this.toastr.error("Total Qty Expired harus sama dengan atau kurang dari Qty Waste");

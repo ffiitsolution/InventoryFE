@@ -124,7 +124,7 @@ export class PembelianListComponent implements OnInit {
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render: (data:any) => this.g.getStatusOrderLabel(data),
+          render: (data:any) => this.g.getStatusOrderLabel(data, false, true),
         },
         {
           title: 'Aksi',

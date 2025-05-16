@@ -49,7 +49,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="['Stock Barang'].includes(currentReport)">
+    <ng-container *ngIf="['Stock Barang','Stock Barang Dibawah Minimum','Stock Barang Diatas Maximum'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
          Tanggal Stock
@@ -79,6 +79,28 @@
           </div>
         </div>
       </div>
+    </ng-container>
+
+    <ng-container *ngIf="['Stock Barang Dibawah Minimum'].includes(currentReport)">
+        <div class="row mt-4">
+          <div class="col-4">
+          </div>
+          <div class="col-6 description alert alert-warning text-center" role="alert">
+            Laporan tersebut akan mencetak semua master barang yang statusnya 'Aktif' <br>
+            dengan Formula : Qty Stock terakhir 'DIBAWAH' Minimum Stock
+          </div>
+        </div>
+    </ng-container>
+
+     <ng-container *ngIf="['Stock Barang Diatas Maximum'].includes(currentReport)">
+        <div class="row mt-4">
+          <div class="col-4">
+          </div>
+          <div class="col-6 description alert alert-warning text-center" role="alert">
+            Laporan tersebut akan mencetak semua master barang yang statusnya 'Aktif' <br>
+            dengan Formula : Qty Stock terakhir 'DIATAS' Maximum Stock
+          </div>
+        </div>
     </ng-container>
 
     <ng-container *ngIf="['Stock Barang'].includes(currentReport)">
