@@ -226,7 +226,78 @@ id="formModalDelete"    [attr.aria-hidden]="!isShowModalCetak">
     </div>
   </c-modal-body>
 </c-modal>
+<div class="fade-in">
 
+  <c-card class="c-card" *ngIf="selectedRowData">
+    <c-card-body>
+      <div class="row p-2 justify-content-start">
+        <div class="col-6">
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-2">
+              <label for="alamatTujuan" class="form-label">{{ "Alamat" | translate }}</label>
+            </div>
+            <div class="col-10">
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.alamatGudang" name="alamatTujuan" />
+            </div>
+          </div>
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-2">
+              <label for="alamat1" class="form-label">{{ "Catatan 1" | translate }}</label>
+            </div>
+            <div class="col-10">
+              <input type="text" readonly placeholder="Catatan 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.keterangan1" name="keterangan1" />
+            </div>
+          </div>
+
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-2">
+              <label for="alamat1" class="form-label">{{ "Catatan 2" | translate }}</label>
+            </div>
+            <div class="col-10">
+              <input type="text" readonly placeholder="Catatan 2" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.keterangan2" name="keterangan2" />
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-2">
+              <label for="userCreate" class="form-label">{{ "User Create" | translate }}</label>
+            </div>
+            <div class="col-10">           
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.userCreate" name="userCreate" />
+            </div>
+          </div>
+
+
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-2">
+              <label for="dateCreate" class="form-label">{{ "Date Create" | translate }}</label>
+            </div>
+            <div class="col-10">
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+              [(ngModel)]="selectedRowData.dateCreate" name="dateCreate" />
+            </div>
+          </div>
+
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-2">
+              <label for="timeCreate" class="form-label">{{ "Time Create" | translate }}</label>
+            </div>
+            <div class="col-10">
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.timeCreate" name="timeCreate" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
 
 <div class="fade-in">
   <app-modal-print-list
