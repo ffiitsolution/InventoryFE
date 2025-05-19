@@ -59,6 +59,8 @@ export class MasterSupplierComponent
   configSelectCity: any = {};
   configSelectRSC: any = {};
   roleId: any;
+  hasCreate: any = false;
+  hasUpdate: any = false;
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
@@ -184,7 +186,7 @@ export class MasterSupplierComponent
         {
           title: 'Action',
           render: () => {
-            if (this.roleId !== '3' && this.roleId !== '2') {
+            if (!this.hasUpdate) {
               return `
                 <div class="btn-group" role="group" aria-label="Action">
                   <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
@@ -299,6 +301,22 @@ export class MasterSupplierComponent
           label: item.KETERANGAN_GUDANG,
         }));
       });
+    this.hasCreate = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' &&
+          p.permission.startsWith('master.master-supplier') &&
+          p.permission.endsWith('.create')
+      );
+    this.hasUpdate = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' &&
+          p.permission.startsWith('master.master-supplier') &&
+          p.permission.endsWith('.update')
+      );
   }
 
   actionBtnClick(action: string, data: any = null) {

@@ -12,10 +12,11 @@ import {
 } from './table-uom';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MasterBranchComponent,
+import {
+  MasterBranchComponent,
   MasterBranchDetailComponent,
   MasterBranchAddComponent,
-  MasterBranchEditComponent
+  MasterBranchEditComponent,
 } from './master-branch';
 import { MasterCompanyComponent } from './master-company/master-company.component';
 import { MasterDepartmentComponent } from './master-department/master-department.component';
@@ -67,6 +68,13 @@ import {
   TablePositionEditComponent,
   TablePositionDetailComponent,
 } from './table-position';
+import {
+  MasterRoleAddComponent,
+  MasterRoleComponent,
+  MasterRoleDetailComponent,
+  MasterRoleEditComponent,
+} from './master-role';
+
 import { MasterUserComponent } from './master-user/master-user.component';
 import { MasterUserEditComponent } from './master-user/edit/edit.component';
 import { MasterUserDetailComponent } from './master-user/detail/detail.component';
@@ -286,6 +294,22 @@ const routes: Routes = [
       {
         path: 'master-resep',
         component: MasterResepComponent,
+      },
+      {
+        path: 'master-role',
+        component: MasterRoleComponent,
+      },
+      {
+        path: 'master-role/add',
+        component: MasterRoleAddComponent,
+      },
+      {
+        path: 'master-role/edit',
+        component: MasterRoleEditComponent,
+      },
+      {
+        path: 'master-role/detail',
+        component: MasterRoleDetailComponent,
       },
       {
         path: 'master-resep/detail',

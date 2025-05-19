@@ -14,7 +14,7 @@ import {
   STATUS_RESULT,
   TIPE_PEMBAYARAN,
   STATUS_PESANAN_TERIMA_PESANAN,
-  STATUS_PESANAN_TERIMA_PO
+  STATUS_PESANAN_TERIMA_PO,
 } from '../../constants';
 import moment from 'moment';
 
@@ -51,12 +51,27 @@ export class GlobalService {
   statusPlanningOrder: any = '';
   statusBackupDb: any = '';
 
+  accessSidebar: any[] = [];
+  accessModule: any[] = [];
+
   constructor(
     private titleService: Title,
     @Inject(DOCUMENT) private document: Document,
     private router: Router,
     private datePipe: DatePipe
   ) {}
+
+  // ngOnInit(): void {
+  //   const permissions = JSON.parse(
+  //     localStorage.getItem('inv_permissions') ?? ''
+  //   );
+  //   console.log(permissions)
+  //   this.accessSidebar =
+  //     permissions?.filter((p: any) => p.app === 'SIDEBAR') || [];
+
+  //   this.accessModule =
+  //     permissions?.filter((p: any) => p.app === 'MODULE') || [];
+  // }
 
   saveLocalstorage(key: string, value: any, type: string | boolean = 'json') {
     if (type === 'json' || type === true) {
@@ -329,7 +344,7 @@ export class GlobalService {
     return `${found?.label}` || status;
   }
   getStatusReceivingOrderLabel(status: string, isPrintStatus: boolean = false) {
-    const data = STATUS_PESANAN_TERIMA_PESANAN
+    const data = STATUS_PESANAN_TERIMA_PESANAN;
     const found = data.find((item) => item.value == status);
     if (!found) {
       return '-';
@@ -338,7 +353,7 @@ export class GlobalService {
     return `${found?.label?.toUpperCase()}` || status;
   }
   getStatusReceivingPOLabel(status: string, isPrintStatus: boolean = false) {
-    const data = STATUS_PESANAN_TERIMA_PO
+    const data = STATUS_PESANAN_TERIMA_PO;
     const found = data.find((item) => item.value == status);
     if (!found) {
       return '-';
@@ -361,20 +376,20 @@ export class GlobalService {
       type === 'numberPlusMinusDot'
         ? /^[0-9.+-]$/
         : type == 'alphanumeric'
-          ? /^[a-zA-Z0-9]$/
-          : type == 'numeric'
-            ? /^[0-9]$/
-            : type == 'numericDot'
-              ? /^[0-9.]$/
-              : type == 'phone'
-                ? /^[0-9-]$/
-                : type == 'email'
-                  ? /^[a-zA-Z0-9@._-]$/
-                  : type == 'excludedSensitive'
-                    ? /^[a-zA-Z0-9 .,_@-]*$/
-                    : type == 'kodeSingkat'
-                      ? /^[a-zA-Z]+$/
-                      : /^[a-zA-Z.() ,\-]*$/;
+        ? /^[a-zA-Z0-9]$/
+        : type == 'numeric'
+        ? /^[0-9]$/
+        : type == 'numericDot'
+        ? /^[0-9.]$/
+        : type == 'phone'
+        ? /^[0-9-]$/
+        : type == 'email'
+        ? /^[a-zA-Z0-9@._-]$/
+        : type == 'excludedSensitive'
+        ? /^[a-zA-Z0-9 .,_@-]*$/
+        : type == 'kodeSingkat'
+        ? /^[a-zA-Z]+$/
+        : /^[a-zA-Z.() ,\-]*$/;
 
     if (temp_regex.test(inp)) {
       // ⭐ Tambahkan ini:
@@ -459,16 +474,21 @@ export class GlobalService {
     if (isNaN(numericValue)) {
       return '';
     }
-    return 'Rp. ' + numericValue.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return (
+      'Rp. ' +
+      numericValue.toLocaleString('id-ID', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+    );
   }
 
   parseRupiahToNumber(formatted: string): number {
-    if(formatted){
+    if (formatted) {
       const cleaned = formatted.replace(/[^\d]/g, ''); // hapus semua selain angka
       return parseInt(cleaned, 10) || 0;
-    } else{
-      return 0
+    } else {
+      return 0;
     }
   }
-
 }

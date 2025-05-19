@@ -4,7 +4,7 @@
       <div class="row">
         <div class="d-flex col-md-4 align-items-center">
           <h3 style="padding-left: 10px">
-            {{ "Master" | translate }} {{ "Counter" | translate }}
+            {{ "Master" | translate }} {{ "Role" | translate }}
           </h3>
         </div>
         <div class="col col-md-8 justify-content-right text-end">
@@ -12,10 +12,9 @@
             class="menu-purpose col-sm-12 justify-content-end align-items-center"
           >
             <span
-              >Master Counter digunakan untuk melihat daftar kode awal suatu
-              proses, dalam master ini memuat Nomor Loket, Code Loket,
-              Keterangan Loket.
-            </span>
+              >Master Role digunakan untuk mengelola daftar peran (role)
+              User yang berisi hak akses masing-masing.</span
+            >
           </div>
         </div>
       </div>
@@ -42,7 +41,7 @@
           {{ "Kembali" | translate }}
         </a>
       </div>
-      <div class="table-responsive">
+      <div>
         <table
           datatable
           [dtOptions]="dtOptions"

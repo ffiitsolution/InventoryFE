@@ -107,6 +107,12 @@ import {
   AddResepComponent,
   MasterResepComponent,
 } from './master-resep';
+import {
+  MasterRoleAddComponent,
+  MasterRoleComponent,
+  MasterRoleDetailComponent,
+  MasterRoleEditComponent,
+} from './master-role';
 import { AddDataDetailProductionComponent } from '../transaction/production/add-data-detail/add-data-detail.component';
 import { ProfileCompanyComponent } from './profile-company/profile-company.component';
 import { SharedComponentModule } from '../../component/shared.component.module';
@@ -211,6 +217,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     MasterResepComponent,
     AddResepComponent,
     AddDataDetailResepComponent,
+
+    MasterRoleAddComponent,
+    MasterRoleComponent,
+    MasterRoleDetailComponent,
+    MasterRoleEditComponent,
 
     ProfileCompanyComponent,
   ],

@@ -1,0 +1,97 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <h5>{{ "Tambah" | translate }} {{ "Role" | translate }}</h5>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label"
+            >{{ "Kode Role" | translate }}
+            <span class="stamp-required show">&nbsp;*</span>
+          </label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="code"
+              [readOnly]="adding"
+              maxlength="10"
+              (keypress)="conditionInput($event, 'code')"
+              (input)="convertToUppercase('code')"
+            />
+            <span
+              *ngIf="
+                myForm.controls['code'].hasError('required') &&
+                myForm.controls['code'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 10 karakter)" | translate }}</span
+            >
+            <span
+              *ngIf="myForm.controls['code'].hasError('code')"
+              class="text-danger"
+              >{{ "Kode Satuan hanya boleh mengandung huruf." | translate }}
+            </span>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">
+            {{ "Nama Role" | translate }}
+            <span class="stamp-required show">&nbsp;* </span>
+          </label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="desc"
+              [readOnly]="adding"
+              (input)="convertToUppercase('desc')"
+              (keypress)="conditionInput($event, 'desc')"
+              maxlength="30"
+            />
+            <span
+              *ngIf="
+                myForm.controls['desc'].hasError('required') &&
+                myForm.controls['desc'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 30 karakter)" | translate }}</span
+            >
+            <span
+              *ngIf="myForm.controls['desc'].hasError('desc')"
+              class="text-danger"
+              >{{
+                "Nama Satuan hanya boleh mengandung huruf." | translate
+              }}
+            </span>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="d-grid gap-3 d-md-flex justify-content-end">
+          <button
+            class="btn btn-light btn-120"
+            (click)="onPreviousPressed()"
+            [disabled]="adding"
+          >
+            {{ "Kembali" | translate }}
+          </button>
+          <button
+            class="btn btn-info text-white btn-150"
+            type="submit"
+            [disabled]="adding"
+          >
+            <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
+            <span *ngIf="!adding"
+              >{{ "Simpan" | translate }}</span
+            >
+          </button>
+        </div>
+      </form>
+    </c-card-body>
+  </c-card>
+</div>

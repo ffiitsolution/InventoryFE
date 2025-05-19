@@ -160,6 +160,7 @@
                 </div>
                 <div class="col-4 d-flex align-items-end justify-content-end">
                   <button 
+                  *ngIf="hasUpdate"
                   [ngClass]="myForm.get('statusBarang')?.value == 'A' ? 'btn btn-success btn-150 pe-3' : 'btn  btn-info btn-150 pe-3'"
                   class=" text-white btn-150 pe-3"
                   [disabled]="loadingSimpan"

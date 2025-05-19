@@ -85,6 +85,9 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
   listGroup: any[] = [];
   currentTab: string = 'cabang';
 
+  hasCreate: any = false;
+  hasUpdate: any = false;
+
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
   }
@@ -108,6 +111,7 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
       serverSide: true,
       autoWidth: true,
       info: true,
+
       drawCallback: (drawCallback) => {
         this.selectedRowData = undefined;
       },
@@ -171,7 +175,7 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
         {
           title: 'Action',
           render: () => {
-            if (this.roleId !== '3' && this.roleId !== '2') {
+            if (!this.hasUpdate) {
               return `
                 <div class="btn-group" role="group" aria-label="Action">
                   <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
@@ -305,15 +309,33 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         const url = event.urlAfterRedirects || event.url;
-        
+
         // Cek path master-branch termasuk subpath seperti add/edit/detail
-        const isStillInMasterBranch = /^\/master\/master-branch(\/.*)?$/.test(url);
-    
+        const isStillInMasterBranch = /^\/master\/master-branch(\/.*)?$/.test(
+          url
+        );
+
         if (!isStillInMasterBranch) {
           this.g.removeLocalstorage('inv_tab_title');
         }
       }
     });
+    this.hasCreate = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' &&
+          p.permission.startsWith('master.master-branch') &&
+          p.permission.endsWith('.create')
+      );
+    this.hasUpdate = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' &&
+          p.permission.startsWith('master.master-branch') &&
+          p.permission.endsWith('.update')
+      );
   }
 
   actionBtnClick(action: string, data: any = null) {

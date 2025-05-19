@@ -5,14 +5,15 @@ export const menu_id: any = [
     iconComponent: {
       name: 'cil-settings',
     },
+    access: 'dashboard',
   },
   {
-    "name": "Master",
-    "url": "/master",
-    "iconComponent": {
-      "name": "cil-storage"
+    name: 'Master',
+    url: '/master',
+    iconComponent: {
+      name: 'cil-storage',
     },
-    'access': 'master'
+    access: 'master',
   },
   {
     name: 'Pesanan',
@@ -20,12 +21,13 @@ export const menu_id: any = [
       name: 'cil-inbox',
     },
     url: '/order/order',
-    'access': 'master'
+    access: 'pesanan',
   },
   {
     name: 'Transaksi',
     url: '/transaksi',
     icon: 'fa fa-exchange',
+    access: 'transaksi',
     children: [
       {
         name: 'Pembelian',
@@ -33,6 +35,7 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cil-cart',
         },
+        access: 'pembelian',
       },
       {
         name: 'Pengiriman',
@@ -40,6 +43,7 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cil-truck',
         },
+        access: 'pengiriman',
         children: [
           {
             name: 'Display & Tambah',
@@ -47,6 +51,7 @@ export const menu_id: any = [
             iconComponent: {
               name: 'cil-plus',
             },
+            access: 'display_&_tambah',
           },
           {
             name: 'Proses Do Balik',
@@ -54,6 +59,7 @@ export const menu_id: any = [
             iconComponent: {
               name: 'cil-note-add',
             },
+            access: 'proses_do_balik',
           },
           {
             name: 'Revisi DO',
@@ -61,6 +67,7 @@ export const menu_id: any = [
             iconComponent: {
               name: 'cil-sync',
             },
+            access: 'revisi_do',
           },
           {
             name: 'Packing List',
@@ -68,6 +75,7 @@ export const menu_id: any = [
             iconComponent: {
               name: 'cil-check',
             },
+            access: 'packing_list',
           },
         ],
       },
@@ -77,6 +85,7 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cil-industry',
         },
+        access: 'penerimaan_dari_gudang',
         children: [
           {
             name: 'Tambah Data',
@@ -84,6 +93,7 @@ export const menu_id: any = [
             iconComponent: {
               name: 'cil-circle',
             },
+            access: 'tambah_data',
           },
           {
             name: 'Display Data',
@@ -91,6 +101,7 @@ export const menu_id: any = [
             iconComponent: {
               name: 'cil-circle',
             },
+            access: 'display_data',
           },
         ],
       },
@@ -100,6 +111,7 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cib-minutemailer',
         },
+        access: 'kirim_barang_retur_ke_supplier',
       },
       {
         name: 'Kirim Barang Retur Ke Site',
@@ -107,6 +119,7 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cil-factory',
         },
+        access: 'kirim_barang_retur_ke_site',
       },
       {
         name: 'Return Order',
@@ -114,23 +127,23 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cil-factory',
         },
+        access: 'return_order',
       },
-
-      //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 START
       {
         name: 'Terima Barang Retur dari Site',
         url: '/transaction/terima-barang-retur-dari-site/list-dt',
         iconComponent: {
           name: 'cil-factory',
         },
+        access: 'terima_barang_retur_dari_site',
       },
-      //// Tambah Modul Terima Barang Retur dari Site - Aditya 19/03/2025 END
       {
         name: 'Terima Barang Bekas',
         url: '/transaction/penerimaan-barang-bekas/list',
         iconComponent: {
           name: 'cil-trash',
         },
+        access: 'terima_barang_bekas',
       },
       {
         name: 'Penjualan Barang Bekas',
@@ -138,6 +151,7 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cil-dollar',
         },
+        access: 'penjualan_barang_bekas',
       },
       {
         name: 'Pemakaian Barang Sendiri',
@@ -145,22 +159,7 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cil-hand-point-right',
         },
-        // children: [
-        //   {
-        //     name: 'Tambah Data',
-        //     url: '/transaction/barang-untuk-pemakaian-sendiri/list-barang-untuk-pemakaian-sendiri',
-        //     iconComponent: {
-        //       name: 'cil-circle',
-        //     },
-        //   },
-        //   {
-        //     name: 'Display Data',
-        //     url: '/transaction/transaksi-pemakaian-barang-sendiri/display-data-pemakaian-barang-sendiri',
-        //     iconComponent: {
-        //       name: 'cil-circle',
-        //     },
-        //   },
-        // ],
+        access: 'pemakaian_barang_sendiri',
       },
       {
         name: 'Pemusnahan Barang',
@@ -168,6 +167,7 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cil-trash',
         },
+        access: 'pemusnahan_barang',
       },
       {
         name: 'Produksi',
@@ -175,6 +175,7 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cil-industry',
         },
+        access: 'produksi',
       },
     ],
   },
@@ -183,6 +184,7 @@ export const menu_id: any = [
     iconComponent: {
       name: 'cil-book',
     },
+    access: 'stock_opname',
     children: [
       {
         name: 'Setup SO',
@@ -190,6 +192,7 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cil-circle',
         },
+        access: 'setup_so',
       },
       {
         name: 'Cetak Form SO',
@@ -197,6 +200,7 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cil-circle',
         },
+        access: 'cetak_form_so',
       },
       {
         name: 'Entry Stock Opname',
@@ -204,6 +208,7 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cil-circle',
         },
+        access: 'entry_stock_opname',
       },
       {
         name: 'Laporan Selisih SO (Sementara)',
@@ -211,6 +216,7 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cil-circle',
         },
+        access: 'laporan_selisih_so_(sementara)',
       },
       {
         name: 'Proses Posting SO',
@@ -218,6 +224,7 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cil-circle',
         },
+        access: 'proses_posting_so',
       },
       {
         name: 'Laporan Hasil SO',
@@ -225,6 +232,7 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cil-circle',
         },
+        access: 'laporan_hasil_so',
       },
       {
         name: 'Display Selisih SO',
@@ -232,6 +240,7 @@ export const menu_id: any = [
         iconComponent: {
           name: 'cil-circle',
         },
+        access: 'display_selisih_so',
       },
     ],
   },
@@ -241,6 +250,7 @@ export const menu_id: any = [
     iconComponent: {
       name: 'cil-calendar-check',
     },
+    access: 'tutup_bulan',
   },
   {
     name: 'Planning Order',
@@ -248,6 +258,7 @@ export const menu_id: any = [
     iconComponent: {
       name: 'cil-av-timer',
     },
+    access: 'planning_order',
   },
   {
     name: 'Laporan',
@@ -255,6 +266,7 @@ export const menu_id: any = [
     iconComponent: {
       name: 'cib-adobe-acrobat-reader',
     },
+    access: 'laporan',
   },
   {
     name: 'Query Stock',
@@ -262,6 +274,7 @@ export const menu_id: any = [
     iconComponent: {
       name: 'cil-balance-scale',
     },
+    access: 'query_stock',
   },
   {
     name: 'Kirim Terima Data',
@@ -269,5 +282,6 @@ export const menu_id: any = [
     iconComponent: {
       name: 'cil-swap-vertical',
     },
+    access: 'kirim_terima_data',
   },
 ];
