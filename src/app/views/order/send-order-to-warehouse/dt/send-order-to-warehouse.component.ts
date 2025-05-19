@@ -245,6 +245,7 @@ export class SendOrderToWarehouseComponent
       ],
       searchDelay: 1000,
       order: [
+        [6, 'asc'],
         [4, 'desc'],
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {

@@ -234,7 +234,8 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
       ],
       searchDelay: 1000,
       order: [
-        [4, 'desc'],
+        [6, 'asc'],
+        [4, 'desc']
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
