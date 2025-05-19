@@ -16,6 +16,11 @@
 .justify-center {
   justify-content: center !important;
 }
+.vertical-center {
+  display: flex;
+  align-items: center;
+}
+  
 
 
 $theme-colors: map-merge(

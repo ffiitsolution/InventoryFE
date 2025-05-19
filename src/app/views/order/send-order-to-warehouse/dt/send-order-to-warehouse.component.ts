@@ -75,6 +75,8 @@ export class SendOrderToWarehouseComponent
   state : any;
 
   protected config = AppConfig.settings.apiServer;
+  selectedRowData: any;
+
 
   constructor(
     private dataService: DataService,
@@ -263,6 +265,15 @@ export class SendOrderToWarehouseComponent
           this.onShowModalPrint(data)
         }
         );
+        $('td', row).on('click', () => {
+          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
         return row;
       },
     };
