@@ -420,11 +420,14 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
       validationExpiredMessageList: '',
       validationQty: '',
       totalStockExpired: '0.00',
+      namaBarang: this.selectedExpProduct.namaBarang,
+      statusSync: 'T',
+      validationQtyKecil: '',
     });
 
     setTimeout(() => {
       this.checkDateExpired();
-    }, 400);
+    }, 300);
   }
 
   expiredHasZeroTotalQty(): boolean {
@@ -463,8 +466,9 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
       (sum, data) =>
         Number(sum) +
         Number(
-          Number(data.qtyBesarSo) * Number(data.konversi) +
-            Number(data.qtyKecilSo)
+          Number(data.qtyBesarSo) > 0
+            ? Number(data.qtyBesarSo) * Number(data.konversi)
+            : 0 + Number(data.qtyKecilSo)
         ),
       0
     );
@@ -473,11 +477,9 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
       2
     );
 
-    this.listEntryExpired[index].totalStockExpired =
-      (Number(this.listEntryExpired[index]?.qtyBesarSo) > 0
-        ? Number(this.listEntryExpired[index]?.qtyBesarSo) *
-          Number(this.listEntryExpired[index]?.konversi)
-        : 0) + Number(this.listEntryExpired[index]?.qtyKecilSo);
+    this.listEntryExpired.forEach((item: any) => {
+      item.totalStockExpired = Number(this.totalFilteredExpired);
+    });
   }
 
   onInputQtyBesarExpired(event: any, kodeBarang: string, index: number) {
