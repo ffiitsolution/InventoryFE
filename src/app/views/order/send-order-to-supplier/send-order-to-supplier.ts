@@ -116,6 +116,12 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
                   tglPesan: this.g.transformDate(rest.tglPesan),
                   tglBrgDikirim: this.g.transformDate(rest.tglBrgDikirim),
                   tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
+                  dateCreate: this.g.transformDate(rest.dateCreate),
+                  timeCreate: this.g.transformTime(rest.timeCreate, true),
+                  dateCancel: this.g.transformDate(rest.dateCancel),
+                  timeCancel: this.g.transformTime(rest.timeCancel,true),
+                  dateKirim: this.g.transformDate(rest.dateKirim),
+                  timeKirim: this.g.transformTime(rest.timeKirim,true),
                 };
                 return finalData;
               });

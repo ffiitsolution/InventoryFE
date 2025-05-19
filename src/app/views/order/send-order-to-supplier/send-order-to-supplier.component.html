@@ -103,54 +103,120 @@
       <div class="row p-2 justify-content-start">
         <div class="col-6">
           <div class="w-100 mb-2 row vertical-center">
-            <div class="col-2">
+            <div class="col-12">
               <label for="alamat1" class="form-label">{{ "Catatan 1" | translate }}</label>
             </div>
-            <div class="col-10">
+            <div class="col-12">
               <input type="text" readonly placeholder="Catatan 1" class="form-control" id="nomorPesanan"
                 [(ngModel)]="selectedRowData.keterangan1" name="keterangan1" />
             </div>
           </div>
 
           <div class="w-100 mb-2 row vertical-center">
-            <div class="col-2">
+            <div class="col-12">
               <label for="alamat1" class="form-label">{{ "Catatan 2" | translate }}</label>
             </div>
-            <div class="col-10">
+            <div class="col-12">
               <input type="text" readonly placeholder="Catatan 2" class="form-control" id="nomorPesanan"
                 [(ngModel)]="selectedRowData.keterangan2" name="keterangan2" />
             </div>
           </div>
         </div>
-        <div class="col-6">
+        <div class="col-2">
+
           <div class="w-100 mb-2 row vertical-center">
-            <div class="col-2">
-              <label for="userCreate" class="form-label">{{ "User Create" | translate }}</label>
+            <div class="col-12">
+              <label for="userCreate" class="form-label">{{ "User Buat" | translate }}</label>
             </div>
-            <div class="col-10">           
+            <div class="col-12">
               <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
                 [(ngModel)]="selectedRowData.userCreate" name="userCreate" />
             </div>
           </div>
 
-
           <div class="w-100 mb-2 row vertical-center">
-            <div class="col-2">
-              <label for="dateCreate" class="form-label">{{ "Date Create" | translate }}</label>
+            <div class="col-12">
+              <label for="dateCreate" class="form-label">{{ "Tgl. Buat" | translate }}</label>
             </div>
-            <div class="col-10">
+            <div class="col-12">
               <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
-              [(ngModel)]="selectedRowData.dateCreate" name="dateCreate" />
+                [(ngModel)]="selectedRowData.dateCreate" name="dateCreate" />
             </div>
           </div>
 
           <div class="w-100 mb-2 row vertical-center">
-            <div class="col-2">
-              <label for="timeCreate" class="form-label">{{ "Time Create" | translate }}</label>
+            <div class="col-12">
+              <label for="timeCreate" class="form-label">{{ "Jam Buat" | translate }}</label>
             </div>
-            <div class="col-10">
+            <div class="col-12">
               <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
                 [(ngModel)]="selectedRowData.timeCreate" name="timeCreate" />
+            </div>
+          </div>
+
+        </div>
+        <div class="col-2">
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-12">
+              <label for="userCreate" class="form-label">{{ "User Kirim" | translate }}</label>
+            </div>
+            <div class="col-12">
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.userKirim" name="userCreate" />
+            </div>
+          </div>
+
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-12">
+              <label for="dateCreate" class="form-label">{{ "Tgl. Kirim" | translate }}</label>
+            </div>
+            <div class="col-12">
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.dateKirim" name="dateCreate" />
+            </div>
+          </div>
+
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-12">
+              <label for="timeCreate" class="form-label">{{ "Jam Kirim" | translate }}</label>
+            </div>
+            <div class="col-12">
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.timeKirim" name="timeCreate" />
+            </div>
+          </div>
+
+        </div>
+        <div class="col-2">
+
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-12">
+              <label for="userCreate" class="form-label">{{ "User Batal" | translate }}</label>
+            </div>
+            <div class="col-12">
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.userCancel" name="userCreate" />
+            </div>
+          </div>
+
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-12">
+              <label for="dateCreate" class="form-label">{{ "Tgl. Batal" | translate }}</label>
+            </div>
+            <div class="col-12">
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.dateCancel" name="dateCreate" />
+            </div>
+          </div>
+
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-12">
+              
+              <label for="timeCreate" class="form-label">{{ "Jam Batal" | translate }}</label>
+            </div>
+            <div class="col-12">
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.timeCancel" name="timeCreate" />
             </div>
           </div>
 
