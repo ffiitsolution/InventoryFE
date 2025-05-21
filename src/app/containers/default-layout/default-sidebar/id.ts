@@ -180,39 +180,10 @@ export const menu_id: any = [
   },
   {
     name: 'Stock Opname',
+    url: '/stock-opname/setup-so',
     iconComponent: {
       name: 'cil-book',
     },
-    children: [
-      {
-        name: 'Display SO',
-        url: '/stock-opname/setup-so',
-        iconComponent: {
-          name: 'cil-circle',
-        },
-      },
-      {
-        name: 'Laporan Selisih SO (Sementara)',
-        url: '/dashboard',
-        iconComponent: {
-          name: 'cil-circle',
-        },
-      },
-      {
-        name: 'Laporan Hasil SO',
-        url: '/stock-opname/laporan-hasil-so',
-        iconComponent: {
-          name: 'cil-circle',
-        },
-      },
-      {
-        name: 'Display Selisih SO',
-        url: '/dashboard',
-        iconComponent: {
-          name: 'cil-circle',
-        },
-      },
-    ],
   },
   {
     name: 'Tutup Bulan',
