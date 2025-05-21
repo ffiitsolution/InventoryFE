@@ -16,24 +16,6 @@
     </c-card-body>
   </c-card>
 </div>
-<!-- <div class="fade-in">
-  <c-card class="mb-2">
-    <c-card-body>
-      <div class="row">
-        <div class="col-sm-12">
-          <i
-            class="fa fa-exclamation-circle text-center"
-            style="font-size: large; color: #3c4b64"
-          ></i>
-          &nbsp;
-          <span class="fw-bold"
-            >Master Satuan digunakan untuk mengelola daftar satuan ukuran besar dan kecil yang digunakan dalam sistem.</span
-          >
-        </div>
-      </div>
-    </c-card-body>
-  </c-card>
-</div> -->
 <div class="fade-in">
 
   <c-card class="mb-2">
@@ -59,8 +41,7 @@
         </div>
         <div class="w-100"></div>
         <div class="col">
-          <button class="btn btn-primary w-100" (click)="onMenuClick('Lihat Detail')"
-            [disabled]="!selectedRowData">
+          <button class="btn btn-primary w-100" (click)="onMenuClick('Lihat Detail')" [disabled]="!selectedRowData">
             Lihat Detail
           </button>
         </div>
@@ -75,6 +56,16 @@
             [disabled]="!selectedRowData || selectedRowData?.statusProses !== 'SUDAH'">
             Display Selisih SO
           </button>
+        </div>
+        <div class="w-100"></div>
+        <div class="col" *ngIf="!selectedRowData">
+          <div class="text-muted mt-2">
+            <i class="fa fa-exclamation-circle text-center"></i>
+            &nbsp;
+            <span class="fw-bold text-danger">
+              Silahkan pilih/klik salah satu nomor SO.
+            </span>
+          </div>
         </div>
       </div>
 

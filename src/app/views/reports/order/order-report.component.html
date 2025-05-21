@@ -149,8 +149,8 @@
           Print
         </button>
         <ul cDropdownMenu>
-          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('preview')">Preview PDF</button></li>
-          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')">Download PDF</button></li>
+          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('preview')" *ngIf="!['Tanggal Pesan vs Tanggal Kirim'].includes(currentReport)">Preview PDF</button></li>
+          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')"  *ngIf="!['Tanggal Pesan vs Tanggal Kirim'].includes(currentReport)">Download PDF</button></li>
           <li><button class="btn btn-outline-primary w-100" (click)="doSubmit('csv')">Download CSV</button></li>
         </ul>
       </c-dropdown>

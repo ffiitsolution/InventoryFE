@@ -16,7 +16,9 @@ import { Page } from '../../../model/page';
 import { DataService } from '../../../service/data.service';
 import { GlobalService } from '../../../service/global.service';
 import { TranslationService } from '../../../service/translation.service';
-import { AppService } from 'src/app/service/app.service';
+import { AppService } from '../../../service/app.service';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-index-sync-data',
@@ -24,22 +26,28 @@ import { AppService } from 'src/app/service/app.service';
   styleUrl: './index.component.scss',
 })
 export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
+  loadings: { [key: string]: boolean } = {};
+  clicked: { [key: string]: boolean } = {};
+  messages: { [key: string]: string } = {};
   columns: any;
-  page = new Page();
+  page: any;
+  // page = new Page();
   data: any;
-  loadingIndicator = true;
   selectedRowData: any;
   verticalItemCount: number = 6;
   reportCategoryData: any;
   selectedMenu: string = 'Kirim Data Transaksi';
   companyProfile: any = {};
+  userData: any;
+  listBackupDb: any[] = [];
 
   constructor(
     private service: AppService,
     private dataService: DataService,
     public g: GlobalService,
     private translation: TranslationService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -51,6 +59,7 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
         this.g.tabTitle
     );
     this.getCompanyProfile();
+    this.userData = this.service.getUserData();
   }
 
   ngOnDestroy(): void {}
@@ -93,14 +102,124 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   processBackupDb() {
-    this.service.insert('/api/backup-database/process', {}).subscribe({
-      next: (res) => {
-        const data = res.data ?? {};
-        console.log(data);
+    this.loadings['processBackupDb'] = true;
+    this.messages['processBackupDb'] = '';
+    Swal.fire({
+      ...this.g.componentKonfirmasiSimpan,
+      showConfirmButton: false,
+      showCancelButton: false,
+      width: '600px',
+      customClass: {
+        popup: 'custom-popup',
       },
-      error: (err) => {
-        console.log('err: ' + err);
+      allowOutsideClick: false,
+      didOpen: () => {
+        const submitBtn = document.getElementById('btn-submit');
+        const cancelBtn = document.getElementById('btn-cancel');
+        submitBtn?.addEventListener('click', () => {
+          Swal.close();
+          this.service
+            .insert('/api/backup-database/process', {
+              process: true,
+              kodeGudang: this.userData?.defaultLocation?.kodeLocation,
+            })
+            .subscribe({
+              next: (res) => {
+                if (res.error) {
+                  this.messages['processBackupDb'] = res.error;
+                } else {
+                  this.toastr.success('Backup database berhasil dilakukan');
+                  this.getListBackup();
+                }
+                this.loadings['processBackupDb'] = false;
+              },
+              error: (err) => {
+                console.log('err: ' + err);
+                this.loadings['processBackupDb'] = false;
+              },
+            });
+        });
+        cancelBtn?.addEventListener('click', () => {
+          Swal.close();
+          this.loadings['processBackupDb'] = false;
+        });
       },
     });
+  }
+
+  getListBackup() {
+    this.loadings['getListBackup'] = true;
+    this.clicked['getListBackup'] = true;
+    this.service
+      .insert('/api/backup-database/process', {
+        kodeGudang: this.userData?.defaultLocation?.kodeLocation,
+      })
+      .subscribe({
+        next: (res) => {
+          if (res.error) {
+            this.messages['getListBackup'] = res.error;
+          } else {
+            this.listBackupDb = res.item ?? [];
+          }
+          this.loadings['getListBackup'] = false;
+        },
+        error: (err) => {
+          console.log('err: ' + err);
+          this.loadings['getListBackup'] = false;
+        },
+      });
+  }
+
+  deleteBackup(data: any) {
+    this.loadings['deleteBackup'] = true;
+    Swal.fire({
+      ...this.g.componentKonfirmasiSimpan,
+      showConfirmButton: false,
+      showCancelButton: false,
+      width: '600px',
+      customClass: {
+        popup: 'custom-popup',
+      },
+      allowOutsideClick: false,
+      didOpen: () => {
+        const submitBtn = document.getElementById('btn-submit');
+        const cancelBtn = document.getElementById('btn-cancel');
+        submitBtn?.addEventListener('click', () => {
+          Swal.close();
+          this.service
+            .insert('/api/backup-database/process', {
+              kodeGudang: this.userData?.defaultLocation?.kodeLocation,
+              delete: data.fileName,
+              download: false,
+            })
+            .subscribe({
+              next: (res) => {
+                if (res.error) {
+                  this.messages['deleteBackup'] = res.error;
+                  this.service.handleErrorResponse(res);
+                } else {
+                  this.toastr.success('Hapus backup berhasil dilakukan');
+                }
+                this.loadings['deleteBackup'] = false;
+                this.getListBackup();
+              },
+              error: (err) => {
+                console.log('err: ' + err);
+                this.loadings['deleteBackup'] = false;
+              },
+            });
+        });
+        cancelBtn?.addEventListener('click', () => {
+          Swal.close();
+          this.loadings['processBackupDb'] = false;
+        });
+      },
+    });
+  }
+
+  downloadBackup(data: any) {
+    const url =
+      this.service.getBaseUrl() + '/api/backup-database/download/' + data.fileName;
+    window.open(url, '_blank');
   }
 }

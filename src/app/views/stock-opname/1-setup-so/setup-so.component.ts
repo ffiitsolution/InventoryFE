@@ -152,27 +152,27 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
         { data: 'userProses', title: 'User Proses', searchable: false },
         { data: 'dateProses', title: 'Tanggal Proses', searchable: false },
         { data: 'timeProses', title: 'Jam Proses', searchable: false },
-        // {
-        //   title: 'Action',
-        //   render: (data: any, type: any, row: any) => {
-        //     let html =
-        //       '<div class="btn-group" role="group" aria-label="Action">';
-        //     if (row.statusProses !== 'SUDAH') {
-        //       html += '<button class="btn btn-sm action-edit btn-info btn-60">';
-        //       html += this.buttonCaptionEdit;
-        //       html += '</button>';
-        //       html +=
-        //         '<button class="btn btn-sm action-print text-white btn-warning btn-60">';
-        //       html += 'Print FORM';
-        //       html += '</button>';
-        //     }
-        //     html +=
-        //       '<button class="btn btn-sm action-view btn-outline-info btn-60">';
-        //     html += this.buttonCaptionView;
-        //     html += '</button></div>';
-        //     return html;
-        //   },
-        // },
+        {
+          title: 'Action',
+          render: (data: any, type: any, row: any) => {
+            let html = '';
+              // '<div class="btn-group" role="group" aria-label="Action">';
+            if (row.statusProses !== 'SUDAH') {
+              // html += '<button class="btn btn-sm action-edit btn-info btn-60">';
+              // html += this.buttonCaptionEdit;
+              // html += '</button>';
+              html +=
+                '<button class="btn btn-sm w-120 action-posting text-white btn-warning btn-60">';
+              html += 'POSTING';
+              html += '</button>';
+            }
+            // html +=
+            //   '<button class="btn btn-sm action-view btn-outline-info btn-60">';
+            // html += this.buttonCaptionView;
+            // html += '</button></div>';
+            return html;
+          },
+        },
       ],
       searchDelay: 1500,
       order: [
@@ -187,9 +187,9 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
         $('.action-edit', row).on('click', () =>
           this.actionBtnClick(ACTION_EDIT, data)
         );
-        // $('.action-print', row).on('click', () =>
-        //   this.actionBtnClick('print', data)
-        // );
+        $('.action-posting', row).on('click', () =>
+          this.actionBtnClick('posting', data)
+        );
 
         $('td', row).off('click');
         $('td', row).on('click', () => {
@@ -198,8 +198,8 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
             $(row).addClass('selected');
             $(row).siblings().removeClass('selected');
           } else {
-            $(row).removeClass('selected');
-            self.selectedRowData = undefined;
+            // $(row).removeClass('selected');
+            // self.selectedRowData = undefined;
           }
         });
         return row;
@@ -234,28 +234,15 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
       this.g.saveLocalstorage(LS_INV_SELECTED_SO, JSON.stringify(data));
       this.router.navigate(['/stock-opname/detail']);
     } else if (action === ACTION_EDIT) {
+      data.posting = false;
       this.g.saveLocalstorage(LS_INV_SELECTED_SO, JSON.stringify(data));
       this.router.navigate(['/stock-opname/edit']);
     } else if (action === ACTION_ADD) {
       this.router.navigate(['/stock-opname/add']);
-    } else if (action === 'print') {
-      this.service
-        .getFile('/api/report/report-jasper', {
-          kodeGudang: data.kodeGudang,
-          nomorSo: data.nomorSo,
-          tanggalSo: data.tanggalSo,
-          userData: this.userData,
-          isDownloadCsv: false,
-          reportName: 'Cetak Form Stock Opname',
-          reportSlug: 'form-stock-opname',
-          yearEom: 2025,
-          monthEom: 4,
-          firstDate: '1 May 2025',
-          lastDate: '31 May 2025',
-        })
-        .subscribe((res: any) => {
-          return this.downloadPDF(res, 'Form Stock Opname');
-        });
+    } else if (action === 'posting') {
+      data.posting = true;
+      this.g.saveLocalstorage(LS_INV_SELECTED_SO, JSON.stringify(data));
+      this.router.navigate(['/stock-opname/edit']);
     }
   }
 

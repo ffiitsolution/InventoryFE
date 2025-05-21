@@ -55,6 +55,10 @@ export class AppService {
     return JSON.parse(userString);
   }
 
+  getBaseUrl() {
+    return this.config.BASE_URL;
+  }
+
   isLoggednIn() {
     return this.getToken();
   }
@@ -460,7 +464,7 @@ export class AppService {
       payload
     );
   }
-  
+
   getSummaryPostingProduction(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/production/summary-posting`,

@@ -108,7 +108,9 @@ export class ReceivingPoSupplierComponent
                   tglBrgDikirim: this.g.transformDate(rest.tglBrgDikirim),
                   tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
                   dateCreate: this.g.transformDate(rest.dateCreate),
-                  timeCreate: this.g.transformTime(rest.timeCreate),
+                  timeCreate: this.g.transformTime(rest.timeCreate, true),
+                  dateCancel: this.g.transformDate(rest.dateCancel),
+                  timeCancel: this.g.transformTime(rest.timeCancel,true),
                 };
                 return finalData;
               });
