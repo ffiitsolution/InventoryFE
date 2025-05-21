@@ -545,6 +545,7 @@ export class AddDataDetailPenjualanBrgBekasComponent
             });
           });
       },
+      order: [[0, 'desc']],
       columns: [
         {
           title: 'Pilih Barang  ',

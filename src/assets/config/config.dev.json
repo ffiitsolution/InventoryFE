@@ -4,5 +4,6 @@
     "BASE_URL_HQ_": "http://172.16.12.180:14026/warehouse",
 
     "BASE_URL": "http://localhost:8093/inventory",
+    "BASE_URL_HQ__": "http://localhost:14026/warehouse",
     "BASE_URL_HQ": "http://192.168.10.28:7009/warehouse"  }
 }

@@ -122,7 +122,6 @@ export class AddDataDetailSendOrderToWarehouseComponent
 
 
   getSendWarehousetemDetails() {
-    this.loading = true;
     this.listOrderData = [{kodeBarang:"",namaBarang:""}];
 
   }

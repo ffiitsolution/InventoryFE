@@ -1,8 +1,10 @@
 import {
   AfterViewInit,
   Component,
+  EventEmitter,
   OnDestroy,
   OnInit,
+  Output,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -74,6 +76,7 @@ export class AddDataDetailWastageComponent
   listCurrentPage: number = 1;
   totalLengthList: number = 1;
   totalFilteredExpired: any = '0.0';
+  @Output() dataCetak = new EventEmitter<any>();
 
   @ViewChild('formModal') formModal: any;
   public dpConfig: Partial<BsDatepickerConfig> = {
@@ -280,6 +283,7 @@ export class AddDataDetailWastageComponent
 
   onSubmit() {
     if (!this.isDataInvalid()) {
+      this.adding = true;
       // param for order Header
       const param = {
         kodeGudang: this.g.getUserLocationCode(),
@@ -322,7 +326,7 @@ export class AddDataDetailWastageComponent
         })) || []
       };
 
-      
+
       if (this.listProductData.length < 2) {
         this.toastr.warning('Mohon pilih barang!');
         this.adding = false;
@@ -350,7 +354,7 @@ export class AddDataDetailWastageComponent
       <div class="divider my-3"></div>
       <div class="d-flex justify-content-center gap-3 mt-3">
         <button class="btn btn-info text-white btn-150 pe-3" id="btn-submit">
-          <i class="fa fa-check pe-2"></i> Proses Pengiriman
+          <i class="fa fa-check pe-2"></i> Proses Posting
         </button>
         <button class="btn btn-secondary text-white btn-150" id="btn-cancel">
           <i class="fa fa-times pe-1"></i> Batal
@@ -373,9 +377,31 @@ export class AddDataDetailWastageComponent
                 if (!res.success) {
                   this.toastr.error(res.message);
                 } else {
+                  const now = new Date();
+                  const paramGenerateReport = {
+                    outletBrand: 'KFC',
+                    isDownloadCsv: false,
+                    nomorTransaksi: res.message,
+                    userEntry: this.g.getLocalstorage('inv_currentUser').namaUser,
+                    jamEntry: now.toLocaleTimeString('id-ID', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit'
+                    }), 
+                    tglEntry: now.toLocaleDateString('id-ID', {
+                      day: '2-digit',
+                      month: 'short', // atau 'long' untuk "April"
+                      year: 'numeric'
+                    }), // hasil: 30 Apr 2025
+                    namaSaksi: param.namaSaksi,
+                    jabatanSaksi: param.jabatanSaksi,
+                    keterangan: param.keterangan,
+                    tglTransaksi: param.tglTransaksi
+                  }
+                  this.dataCetak.emit(paramGenerateReport)
                   setTimeout(() => {
                     this.toastr.success("Data wastage berhasil dibuat");
-                    this.onPreviousPressed();
+                    this.router.navigate(["/transaction/wastage/add-data"]);
                   }, DEFAULT_DELAY_TIME);
 
                 }

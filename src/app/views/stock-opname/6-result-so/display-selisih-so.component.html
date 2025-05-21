@@ -1,0 +1,37 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>{{ "Pengiriman ke Cabang atau Gudang" | translate }}</h5>
+        </div>
+        <div class="col col-md-8">
+          <div class="menu-purpose col-sm-12 d-flex justify-content-end align-items-center">
+            <span>
+              Program ini digunakan untuk pengiriman pesanan ke cabang atau gudang lain            
+            </span>
+          </div>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="divider"></div>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" class="row-border hover stripe"></table>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<div class="fade-in">
+  <app-modal-print-list [alreadyPrint]="alreadyPrint" [disabledPrintButton]="disabledPrintButton"
+    [generatePdfUrl]="'/api/report/laporan-hasil-so'"
+    [updateStatusUrl]="''" [updatePrintStatusParam]="''"
+    [generateReportParam]="paramGenerateReport" [isShowModalReport]="isShowModalReport" [isShowSelection]="true"
+    (closeModalEvent)="closeModal()">
+  </app-modal-print-list>
+</div>

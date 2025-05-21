@@ -270,7 +270,7 @@ export class RevisiDoEditComponent
         if (!res.success) {
           this.appService.handleErrorResponse(res);
         } else {
-          this.toastr.success("Berhasil!");
+          this.toastr.success("Berhasil revisi D.O!");
           this.getDeliveryItemDetails();
     
           this.isShowModalExpired = false;
@@ -296,7 +296,7 @@ export class RevisiDoEditComponent
     if (this.getTotalQtyRow() > this.selectedRowData.totalQtyPesanOld) {
       Swal.fire({
         title: 'Pesan Error',
-        text: 'TOTAL QTY KIRIM TIDAK SAMA DENGAN TOTAL QTY EXPIRED... PERIKSA KEMBALI..!!',
+        text: 'QTY KIRIM TIDAK BOLEH LEBIH BESAR DARI QTY PESAN..!!',
         icon: 'warning',
         showCancelButton: false,
         confirmButtonColor: '#000080',
@@ -408,7 +408,7 @@ export class RevisiDoEditComponent
   };
   get filteredListExpired() {
     return this.listEntryExpired.filter(
-      (item) => item.kodeBarang === this.selectedExpProduct.kodeBarang
+      (item) => item.kodeBarang === this.selectedRowData.kodeBarang
     );
   }
 

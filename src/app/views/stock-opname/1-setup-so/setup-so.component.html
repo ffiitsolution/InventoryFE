@@ -6,18 +6,8 @@
           <h5>{{ "Stock" | translate }} {{ "Opname" | translate }}</h5>
         </div>
         <div class="col text-end">
-          <button
-            type="button"
-            class="btn btn-outline-primary me-3"
-          >
-            <i class="fa fa-print pe-1 icon-12" aria-hidden="true"></i>
-            {{ "Cetak Form SO" | translate }}
-          </button>
-          <button
-            type="button"
-            class="btn btn-success text-white me-2 btn-120"
-            (click)="actionBtnClick(CONST_ACTION_ADD)"
-          >
+          <button type="button" class="btn btn-success text-white me-2 btn-120"
+            (click)="actionBtnClick(CONST_ACTION_ADD)">
             <i class="fa fa-plus pe-1 icon-12" aria-hidden="true"></i>
             {{ "Tambah" | translate }}
           </button>
@@ -26,35 +16,96 @@
     </c-card-body>
   </c-card>
 </div>
-<!-- <div class="fade-in">
+<div class="fade-in">
+
   <c-card class="mb-2">
     <c-card-body>
       <div class="row">
-        <div class="col-sm-12">
-          <i
-            class="fa fa-exclamation-circle text-center"
-            style="font-size: large; color: #3c4b64"
-          ></i>
-          &nbsp;
-          <span class="fw-bold"
-            >Master Satuan digunakan untuk mengelola daftar satuan ukuran besar dan kecil yang digunakan dalam sistem.</span
-          >
+        <div class="col mb-2">
+          <button class="btn btn-primary w-100" (click)="onMenuClick('Cetak Form SO')"
+            [disabled]="!selectedRowData || selectedRowData?.statusProses !== 'BELUM'">
+            Cetak Form SO
+          </button>
+        </div>
+        <div class="col mb-2">
+          <button class="btn btn-primary w-100" (click)="onMenuClick('Entry Stock Opname')"
+            [disabled]="!selectedRowData || selectedRowData?.statusProses !== 'BELUM'">
+            Entry Stock Opname
+          </button>
+        </div>
+        <div class="col mb-2">
+          <button class="btn btn-primary w-100" (click)="onMenuClick('Laporan Selisih SO (Sementara)')"
+            [disabled]="!selectedRowData || selectedRowData?.statusProses !== 'BELUM'">
+            Laporan Selisih SO (Sementara)
+          </button>
+        </div>
+        <div class="w-100"></div>
+        <div class="col">
+          <button class="btn btn-primary w-100" (click)="onMenuClick('Lihat Detail')" [disabled]="!selectedRowData">
+            Lihat Detail
+          </button>
+        </div>
+        <div class="col">
+          <button class="btn btn-primary w-100" (click)="onMenuClick('Laporan Hasil SO')"
+            [disabled]="!selectedRowData || selectedRowData?.statusProses !== 'SUDAH'">
+            Laporan Hasil SO
+          </button>
+        </div>
+        <div class="col">
+          <button class="btn btn-primary w-100" (click)="onMenuClick('Display Selisih SO')"
+            [disabled]="!selectedRowData || selectedRowData?.statusProses !== 'SUDAH'">
+            Display Selisih SO
+          </button>
+        </div>
+        <div class="w-100"></div>
+        <div class="col" *ngIf="!selectedRowData">
+          <div class="text-muted mt-2">
+            <i class="fa fa-exclamation-circle text-center"></i>
+            &nbsp;
+            <span class="fw-bold text-danger">
+              Silahkan pilih/klik salah satu nomor SO.
+            </span>
+          </div>
         </div>
       </div>
+
     </c-card-body>
   </c-card>
-</div> -->
-<div class="fade-in">
-  <c-card class="mb-4">
+
+  <c-card>
     <c-card-body>
-      <div>
-        <table
-          datatable
-          [dtOptions]="dtOptions"
-          (page.dt)="dtPageChange($event)"
-          class="row-border hover stripe"
-        ></table>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" (page.dt)="dtPageChange($event)" class="row-border hover stripe">
+        </table>
       </div>
     </c-card-body>
   </c-card>
+</div>
+
+<div class="modal fade" #modalMenuSo id="modalMenuSo" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="modalMenuSoLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalMenuSoLabel">{{selectedMenu}}</h1>
+        <button type="button" class="btn-close" (click)="closeModalMenu()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to proceed with {{selectedMenu}}?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModalMenu()">Close</button>
+        <button type="button" class="btn btn-primary">Understood</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="fade-in">
+  <app-modal-print-list [alreadyPrint]="alreadyPrint" [disabledPrintButton]="disabledPrintButton"
+    [generatePdfUrl]="'/api/report/laporan-hasil-so'"
+    [updateStatusUrl]="''" [updatePrintStatusParam]="''"
+    [generateReportParam]="paramGenerateReport" [isShowModalReport]="isShowModalReport" [isShowSelection]="true"
+    (closeModalEvent)="closeModal()">
+  </app-modal-print-list>
 </div>
