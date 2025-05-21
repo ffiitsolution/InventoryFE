@@ -39,6 +39,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
   dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
+  adding: boolean = false;
 
   startDate: Date = new Date();
   endDate: Date = new Date();
@@ -143,7 +144,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
 
         return row;
       },
-      order: [[6, 'desc']],
+      order: [[4, 'desc']],
     };
   }
 
@@ -268,8 +269,6 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
       ).format('DD-MM-YYYY'), // Jika perlu, bisa dikirim juga
     };
 
-    console.log('Mengirim data ke backend:', params);
-
     this.dataService
       .postData(
         this.config.BASE_URL + '/api/delivery-order/proses-do-balik',
@@ -317,6 +316,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onProsesDoBalik(data: any) {
+    this.adding = true;
     const param = {
       kodeGudang: data.kodeGudang,
       noSuratJalan: data.noSuratJalan,
@@ -329,9 +329,11 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
         this.toastr.success('Berhasil Posting DO Balik');
         this.isShowModalPosting = false;
         this.search();
+        this.adding = false;
 
       },
       error: (error) => {
+        this.adding = false;
         this.toastr.error('Gagal Posting DO Balik');
       },
     });

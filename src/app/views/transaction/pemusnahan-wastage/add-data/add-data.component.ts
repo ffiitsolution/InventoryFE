@@ -45,7 +45,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
     displayKey: 'name', // Key to display in the dropdown
     search: true, // Enable search functionality
     height: '200px', // Dropdown height
-    customComparator: () => {}, // Custom sorting comparator
+    customComparator: () => { }, // Custom sorting comparator
     moreText: 'lebih banyak', // Text for "more" options
     noResultsFound: 'Tidak ada hasil', // Text when no results are found
     searchOnKey: 'name' // Key to search
@@ -99,7 +99,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
     };
   }
 
-  getDropdownUser(): void{
+  getDropdownUser(): void {
     const param = {
       defaultLocation: this.globalService.getUserLocationCode()
     };
@@ -113,7 +113,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
-  onUserChange(event: any){
+  onUserChange(event: any) {
     const value = event.value;
     this.formData.namaSaksi = value.name;
     this.formData.jabatanSaksi = value.jabatan;
@@ -154,7 +154,40 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isShowModal = true;
   }
 
+  onResetForm(newItem: any): void {
+    this.formData = {
+      namaSaksi: '',
+      jabatanSaksi: '',
+      keterangan: '',
+      tglTransaksi: moment(new Date(), 'YYYY-MM-DD').format('DD-MM-YYYY') || '',
 
+    };
+    this.isShowDetail = false;
+    if (newItem) this.onShowModalPrint(newItem);
+  }
+
+
+  alreadyPrint: boolean;
+  disabledPrintButton: any;
+  paramGenerateReport: any = {}
+  isShowModalReport: boolean;
+
+
+  onShowModalPrint(data: any) {
+    this.paramGenerateReport = {
+      outletBrand: 'KFC',
+      isDownloadCsv: false,
+      ...data
+    };
+    this.isShowModalReport = true;
+    // this.onBackPressed();
+  }
+
+  
+  closeModal() {
+    this.isShowModalReport = false;
+    this.disabledPrintButton = false;
+  }
 }
 @Injectable({
   providedIn: 'root',

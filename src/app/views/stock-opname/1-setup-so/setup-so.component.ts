@@ -53,6 +53,11 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
   listData: any[] = [];
   filteredListData: any[] = [];
 
+  alreadyPrint: boolean;
+  disabledPrintButton: any;
+  paramGenerateReport: any = {}
+  isShowModalReport: boolean = false;
+
   constructor(
     private service: AppService,
     private dataService: DataService,
@@ -206,10 +211,10 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.g.changeTitle(
       this.translation.instant('Stock') +
-        ' ' +
-        this.translation.instant('Opname') +
-        ' - ' +
-        this.g.tabTitle
+      ' ' +
+      this.translation.instant('Opname') +
+      ' - ' +
+      this.g.tabTitle
     );
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.buttonCaptionEdit = this.translation.instant('Entri');
@@ -345,6 +350,28 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
         this.router.navigate(['/stock-opname/detail']);
         break;
 
+      case 'Laporan Hasil SO':
+        const now = new Date();
+        this.isShowModalReport = true;
+        this.disabledPrintButton = false;
+        this.paramGenerateReport = {
+          isDownloadCsv: false,
+          nomorSo: data.nomorSo,
+          userCetak: this.g.getLocalstorage('inv_currentUser').namaUser,
+          tglCetak: now.toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'short', // atau 'long' untuk "April"
+            year: 'numeric'
+          }), // hasil: 30 Apr 2025
+
+          jamCetak: now.toLocaleTimeString('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          }) // hasil: sil: 13:
+        }
+        break;
+
       default:
         this.openModalMenu();
         break;
@@ -360,5 +387,10 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.bsModalMenu) {
       this.bsModalMenu.hide();
     }
+  }
+
+  closeModal() {
+    this.isShowModalReport = false;
+    this.disabledPrintButton = false;
   }
 }

@@ -338,7 +338,7 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
   onShowModalPrint(data: any) {
     this.paramGenerateReport = {
       outletBrand: 'KFC',
-      isDownloadCsv: true,
+      isDownloadCsv: false,
       nomorTransaksi: data.nomorTransaksi,
       kodeGudang: this.globalService.getUserLocationCode()
     };
