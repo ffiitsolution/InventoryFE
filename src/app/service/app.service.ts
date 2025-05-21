@@ -481,4 +481,12 @@ export class AppService {
       payload
     );
   }
+
+   listSetupTransaksiDt(payload:any): Observable<any> {
+    return this.dataService.postData(
+      this.config.BASE_URL +  '/api/setup-transaksi/dt',
+      payload
+    );
+  }
+ 
 }

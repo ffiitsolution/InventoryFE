@@ -27,12 +27,27 @@
     height: 48px;
 }
 
+.h-60{
+    height: 58px;
+}
+
 .my-container {
     max-width: 100% !important;
 }
 
 .resep-body{
-    min-height: 425px;
+    height: 450px;
+    overflow: auto;
+}
+
+.resep-form{
+    min-height: 496px;
+    overflow: auto;
+}
+
+.resep-expired-body{
+    height: 300px;
+    overflow: auto;
 }
 
 .text-black{
@@ -57,4 +72,75 @@
 .header-all{
     background-color: #262693;
     color: white;
+}
+
+.divider {
+  border-top: 1px solid #ccc;
+  margin-top: 24px;
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+.hover-danger:hover {
+  background-color: #dc3545 !important; /* Bootstrap danger */
+  color: white !important;
+  border-color: #dc3545 !important;
+   cursor: default !important;
+}
+.hover-danger:hover i {
+  color: white !important; /* ensure icon turns white too */
+   cursor: default !important;
+}
+
+/* Default: floating label aktif */
+.custom-floating {
+  position: relative;
+}
+
+.custom-floating > label {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  transition: all 0.2s ease-in-out;
+  pointer-events: none;
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+/* Ketika input focus atau ada value, label naik */
+.custom-floating > input:focus + label,
+.custom-floating > input:not(:placeholder-shown) + label {
+  top: -0.5rem;
+  left: 0.65rem;
+  font-size: 0.75rem;
+  color: #0d6efd;
+  background-color: white;
+  padding: 0 0.25rem;
+}
+
+/* --- Override untuk desktop (min-width: 768px) --- */
+@media (min-width: 768px) {
+  .custom-floating > label {
+    position: static;
+    font-size: 1rem;
+    color: inherit;
+    top: auto;
+    left: auto;
+    padding: 0;
+    pointer-events: auto;
+  }
+
+  .custom-floating > input:focus + label,
+  .custom-floating > input:not(:placeholder-shown) + label {
+    top: auto;
+    left: auto;
+    font-size: 1rem;
+    color: inherit;
+    background-color: transparent;
+    padding: 0;
+  }
+}
+
+.page-link{
+    z-index: 0;
 }
