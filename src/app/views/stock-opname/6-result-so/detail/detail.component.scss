@@ -1,0 +1,42 @@
+.order-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.label {
+  font-weight: bold;
+  width: 30%; /* Adjust width as needed */
+  text-align: left;
+  padding-right: 10px;
+}
+
+.value {
+  width: 70%; /* Adjust width as needed */
+  text-align: left;
+  padding-left: 10px;
+}
+
+/* CSS */
+.detail-so-button {
+  background-color: #a40000; /* merah tua */
+  color: white;
+  font-style: italic;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  font-size: 16px;
+  cursor: default;
+  text-transform: uppercase;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+table.dataTable thead th {
+  background-color: #3c4b64;
+}
+
