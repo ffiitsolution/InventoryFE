@@ -104,12 +104,11 @@ export class AddDataDetailProductionComponent
     this.disabledPrintButton = isCanceled;
     this.disabledCancelButton = isCanceled;
     this.alreadyPrint =
-    this.headerProduction.statusCetak == SEND_PRINT_STATUS_SUDAH;
+      this.headerProduction.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
 
-    console.log(this.isUpdate,'isUpdate');
-    if(!this.isUpdate) this.loadBahanBaku();
-
+    console.log(this.isUpdate, 'isUpdate');
+    if (!this.isUpdate) this.loadBahanBaku();
   }
 
   onFilterSearch(
@@ -144,7 +143,7 @@ export class AddDataDetailProductionComponent
       this.loadingSimpan = true;
       // param for order Header
 
-      const extraItem = {
+      const extraItem = { 
         kodeGudang: this.g.getUserLocationCode(),
         tglTransaksi: moment(
           this.headerProduction.tglTransaksi,
@@ -165,6 +164,7 @@ export class AddDataDetailProductionComponent
         flagExpired: 'Y',
         tipeProduksi: 'F',
         hargaSatuan: this.headerProduction.hargaSatuan,
+        userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
       };
 
       const param = {
@@ -212,7 +212,7 @@ export class AddDataDetailProductionComponent
                   this.getExpiredData(item.bahanBaku).qtyPemakaianKecil
                 ),
               hargaSatuan: 0,
-              userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+              userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
             })),
           extraItem,
         ],
@@ -250,17 +250,28 @@ export class AddDataDetailProductionComponent
 
       Swal.fire({
         ...this.g.componentKonfirmasiPosting,
-         showConfirmButton: false,
-         showCancelButton: false,
-         width: '600px',
-         customClass: {
-           popup: 'custom-popup'
-         },
-         didOpen: () => {
-          const submitBtn = document.getElementById('btn-submit');
-          const cancelBtn = document.getElementById('btn-cancel');
+        showConfirmButton: false,
+        showCancelButton: false,
+        width: '600px',
+        customClass: {
+          popup: 'custom-popup',
+        },
+        allowOutsideClick: () => {
+            return false; // Prevent closing
+        },
+        didOpen: () => {
+          const submitBtn = document.getElementById(
+            'btn-submit'
+          ) as HTMLButtonElement;
+          const cancelBtn = document.getElementById(
+            'btn-cancel'
+          ) as HTMLButtonElement;
 
           submitBtn?.addEventListener('click', () => {
+            submitBtn.disabled = true;
+            cancelBtn.disabled = true;
+
+             Swal.close();
             this.service
               .insert('/api/production/insert', param)
               .pipe(takeUntil(this.ngUnsubscribe))
@@ -280,17 +291,19 @@ export class AddDataDetailProductionComponent
                 },
                 error: () => {
                   this.loadingSimpan = false;
+                  submitBtn.disabled = false;
+                  cancelBtn.disabled = false;
                 },
               });
-              Swal.close();
-            });
+            Swal.close();
+          });
 
-            cancelBtn?.addEventListener('click', () => {
-              Swal.close();
-              this.loadingSimpan = false;
-              this.toastr.info('Posting dibatalkan');
-            });
-          }
+          cancelBtn?.addEventListener('click', () => {
+            Swal.close();
+            this.loadingSimpan = false;
+            this.toastr.info('Posting dibatalkan');
+          });
+        },
       });
     }
   }
@@ -328,7 +341,6 @@ export class AddDataDetailProductionComponent
       ).toFixed(2)
     ).toFixed(2);
 
-
     if (
       !this.listEntryExpired.some(
         (item) => item.kodeBarang === this.selectedExpProduct.bahanBaku
@@ -356,10 +368,11 @@ export class AddDataDetailProductionComponent
       });
 
       this.totalFilteredExpired = totalQtySum;
-    }else{
+    } else {
       this.totalFilteredExpired = this.listEntryExpired
-      .filter((item) => item.kodeBarang === this.selectedExpProduct.bahanBaku)
-      .reduce((sum, item) => sum + parseFloat(item.totalQty) || 0, 0).toFixed(2);
+        .filter((item) => item.kodeBarang === this.selectedExpProduct.bahanBaku)
+        .reduce((sum, item) => sum + parseFloat(item.totalQty) || 0, 0)
+        .toFixed(2);
     }
 
     this.isShowModalExpired = true;
@@ -376,7 +389,8 @@ export class AddDataDetailProductionComponent
       konversi: parseFloat(this.selectedExpProduct.konversi).toFixed(2),
       totalQty: '0.0',
       kodeBarang: this.selectedExpProduct.bahanBaku,
-      validationExpiredMessageList: 'Tanggal tidak boleh kosong, silahkan pilih tanggal! ',
+      validationExpiredMessageList:
+        'Tanggal tidak boleh kosong, silahkan pilih tanggal! ',
       validationQty: '',
     });
   }
@@ -402,7 +416,7 @@ export class AddDataDetailProductionComponent
 
   onSaveEntryExpired() {
     let totalQtyExpired = 0;
-    let validationExpiredMessageList='';
+    let validationExpiredMessageList = '';
     let totalQtyEmpty = 0;
 
     const totalQtyPemakaian =
@@ -418,7 +432,7 @@ export class AddDataDetailProductionComponent
         item.kodeBarang = this.selectedExpProduct.bahanBaku;
         totalQtyExpired += item.totalQty;
 
-        if(item.totalQty <= 0){
+        if (item.totalQty <= 0) {
           totalQtyEmpty++;
         }
         validationExpiredMessageList = item.validationExpiredMessageList;
@@ -426,15 +440,18 @@ export class AddDataDetailProductionComponent
     });
 
     if (totalQtyExpired != totalQtyPemakaian) {
-      this.toastr.error('Total Qty Expired harus sama dengan Qty Pemakaian,  Tolong masukan Qty Expired dengan benar!');
-    } else if(validationExpiredMessageList){
+      this.toastr.error(
+        'Total Qty Expired harus sama dengan Qty Pemakaian,  Tolong masukan Qty Expired dengan benar!'
+      );
+    } else if (validationExpiredMessageList) {
       this.toastr.error(validationExpiredMessageList);
-    }else if(totalQtyEmpty > 0){
-      this.toastr.error('Total Qty Expired tidak boleh 0, Silahkan hapus data yg tidak terpakai atau isikan Qty dengan benar!');
+    } else if (totalQtyEmpty > 0) {
+      this.toastr.error(
+        'Total Qty Expired tidak boleh 0, Silahkan hapus data yg tidak terpakai atau isikan Qty dengan benar!'
+      );
     } else {
       this.isShowModalExpired = false;
     }
-
   }
 
   get filteredList() {
@@ -617,7 +634,8 @@ export class AddDataDetailProductionComponent
 
     // ✅ Validate empty input
     if (!inputDate) {
-      validationMessage = 'Tanggal tidak boleh kosong!, silahkan pilih tanggal!';
+      validationMessage =
+        'Tanggal tidak boleh kosong!, silahkan pilih tanggal!';
     } else {
       // ✅ Check if the item is expired
       const expiredData = this.listEntryExpired.find(
@@ -633,7 +651,8 @@ export class AddDataDetailProductionComponent
       );
 
       if (isDuplicate) {
-        validationMessage = 'Tanggal ini sudah ada dalam daftar, silahkan pilih tanggal lain!';
+        validationMessage =
+          'Tanggal ini sudah ada dalam daftar, silahkan pilih tanggal lain!';
       }
     }
 
@@ -754,8 +773,8 @@ export class AddDataDetailProductionComponent
       0
     );
 
-    if(this.totalFilteredExpired == 0){
-        this.toastr.error(`Total Qty tidak boleh 0!`);
+    if (this.totalFilteredExpired == 0) {
+      this.toastr.error(`Total Qty tidak boleh 0!`);
     }
 
     this.totalFilteredExpired = parseFloat(this.totalFilteredExpired).toFixed(
@@ -765,7 +784,7 @@ export class AddDataDetailProductionComponent
 
   @Input()
   set dataProduct(value: any) {
-    console.log(value,'value')
+    console.log(value, 'value');
     this.listProductData = value; // or any logic
   }
 
@@ -779,14 +798,11 @@ export class AddDataDetailProductionComponent
     this.isUpdate = value;
   }
 
-
-
   @Input()
   set dataHeader(value: any) {
-    console.log(value,'dataHeader')
+    console.log(value, 'dataHeader');
     this.headerData = value;
   }
-
 
   onUpdate() {
     if (!this.isDataInvalid()) {
@@ -814,8 +830,9 @@ export class AddDataDetailProductionComponent
         flagExpired: 'Y',
         tipeProduksi: 'F',
         hargaSatuan: this.headerProduction.hargaSatuan,
+        userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
       };
-
+      console.log(extraItem, 'extraItem');
       const param = {
         kodeGudang: this.g.getUserLocationCode(),
         nomorTransaksi: this.headerProduction.nomorTransaksi,
@@ -862,7 +879,7 @@ export class AddDataDetailProductionComponent
                   this.getExpiredData(item.bahanBaku).qtyPemakaianKecil
                 ),
               hargaSatuan: 0,
-              userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+              userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
             })),
           extraItem,
         ],
@@ -900,17 +917,28 @@ export class AddDataDetailProductionComponent
 
       Swal.fire({
         ...this.g.componentKonfirmasiSimpan,
-         showConfirmButton: false,
-         showCancelButton: false,
-         width: '600px',
-         customClass: {
-           popup: 'custom-popup'
-         },
-         didOpen: () => {
-          const submitBtn = document.getElementById('btn-submit');
-          const cancelBtn = document.getElementById('btn-cancel');
+        showConfirmButton: false,
+        showCancelButton: false,
+        width: '600px',
+        customClass: {
+          popup: 'custom-popup',
+        },
+        allowOutsideClick: () => {
+            return false; // Prevent closing
+        },
+        didOpen: () => {
+         const submitBtn = document.getElementById(
+            'btn-submit'
+          ) as HTMLButtonElement;
+          const cancelBtn = document.getElementById(
+            'btn-cancel'
+          ) as HTMLButtonElement;
 
           submitBtn?.addEventListener('click', () => {
+
+            submitBtn.disabled = true;
+            cancelBtn.disabled = true;
+            Swal.close();
             this.service
               .insert('/api/production/update', param)
               .pipe(takeUntil(this.ngUnsubscribe))
@@ -922,25 +950,29 @@ export class AddDataDetailProductionComponent
                     // this.onBackPressed(res.data);
                     setTimeout(() => {
                       this.toastr.success('Data production berhasil diubah!');
-                      this.router.navigate(['/transaction/production/list-dt-for-posting']);
+                      this.router.navigate([
+                        '/transaction/production/list-dt-for-posting',
+                      ]);
                     }, DEFAULT_DELAY_TIME);
                   }
                   this.adding = false;
                   this.loadingSimpan = false;
                 },
                 error: () => {
+                  submitBtn.disabled = false;
+                  cancelBtn.disabled = false;
                   this.loadingSimpan = false;
                 },
               });
-              Swal.close();
-            });
+            Swal.close();
+          });
 
-            cancelBtn?.addEventListener('click', () => {
-              Swal.close();
-              this.loadingSimpan = false;
-              this.toastr.info('Posting dibatalkan');
-            });
-          }
+          cancelBtn?.addEventListener('click', () => {
+            Swal.close();
+            this.loadingSimpan = false;
+            this.toastr.info('Posting dibatalkan');
+          });
+        },
       });
     }
   }

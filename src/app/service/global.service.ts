@@ -57,6 +57,11 @@ export class GlobalService {
   statusPlanningOrder: any = '';
   statusBackupDb: any = '';
   mpcsDefaultGudang: string='';
+  mpcsGudangPRD: string='';
+  mpcsGudangCOM: string='';
+  mpcsGudangDRY: string='';
+  mpcsJenisGudang: string='';
+  mpcsDefaultNamaGudang: string='';
   componentKonfirmasiPosting: any = {
     title:
       '<div style="color: white; background: #c0392b; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
@@ -75,6 +80,9 @@ export class GlobalService {
          </button>
        </div>
      `,
+    allowOutsideClick: () => {
+      return false; // Prevent closing
+    },
   };
 
   componentKonfirmasiSimpan: any = {
@@ -94,6 +102,9 @@ export class GlobalService {
       </button>
     </div>
   `,
+   allowOutsideClick: () => {
+      return false; // Prevent closing
+    },
   };
 
   componentKonfirmasiKirim: any = {
@@ -113,6 +124,9 @@ export class GlobalService {
       </button>
     </div>
   `,
+   allowOutsideClick: () => {
+      return false; // Prevent closing
+    },
   };
 
   constructor(
@@ -146,6 +160,13 @@ export class GlobalService {
   getUserLocationCode() {
     return (
       this.getLocalstorage('inv_currentUser')?.defaultLocation?.kodeLocation ||
+      ''
+    );
+  }
+
+  getUserLocationNama() {
+    return (
+      this.getLocalstorage('inv_currentUser')?.defaultLocation?.keteranganLokasi ||
       ''
     );
   }

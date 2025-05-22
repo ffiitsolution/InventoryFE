@@ -10,28 +10,47 @@
               </h5>
             </div>
             <div
-              class="d-grid gap-3 d-md-flex justify-content-center justify-content-md-end col-12 col-md-6"
+              class="d-flex justify-content-center justify-content-md-end gap-2 col-12 col-md-6"
             >
-              <!-- <button
-                    type="button"
-                    class="w-120 btn btn-secondary text-white me-2"
-                    style="height: min-content"
-                    (click)="toggleFilter()"
-                  >
-                    {{ "Filter" | translate }}
-                  </button> -->
+              <!-- <span
+                class="btn btn-outline-primary text-dark btn-150 d-flex align-items-center hover-pointer hover-danger"
+                (click)="openModalWarehouse(true)"
+              >
+                <i class="fa fa-building pe-0 pe-md-1"></i>
+                <span class="d-none d-lg-inline ms-1">
+                  {{ selectedWarehouse }} ({{ g.mpcsDefaultGudang }})
+                </span>
+              </span> -->
+
               <button
-                class="btn btn-success text-white btn-150"
+                class="btn btn-success text-white btn-150 d-flex align-items-center cursor-pointer"
                 (click)="showModalKirim()"
               >
-                <i class="fa fa-send pe-1"></i> {{ "Kirim Data" | translate }}
+                <i class="fa fa-send pe-0 pe-md-1"></i>
+                <label class="d-none d-lg-block cursor-pointer">{{
+                  "Kirim Data" | translate
+                }}</label>
               </button>
               <button
-                class="btn btn-info text-white btn-150"
+                class="btn btn-info text-white btn-150 d-flex align-items-center hover-pointer"
                 (click)="onAddPressed()"
               >
-                <i class="fa fa-plus pe-1"></i> {{ "Tambah" | translate }}
+                <i class="fa fa-plus pe-0 pe-md-1"></i>
+                <label class="d-none d-lg-block cursor-pointer">{{
+                  "Tambah" | translate
+                }}</label>
               </button>
+              <button
+                class="btn btn-danger text-white btn-150  d-flex align-items-center hover-pointer"
+                (click)="openModalWarehouse(true)"
+              >
+              <i class="fa fa-building pe-0 pe-md-1"></i> 
+              <label class="d-none d-xl-block cursor-pointer">
+                {{ "Pilih Gudang" | translate }}
+                ({{ g.mpcsDefaultNamaGudang }} ({{ g.mpcsDefaultGudang }}))
+              </label>
+              
+            </button>
             </div>
             <div [visible]="isFilterShown" cCollapse>
               <c-card class="mb-3">
@@ -55,7 +74,7 @@
                         placeholder="{{ 'Tanggal Pesan' | translate }}"
                       />
                     </div>
-                
+
                     <!-- Time Picker -->
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                       <label class="col-form-label">
@@ -87,7 +106,7 @@
                         </div>
                       </div>
                     </div>
-                
+
                     <!-- Status Filter -->
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                       <label cLabel for="selectStatusFilter">
@@ -108,7 +127,6 @@
                     </div>
                   </div>
                 </c-card-body>
-                
               </c-card>
             </div>
           </div>
@@ -121,7 +139,9 @@
             >
               <div class="card-list h-100" (click)="actionBtnClick(item)">
                 <div class="d-flex flex-column">
-                  <div class="d-flex flex-column flex-lg-row justify-content-between gap-1 mb-1">
+                  <div
+                    class="d-flex flex-column flex-lg-row justify-content-between gap-1 mb-1"
+                  >
                     <label>{{ item.dateCreateFormat2 }}</label>
                     <label>{{ item.nomorTransaksi }}</label>
                   </div>
@@ -153,40 +173,41 @@
                     <label> </label>
                   </div>
                   <div class="divider mt-2"></div>
-                  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                  <div
+                    class="d-flex flex-wrap justify-content-between align-items-center gap-2"
+                  >
                     <!-- Label with date -->
                     <label class="mb-0">
                       Tgl Expired: {{ g.formatStrDateMMM(item.tglExp) }}
                     </label>
-                  
+
                     <!-- POSTED badge -->
                     <span
                       class="badge text-white py-2 px-3"
-                      style="background-color: #2eb85c;"
+                      style="background-color: #2eb85c"
                       *ngIf="item.statusPosting == 'P'"
                     >
                       POSTED
                     </span>
-                  
+
                     <!-- TERKIRIM badge -->
                     <span
                       class="badge text-white py-2 px-3"
-                      style="background-color: #3f1dd7;"
+                      style="background-color: #3f1dd7"
                       *ngIf="item.statusPosting == 'K'"
                     >
                       TERKIRIM
                     </span>
-                  
+
                     <!-- BELUM KIRIM badge -->
                     <span
                       class="badge text-white py-2 px-3"
-                      style="background-color: #b51823;"
+                      style="background-color: #b51823"
                       *ngIf="item.statusPosting == 'B'"
                     >
                       OPEN
                     </span>
                   </div>
-                  
                 </div>
               </div>
             </div>
@@ -235,106 +256,246 @@
   </c-row>
 </c-container>
 
-
-<c-modal #formModalKirim [fullscreen]="false" [visible]="isShowModalKirim" backdrop="static"  [size]="'xl'"
-id="formModalKirim"    [attr.aria-hidden]="!isShowModalKirim">
+<c-modal
+  #formModalKirim
+  [fullscreen]="false"
+  [visible]="isShowModalKirim"
+  backdrop="static"
+  [size]="'xl'"
+  id="formModalKirim"
+  [attr.aria-hidden]="!isShowModalKirim"
+>
   <c-modal-header>
     <h5 cModalTitle>Konfirmasi Kirim Data Production</h5>
-    <button (click)="isShowModalKirim = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalKirim.id"
-      cButtonClose><i class="fa fa-times"></i></button>
+    <button
+      (click)="isShowModalKirim = false"
+      type="button"
+      class="btn btn-primary ms-2"
+      [cModalToggle]="formModalKirim.id"
+      cButtonClose
+    >
+      <i class="fa fa-times"></i>
+    </button>
   </c-modal-header>
   <c-modal-body>
-    <div >
+    <div>
       <div class="card shadow-sm mb-3">
         <div class="card-body">
-          <div class=" d-flex gap-1 flex-column justify-content-center align-items-center mb-3">
+          <div
+            class="d-flex gap-1 flex-column justify-content-center align-items-center mb-3"
+          >
             <div class="fw-bold">
-              <i class="bi bi-calendar-range me-2 text-black "></i> <!-- Bootstrap Icons -->
+              <i class="bi bi-calendar-range me-2 text-black"></i>
+              <!-- Bootstrap Icons -->
               <h4>{{ "Summary Produksi" | translate }}</h4>
             </div>
             <!-- <div class="fw-bold">
               <span class="badge bg-primary fs-6"> -->
-                <!-- {{formatToday()}} -->
-                <!-- {{ formatStartDate() }} &nbsp;–&nbsp; {{ formatEndDate() }} -->
-              <!-- </span>
+            <!-- {{formatToday()}} -->
+            <!-- {{ formatStartDate() }} &nbsp;–&nbsp; {{ formatEndDate() }} -->
+            <!-- </span>
             </div> -->
-            
-            <div class="alert-kirim col-sm-12 d-flex flex-column justify-content-start align-items-center">
-              <span>
-               Semua data production yang statusnya BELUM KIRIM !
-              </span>
-              <span>
-              Akan dikirm ke ADMIN untuk diperiksa dan di POSTING !
-              </span>
-              <span>
-              Silahkan periksa kembali data yang akan dikirim !
-              </span>
-            </div>
 
+            <div
+              class="alert-kirim col-sm-12 d-flex flex-column justify-content-start align-items-center"
+            >
+              <span> Semua data production yang statusnya BELUM KIRIM ! </span>
+              <span>
+                Akan dikirm ke ADMIN untuk diperiksa dan di POSTING !
+              </span>
+              <span> Silahkan periksa kembali data yang akan dikirim ! </span>
+            </div>
           </div>
         </div>
       </div>
-     
-     
-      <div class="card shadow-sm mb-3" >
-      
+
+      <div class="card shadow-sm mb-3">
         <div class="card-body body-kirim">
-          <div *ngIf="listSummaryData.length ==0" class="alert alert-warning text-center" role="alert">
-              <strong> Tidak ada data yang bisa dikirim, silahkan input data!. </strong>
+          <div
+            *ngIf="listSummaryData.length == 0"
+            class="alert alert-warning text-center"
+            role="alert"
+          >
+            <strong>
+              Tidak ada data yang bisa dikirim, silahkan input data!.
+            </strong>
           </div>
           <div
             class="row align-items-center mx-1 my-2"
             *ngFor="let item of listSummaryData"
           >
-           <!-- Item description -->
+            <!-- Item description -->
             <div class="col-12 col-sm-12 col-lg-6 fw-semibold mb-2">
               {{ item.kodeBarang }} - {{ item.namaBarang }}
             </div>
 
             <!-- Konversi -->
-            <div class="col-12 col-sm-4 col-lg-2  mb-2">
-              <span class="badge bg-primary fs-6 fs-sm-7 fs-md-6 w-100 d-flex justify-content-center">
-                {{ item.konversi }} {{ item.satuanKecil }}/{{ item.satuanBesar }}
+            <div class="col-12 col-sm-4 col-lg-2 mb-2">
+              <span
+                class="badge bg-primary fs-6 fs-sm-7 fs-md-6 w-100 d-flex justify-content-center"
+              >
+                {{ item.konversi }} {{ item.satuanKecil }}/{{
+                  item.satuanBesar
+                }}
               </span>
             </div>
 
             <!-- Jumlah Produksi -->
             <div class="col-12 col-sm-4 col-lg-2 mb-2">
-              <span class="badge bg-primary fs-6 fs-sm-7 fs-md-6 w-100 d-flex justify-content-center">
+              <span
+                class="badge bg-primary fs-6 fs-sm-7 fs-md-6 w-100 d-flex justify-content-center"
+              >
                 {{ item.jumlahProduksi }} {{ item.satuanBesar }}
               </span>
             </div>
 
             <!-- Total Produksi -->
             <div class="col-12 col-sm-4 col-lg-2 mb-2">
-              <span class="badge bg-primary fs-6 fs-sm-7 fs-md-6 w-100 d-flex justify-content-center">
+              <span
+                class="badge bg-primary fs-6 fs-sm-7 fs-md-6 w-100 d-flex justify-content-center"
+              >
                 {{ item.totalProduksi }} {{ item.satuanKecil }}
               </span>
             </div>
-
           </div>
         </div>
-        
-        
       </div>
 
       <div class="d-flex justify-content-center align-items-center flex-column">
-        <span class="fw-bold text-center">Total Transaksi ({{totalTransSummary}})</span>
+        <span class="fw-bold text-center"
+          >Total Transaksi ({{ totalTransSummary }})</span
+        >
       </div>
-      
-      </div>
-    </c-modal-body>
-    <c-modal-footer class="justify-center">
-      <button
+    </div>
+  </c-modal-body>
+  <c-modal-footer class="justify-center">
+    <button
       class="btn btn-success text-white btn-150 w-180 me-3"
       [disabled]="loadingKirim || listSummaryData.length == 0"
       (click)="onKirimData()"
     >
-      <i class="fa fa-send pe-1"  *ngIf="!loadingKirim"></i> 
+      <i class="fa fa-send pe-1" *ngIf="!loadingKirim"></i>
       <i class="fa fa-spinner fa-spin" *ngIf="loadingKirim"></i>
       {{ "Kirim" | translate }}
     </button>
-      <button type="button" class="btn btn-light w-180 me-3" data-bs-dismiss="modal" (click)="isShowModalKirim = false">Batal</button>
-      <!-- <button type="button" class="btn btn-success text-white  w-180" (click)="refreshDatabase()">Proses Terima Data</button> -->
-    </c-modal-footer>
+    <button
+      type="button"
+      class="btn btn-light w-180 me-3"
+      data-bs-dismiss="modal"
+      (click)="isShowModalKirim = false"
+    >
+      Batal
+    </button>
+    <!-- <button type="button" class="btn btn-success text-white  w-180" (click)="refreshDatabase()">Proses Terima Data</button> -->
+  </c-modal-footer>
+</c-modal>
+
+<c-modal
+  #warehouseModal
+  [visible]="isShowWarehouseModal"
+  [backdrop]="'static'"
+  [keyboard]="false"
+  [size]="'lg'"
+  [attr.aria-hidden]="!isShowWarehouseModal"
+  (cModalClose)="onCloseWarehouse()"
+>
+  <c-modal-header>
+    <h5 cModalTitle>Select Default Warehouse</h5>
+  </c-modal-header>
+
+  <c-modal-body>
+    <form>
+      <div class="d-flex flex-column flex-md-row gap-3">
+        <label
+          class="warehouse-option p-3 border rounded d-flex align-items-start gap-3 w-100 w-md-30"
+          [class.selected]="selectedWarehouse === 'Production'"
+          for="warehouseProduction"
+        >
+          <input
+            type="radio"
+            id="warehouseProduction"
+            name="warehouse"
+            [value]="'Production'"
+            [(ngModel)]="selectedWarehouse"
+            class="d-none"
+          />
+          <div class="fs-4 text-primary mt-1">
+            <i class="bi bi-building"></i>
+          </div>
+          <div>
+            <div class="fw-semibold fs-5">Production</div>
+            <span class="text-muted small"
+              >Kode Gudang ({{ g.mpcsGudangPRD }})</span
+            >
+          </div>
+        </label>
+
+        <label
+          class="warehouse-option p-3 border rounded d-flex align-items-start gap-3 w-100 w-md-30"
+          [class.selected]="selectedWarehouse === 'DRY Good'"
+          for="warehouseDryGood"
+        >
+          <input
+            type="radio"
+            id="warehouseDryGood"
+            name="warehouse"
+            [value]="'DRY Good'"
+            [(ngModel)]="selectedWarehouse"
+            class="d-none"
+          />
+          <div class="fs-4 text-success mt-1">
+            <i class="bi bi-box-seam"></i>
+          </div>
+          <div>
+            <div class="fw-semibold fs-5">DRY Good</div>
+            <span class="text-muted small"
+              >Kode Gudang ({{ g.mpcsGudangDRY }})</span
+            >
+          </div>
+        </label>
+
+        <!-- <label
+          class="warehouse-option p-3 border rounded d-flex align-items-start gap-3 w-100 w-md-30"
+          [class.selected]="selectedWarehouse === 'Commisary'"
+          for="warehouseCommisary"
+        >
+          <input
+            type="radio"
+            id="warehouseCommisary"
+            name="warehouse"
+            [value]="'Commisary'"
+            [(ngModel)]="selectedWarehouse"
+            class="d-none"
+          />
+          <div class="fs-4 text-warning mt-1">
+            <i class="bi bi-shop-window"></i>
+          </div>
+          <div>
+            <div class="fw-semibold fs-5">Commisary</div>
+            <span class="text-muted small"
+              >Kode Gudang ({{g.mpcsGudangCOM }})</span
+            >
+          </div>
+        </label> -->
+      </div>
+    </form>
+  </c-modal-body>
+
+  <c-modal-footer class="justify-center">
+    <button
+      class="btn btn-success w-100"
+      [disabled]="!selectedWarehouse"
+      (click)="confirmSelectionWarehouse()"
+    >
+      Confirm
+    </button>
+    <!-- <button
+      type="button"
+      class="btn btn-light w-100 mt-2"
+      (click)="isShowWarehouseModal = false"
+      [cModalToggle]="warehouseModal.id"
+    >
+      Cancel
+    </button> -->
+  </c-modal-footer>
 </c-modal>

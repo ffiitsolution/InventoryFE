@@ -24,14 +24,15 @@
 </c-modal> -->
 
 <div style="position: fixed; bottom: 0; width: 100%;" class="footer">
-  <div>
-    <!-- <c-input-group>
-      <button cButton color="primary" (click)="releasenoteModal?.toggleVisibility()">
-        <_ </button>
-          <input #inputCmd aria-describedby="command-input" aria-label="Command" cFormControl autofocus
-            (blur)="onInputCmdBlur()" [(ngModel)]="cmdValue" (ngModelChange)="onInputCmdChange()"
-            (keydown.enter)="onCmdEnter()" style="width: 150px" class="input-sm" />
-    </c-input-group> -->
+  <div class="flex justify-content-center span-gudang">
+    <span
+      class="btn btn-outline-primary text-dark btn btn-200 d-flex align-items-center hover-danger"
+    >
+      <i class="fa fa-building pe-0 pe-md-1"></i>
+      <span class="ms-1">
+        {{ g.mpcsDefaultNamaGudang }} ({{ g.mpcsDefaultGudang }})
+      </span>
+    </span>
   </div>
   <div class="ps-2 d-flex align-items-center fw-bold"
     [ngClass]="{ 'text-danger': g.serverStatus !== 'UP' || g.footerAlert.includes('ERROR:') }">
@@ -45,4 +46,3 @@
     Version {{ g.appVersion }} &copy; {{ yearText }} IT Department PT. Fast Food Indonesia, Tbk.
   </div>
 </div>
-<!--</c-footer>-->

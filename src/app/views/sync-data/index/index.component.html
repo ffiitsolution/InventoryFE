@@ -5,8 +5,7 @@
         <div class="col">
           <h5>{{ "Kirim" | translate }} {{ "Terima" | translate }} Data</h5>
         </div>
-        <div class="col text-end">
-        </div>
+        <div class="col text-end"></div>
       </div>
     </c-card-body>
   </c-card>
@@ -17,46 +16,92 @@
       <c-card-body>
         <ul cListGroup flush>
             <li cListGroupItem class="fw-bold">
-              <div (click)="onClickMenu('Kirim Data Transaksi')"
-                class="p-1 ps-3 text-capitalize pointer-only rounded {{'Kirim Data Transaksi' === selectedMenu ? 'text-bg-secondary text-white' : ''}}">
+              <div
+                (click)="onClickMenu('Kirim Data Transaksi')"
+                class="p-1 ps-3 text-capitalize pointer-only rounded {{
+                  'Kirim Data Transaksi' === selectedMenu
+                    ? 'text-bg-secondary text-white'
+                    : ''
+                }}"
+              >
                 Kirim Data Transaksi
               </div>
               <ul cListGroup flush>
                 <li cListGroupItem class="fw-bold">
-                  <div class="ms-2" (click)="onClickMenu('Cek Data Stock Minus')"
-                    class="p-1 ps-3 text-capitalize pointer-only rounded {{'Cek Data Stock Minus' === selectedMenu ? 'text-bg-secondary text-white' : ''}}">
+                  <div
+                    class="ms-2"
+                    (click)="onClickMenu('Cek Data Stock Minus')"
+                    class="p-1 ps-3 text-capitalize pointer-only rounded {{
+                      'Cek Data Stock Minus' === selectedMenu
+                        ? 'text-bg-secondary text-white'
+                        : ''
+                    }}"
+                  >
                     Cek Data Stock Minus
                   </div>
                 </li>
                 <li cListGroupItem class="fw-bold">
-                  <div class="ms-2" (click)="onClickMenu('Cek Data Pengiriman (D.O)')"
-                    class="p-1 ps-3 text-capitalize pointer-only rounded {{'Cek Data Pengiriman (D.O)' === selectedMenu ? 'text-bg-secondary text-white' : ''}}">
+                  <div
+                    class="ms-2"
+                    (click)="onClickMenu('Cek Data Pengiriman (D.O)')"
+                    class="p-1 ps-3 text-capitalize pointer-only rounded {{
+                      'Cek Data Pengiriman (D.O)' === selectedMenu
+                        ? 'text-bg-secondary text-white'
+                        : ''
+                    }}"
+                  >
                     Cek Data Pengiriman (D.O)
                   </div>
                 </li>
                 <li cListGroupItem class="fw-bold">
-                  <div class="ms-2" (click)="onClickMenu('Proses Kirim Data Ke Pusat (Harian)')"
-                    class="p-1 ps-3 text-capitalize pointer-only rounded {{'Proses Kirim Data Ke Pusat (Harian)' === selectedMenu ? 'text-bg-secondary text-white' : ''}}">
+                  <div
+                    class="ms-2"
+                    (click)="onClickMenu('Proses Kirim Data Ke Pusat (Harian)')"
+                    class="p-1 ps-3 text-capitalize pointer-only rounded {{
+                      'Proses Kirim Data Ke Pusat (Harian)' === selectedMenu
+                        ? 'text-bg-secondary text-white'
+                        : ''
+                    }}"
+                  >
                     Proses Kirim Data Ke Pusat (Harian)
                   </div>
                 </li>
                 <li cListGroupItem class="fw-bold">
-                  <div class="ms-2" (click)="onClickMenu('Cek Hasil Kirim Data Ke HQ')"
-                    class="p-1 ps-3 text-capitalize pointer-only rounded {{'Cek Hasil Kirim Data Ke HQ' === selectedMenu ? 'text-bg-secondary text-white' : ''}}">
+                  <div
+                    class="ms-2"
+                    (click)="onClickMenu('Cek Hasil Kirim Data Ke HQ')"
+                    class="p-1 ps-3 text-capitalize pointer-only rounded {{
+                      'Cek Hasil Kirim Data Ke HQ' === selectedMenu
+                        ? 'text-bg-secondary text-white'
+                        : ''
+                    }}"
+                  >
                     Cek Hasil Kirim Data Ke HQ
                   </div>
                 </li>
               </ul>
             </li>
             <li cListGroupItem class="fw-bold">
-              <div (click)="onClickMenu('Terima Data Master')"
-                class="p-1 ps-3 text-capitalize pointer-only rounded {{'Terima Data Master' === selectedMenu ? 'text-bg-secondary text-white' : ''}}">
+              <div
+                (click)="onClickMenu('Terima Data Master')"
+                class="p-1 ps-3 text-capitalize pointer-only rounded {{
+                  'Terima Data Master' === selectedMenu
+                    ? 'text-bg-secondary text-white'
+                    : ''
+                }}"
+              >
                 Terima Data Master
               </div>
             </li>
             <li cListGroupItem class="fw-bold">
-              <div (click)="onClickMenu('Backup Data')"
-                class="p-1 ps-3 text-capitalize pointer-only rounded {{'Backup Data' === selectedMenu ? 'text-bg-secondary text-white' : ''}}">
+              <div
+                (click)="onClickMenu('Backup Data')"
+                class="p-1 ps-3 text-capitalize pointer-only rounded {{
+                  'Backup Data' === selectedMenu
+                    ? 'text-bg-secondary text-white'
+                    : ''
+                }}"
+              >
                 Backup Data
               </div>
             </li>
@@ -69,7 +114,7 @@
       <c-card-body>
         <div class="fade-in row">
           <div class="col">
-            <h5>{{selectedMenu}}</h5>
+            <h5>{{ selectedMenu }}</h5>
             <c-card class="mb-4">
               <c-card-body>
                 <!-- buat content sesuai menu -->
@@ -83,7 +128,7 @@
                     <div class="my-2 text-xl p-2">
                       Tanggal Proses
                       <span class="ms-4 p-2 border rounded">
-                        {{g.currentDate}}
+                        {{ g.currentDate }}
                       </span>
                     </div>
                     <div class="my-4">
@@ -106,12 +151,13 @@
                       Pastikan Program Tersebut Dilakukan Setiap Hari ...!!
                     </p>
                     <p class="text-danger">
-                      Semua User tidak boleh ada yang melakukan transaksi Mutasi Stock ..!!
+                      Semua User tidak boleh ada yang melakukan transaksi Mutasi
+                      Stock ..!!
                     </p>
                     <div class="my-2 text-xl p-2">
                       Tanggal Backup
                       <span class="ms-4 p-2 border rounded">
-                        {{g.currentDate}}
+                        {{ g.currentDate }}
                       </span>
                     </div>
                     <div class="my-2 text-info">
@@ -186,6 +232,95 @@
                   </c-card>
                 </ng-container>
 
+                <!-- Cek Data Stock Minus -->
+                <ng-container *ngIf="selectedMenu === 'Cek Data Stock Minus'">
+                  <div class="row mt-4">
+                    <div class="col-4">
+                      Tanggal Stock Barang
+                      <span class="float-end">:</span>
+                    </div>
+                    <div class="col-4">
+                      <input
+                        type="text"
+                        id="tglTransaksi"
+                        class="form-control"
+                        aria-describedby="tglTransaksi"
+                        #dp="bsDatepicker"
+                        [bsConfig]="dpConfigtrans"
+                        bsDatepicker
+                        autocomplete="off"
+                        [(ngModel)]="paramTglTransaksi"
+                        (ngModelChange)="onTglTransaksiChange($event)"
+                        placeholder="{{ 'Tanggal transaksi' | translate }}"
+                      />
+                    </div>
+                    <div class="col-4">
+                      <div
+                        class="d-flex align-items-center"
+                        style="height: 40px"
+                      >
+                        <span
+                          class="badge bg-primary h-100 d-flex align-items-center"
+                        >
+                          {{ dateRangeString }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="border-top mt-4 pt-3"
+                    *ngIf="loadingState['submit']"
+                  >
+                    <div class="loading-input">
+                      <i class="fa fa-spinner fa-spin"></i>
+                      <span>Loading...</span>
+                    </div>
+                  </div>
+                  <div
+                    class="d-flex justify-content-end align-items-center border-top mt-4 pt-3"
+                    *ngIf="!loadingState['submit']"
+                  >
+                    <c-dropdown>
+                      <button
+                        cButton
+                        cDropdownToggle
+                        color="primary"
+                        variant="outline"
+                        class="w-120"
+                      >
+                        <i class="fa fa-print me-2"></i>
+                        Print
+                      </button>
+                      <ul cDropdownMenu>
+                        <li>
+                          <button
+                            class="btn btn-outline-primary w-100 mb-2"
+                            (click)="doSubmit('preview')"
+                          >
+                            Preview PDF
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            class="btn btn-outline-primary w-100 mb-2"
+                            (click)="doSubmit('pdf')"
+                          >
+                            Download PDF
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            class="btn btn-outline-primary w-100"
+                            (click)="doSubmit('csv')"
+                          >
+                            Download CSV
+                          </button>
+                        </li>
+                      </ul>
+                    </c-dropdown>
+                  </div>
+                </ng-container>
               </c-card-body>
             </c-card>
           </div>

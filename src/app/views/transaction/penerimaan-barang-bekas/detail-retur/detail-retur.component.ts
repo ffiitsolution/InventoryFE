@@ -92,7 +92,7 @@ export class DetailPenerimaanBrgBksReturComponent
     private router: Router,
     private toastr: ToastrService,
     public helper: HelperService,
-    private appService: AppService,
+    private appService: AppService
   ) {
     this.g.navbarVisibility = true;
     this.selectedPenerimaanBrgBks = JSON.parse(this.selectedPenerimaanBrgBks);
@@ -320,7 +320,7 @@ export class DetailPenerimaanBrgBksReturComponent
 
       const param = {
         kodeGudang: this.g.getUserLocationCode(),
-        tglTransaksi:moment().format('D MMM YYYY'),
+        tglTransaksi: moment().format('D MMM YYYY'),
         statusPosting: 'P',
         noDocument: this.selectedPenerimaanBrgBks.returnNo,
         keterangan: 'penerimaan barang bekas otomatis',
@@ -330,7 +330,7 @@ export class DetailPenerimaanBrgBksReturComponent
           .filter((item) => item.kodeBarang && item.kodeBarang.trim() !== '')
           .map((item) => ({
             kodeGudang: this.g.getUserLocationCode(),
-            tglTransaksi:moment().format('D MMM YYYY'),
+            tglTransaksi: moment().format('D MMM YYYY'),
             tipeTransaksi: 10,
             kodeBarang: item.kodeBarang,
             konversi: item.konversi,
@@ -347,73 +347,91 @@ export class DetailPenerimaanBrgBksReturComponent
       };
 
       Swal.fire({
-        title:
-          'Pastikan semua data sudah di input dengan benar, PERIKSA SEKALI LAGI...!!',
-        text: 'DATA YANG SUDAH DIPOSTING TIDAK DAPAT DIPERBAIKI..!!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Proses Posting',
-        cancelButtonText: 'Batal Posting',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.appService
-            .insert('/api/receiving-product-wasted/insert', param)
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe({
-              next: (res) => {
-                if (!res.success) {
-                  this.toastr.error(res.message);
-                } else {
-                  this.appService
-                    .updateWarehouse('/api/return-order/update', paramUpdate)
-                    .pipe(takeUntil(this.ngUnsubscribe))
-                    .subscribe({
-                      next: (res2) => {
-                        if (!res2.success) {
+        ...this.g.componentKonfirmasiPosting,
+        showConfirmButton: false,
+        showCancelButton: false,
+        width: '600px',
+        customClass: {
+          popup: 'custom-popup',
+        },
+        allowOutsideClick: () => {
+          return false; // Prevent closing
+        },
+        didOpen: () => {
+          const submitBtn = document.getElementById(
+            'btn-submit'
+          ) as HTMLButtonElement;
+          const cancelBtn = document.getElementById(
+            'btn-cancel'
+          ) as HTMLButtonElement;
+
+          submitBtn?.addEventListener('click', () => {
+            submitBtn.disabled = true;
+            cancelBtn.disabled = true;
+            Swal.close();
+            this.appService
+              .insert('/api/receiving-product-wasted/insert', param)
+              .pipe(takeUntil(this.ngUnsubscribe))
+              .subscribe({
+                next: (res) => {
+                  if (!res.success) {
+                    this.toastr.error(res.message);
+                  } else {
+                    this.appService
+                      .updateWarehouse('/api/return-order/update', paramUpdate)
+                      .pipe(takeUntil(this.ngUnsubscribe))
+                      .subscribe({
+                        next: (res2) => {
+                          if (!res2.success) {
+                            this.toastr.warning(
+                              'Data berhasil diposting, tetapi update status retur gagal!'
+                            );
+                          } else {
+                            this.toastr.success(
+                              'Data penerimaan barang bekas berhasil diposting dan status retur diperbarui!'
+                            );
+                          }
+                          this.adding = false;
+                          this.loadingSimpan = false;
+                          Swal.close();
+                          this.onPreviousPressed();
+                        },
+                        error: () => {
                           this.toastr.warning(
-                            'Data berhasil diposting, tetapi update status retur gagal!'
+                            'Data berhasil diposting, tetapi gagal update status retur!'
                           );
-                        } else {
-                          this.toastr.success(
-                            'Data penerimaan barang bekas berhasil diposting dan status retur diperbarui!'
-                          );
-                        }
-                        this.adding = false;
-                        this.loadingSimpan = false;
-                        this.onPreviousPressed();
-                      },
-                      error: () => {
-                        this.toastr.warning(
-                          'Data berhasil diposting, tetapi gagal update status retur!'
-                        );
-                        this.loadingSimpan = false;
-                      },
-                    });
-                }
-                this.adding = false;
-                this.loadingSimpan = false;
-              },
-              error: () => {
-                this.loadingSimpan = false;
-              },
-            });
-        } else {
-          this.toastr.info('Posting dibatalkan');
-          this.loadingSimpan = false;
-        }
+                          this.loadingSimpan = false;
+                        },
+                      });
+                  }
+                  this.adding = false;
+                  this.loadingSimpan = false;
+                  Swal.close();
+                },
+                error: () => {
+                  this.loadingSimpan = false;
+                  submitBtn.disabled = false;
+                  cancelBtn.disabled = false;
+                  Swal.close();
+                },
+              });
+          });
+
+          cancelBtn?.addEventListener('click', () => {
+            Swal.close();
+            this.toastr.info('Posting dibatalkan');
+            this.loadingSimpan = false;
+          });
+        },
       });
     }
   }
 
   isDataInvalid(): boolean {
-    return false
+    return false;
   }
 
   onPreviousPressed(): void {
     this.router.navigate(['/transaction/penerimaan-barang-bekas/list-retur']);
   }
-
-
 }

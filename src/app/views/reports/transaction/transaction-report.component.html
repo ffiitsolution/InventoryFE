@@ -35,6 +35,19 @@
       </div>
     </ng-container>
 
+     <ng-container *ngIf="['Penerimaan Barang Bekas'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Tanggal Terima
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
+          aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
+          placeholder="{{ 'Tanggal Pesan' | translate }}" />
+        </div>
+      </div>
+    </ng-container>
     
 
     <ng-container *ngIf="['Terima Retur Dari Site', 'Kirim Retur Ke Site', 'Kirim Retur Ke Supplier'].includes(currentReport)">

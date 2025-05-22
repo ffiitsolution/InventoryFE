@@ -1,0 +1,19 @@
+.hover-danger:hover {
+  background-color: #dc3545 !important; /* Bootstrap danger */
+  color: white !important;
+  border-color: #dc3545 !important;
+}
+.hover-danger:hover i {
+  color: white !important; /* ensure icon turns white too */
+}
+
+.btn-200 {
+  width: 200px !important;
+}
+
+@media (max-width: 767.98px) {
+  .span-gudang {
+    margin: auto;
+  }
+}
+

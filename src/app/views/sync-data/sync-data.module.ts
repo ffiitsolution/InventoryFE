@@ -10,6 +10,7 @@ import {
   ButtonGroupModule,
   CardModule,
   CollapseDirective,
+  DropdownModule,
   FormModule,
   GridModule,
   ListGroupModule,
@@ -25,6 +26,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
 import { AllSyncDataComponent } from './index/index.component';
 import { SyncDataRoutingModule } from './sync-data-routing.module';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { SharedCustomPipeModule } from '../../pipes/shared-pipe.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -50,6 +53,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     ModalModule,
     SelectDropDownModule,
     ListGroupModule,
+    BsDatepickerModule.forRoot(),
+    SharedCustomPipeModule,
+    DropdownModule
   ],
   declarations: [
     AllSyncDataComponent,

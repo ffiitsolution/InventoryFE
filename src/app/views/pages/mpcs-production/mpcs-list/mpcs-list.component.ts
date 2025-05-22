@@ -73,6 +73,8 @@ export class MpcsListComponent implements OnInit {
   totalTransSummary: number = 0;
   loadingKirim: boolean = false;
   protected configGudang = '';
+  isShowWarehouseModal = false;
+  selectedWarehouse: string | null = null;
   constructor(
     translate: TranslateService,
     private route: ActivatedRoute,
@@ -103,7 +105,7 @@ export class MpcsListComponent implements OnInit {
 
     console.log(this.configGudang, 'configGudang');
     this.getMpcsDefaultGudang();
-  
+    this.openModalWarehouse();
   }
 
   
@@ -306,11 +308,22 @@ export class MpcsListComponent implements OnInit {
           customClass: {
             popup: 'custom-popup',
           },
+          allowOutsideClick: () => {
+            return false; // Prevent closing
+          },
           didOpen: () => {
-            const submitBtn = document.getElementById('btn-submit');
-            const cancelBtn = document.getElementById('btn-cancel');
-    
-            submitBtn?.addEventListener('click', () => {
+          const submitBtn = document.getElementById(
+            'btn-submit'
+          ) as HTMLButtonElement;
+          const cancelBtn = document.getElementById(
+            'btn-cancel'
+          ) as HTMLButtonElement;
+ 
+          submitBtn?.addEventListener('click', () => {
+
+              submitBtn.disabled = true;
+              cancelBtn.disabled = true;
+              Swal.close();
               this.appService.kirimProduction(requestBody).subscribe({
                 next: (res: any) => {
                   if (!res.success) {
@@ -328,7 +341,8 @@ export class MpcsListComponent implements OnInit {
                 error: (err: any) => {
                   console.log('An error occurred while Kirim Data.');
                   this.loadingKirim = false;
-               
+                  submitBtn.disabled = false;
+                  cancelBtn.disabled = false;
                   Swal.close();
                 },
               });
@@ -345,13 +359,76 @@ export class MpcsListComponent implements OnInit {
 
    getMpcsDefaultGudang() {
   
+    if(this.g.mpcsDefaultGudang){
+        this.configGudang = this.g.mpcsDefaultGudang;
+      switch (this.g.mpcsJenisGudang) {
+        case 'COM':
+          this.selectedWarehouse = 'Commisary';
+          break;
+        case 'PRD':
+          this.selectedWarehouse = 'Production';
+          break;
+        case 'DRY':
+          this.selectedWarehouse = 'DRY Good';
+          break;
+      }
+
+    }else{
     this.appService
     .mpcsDefaultGudang({})
     .subscribe((resp) => {
-        this.g.mpcsDefaultGudang = resp.data.defaultGudang;
+        this.g.mpcsDefaultGudang = resp.data.gudangPRD;
+        this.g.mpcsGudangCOM = resp.data.gudangCOM;
+        this.g.mpcsGudangPRD = resp.data.gudangPRD;
+        this.g.mpcsGudangDRY = resp.data.gudangDRY;
+        this.selectedWarehouse = 'Production';
         this.configGudang = this.g.mpcsDefaultGudang;
-        this.getDataProduction();
+      
     });
+    }
+     this.getDataProduction();
   }
- 
+  
+  openModalWarehouse(isChange : boolean = false) {
+
+    if(!this.g.mpcsDefaultGudang || isChange){
+       this.isShowWarehouseModal = true;
+    }else{
+        this.configGudang = this.g.mpcsDefaultGudang;
+    }
+   
+  }
+
+  confirmSelectionWarehouse() {
+    if (this.selectedWarehouse) {
+      // Handle the selected warehouse value
+
+       switch (this.selectedWarehouse) {
+        case 'Commisary':
+          this.g.mpcsJenisGudang = 'COM';
+          this.g.mpcsDefaultGudang = this.g.mpcsGudangCOM;
+          this.g.mpcsDefaultNamaGudang = 'Commisary';
+          break;
+        case 'Production':
+          this.g.mpcsJenisGudang = 'PRD';
+          this.g.mpcsDefaultGudang = this.g.mpcsGudangPRD;
+          this.g.mpcsDefaultNamaGudang = 'Production';
+          break;
+        case 'DRY Good':
+          this.g.mpcsJenisGudang = 'DRY';
+          this.g.mpcsDefaultGudang = this.g.mpcsGudangDRY;
+          this.g.mpcsDefaultNamaGudang = 'DRY Good';
+          break;
+      }
+
+        this.configGudang = this.g.mpcsDefaultGudang;
+      // Close modal after confirmation
+      this.isShowWarehouseModal = false;
+      this.getDataProduction();
+    }
+  }
+
+  onCloseWarehouse() {
+    this.isShowWarehouseModal = false;
+  }
 }

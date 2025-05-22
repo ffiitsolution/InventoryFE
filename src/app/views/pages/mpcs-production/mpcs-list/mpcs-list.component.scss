@@ -150,6 +150,52 @@
     max-height: 500px;
     overflow: auto;
 }
+
+.warehouse-option {
+  cursor: pointer;
+  border: 1px solid #ddd;
+  transition: border-color 0.3s ease;
+}
+
+.warehouse-option:hover {
+  border-color: #0d6efd; /* Bootstrap primary blue on hover */
+}
+
+.warehouse-option.selected {
+  border-color: #0d6efd; /* Bootstrap primary blue when selected */
+  background-color: #e7f1ff; /* subtle blue background to highlight */
+}
+
+@media (min-width: 768px) {
+  .w-md-30 {
+    width: 49% !important;
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+.hover-white:hover {
+  color: white !important;
+}
+
+.hover-danger:hover {
+  background-color: #dc3545 !important; /* Bootstrap danger */
+  color: white !important;
+  border-color: #dc3545 !important;
+}
+.hover-danger:hover i {
+  color: white !important; /* ensure icon turns white too */
+}
+
+.page-link{
+    z-index: 0;
+}
+
+
+
+
   
   
   

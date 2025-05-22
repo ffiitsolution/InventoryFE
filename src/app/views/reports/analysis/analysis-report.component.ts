@@ -16,6 +16,14 @@ import {
 import { AppService } from '../../../service/app.service';
 import { DatePipe } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import { Subject, takeUntil } from 'rxjs';
+import moment from 'moment';
+import { Page } from '../../../model/page';
+import {
+  BUTTON_CAPTION_SELECT,
+  DEFAULT_DATE_RANGE_RECEIVING_ORDER,
+} from '../../../../constants';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 
 @Component({
   selector: 'app-analysis-report',
@@ -36,16 +44,33 @@ export class AnalysisReportComponent
   currentReport: string = '';
   rangeDateVal = [new Date(), new Date()];
   downloadURL: any = [];
-
   configRegion: any;
-
   listRegion: any = [];
-
   selectedRegion: any;
-
   paramStatusAktif: string = '';
   paramTipeListing: string = 'header';
-
+  kodePenerima: string = '';
+  namaPenerima: string = 'KOSONG = CETAK SEMUA PENERIMA';
+  isShowModalPenerima: boolean = false;
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
+  public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+  currentDate: Date = new Date();
+  startDateFilter: Date = new Date(
+    this.currentDate.setDate(
+      this.currentDate.getDate() - DEFAULT_DATE_RANGE_RECEIVING_ORDER
+    )
+  );
+  dateRangeFilter: any = [this.startDateFilter, new Date()];
+  dtOptions: any = {};
+  selectedRowData: any;
+  page = new Page();
+  buttonCaptionSelect: string = BUTTON_CAPTION_SELECT;
+  periode1Filter: [any, any];
+  periode2Filter: [any, any];
+  periode3Filter: [any, any];
+  kodeTransaksi: string = '';
+  namaTransaksi: string = 'WAJIB PILIH TRANSAKSI';
+  isShowModalTransaksi: boolean = false;
   constructor(
     private service: AppService,
     private g: GlobalService,
@@ -54,7 +79,11 @@ export class AnalysisReportComponent
     private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService
-  ) {}
+  ) {
+    this.dpConfig.containerClass = 'theme-dark-blue';
+    this.dpConfig.customTodayClass = 'today-highlight';
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
+  }
 
   ngOnInit(): void {
     this.g.changeTitle(
@@ -75,6 +104,29 @@ export class AnalysisReportComponent
     if (['Master Cabang'].includes(this.currentReport)) {
       this.getListParam('listRegion');
     }
+
+    if (['Pengirim By Tujuan'].includes(this.currentReport)) {
+      this.renderDataTablesBranch();
+    }else if(['Rekap Transaksi 3 Periode (By Type)'].includes(this.currentReport)){
+      this.renderDataTablesSetupTransaksi()
+    }
+
+    const now = moment();
+    // Periode 1: 2 months before (start to end of that month)
+    this.periode1Filter = [
+      moment(now).subtract(2, 'months').startOf('month').toDate(),
+      moment(now).subtract(2, 'months').endOf('month').toDate(),
+    ];
+    // Periode 2: 1 month before (start to end of that month)
+    this.periode2Filter = [
+      moment(now).subtract(1, 'months').startOf('month').toDate(),
+      moment(now).subtract(1, 'months').endOf('month').toDate(),
+    ];
+    // Periode 3: current month (start to end)
+    this.periode3Filter = [
+      moment(now).startOf('month').toDate(),
+      moment(now).endOf('month').toDate(),
+    ];
   }
 
   ngOnDestroy(): void {}
@@ -143,6 +195,17 @@ export class AnalysisReportComponent
         kodeRegion: this.selectedRegion['code'],
         status: this.paramStatusAktif,
         tipeListing: this.paramTipeListing,
+      };
+    }else if(['Rekap Transaksi 3 Periode (By Type)'].includes(this.currentReport)){
+       param = {
+        kodeGudang: this.userData.defaultLocation.kodeLocation,
+        tipeTransaksi: this.kodeTransaksi,
+        firstDateP1: this.g.transformDate(this.periode1Filter[0]),
+        endDateP1: this.g.transformDate(this.periode1Filter[1]),
+        firstDateP2: this.g.transformDate(this.periode2Filter[0]),
+        endDateP2: this.g.transformDate(this.periode2Filter[1]),
+        firstDateP3: this.g.transformDate(this.periode3Filter[0]),
+        endDateP3: this.g.transformDate(this.periode3Filter[1]),
       };
     }
 
@@ -218,5 +281,303 @@ export class AnalysisReportComponent
       link.click();
       this.toastr.success('File sudah terunduh');
     } else this.toastr.error('File tidak dapat terunduh');
+  }
+
+  onShowModalPenerima() {
+    this.isShowModalPenerima = true;
+  }
+
+  onShowModalTransaksi() {
+    this.isShowModalTransaksi = true;
+  }
+
+  handleEnter(event: any) {
+    event.preventDefault();
+
+    let kodePenerima = this.kodePenerima?.trim();
+    if (kodePenerima !== '') {
+      this.getPenerimaRow(kodePenerima);
+    }
+  }
+
+  getPenerimaRow(kodePenerima: string) {
+    if (kodePenerima !== '') {
+      this.service
+        .getProductResep(kodePenerima)
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe({
+          next: (res: any) => {
+            if (res) {
+              this.namaPenerima = res.namaPenerima;
+            }
+          },
+          error: (err: any) => {
+            // Handle error case and show error toast
+            this.toastr.error('Kode barang tidak ditemukan!');
+          },
+        });
+    }
+  }
+
+  renderDataTablesBranch(): void {
+    this.dtOptions = {
+      language:
+        this.translation.getCurrentLanguage() == 'id'
+          ? this.translation.idDatatable
+          : {},
+      processing: true,
+      serverSide: true,
+      autoWidth: true,
+      info: true,
+      pageLength: 5,
+      lengthMenu: [
+        // Provide page size options
+        [8, 10], // Available page sizes
+        ['8', '10'], // Displayed page size labels
+      ],
+      drawCallback: (drawCallback: any) => {
+        this.selectedRowData = undefined;
+      },
+      ajax: (dataTablesParameters: any, callback: any) => {
+        this.page.start = dataTablesParameters.start;
+        this.page.length = dataTablesParameters.length;
+        const params = {
+          ...dataTablesParameters,
+          kodeGudang: this.g.getUserLocationCode(),
+        };
+        this.service.getBranchList(params).subscribe((resp: any) => {
+          const mappedData = resp.data.map((item: any, index: number) => {
+            // hapus rn dari data
+            const { rn, ...rest } = item;
+            const finalData = {
+              ...rest,
+              dtIndex: this.page.start + index + 1,
+            };
+            return finalData;
+          });
+          this.page.recordsTotal = resp.recordsTotal;
+          this.page.recordsFiltered = resp.recordsFiltered;
+          callback({
+            recordsTotal: resp.recordsTotal,
+            recordsFiltered: resp.recordsFiltered,
+            data: mappedData,
+          });
+        });
+      },
+      columns: [
+        { data: 'dtIndex', title: '#', orderable: false, searchable: false },
+        { data: 'kodeCabang', title: 'Kode', searchable: true },
+        // { data: 'kodeSingkat', title: 'Inisial', searchable: true },
+        // { data: 'tipeCabang', title: 'Tipe', searchable: true },
+        { data: 'namaCabang', title: 'Nama Site', searchable: true },
+        { data: 'deskripsiGroup', title: 'Group', searchable: true },
+        {
+          data: 'alamat1', // or data: 'alamat' if needed, but `null` works fine when using render
+          title: 'Alamat',
+          searchable: false,
+          width: '200px',
+          render: function (data: any, type: any, row: any) {
+            return `${row.alamat1 || ''}, ${row.alamat2 || ''}`.trim();
+          },
+        },
+        { data: 'kota', title: 'Kota', searchable: true },
+        {
+          data: 'statusAktif',
+          title: 'Status',
+          searchable: false,
+          render: (data: any) => {
+            if (data === 'A') {
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+            }
+            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
+          },
+        },
+        {
+          title: 'Action',
+          render: (data: any, _: any, row: any) => {
+            if (row.statusAktif === 'A') {
+              return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-select btn-info btn-60 text-white">${this.buttonCaptionSelect}</button>
+                </div>
+              `;
+            }
+            return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-select btn-info btn-60 text-white" disabled>${this.buttonCaptionSelect}</button>
+                </div>
+              `;
+          },
+        },
+      ],
+      searchDelay: 1000,
+      rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        $('.action-select', row).on('click', () => this.actionBtnClick(data));
+        if (index === 0 && !this.selectedRowData) {
+          setTimeout(() => {
+            $(row).trigger('td');
+          }, 0);
+        }
+        $('td', row).on('click', () => {
+          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
+
+        return row;
+      },
+    };
+  }
+
+  actionBtnClick(data: any) {
+    console.log('actionBtnClick', data);
+    let errorMessage;
+    this.isShowModalPenerima = false;
+    this.kodePenerima = data.kodeCabang;
+    this.namaPenerima = data.namaCabang;
+  }
+
+  
+  actionBtnClickSetupTransaksi(data: any) {
+    console.log('actionBtnClick', data);
+    let errorMessage;
+    this.isShowModalTransaksi = false;
+    this.kodeTransaksi = data.keyTransaksi;
+    this.namaTransaksi = data.keterangan;
+  }
+
+  deletePenerima() {
+    this.kodePenerima = '';
+    this.namaPenerima = 'KOSONG = CETAK SEMUA PENERIMA';
+  }
+
+  deleteTransaksi() {
+    this.kodeTransaksi = '';
+    this.namaTransaksi = 'WAJIB PILIH TRANSAKSI';
+  }
+
+  exportExcel() {
+    this.loadingState['submit'] = true;
+    let apiUrl = '';
+    let param = {};
+    if (this.currentReport === 'Pengirim By Tujuan') {
+      param = {
+        kodeGudang: this.userData.defaultLocation.kodeLocation,
+        namaGudang: this.g.getUserLocationNama(),
+        kodeTujuan: this.kodePenerima,
+        startDate: this.g.transformDate(this.dateRangeFilter[0]),
+        endDate: this.g.transformDate(this.dateRangeFilter[1]),
+      };
+
+      apiUrl = '/api/report/analysis/pengirim-by-tujuan';
+    }
+
+    param = {
+      ...param,
+      userData: this.userData,
+      reportName: this.currentReport,
+      reportSlug: this.g.formatUrlSafeString(this.currentReport),
+    };
+
+    this.service.getFile(apiUrl, param).subscribe({
+      next: (res) => {
+        this.loadingState['submit'] = false;
+        return this.downloadCsv(res, '');
+      },
+      error: (error) => {
+        this.loadingState['submit'] = false;
+      },
+    });
+  }
+
+  renderDataTablesSetupTransaksi(): void {
+    this.dtOptions = {
+      language:
+        this.translation.getCurrentLanguage() == 'id'
+          ? this.translation.idDatatable
+          : {},
+      processing: true,
+      serverSide: true,
+      autoWidth: true,
+      info: true,
+      pageLength: 8,
+      lengthMenu: [
+        // Provide page size options
+        [8, 20], // Available page sizes
+        ['8', '20'], // Displayed page size labels
+      ],
+      drawCallback: (drawCallback: any) => {
+        this.selectedRowData = undefined;
+      },
+      ajax: (dataTablesParameters: any, callback: any) => {
+        this.page.start = dataTablesParameters.start;
+        this.page.length = dataTablesParameters.length;
+        const params = {
+          ...dataTablesParameters,
+          kodeGudang: this.g.getUserLocationCode(),
+        };
+        this.service.listSetupTransaksiDt(params).subscribe((resp: any) => {
+          const mappedData = resp.data.map((item: any, index: number) => {
+            // hapus rn dari data
+            const { rn, ...rest } = item;
+            const finalData = {
+              ...rest,
+              dtIndex: this.page.start + index + 1,
+            };
+            return finalData;
+          });
+          this.page.recordsTotal = resp.recordsTotal;
+          this.page.recordsFiltered = resp.recordsFiltered;
+          callback({
+            recordsTotal: resp.recordsTotal,
+            recordsFiltered: resp.recordsFiltered,
+            data: mappedData,
+          });
+        });
+      },
+      columns: [
+      
+        { data: 'keyTransaksi', title: 'Kode', searchable: true },
+        // { data: 'kodeSingkat', title: 'Inisial', searchable: true },
+        // { data: 'tipeCabang', title: 'Tipe', searchable: true },
+        { data: 'kodeTransaksi', title: 'Inisial', searchable: true },
+        { data: 'keterangan', title: 'Keterangan', searchable: true },
+        {
+          title: 'Action',
+          render: (data: any, _: any, row: any) => {
+         
+              return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-select btn-info btn-60 text-white">${this.buttonCaptionSelect}</button>
+                </div>
+              `;              
+          },
+        },
+      ],
+      searchDelay: 1000,
+      rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        $('.action-select', row).on('click', () => this.actionBtnClickSetupTransaksi(data));
+        if (index === 0 && !this.selectedRowData) {
+          setTimeout(() => {
+            $(row).trigger('td');
+          }, 0);
+        }
+        $('td', row).on('click', () => {
+          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
+
+        return row;
+      },
+    };
   }
 }

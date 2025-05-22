@@ -1,11 +1,9 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-     <div class="row">
-        <div class="col d-flex flex-column justify-content-start ">
-        
+      <div class="row">
+        <div class="col d-flex flex-column justify-content-start">
           <h5>{{ "List Produksi Belum Posting" | translate }}</h5>
-         
         </div>
       </div>
     </c-card-body>
@@ -14,7 +12,7 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-       <div class="row">
+      <div class="row">
         <div class="col text-end">
           <button
             type="button"
@@ -24,7 +22,7 @@
             <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
             {{ "Filter" | translate }}
           </button>
-          <button
+          <!-- <button
             type="button"
             class="btn btn-info text-white me-2 btn-240"
             data-toggle="modal"
@@ -32,13 +30,11 @@
           >
           <i class="fa fa-check pe-2"></i>
             {{ "Posting All" | translate }}
-          </button>
-             <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
-          
+          </button> -->
+          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
             {{ "Kembali" | translate }}
           </button>
         </div>
-        
       </div>
       <div [visible]="showFilterSection" cCollapse>
         <div class="divider"></div>
@@ -47,26 +43,27 @@
             <c-row>
               <c-col>
                 <div class="row">
-
-                <div class="col-12  col-md-3">
-                  <label class="col-form-label">{{
-                    "Tanggal Produksi" | translate
-                  }}</label>
-                  <input
-                    type="text"
-                    id="dateFilter"
-                    class="form-control"
-                    bsDaterangepicker
-                    [bsConfig]="dpConfig"
-                    aria-describedby="dateFilter"
-                    [(ngModel)]="dateRangeFilter"
-                    #dp="bsDaterangepicker"
-                    placeholder="{{ 'Tanggal Pesan' | translate }}"
-                  />
+                  <div class="col-12 col-md-3">
+                    <label class="col-form-label">{{
+                      "Tanggal Produksi" | translate
+                    }}</label>
+                    <input
+                      type="text"
+                      id="dateFilter"
+                      class="form-control"
+                      bsDaterangepicker
+                      [bsConfig]="dpConfig"
+                      aria-describedby="dateFilter"
+                      [(ngModel)]="dateRangeFilter"
+                      #dp="bsDaterangepicker"
+                      placeholder="{{ 'Tanggal Pesan' | translate }}"
+                    />
                   </div>
                   <div class="col-12 col-md-3">
-                    <label class="col-form-label">{{ "Waktu Produksi" | translate }}</label>
-                  
+                    <label class="col-form-label">{{
+                      "Waktu Produksi" | translate
+                    }}</label>
+
                     <div class="d-flex gap-1">
                       <div class="custom-time-picker">
                         <input
@@ -91,8 +88,7 @@
                       </div>
                     </div>
                   </div>
-                  
-              </div>
+                </div>
               </c-col>
               <c-col
                 xs="3"
@@ -124,39 +120,68 @@
   </c-card>
 </div>
 <div class="fade-in">
-
   <c-card class="c-card" *ngIf="selectedRowData">
     <c-card-body>
       <div class="row p-2 justify-content-end">
         <div class="col-6">
           <div class="w-100 mb-2">
-            <label for="keterangan" class="form-label">{{ "Keterangan" | translate }}</label>
-            <input type="text" disabled placeholder="Keterangan" class="form-control" 
-              [(ngModel)]="selectedRowData.keterangan" name="keterangan" />
-          </div>
-        
-        </div>
-        <div class="col-2">
-         
-            <div class="w-100 mb-2 ">
-              <label for="userCreate" class="form-label">{{ "User Create" | translate }}</label>
-              <input type="text" disabled placeholder="User Create" class="form-control"
-                [(ngModel)]="selectedRowData.namaUser" name="namaUser" />
-            </div>
-        </div>
-        <div class="col-2">
-          <div class="w-100 mb-2 ">
-            <label for="dateCreate" class="form-label">{{ "Date Create" | translate }}</label>
-            <input type="text" disabled placeholder="Alamat 1" class="form-control" 
-              [(ngModel)]="selectedRowData.dateCreateFormat2" name="dateCreate" />
+            <label for="keterangan" class="form-label">{{
+              "Keterangan" | translate
+            }}</label>
+            <input
+              type="text"
+              disabled
+              placeholder="Keterangan"
+              class="form-control"
+              [(ngModel)]="selectedRowData.keterangan"
+              name="keterangan"
+            />
           </div>
         </div>
         <div class="col-2">
-          <div class="w-100 mb-2 ">
-            <label for="timeCreate" class="form-label">{{ "Time Create" | translate }}</label>
-            <input type="text" disabled placeholder="Time Create" class="form-control"
-              [(ngModel)]="selectedRowData.timeCreate" name="timeCreate" />
-          </div> 
+          <div class="w-100 mb-2">
+            <label for="userCreate" class="form-label">{{
+              "User Create" | translate
+            }}</label>
+            <input
+              type="text"
+              disabled
+              placeholder="User Create"
+              class="form-control"
+              [(ngModel)]="selectedRowData.namaUser"
+              name="namaUser"
+            />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="w-100 mb-2">
+            <label for="dateCreate" class="form-label">{{
+              "Date Create" | translate
+            }}</label>
+            <input
+              type="text"
+              disabled
+              placeholder="Alamat 1"
+              class="form-control"
+              [(ngModel)]="selectedRowData.dateCreateFormat2"
+              name="dateCreate"
+            />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="w-100 mb-2">
+            <label for="timeCreate" class="form-label">{{
+              "Time Create" | translate
+            }}</label>
+            <input
+              type="text"
+              disabled
+              placeholder="Time Create"
+              class="form-control"
+              [(ngModel)]="selectedRowData.timeCreate"
+              name="timeCreate"
+            />
+          </div>
         </div>
       </div>
     </c-card-body>
@@ -178,61 +203,87 @@
   </app-modal-print-list>
 </div>
 
-<c-modal #formModalPosting [fullscreen]="false" [visible]="isShowModalPosting" backdrop="static"  [size]="'xl'"
-id="formModalPosting"    [attr.aria-hidden]="!isShowModalPosting">
+<c-modal
+  #formModalPosting
+  [fullscreen]="false"
+  [visible]="isShowModalPosting"
+  backdrop="static"
+  [size]="'xl'"
+  id="formModalPosting"
+  [attr.aria-hidden]="!isShowModalPosting"
+>
   <c-modal-header>
     <h5 cModalTitle>Konfirmasi Posting Data Production</h5>
-    <button (click)="isShowModalPosting = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalPosting.id"
-      cButtonClose><i class="fa fa-times"></i></button>
+    <button
+      (click)="isShowModalPosting = false"
+      type="button"
+      class="btn btn-primary ms-2"
+      [cModalToggle]="formModalPosting.id"
+      cButtonClose
+    >
+      <i class="fa fa-times"></i>
+    </button>
   </c-modal-header>
   <c-modal-body>
-    <div >
+    <div>
       <div class="card shadow-sm mb-3">
         <div class="card-body">
-          <div class=" d-flex gap-1 flex-column justify-content-center align-items-center mb-3">
+          <div
+            class="d-flex gap-1 flex-column justify-content-center align-items-center mb-3"
+          >
             <div class="fw-bold">
-              <i class="bi bi-calendar-range me-2 text-black "></i> <!-- Bootstrap Icons -->
+              <i class="bi bi-calendar-range me-2 text-black"></i>
+              <!-- Bootstrap Icons -->
               <h4>{{ "Summary Produksi" | translate }}</h4>
             </div>
             <!-- <div class="fw-bold">
               <span class="badge bg-primary fs-6"> -->
-                <!-- {{formatToday()}} -->
-                <!-- {{ formatStartDate() }} &nbsp;–&nbsp; {{ formatEndDate() }} -->
-              <!-- </span>
+            <!-- {{formatToday()}} -->
+            <!-- {{ formatStartDate() }} &nbsp;–&nbsp; {{ formatEndDate() }} -->
+            <!-- </span>
             </div> -->
-            
-            <div class="alert-kirim col-sm-12 d-flex flex-column justify-content-start align-items-center">
-              <span>
-               Semua data production yang statusnya  KIRIM (BELUM POSTING) !
-              </span>
-              <span>
-              Akan di POSTING , data yang sudah di POSTING tidak dapat diubah !
-              </span>
-              <span>
-              Silahkan periksa kembali data yang akan diposting !
-              </span>
-            </div>
 
+            <div
+              class="alert-kirim col-sm-12 d-flex flex-column justify-content-start align-items-center"
+            >
+              <span>
+                Semua data production yang statusnya KIRIM (BELUM POSTING) !
+              </span>
+              <span>
+                Akan di POSTING , data yang sudah di POSTING tidak dapat diubah
+                !
+              </span>
+              <span> Silahkan periksa kembali data yang akan diposting ! </span>
+            </div>
           </div>
         </div>
       </div>
-     
-     
-      <div class="card shadow-sm mb-3" >
-      
+
+      <div class="card shadow-sm mb-3">
         <div class="card-body body-kirim">
-          
-          <div *ngIf="listSummaryData.length ==0" class="alert alert-warning text-center" role="alert">
-              <strong> Tidak ada data yang bisa diposting, silahkan infokan user kirim data terlebih dahulu!. </strong>
+          <div
+            *ngIf="listSummaryData.length == 0"
+            class="alert alert-warning text-center"
+            role="alert"
+          >
+            <strong>
+              Tidak ada data yang bisa diposting, silahkan infokan user kirim
+              data terlebih dahulu!.
+            </strong>
           </div>
-          <div class="row align-items-center mx-1 my-2" *ngFor="let item of listSummaryData">
+          <div
+            class="row align-items-center mx-1 my-2"
+            *ngFor="let item of listSummaryData"
+          >
             <div class="col-12 col-md-6 fw-semibold mb-2 mb-md-0">
               <!-- <i class="bi bi-calendar-range me-2 text-black"></i> -->
               {{ item.kodeBarang }} - {{ item.namaBarang }}
             </div>
             <div class="col-6 col-md-2 mb-2 mb-md-0">
               <span class="badge bg-primary fs-6 w-100 text-center">
-                {{ item.konversi }} {{ item.satuanKecil }}/{{ item.satuanBesar }}
+                {{ item.konversi }} {{ item.satuanKecil }}/{{
+                  item.satuanBesar
+                }}
               </span>
             </div>
             <div class="col-6 col-md-2 mb-2 mb-md-0">
@@ -247,26 +298,33 @@ id="formModalPosting"    [attr.aria-hidden]="!isShowModalPosting">
             </div>
           </div>
         </div>
-        
       </div>
 
       <div class="d-flex justify-content-center align-items-center flex-column">
-        <span class="fw-bold text-center">Total Transaksi ({{totalTransSummary}})</span>
+        <span class="fw-bold text-center"
+          >Total Transaksi ({{ totalTransSummary }})</span
+        >
       </div>
-      
-      </div>
-    </c-modal-body>
-    <c-modal-footer class="justify-center">
-      <button
+    </div>
+  </c-modal-body>
+  <c-modal-footer class="justify-center">
+    <button
       class="btn btn-success text-white btn-150 w-180 me-3"
       [disabled]="loadingPosting || listSummaryData.length == 0"
       (click)="onPostingData()"
     >
-      <i class="fa fa-send pe-1"  *ngIf="!loadingPosting"></i> 
+      <i class="fa fa-send pe-1" *ngIf="!loadingPosting"></i>
       <i class="fa fa-spinner fa-spin" *ngIf="loadingPosting"></i>
       {{ "Posting" | translate }}
     </button>
-      <button type="button" class="btn btn-light w-180 me-3" data-bs-dismiss="modal" (click)="isShowModalPosting = false">Batal</button>
-      <!-- <button type="button" class="btn btn-success text-white  w-180" (click)="refreshDatabase()">Proses Terima Data</button> -->
-    </c-modal-footer>
+    <button
+      type="button"
+      class="btn btn-light w-180 me-3"
+      data-bs-dismiss="modal"
+      (click)="isShowModalPosting = false"
+    >
+      Batal
+    </button>
+    <!-- <button type="button" class="btn btn-success text-white  w-180" (click)="refreshDatabase()">Proses Terima Data</button> -->
+  </c-modal-footer>
 </c-modal>
