@@ -21,7 +21,7 @@ export class DeliveryItemComponent implements OnInit {
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   protected config = AppConfig.settings.apiServer;
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
@@ -41,7 +41,7 @@ export class DeliveryItemComponent implements OnInit {
       this.currentDate.getDate() - DEFAULT_DATE_RANGE_RECEIVING_ORDER
     )
   );
-  
+
   endDateFilter: Date = new Date(
     new Date().setDate(new Date().getDate() + 1)
   );
@@ -66,7 +66,7 @@ export class DeliveryItemComponent implements OnInit {
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -137,19 +137,19 @@ export class DeliveryItemComponent implements OnInit {
         {
           data: 'cetakSuratJalan',
           title: 'Status Cetak Surat Jalan',
-          render: (data) => this.g.getsatusDeliveryOrderLabel(data, true),
+          render: (data:any) => this.g.getStatusOrderLabel(data, true, true),
         },
         {
           data: 'statusDoBalik',
           title: 'Status DO Balik',
-          render: (data) => this.g.getsatusDeliveryOrderLabel(data, true),
+          render: (data:any) => this.g.getStatusOrderLabel(data, true, true),
         },
         {
           data: 'statusPosting',
           title: 'Status Pengiriman',
-          render: (data) => {
+          render: (data:any) => {
             const isCancel = data == CANCEL_STATUS;
-            const label = this.g.getStatusOrderLabel(data);
+            const label = this.g.getStatusOrderLabel(data, false, true);
             if (isCancel) {
               return `<span class="text-center text-danger">${label}</span>`;
             }
@@ -159,8 +159,9 @@ export class DeliveryItemComponent implements OnInit {
         {
           title: 'Aksi',
           className: 'text-center',
+
           render: () => {
-            return `<div class="d-flex px-2 gap-1"> 
+            return `<div class="d-flex px-2 gap-1">
               <button style="width: 74px" class="btn btn-sm action-view btn-outline-info btn-60 pe-2">
               <i class="fa fa-eye pe-2"></i>${this.buttonCaptionView}</button>
             </div>`;
@@ -267,7 +268,7 @@ export class DeliveryItemComponent implements OnInit {
   }
 
   onFilterPressed(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
     console.log('filter pressed');

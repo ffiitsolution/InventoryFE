@@ -36,12 +36,12 @@
               <h5 class="mb-2 p-2 pl-0" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5>
 
               <form [formGroup]="myForm">
-                <div class="mb-3 row">
-                  <label class="col-sm-4 col-form-label">{{
+                <div class="mb-1 row">
+                  <label class="col-sm-5 col-form-label">{{
                     "Nomor Pesanan" | translate
                   }}
                 </label>
-                  <div class="col-sm-8">
+                  <div class="col-sm-7">
                     <input
                       type="text"
                       class="form-control"
@@ -54,13 +54,13 @@
                   </div>
                 </div>
 
-                <div class="mb-3 row">
-                  <label class="col-sm-4 col-form-label">{{
+                <div class="mb-1 row">
+                  <label class="col-sm-5 col-form-label">{{
                       "Tgl. Pesanan" | translate
                     }}
                     <span class="stamp-required show">&nbsp;*</span>
                   </label>
-                  <div class="col-sm-8">
+                  <div class="col-sm-7">
                     <input
                       type="text"
                       id="tanggalPesanan"
@@ -77,13 +77,13 @@
                     }}</span>
                   </div>
                 </div>
-                <div class="mb-3 row">
-                  <label class="col-sm-4 col-form-label">{{
+                <div class="mb-1 row">
+                  <label class="col-sm-5 col-form-label">{{
                       "Tgl. Kirim Barang" | translate
                     }}
                     <span class="stamp-required show">&nbsp;*</span>
                   </label>
-                  <div class="col-sm-8">
+                  <div class="col-sm-7">
                     <input
                       type="text"
                       id="tanggalKirimBarang"
@@ -105,13 +105,13 @@
                     </span>
                   </div>
                 </div>
-                <div class="mb-3 row">
-                  <label class="col-sm-4 col-form-label">{{
+                <div class="mb-1 row">
+                  <label class="col-sm-5 col-form-label">{{
                     "Tgl. Batal Pesanan" | translate
                   }}
                   <span class="stamp-required show">&nbsp;*</span>
                   </label>
-                  <div class="col-sm-8">
+                  <div class="col-sm-7">
                     <input
                       type="text"
                       id="tanggalBatalPesanan"
@@ -132,14 +132,14 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider-10"></div>
                 
-                <div class="mb-3 row">
+                <div class="mb-1 row">
                   <div class="col-4 d-flex align-items-center">
                     <label for="nomorPesanan">{{ "Pemesan (Tujuan)" | translate }}</label>
                   </div>
                   
-                  <div class="col-8 pe-0 d-flex flex-column">
+                  <div class="col-8 d-flex flex-column">
                     <div class="d-flex">
                       <input type="text" placeholder="Pemesan (Tujuan)" class="form-control" id="Pemesan"
                         formControlName="gudangTujuan" name="pemesan" (keydown.enter)="handleEnterPemesan($event)" />
@@ -156,7 +156,7 @@
                   
                 </div>
 
-                <div class="mb-3 row">
+                <div class="mb-1 row">
                   <label class="col-sm-4 col-form-label">{{
                     "Nama Pemesan" | translate
                   }}
@@ -175,7 +175,7 @@
                     }}</span>
                   </div>
                 </div>
-                <div class="mb-3 row">
+                <div class="mb-1 row">
                   <label class="col-sm-4 col-form-label">{{
                     "Alamat Tujuan Kirim Barang" | translate 
                     }} 
@@ -196,9 +196,9 @@
                 </div>
               
                 
-                <div class="mb-3 row">
+                <div class="mb-1 row">
                   <label class="col-sm-4 col-form-label">{{
-                    "Status Gudang" | translate
+                    "Status Aktif" | translate
                   }}</label>
                   <div class="col-sm-8">
                     <input
@@ -211,9 +211,9 @@
                   </div>
                 </div>
 
-                <div class="divider"></div>
+                <div class="divider-10"></div>
 
-                <div class="mb-3 row">
+                <div class="mb-1 row">
                   <label class="col-sm-4 col-form-label"
                     >{{ "Tipe Pesanan" | translate }}
                     <span class="stamp-required show">&nbsp;*</span></label
@@ -261,7 +261,7 @@
                     </c-row>
                   </c-col>
                 </div>
-                <div class="mb-3 row">
+                <div class="mb-1 row">
                   <label class="col-sm-4 col-form-label">{{
                     "Keterangan / No. Order Pemesan" | translate
                   }}</label>
@@ -292,7 +292,7 @@
                 </div>
 
                 
-                <div class="divider"></div>
+                <div class="divider-10"></div>
                 <div class="d-grid gap-3 d-md-flex justify-content-end" *ngIf="!isShowDetail">
                   <button
                     class="btn btn-light btn-120"

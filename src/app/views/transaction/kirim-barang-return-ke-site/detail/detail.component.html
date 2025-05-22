@@ -1,6 +1,6 @@
 
 <div class="fade-in">
-  <c-card class="mb-4">
+  <c-card class="mb-2">
     <c-card-body>
       <c-row>
         <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
@@ -8,12 +8,12 @@
             <i class="fa fa-chevron-left icon-12 icon-gap"></i>
             {{ "Kembali" | translate }}
           </button>
-          <h5>{{ "Detail Kirim Barang Return Ke Site" | translate }}</h5>
+          <h5>{{ "Detail Kirim Barang Retur ke Site" | translate }}</h5>
         </div>       
       </c-row>
     </c-card-body>
   </c-card>
-  <c-card class="mb-4">
+  <c-card class="mb-2">
     <c-card-body>
       <div class="row">
         <div class="col"></div>
@@ -21,43 +21,45 @@
           <app-print-button
           [alreadyPrint]="alreadyPrint"
           [disabledPrintButton]="disabledPrintButton"
-          [generatePdfUrl]="'/report-wastage-jasper'"
+          [generatePdfUrl]="'/cetak-send-return-to-site-jasper'"
           [updateStatusUrl]="''"
           [updatePrintStatusParam]="''"
           [generateReportParam]="paramGenerateReport"
           (reloadTable)="reloadTable()"
         ></app-print-button>
         </div>
-        <div class="divider mt-4"></div>
+
+        <div class="divider mt-2"></div>
+        
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">
               <span class="label">{{ "Nomor Transaksi" | translate }}</span>
-              <span class="value">{{ selectedOrder.nomorTransaksi }}</span>
+              <span class="value">: {{ selectedProduction.nomorTransaksi }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tgl. Transaksi" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglTransaksi }}</span>
+              <span class="label">{{ "Tanggal Transaksi" | translate }}</span>
+              <span class="value">: {{ selectedProduction.tglTransaksi }}</span> 
             </div>
             <div class="detail-item">
               <span class="label">{{ "Status Transaksi" | translate }}</span>
-              <span class="value">{{ selectedOrder.statusPosting }}</span>
+              <span class="value">: <span class="badge bg-success">{{ selectedProduction.namaPosting }}</span></span>
             </div>
           </div>
         </div>
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">
-              <span class="label">{{ "Nama Saksi" | translate }}</span>
-              <span class="value"> {{ selectedOrder.namaSaksi }}</span>
+              <span class="label">{{ "Kode Tujuan" | translate }}</span>
+              <span class="value">: {{ selectedProduction.kodeTujuan }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Jabatan Saksi" | translate }}</span>
-              <span class="value"> {{ selectedOrder.jabatanSaksi }}</span>
+              <span class="label">{{ "Nama Tujuan" | translate }}</span>
+              <span class="value">: {{ selectedProduction.namaTujuan }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Catatan" | translate }}</span>
-              <span class="value">{{ selectedOrder.keterangan }} </span>
+              <span class="label">{{ "Catatan / Keterangan" | translate }}</span>
+              <span class="value">: {{ selectedProduction.keterangan }}</span>
             </div>
           </div>
         </div>
@@ -80,3 +82,145 @@
     </c-card-body>
   </c-card>
 </div>
+
+<c-modal
+  #staticBackdropModal
+  [visible]="isShowModal"
+  backdrop="static"
+  id="staticBackdropModal"
+  size="xl"
+>
+  <c-modal-header>
+    <h5 cModalTitle>History Data Expired</h5>
+    <button
+      (click)="closeModal($event)"
+      type="button"
+      class="btn btn-info ms-2"
+      [cModalToggle]="staticBackdropModal.id"
+      cButtonClose
+    >
+      <i class="fa fa-times text-white"></i>
+    </button>
+  </c-modal-header>
+
+  <c-modal-body>
+    <div class="row">
+      <div class="col-9">
+        <div class="w-100 mb-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Kode dan Nama Barang" | translate }}</label>
+          </div>
+          <div class="col-8 pe-0 d-flex">
+            <div class="col-3 pe-2">
+              <input type="text" class="form-control" id="kodeBarang" [value]="formExpiredData.kodeBarang"
+                name="kodeBarang" readonly />
+            </div>
+            <div class="col-9">
+              <input type="text" class="form-control" id="namaBarang" [value]="formExpiredData.kodeNamaBarang"
+                name="namaBarang" readonly />
+            </div>
+          </div>
+        </div>
+
+        <div class="w-100 mb-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Konversi Barang" | translate }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi"
+            [value]="formExpiredData.konversi"
+              name="konversi" readonly />
+          </div>
+        </div>
+
+        <div class="w-100 mb-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label class="fw-semibold" for="nomorPesanan">{{ "TOTAL QTY..............." | translate }}</label>
+          </div>
+          <div class="col-5 pe-0">
+            <input type="text" placeholder="Nomor pesanan" class="form-control" id="totalQtyProduksi"
+            [value]="formExpiredData.totalQty"
+              name="totalQtyProduksi" readonly />
+          </div>
+          <div class="col-3 d-flex align-items-center">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-3">
+        <div class="w-100 mb-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Quantity Besar" | translate }}</label>
+          </div>
+          <div class="col-5 pe-0">
+            <input type="text" class="form-control" id="qtyPemakaianBesar" [value]="formExpiredData.qtyBesar"
+              name="qtyPemakaianBesar" readonly />
+          </div>
+          <div class="col-3 d-flex align-items-center">
+          </div>
+        </div>
+      
+        <div class="w-100 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Quantity Kecil" | translate }}</label>
+          </div>
+          <div class="col-5 pe-0">
+            <input type="text" class="form-control" id="qtyPemakaianKecil" [value]="formExpiredData.qtyKecil"
+              name="qtyPemakaianKecil" readonly />
+          </div>
+          <div class="col-3 d-flex align-items-center">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider mt-2 mb-2"></div>
+
+    <c-card class="mb-2">
+      <c-card-body>
+        <div class="table-responsive" *ngIf="dtOptionsExpired">
+          <table
+            datatable
+            [dtOptions]="dtOptionsExpired"
+            [dtTrigger]="dtTriggerExpired"
+            class="datatable row-border hover stripe w-100"
+            id="tableIdExpired"
+          ></table>
+        </div>              
+      </c-card-body>
+    </c-card>
+  </c-modal-body>
+
+  <c-modal-footer class="d-flex justify-content-between">
+    <!-- Tombol Close Kiri -->
+    <button
+      (click)="closeModal($event)"
+      type="button"
+      class="btn btn-danger"
+    >
+      <i class="fa fa-times-circle pe-1"></i> Keluar
+    </button>
+  
+    <!-- Bagian TOTAL QTY dalam satu row -->
+    <div class="d-flex align-items-center">
+      <div class="me-3">
+        <label class="fw-semibold" for="totalQtyProduksi">{{ "TOTAL QTY EXPIRED..............." | translate }}</label>
+      </div>
+      <div class="me-3">
+        <input
+          type="text"
+          placeholder="Nomor pesanan"
+          class="form-control"
+          id="totalQtyProduksi"
+          [value]="formExpiredData.totalExpiredQty"
+          name="totalQtyProduksi"
+          readonly
+        />
+      </div>
+    </div>
+  </c-modal-footer>
+  
+  
+</c-modal>
+
+

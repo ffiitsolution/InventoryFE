@@ -21,7 +21,7 @@ export class PembelianListComponent implements OnInit {
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   protected config = AppConfig.settings.apiServer;
 
   dtTrigger: Subject<any> = new Subject();
@@ -61,7 +61,7 @@ export class PembelianListComponent implements OnInit {
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -124,7 +124,7 @@ export class PembelianListComponent implements OnInit {
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render: (data) => this.g.getStatusOrderLabel(data),
+          render: (data:any) => this.g.getStatusOrderLabel(data, false, true),
         },
         {
           title: 'Aksi',
@@ -169,7 +169,7 @@ export class PembelianListComponent implements OnInit {
         'selectedData',
         JSON.stringify(data)
       );
-      this.router.navigate(['/transaction/pembelian/detail']); 
+      this.router.navigate(['/transaction/pembelian/detail']);
     }
   }
 
@@ -216,7 +216,7 @@ export class PembelianListComponent implements OnInit {
   }
 
   onFilterPressed(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
     console.log('filter pressed');

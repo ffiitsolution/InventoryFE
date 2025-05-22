@@ -52,7 +52,7 @@
                 </label>
                 <div class="col-sm-8">
                   <input type="text" class="form-control" formControlName="keterangan" max="50"
-                  (keypress)="conditionInput($event, 'excludedSensitive')"/>
+                  (keypress)="conditionInput($event, 'excludedSensitive')" readonly/>
                   <span *ngIf="
                 myForm.controls['keterangan']?.hasError('required') &&
                 myForm.controls['keterangan']?.touched

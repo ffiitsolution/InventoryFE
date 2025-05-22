@@ -5,10 +5,7 @@
         <div
           class="d-grid gap-3 d-md-flex justify-content-start align-items-center"
         >
-          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
-            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
-            {{ "Kembali" | translate }}
-          </button>
+       
           <h5>{{ "Tambah Produksi" | translate }}</h5>
         </div>
       </c-row>
@@ -49,7 +46,6 @@
                       autocomplete="off"
                       formControlName="tglTransaksi"
                       placeholder="{{ 'Tanggal transaksi' | translate }}"
-                      [readOnly]="isShowDetail"
                     />
                     <input
                       type="text"
@@ -60,7 +56,6 @@
                       aria-describedby="tglTransaksi"
                       autocomplete="off"
                       placeholder="{{ 'Tanggal transaksi' | translate }}"
-                      [readOnly]="true"
                       formControlName="tglTransaksi"
                     />
                   </div>
@@ -69,7 +64,7 @@
                 <div class="w-100 px-2 py-1 row">
                   <div class="col-4 d-flex align-items-center">
                     <label for="kodeBarang"
-                      >{{ "Kode Barang" | translate
+                      >{{ "Kode Barang Produksi" | translate
                       }}<span class="text-danger">* </span>
                     </label>
                   </div>
@@ -109,7 +104,6 @@
                       id="kodeBarang"
                       formControlName="namaBarang"
                       name="kodeBarang"
-                      [readOnly]="true"
                     >
                     </textarea>
                   </div>
@@ -172,7 +166,7 @@
                       id="jumlahHasilProduksi"
                       formControlName="jumlahHasilProduksi"
                       name="jumlahHasilProduksi"
-                      [readonly]="isShowDetail"
+                     
                     />
                   </div>
                 </div>
@@ -231,7 +225,6 @@
                   <div class="col-8 pe-0 d-flex">
                     <input
                       type="text"
-                      *ngIf="!isShowDetail"
                       id="tglExp"
                       class="form-control"
                       aria-describedby="tglExp"
@@ -244,7 +237,7 @@
                         'Tgl. Expired Hasil Produksi' | translate
                       }}"
                     />
-                    <input
+                    <!-- <input
                       type="text"
                       *ngIf="isShowDetail"
                       id="tglExp"
@@ -257,7 +250,7 @@
                       placeholder="{{
                         'Tgl. Expired Hasil Produksi' | translate
                       }}"
-                    />
+                    /> -->
                   </div>
                 </div>
 
@@ -275,7 +268,6 @@
                       maxlength="50"
                       class="form-control"
                       id="keterangan"
-                      [readonly]="isShowDetail"
                       formControlName="keterangan"
                       name="keterangan"
                     >
@@ -313,17 +305,23 @@
                   </div>
                 </div>
 
-                <div style="width: 96%" class="p-2">
-                  <button
-                    class="shadow-sm btn w-100 btn-primary text-white"
-                    *ngIf="!isShowDetail"
-                    [disabled]="myForm.invalid"
-                    (click)="onAddDetail()"
-                  >
-                    <i class="fa fa-check pe-2"></i>
-                    {{ "Detail Transaksi" | translate }}
-                  </button>
-                </div>
+              <div style="width: 98%;" class=" px-2 py-1 d-flex justify-content-end gap-2 align-items-center">
+                <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+                  <!-- <i class="fa fa-chevron-left icon-12 icon-gap"></i> -->
+                  {{ "Kembali" | translate }}
+                </button>
+
+                <button
+                  class="shadow-sm btn btn-primary text-white"
+                  *ngIf="!isShowDetail"
+                  [disabled]="myForm.invalid"
+                  (click)="onAddDetail()"
+                >
+                  <i class="fa fa-check pe-2"></i>
+                  {{ "Detail Transaksi" | translate }}
+                </button>
+              </div>
+
               </form>
             </div>
           </div>
@@ -334,6 +332,10 @@
             <app-add-data-detail-production
               (onBatalPressed)="onBatalPressed($event)"
               (jumlahBahanbaku)="addJumlahBahanBaku($event)"
+              [dataProduct]="listProductData"
+              [dataExired]="listExpiredData"
+              [dataUpdate]="isUpdate"
+              [dataHeader]="formData"
             ></app-add-data-detail-production>
           </div>
         </div>

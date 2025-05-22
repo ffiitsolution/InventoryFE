@@ -3,7 +3,7 @@
     <c-card-body>
       <div class="row">
         <div class="col">
-          <h5>{{ "Kirim Barang Return Ke Site" | translate }}</h5>
+          <h5>{{ "Kirim Barang Retur Ke Site" | translate }}</h5>
         </div>
         <div class="col text-end">
           <button
@@ -24,7 +24,6 @@
             {{ "Tambah" | translate }}
           </button>
         </div>
-        
       </div>
       <div [visible]="showFilterSection" cCollapse>
         <div class="divider"></div>
@@ -33,7 +32,7 @@
             <c-row>
               <c-col>
                 <label class="col-form-label">{{
-                  "Tanggal Pesan" | translate
+                  "Tanggal Transaksi" | translate
                 }}</label>
                 <input
                   type="text"
@@ -44,7 +43,7 @@
                   aria-describedby="dateFilter"
                   [(ngModel)]="dateRangeFilter"
                   #dp="bsDaterangepicker"
-                  placeholder="{{ 'Tanggal Pesan' | translate }}"
+                  placeholder="{{ 'Tanggal Transaksi' | translate }}"
                 />
               </c-col>
               <c-col
@@ -79,4 +78,19 @@
       </div>
     </c-card-body>
   </c-card>
+</div>
+
+<div class="fade-in">
+  <app-modal-print-list
+    [alreadyPrint]="alreadyPrint"
+    [disabledPrintButton]="disabledPrintButton"
+    [generatePdfUrl]="'/cetak-send-return-to-site-jasper'"
+    [updateStatusUrl]="''"
+    [updatePrintStatusParam]="''"
+    [generateReportParam]="paramGenerateReport"
+    [isShowModalReport]="isShowModalReport"
+    [isShowSelection]="true"
+    (closeModalEvent)="closeModal()"
+  >
+  </app-modal-print-list>
 </div>

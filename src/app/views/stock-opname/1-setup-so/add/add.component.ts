@@ -14,6 +14,7 @@ import { GlobalService } from '../../../../service/global.service';
 import {
   DEFAULT_DELAY_TIME,
   LS_INV_SELECTED_SET_NUMBER,
+  LS_INV_SELECTED_SO,
 } from '../../../../../constants';
 import { DataService } from '../../../../service/data.service';
 import * as moment from 'moment';
@@ -57,9 +58,9 @@ export class StockSoAddComponent implements OnInit {
     this.myForm = this.form.group({
       tahun: ['', [Validators.required]],
       bulan: ['', [Validators.required]],
-      keterangan: ['', [Validators.required]],
-      noSo: new FormControl({value: '', disabled: true}),
-      tanggalSo: new FormControl({value: '', disabled: true}),
+      keterangan: new FormControl({ value: '', disabled: true }),
+      noSo: new FormControl({ value: '', disabled: true }),
+      tanggalSo: new FormControl({ value: '', disabled: true }),
       userCreate: [''],
       userUpdate: [''],
       dateCreate: [''],
@@ -71,10 +72,18 @@ export class StockSoAddComponent implements OnInit {
     this.myForm.controls['bulan'].setValue(month);
 
     month = month - 1;
-    const lastDateOfMonth = moment({year, month}).endOf('month').format('DDMMYY');
-    this.myForm.controls['tanggalSo'].setValue( moment({year, month}).endOf('month').format('DD MMM YYYY'));
+    const lastDateOfMonth = moment({ year, month }).endOf('month');
+    this.myForm.controls['tanggalSo'].setValue(
+      moment({ year, month }).endOf('month').format('DD MMM YYYY')
+    );
     this.myForm.controls['noSo'].setValue(
-      'SOP' + this.userData.defaultLocation.kodeLocation + '-' + lastDateOfMonth
+      'SOP' +
+        this.userData.defaultLocation.kodeLocation +
+        '-' +
+        lastDateOfMonth.format('DDMMYY')
+    );
+    this.myForm.controls['keterangan'].setValue(
+      'STOCK OPNAME TGL. ' + lastDateOfMonth.format('DD/MM/YYYY')
     );
 
     this.listTahun = this.g.generateNumberRange(2025, 2125);
@@ -134,18 +143,27 @@ export class StockSoAddComponent implements OnInit {
       this.service.insert('/api/stock-opname/insert', param).subscribe({
         next: (res) => {
           if (!res.success) {
-            this.service.handleErrorResponse(res);
+            const error = res.data.error ?? res.error ?? ' ';
+            if (error.toLowerCase().includes('selesaikan dulu')) {
+              this.toastr.error('Stock Opname di bulan tersebut sudah dibuat!');
+            } else {
+              this.service.handleErrorResponse(res);
+            }
           } else {
-            this.toastr.success('Berhasil!');
+            this.toastr.success('Silahkan Entry quantity fisik.','Stock Opname berhasil dibuat!');
             setTimeout(() => {
-              this.onPreviousPressed();
+              this.g.saveLocalstorage(
+                LS_INV_SELECTED_SO,
+                JSON.stringify(param)
+              );
+              this.router.navigate(['/stock-opname/edit']);
             }, DEFAULT_DELAY_TIME);
           }
           this.adding = false;
         },
         error: (err) => {
           this.adding = false;
-        }
+        },
       });
     }
   }
@@ -165,13 +183,20 @@ export class StockSoAddComponent implements OnInit {
     const year = this.myForm.controls['tahun']?.value ?? 2025;
     const month = (this.myForm.controls['bulan']?.value ?? 1) - 1;
 
-    this.myForm.controls['tanggalSo'].setValue( moment({year, month}).endOf('month').format('DD MMM YYYY'));
-    const lastDateOfMonth = moment({ year, month })
-      .endOf('month')
-      .format('DDMMYY');
+    this.myForm.controls['tanggalSo'].setValue(
+      moment({ year, month }).endOf('month').format('DD MMM YYYY')
+    );
+    const lastDateOfMonth = moment({ year, month }).endOf('month');
 
     this.myForm.controls['noSo'].setValue(
-      'SOP' + this.userData.defaultLocation.kodeLocation + '-' + lastDateOfMonth
+      'SOP' +
+        this.userData.defaultLocation.kodeLocation +
+        '-' +
+        lastDateOfMonth.format('DDMMYY')
+    );
+
+    this.myForm.controls['keterangan'].setValue(
+      'STOCK OPNAME TGL. ' + lastDateOfMonth.format('DD/MM/YYYY')
     );
   }
 

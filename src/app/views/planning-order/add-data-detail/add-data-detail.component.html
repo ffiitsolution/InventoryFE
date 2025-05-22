@@ -2,10 +2,22 @@
   <c-card class="mb-4">
     <c-card-header>
       
-      <div class="d-flex align-items-center justify-content-start text-start" style="width: 300px;height: 100%;">
-        <c-alert color="warning" *ngIf="g.statusPlanningOrder">
+      <div class="d-flex align-items-center justify-content-start text-start gap-2" style="height: 100%;">
+        <!-- <c-alert color="warning" *ngIf="g.statusPlanningOrder">
           {{'Progress: ' + g.statusPlanningOrder}}
-        </c-alert>
+        </c-alert> -->
+        <!-- <label class="m-0" *ngIf="g.statusPlanningOrder" >
+          Progress : 
+        </label>
+        <c-progress *ngIf="g.statusPlanningOrder"  style="width: 500px;height: 50px; margin-top:3px">
+          <c-progress-bar 
+            [value]="g.statusPlanningOrder" 
+            color="success"
+            [striped]="true"
+            [animated]="true">
+            {{ g.statusPlanningOrder }}%
+          </c-progress-bar>
+        </c-progress>       -->
       </div>
       <div class="row d-flex justify-content-between" *ngIf="!g.statusPlanningOrder">
         
@@ -62,14 +74,7 @@
       <div class="table-responsive">
         <ng-container>
           <div *ngIf="loading">
-            <div class="header-wrapper-loading">
-              <div class="wrapper-loading">
-                <div class="spinner">
-                  <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><br/>
-                  <span style="font-weight: bold">Loading...</span>
-                </div>
-              </div>
-            </div>
+            
           </div>
           <table *ngIf="!loading" bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
             <thead>
@@ -174,46 +179,48 @@
                 <td class="text-center">
                   {{ data.orderBySystem}} {{ data.satuanBesar}}
                 </td>
-                <td class="text-center">
-                  <div class="d-flex" style="gap: 5px;">
-                    <input #nextInput type="text" min="0" 
-                      class="form-control text-center inputQty inputNumberSpace"
-                     
-                      [(ngModel)]="data.week1" 
-                      (change)="onInputValueItemDetail($event, i)"
-                     />
+                <td *ngIf="loadingDetail[i+((listCurrentPage-1)*5)]; else inputColumns" class="text-center" [attr.colspan]="4">
+                  <div class="d-flex justify-content-center">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
                   </div>
                 </td>
-                <td class="text-center">
-                  <div class="d-flex" style="gap: 5px;">
-                    <input #nextInput type="text" min="0" 
-                      class="form-control text-center inputQty inputNumberSpace"
-                     
-                      [(ngModel)]="data.week2" 
-                      (change)="onInputValueItemDetail($event, i,2)"
-                     />
-                  </div>
-                </td>
-                <td class="text-center">
-                  <div class="d-flex" style="gap: 5px;">
-                    <input #nextInput type="text" min="0" 
-                      class="form-control text-center inputQty inputNumberSpace"
-                     
-                      [(ngModel)]="data.week3" 
-                      (change)="onInputValueItemDetail($event, i,3)"
-                     />
-                  </div>
-                </td>
-                <td class="text-center">
-                  <div class="d-flex" style="gap: 5px;">
-                    <input #nextInput type="text" min="0" 
-                      class="form-control text-center inputQty inputNumberSpace"
-                     
-                      [(ngModel)]="data.week4" 
-                      (change)="onInputValueItemDetail($event, i,4)"
-                     />
-                  </div>
-                </td>
+              
+                <ng-template #inputColumns>
+                  <td class="text-center">
+                    <div class="d-flex" style="gap: 5px;">
+                      <input #nextInput type="text" min="0" 
+                             class="form-control text-center inputQty inputNumberSpace"
+                             [(ngModel)]="data.week1" 
+                             (change)="onInputValueItemDetail($event, i)" />
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <div class="d-flex" style="gap: 5px;">
+                      <input #nextInput type="text" min="0" 
+                             class="form-control text-center inputQty inputNumberSpace"
+                             [(ngModel)]="data.week2" 
+                             (change)="onInputValueItemDetail($event, i, 2)" />
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <div class="d-flex" style="gap: 5px;">
+                      <input #nextInput type="text" min="0" 
+                             class="form-control text-center inputQty inputNumberSpace"
+                             [(ngModel)]="data.week3" 
+                             (change)="onInputValueItemDetail($event, i, 3)" />
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <div class="d-flex" style="gap: 5px;">
+                      <input #nextInput type="text" min="0" 
+                             class="form-control text-center inputQty inputNumberSpace"
+                             [(ngModel)]="data.week4" 
+                             (change)="onInputValueItemDetail($event, i, 4)" />
+                    </div>
+                  </td>
+                </ng-template>
                 <td class="text-center">
                   {{ data.totalOrder}} {{ data.satuanBesar}}
                 </td>
@@ -309,4 +316,34 @@
           </button>
   </c-modal-footer>
 </c-modal>
+<div class="modal-bg-backdrop" *ngIf="loading">
+  <!-- <div class="header-wrapper-loading"> -->
+    <!-- <div class="wrapper-loading"> -->
+      <!-- <div class="spinner">
+        <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><br/>
+        <span style="font-weight: bold">Loading...</span>
+      </div> -->
+      <div class="d-flex flex-column align-items-center justify-content-center text-start gap-2" style="height: 100%;">
+        <div class="spinner">
+          <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><br/>
+          <span style="font-weight: bold">Loading...</span>
+        </div>
+        <!-- <label class="m-0 text-white" *ngIf="g.statusPlanningOrder" >
+          Progress : 
+        </label> -->
+        <c-progress *ngIf="g.statusPlanningOrder" class="custom-progress-container" style="width: 500px;height: 22px;margin-top:3px">
+          <c-progress-bar 
+            [value]="g.statusPlanningOrder" 
+            color="success"
+            [striped]="true"
+            [animated]="true"
+            class="text-white py-2 h-45"
+            >
+            <span class="text-white px-2 py-3" style="font-size: 16px;">{{g.statusPlanningOrder}} %</span>
+          </c-progress-bar>
+        </c-progress>      
+      </div>
+    <!-- </div> -->
+  <!-- </div> -->
+</div>
 

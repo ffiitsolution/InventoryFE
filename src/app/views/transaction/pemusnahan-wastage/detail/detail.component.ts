@@ -8,7 +8,7 @@ import {
 import { TranslationService } from 'src/app/service/translation.service';
 
 import { DataTableDirective } from 'angular-datatables';
-import { lastValueFrom, Subject } from 'rxjs';
+import { lastValueFrom, Subject, takeUntil } from 'rxjs';
 import { Page } from 'src/app/model/page';
 import { DataService } from 'src/app/service/data.service';
 import { GlobalService } from 'src/app/service/global.service';
@@ -18,6 +18,8 @@ import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DELAY_TABLE, SEND_PRINT_STATUS_SUDAH } from 'src/constants';
 import { AppConfig } from 'src/app/config/app.config';
+import { AppService } from '../../../../service/app.service';
+import { HelperService } from 'src/app/service/helper.service';
 
 @Component({
   selector: 'app-detail-wastage',
@@ -31,7 +33,7 @@ export class DetailWastageComponent
 
   orders: any[] = [];
   dtColumns: any = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -50,6 +52,8 @@ export class DetailWastageComponent
   buttonCaptionView: String = 'Lihat';
   paramGenerateReport = {};
   paramUpdatePrintStatus = {};
+  listDataExpired: any[] = [];
+  isShowModalExpired: boolean = false;
 
   protected config = AppConfig.settings.apiServer;
 
@@ -58,7 +62,9 @@ export class DetailWastageComponent
     public g: GlobalService,
     private translation: TranslationService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private appService: AppService,
+    public helperService: HelperService
   ) {
     this.g.navbarVisibility = true;
     this.selectedOrder = JSON.parse(this.selectedOrder);
@@ -72,7 +78,7 @@ export class DetailWastageComponent
         autoWidth: true,
         info: true,
         drawCallback: () => { },
-        ajax: (dataTablesParameters: any, callback) => {
+        ajax: (dataTablesParameters: any, callback:any) => {
           this.page.start = dataTablesParameters.start;
           this.page.length = dataTablesParameters.length;
           const params = {
@@ -103,10 +109,10 @@ export class DetailWastageComponent
                     dtIndex: this.page.start + index + 1,
                     tglPesanan: this.g.transformDate(rest.tglPesanan),
                     tglTransaksi: this.g.transformDate(rest.tglTransaksi),
-                  konversi: this.g.formatToDecimal(rest.konversi),
-                  qtyBesar: this.g.formatToDecimal(rest.qtyBesar),
-                  qtyKecil: this.g.formatToDecimal(rest.qtyKecil),
-                  totalQty: this.g.formatToDecimal(rest.totalQty),
+                    konversi: this.g.formatToDecimal(rest.konversi),
+                    qtyBesar: this.g.formatToDecimal(rest.qtyBesar),
+                    qtyKecil: this.g.formatToDecimal(rest.qtyKecil),
+                    totalQty: this.g.formatToDecimal(rest.totalQty),
                   }
                   return finalData;
                 });
@@ -141,28 +147,32 @@ export class DetailWastageComponent
           { data: 'namaBarang', title: 'Nama Barang' },
           {
             data: 'konversi', title: 'Konversi',
-            render: (data, type, row) => `${data}  ${row.satuanKecil}/${row.satuanBesar}`
+            render: (data:any, type:any, row:any) => `${data}  ${row.satuanKecil}/${row.satuanBesar}`
           },
           {
             data: 'qtyBesar', title: 'Qty Besar',
-            render: (data, type, row) => `${data} ${row.satuanBesar}`
+            render: (data:any, type:any, row:any) => `${data} ${row.satuanBesar}`
           },
           {
             data: 'qtyKecil', title: 'Qty Kecil',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
+            render: (data:any, type:any, row:any) => `${data} ${row.satuanKecil}`
           },
           {
             data: 'totalQty', title: 'Total Qty',
-            render: (data, type, row) => `${data} ${row.satuanKecil}`
+            render: (data:any, type:any, row:any) => `${data} ${row.satuanKecil}`
           },
-          // {
-          //   title: 'Cek Qty. Expired',
-          //   render: () => {
-          //     return `<div class="d-flex justify-content-start">
-          //   <button class="btn btn-sm action-view btn-outline-success w-50"><i class="fa fa-check pe-1"></i> Cek</button>
-          //   </div>`;
-          //   },
-          // },
+          {
+            title: 'Cek Quantity Expired',
+            render: (data:any, type:any, row:any) => {
+              if (row.flagExpired === 'Y') {
+                return `<div class="d-flex justify-content-start">
+                    <button class="btn btn-sm action-view btn-outline-success w-50"><i class="fa fa-check pe-1"></i> Cek</button>
+              </div>`;
+              } else {
+                return '';
+              }
+            },
+          },
         ],
         searchDelay: 1000,
         order: [[1, 'asc']],
@@ -177,11 +187,46 @@ export class DetailWastageComponent
   }
   reloadTable() {
     setTimeout(() => {
-      this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      this.datatableElement?.dtInstance.then((dtInstance: any) => {
         dtInstance.ajax.reload();
       });
     }, DEFAULT_DELAY_TABLE);
   }
+
+
+  getTotalQty(): number {
+    return this.listDataExpired.reduce((sum, item) => {
+      return sum + Math.abs(Number(item.totalQty));
+    }, 0);
+  }
+  selectedRowData: any = {};
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
+
+  actionBtnClick(action: string, data: any = null) {
+    this.selectedRowData = data
+    const payload = {
+      nomorTransaksi: this.selectedOrder.nomorTransaksi,
+      kodeBarang: data.kodeBarang,
+      tipeTransaksi: 4,
+    };
+
+    this.appService.getExpiredData(payload)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (res) => {
+          if (res) {
+            this.listDataExpired = res;
+            this.isShowModalExpired = true;
+          }
+        },
+        error: (err) => {
+          // Handle error case and show error toast
+          this.toastr.error('Kode barang tidak ditemukan!');
+        },
+      });
+  }
+  dtPageChange(event: any) { }
+
 
   ngOnInit(): void {
     this.g.changeTitle(
@@ -194,16 +239,13 @@ export class DetailWastageComponent
       this.selectedOrder.cetakSuratJalan == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
   }
-  actionBtnClick(action: string, data: any = null) { }
-
-  dtPageChange(event: any) { }
 
   ngAfterViewInit(): void {
     this.rerenderDatatable();
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }

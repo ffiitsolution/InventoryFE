@@ -22,6 +22,8 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors }
 import { HelperService } from '../../../../service/helper.service';
 import { DatePipe } from '@angular/common';
 import { AppConfig } from '../../../../config/app.config';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -37,7 +39,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
   public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   isShowModal: boolean = false;
   dtTrigger: Subject<any> = new Subject();
   bsConfig: Partial<BsDatepickerConfig>;
@@ -49,7 +51,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
   isShowDetailBranch: boolean = false;
   selectedRowData: any;
   defaultDate: any ;
-  someBoolean: boolean = true; 
+  someBoolean: boolean = true;
   private ngUnsubscribe: Subject<void> = new Subject<void>();
   buttonCaptionSelect: string = BUTTON_CAPTION_SELECT;
   currentDate: Date = new Date();
@@ -60,10 +62,16 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
   isShowModalBranch: boolean = false;
-  dtOptionsBranch: DataTables.Settings = {};
+  dtOptionsBranch: any = {};
   selectedRowDataBranch: any;
   pageBranch = new Page();
-  
+  selectedRowRetur: any = {};
+
+  paramGenerateReport = {};
+  isShowModalReport: boolean = false;
+  disabledPrintButton: boolean = false;
+  alreadyPrint: boolean = false;
+
 
   @ViewChild('formModal') formModal: any;
   // Form data object
@@ -79,6 +87,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     private datePipe: DatePipe,
     private cdr: ChangeDetectorRef,
     private dataService: DataService,
+    private toastr: ToastrService,
   ) {
     this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
@@ -91,7 +100,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     this.dpConfigtrans.maxDate = new Date();
     this.dpConfigtrans.customTodayClass='today-highlight';
   }
-  
+
 
   myForm: FormGroup;
 
@@ -111,7 +120,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     statusTujuan: '',
     keterangan: '',
   };
-  
+
 
   ngOnInit(): void {
 
@@ -160,6 +169,15 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
   }
 
   onAddDetail() {
+    const keteranganValue = this.myForm.get('keterangan')?.value;
+
+    if (!keteranganValue || keteranganValue.trim() === '') {
+      this.showWarningModal(
+        'CATATAN/KETERANGAN PENGEMBALIAN BARANG, TIDAK BOLEH DIKOSONGKAN, PERIKSA KEMBALI...!!!'
+      );
+      return;
+    }
+
     this.myForm.patchValue({
           tglTransaksi: moment(this.myForm.value.tglTransaksi,'DD/MM/YYYY',true).format('DD/MM/YYYY'),
           tglExp: moment(this.myForm.value.tglExp, 'DD/MM/YYYY',true).format('DD/MM/YYYY')
@@ -176,13 +194,12 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
 
   get isFormInvalid(): boolean {
     return true
-    // return Object.values(this.formData).some(value => value === '');
   }
 
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
     this.someBoolean = false;
-    this.cdr.detectChanges(); 
+    this.cdr.detectChanges();
   }
 
   ngOnDestroy(): void {
@@ -192,84 +209,162 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     );
     // clean subsribe rxjs
     this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();  
-    
+    this.ngUnsubscribe.complete();
+
   }
 
   actionBtnClick(data: any = null) {
-    this.formData.kodeTujuan = data?.outletCode;
-    this.formData.tglTransaksi = data?.dateReturn ? new Date(data.dateReturn) : undefined;
-    this.formData.namaTujuan = data?.namaPengirim;
-    this.formData.alamatTujuan = data?.alamatPengirim;
-    this.formData.statusTujuan = data?.statusAktif;
-    this.formData.noReturnPengirim = data?.returnNo;
-    this.isShowModal = false;
-  }
+    const params = {
+      noDoc:  data.returnNo,
+    };
 
+    const paramUpdate = {
+      returnNo: data.returnNo,
+      status: 'T',
+      user: this.globalService.getLocalstorage('inv_currentUser').kodeUser,
+      flagBrgBekas: 'T',
+    };
+
+    this.appService.checkNoReturFromSiteExist(params)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((resp: any) => {
+        console.log('on going', resp)
+          if(resp){
+            console.log('berhasil', resp)
+            this.toastr.error(`No retur tersebut sudah di input secara manual!`);
+            this.appService
+                    .updateWarehouse('/api/return-order/update', paramUpdate)
+                    .pipe(takeUntil(this.ngUnsubscribe))
+                    .subscribe({
+                      next: (res2) => {
+
+                        const currentUrl = this.router.url;
+                        this.router.navigateByUrl('/empty', { skipLocationChange: true }).then(() => {
+                          this.router.navigate([currentUrl]);
+                        });
+                      },
+                    });
+          }else{
+            console.log('gagal', resp)
+            this.selectedRowRetur = JSON.stringify(data);
+            this.formData.kodeTujuan = data?.outletCode;
+            this.formData.tglTransaksi = data?.dateReturn ? new Date(data.dateReturn) : undefined;
+            this.formData.namaTujuan = data?.namaPengirim;
+            this.formData.alamatTujuan = data?.alamatPengirim;
+            this.formData.statusTujuan = this.convertStatusAktif(data?.statusAktif); // ✅ Gunakan function ini
+            this.formData.noReturnPengirim = data?.returnNo;
+            this.isShowModal = false;
+            this.mappingDataPemesan(data);
+
+          }
+      });
+  }
 
   actionBtnClickBranch(data: any = null) {
     this.formData.kodeTujuan = data?.kodeCabang;
     this.formData.namaTujuan = data?.namaCabang;
     this.formData.alamatTujuan = data?.alamat1;
-    this.formData.statusTujuan = data?.statusAktif;
+    this.formData.statusTujuan = this.convertStatusAktif(data?.statusAktif); // ✅ Gunakan function ini
     this.isShowModalBranch = false;
+  }
+
+  convertStatusAktif(statusAktif: string): string {
+    const status = statusAktif?.trim().toUpperCase();
+    if (status === 'AKTIF') {
+      return 'A';
+    } else if (status === 'TIDAK AKTIF') {
+      return 'T';
+    } else if (status === 'A' || status === 'T') {
+      return status;
+    }
+    return '-'; // Atau default lainnya
+  }
+
+
+  getStatusAktifText(statusAktif: string): string {
+    const statusMap: { [key: string]: string } = {
+      'A': 'Aktif',
+      'T': 'Tidak Aktif'
+    };
+    return statusMap[statusAktif] || '-';
   }
 
   handleEnterPemesan(event: any) {
     event.preventDefault(); // Prevents the form from submitting
 
-    this.dataService
-    .postData(this.config.BASE_URL_HQ + '/api/return-order/list-search',
-      {"returnNo":  event.target.value, 
-        "kodeGudang" : this.globalService.getUserLocationCode(),
-        "status" : 'K'
-      }
-    )
-    .subscribe((resp: any) => {
-      if(resp.length > 0) {
-        this.mappingDataPemesan(this.globalService.convertKeysToCamelCase(resp[0]))
-      }
-      else
-        this.resetDataPemesan();
-    });
+    const params = {
+      noDoc:  event.target.value,
+    };
+
+    const paramUpdate = {
+      returnNo: event.target.value,
+      status: 'T',
+      user: this.globalService.getLocalstorage('inv_currentUser').kodeUser,
+      flagBrgBekas: 'T',
+    };
+
+    this.appService.checkNoReturFromSiteExist(params)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((resp: any) => {
+        console.log('on going', resp)
+          if(resp){
+            console.log('berhasil', resp)
+            this.toastr.error(`No retur tersebut sudah di input secara manual!`);
+            this.appService
+                    .updateWarehouse('/api/return-order/update', paramUpdate)
+                    .pipe(takeUntil(this.ngUnsubscribe))
+                    .subscribe({
+                      next: (res2) => {
+
+                        const currentUrl = this.router.url;
+                        this.router.navigateByUrl('/empty', { skipLocationChange: true }).then(() => {
+                          this.router.navigate([currentUrl]);
+                        });
+                      },
+                    });
+          }else{
+            this.dataService
+            .postData(this.config.BASE_URL_HQ + '/api/return-order/list-search',
+              {"returnNo":  event.target.value,
+                "kodeGudang" : this.globalService.getUserLocationCode(),
+                "status" : 'K'
+              }
+            )
+            .subscribe((resp: any) => {
+              if(resp.length > 0) {
+                this.mappingDataPemesan(this.globalService.convertKeysToCamelCase(resp[0]))
+              }
+              else
+                this.resetDataPemesan();
+            });
+          }
+      });
   }
+
 
   resetDataPemesan() {
     this.myForm.controls['kodeBarang'].setValue("");
     this.myForm.controls['namaBarang'].setValue("");
     this.myForm.controls['alamatPengirim'].setValue("");
-    this.myForm.controls['noReturnPengirim'].setValue("");   
-    this.myForm.controls['satuanHasilProduksi'].setValue("");  
-    this.myForm.controls['keterangan'].setValue("");  
+    this.myForm.controls['noReturnPengirim'].setValue("");
+    this.myForm.controls['satuanHasilProduksi'].setValue("");
+    this.myForm.controls['keterangan'].setValue("");
   }
 
   mappingDataPemesan(data : any) {
     this.myForm.controls['kodeBarang'].setValue(data.outletCode);
-    this.myForm.controls['namaBarang'].setValue(data.namaPengirim);  
-    this.myForm.controls['tglTransaksi'].setValue(data.dateReturn ? new Date(data.dateReturn) : null);
-    if (data.statusAktif.trim() === 'Aktif') {
-      this.myForm.controls['satuanHasilProduksi'].setValue("A");
-    }  
-    else if(data.statusAktif.trim() === 'Tidak Aktif'){
-      this.myForm.controls['satuanHasilProduksi'].setValue("T");
-    }
-    else {
-      this.myForm.controls['satuanHasilProduksi'].setValue(data.statusAktif);
-    }
-    this.myForm.controls['alamatPengirim'].setValue(data.alamatPengirim);  
+    this.myForm.controls['namaBarang'].setValue(data.namaPengirim);
+    let statusValue = '';
+      if (data.statusAktif?.trim().toUpperCase() === 'AKTIF') {
+        statusValue = 'A';
+      } else if (data.statusAktif?.trim().toUpperCase() === 'TIDAK AKTIF') {
+        statusValue = 'T';
+      } else {
+        statusValue = data.statusAktif;
+      }
+    this.myForm.controls['satuanHasilProduksi'].setValue(statusValue);
+    this.myForm.controls['alamatPengirim'].setValue(data.alamatPengirim);
     this.myForm.controls['noReturnPengirim'].setValue(data.returnNo);
-    // this.myForm.controls['kodeBarang'].setValue(data.kodeCabang);
-    // this.myForm.controls['namaBarang'].setValue(data.namaCabang);
-    // this.myForm.controls['alamatPengirim'].setValue(data.alamat1);  
-    // if (data.statusAktifLabel.trim() === 'Aktif') {
-    //   this.myForm.controls['satuanHasilProduksi'].setValue("Aktif");
-    // }  
-    // else if(data.statusAktifLabel.trim() === 'Tidak Aktif'){
-    //   this.myForm.controls['satuanHasilProduksi'].setValue("Tidak Aktif");
-    // }
-    // else {
-    //   this.myForm.controls['satuanHasilProduksi'].setValue(data.statusAktifLabel);
-    // }       
   }
 
 
@@ -294,16 +389,17 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
         [8, 10],   // Available page sizes
         ['8', '10']  // Displayed page size labels
       ],
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.globalService.getUserLocationCode(),
-          status: 'K'
+          status: 'K',
+          flagBrgBekas : 'T'
         };
         this.dataService
           .postData(
@@ -329,17 +425,17 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
             });
           });
       },
-      
+
       columns: [
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
-        { data: 'returnNo', title: 'Tipe', searchable: true },
+        { data: 'returnNo', title: 'No. Retur', searchable: true },
         { data: 'outletCode', title: 'Kode', searchable: true },
-        { data: 'namaPengirim', title: 'Inisial', searchable: true },
+        { data: 'namaPengirim', title: 'Pengirim', searchable: true },
         {
           data: 'statusAktif',
           title: 'Status',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             if (data === 'Aktif') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
@@ -348,7 +444,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
         },
         {
           title: 'Action',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             if (row.statusAktif === 'Aktif') {
               return `
                 <div class="btn-group" role="group" aria-label="Action">
@@ -366,7 +462,6 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
       ],
       searchDelay: 1500,
       order: [
-        [2, 'asc'],
         [1, 'asc'],
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
@@ -387,24 +482,24 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
       autoWidth: true,
       info: true,
       pageLength: 5,
-      drawCallback: (drawCallback) => {
-        
+      drawCallback: (drawCallback:any) => {
+
         this.selectedRowDataBranch = undefined;
       },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         console.log('Sending AJAX request...', dataTablesParameters);
         this.pageBranch.start = dataTablesParameters.start;
         this.pageBranch.length = dataTablesParameters.length;
-  
+
         const params = {
           ...dataTablesParameters,
         };
-  
+
         this.dataService
           .postData(this.config.BASE_URL + '/api/branch/dt', params)
           .subscribe((resp: any) => {
             console.log('Response from backend:', resp);
-  
+
             const mappedData = resp.data.map((item: any, index: number) => {
               const { rn, ...rest } = item;
               const finalData = {
@@ -414,10 +509,10 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
               };
               return finalData;
             });
-  
+
             this.pageBranch.recordsTotal = resp.recordsTotal;
             this.pageBranch.recordsFiltered = resp.recordsFiltered;
-  
+
             callback({
               recordsTotal: resp.recordsTotal,
               recordsFiltered: resp.recordsFiltered,
@@ -436,7 +531,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
           data: 'statusAktif',
           title: 'Status',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             return data === 'A'
               ? `<div class="d-flex justify-content-center"><span class="badge badge-success py-2" style="color:white; background-color:#2eb85c; width:60px">Active</span></div>`
               : `<div class="d-flex justify-content-center"><span class="badge badge-secondary py-2" style="background-color:grey; width:60px">Inactive</span></div>`;
@@ -444,7 +539,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
         },
         {
           title: 'Action',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             if (row.statusAktif === 'A') {
               return `
                 <div class="btn-group" role="group" aria-label="Action">
@@ -470,7 +565,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
       },
     };
   }
-  
+
     private mapOrderData(data: any): void {
       this.myForm.patchValue({
         kodeBarang: data.kodeBarang,
@@ -483,7 +578,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     calculateTotalHasilProduksi(): void {
       const jumlahHasilProduksi = this.myForm.get('jumlahHasilProduksi')?.value;
       const satuanHasilProduksi = this.myForm.get('satuanHasilProduksi')?.value;
-  
+
       if (jumlahHasilProduksi && satuanHasilProduksi) {
         const totalHasilProduksi = jumlahHasilProduksi * satuanHasilProduksi;
         this.myForm.patchValue({
@@ -508,11 +603,13 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
         totalBahanBaku: 0,
       });
       this.isShowDetail = false;
+      console.log('newItem :', newItem)
+      if (newItem) this.onShowModalPrint(newItem);
     }
 
     addJumlahBahanBaku($event:any): void {
         this.myForm.patchValue({
-          totalBahanBaku: $event  
+          totalBahanBaku: $event
         });
     }
 
@@ -527,7 +624,7 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
     onShowModalBranch() {
       this.isShowModalBranch= true;
     }
-    
+
     specialCharValidator(control: AbstractControl): ValidationErrors | null {
         const specialCharRegex = /[^a-zA-Z0-9&\-().\s]/;
         const value = control.value;
@@ -540,15 +637,53 @@ export class AddTerimaBarangReturDariSiteComponent implements OnInit, AfterViewI
       onKeteranganInput(event: Event): void {
         const input = event.target as HTMLTextAreaElement;
         const originalValue = input.value;
-        const filteredValue = originalValue.replace(/[^a-zA-Z0-9\-]/g, '');
-        
+        const filteredValue = originalValue.replace(/[^a-zA-Z0-9\s\-]/g, '');
+
         if (originalValue !== filteredValue) {
           input.value = filteredValue;
           this.myForm.get('keterangan')?.setValue(filteredValue);
         }
       }
-      
 
+      onNoDocumentInput(event: Event): void {
+        const input = event.target as HTMLTextAreaElement;
+        const originalValue = input.value;
+        const filteredValue = originalValue.replace(/[^a-zA-Z0-9\-]/g, '');
+
+        if (originalValue !== filteredValue) {
+          input.value = filteredValue;
+          this.myForm.get('noReturnPengirim')?.setValue(filteredValue);
+        }
+      }
+
+
+      showWarningModal(message: string) {
+        Swal.fire({
+          title: 'Pesan Error',
+          text: message,
+          confirmButtonText: 'OK'
+        });
+      }
+
+      closeModal() {
+        this.isShowModalReport = false;
+        this.disabledPrintButton = false;
+      }
+
+      onShowModalPrint(data: any) {
+        this.paramGenerateReport = {
+          noTransaksi: data.nomorTransaksi,
+          userEntry: data.userCreate,
+          jamEntry: this.globalService.transformTime(data.timeCreate),
+          tglEntry: this.globalService.transformDate(data.dateCreate),
+          outletBrand: 'KFC',
+          kodeGudang: this.globalService.getUserLocationCode(),
+          isDownloadCsv: false,
+          reportName: 'Cetak Terima Barang Retur dari Site',
+          confirmSelection: 'Ya',
+        };
+        this.isShowModalReport = true;
+      }
 }
 
 

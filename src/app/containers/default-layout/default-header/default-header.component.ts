@@ -42,7 +42,7 @@ export class DefaultHeaderComponent
   }
 
   ngOnInit(): void {
-    this.checkConnection();
+    // this.checkConnection(); // check hanya jika diperlukan
     this.currentUser = this.g.getLocalstorage('inv_currentUser');
     this.g.currentUser = this.currentUser;
     if (!isEmpty(this.currentUser?.defaultLocation)) {
@@ -139,7 +139,7 @@ export class DefaultHeaderComponent
     });
   }
 
-  checkTitleIfOffline(time: number) {
+  checkTitleIfOffline(time: number) { 
     const offlineText = 'OFFLINE - ';
     const title = this.g.getTitle();
     if (this.g.serverStatus === 'DOWN') {
@@ -163,7 +163,7 @@ export class DefaultHeaderComponent
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
         next: (res: any) => {
-          const ip = res?.ipSvrhq || '192.168.10.28'; // Fallback to default IP if undefined
+          const ip = res?.ipSvrhq || 'http://localhost:14026'; // Fallback to default IP if undefined
           const urls = `http://${ip}:7009/warehouse/halo`;
 
           const payload = { url: urls };

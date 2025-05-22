@@ -12,7 +12,7 @@ import { lastValueFrom, Subject, takeUntil } from 'rxjs';
 import { Page } from 'src/app/model/page';
 import { DataService } from 'src/app/service/data.service';
 import { GlobalService } from 'src/app/service/global.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 // import { AppConfig } from 'src/app/config/app.config.ts';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
@@ -39,7 +39,7 @@ export class DetailProductionComponent
 
   orders: any[] = [];
   dtColumns: any = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -61,6 +61,8 @@ export class DetailProductionComponent
   protected config = AppConfig.settings.apiServer;
   isShowModalExpired: boolean = false;
   selectedRowData: any;
+  loadingPosting: boolean = false;
+  isShowModalReport: boolean = false;
   constructor(
     private dataService: DataService,
     public g: GlobalService,
@@ -97,7 +99,7 @@ export class DetailProductionComponent
         autoWidth: true,
         info: true,
         drawCallback: () => {},
-        ajax: (dataTablesParameters: any, callback) => {
+        ajax: (dataTablesParameters: any, callback: any) => {
           this.page.start = dataTablesParameters.start;
           this.page.length = dataTablesParameters.length;
           const params = {
@@ -163,30 +165,30 @@ export class DetailProductionComponent
           {
             data: 'konversi',
             title: 'Konversi',
-            render: (data, type, row) =>
+            render: (data: any, type: any, row: any) =>
               `${Number(data).toFixed(2)} ${row.satuanKecil}`,
           },
           {
             data: 'qtyBesar',
             title: 'Qty Besar',
-            render: (data, type, row) =>
+            render: (data: any, type: any, row: any) =>
               `${Number(data).toFixed(2)} ${row.satuanBesar}`,
           },
           {
             data: 'qtyKecil',
             title: 'Qty Kecil',
-            render: (data, type, row) =>
+            render: (data: any, type: any, row: any) =>
               `${Number(data).toFixed(2)} ${row.satuanKecil}`,
           },
           {
             data: 'totalQty',
             title: 'Total Qty',
-            render: (data, type, row) =>
+            render: (data: any, type: any, row: any) =>
               `${Number(data).toFixed(2)} ${row.satuanKecil}`,
           },
           {
             title: 'Cek Quantity Expired',
-            render: (data, type, row) => {
+            render: (data: any, type: any, row: any) => {
               if (row.flagExpired === 'Y') {
                 return `<div class="d-flex justify-content-start">
                       <button class="btn btn-sm action-view btn-outline-success w-50"><i class="fa fa-check pe-1"></i> Cek</button>
@@ -211,7 +213,7 @@ export class DetailProductionComponent
   }
   reloadTable() {
     setTimeout(() => {
-      this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      this.datatableElement?.dtInstance.then((dtInstance: any) => {
         dtInstance.ajax.reload();
       });
     }, DEFAULT_DELAY_TABLE);
@@ -261,7 +263,7 @@ export class DetailProductionComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }
@@ -276,7 +278,11 @@ export class DetailProductionComponent
   }
 
   onBackPressed() {
-    this.router.navigate(['/transaction/production/list-dt']);
+    if (this.selectedProduction.statusPosting !== 'P') {
+      this.router.navigate(['/transaction/production/list-dt-for-posting']);
+    } else {
+      this.router.navigate(['/transaction/production/list-dt']);
+    }
   }
 
   onDelete() {
@@ -330,5 +336,92 @@ export class DetailProductionComponent
     return this.listDataExpired.reduce((sum, item) => {
       return sum + Math.abs(Number(item.totalQty));
     }, 0);
+  }
+
+  onPosting(data: any) {
+    this.loadingPosting = true;
+
+    const requestBody = {
+      nomorTransaksi: [data.nomorTransaksi],
+      kodeGudang: this.g.getUserLocationCode(),
+      userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
+    };
+
+    Swal.fire({
+      ...this.g.componentKonfirmasiPosting,
+      showConfirmButton: false,
+      showCancelButton: false,
+      width: '600px',
+      customClass: {
+        popup: 'custom-popup',
+      },
+      allowOutsideClick: () => {
+          return false; // Prevent closing
+      },
+      didOpen: () => {
+       const submitBtn = document.getElementById(
+            'btn-submit'
+          ) as HTMLButtonElement;
+          const cancelBtn = document.getElementById(
+            'btn-cancel'
+          ) as HTMLButtonElement;
+
+          submitBtn?.addEventListener('click', () => {
+
+          submitBtn.disabled = true;
+          cancelBtn.disabled = true;
+          Swal.close();
+          this.appService.postingProduction(requestBody).subscribe({
+            next: (res: any) => {
+              if (!res.success) {
+                this.appService.handleErrorResponse(res);
+              } else {
+                this.toastr.success('Berhasil Posting!');
+              }
+
+              this.loadingPosting = false;
+
+              Swal.close();
+              this.onBackPressed();
+            },
+            error: (err: any) => {
+              console.log('An error occurred while updating the profile.');
+              this.loadingPosting = false;
+              submitBtn.disabled = false;
+              cancelBtn.disabled = false;
+              Swal.close();
+            },
+          });
+        });
+
+        cancelBtn?.addEventListener('click', () => {
+          Swal.close();
+          this.toastr.info('Posting dibatalkan');
+          this.loadingPosting = false;
+        });
+      },
+    });
+  }
+
+  onPrint(){
+    
+    this.isShowModalReport = true;
+
+    this.paramGenerateReport = {
+      noTransaksi: this.selectedProduction.nomorTransaksi,
+      userEntry: this.selectedProduction.userCreate,
+      jamEntry: this.g.transformTime(this.selectedProduction.timeCreate),
+      tglEntry: this.g.transformDate(this.selectedProduction.dateCreate),
+      outletBrand: 'KFC',
+      kodeGudang: this.g.getUserLocationCode(),
+      isDownloadCsv: false,
+      reportName: 'cetak_production',
+      confirmSelection: 'Ya',
+    };
+  }
+
+  closeModal() {
+    this.isShowModalReport = false;
+    this.disabledPrintButton = false;
   }
 }

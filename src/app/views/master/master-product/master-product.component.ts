@@ -32,7 +32,7 @@ export class MasterProductComponent
   data: any;
   loadingIndicator = true;
   orders: any[] = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -61,7 +61,7 @@ export class MasterProductComponent
   }
 
   onStatusFilterChange() {
-    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
@@ -81,10 +81,10 @@ export class MasterProductComponent
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const requestData = {
@@ -139,7 +139,7 @@ export class MasterProductComponent
           data: 'konversi',
           title: 'Konv.',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             if (!isNaN(parseFloat(data)) && isFinite(data)) {
               return parseFloat(data).toFixed(2);
             }
@@ -170,7 +170,7 @@ export class MasterProductComponent
         //   data: 'minStock',
         //   title: 'Min. Stock',
         //   searchable: false,
-        //   render: (data) => {
+        //   render: (data:any) => {
         //     if (!isNaN(parseFloat(data)) && isFinite(data)) {
         //       return parseFloat(data).toFixed(2);
         //     }
@@ -182,7 +182,7 @@ export class MasterProductComponent
         //   data: 'maxStock',
         //   title: 'Max. Stock',
         //   searchable: false,
-        //   render: (data) => {
+        //   render: (data:any) => {
         //     if (!isNaN(parseFloat(data)) && isFinite(data)) {
         //       return parseFloat(data).toFixed(2);
         //     }
@@ -194,7 +194,7 @@ export class MasterProductComponent
           data: 'flagExpired',
           title: 'Flag Expired',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             if (data == 'Y') {
               return 'Ya';
             } else if (data == 'T') {
@@ -208,7 +208,7 @@ export class MasterProductComponent
         //   data: 'flagBrgBekas',
         //   title: 'Flag Brg Bekas',
         //   searchable: false,
-        //   render: (data) => {
+        //   render: (data:any) => {
         //     if (data == 'Y') {
         //       return 'Ya';
         //     }else if (data == 'T'){
@@ -222,7 +222,7 @@ export class MasterProductComponent
           data: 'flagResepProduksi',
           title: 'Flag Resep Produksi',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             if (data == 'Y') {
               return 'Ya';
             } else if (data == 'T') {
@@ -236,7 +236,7 @@ export class MasterProductComponent
         //   data: 'others2',
         //   title: 'Beli Kgs ?',
         //   searchable: false,
-        //   render: (data) => {
+        //   render: (data:any) => {
         //     if (data == 'Y') {
         //       return 'Ya';
         //     }else if (data == 'T'){
@@ -250,7 +250,7 @@ export class MasterProductComponent
           data: 'statusAktif',
           title: 'Status',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             if (data === 'A') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
@@ -300,7 +300,7 @@ export class MasterProductComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }

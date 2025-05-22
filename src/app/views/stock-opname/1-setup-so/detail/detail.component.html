@@ -1,48 +1,49 @@
 <div class="fade-in">
-  <c-card class="mb-4">
+  <c-card class="mb-2">
     <c-card-body>
       <c-row>
-        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
-          <button class="btn btn-light btn-120" (click)="onBackPressed()">
-            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
-            {{ "Kembali" | translate }}
-          </button>
-          <h5>{{ "Detail Stock Opname" | translate }}</h5>
-        </div>
+        <c-col>
+          <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
+            <button class="btn btn-light btn-120" (click)="onBackPressed()">
+              <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+              {{ "Kembali" | translate }}
+            </button>
+            <h5>{{ "Detail Stock Opname" | translate }}</h5>
+          </div>
+        </c-col>
+        <c-col class="text-end">
+          <button class="btn fw-bold btn-{{selectedSo?.statusProses === 'SUDAH' ? 'success' : 'danger'}} text-white" disabled>
+            {{selectedSo?.statusProses}} {{ "POSTING" | translate }} </button>
+        </c-col>
       </c-row>
     </c-card-body>
   </c-card>
-  <c-card class="mb-4">
+  <c-card class="mb-2">
     <c-card-body>
       <div class="row">
-        <div class="col-sm-12 col-lg-3">
+        <div class="col-sm-12 col-lg-4">
           <div class="row">
-            <div class="col ps-4">Tanggal SO</div>
+            <div class="col-4 ps-4">Tanggal SO</div>
             <div class="col">
               <input type="text" class="form-control" disabled [value]="selectedSo.tanggalSo">
             </div>
           </div>
         </div>
-        <div class="col-sm-12 col-lg-3">
+        <div class="col-sm-12 col-lg-4">
           <div class="row">
-            <div class="col ps-4">Nomor SO</div>
+            <div class="col-4 ps-4">Nomor SO</div>
             <div class="col">
               <input type="text" class="form-control" disabled [value]="selectedSo.nomorSo">
             </div>
           </div>
         </div>
-        <div class="col-sm-12 col-lg-3">
+        <div class="col-sm-12 col-lg-4">
           <div class="row">
-            <div class="col ps-4">Keterangan</div>
+            <div class="col-4 ps-4">Keterangan</div>
             <div class="col">
               <input type="text" class="form-control" disabled [value]="selectedSo.keterangan">
             </div>
           </div>
-        </div>
-        <div class="col-sm-12 col-lg-3">
-          <app-print-button [alreadyPrint]="alreadyPrint" [disabledPrintButton]="disabledPrintButton"
-            [generatePdfUrl]="'/cetak-production-jasper'" [updateStatusUrl]="''" [updatePrintStatusParam]="''"
-            [generateReportParam]="paramGenerateReport" (reloadTable)="reloadTable()"></app-print-button>
         </div>
       </div>
     </c-card-body>
@@ -115,7 +116,7 @@
           </div>
           <div class="col-5 pe-0">
             <input type="text" placeholder="Nomor pesanan" class="form-control" id="totalQtyProduksi"
-              [value]="this.selectedRowData.totalQty | number : '1.2-2'" name="totalQtyProduksi" readonly />
+              [value]="this.selectedRowData.totalQtySo | number : '1.2-2'" name="totalQtyProduksi" readonly />
           </div>
           <div class="col-3 d-flex align-items-start">
             <label for="totalQtyProduksi">{{
@@ -131,7 +132,7 @@
           </div>
           <div class="col-5 pe-0">
             <input type="text" class="form-control" id="qtyPemakaianBesar"
-              [value]="selectedRowData.qtyBesar | number : '1.2-2'" name="qtyPemakaianBesar" readonly />
+              [value]="selectedRowData.qtyBesarSo | number : '1.2-2'" name="qtyPemakaianBesar" readonly />
           </div>
           <div class="col-3 d-flex align-items-start">
             <label for="qtyPemakaianBesar">{{
@@ -146,7 +147,7 @@
           </div>
           <div class="col-5 pe-0">
             <input type="text" class="form-control" id="qtyPemakaianKecil"
-              [value]="selectedRowData.qtyKecil | number : '1.2-2'" name="qtyPemakaianKecil" readonly />
+              [value]="selectedRowData.qtyKecilSo | number : '1.2-2'" name="qtyPemakaianKecil" readonly />
           </div>
           <div class="col-3 d-flex align-items-start">
             <label for="qtyPemakaianKecil">{{

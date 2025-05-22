@@ -41,7 +41,7 @@ export const CANCEL_STATUS = '4';
 export const OUTLET_BRAND_KFC = 'KFC';
 
 export const DEFAULT_DELAY_TIME = 500;
-export const DEFAULT_DATE_RANGE_RECEIVING_ORDER = 5;
+export const DEFAULT_DATE_RANGE_RECEIVING_ORDER = 7;
 export const DEFAULT_DELAY_TABLE = 500;
 export const STATUS_SAME_CONVERSION = 'KONVERSI SAMA';
 
@@ -152,41 +152,143 @@ export const STATUS_RESULT = [
     value: 'R',
   },
 ];
-
 export const STATUS_PESANAN_TERIMA_PESANAN = [
   {
     label: 'BARU',
     value: '1',
+    color: '#0d6efd',    // Blue
+    textColor: '#ffffff',
   },
   {
     label: 'SISA',
     value: '2',
+    color: '#ffc107',    // Yellow
+    textColor: '#000000',
   },
   {
     label: 'SELESAI',
     value: '3',
+    color: '#198754',    // Green
+    textColor: '#ffffff',
   },
   {
     label: 'BATAL',
     value: '4',
+    color: '#dc3545',    // Red
+    textColor: '#ffffff',
   },
 ];
+
 
 export const STATUS_PESANAN_TERIMA_PO = [
   {
     label: 'P.O BARU',
     value: '1',
+    color: '#0d6efd',    // Blue
+    textColor: '#ffffff',
   },
   {
     label: 'SISA PESANAN',
     value: '2',
+    color: '#ffc107',    // Yellow
+    textColor: '#000000',
   },
   {
     label: 'SELESAI',
     value: '3',
+    color: '#198754',    // Green
+    textColor: '#ffffff',
   },
   {
     label: 'P.O DIBATALKAN',
     value: '4',
+    color: '#dc3545',    // Red
+    textColor: '#ffffff',
+  },
+];
+
+export const STATUS_KIRIM_PESANAN_KE_GUDANG = [
+  {
+    value: '1',
+    label: 'Baru',
+    color: '#0d6efd',       // Biru
+    textColor: '#ffffff',
+  },
+  {
+    value: '2',
+    label: 'Sisa',
+    color: '#ffc107',       // Kuning
+    textColor: '#000000',
+  },
+  {
+    value: '3',
+    label: 'Selesai',
+    color: '#198754',       // Hijau
+    textColor: '#ffffff',
+  },
+  {
+    value: '4',
+    label: 'Batal',
+    color: '#dc3545',       // Merah
+    textColor: '#ffffff',
+  },
+];
+
+export const RANGE_BERAT_KGS = [
+  {
+    value: '01-1002',
+    label: 'KG_AYAM',
+    description: 'RANGE STANDARDNYA ANTARA: 0.87-1.30 KGS/PCS',
+    min: 0.87,
+    max: 1.30
+  },
+  {
+    value: '01-1003',
+    label: 'KG_AYAM',
+    description: 'RANGE STANDARDNYA ANTARA: 0.92-1.07 KGS/PCS',
+    min: 0.92,
+    max: 1.07
+  },
+  {
+    value: '01-2001',
+    label: 'KG_WING',
+    description: 'RANGE STANDARDNYA ANTARA: 0.08-0.13 KGS/PCS',
+    min: 0.08,
+    max: 0.13
+  },
+  {
+    value: '01-2004',
+    label: 'KG_WING',
+    description: 'RANGE STANDARDNYA ANTARA: 0.08-0.13 KGS/PCS',
+    min: 0.08,
+    max: 0.13
+  },
+  {
+    value: '01-2102',
+    label: 'KG_WING',
+    description: 'RANGE STANDARDNYA ANTARA: 1.60-2.10 KGS/PCS',
+    min: 1.60,
+    max: 2.10
+  }
+];
+
+export const STATUS_PRODUKSI = [
+  {
+    label: 'OPEN',
+    value: 'B',
+    color: '#dc3545',    // Red
+    textColor: '#ffffff',
+  },
+  {
+    label: 'BELUM POSTING',
+    value: 'K',
+    color: '#ffc107',    // Yellow
+    textColor: '#000000',
+  },
+  {
+    label: 'POSTED',
+    value: 'P',
+    color: '#198754',    // Green
+    textColor: '#ffffff',
   },
 ];

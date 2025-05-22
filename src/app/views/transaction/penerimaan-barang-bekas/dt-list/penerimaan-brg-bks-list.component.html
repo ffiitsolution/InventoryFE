@@ -5,6 +5,15 @@
         <div class="col">
           <h5>{{ "Penerimaan Barang Bekas" | translate }}</h5>
         </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+     <div class="row">
+    
         <div class="col text-end">
           <button
             type="button"
@@ -18,11 +27,20 @@
             type="button"
             class="btn btn-success text-white me-2 btn-240"
             data-toggle="modal"
-            (click)="onAddPressed()"
+            (click)="onAddPressedOtomatis()"
           >
             <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
             {{ "Tambah Penerimaan" | translate }}
           </button>
+          <button
+          type="button"
+          class="btn btn-success text-white me-2 btn-240"
+          data-toggle="modal"
+          (click)="onAddPressed()"
+        >
+          <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
+          {{ "Tambah Manual" | translate }}
+        </button>
         </div>
         
       </div>
@@ -63,12 +81,7 @@
           </c-card-body>
         </div>
       </div>
-    </c-card-body>
-  </c-card>
-</div>
-<div class="fade-in">
-  <c-card class="mb-4">
-    <c-card-body>
+       <div class="divider"></div>
       <div class="table-responsive">
         <table
           datatable

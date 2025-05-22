@@ -41,7 +41,7 @@ export class ReceivingPoSupplierComponent
   loadingIndicator: boolean = false;
   showFilterSection: boolean = false;
   searchTriggered: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -64,10 +64,15 @@ export class ReceivingPoSupplierComponent
   paramUpdatePrintStatus = {};
   state : any;
   dataUser: any;
+  isShowModalRefresh: boolean = false;
+  dateRangeRefresh: any = [this.startDateFilter, new Date()];
+  jumlahPesananMasuk: number;
+  isShowModalPesananMasuk: boolean = false;
+
 
   constructor(
     private dataService: DataService,
-    private g: GlobalService,
+    public g: GlobalService,
     private translation: TranslationService,
     private router: Router
   ) {
@@ -79,7 +84,7 @@ export class ReceivingPoSupplierComponent
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -89,7 +94,7 @@ export class ReceivingPoSupplierComponent
           endDate: this.g.transformDate(this.dateRangeFilter[1]),
         };
         setTimeout(() => {
-          this.dataService  
+          this.dataService
             .postData(this.config.BASE_URL + '/api/receiving-po-supplier/dt', params)
             .subscribe((resp: any) => {
               const mappedData = resp.data.map((item: any, index: number) => {
@@ -103,7 +108,9 @@ export class ReceivingPoSupplierComponent
                   tglBrgDikirim: this.g.transformDate(rest.tglBrgDikirim),
                   tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
                   dateCreate: this.g.transformDate(rest.dateCreate),
-                  timeCreate: this.g.transformTime(rest.timeCreate),
+                  timeCreate: this.g.transformTime(rest.timeCreate, true),
+                  dateCancel: this.g.transformDate(rest.dateCancel),
+                  timeCancel: this.g.transformTime(rest.timeCancel,true),
                 };
                 return finalData;
               });
@@ -120,18 +127,18 @@ export class ReceivingPoSupplierComponent
       },
       columns: [
         { data: 'dtIndex', title: '#' },
-        { data: 'tglPesanan', title: 'Tgl. P.O', 
-          render: (data, type, row) => {
+        { data: 'tglPesanan', title: 'Tgl. P.O',
+            render: (data: any, _: any, row: any) => {
             return this.g.formatStrDateMMM(data);
           }
         },
         { data: 'tglKirimBrg', title: 'Tgl. Kirim Brg',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             return this.g.formatStrDateMMM(data);
           }
         },
         { data: 'tglBatalExp', title: 'Tgl. Batal',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             return this.g.formatStrDateMMM(data);
           }
         },
@@ -141,7 +148,7 @@ export class ReceivingPoSupplierComponent
           title: 'Nama Supplier',
           orderable: true,
           searchable: true,
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             return data +"-"+row.namaSupplier
           },
         },
@@ -149,19 +156,14 @@ export class ReceivingPoSupplierComponent
           data: 'statusPesanan',
           title: 'Status P.O',
           searchable: true,
-          render: (data) => {
-            const isCancel = data == CANCEL_STATUS;
-            const label = this.g.getStatusReceivingPOLabel(data);
-            if (isCancel) {
-              return `<span class="text-center text-danger">${label}</span>`;
-            }
-            return label;
+          render: (data:any) => {
+            return this.g.getStatusReceivingPOBadge(data);
           },
         },
         {
           data: 'statusCetak',
           title: 'Status Cetak P.O',
-          render: (data) => this.g.getStatusOrderLabel(data, true),
+          render: (data:any) => this.g.getStatusOrderLabel(data, true),
         },
         {
           title: 'Opsi',
@@ -169,7 +171,7 @@ export class ReceivingPoSupplierComponent
             return `
               <div class="btn-group" role="group" aria-label="Action">
                 <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
-                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>           
+                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>
               </div>
             `;
           },
@@ -177,7 +179,8 @@ export class ReceivingPoSupplierComponent
       ],
       searchDelay: 1000,
       order: [
-        [1, 'desc'],
+        [6, 'asc'],
+        [4, 'desc']
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
@@ -232,7 +235,7 @@ export class ReceivingPoSupplierComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }
@@ -245,7 +248,7 @@ export class ReceivingPoSupplierComponent
   }
 
   onFilterPressed() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
@@ -262,13 +265,61 @@ export class ReceivingPoSupplierComponent
         user:  this.dataUser.kodeUser,
         nomorPesanan: selectedOrder.nomorPesanan,
         statusPesanan: selectedOrder.statusPesanan,
-        statusCetak: selectedOrder.statusCetak 
+        statusCetak: selectedOrder.statusCetak
     };
     this.isShowModalReport = true;
   }
   closeModal(){
     this.isShowModalReport = false;
     this.disabledPrintButton = false;
+    window.location.reload();
+  }
+
+  refreshDatabase() {
+    console.log("refresh database");
+    const paramGetHeaderDetailAllHQ={
+      kodeTujuan: this.g.getUserLocationCode(),
+      startDate: this.g.transformDate(this.dateRangeRefresh[0]),
+      endDate: this.g.transformDate(this.dateRangeRefresh[1]),
+      user: this.g.getUserCode(),
+      tipePesanan: "S"
+    }
+
+    this.dataService.postData(
+      this.g.urlServer + '/api/receiving-order/get-header-and-detail-all-hq',paramGetHeaderDetailAllHQ
+    ).subscribe((respGetHeaderDetail: any) => {
+      console.log("respGetHeaderDetail", respGetHeaderDetail);
+      this.jumlahPesananMasuk = respGetHeaderDetail.item[0].header.length;
+      // ✅ Call API 2 inside this block
+      this.dataService.postData(
+        this.g.urlServer + '/api/receiving-po-supplier/insert-receiving-from-warehouse-all',
+        {
+          header: respGetHeaderDetail.item[0].header,
+          detail: respGetHeaderDetail.item[0].detail,
+          user: this.g.getUserCode()
+        }
+      ).subscribe((respInsertFromWarehouse: any) => {
+          console.log("respInsertFromWarehouse", respInsertFromWarehouse);
+          // ✅ Call API 3 inside this block
+          this.dataService.postData(
+            this.g.urlServer + '/api/receiving-order/update-status-receiving-all-hq',paramGetHeaderDetailAllHQ
+          ).subscribe((respUpdateStatusReceiving: any) => {
+            console.log("respUpdateStatusReceiving", respUpdateStatusReceiving);
+            this.isShowModalRefresh = false;
+            this.isShowModalPesananMasuk = true;
+          }, error => {
+            console.error("API 3 failed", error);
+          });
+      }, error => {
+        console.error("API 2 failed", error);
+      });
+
+    }, error => {
+      console.error("API 1 failed", error);
+    });
+  }
+
+  onClickModalPesananMasuk(){
     window.location.reload();
   }
 }

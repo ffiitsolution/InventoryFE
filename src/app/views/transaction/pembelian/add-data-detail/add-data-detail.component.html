@@ -2,23 +2,30 @@
   <c-card-body class="w-100">
     <div>
       <ng-container>
-        <div *ngIf="loading">
-          <app-loading></app-loading>
-        </div>
+        <div class="row justify-content-between mb-2">
+          <div class="col-6 d-flex align-items-center">
+            <div class="col-3">
+              <label for="jabatanSaksi">{{ "Jumlah Item " | translate }}</label>
+            </div>
+            <div class="col-1 pe-0">
+              <input type="text" class="form-control text-center" [value]="listOrderData.length" disabled />
+            </div>
+            <div class="col"></div>
 
-        <div class="row justify-content-end py-2">
-          <div class="w-25 pb-2">
+          </div>
+          <div class="col-2"></div>
+          <div class="col-4 d-flex justify-content-end">
             <c-input-group>
               <span cInputGroupText id="basic-addon1"><i class="fa fa-search"></i></span>
               <input id="appendedInputButton" (input)="onSearchDetail($event)" class="form-control" size="16"
                 type="text" placeholder="Search...">
             </c-input-group>
+
           </div>
         </div>
-
         <div style=" width: 100%;">
           <table *ngIf="filteredListTypeOrder as list" bordered cTable class="mb-0 border" [hover]="true"
-            [responsive]="true" [striped]="true" style="font-size: 12px; width: max-content; table-layout: auto;">
+            [responsive]="true" [striped]="true" style=" width: max-content; table-layout: auto;">
             <thead>
               <tr>
                 <th scope="col" class="text-center w-10" rowspan="2"
@@ -62,7 +69,8 @@
             </thead>
             <tbody *ngIf="!list || list.length === 0">
               <tr>
-                <td colspan="12" class="text-center">No Data Found</td>
+                <td colspan="13" class="text-center"> <app-loading></app-loading>
+                </td>
               </tr>
             </tbody>
             <tbody>
@@ -71,42 +79,85 @@
                 <td class="text-center">{{ data.kodeBarang }}</td>
                 <td class="text-center">{{ data.namaBarang }}</td>
                 <td class="text-center">{{ data.konversi }}.00 {{ data.satuanKecil }}/{{ data.satuanBesar }}</td>
-                <td class="text-center">{{ data.qtyPesanBesar }}.00 {{ data.satuanBesar }}</td>
-                <td class="text-center">{{ data.qtyPesanKecil }}.00 {{ data.satuanKecil }}</td>
-                <td class="text-center">{{ data.totalQtyPesan }}.00 {{ data.satuanKecil }}</td>
-                <td class="text-center">
+                <td class="text-center">{{ data.qtyPesanBesar }}.00 </td>
+                <td class="text-center">{{ data.qtyPesanKecil }}.00 </td>
+                <td class="text-center">{{ data.totalQtyPesan }}.00 </td>
+                <!-- <td class="text-center">
                   <input type="text" class="form-control text-center" style="width: 60px;"
                     [(ngModel)]="data.qtyTerimaBesar" />
-                </td>
-                <td class="text-center">
-                  <input type="text" class="form-control text-center" style="width: 60px;"
-                    [(ngModel)]="data.qtyTerimaKecil" />
-                </td>
-                <td class="text-center">{{ data.totalQtyTerima }}.00 {{ data.satuanKecil }}</td>
-                <td class="text-center">
-                  <input *ngIf="data.flagJenis === 'Y'" type="text" class="form-control text-center" style="width: 60px;"
-                    [(ngModel)]="data.qtyKgs" />
-                </td>
-                <td class="text-center">
-                  <div class="position-relative">
-                    <select class="text-center pe-5" *ngIf="data.flagJenis === 'Y'" [(ngModel)]="data.jenis">
-                      <option *ngFor="let status of listStatus" [value]="status.id" style="font-size: 12px;">{{ status.name }}</option>
-                    </select>
-                    <i class="bi bi-chevron-down position-absolute dropdown-icon" ></i>
-
-                    <!-- <ngx-select-dropdown [(ngModel)]="data.jenis" [multiple]="false" [config]="configSelectUser"
-                    [options]="listStatus" id="jenis" (change)="onStatusChange($event)" class="w-100">
-                  </ngx-select-dropdown> -->
+                    
+                </td> -->
+                <td class="text-center input-column">
+                  <div class="d-flex justify-content-center" style="gap: 5px;">
+                    <input type="text" numberOnly max="{{data.qtyPesanBesar}}" min="0"
+                      [ngClass]="{'form-invalid': validationMessages[i]}"
+                      class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyTerimaBesar"
+                      (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
+                      (keypress)="g.conditionInput($event, 'numericDot')" autofocus
+                      (blur)="onBlurParsed(i, 'qtyTerimaBesar') " />
+                    <span class="d-flex align-items-center justify-content-center">{{data.satuanBesar}}</span>
                   </div>
-                  
+                  <span class="text-danger validation-input" *ngIf="validationMsg[i]?.['qtyTerimaBesar']">
+                    {{ validationMsg[i]['qtyTerimaBesar'] }}
+                  </span>
+                </td>
+
+                <td class="text-center input-column">
+                  <div class="d-flex justify-content-center" style="gap: 5px;">
+                    <input type="text" numberOnly max="{{data.konversi}}" min="0"
+                      class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyTerimaKecil"
+                      (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')"
+                      (keypress)="g.conditionInput($event, 'numericDot')" (blur)="onBlurParsed(i, 'qtyTerimaKecil')" />
+                    <span class="d-flex align-items-center justify-content-center">{{data.satuanKecil}}
+                    </span>
+                  </div>
+                  <span class="text-danger validation-input" *ngIf="validationMsg[i]?.['qtyTerimaKecil']">
+                    {{ validationMsg[i]['qtyTerimaKecil'] }}
+                  </span>
+
+
+                </td>
+
+                <td class="text-center">
+                  <div>
+                    {{((helper.sanitizedNumber(data.qtyTerimaBesar) *
+                    data.konversi) + helper.sanitizedNumber(data.qtyTerimaKecil)).toFixed(2)}}
+                  </div>
+                </td>
+                <td class="text-center input-column">
+                  <div class="d-flex justify-content-center">
+                    <input type="text" *ngIf="data.flagJenis === 'Y'" [(ngModel)]="data.qtyKgs" numberOnly min="0"
+                      class="form-control text-center inputQty inputNumberSpace"
+                      (keypress)="g.conditionInput($event, 'numericDot')" (blur)="onBlurParsed(i, 'qtyKgs')" />
+                  </div>
+                  <span class="text-danger validation-input" *ngIf="validationMsg[i]?.['qtyKgs']">
+                    {{ validationMsg[i]['qtyKgs'] }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <div class="position-relative" *ngIf="data.flagJenis === 'Y'">
+                    <select class="form-select text-center pe-5 custom-select" [(ngModel)]="data.jenis">
+                      <option *ngFor="let status of listStatus" [value]="status.id">
+                        {{ status.name }}
+                      </option>
+                    </select>
+                    <i class="bi bi-chevron-down position-absolute dropdown-icon pe-2"
+                      style="top: 50%; right: 1rem; transform: translateY(-50%); pointer-events: none;"></i>
+                  </div>
+                  <span class="text-danger validation-input" *ngIf="validationMsg[i]?.['jenis']">
+                    {{ validationMsg[i]['jenis'] }}
+                  </span>
                 </td>
                 <td>
                   <button [disabled]="data.flagExpired !== 'Y'" (click)="onShowModalExpired($event, i)"
-                    class="btn btn-success btn-sm text-white p-1" style="font-size: 12px; width: 60px; height: 25px;">
+                    class="btn btn-success btn-sm text-white p-1">
                     <i class="fa fa-check pe-1"></i> {{ "Exp." | translate }}
                   </button>
                 </td>
-                <td class="text-center" *ngIf="totalQtyExpired[data.kodeBarang]"> {{totalQtyExpired[data.kodeBarang]}}.00 {{data.satuanKecil}}
+                <td class="text-center">
+                  <span *ngIf="totalQtyExpired[data.kodeBarang]">
+                    {{totalQtyExpired[data.kodeBarang].toFixed(2)}}
+                  </span>
                 </td>
               </tr>
             </tbody>
@@ -125,7 +176,7 @@
 </c-card>
 
 <div class="d-grid gap-3 d-md-flex justify-content-end">
-  <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
+  <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()" [disabled]="adding">
     <i class="fa fa-check pe-2" *ngIf="!adding"></i>
     <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
     {{ "Proses Simpan Data" | translate }}
@@ -142,8 +193,6 @@
   [attr.aria-hidden]="!isShowModalExpired">
   <c-modal-header>
     <h5 cModalTitle>Entry Data Expired</h5>
-    <button (click)="isShowModalExpired = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
-        class="fa fa-times"></i></button>
   </c-modal-header>
   <c-modal-body>
     <div class="row">
@@ -183,7 +232,7 @@
           </div>
           <div class="col-8 pe-0">
             <input type="text" placeholder="Nomor pesanan" class="form-control" id="konversi"
-              [value]="(helper.sanitizedNumber(selectedExpProduct.qtyTerimaBesar) * selectedExpProduct.konversi) + helper.sanitizedNumber(selectedExpProduct.qtyTerimaKecil) + ' ' + selectedExpProduct.satuanKecil"
+              [value]="((helper.sanitizedNumber(selectedExpProduct.qtyTerimaBesar) * selectedExpProduct.konversi) + helper.sanitizedNumber(selectedExpProduct.qtyTerimaKecil)).toFixed(2) + ' ' + selectedExpProduct.satuanKecil"
               name="konversi" readonly />
           </div>
 
@@ -219,9 +268,6 @@
 
     <div class="table-responsive">
       <ng-container>
-        <div *ngIf="loading">
-          <app-loading></app-loading>
-        </div>
         <table bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
           <thead>
             <tr>
@@ -265,7 +311,8 @@
               <td class="text-center input-column">
                 <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.qtyTerimaBesar" (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')" />
+                    [(ngModel)]="data.qtyTerimaBesar" (blur)="onBlurParsedExp(i, 'qtyTerimaBesar')"
+                    (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')" />
                   <span class="d-flex align-items-center justify-content-center">
                     / {{data.satuanBesar}}
                   </span>
@@ -275,15 +322,16 @@
               <td class="text-center input-column">
                 <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.qtyTerimaKecil" (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')" />
+                    [(ngModel)]="data.qtyTerimaKecil" (blur)="onBlurParsedExp(i, 'qtyTerimaKecil')"
+                    (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')" />
                   <span class="d-flex align-items-center justify-content-center">
                     / {{data.satuanKecil}}
                   </span>
                 </div>
               </td>
 
-              <td class="text-center">{{(helper.sanitizedNumber(data.qtyTerimaBesar) *
-                data.konversi) + helper.sanitizedNumber(data.qtyTerimaKecil) }} {{data.satuanKecil}}
+              <td class="text-center">{{((helper.sanitizedNumber(data.qtyTerimaBesar) *
+                data.konversi) + helper.sanitizedNumber(data.qtyTerimaKecil)).toFixed(2) }} {{data.satuanKecil}}
               </td>
             </tr>
           </tbody>

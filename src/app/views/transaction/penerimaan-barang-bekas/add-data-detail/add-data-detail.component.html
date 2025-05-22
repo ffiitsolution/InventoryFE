@@ -119,8 +119,8 @@
 
     <c-card-footer>
       <div class="d-md-flex justify-content-end">
-        <div class="d-grid gap-3 d-md-flex justify-content-end">
-          <button class="btn btn-success text-white btn-150 pe-3" (click)="onAdd()">
+        <div class="d-grid gap-3 d-md-flex justify-content-end" >
+          <button class="btn btn-success text-white btn-150 pe-3" *ngIf="!isGenerate" (click)="onAdd()">
             <i class="fa fa-plus pe-2" *ngIf="!adding"></i>
             {{ "Tambah Data" | translate }}
           </button>

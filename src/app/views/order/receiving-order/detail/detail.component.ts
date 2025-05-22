@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   OnDestroy,
   OnInit,
@@ -25,6 +24,7 @@ import { AppConfig } from 'src/app/config/app.config';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { AppService } from '../../../../service/app.service';
+import { HelperService } from '../../../../service/helper.service';
 
 @Component({
   selector: 'app-detail-receiving-order',
@@ -32,13 +32,13 @@ import { AppService } from '../../../../service/app.service';
   styleUrl: './detail.component.scss',
 })
 export class ReceivingOrderDetailComponent
-  implements OnInit, OnDestroy, AfterViewInit {
+  implements OnInit, OnDestroy {
   columns: any;
   page = new Page();
 
   orders: any[] = [];
   dtColumns: any = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -59,6 +59,15 @@ export class ReceivingOrderDetailComponent
   alasanDiBatalkan: string = '';
   dataUser: any;
 
+
+  listCurrentPage: number = 1;
+  itemsPerPage: number = 5;
+  searchListViewOrder: string = '';
+  listOrderData: any[] = [];
+  statusSameConversion = STATUS_SAME_CONVERSION;
+
+  public loading: boolean = false;
+
   protected config = AppConfig.settings.apiServer;
 
   constructor(
@@ -67,107 +76,15 @@ export class ReceivingOrderDetailComponent
     private translation: TranslationService,
     private router: Router,
     private toastr: ToastrService,
-    private appService: AppService
+    private appService: AppService,
+    public helper: HelperService
   ) {
     this.g.navbarVisibility = false;
     this.selectedOrder = JSON.parse(this.selectedOrder);
-    this.dtOptions = {
-      language:
-        translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
-      processing: true,
-      serverSide: true,
-      autoWidth: true,
-      info: true,
-      drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
-        this.page.start = dataTablesParameters.start;
-        this.page.length = dataTablesParameters.length;
-        const params = {
-          ...dataTablesParameters,
-          nomorPesanan: this.selectedOrder?.nomorPesanan,
-        };
-        setTimeout(() => {
-          this.dataService
-            .postData(
-              this.config.BASE_URL + '/api/receiving-order/detail/dt',
-              params
-            )
-            .subscribe((resp: any) => {
-              const updatedSelectedOrder = {
-                ...this.selectedOrder,
-                noSjPengirim: resp.data[0]?.noSjPengirim || ' ',
-              };
-              this.selectedOrder = updatedSelectedOrder;
-              this.g.saveLocalstorage(
-                LS_INV_SELECTED_RECEIVING_ORDER,
-                JSON.stringify(updatedSelectedOrder)
-              );
-              const mappedData = resp.data.map((item: any, index: number) => {
-                const { rn, ...rest } = item;
-                const finalData = {
-                  ...rest,
-                  dtIndex: this.page.start + index + 1,
-                  konversi: `${this.g.formatToDecimal(rest.konversi)} ${rest.satuanKecil}/${rest.satuanBesar}`,
-                  konversiProduct: `${this.g.formatToDecimal(rest.konversiProduct)} ${rest.satuanKecilProduct || '-'
-                    }/${rest.satuanBesarProduct || '-'}`,
-                  qtyPesanBesar: this.g.formatToDecimal(rest.qtyPesanBesar),
-                  totalQtyPesan: this.g.formatToDecimal(rest.totalQtyPesan),
-                  qtyPesanKecil: this.g.formatToDecimal(rest.qtyPesanKecil),
-                };
-                return finalData;
-              });
-              this.page.recordsTotal = resp.recordsTotal;
-              this.page.recordsFiltered = resp.recordsFiltered;
-              this.totalLength = mappedData.length;
-              callback({
-                recordsTotal: resp.recordsTotal,
-                recordsFiltered: resp.recordsFiltered,
-                data: mappedData,
-              });
-            });
-        }, DEFAULT_DELAY_TABLE);
-      },
-      columns: [
-        { data: 'dtIndex', title: '#' },
-        { data: 'kodeBarang', title: 'Kode Barang', searchable: true },
-        { data: 'namaBarang', title: 'Nama Barang', searchable: true },
-        { data: 'konversi', title: 'Konversi Pesan',
-          
-        },
-        { data: 'qtyPesanBesar', title: 'Qty Pesan Besar' },
-        { data: 'qtyPesanKecil', title: 'Qty Pesan Kecil' },
-        { data: 'totalQtyPesan', title: 'Total Pesanan' },
-        { data: 'konversiProduct', title: 'Konversi Gudang' },
-        {
-          data: 'keterangan',
-          title: 'Keterangan',
-          render: (data) => {
-            if (data.toUpperCase() == STATUS_SAME_CONVERSION) {
-              return `
-                <span class="text-center text-success">${data}</span>
-              `;
-            } else {
-              return `
-                <span class="text-center text-danger">${data}</span>
-              `;
-            }
-          },
-        },
-      ],
-      searchDelay: 1000,
-      order: [[1, 'asc']],
-      rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        $('.action-view', row).on('click', () =>
-          this.actionBtnClick(ACTION_VIEW, data)
-        );
-        return row;
-      },
-    };
-    this.dtColumns = this.dtOptions.columns;
   }
   reloadTable() {
     setTimeout(() => {
-      this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      this.datatableElement?.dtInstance.then((dtInstance: any) => {
         dtInstance.ajax.reload();
       });
     }, DEFAULT_DELAY_TABLE);
@@ -181,26 +98,23 @@ export class ReceivingOrderDetailComponent
     this.disabledPrintButton = false;
     this.disabledCancelButton = isCanceled;
     this.alreadyPrint =
-      this.selectedOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
+    this.selectedOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.dataUser = this.g.getLocalstorage('inv_currentUser');
+
+    const params = {
+      nomorPesanan: this.selectedOrder.nomorPesanan,
+    }
+    this.dataService
+      .postData(this.g.urlServer + '/api/receiving-order/detail/list', params)
+      .subscribe((resp: any) => {
+        this.listOrderData = resp.map((item:any) => this.g.convertKeysToCamelCase(item));
+      });
 
   }
   actionBtnClick(action: string, data: any = null) { }
 
   dtPageChange(event: any) { }
-
-  ngAfterViewInit(): void {
-    this.rerenderDatatable();
-  }
-
-  rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
-      if (this.dtColumns[index]?.title) {
-        column.title = this.translation.instant(this.dtColumns[index].title);
-      }
-    });
-  }
 
   ngOnDestroy(): void {
     this.g.navbarVisibility = true;
@@ -289,7 +203,7 @@ export class ReceivingOrderDetailComponent
             user:  this.dataUser.kodeUser,
             nomorPesanan: this.selectedOrder.nomorPesanan,
             statusPesanan: this.selectedOrder.statusPesanan,
-            statusCetak: this.selectedOrder.statusCetak 
+            statusCetak: this.selectedOrder.statusCetak
           };
           const base64Response = await lastValueFrom(
             this.dataService.postData(
@@ -383,4 +297,39 @@ export class ReceivingOrderDetailComponent
   onShowModalBatal(){
     this.isShowModalBatal = true;
   }
+
+  onFilterTextChange(newValue: string) {
+    this.listCurrentPage = 1;
+    if (newValue.length >= 3) {
+      this.totalLength = 1;
+    } else {
+      this.totalLength = this.listOrderData.length;
+    }
+    this.listCurrentPage = this.listCurrentPage;
+  }
+
+    get filteredList() {
+    if (!this.searchListViewOrder) {
+      return this.listOrderData;
+    }
+    const searchText = this.searchListViewOrder.toLowerCase();
+    return this.listOrderData.filter(item =>
+      JSON.stringify(item).toLowerCase().includes(searchText)
+    );
+  }
+
+  getPaginationIndex(i: number): number {
+    return (this.listCurrentPage - 1) * this.itemsPerPage + i;
+  }
+  getJumlahItem(): number {
+    if (this.filteredList.length === 0) {
+      return 0;
+    }
+    if (this.filteredList[this.filteredList.length - 1].namaBarang.trim() === "") {
+      return this.filteredList.length - 1;
+    }
+    return this.filteredList.length;
+  }
+
+
 }

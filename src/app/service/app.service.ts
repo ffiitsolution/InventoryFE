@@ -55,6 +55,10 @@ export class AppService {
     return JSON.parse(userString);
   }
 
+  getBaseUrl() {
+    return this.config.BASE_URL;
+  }
+
   isLoggednIn() {
     return this.getToken();
   }
@@ -258,9 +262,16 @@ export class AppService {
     );
   }
 
+  // getNewReceivingOrderGudang(payload: any) {
+  //   return this.dataService.postData(
+  //     `${this.config.BASE_URL}/api/delivery-order/search-penerimaan-gudang`,
+  //     payload
+  //   );
+  // }
+
   getNewReceivingOrderGudang(payload: any) {
     return this.dataService.postData(
-      `${this.config.BASE_URL}/api/delivery-order/search-penerimaan-gudang`,
+      `${this.config.BASE_URL}/api/search-gudang/dt`,
       payload
     );
   }
@@ -392,4 +403,94 @@ export class AppService {
       payload
     );
   }
+
+  getExpiredPemakaian(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/exp-sendiri/list`,
+      payload
+    );
+  }
+
+  checkNoReturExistPenerimaanBrgBks(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/whbkshd/check-nodoc`,
+      payload
+    );
+  }
+
+  getProductReturnList(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/product-return/dt`,
+      payload
+    );
+  }
+
+  checkNoReturFromSiteExist(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/whrtchd/check-nodoc`,
+      payload
+    );
+  }
+  listReturSupplier(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/retur-supplier/list`,
+      payload
+    );
+  }
+
+  detailProductionAndExpired(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/details`,
+      payload
+    );
+  }
+
+  postingProduction(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/posting`,
+      payload
+    );
+  }
+  getSummaryKirimProduction(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/summary-kirim`,
+      payload
+    );
+  }
+
+  kirimProduction(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/kirim`,
+      payload
+    );
+  }
+
+  getSummaryPostingProduction(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/summary-posting`,
+      payload
+    );
+  }
+  // Activity Log
+  listActivityLogFiles(payload: any): Observable<any> {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/list-log`,
+      payload
+    );
+  }
+
+    mpcsDefaultGudang(payload:any): Observable<any> {
+    return this.dataService.postData(
+      this.config.BASE_URL + '/api/auth/mpcs-default-gudang',
+      payload
+    );
+  }
+
+   listSetupTransaksiDt(payload:any): Observable<any> {
+    return this.dataService.postData(
+      this.config.BASE_URL +  '/api/setup-transaksi/dt',
+      payload
+    );
+  }
+ 
 }

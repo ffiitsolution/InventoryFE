@@ -42,7 +42,7 @@ export class DeliveryOrderComponent
   loadingIndicator: boolean = false;
   showFilterSection: boolean = false;
   searchTriggered: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -71,7 +71,7 @@ export class DeliveryOrderComponent
       autoWidth: true,
       info: true,
       drawCallback: () => {},
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -123,12 +123,12 @@ export class DeliveryOrderComponent
         {
           data: 'tipeData',
           title: 'Tipe Pengiriman',
-          render: (data) => this.g.getStatusOrderLabel(data),
+          render: (data:any) => this.g.getStatusOrderLabel(data),
         },
         {
           data: 'statusPesanan',
           title: 'Status Transaksi',
-          render: (data) => {
+          render: (data:any) => {
             const isCancel = data == CANCEL_STATUS;
             const label = this.g.getStatusOrderLabel(data);
             if (isCancel) {
@@ -140,7 +140,7 @@ export class DeliveryOrderComponent
         {
           data: 'statusCetak',
           title: 'Status Cetak',
-          render: (data) => this.g.getStatusOrderLabel(data, true),
+          render: (data:any) => this.g.getStatusOrderLabel(data, true),
         },
         {
           title: 'Opsi',
@@ -169,7 +169,7 @@ export class DeliveryOrderComponent
       this.translation.instant('Pengiriman Pesanan') + ' - ' + this.g.tabTitle
     );
     this.buttonCaptionView = this.translation.instant('Lihat');
-    localStorage.removeItem(LS_INV_SELECTED_DELIVERY_ORDER); 
+    localStorage.removeItem(LS_INV_SELECTED_DELIVERY_ORDER);
   }
 
   actionBtnClick(action: string, data: any = null) {
@@ -188,7 +188,7 @@ export class DeliveryOrderComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }
@@ -201,7 +201,7 @@ export class DeliveryOrderComponent
   }
 
   onFilterPressed() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }

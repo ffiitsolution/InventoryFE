@@ -45,7 +45,7 @@ export class SendOrderToWarehouseComponent
   loadingIndicator: boolean = false;
   showFilterSection: boolean = false;
   searchTriggered: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -75,6 +75,8 @@ export class SendOrderToWarehouseComponent
   state : any;
 
   protected config = AppConfig.settings.apiServer;
+  selectedRowData: any;
+
 
   constructor(
     private dataService: DataService,
@@ -92,7 +94,7 @@ export class SendOrderToWarehouseComponent
       autoWidth: true,
       info: true,
       drawCallback: () => {},
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -116,6 +118,12 @@ export class SendOrderToWarehouseComponent
                   tglPesan: this.g.transformDate(rest.tglPesan),
                   tglBrgDikirim: this.g.transformDate(rest.tglBrgDikirim),
                   tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
+                  dateCreate: this.g.transformDate(rest.dateCreate),
+                  timeCreate: this.g.transformTime(rest.timeCreate, true),
+                  dateCancel: this.g.transformDate(rest.dateCancel),
+                  timeCancel: this.g.transformTime(rest.timeCancel,true),
+                  dateKirim: this.g.transformDate(rest.dateKirim),
+                  timeKirim: this.g.transformTime(rest.timeKirim,true),
                 };
                 return finalData;
               });
@@ -135,7 +143,7 @@ export class SendOrderToWarehouseComponent
         {
           data: 'tglPesanan',
           title: 'Tanggal Pesanan',
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
           }
@@ -143,7 +151,7 @@ export class SendOrderToWarehouseComponent
         {
           data: 'tglKirimBrg',
           title: 'Tanggal Kirim' ,
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
           }
@@ -151,7 +159,7 @@ export class SendOrderToWarehouseComponent
         {
           data: 'tglBatalExp',
           title: 'Tanggal Batal',
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             if (!data) return ""; // Handle null/undefined values
             return moment(data, "YYYY-MM-DD").format("D MMM YYYY"); // Convert to "6 Feb 2025"
           }
@@ -160,41 +168,22 @@ export class SendOrderToWarehouseComponent
         {
           data: 'supplier',
           title: 'Gudang Tujuan',
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             return row.supplier && row.namaSupplier ? `${row.supplier} - ${row.namaSupplier}` : row.supplier || row.namaSupplier || "";
           }
         },
         {
           data: 'statusPesanan',
           title: 'Status Pesanan',
-          render: function (data) {
-            let statusLabel = "";
-
-            // Map statusPesanan values to labels
-            switch (data) {
-              case "1":
-                statusLabel = "Baru";
-                break;
-              case "2":
-                statusLabel = "Sisa";
-                break;
-              case "3":
-                statusLabel = "Dikirim";
-                break;
-              case "4":
-                statusLabel = "Batal";
-                break;
-              default:
-                statusLabel = "Tidak Diketahui"; // Default label for undefined values
-            }
-            return statusLabel;
+          render: (data:any) => {
+            return  this.g.getStatusKirimPesananGudangBadge(data);
           }
         },
 
         {
           data: 'statusCetak',
           title: 'Status Cetak' ,
-          render: function (data) {
+          render: function (data: any) {
             let statusLabel = "";
 
             // Map statusPesanan values to labels
@@ -215,7 +204,7 @@ export class SendOrderToWarehouseComponent
         {
           data: 'statusKirim',
           title: 'Status Kirim Data' ,
-          render: function (data) {
+          render: function (data: any) {
             let statusLabel = "";
 
             // Map statusPesanan values to labels
@@ -236,7 +225,7 @@ export class SendOrderToWarehouseComponent
         {
           data: 'keterangan1',
           title: 'Catatan1',
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             if (!data) return ""; // Handle null/undefined values
             return data.substring(0, 20); // Cut the first 20 characters
           }
@@ -246,7 +235,7 @@ export class SendOrderToWarehouseComponent
 
         {
           title: 'Opsi',
-          render: (data, type, row) => {
+            render: (data: any, _: any, row: any) => {
             const isDisabled = row?.statusKirim=="S"; // Set to true to disable the button
             const isDisabledCetak = row?.statusCetak=="S"; // Set to true to disable the button
             const htmlString = `
@@ -264,6 +253,7 @@ export class SendOrderToWarehouseComponent
       ],
       searchDelay: 1000,
       order: [
+        [6, 'asc'],
         [4, 'desc'],
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
@@ -281,6 +271,15 @@ export class SendOrderToWarehouseComponent
           this.onShowModalPrint(data)
         }
         );
+        $('td', row).on('click', () => {
+          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
         return row;
       },
     };
@@ -347,7 +346,7 @@ export class SendOrderToWarehouseComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }
@@ -360,7 +359,7 @@ export class SendOrderToWarehouseComponent
   }
 
   onFilterPressed() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }

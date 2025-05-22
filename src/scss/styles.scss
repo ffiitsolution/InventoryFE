@@ -29,6 +29,13 @@ $enable-rtl: true;
   width: 100%;
 }
 
+.divider-10 {
+  border-top: 1px solid #ccc;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
 .btn-240 {
   width: 240px;
 }
@@ -166,8 +173,18 @@ $enable-rtl: true;
 .input-disabled {
   background-color: #d8dbe0;
   border-color: #b1b7c1;
+  color: #6c757d; /* explicitly make text grey */
   opacity: 1;
 }
+
+/* Ensure color doesn't change when focused */
+.input-disabled:focus {
+  color: #6c757d;
+  background-color: #d8dbe0;
+  border-color: #b1b7c1;
+  box-shadow: none; /* optional: remove blue focus outline if needed */
+}
+
 
 .validation-input {
   font-size: 14px;
@@ -177,4 +194,13 @@ $enable-rtl: true;
   display: inline-block;
   text-align: justify;
 
+}
+.red-line {
+  border-right: 3px solid #3c4b64;
+  opacity: 1;
+  max-height: auto;
+}
+
+.bl-detail{
+  border-left: 1px solid #ccc;
 }

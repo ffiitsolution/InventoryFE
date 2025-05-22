@@ -33,7 +33,7 @@ export class MasterSupplierComponent
   data: any;
   loadingIndicator = true;
   orders: any[] = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -67,22 +67,22 @@ export class MasterSupplierComponent
   }
 
   onStatusFilterChange() {
-    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
   onCityFilterChange() {
-    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
   onRscFilterChange() {
-    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
   onGudangFilterChange() {
-    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
@@ -100,10 +100,10 @@ export class MasterSupplierComponent
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const requestData = {
@@ -176,7 +176,7 @@ export class MasterSupplierComponent
           data: 'statusAktif',
           title: 'Status',
           searchable: false,
-          render: (data) => {
+          render: (data:any) => {
             if (data === 'A') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
@@ -226,7 +226,7 @@ export class MasterSupplierComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }

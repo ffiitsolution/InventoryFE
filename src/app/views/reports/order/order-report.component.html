@@ -35,6 +35,45 @@
       </div>
     </ng-container>
 
+    <ng-container *ngIf="['Tanggal Pesan vs Tanggal Kirim'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Tanggal Pesanan Dari
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
+          aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
+          placeholder="{{ 'Tanggal Pesan' | translate }}" />
+        </div>
+      </div>
+    </ng-container>
+
+    
+    <ng-container *ngIf="['Estimasi Pengiriman Barang'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Tanggal Kirim Barang (H+)
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <input type="text"
+            id="dateFilter"
+            class="form-control"
+            bsDatepicker
+            [bsConfig]="dpConfigSinglePicker"
+            aria-describedby="dateFilter"
+            [(ngModel)]="dateFilter"
+            placeholder="{{ 'Tanggal Pesan' | translate }}" 
+          />
+   
+          
+        </div>
+      </div>
+    </ng-container>
+
+
+
     <ng-container *ngIf="['Pesanan Ke Supplier'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
@@ -57,12 +96,12 @@
         </div>
         <div class="col">
           <c-button-group role="group">
-            <input class="btn-check" type="radio" [(ngModel)]="paramTipeListing" name="tipeListing"
-              id="tipeListingRekap" value="rekap" />
+            <input class="btn-check" type="radio" [(ngModel)]="paramStatusPesanan" name="tipeListing"
+              id="tipeListingRekap" value="1" />
             <label cButton cFormCheckLabel class="w-240" variant="outline" for="tipeListingRekap">Pesanan Baru</label>
 
-            <input class="btn-check" type="radio" [(ngModel)]="paramTipeListing" name="tipeListing"
-              id="tipeListingDetail" value="detail" />
+            <input class="btn-check" type="radio" [(ngModel)]="paramStatusPesanan" name="tipeListing"
+              id="tipeListingDetail" value="3" />
             <label cButton cFormCheckLabel class="w-240" variant="outline" for="tipeListingDetail">Pesanan Yang Sudah Diterima</label>
           </c-button-group>
         </div>
@@ -110,8 +149,8 @@
           Print
         </button>
         <ul cDropdownMenu>
-          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('preview')">Preview PDF</button></li>
-          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')">Download PDF</button></li>
+          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('preview')" *ngIf="!['Tanggal Pesan vs Tanggal Kirim'].includes(currentReport)">Preview PDF</button></li>
+          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')"  *ngIf="!['Tanggal Pesan vs Tanggal Kirim'].includes(currentReport)">Download PDF</button></li>
           <li><button class="btn btn-outline-primary w-100" (click)="doSubmit('csv')">Download CSV</button></li>
         </ul>
       </c-dropdown>

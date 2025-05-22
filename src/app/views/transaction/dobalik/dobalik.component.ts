@@ -36,9 +36,10 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
     | undefined;
 
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
+  adding: boolean = false;
 
   startDate: Date = new Date();
   endDate: Date = new Date();
@@ -79,7 +80,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
       lengthMenu: [5],
       processing: true,
       serverSide: true,
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         setTimeout(() => this.getProsesDoBalik(dataTablesParameters, callback), DEFAULT_DELAY_TABLE);
 
 
@@ -93,12 +94,12 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
         {
           data: 'tglTransaksi',
           title: 'Tanggal Kirim',
-          render: (data) => this.g.transformDate(data),
+          render: (data:any) => this.g.transformDate(data),
         },
         {
           data: 'tglPesanan',
           title: 'Tanggal Pesanan',
-          render: (data) => this.g.transformDate(data),
+          render: (data:any) => this.g.transformDate(data),
         },
         { data: 'nomorPesanan', title: 'Nomor Pesanan' },
         { data: 'noSuratJalan', title: 'No Surat Jalan' },
@@ -107,17 +108,17 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
         {
           data: 'cetakSuratJalan',
           title: 'Status Cetak Surat Jalan',
-          render: (data: string) => this.g.getStatusOrderLabel(data, true),
+          render: (data: string) => this.g.getStatusOrderLabel(data, true, true),
         },
         {
           data: 'statusDoBalik',
           title: 'Status DO Balik',
-          render: (data: string) => this.g.getStatusOrderLabel(data, true),
+          render: (data: string) => this.g.getStatusOrderLabel(data, true, true),
         },
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render: (data: string) => this.g.getStatusOrderLabel(data),
+          render: (data: string) => this.g.getStatusOrderLabel(data, false, true),
         },
         {
           title: 'Opsi',
@@ -138,12 +139,12 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
         );
 
         $('.action-posting', row).on('click', () => {
-          this.onShowModalPosting(data);
+          this.actionBtnClick('POSTING', data)
         });
 
         return row;
       },
-      order: [[6, 'desc']],
+      order: [[4, 'desc']],
     };
   }
 
@@ -222,22 +223,12 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
       this;
     }
     if (action === 'POSTING') {
-      const param = {
-        kodeGudang: data.kodeGudang,
-        noSuratJalan: data.noSuratJalan,
-        userPosted: JSON.parse(localStorage.getItem('inv_currentUser') || '')
-          .namaUser,
-        datePosted: this.g.getLocalDateTime(new Date()),
-      };
-      this.appService.updateDeliveryOrderPostingStatus(param).subscribe({
-        next: (response) => {
-          this.toastr.success('Berhasil Posting DO Balik');
-          this.search();
-        },
-        error: (error) => {
-          this.toastr.error('Gagal Posting DO Balik');
-        },
-      });
+      if(data.cetakSuratJalan !== 'S'){
+        this.toastr.warning( 'DO BALIK TIDAK DAPAT DIPROSES, SURAT JALAN BELUM DICETAK..!!'
+        );
+      } else if (data.cetakSuratJalan === 'S'){
+        this.onShowModalPosting(data)
+      }
     }
   }
 
@@ -252,7 +243,7 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
   dtPageChange(event: any): void { }
 
   search(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
@@ -277,8 +268,6 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
         'ddd MMM DD YYYY HH:mm:ss [GMT]Z'
       ).format('DD-MM-YYYY'), // Jika perlu, bisa dikirim juga
     };
-
-    console.log('Mengirim data ke backend:', params);
 
     this.dataService
       .postData(
@@ -321,12 +310,13 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onFilterPressed() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
 
   onProsesDoBalik(data: any) {
+    this.adding = true;
     const param = {
       kodeGudang: data.kodeGudang,
       noSuratJalan: data.noSuratJalan,
@@ -339,9 +329,11 @@ export class DobalikComponent implements OnInit, AfterViewInit, OnDestroy {
         this.toastr.success('Berhasil Posting DO Balik');
         this.isShowModalPosting = false;
         this.search();
-        
+        this.adding = false;
+
       },
       error: (error) => {
+        this.adding = false;
         this.toastr.error('Gagal Posting DO Balik');
       },
     });

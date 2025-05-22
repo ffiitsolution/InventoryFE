@@ -32,7 +32,7 @@ export class MasterResepComponent
   data: any;
   loadingIndicator = true;
   orders: any[] = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -58,7 +58,7 @@ export class MasterResepComponent
   }
 
   onStatusFilterChange() {
-    this.datatableElement?.dtInstance?.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance?.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
@@ -78,15 +78,15 @@ export class MasterResepComponent
       autoWidth: true,
       info: true,
       order: [[8,'asc'],[1,'asc']],
-      drawCallback: (drawCallback) => {
+      drawCallback: (drawCallback:any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const requestData = {
           ...dataTablesParameters,
-          status: this.selectedStatusFilter,
+          STATUS: this.selectedStatusFilter,
           DEFAULT_GUDANG: this.selectedGudangFilter.id
             ? this.selectedGudangFilter.id
             : '',
@@ -131,27 +131,27 @@ export class MasterResepComponent
           orderable: true,
           searchable: true,
         },
-        { 
+        {
           data: 'defaultGudang',
           title: 'Default Gudang',
           searchable: false,
-          width:'30px' 
+          width:'30px'
         },
         {
           data: 'konversi',
           title: 'Konversi',
           searchable: false,
           width:'50px',
-          render: (data) => {
+          render: (data:any) => {
             if (!isNaN(parseFloat(data)) && isFinite(data)) {
               return parseFloat(data).toFixed(2);
             }
             return data; // Return as is if not a number
           },
         },
-        { 
+        {
           data: 'satuanBesar',
-          title: 'Satuan Besar', 
+          title: 'Satuan Besar',
           searchable: false ,
           width:'30px'
         },
@@ -160,20 +160,20 @@ export class MasterResepComponent
           title: 'Satuan Kecil',
           searchable: false,
            width:'30px'
-        },      
-        { 
-          data: 'jumlahBahanBaku', 
-          title: 'Jumlah Resep', 
-          orderable: false, 
+        },
+        {
+          data: 'jumlahBahanBaku',
+          title: 'Jumlah Resep',
+          orderable: false,
           searchable: false,
-          width:'30px' 
+          width:'30px'
         },
         {
           data: 'statusAktif',
           title: 'Status',
           searchable: false,
           width:'30px',
-          render: (data) => {
+          render: (data:any) => {
             if (data === 'A') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
@@ -186,35 +186,35 @@ export class MasterResepComponent
             if (this.roleId !== '3' && this.roleId !== '2') {
               return `
               <div class="btn-group" role="group" aria-label="Action">
-                <button 
-                  class="btn btn-sm action-resep btn-outline-info btn-60" 
+                <button
+                  class="btn btn-sm action-resep btn-outline-info btn-60"
                  ">
                   ${this.buttonCaptionAction}
                 </button>
               </div>
             `;
-            
+
             }
             return `
             <div class="btn-group" role="group" aria-label="Action">
-              <button 
-                class="btn btn-sm action-resep btn-outline-info btn-60" 
+              <button
+                class="btn btn-sm action-resep btn-outline-info btn-60"
                ">
                 ${this.buttonCaptionAction}
               </button>
             </div>
           `;
-          
+
           },
         },
       ],
       searchDelay: 1500,
-    
+
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-resep', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
         );
-       
+
         if (this.selectedRowData !== data) {
           this.selectedRowData = data;
         } else {
@@ -227,7 +227,7 @@ export class MasterResepComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }

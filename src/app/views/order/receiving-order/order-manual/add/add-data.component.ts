@@ -42,7 +42,7 @@ export class AddDataOrderManualComponent implements OnInit {
   configSelectDefaultLokasi: any ;
   configSelectRole: any ;
   listRole: any[] = [];
-  
+
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   public dpConfigTglKirimBarang: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   public dpConfigTglBatalPesanan: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
@@ -58,7 +58,7 @@ export class AddDataOrderManualComponent implements OnInit {
   isShowModalBranch: boolean = false;
   isShowModalBuatPesanan: boolean = false;
 
-  dtOptionsPemesan: DataTables.Settings = {};
+  dtOptionsPemesan: any = {};
   selectedRowData: any;
   page = new Page();
 
@@ -87,11 +87,11 @@ export class AddDataOrderManualComponent implements OnInit {
     const storedState = sessionStorage.getItem('sendOrderState');
     if (storedState) {
       const parsedState = JSON.parse(storedState);
-  
+
       if (parsedState.showModal) {
         this.onShowModalPrint(parsedState);
       }
-  
+
       // Setelah dipakai, hapus agar tidak muncul lagi saat refresh berikutnya
       sessionStorage.removeItem('sendOrderState');
     }
@@ -169,12 +169,12 @@ export class AddDataOrderManualComponent implements OnInit {
 
   }
 
-  
+
 
   onSubmit(): void {
     this.isShowModalBuatPesanan = false;
     const currentUser = this.g.getLocalstorage('inv_currentUser');
-    
+
     const { controls, invalid } = this.myForm;
 
 
@@ -203,7 +203,7 @@ export class AddDataOrderManualComponent implements OnInit {
       const tglbatalpsnn =  moment(controls?.['tanggalBatalPesanan']?.value).format("DD/MM/YYYY");
       this.myForm.controls['tanggalBatalPesanan'].setValue("00/00/0000");
       this.myForm.controls['tanggalBatalPesanan'].setValue(tglbatalpsnn);
-      
+
 
       setTimeout(() => {
         this.isShowDetail = true;
@@ -212,25 +212,25 @@ export class AddDataOrderManualComponent implements OnInit {
         this.myForm.get('RSCTujuan')?.disable();
         this.myForm.get('tanggalKirimBarang')?.disable();
         this.myForm.get('tanggalBatalPesanan')?.disable();
-        this.myForm.get('gudangTujuan')?.disable();       
-        this.myForm.get('tipeOrder')?.disable();        
- 
+        this.myForm.get('gudangTujuan')?.disable();
+        this.myForm.get('tipeOrder')?.disable();
+
           // this.onNextPressed();
         }, DEFAULT_DELAY_TIME);
       }
       this.adding = false;
 
     }
-   
+
     // onNextPressed() {
     //   this.router.navigate(['/order/send-order-to-supplier-via-rsc/add-data-detail']);
     // }
-  
+
     onPreviousPressed() {
       localStorage.removeItem(LS_INV_SELECTED_SET_NUMBER);
       this.router.navigate(['/order/receiving-order']);
     }
-  
+
 
 
   isFieldValid(fieldName: String) {
@@ -263,7 +263,7 @@ export class AddDataOrderManualComponent implements OnInit {
         ? /^[a-zA-Z]+$/
         : type =='tanggal'
         ? /^[0-9\/]+$/
-        : /^[a-zA-Z.() ,\-]*$/;        
+        : /^[a-zA-Z.() ,\-]*$/;
     if (temp_regex.test(inp)) return true;
     else {
       event.preventDefault();
@@ -299,7 +299,7 @@ export class AddDataOrderManualComponent implements OnInit {
     this.isShowModalBuatPesanan= true;
   }
 
-  
+
   onGudangTujuanChange(selectedValue: any) {
     this.getGudangDetail(selectedValue?.value?.id);
   }
@@ -320,9 +320,9 @@ export class AddDataOrderManualComponent implements OnInit {
           this.gudangDetail?.length
             ? (this.gudangDetail[0].STATUS_AKTIF === "A" ? "Aktif" : "Tidak Aktif")
             : null
-        );    
-        this.myForm.get('kodeSingkat')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].KODE_SINGKAT : null);  
-      }); 
+        );
+        this.myForm.get('kodeSingkat')?.setValue(this.gudangDetail?.length ? this.gudangDetail[0].KODE_SINGKAT : null);
+      });
   }
 
 
@@ -352,10 +352,10 @@ export class AddDataOrderManualComponent implements OnInit {
         serverSide: true,
         autoWidth: true,
         info: true,
-        drawCallback: (drawCallback) => {
+        drawCallback: (drawCallback: any) => {
           this.selectedRowData = undefined;
         },
-        ajax: (dataTablesParameters: any, callback) => {
+        ajax: (dataTablesParameters: any, callback:any) => {
           this.page.start = dataTablesParameters.start;
           this.page.length = dataTablesParameters.length;
           const requestData = {
@@ -394,7 +394,7 @@ export class AddDataOrderManualComponent implements OnInit {
             data: 'statusAktif',
             title: 'Status',
             searchable: false,
-            render: (data) => {
+            render: (data:any) => {
               if (data === 'A') {
                 return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
               }
@@ -403,7 +403,7 @@ export class AddDataOrderManualComponent implements OnInit {
           },
           {
             title: 'Action',
-            render: (data, type, row) => {
+            render: (data:any, type:any, row:any) => {
               if (row.statusAktif === 'T') {
                 return `
                   <div class="btn-group" role="group" aria-label="Action">
@@ -416,10 +416,10 @@ export class AddDataOrderManualComponent implements OnInit {
                 <div class="btn-group" role="group" aria-label="Action">
                   <button class="btn btn-sm action-select btn-outline-info btn-60">Pilih</button>
                 </div>
-              `;            
+              `;
             }
           }
-          
+
         ],
         searchDelay: 1500,
         order: [
@@ -431,7 +431,7 @@ export class AddDataOrderManualComponent implements OnInit {
          );
          if (index === 0 && !this.selectedRowData) {
            setTimeout(() => {
-             $(row).trigger('td'); 
+             $(row).trigger('td');
            }, 0);
          }
          $('td', row).on('click', () => {
@@ -443,10 +443,10 @@ export class AddDataOrderManualComponent implements OnInit {
              this.selectedRowData = undefined;
            }
          });
-       
-     
+
+
          return row;
- 
+
        },
       };
     }
@@ -463,14 +463,14 @@ export class AddDataOrderManualComponent implements OnInit {
       this.myForm.controls['namaPemesan'].setValue(data.namaCabang);
       if (data.statusAktif.trim() === 'A') {
         this.myForm.controls['statusGudang'].setValue("Aktif");
-      }  
+      }
       else if(data.statusAktif.trim() === 'T'){
         this.myForm.controls['statusGudang'].setValue("Tidak Aktif");
       }
       else {
         this.myForm.controls['statusGudang'].setValue(data.statusAktif);
       }
-      this.myForm.controls['alamatGudang'].setValue(data.alamat1);      
+      this.myForm.controls['alamatGudang'].setValue(data.alamat1);
     }
 
     resetDataPemesan() {
@@ -478,7 +478,7 @@ export class AddDataOrderManualComponent implements OnInit {
       this.myForm.controls['namaPemesan'].setValue("");
 
       this.myForm.controls['statusGudang'].setValue("");
-      this.myForm.controls['alamatGudang'].setValue("");   
+      this.myForm.controls['alamatGudang'].setValue("");
     }
 
     onShowModalPrint(state: any) {

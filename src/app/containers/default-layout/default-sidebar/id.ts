@@ -107,7 +107,7 @@ export const menu_id: any = [
       },
       {
         name: 'Kirim Barang Retur Ke Supplier',
-        url: '/transaction/retur-ke-supplier/list-barang-retur',
+        url: '/transaction/kirim-barang-return-ke-supplier/list-dt',
         iconComponent: {
           name: 'cib-minutemailer',
         },
@@ -171,7 +171,7 @@ export const menu_id: any = [
       },
       {
         name: 'Produksi',
-        url: '/transaction/production/list-dt',
+        url: '/transaction/production/',
         iconComponent: {
           name: 'cil-industry',
         },
@@ -181,68 +181,10 @@ export const menu_id: any = [
   },
   {
     name: 'Stock Opname',
+    url: '/stock-opname/setup-so',
     iconComponent: {
       name: 'cil-book',
     },
-    access: 'stock_opname',
-    children: [
-      {
-        name: 'Setup SO',
-        url: '/stock-opname/setup-so',
-        iconComponent: {
-          name: 'cil-circle',
-        },
-        access: 'setup_so',
-      },
-      {
-        name: 'Cetak Form SO',
-        url: '/dashboard',
-        iconComponent: {
-          name: 'cil-circle',
-        },
-        access: 'cetak_form_so',
-      },
-      {
-        name: 'Entry Stock Opname',
-        url: '/dashboard',
-        iconComponent: {
-          name: 'cil-circle',
-        },
-        access: 'entry_stock_opname',
-      },
-      {
-        name: 'Laporan Selisih SO (Sementara)',
-        url: '/dashboard',
-        iconComponent: {
-          name: 'cil-circle',
-        },
-        access: 'laporan_selisih_so_(sementara)',
-      },
-      {
-        name: 'Proses Posting SO',
-        url: '/dashboard',
-        iconComponent: {
-          name: 'cil-circle',
-        },
-        access: 'proses_posting_so',
-      },
-      {
-        name: 'Laporan Hasil SO',
-        url: '/dashboard',
-        iconComponent: {
-          name: 'cil-circle',
-        },
-        access: 'laporan_hasil_so',
-      },
-      {
-        name: 'Display Selisih SO',
-        url: '/dashboard',
-        iconComponent: {
-          name: 'cil-circle',
-        },
-        access: 'display_selisih_so',
-      },
-    ],
   },
   {
     name: 'Tutup Bulan',
@@ -283,5 +225,12 @@ export const menu_id: any = [
       name: 'cil-swap-vertical',
     },
     access: 'kirim_terima_data',
+  },
+  {
+    name: 'Activity Log Report',
+    url: '/reports/activity-log',
+    iconComponent: {
+      name: 'cil-sync',
+    },
   },
 ];

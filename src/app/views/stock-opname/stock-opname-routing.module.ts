@@ -5,6 +5,7 @@ import { SetupSoComponent } from './1-setup-so/setup-so.component';
 import { SetupSoDetailComponent } from './1-setup-so/detail/detail.component';
 import { StockSoAddComponent } from './1-setup-so/add/add.component';
 import { StockSoEditComponent } from './1-setup-so/edit/edit.component';
+import { DisplaySelisihSoComponent } from './6-result-so/display-selisih-so.component';
 
 const routes: Routes = [
   {
@@ -27,6 +28,10 @@ const routes: Routes = [
         component: StockSoEditComponent,
       },
     ],
+  },
+  {
+    path: 'display-selisih-so',
+    component: DisplaySelisihSoComponent,
   },
 ];
 

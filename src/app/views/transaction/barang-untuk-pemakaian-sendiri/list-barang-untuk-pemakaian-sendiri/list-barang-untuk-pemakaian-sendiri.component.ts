@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { DataService } from '../../../../service/data.service';
 import { GlobalService } from '../../../../service/global.service';
@@ -29,17 +30,23 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
-  dtOptions: DataTables.Settings = {};
-  dtOptionsModal: DataTables.Settings = {};
+  dtOptions: any = {};
+  dtOptionsModal: any = {};
   protected config = AppConfig.settings.apiServer;
   isShowModal: boolean = false;
-  pageSize: number = 10; 
+  pageSize: number = 10;
   dtTrigger: Subject<any> = new Subject();
   currentPage: number = 1;
   page = new Page();
   dtColumns: any = [];
-  showFilterSection: boolean = false;
   buttonCaptionView: String = 'Lihat';
+  buttonCaptionPrint: String = 'Cetak';
+  selectedData: any;
+  isShowModalReport: boolean = false;
+  showFilterSection: boolean = false;
+  confirmSelection: string = 'semua';
+  paramGenerateReport: any = {};
+
   selectedStatusFilter: string = '';
   orders: any[] = [];
   totalRecords: number = 0;
@@ -55,14 +62,15 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
     )
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
+  alreadyPrint: boolean = false;
 
   constructor(
     private dataService: DataService,
     private g: GlobalService,
     private transaltionService: TranslationService,
     private router: Router,
-    private globalService: GlobalService,
-    private appService: AppService
+    private appService: AppService,
+    private toastr: ToastrService
   ) {
     this.dtOptions = {
       language:
@@ -74,7 +82,7 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
       autoWidth: true,
       info: true,
       drawCallback: () => {},
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -117,7 +125,7 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
         {
           data: 'tglTransaksi',
           title: 'Tanggal Transaksi',
-          render: (data) => this.g.transformDate(data),
+          render: (data:any) => this.g.transformDate(data),
         },
         { data: 'nomorTransaksi', title: 'No. Transaksi' },
         { data: 'keterangan', title: 'Keterangan Pemakaian', searchable: true },
@@ -125,14 +133,14 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
         {
           data: 'tglTransaksi',
           title: 'Tanggal Proses',
-          render: (data) => this.g.transformDate(data),
+          render: (data:any) => this.g.transformDate(data),
         },
         {
           data: 'timeCreate',
           title: 'Jam Proses',
           orderable: true,
           searchable: true,
-          render: function (data, type, row) {
+          render: function (data:any, type:any, row:any) {
             if (type === 'display' && data) {
               const time = data.toString();
               const hours = time.slice(0, 2).padStart(2, '0');
@@ -147,16 +155,15 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render: (data) => this.g.getStatusOrderLabel(data),
+          render: (data:any) => this.g.getStatusOrderLabel(data),
         },
         {
           title: 'Aksi',
-          orderable: false,
-          searchable: false,
-          render: (data, type, row) => {
-            return `<button class="btn btn-sm btn-primary action-view" data-nomor-transaksi="${row.NOMOR_TRANSAKSI}">
-                      <i class="fa fa-eye"></i> Lihat Detail
-                    </button>`;
+          render: () => {
+            return ` <div class="btn-group" role="group" aria-label="Action">
+                <button class="btn btn-sm action-view btn-outline-primary btn-60">${this.buttonCaptionView}</button>
+                <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>
+              </div>`;
           },
         },
       ],
@@ -167,6 +174,24 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
         );
+        $('.action-print', row).on('click', () => {
+          // this.onClickPrint(data)
+          this.selectedRowCetak = data;
+          this.isShowModalReport = true;
+
+          this.paramGenerateReport = {
+            nomorTransaksi: this.selectedRowCetak.nomorTransaksi,
+            userEntry: this.selectedRowCetak.userCreate,
+            jamEntry: this.g.transformTime(this.selectedRowCetak.timeCreate),
+            tglEntry: this.g.transformDate(this.selectedRowCetak.dateCreate),
+            outletBrand: 'KFC',
+            kodeGudang: this.g.getUserLocationCode(),
+            isDownloadCsv: false,
+            reportName: 'cetak_production',
+            confirmSelection: this.confirmSelection || 'semua',
+          };
+        });
+        console.log('INI Confirm Selection:', this.confirmSelection);
         return row;
       },
     };
@@ -188,10 +213,13 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
 
   // onNextPage(): void {
   //   const route = this.router.createUrlTree(['/transaction/wastage/add-data']);
-  //   this.router.navigateByUrl(route);
+  //   this.router.navigateByUrl(route);S
   // }
 
   actionBtnClick(action: string, data: any = null) {
+    if (!this.confirmSelection) {
+      this.confirmSelection = 'semua';
+    }
     console.log('button clickef');
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage('pemakaianBarangSendiri', JSON.stringify(data));
@@ -243,7 +271,7 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
   }
 
   onFilterPressed(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
     console.log('filter pressed');
@@ -269,6 +297,10 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
   cetakJesper() {}
 
   selectedRows: string[] = [];
+  generateReportParam: any; // Declare the missing property
+  downloadURL: string = '';
+  selectedRowCetak: any; // Declare the missing property
+  disabledPrintButton: boolean = false; // Declare the missing property
 
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
@@ -303,6 +335,30 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
       console.log('Selected Rows:', this.selectedRows);
     });
   }
+  headerPlanningOrder = {
+    selectedYear: new Date().getFullYear().toString(),
+    selectedMonth: (new Date().getMonth() + 1).toString().padStart(2, '0'),
+  };
+
+  downloadCsv(res: any) {
+    var blob = new Blob([res], { type: 'text/csv' });
+    this.downloadURL = window.URL.createObjectURL(blob);
+
+    if (this.downloadURL.length) {
+      var link = document.createElement('a');
+      link.href = this.downloadURL;
+      link.download = `ORDER${this.headerPlanningOrder.selectedYear}${this.headerPlanningOrder.selectedMonth}.csv`;
+      link.click();
+      this.toastr.success('Berhasil Dicetak!');
+      this.isShowModalReport = false;
+    } else
+      this.g.alertError('Maaf, Ada kesalahan!', 'File tidak dapat terunduh.');
+  }
+  closeModal(){
+    this.isShowModalReport = false;
+    this.selectedRowCetak = null;
+    this.disabledPrintButton = false;
+  }
 
   // renderDataTables(): void {
   //     this.dtOptionsModal = {
@@ -313,7 +369,7 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
   //       autoWidth: true,
   //       info: true,
   //       drawCallback: () => { },
-  //       ajax: (dataTablesParameters: any, callback) => {
+  //       ajax: (dataTablesParameters: any, callback:any) => {
   //         this.page.start = dataTablesParameters.start;
   //         this.page.length = dataTablesParameters.length;
   //         const params = {

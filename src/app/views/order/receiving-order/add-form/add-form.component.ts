@@ -36,7 +36,7 @@ export class ReceivingOrderAddFormComponent
   protected config = AppConfig.settings.apiServer;
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
 
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   page = new Page();
   currentDate: Date = new Date();
   startDateFilter: Date = new Date(
@@ -66,7 +66,7 @@ export class ReceivingOrderAddFormComponent
       autoWidth: true,
       info: true,
       drawCallback: () => {},
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -74,6 +74,7 @@ export class ReceivingOrderAddFormComponent
           kodeTujuan: this.g.getUserLocationCode(),
           startDate: this.g.transformDate(this.dateRangeFilter[0]),
           endDate: this.g.transformDate(this.dateRangeFilter[1]),
+          tipePesanan: "I"
         };
         setTimeout(() => {
           this.dataService
@@ -127,7 +128,7 @@ export class ReceivingOrderAddFormComponent
         {
           data: 'statusPesanan',
           title: 'Status Pesanan',
-          render: (data) => this.g.getStatusOrderLabel(data),
+          render: (data:any) => this.g.getStatusOrderLabel(data),
         },
         {
           title: 'Opsi',
@@ -150,6 +151,7 @@ export class ReceivingOrderAddFormComponent
     this.dtColumns = this.dtOptions.columns;
     this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.customTodayClass='today-highlight';
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
   }
 
   ngOnInit(): void {
@@ -174,14 +176,14 @@ export class ReceivingOrderAddFormComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }
     });
   }
   onFilterApplied() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }

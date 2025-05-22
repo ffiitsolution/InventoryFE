@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   EventEmitter,
+  Input,
   OnChanges,
   OnDestroy,
   OnInit,
@@ -53,7 +54,7 @@ export class AddDataDetailProductionComponent
   public loading: boolean = false;
   page: number = 1;
   isShowModal: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   selectedRow: any[] = [];
   pageModal = new Page();
   dataUser: any = {};
@@ -77,6 +78,8 @@ export class AddDataDetailProductionComponent
     minDate: new Date(),
   };
   protected config = AppConfig.settings.apiServer;
+  isUpdate: boolean = false;
+  headerData: any = {};
 
   constructor(
     public g: GlobalService,
@@ -103,7 +106,9 @@ export class AddDataDetailProductionComponent
     this.alreadyPrint =
       this.headerProduction.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
-    this.loadBahanBaku();
+
+    console.log(this.isUpdate, 'isUpdate');
+    if (!this.isUpdate) this.loadBahanBaku();
   }
 
   onFilterSearch(
@@ -138,7 +143,7 @@ export class AddDataDetailProductionComponent
       this.loadingSimpan = true;
       // param for order Header
 
-      const extraItem = {
+      const extraItem = { 
         kodeGudang: this.g.getUserLocationCode(),
         tglTransaksi: moment(
           this.headerProduction.tglTransaksi,
@@ -159,6 +164,7 @@ export class AddDataDetailProductionComponent
         flagExpired: 'Y',
         tipeProduksi: 'F',
         hargaSatuan: this.headerProduction.hargaSatuan,
+        userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
       };
 
       const param = {
@@ -174,7 +180,7 @@ export class AddDataDetailProductionComponent
           'D MMM YYYY'
         ),
         jumlahResep: this.headerProduction.jumlahHasilProduksi,
-        userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+        userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
         details: [
           ...this.listProductData
             .filter((item) => item.bahanBaku && item.bahanBaku.trim() !== '')
@@ -206,7 +212,7 @@ export class AddDataDetailProductionComponent
                   this.getExpiredData(item.bahanBaku).qtyPemakaianKecil
                 ),
               hargaSatuan: 0,
-              userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+              userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
             })),
           extraItem,
         ],
@@ -243,41 +249,61 @@ export class AddDataDetailProductionComponent
       };
 
       Swal.fire({
-        title: 'Pastikan semua data sudah di input dengan benar!',
-        text: 'DATA YANG SUDAH DIPOSTING TIDAK DAPAT DIPERBAIKI..!!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Proses Posting',
-        cancelButtonText: 'Batal Posting',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.service
-            .insert('/api/production/insert', param)
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe({
-              next: (res) => {
-                if (!res.success) {
-                  this.toastr.error(res.message);
-                } else {
-                  this.onBackPressed(res.data);
-                  // setTimeout(() => {
-                  //   this.toastr.success('Data production berhasil diposting!');
-                  //   this.onPreviousPressed();
-                  // }, DEFAULT_DELAY_TIME);
-                }
-                this.adding = false;
-                this.loadingSimpan = false;
-              },
-              error: () => {
-                this.loadingSimpan = false;
-              },
-            });
-        } else {
-          this.toastr.info('Posting dibatalkan');
-          this.loadingSimpan = false;
-        }
+        ...this.g.componentKonfirmasiPosting,
+        showConfirmButton: false,
+        showCancelButton: false,
+        width: '600px',
+        customClass: {
+          popup: 'custom-popup',
+        },
+        allowOutsideClick: () => {
+            return false; // Prevent closing
+        },
+        didOpen: () => {
+          const submitBtn = document.getElementById(
+            'btn-submit'
+          ) as HTMLButtonElement;
+          const cancelBtn = document.getElementById(
+            'btn-cancel'
+          ) as HTMLButtonElement;
+
+          submitBtn?.addEventListener('click', () => {
+            submitBtn.disabled = true;
+            cancelBtn.disabled = true;
+
+             Swal.close();
+            this.service
+              .insert('/api/production/insert', param)
+              .pipe(takeUntil(this.ngUnsubscribe))
+              .subscribe({
+                next: (res) => {
+                  if (!res.success) {
+                    this.toastr.error(res.message);
+                  } else {
+                    this.onBackPressed(res.data);
+                    // setTimeout(() => {
+                    //   this.toastr.success('Data production berhasil diposting!');
+                    //   this.onPreviousPressed();
+                    // }, DEFAULT_DELAY_TIME);
+                  }
+                  this.adding = false;
+                  this.loadingSimpan = false;
+                },
+                error: () => {
+                  this.loadingSimpan = false;
+                  submitBtn.disabled = false;
+                  cancelBtn.disabled = false;
+                },
+              });
+            Swal.close();
+          });
+
+          cancelBtn?.addEventListener('click', () => {
+            Swal.close();
+            this.loadingSimpan = false;
+            this.toastr.info('Posting dibatalkan');
+          });
+        },
       });
     }
   }
@@ -315,7 +341,6 @@ export class AddDataDetailProductionComponent
       ).toFixed(2)
     ).toFixed(2);
 
-    this.totalFilteredExpired = totalQtySum;
     if (
       !this.listEntryExpired.some(
         (item) => item.kodeBarang === this.selectedExpProduct.bahanBaku
@@ -341,6 +366,13 @@ export class AddDataDetailProductionComponent
         validationExpiredMessageList: '',
         validationQty: '',
       });
+
+      this.totalFilteredExpired = totalQtySum;
+    } else {
+      this.totalFilteredExpired = this.listEntryExpired
+        .filter((item) => item.kodeBarang === this.selectedExpProduct.bahanBaku)
+        .reduce((sum, item) => sum + parseFloat(item.totalQty) || 0, 0)
+        .toFixed(2);
     }
 
     this.isShowModalExpired = true;
@@ -357,7 +389,8 @@ export class AddDataDetailProductionComponent
       konversi: parseFloat(this.selectedExpProduct.konversi).toFixed(2),
       totalQty: '0.0',
       kodeBarang: this.selectedExpProduct.bahanBaku,
-      validationExpiredMessageList: 'Tanggal tidak boleh kosong!',
+      validationExpiredMessageList:
+        'Tanggal tidak boleh kosong, silahkan pilih tanggal! ',
       validationQty: '',
     });
   }
@@ -383,6 +416,8 @@ export class AddDataDetailProductionComponent
 
   onSaveEntryExpired() {
     let totalQtyExpired = 0;
+    let validationExpiredMessageList = '';
+    let totalQtyEmpty = 0;
 
     const totalQtyPemakaian =
       this.helper.sanitizedNumber(this.selectedExpProduct.qtyPemakaianBesar) *
@@ -390,17 +425,30 @@ export class AddDataDetailProductionComponent
       this.helper.sanitizedNumber(this.selectedExpProduct.qtyPemakaianKecil);
 
     this.listEntryExpired.forEach((item: any) => {
-      if (item.kodeBarang === this.selectedExpProduct.kodeBarang) {
+      if (item.kodeBarang === this.selectedExpProduct.bahanBaku) {
         item.totalQty =
           this.helper.sanitizedNumber(item.qtyPemakaianBesar) * item.konversi +
           this.helper.sanitizedNumber(item.qtyPemakaianKecil);
-        item.kodeBarang = this.selectedExpProduct.kodeBarang;
+        item.kodeBarang = this.selectedExpProduct.bahanBaku;
         totalQtyExpired += item.totalQty;
+
+        if (item.totalQty <= 0) {
+          totalQtyEmpty++;
+        }
+        validationExpiredMessageList = item.validationExpiredMessageList;
       }
     });
 
-    if (totalQtyExpired > totalQtyPemakaian) {
-      this.toastr.error('Total Qty Expired harus sama dengan Qty Pemakaian');
+    if (totalQtyExpired != totalQtyPemakaian) {
+      this.toastr.error(
+        'Total Qty Expired harus sama dengan Qty Pemakaian,  Tolong masukan Qty Expired dengan benar!'
+      );
+    } else if (validationExpiredMessageList) {
+      this.toastr.error(validationExpiredMessageList);
+    } else if (totalQtyEmpty > 0) {
+      this.toastr.error(
+        'Total Qty Expired tidak boleh 0, Silahkan hapus data yg tidak terpakai atau isikan Qty dengan benar!'
+      );
     } else {
       this.isShowModalExpired = false;
     }
@@ -461,6 +509,7 @@ export class AddDataDetailProductionComponent
   tempKodeBarang: string = '';
 
   loadBahanBaku() {
+    console.log('loadBahanBaku', this.headerProduction.kodeBarang);
     let param = this.headerProduction?.kodeBarang;
 
     this.appService.getBahanBakuByResep(param).subscribe({
@@ -574,7 +623,7 @@ export class AddDataDetailProductionComponent
     console.log('expiredDate', expiredDate);
 
     if (expiredDate < today) {
-      validationMessage = `Tanggal kadaluarsa tidak boleh lebih < dari sekarang!`;
+      validationMessage = `Tanggal kadaluarsa tidak boleh lebih < dari sekarang, silahkan pilih tanggal lain!`;
     }
 
     // ✅ Get only the filtered list of entries for the same `kodeBarang`
@@ -585,7 +634,8 @@ export class AddDataDetailProductionComponent
 
     // ✅ Validate empty input
     if (!inputDate) {
-      validationMessage = 'Tanggal tidak boleh kosong!';
+      validationMessage =
+        'Tanggal tidak boleh kosong!, silahkan pilih tanggal!';
     } else {
       // ✅ Check if the item is expired
       const expiredData = this.listEntryExpired.find(
@@ -601,7 +651,8 @@ export class AddDataDetailProductionComponent
       );
 
       if (isDuplicate) {
-        validationMessage = 'Tanggal ini sudah ada dalam daftar!';
+        validationMessage =
+          'Tanggal ini sudah ada dalam daftar, silahkan pilih tanggal lain!';
       }
     }
 
@@ -653,7 +704,7 @@ export class AddDataDetailProductionComponent
             parseFloat(value) +
               parseFloat(this.listEntryExpired[realIndex].qtyPemakaianKecil) <=
             0
-              ? 'Quantity tidak boleh < 0'
+              ? 'Quantity tidak boleh <= 0'
               : '',
         };
       }
@@ -692,7 +743,7 @@ export class AddDataDetailProductionComponent
             parseFloat(this.listEntryExpired[realIndex].qtyPemakaianBesar) <=
           0
         ) {
-          messageValidation = 'Quantity tidak boleh < 0';
+          messageValidation = 'Quantity tidak boleh <= 0';
         } else if (
           Math.round(value) >=
           Math.round(this.listEntryExpired[realIndex].konversi)
@@ -722,8 +773,207 @@ export class AddDataDetailProductionComponent
       0
     );
 
+    if (this.totalFilteredExpired == 0) {
+      this.toastr.error(`Total Qty tidak boleh 0!`);
+    }
+
     this.totalFilteredExpired = parseFloat(this.totalFilteredExpired).toFixed(
       2
     );
+  }
+
+  @Input()
+  set dataProduct(value: any) {
+    console.log(value, 'value');
+    this.listProductData = value; // or any logic
+  }
+
+  @Input()
+  set dataExired(value: any) {
+    this.listEntryExpired = value; // or any logic
+  }
+
+  @Input()
+  set dataUpdate(value: any) {
+    this.isUpdate = value;
+  }
+
+  @Input()
+  set dataHeader(value: any) {
+    console.log(value, 'dataHeader');
+    this.headerData = value;
+  }
+
+  onUpdate() {
+    if (!this.isDataInvalid()) {
+      this.loadingSimpan = true;
+      // param for order Header
+
+      const extraItem = {
+        kodeGudang: this.g.getUserLocationCode(),
+        tglTransaksi: moment(
+          this.headerProduction.tglTransaksi,
+          'DD-MM-YYYY'
+        ).format('D MMM YYYY'),
+        tipeTransaksi: 12,
+        kodeBarang: this.headerProduction.kodeBarang,
+        tglExpired: moment(this.headerData.tglExp, 'DD-MM-YYYY').format(
+          'D MMM YYYY'
+        ),
+        konversi: this.headerProduction.satuanHasilProduksi,
+        satuanKecil: this.headerProduction.satuanKecil,
+        satuanBesar: this.headerProduction.satuanBesar,
+        qtyBesar: this.headerData.jumlahHasilProduksi,
+        qtyKecil: '0.00',
+        totalQty: this.headerData.totalHasilProduksi,
+        totalQtyExpired: this.headerData.totalHasilProduksi,
+        flagExpired: 'Y',
+        tipeProduksi: 'F',
+        hargaSatuan: this.headerProduction.hargaSatuan,
+        userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
+      };
+      console.log(extraItem, 'extraItem');
+      const param = {
+        kodeGudang: this.g.getUserLocationCode(),
+        nomorTransaksi: this.headerProduction.nomorTransaksi,
+        tglTransaksi: moment(
+          this.headerProduction.tglTransaksi,
+          'DD-MM-YYYY'
+        ).format('D MMM YYYY'),
+        statusPosting: 'K',
+        keterangan: this.headerData.keterangan,
+        kodeResep: this.headerProduction.kodeBarang,
+        tglExp: moment(this.headerData.tglExp, 'DD-MM-YYYY').format(
+          'D MMM YYYY'
+        ),
+        jumlahResep: this.headerData.jumlahHasilProduksi,
+        userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
+        details: [
+          ...this.listProductData
+            .filter((item) => item.bahanBaku && item.bahanBaku.trim() !== '')
+            .map((item) => ({
+              kodeGudang: this.g.getUserLocationCode(),
+              tglTransaksi: moment(
+                this.headerProduction.tglTransaksi,
+                'DD-MM-YYYY'
+              ).format('D MMM YYYY'),
+              tipeTransaksi: 12,
+              kodeBarang: item.bahanBaku,
+              konversi: item.konversi,
+              satuanKecil: item.satuanKecil,
+              satuanBesar: item.satuanBesar,
+              qtyBesar: item.qtyPemakaianBesar || 0,
+              qtyKecil: item.qtyPemakaianKecil || 0,
+              flagExpired: item.isConfirmed ? 'Y' : 'T',
+              tipeProduksi: 'R',
+              totalQty:
+                this.helper.sanitizedNumber(item.qtyPemakaianBesar) *
+                  item.konversi +
+                this.helper.sanitizedNumber(item.qtyPemakaianKecil),
+              totalQtyExpired:
+                this.helper.sanitizedNumber(
+                  this.getExpiredData(item.bahanBaku).qtyPemakaianBesar
+                ) *
+                  item.konversi +
+                this.helper.sanitizedNumber(
+                  this.getExpiredData(item.bahanBaku).qtyPemakaianKecil
+                ),
+              hargaSatuan: 0,
+              userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
+            })),
+          extraItem,
+        ],
+
+        detailsExpired: [
+          ...this.listEntryExpired?.map((expiredItem) => ({
+            kodeGudang: this.g.getUserLocationCode(),
+            tglTransaksi: moment(
+              this.headerProduction.tglTransaksi,
+              'DD-MM-YYYY'
+            ).format('D MMM YYYY'),
+            tipeTransaksi: 12,
+            kodeBarang: expiredItem.kodeBarang,
+            tglExpired: moment(expiredItem.tglExpired, 'DD-MM-YYYY').format(
+              'D MMM YYYY'
+            ),
+            konversi: Math.abs(expiredItem.konversi).toFixed(2),
+            qtyBesar:
+              -Math.abs(parseFloat(expiredItem.qtyPemakaianBesar)).toFixed(2) ||
+              0,
+            qtyKecil:
+              -Math.abs(parseFloat(expiredItem.qtyPemakaianKecil)).toFixed(2) ||
+              0,
+            totalQty: -parseFloat(
+              (
+                Number(expiredItem.qtyPemakaianBesar) *
+                  Number(expiredItem.konversi) +
+                Number(expiredItem.qtyPemakaianKecil)
+              ).toFixed(2)
+            ).toFixed(2),
+          })),
+          extraItem,
+        ],
+      };
+
+      Swal.fire({
+        ...this.g.componentKonfirmasiSimpan,
+        showConfirmButton: false,
+        showCancelButton: false,
+        width: '600px',
+        customClass: {
+          popup: 'custom-popup',
+        },
+        allowOutsideClick: () => {
+            return false; // Prevent closing
+        },
+        didOpen: () => {
+         const submitBtn = document.getElementById(
+            'btn-submit'
+          ) as HTMLButtonElement;
+          const cancelBtn = document.getElementById(
+            'btn-cancel'
+          ) as HTMLButtonElement;
+
+          submitBtn?.addEventListener('click', () => {
+
+            submitBtn.disabled = true;
+            cancelBtn.disabled = true;
+            Swal.close();
+            this.service
+              .insert('/api/production/update', param)
+              .pipe(takeUntil(this.ngUnsubscribe))
+              .subscribe({
+                next: (res) => {
+                  if (!res.success) {
+                    this.toastr.error(res.message);
+                  } else {
+                    // this.onBackPressed(res.data);
+                    setTimeout(() => {
+                      this.toastr.success('Data production berhasil diubah!');
+                      this.router.navigate([
+                        '/transaction/production/list-dt-for-posting',
+                      ]);
+                    }, DEFAULT_DELAY_TIME);
+                  }
+                  this.adding = false;
+                  this.loadingSimpan = false;
+                },
+                error: () => {
+                  submitBtn.disabled = false;
+                  cancelBtn.disabled = false;
+                  this.loadingSimpan = false;
+                },
+              });
+            Swal.close();
+          });
+
+          cancelBtn?.addEventListener('click', () => {
+            Swal.close();
+            this.loadingSimpan = false;
+            this.toastr.info('Posting dibatalkan');
+          });
+        },
+      });
+    }
   }
 }

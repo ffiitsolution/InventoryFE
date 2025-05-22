@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TableUomComponent } from './table-uom.component';
+import { ActivityLogComponent } from './activity-log.component';
 
-describe('TableUomComponent', () => {
-  let component: TableUomComponent;
-  let fixture: ComponentFixture<TableUomComponent>;
+describe('ActivityLogComponent', () => {
+  let component: ActivityLogComponent;
+  let fixture: ComponentFixture<ActivityLogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TableUomComponent]
+      declarations: [ ActivityLogComponent ]
     })
     .compileComponents();
-    
-    fixture = TestBed.createComponent(TableUomComponent);
+
+    fixture = TestBed.createComponent(ActivityLogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

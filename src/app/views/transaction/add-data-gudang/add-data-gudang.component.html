@@ -38,7 +38,7 @@
                 <div class="col-8 pe-0 d-flex">
                   <input
                     type="text"
-                    placeholder="Nomor pesanan"
+                    placeholder=""
                     class="form-control"
                     id="nomorPesanan"
                     [(ngModel)]="formData.nomorPesanan"
@@ -64,7 +64,7 @@
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <input
-                    placeholder="Kode - nama Pengirim"
+                    placeholder=""
                     type="text"
                     class="form-control"
                     id="codeDestination"
@@ -87,7 +87,7 @@
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <textarea
-                    placeholder="Alamat Pengirim"
+                    placeholder=""
                     class="form-control w-100"
                     [(ngModel)]="formData.alamat1"
                     rows="2"
@@ -157,8 +157,7 @@
                     bsDatepicker
                     autocomplete="off"
                     [(ngModel)]="formData.tglPesan"
-                    placeholder="{{ 'Tanggal Surat Jalan' | translate }}"
-                    style="pointer-events: none"
+                    placeholder="{{ '' | translate }}"
                   />
                 </div>
               </div>
@@ -177,14 +176,13 @@
                     aria-describedby="tglTerimaBarang"
                     #dp="bsDatepicker"
                     [bsConfig]="dpConfig"
-                    [isDisabled]="true"
+                    [isDisabled]="false"
                     bsDatepicker
                     autocomplete="off"
                     [(ngModel)]="formData.tglBrgDikirim"
                     placeholder="{{ '' | translate }}"
                     [minDate]="minDate"
                     [maxDate]="maxDate"
-                    style="pointer-events: none"
                   />
                 </div>
               </div>
@@ -194,15 +192,25 @@
                   <label for="notes">{{ "Catatan (Keterangan Lain)" | translate }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                <textarea
-                placeholder=""
-                class="form-control w-100"
-                [(ngModel)]="formData.notes"
-                id="exampleFormControlTextarea1"
-                rows="1"
-                name="keterangan1"
-                readonly
+                  <textarea
+                  placeholder=""
+                  type="text"
+                  class="form-control"
+                  id="keterangan"
+                  name="keterangan"
+                  [(ngModel)]="formData.notes"
+                  (input)="onKeteranganInput()"
+                  [class.is-invalid]="isKeteranganInvalid"
+                  maxlength="50"
                 ></textarea>
+            
+                <div class="text-end text-muted mt-1">
+                  <small>{{ charCount }}/50 karakter</small>
+                </div>
+            
+                <div *ngIf="isKeteranganInvalid" class="text-danger mt-1 fw-bold">
+                 HARAP MASUKAN KARAKTER YANG VALID..!!!!
+                </div>
                 </div>
               </div>
 

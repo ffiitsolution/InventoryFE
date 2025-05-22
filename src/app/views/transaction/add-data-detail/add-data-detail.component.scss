@@ -62,3 +62,8 @@
   justify-content: center;
   gap: 15px; /* Atur sesuai kebutuhan */
 }
+
+::ng-deep #myTable thead {
+  background-color: #3c4b64; /* hijau */
+  color: white;
+}

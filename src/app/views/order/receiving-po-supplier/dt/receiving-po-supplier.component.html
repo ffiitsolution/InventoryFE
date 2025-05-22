@@ -41,15 +41,18 @@
             <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
             {{ "Filter" | translate }}
           </button>
-          <button
-            type="button"
-            class="btn btn-success text-white me-2 btn-240"
-            data-toggle="modal"
-            (click)="onAddPressed()"
-          >
-            <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
-            {{ "Tambah Pesanan" | translate }}
+          <button type="button" class="btn btn-success text-white me-2 btn-360" data-toggle="modal"
+            (click)="isShowModalRefresh = true">
+            <i class="fa fa-refresh pe-1 icon-12 icon-gap" aria-hidden="true"></i>
+            {{ "REFRESH (TERIMA DATA ONLINE)" | translate }}
           </button>
+          <a
+            type="button"
+            class="btn w-120 btn-outline-primary me-2"
+            href="#/order/order"
+          >
+            {{ "Kembali" | translate }}
+          </a>
         </div>
       </div>
       <div [visible]="showFilterSection" cCollapse>
@@ -99,51 +102,105 @@
 
   <c-card class="c-card" *ngIf="selectedRowData">
     <c-card-body>
-      <div class="row p-2 justify-content-end">
+      <div class="row p-2 justify-content-start">
         <div class="col-6">
-          <div class="w-100 mb-2">
-            <label for="alamatTujuan" class="form-label">{{ "Alamat" | translate }}</label>
-            <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
-              [(ngModel)]="selectedRowData.alamatTujuan" name="alamatTujuan" />
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-12">
+              <label for="alamatTujuan" class="form-label">{{ "Alamat Supplier" | translate }}</label>
+            </div>
+            <div class="col-12">
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.alamatSupplier" name="alamatTujuan" />
+            </div>
           </div>
-          <div class="w-100 mb-2">
-            <label for="alamat1" class="form-label">{{ "Catatan 1" | translate }}</label>
-            <input type="text" readonly placeholder="Catatan 1" class="form-control" id="nomorPesanan"
-              [(ngModel)]="selectedRowData.keterangan1" name="keterangan1" />
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-12">
+              <label for="alamat1" class="form-label">{{ "Catatan 1" | translate }}</label>
+            </div>
+            <div class="col-12">
+              <input type="text" readonly placeholder="Catatan 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.keterangan1" name="keterangan1" />
+            </div>
           </div>
 
-          <div class="w-100 mb-2">
-            <label for="alamat1" class="form-label">{{ "Catatan 2" | translate }}</label>
-            <input type="text" readonly placeholder="Catatan 2" class="form-control" id="nomorPesanan"
-              [(ngModel)]="selectedRowData.keterangan2" name="keterangan2" />
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-12">
+              <label for="alamat1" class="form-label">{{ "Catatan 2" | translate }}</label>
+            </div>
+            <div class="col-12">
+              <input type="text" readonly placeholder="Catatan 2" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.keterangan2" name="keterangan2" />
+            </div>
           </div>
         </div>
-        <div class="col-6">
-          <div class="row justify-content-end">
+        <div class="col-3">
 
-            <div class="col-4"></div>
-            <div class="col-8">
-              <div class="w-100 mb-2">
-                <label for="userCreate" class="form-label">{{ "User Create" | translate }}</label>
-                <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
-                  [(ngModel)]="selectedRowData.userCreate" name="userCreate" />
-              </div>
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-12">
+              <label for="userCreate" class="form-label">{{ "User Buat" | translate }}</label>
+            </div>
+            <div class="col-12">
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.userCreate" name="userCreate" />
+            </div>
+          </div>
 
-              <div class="w-100 mb-2">
-                <label for="dateCreate" class="form-label">{{ "Date Create" | translate }}</label>
-                <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
-                  [(ngModel)]="selectedRowData.dateCreate" name="dateCreate" />
-              </div>
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-12">
+              <label for="dateCreate" class="form-label">{{ "Tgl. Buat" | translate }}</label>
+            </div>
+            <div class="col-12">
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.dateCreate" name="dateCreate" />
+            </div>
+          </div>
 
-              <div class="w-100 mb-2">
-                <label for="timeCreate" class="form-label">{{ "Time Create" | translate }}</label>
-                <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
-                  [(ngModel)]="selectedRowData.timeCreate" name="timeCreate" />
-              </div>
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-12">
+              <label for="timeCreate" class="form-label">{{ "Jam Buat" | translate }}</label>
+            </div>
+            <div class="col-12">
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.timeCreate" name="timeCreate" />
             </div>
           </div>
 
         </div>
+        <div class="col-3">
+
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-12">
+              <label for="userCreate" class="form-label">{{ "User Batal" | translate }}</label>
+            </div>
+            <div class="col-12">
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.userCancel" name="userCreate" />
+            </div>
+          </div>
+
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-12">
+              <label for="dateCreate" class="form-label">{{ "Tgl. Batal" | translate }}</label>
+            </div>
+            <div class="col-12">
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.dateCancel" name="dateCreate" />
+            </div>
+          </div>
+
+          <div class="w-100 mb-2 row vertical-center">
+            <div class="col-12">
+              
+              <label for="timeCreate" class="form-label">{{ "Jam Batal" | translate }}</label>
+            </div>
+            <div class="col-12">
+              <input type="text" readonly placeholder="Alamat 1" class="form-control" id="nomorPesanan"
+                [(ngModel)]="selectedRowData.timeCancel" name="timeCreate" />
+            </div>
+          </div>
+
+        </div>
+   
       </div>
     </c-card-body>
   </c-card>
@@ -161,4 +218,70 @@
     (closeModalEvent)="closeModal()"
   >
   </app-modal-print-list>
+
+  <c-modal #formModalKirim [fullscreen]="false" [visible]="isShowModalRefresh" backdrop="static"
+id="formModalKirim"    [attr.aria-hidden]="!isShowModalRefresh">
+  <c-modal-header>
+    <h5 cModalTitle>Konfirmasi Terima Data Pesanan - Online</h5>
+    <button (click)="isShowModalRefresh = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalKirim.id"
+      cButtonClose><i class="fa fa-times"></i></button>
+  </c-modal-header>
+  <c-modal-body>
+    <div >
+        <div class="mb-3 row">
+          <label class="col-sm-4 col-form-label">{{
+            "Kode Gudang" | translate
+          }}</label>
+          <div class="col-sm-8">
+            <input
+              type="text"
+              class="form-control input-disabled"
+              readonly
+              [value]="(g.getUserLocationCode() || '') "
+            />
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-sm-4 col-form-label">{{
+            "Tanggal Pesan Dari" | translate
+          }}</label>
+          <div class="col-sm-8">
+            <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
+              aria-describedby="dateFilter" [(ngModel)]="dateRangeRefresh" #dp="bsDaterangepicker"
+              placeholder="{{ 'Tanggal Pesan' | translate }}" />
+          </div>
+        </div>
+        
+
+   
+        <div class="d-flex justify-content-center align-items-center flex-column">
+          <span class="fw-bold text-center">Synchronize Database - Refresh</span>
+        </div>
+        
+      </div>
+    </c-modal-body>
+    <c-modal-footer class="justify-center">
+      <button type="button" class="btn btn-light w-180 me-3" data-bs-dismiss="modal" (click)="isShowModalRefresh = false">Batal</button>
+      <button type="button" class="btn btn-success text-white  w-180" (click)="refreshDatabase()">Proses Terima Data</button>
+    </c-modal-footer>
+</c-modal>
+
+<c-modal #formModalPesananMasuk [fullscreen]="false" [visible]="isShowModalPesananMasuk" backdrop="static" #modalLg 
+id="formModalPesananMasuk"    [attr.aria-hidden]="!isShowModalPesananMasuk">
+  <c-modal-header>
+    <h5 cModalTitle>Perhatian </h5>
+    <button (click)="isShowModalPesananMasuk = false" type="button" class="btn btn-primary ms-2" [cModalToggle]="formModalPesananMasuk.id"
+      cButtonClose><i class="fa fa-times"></i></button>
+  </c-modal-header>
+  <c-modal-body>
+    <p class="text-center"  *ngIf="jumlahPesananMasuk!=0">Ada {{jumlahPesananMasuk}} Pesanan Baru, Yang Masuk.....  Harap Diperiksa Kembali.. !!</p>
+    <p class="text-center"  *ngIf="jumlahPesananMasuk ==0">Tidak Ada Pesanan Baru, Yang Masuk</p>
+
+    <div class="d-flex justify-center py-2">
+
+      <button class="btn btn-primary text-white w-90" (click)="onClickModalPesananMasuk()">Oke</button>
+
+    </div>
+  </c-modal-body>
+</c-modal>
 </div>

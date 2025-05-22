@@ -77,18 +77,35 @@
 
 .spinner i {
   font-size: 5rem; /* bigger spinner */
-  color: #3c4b64; /* custom color */
+  color: #f8fbff; /* custom color */
 }
 
 .spinner span {
   display: block;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   font-size: 1.5rem;
-  color: #3c4b64;
+  color: #f8fbff;
 }
 
 .menu-purpose{
   margin-left: 0px;
 }
 
+.modal-bg-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(54, 50, 50, 0.7);
+  /* Transparansi dan warna hitam */
+  z-index: 1040;
+  /* Pastikan berada di belakang modal */
+  transition: all 0.3s ease-in-out;
+  /* Smooth transition untuk opacity */
+}
 
+
+.custom-progress-container {
+  height: 25px !important;
+}

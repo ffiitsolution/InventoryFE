@@ -21,9 +21,9 @@ export class PenerimaanBrgBksListComponent implements OnInit {
   orderDateFilter: string = '';
   expiredFilter: string = '';
   tujuanFilter: string = '';
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
     protected config = AppConfig.settings.apiServer;
-  
+
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
   dtColumns: any = [];
@@ -64,7 +64,7 @@ export class PenerimaanBrgBksListComponent implements OnInit {
       info: true,
       order: [[1,'desc'],[2,'desc']],
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -121,14 +121,14 @@ export class PenerimaanBrgBksListComponent implements OnInit {
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render:function(data, type, row) {return 'POSTED'} ,
+          render: (data:any) => this.g.getStatusOrderLabel(data,false,true),
         },
         {
           title: 'Aksi',
           render: () => {
             return ` <div class="btn-group" role="group" aria-label="Action">
                         <button class="btn btn-sm action-view btn-outline-primary btn-60">${this.buttonCaptionView}</button>
-                        <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>           
+                        <button class="btn btn-sm action-print btn-outline-primary btn-60"}>${this.buttonCaptionPrint}</button>
                     </div>`;
           },
         },
@@ -176,7 +176,7 @@ export class PenerimaanBrgBksListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-  
+
   }
 
   toggleFilter(): void {
@@ -185,6 +185,12 @@ export class PenerimaanBrgBksListComponent implements OnInit {
 
   onAddPressed(): void {
     const route = this.router.createUrlTree(['/transaction/penerimaan-barang-bekas/add-data']);
+    this.router.navigateByUrl(route);
+  }
+
+
+  onAddPressedOtomatis(): void {
+    const route = this.router.createUrlTree(['/transaction/penerimaan-barang-bekas/list-retur']);
     this.router.navigateByUrl(route);
   }
 
@@ -241,7 +247,7 @@ export class PenerimaanBrgBksListComponent implements OnInit {
   }
 
   onFilterPressed(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
     console.log('filter pressed');

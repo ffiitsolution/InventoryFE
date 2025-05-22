@@ -44,7 +44,8 @@
               <tr>
                 <th scope="col" style=" vertical-align: middle;" class="text-center align-items-start" rowspan="2">No.
                 </th>
-                <th scope="col" style=" vertical-align: middle;" class="text-center align-items-start" rowspan="2">Kode</th>
+                <th scope="col" style=" vertical-align: middle;" class="text-center align-items-start" rowspan="2">Kode
+                </th>
                 <th scope="col" style=" vertical-align: middle;" class="text-center align-items-start" rowspan="3">Nama
                   Barang</th>
                 <th scope="col" style=" vertical-align: middle;" class="text-center align-items-start" rowspan="2">
@@ -83,8 +84,8 @@
                 <td class="text-center">{{ i + 1 }}</td>
                 <td class="text-center">{{ data.kodeBarang }}</td>
                 <td class="text-center">{{ data.namaBarang }}</td>
-                <td class="text-center">{{ data.konversi }} {{data.satuanKecil}}</td>
-                <td class="text-center">{{ data.totalQtyKirim }} {{data.satuanKecil}}</td>
+                <td class="text-center">{{ data.konversi }} {{data.satuanKecil}} / {{data.satuanBesar}}</td>
+                <td class="text-center">{{ data.totalQtyKirim }}</td>
                 <td class="text-center">{{ data.noSuratJalan }}</td>
                 <td class="text-center">{{ data.kodeTujuan }} - {{data.namaCabang}}</td>
 
@@ -94,10 +95,10 @@
                       [(ngModel)]="data.nomorColli" (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
                       (keypress)="g.conditionInput($event, 'numeric')" />
 
-                    </div>
-                    <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessages[i]">
-                      {{ validationMessages[i] }}
-                    </span>
+                  </div>
+                  <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessages[i]">
+                    {{ validationMessages[i] }}
+                  </span>
                 </td>
 
                 <td class="text-center input-column">
@@ -147,40 +148,64 @@
         <h3 class="modal-title">Konfirmasi Cetak Data</h3>
       </div>
       <div class="modal-body" *ngIf="isShowPrintModal">
-        <div class="form-group">
+        <div class="form-group" *ngIf="!isSingleDo">
           <label>No. Packing List</label>
-          <input type="text" [(ngModel)]="selectedData.packingListNumber" readonly class="form-control">
+          <input type="text" [value]="'Automatic'" readonly class="form-control">
         </div>
 
-        <div class="form-group">
+        <div class="form-group" *ngIf="isSingleDo">
+          <label>No. Packing List</label>
+          <input type="text" [value]="singleDoData.noSuratJalan" readonly class="form-control">
+        </div>
+
+        <div class="form-group" *ngIf="!isSingleDo">
           <label>Tujuan Kirim</label>
           <div class="tujuan-kirim d-flex align-items-center">
             <input type="text" [(ngModel)]="selectedData.data.kodeCabang" readonly class="form-control w-25">
-            <button class="btn btn-outline-secondary ms-2" (click)="onShowModal()"><i
-                class="fa fa-search"></i></button>
+            <button class="btn btn-outline-secondary ms-2" (click)="onShowModal()"><i class="fa fa-search"></i></button>
             <input type="text" [(ngModel)]="selectedData.data.namaCabang" readonly class="form-control w-50 ms-2">
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" *ngIf="isSingleDo">
+          <label>Tujuan Kirim</label>
+          <div class="tujuan-kirim d-flex align-items-center">
+            <input type="text" [(ngModel)]="singleDoData.kodeTujuan" readonly class="form-control w-25">
+            <input type="text" [value]="singleDoData.namaTujuan" readonly class="form-control w-50 ms-2">
+          </div>
+        </div>
+
+
+        <div class="form-group" *ngIf="!isSingleDo">
           <label>Alamat Tujuan</label>
           <textarea [(ngModel)]="selectedData.data.alamat1" readonly class="form-control"></textarea>
         </div>
 
-        <p class="note text-center text-muted">
-          Siapkan kertas, jika anda ingin mencetak ke <strong>'PRINTER'</strong>
-        </p>
+        <div class="form-group" *ngIf="isSingleDo">
+          <label>Alamat Tujuan</label>
+          <textarea
+            [value]="singleDoData.alamatTujuan + ', ' +  singleDoData.alamatTujuanLanjutan + ', ' + singleDoData.kotaTujuan"
+            readonly class="form-control"></textarea>
+        </div>
+
+        <div class="row justify-content-center">
+          <div class="col-10 d-flex justify-content-center">
+            <label>
+              Siapkan kertas, jika anda ingin mencetak ke <strong>'PRINTER'</strong>
+            </label>
+          </div>
+        </div>
       </div>
 
       <div class="modal-footer justify-content-center">
         <button class="btn btn-warning me-2" (click)="onSubmit('download')">
-          <i class="fa fa-file-pdf-o pe-2" *ngIf="!printing"></i> 
-          <i class="fa fa-spinner fa-spin" *ngIf="printing"></i>
+          <i class="fa fa-file-pdf-o pe-2" *ngIf="!printingPdf"></i>
+          <i class="fa fa-spinner fa-spin" *ngIf="printingPdf"></i>
           PDF
         </button>
         <button class="btn btn-primary me-2" (click)="onSubmit('print')">
-          <i class="fa fa-print pe-2"  *ngIf="!printing"></i>
-          <i class="fa fa-spinner fa-spin" *ngIf="printing"></i>
+          <i class="fa fa-print pe-2" *ngIf="!printingPrinter"></i>
+          <i class="fa fa-spinner fa-spin" *ngIf="printingPrinter"></i>
           Printer
         </button>
         <button class="btn btn-danger" (click)="isShowPrintModal = false">

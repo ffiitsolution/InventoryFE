@@ -36,7 +36,7 @@ export class AddDataBarangReturComponent
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings = {
+  dtOptions: any = {
     pagingType: 'full_numbers',
     pageLength: 5,
     processing: true,
@@ -164,7 +164,7 @@ export class AddDataBarangReturComponent
       ordering: true,
       paging: true,
       drawCallback: () => {},
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         let page = Math.floor(
           dataTablesParameters.start / dataTablesParameters.length
         );
@@ -199,7 +199,7 @@ export class AddDataBarangReturComponent
         {
           data: 'dtIndex',
           title: 'No.',
-          render: (data) => `<strong>${data || '-'}</strong>`,
+          render: (data:any) => `<strong>${data || '-'}</strong>`,
         },
         { data: 'KODE_SUPPLIER', title: 'Kode Supplier' },
         { data: 'NAMA_SUPPLIER', title: 'Nama Supplier' },
@@ -208,7 +208,7 @@ export class AddDataBarangReturComponent
         {
           data: 'STATUS_AKTIF',
           title: 'Status',
-          render: (data) => (data === 'A' ? 'AKTIF' : 'TIDAK AKTIF'),
+          render: (data:any) => (data === 'A' ? 'AKTIF' : 'TIDAK AKTIF'),
         },
         {
           title: 'Action',

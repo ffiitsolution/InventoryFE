@@ -7,6 +7,8 @@ import { CommonModule } from '@angular/common';
 
 import {
   AlertComponent,
+  ProgressComponent ,
+  ProgressBarComponent,
   ButtonDirective,
   ButtonGroupModule,
   CardModule,
@@ -18,6 +20,7 @@ import {
   TableModule,
   TextColorDirective,
   UtilitiesModule,
+  ProgressModule 
 } from '@coreui/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -60,7 +63,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     BsDatepickerModule.forRoot(),
     SharedComponentModule,
     TableModule,
-    AlertComponent
+    AlertComponent,
+    ProgressComponent,
+    ProgressBarComponent,
+    ProgressModule
   ],
   declarations: [
     AddPlanningOrderComponent,

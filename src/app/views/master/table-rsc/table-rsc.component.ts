@@ -30,7 +30,7 @@ export class TableRscComponent implements OnInit, OnDestroy, AfterViewInit {
   data: any;
   loadingIndicator = false;
   orders: any[] = [];
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -61,7 +61,7 @@ export class TableRscComponent implements OnInit, OnDestroy, AfterViewInit {
       drawCallback: () => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         this.dataService
@@ -175,7 +175,7 @@ export class TableRscComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }

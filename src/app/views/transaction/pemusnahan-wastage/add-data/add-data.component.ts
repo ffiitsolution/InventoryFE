@@ -31,7 +31,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   isShowModal: boolean = false;
   dtTrigger: Subject<any> = new Subject();
   bsConfig: Partial<BsDatepickerConfig>;
@@ -45,7 +45,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
     displayKey: 'name', // Key to display in the dropdown
     search: true, // Enable search functionality
     height: '200px', // Dropdown height
-    customComparator: () => {}, // Custom sorting comparator
+    customComparator: () => { }, // Custom sorting comparator
     moreText: 'lebih banyak', // Text for "more" options
     noResultsFound: 'Tidak ada hasil', // Text when no results are found
     searchOnKey: 'name' // Key to search
@@ -64,11 +64,11 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private router: Router,
     private dataService: DataService,
-    private globalService: GlobalService,
+    public globalService: GlobalService,
     private translationService: TranslationService,
     private deliveryDataService: DeliveryDataService,
     private appService: AppService
-  ) { 
+  ) {
     this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
@@ -89,7 +89,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
     const today = new Date().toISOString().split('T')[0];
     this.minDate = new Date(today);
     this.maxDate = new Date(today);
-    
+
     this.getDropdownUser();
     this.configSelectUser = {
       ...this.baseConfig,
@@ -99,7 +99,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
     };
   }
 
-  getDropdownUser(): void{
+  getDropdownUser(): void {
     const param = {
       defaultLocation: this.globalService.getUserLocationCode()
     };
@@ -113,14 +113,14 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
-  onUserChange(event: any){
+  onUserChange(event: any) {
     const value = event.value;
     this.formData.namaSaksi = value.name;
     this.formData.jabatanSaksi = value.jabatan;
   }
 
   onAddDetail() {
-    this.formData.tglTransaksi = moment(this.formData.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
+    // this.formData.tglTransaksi = moment(this.formData.tglTransaksi, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
 
     this.globalService.saveLocalstorage(
       'headerWastage',
@@ -154,7 +154,40 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isShowModal = true;
   }
 
+  onResetForm(newItem: any): void {
+    this.formData = {
+      namaSaksi: '',
+      jabatanSaksi: '',
+      keterangan: '',
+      tglTransaksi: moment(new Date(), 'YYYY-MM-DD').format('DD-MM-YYYY') || '',
 
+    };
+    this.isShowDetail = false;
+    if (newItem) this.onShowModalPrint(newItem);
+  }
+
+
+  alreadyPrint: boolean;
+  disabledPrintButton: any;
+  paramGenerateReport: any = {}
+  isShowModalReport: boolean;
+
+
+  onShowModalPrint(data: any) {
+    this.paramGenerateReport = {
+      outletBrand: 'KFC',
+      isDownloadCsv: false,
+      ...data
+    };
+    this.isShowModalReport = true;
+    // this.onBackPressed();
+  }
+
+  
+  closeModal() {
+    this.isShowModalReport = false;
+    this.disabledPrintButton = false;
+  }
 }
 @Injectable({
   providedIn: 'root',

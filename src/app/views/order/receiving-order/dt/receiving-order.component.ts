@@ -42,7 +42,7 @@ export class ReceivingOrderComponent
   loadingIndicator: boolean = false;
   showFilterSection: boolean = false;
   searchTriggered: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective | undefined;
@@ -55,6 +55,8 @@ export class ReceivingOrderComponent
     )
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
+  dateRangeRefresh: any = [this.startDateFilter, new Date()];
+
   selectedRowData: any;
   protected config = AppConfig.settings.apiServer;
 
@@ -68,10 +70,13 @@ export class ReceivingOrderComponent
   paramUpdatePrintStatus = {};
   state : any;
   dataUser: any;
+  isShowModalRefresh: boolean = false;
+  isShowModalPesananMasuk: boolean = false;
+  jumlahPesananMasuk: number;
 
   constructor(
     private dataService: DataService,
-    private g: GlobalService,
+    public g: GlobalService,
     private translation: TranslationService,
     private router: Router
   ) {
@@ -83,7 +88,7 @@ export class ReceivingOrderComponent
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -108,7 +113,7 @@ export class ReceivingOrderComponent
                   tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
                   dateCancel: this.g.transformDate(rest.dateCancel),
                   dateCreate: this.g.transformDate(rest.dateCreate),
-                  timeCreate: this.g.transformTime(rest.timeCreate),
+                  timeCreate: this.g.transformTime(rest.timeCreate, true),
                 };
                 return finalData;
               });
@@ -138,25 +143,21 @@ export class ReceivingOrderComponent
         {
           data: 'tipeData',
           title: 'Tipe Pesanan',
-          render: (data) => this.g.getStatusOrderLabel(data),
+          render: (data:any) => this.g.getStatusOrderLabel(data),
         },
         {
           data: 'statusPesanan',
           title: 'Status Pesanan',
           searchable: true,
-          render: (data) => {
-            const isCancel = data == CANCEL_STATUS;
-            const label = this.g.getStatusReceivingOrderLabel(data);
-            if (isCancel) {
-              return `<span class="text-center text-danger">${label}</span>`;
-            }
-            return label;
+          render: (data:any) => {
+            return this.g.getStatusReceivingOrderBadge(data);
           },
         },
+
         {
           data: 'statusCetak',
           title: 'Status Cetak',
-          render: (data) => this.g.getStatusOrderLabel(data, true),
+          render: (data:any) => this.g.getStatusOrderLabel(data, true),
         },
         {
           title: 'Opsi',
@@ -164,7 +165,7 @@ export class ReceivingOrderComponent
             const htmlString = `
               <div class="btn-group" role="group" aria-label="Action">
                 <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
-                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>           
+                <button class="btn btn-sm action-print btn-outline-info btn-60"}>${this.buttonCaptionPrint}</button>
               </div>
             `;
             return htmlString;
@@ -228,7 +229,7 @@ export class ReceivingOrderComponent
   }
 
   rerenderDatatable(): void {
-    this.dtOptions?.columns?.forEach((column: any, index) => {
+    this.dtOptions?.columns?.forEach((column: any, index: any) => {
       if (this.dtColumns[index]?.title) {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }
@@ -241,7 +242,7 @@ export class ReceivingOrderComponent
   }
 
   onFilterPressed() {
-    this.datatableElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
       dtInstance.ajax.reload();
     });
   }
@@ -275,7 +276,7 @@ export class ReceivingOrderComponent
       dateKirim: moment().format("DD-MM-YYYY"),
       timeKirim: moment().format("HHmmss"),
       nomorPesanan: selectedOrder.nomorPesanan,
-    }    
+    }
     this.isShowModalReport = true;
   }
   closeModal(){
@@ -284,4 +285,54 @@ export class ReceivingOrderComponent
     window.location.reload();
   }
 
+
+  refreshDatabase() {
+    console.log("refresh database");
+    const paramGetHeaderDetailAllHQ={
+      kodeTujuan: this.g.getUserLocationCode(),
+      startDate: this.g.transformDate(this.dateRangeRefresh[0]),
+      endDate: this.g.transformDate(this.dateRangeRefresh[1]),
+      user: this.g.getUserCode(),
+      tipePesanan: "I"
+    }
+
+    this.dataService.postData(
+      this.g.urlServer + '/api/receiving-order/get-header-and-detail-all-hq',paramGetHeaderDetailAllHQ
+    ).subscribe((respGetHeaderDetail: any) => {
+      console.log("respGetHeaderDetail", respGetHeaderDetail);
+      this.jumlahPesananMasuk = respGetHeaderDetail.item[0].header.length;
+      // ✅ Call API 2 inside this block
+      this.dataService.postData(
+        this.g.urlServer + '/api/receiving-order/insert-receiving-from-warehouse-all',
+        {
+          header: respGetHeaderDetail.item[0].header,
+          detail: respGetHeaderDetail.item[0].detail,
+          user: this.g.getUserCode()
+        }
+      ).subscribe((respInsertFromWarehouse: any) => {
+          console.log("respInsertFromWarehouse", respInsertFromWarehouse);
+          // ✅ Call API 3 inside this block
+          this.dataService.postData(
+            this.g.urlServer + '/api/receiving-order/update-status-receiving-all-hq',paramGetHeaderDetailAllHQ
+          ).subscribe((respUpdateStatusReceiving: any) => {
+            console.log("respUpdateStatusReceiving", respUpdateStatusReceiving);
+            this.isShowModalRefresh = false;
+            this.isShowModalPesananMasuk = true;
+          }, error => {
+            console.error("API 3 failed", error);
+          });
+      }, error => {
+        console.error("API 2 failed", error);
+      });
+
+    }, error => {
+      console.error("API 1 failed", error);
+    });
+  }
+
+
+  onClickModalPesananMasuk(){
+    window.location.reload();
+  }
 }
+
