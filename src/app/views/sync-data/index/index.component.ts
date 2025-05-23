@@ -235,6 +235,7 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
             this.messages['getListBackup'] = res.error;
           } else {
             this.listBackupDb = res.item ?? [];
+            this.messages['freeDiskSpaceBackup'] = res.message + ' GB';
           }
           this.loadings['getListBackup'] = false;
         },

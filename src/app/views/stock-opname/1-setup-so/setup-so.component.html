@@ -23,7 +23,8 @@
       <div class="row">
         <div class="col mb-2">
           <button class="btn btn-primary w-100" (click)="onMenuClick('Cetak Form SO')"
-            [disabled]="!selectedRowData || selectedRowData?.statusProses !== 'BELUM'">
+            [disabled]="!selectedRowData || selectedRowData?.statusProses !== 'BELUM' || loadings['cetakFormSo']">
+            <i class="fa fa-refresh fa-spin me-2" *ngIf="loadings['cetakFormSo']"></i>
             Cetak Form SO
           </button>
         </div>
@@ -35,7 +36,8 @@
         </div>
         <div class="col mb-2">
           <button class="btn btn-primary w-100" (click)="onMenuClick('Laporan Selisih SO (Sementara)')"
-            [disabled]="!selectedRowData || selectedRowData?.statusProses !== 'BELUM'">
+            [disabled]="!selectedRowData || selectedRowData?.statusProses !== 'BELUM' || loadings['laporanSelisihSO']">
+            <i class="fa fa-refresh fa-spin me-2" *ngIf="loadings['laporanSelisihSO']"></i>
             Laporan Selisih SO (Sementara)
           </button>
         </div>
@@ -103,9 +105,41 @@
 
 <div class="fade-in">
   <app-modal-print-list [alreadyPrint]="alreadyPrint" [disabledPrintButton]="disabledPrintButton"
-    [generatePdfUrl]="'/api/report/laporan-hasil-so'"
-    [updateStatusUrl]="''" [updatePrintStatusParam]="''"
+    [generatePdfUrl]="'/api/report/laporan-hasil-so'" [updateStatusUrl]="''" [updatePrintStatusParam]="''"
     [generateReportParam]="paramGenerateReport" [isShowModalReport]="isShowModalReport" [isShowSelection]="true"
     (closeModalEvent)="closeModal()">
   </app-modal-print-list>
+</div>
+
+<div class="container my-5 fade-in fs-8">
+  <div class="alert alert-info">
+    <h5 class="alert-heading">
+      <em class="text-danger">
+        <i class="fa fa-exclamation-circle"></i>
+        PERHATIAN: Stock Opname (SO) hanya dilakukan di akhir bulan sebelum Tutup Bulan!
+      </em>
+      <hr class="m-1">
+      Urutan Proses Stock Opname:
+    </h5>
+    <ol class="list-group list-group-numbered">
+      <li class="list-group-item">
+        <strong>Tambah SO:</strong> Buat data SO baru sesuai dengan periode
+      </li>
+      <li class="list-group-item">
+        <strong>Cetak Form SO:</strong> Cetak formulir fisik untuk pencatatan manual hasil penghitungan stok fisik
+      </li>
+      <li class="list-group-item">
+        <strong>Entry SO:</strong> Masukkan hasil penghitungan stok fisik ke dalam sistem berdasarkan data dari form SO
+        yang telah diisi
+      </li>
+      <li class="list-group-item">
+        <strong>Laporan Selisih SO:</strong> Tinjau laporan selisih antara stok sistem dan stok fisik. Lakukan analisis
+        dan koreksi jika diperlukan.
+      </li>
+      <li class="list-group-item">
+        <strong>Posting SO:</strong> Setelah semua data dipastikan benar, lakukan proses posting untuk memperbarui data
+        stok di sistem.
+      </li>
+    </ol>
+  </div>
 </div>

@@ -48,7 +48,7 @@
         </div>
       </div>
     </ng-container>
-    
+
 
     <ng-container *ngIf="['Terima Retur Dari Site', 'Kirim Retur Ke Site', 'Kirim Retur Ke Supplier'].includes(currentReport)">
       <div class="row mt-4">
@@ -141,6 +141,7 @@
         <ul cDropdownMenu>
           <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('preview')" *ngIf="(currentReport !== 'Transaksi Pengiriman') ||  (currentReport === 'Transaksi Pengiriman' && paramTipeListing !== 'by-item')">Preview PDF</button></li>
           <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')"  *ngIf="(currentReport !== 'Transaksi Pengiriman') || (currentReport === 'Transaksi Pengiriman' && paramTipeListing !== 'by-item')">Download PDF</button></li>
+          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('xlsx')">Download XLSX</button></li>
           <li><button class="btn btn-outline-primary w-100" (click)="doSubmit('csv')">Download CSV</button></li>
         </ul>
       </c-dropdown>
