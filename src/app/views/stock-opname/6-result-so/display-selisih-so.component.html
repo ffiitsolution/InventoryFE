@@ -2,15 +2,12 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="row">
-        <div class="col">
-          <h5>{{ "Pengiriman ke Cabang atau Gudang" | translate }}</h5>
-        </div>
-        <div class="col col-md-8">
-          <div class="menu-purpose col-sm-12 d-flex justify-content-end align-items-center">
-            <span>
-              Program ini digunakan untuk pengiriman pesanan ke cabang atau gudang lain            
-            </span>
-          </div>
+        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
+          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button>
+          <h5>{{ "Display Selisih S.O" | translate }}</h5>
         </div>
       </div>
     </c-card-body>
@@ -19,7 +16,6 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <div class="divider"></div>
       <div class="table-responsive">
         <table datatable [dtOptions]="dtOptions" class="row-border hover stripe"></table>
       </div>
@@ -29,9 +25,9 @@
 
 <div class="fade-in">
   <app-modal-print-list [alreadyPrint]="alreadyPrint" [disabledPrintButton]="disabledPrintButton"
-    [generatePdfUrl]="'/api/report/laporan-hasil-so'"
+    [generatePdfUrl]="'/api/report/display-selisih-so'"
     [updateStatusUrl]="''" [updatePrintStatusParam]="''"
-    [generateReportParam]="paramGenerateReport" [isShowModalReport]="isShowModalReport" [isShowSelection]="true"
+    [generateReportParam]="paramGenerateReport" [isShowModalReport]="isShowModalReport" [isShowSelection]="false"
     (closeModalEvent)="closeModal()">
   </app-modal-print-list>
 </div>

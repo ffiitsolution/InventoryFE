@@ -159,8 +159,9 @@
                       type="text"
                       min="0"
                       class="form-control text-center inputQty inputNumberSpace"
-                      [ngClass]="{ 'is-invalid': validationMessageList[i] }"
-                      [(ngModel)]="data.qtyPemakaian"
+                      [ngClass]="{'is-invalid': validationMessageList[i]}" 
+                      [(ngModel)]="data.qtyPemakaian" 
+                      (focus)="g.selectInputContent($event)"
                       (change)="onInputValueItemDetail($event, i)"
                     />
                     <span

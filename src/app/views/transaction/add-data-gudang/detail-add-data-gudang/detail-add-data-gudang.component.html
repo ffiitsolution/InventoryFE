@@ -420,8 +420,8 @@
   [attr.aria-hidden]="!isShowModalExpired">
   <c-modal-header>
     <h5 cModalTitle>Entry Data Expired</h5>
-    <button (click)="isShowModalExpired = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
-        class="fa fa-times"></i></button>
+    <!-- <button (click)="isShowModalExpired = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
+        class="fa fa-times"></i></button> -->
   </c-modal-header>
   <c-modal-body>
     <div class="row">
@@ -617,7 +617,7 @@
           }} {{ selectedExpProduct.SATUAN_KECIL }} 
         </p>
         <button (click)="onSaveEntryExpired()" type="button" class="btn btn-primary ms-2">
-          <i class="fa fa-check me-1"></i>Simpan
+          <i class="fa fa-check me-1"></i>Simpan Data
         </button>
       </div>
     </div>

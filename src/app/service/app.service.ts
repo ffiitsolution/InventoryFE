@@ -116,6 +116,10 @@ export class AppService {
   updateWarehouse(url: String, params: any): Observable<any> {
     return this.dataService.postData(this.config.BASE_URL_HQ + url, params);
   }
+  insertInventory(url: String, params: any): Observable<any> {
+    return this.dataService.postData(this.config.BASE_URL + url, params);
+  }
+
   patch(url: string, params: any): Observable<any> {
     return this.dataService.patchData(this.config.BASE_URL + url, params);
   }

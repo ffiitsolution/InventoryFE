@@ -45,6 +45,11 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
   charCount: number = 0;
   isKeteranganInvalid: boolean = false;
   selectedRowData: any;
+  isShowModalReport: boolean = false;
+  disabledPrintButton: boolean = false;
+  paramGenerateReport: any = {};
+  alreadyPrint: boolean = false;
+
 
   @ViewChild('formModal') formModal: any;
   // Form data object
@@ -131,6 +136,29 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     this.isKeteranganInvalid = !allowedRegex.test(currentValue);
   }
 
+  onBatalPressed(newItem: any): void {
+    console.log('newItem', newItem);
+    this.isShowDetail = false;
+    if (newItem) this.onShowModalPrint(newItem);
+  }
+
+  onShowModalPrint(data: any) {
+    console.log('ini data', data);
+
+    this.paramGenerateReport = {
+      nomorTransaksi: data.nomorTransaksi,
+      userEntry: '',
+      jamEntry: '',
+      tglEntry: '',
+      outletBrand: 'KFC',
+      kodeGudang: this.globalService.getUserLocationCode(),
+      isDownloadCsv: false,
+      reportName: 'cetak-pemakaian-barang-sendiri',
+      confirmSelection: 'Ya',
+    };
+    this.isShowModalReport = true;
+  }
+
   actionBtnClick(action: string, data: any = null) {
     this.selectedRo = JSON.stringify(data);
     this.renderDataTables();
@@ -164,6 +192,11 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   
     return false;
+  }
+
+  closeModal() {
+    this.isShowModalReport = false;
+    this.disabledPrintButton = false;
   }
   
   onAddDetail() {

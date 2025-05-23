@@ -733,4 +733,10 @@ export class GlobalService {
                   ${found.label.toUpperCase()}</span>`;
 
   }
+
+  selectInputContent(event: FocusEvent): void {
+    const input = event.target as HTMLInputElement;
+    input.select();
+  }
+
 }
