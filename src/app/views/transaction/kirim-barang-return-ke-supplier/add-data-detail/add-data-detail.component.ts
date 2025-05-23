@@ -197,7 +197,7 @@ export class AddDataDetailKirimBarangReturnKeSupplierComponent
           satuanBesar: item.satuanBesar,
           qtyBesar: item.qtyPemakaianBesar || 0,
           qtyKecil: item.qtyPemakaianKecil || 0,
-          flagExpired: 'Y',
+          flagExpired: item.isConfirmed ? 'Y' : 'T',
           // flagExpired: item.flagExpired,
           totalQty: (this.helper.sanitizedNumber(item.qtyPemakaianBesar) * item.konversi) +
                     this.helper.sanitizedNumber(item.qtyPemakaianKecil),
@@ -808,9 +808,9 @@ export class AddDataDetailKirimBarangReturnKeSupplierComponent
   }
 
 
+  // Saat memanggil API, pastikan default-nya terisi
   getProductRow(kodeBarang: string, index: number) {
-    let errorMessage
-    let param = { kodeBarang: kodeBarang };
+    const param = { kodeBarang };
 
     if (kodeBarang !== '') {
       const isDuplicate = this.listProductData.some(
@@ -818,50 +818,60 @@ export class AddDataDetailKirimBarangReturnKeSupplierComponent
       );
 
       if (isDuplicate) {
-        this.toastr.error("Barang sudah ditambahkan")
+        this.toastr.error("Barang sudah ditambahkan");
         return;
       }
 
       this.appService.getProductById(param).subscribe({
         next: (res) => {
           if (res) {
-            this.listProductData[index].namaBarang = res.namaBarang;
-            this.listProductData[index].satuanKecil = res.satuanKecil;
-            this.listProductData[index].satuanBesar = res.satuanBesar;
-            this.listProductData[index].konversi = res.konversi;
-
-            this.listProductData[index].isConfirmed = true;
-            this.listProductData[index].isLoading = false;
-
-            this.listProductData[index].totalQtyPesan = (0).toFixed(2);
-            this.listProductData[index].qtyPesanKecil = (0).toFixed(2);
-            this.listProductData[index].qtyPesanBesar = (0).toFixed(2);
-
-            // Add new properties to the object
-            this.listProductData[index] = {
+            const updatedData = {
               ...this.listProductData[index],
-              ...res
+              kodeBarang: res.kodeBarang,
+              namaBarang: res.namaBarang,
+              satuanKecil: res.satuanKecil || '',
+              satuanBesar: res.satuanBesar || '',
+              konversi: ((res.konversi ?? 1) as number).toFixed(2), 
+              isConfirmed: res.flagExpired === 'Y',
+              isLoading: false,
+              totalQtyPesan: '0.00',
+              qtyPesanKecil: '0.00',
+              qtyPesanBesar: '0.00',
+              qtyPemakaianKecil: '0.00',
+              qtyPemakaianBesar: '0.00',
+              totalQtyPemakaian: '0.00',
             };
 
+            this.listProductData[index] = updatedData;
 
             if (index === this.listProductData.length - 1) {
-              this.listProductData.push({
-                kodeBarang: '',
-                namaBarang: '',
-              });
+              this.listProductData.push({ kodeBarang: '', namaBarang: '' });
             }
-            this.validationMessageListSatuanKecil.push("")
-            this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0")
-            this.validationMessageListSatuanBesar.push("")
-              // this.mapOrderData(data);
-              // this.onSaveData();
 
-
+            this.validationMessageListSatuanKecil.push("");
+            this.validationMessageQtyPesanList.push("Quantity Pesan tidak Boleh 0");
+            this.validationMessageListSatuanBesar.push("");
           }
         },
       });
     }
   }
+
+  // Fungsi pemformatan angka ke dua desimal
+  formatQty(data: any, tipe: 'besar' | 'kecil') {
+    if (tipe === 'besar') {
+      data.qtyPemakaianBesar = this.formatToFixed(data.qtyPemakaianBesar);
+    } else {
+      data.qtyPemakaianKecil = this.formatToFixed(data.qtyPemakaianKecil);
+    }
+  }
+
+  formatToFixed(value: any): string {
+    const num = parseFloat(value);
+    return isNaN(num) ? '0.00' : num.toFixed(2);
+  }
+
+  
 
   onBlurQtyPesanBesar(index: number) {
     const value = this.listProductData[index].qtyPesanBesar;
@@ -1173,7 +1183,7 @@ export class AddDataDetailKirimBarangReturnKeSupplierComponent
       qtyPemakaianKecil: '0.00',
       totalQtyPemakaian: '0.00',
       isFromRetur: false,
-      isConfirmed: data.flagExpired
+      isConfirmed: data.flagExpired == 'Y' ? true : false
     };
 
     this.listProductData[this.currentSelectedForModal] = resepData;

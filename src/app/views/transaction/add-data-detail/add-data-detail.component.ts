@@ -66,6 +66,7 @@ export class AddDataDetailDeliveryComponent
   protected config = AppConfig.settings.apiServer;
   filteredListTypeOrder: any[] = [];
   validationMessages: { [key: number]: string } = {};
+  validationQtyExp: { [key: number]: string } = {};
   validationQtyKecilKonversi: { [key: number]: string } = {};
   validationTotalStock: { [key: number]: string } = {};
   dtColumns: any = [];
@@ -276,6 +277,7 @@ export class AddDataDetailDeliveryComponent
           qtyBKirim: data.qtyPesanBesar,
           qtyKKirim: data.qtyPesanKecil,
           hargaSatuan: 0,
+          flagExpired: data.flagExpired,
           userCreate: JSON.parse(localStorage.getItem("inv_currentUser") || "{}").namaUser,
           konversi: data.konversi,
           satuanKecil: data.satuanKecil,
@@ -313,12 +315,15 @@ export class AddDataDetailDeliveryComponent
     );
 
     if (expiredButNotEntered.length > 0) {
+      expiredButNotEntered.forEach((data: any) => {
+        this.validationQtyExp[data.kodeBarang] = 'Isi expired!';
+      });
+
       this.toastr.warning('Qty expired belum dilengkapi!');
       this.adding = false;
       return;
     }
 
-    const self = this;
 
     Swal.fire({
       title: '<div style="color: white; background: #e55353; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
@@ -337,6 +342,7 @@ export class AddDataDetailDeliveryComponent
       </button>
     </div>
   `,
+      allowOutsideClick: false,
       showConfirmButton: false,
       showCancelButton: false,
       width: '600px',
@@ -348,6 +354,7 @@ export class AddDataDetailDeliveryComponent
         const cancelBtn = document.getElementById('btn-cancel');
 
         submitBtn?.addEventListener('click', () => {
+          Swal.close();
           this.appService.saveDeliveryOrder(param).subscribe({
 
             next: (res) => {
@@ -372,7 +379,6 @@ export class AddDataDetailDeliveryComponent
               this.adding = false;
             },
           }); // 👈 bukan onSubmit lagi
-          Swal.close();
         });
 
         cancelBtn?.addEventListener('click', () => {
@@ -750,10 +756,23 @@ export class AddDataDetailDeliveryComponent
         totalQtyExpired += item.totalQty;
       }
     });
+    this.validationQtyExp[this.selectedExpProduct.kodeBarang] = '';
+
+    const expiredButNotEntered = this.listOrderData.filter((data: any) =>
+      data.flagExpired === 'Y' &&
+      !this.listEntryExpired.some((entry: any) => 
+        entry.kodeBarang === data.kodeBarang)
+    );
+
+    if (expiredButNotEntered.length > 0) {
+      expiredButNotEntered.forEach((data: any) => {
+        this.validationQtyExp[data.kodeBarang] = 'Isi expired!';
+      });
+    }
 
 
     if (totalQtyExpired !== totalQtyWaste) {
-      this.toastr.error("Total Qty Expired harus sama dengan Qty Expired");
+      this.toastr.error("Total Qty Expired harus sama dengan Total Qty Kirim");
     } else {
       this.isShowModalExpired = false;
     }

@@ -2,20 +2,16 @@
   <c-card-body class="w-100">
     <div>
       <ng-container>
-        <div *ngIf="loading">
-          <app-loading></app-loading>
-        </div>
-
         <div class="row justify-content-between mb-2">
           <div class="col-6 d-flex align-items-center">
-            <div class="col-4 ">
+            <div class="col-3">
               <label for="jabatanSaksi">{{ "Jumlah Item " | translate }}</label>
             </div>
-            <div class="col-2 pe-0">
+            <div class="col-1 pe-0">
               <input type="text" class="form-control text-center" [value]="listOrderData.length" disabled />
             </div>
             <div class="col"></div>
-    
+
           </div>
           <div class="col-2"></div>
           <div class="col-4 d-flex justify-content-end">
@@ -73,7 +69,8 @@
             </thead>
             <tbody *ngIf="!list || list.length === 0">
               <tr>
-                <td colspan="12" class="text-center">No Data Found</td>
+                <td colspan="13" class="text-center"> <app-loading></app-loading>
+                </td>
               </tr>
             </tbody>
             <tbody>
@@ -139,8 +136,7 @@
                 </td>
                 <td class="text-center">
                   <div class="position-relative" *ngIf="data.flagJenis === 'Y'">
-                    <select class="form-select text-center pe-5 custom-select" (blur)="onBlurParsed(i, 'jenis')"
-                      [(ngModel)]="data.jenis">
+                    <select class="form-select text-center pe-5 custom-select" [(ngModel)]="data.jenis">
                       <option *ngFor="let status of listStatus" [value]="status.id">
                         {{ status.name }}
                       </option>
@@ -160,7 +156,7 @@
                 </td>
                 <td class="text-center">
                   <span *ngIf="totalQtyExpired[data.kodeBarang]">
-                    {{totalQtyExpired[data.kodeBarang].toFixed(2)}} {{data.satuanKecil}}
+                    {{totalQtyExpired[data.kodeBarang].toFixed(2)}}
                   </span>
                 </td>
               </tr>
@@ -180,7 +176,7 @@
 </c-card>
 
 <div class="d-grid gap-3 d-md-flex justify-content-end">
-  <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()">
+  <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()" [disabled]="adding">
     <i class="fa fa-check pe-2" *ngIf="!adding"></i>
     <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
     {{ "Proses Simpan Data" | translate }}
@@ -236,7 +232,7 @@
           </div>
           <div class="col-8 pe-0">
             <input type="text" placeholder="Nomor pesanan" class="form-control" id="konversi"
-              [value]="(helper.sanitizedNumber(selectedExpProduct.qtyTerimaBesar) * selectedExpProduct.konversi) + helper.sanitizedNumber(selectedExpProduct.qtyTerimaKecil) + ' ' + selectedExpProduct.satuanKecil"
+              [value]="((helper.sanitizedNumber(selectedExpProduct.qtyTerimaBesar) * selectedExpProduct.konversi) + helper.sanitizedNumber(selectedExpProduct.qtyTerimaKecil)).toFixed(2) + ' ' + selectedExpProduct.satuanKecil"
               name="konversi" readonly />
           </div>
 
@@ -272,9 +268,6 @@
 
     <div class="table-responsive">
       <ng-container>
-        <div *ngIf="loading">
-          <app-loading></app-loading>
-        </div>
         <table bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
           <thead>
             <tr>
@@ -318,7 +311,8 @@
               <td class="text-center input-column">
                 <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.qtyTerimaBesar" (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')" />
+                    [(ngModel)]="data.qtyTerimaBesar" (blur)="onBlurParsedExp(i, 'qtyTerimaBesar')"
+                    (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')" />
                   <span class="d-flex align-items-center justify-content-center">
                     / {{data.satuanBesar}}
                   </span>
@@ -328,15 +322,16 @@
               <td class="text-center input-column">
                 <div class="d-flex justify-content-center" style="gap: 5px;">
                   <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.qtyTerimaKecil" (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')" />
+                    [(ngModel)]="data.qtyTerimaKecil" (blur)="onBlurParsedExp(i, 'qtyTerimaKecil')"
+                    (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')" />
                   <span class="d-flex align-items-center justify-content-center">
                     / {{data.satuanKecil}}
                   </span>
                 </div>
               </td>
 
-              <td class="text-center">{{(helper.sanitizedNumber(data.qtyTerimaBesar) *
-                data.konversi) + helper.sanitizedNumber(data.qtyTerimaKecil) }} {{data.satuanKecil}}
+              <td class="text-center">{{((helper.sanitizedNumber(data.qtyTerimaBesar) *
+                data.konversi) + helper.sanitizedNumber(data.qtyTerimaKecil)).toFixed(2) }} {{data.satuanKecil}}
               </td>
             </tr>
           </tbody>

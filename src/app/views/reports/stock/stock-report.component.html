@@ -199,7 +199,14 @@
       </div>
       <div class="col-5">
         <div class="input-group">
-          <input type="text" id="dateFilter" class="form-control input-disabled" [(ngModel)]="namaBarang"  disabled />
+          <input
+            type="text"
+            id="dateFilter"
+            class="form-control input-disabled"
+            [(ngModel)]="namaBarang"
+            [placeholder]="namaBarang ? '' : 'Semua Barang'"
+            disabled
+          />
           <button class="btn btn-outline-primary" type="button" 
           (click)="deleteBarang()">
             <i class="fa fa-trash"></i>

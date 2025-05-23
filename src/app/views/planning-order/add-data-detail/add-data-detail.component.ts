@@ -433,6 +433,7 @@ export class AddDataDetailPlanningOrderComponent
       year: Number(this.headerPlanningOrder.selectedYear),
       month: Number(this.headerPlanningOrder.selectedMonth),
       tipedata: this.confirmSelection,
+      namaGudang: this.g.getUserLocationNama(),
       kodeGudang: this.g.getUserLocationCode(),
     };
     this.service.getFile('/api/report/planning-order', param).subscribe({

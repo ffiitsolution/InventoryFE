@@ -109,6 +109,7 @@ export class PenerimaanBrgBksListNoreturComponent implements OnInit {
           ...dataTablesParametersRetur,
           kodeGudang: this.g.getUserLocationCode(),
           status: 'K',
+          flagBrgBekas: 'Y',
         };
         this.dataService
           .postData(

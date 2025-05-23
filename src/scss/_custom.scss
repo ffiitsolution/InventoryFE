@@ -16,7 +16,10 @@
 .justify-center {
   justify-content: center !important;
 }
-
+.vertical-center {
+  display: flex;
+  align-items: center;
+}
 
 $theme-colors: map-merge(
   $theme-colors,
@@ -91,7 +94,12 @@ c-modal[backdrop="static"] {
   background: rgba(0, 0, 0, 0.7) !important;
 }
 
-.ngx-pagination a, .ngx-pagination li {
+.modal[data-bs-backdrop="static"] {
+  background: rgba(0, 0, 0, 0.7) !important;
+}
+
+.ngx-pagination a,
+.ngx-pagination li {
   text-decoration: none !important;
   border-radius: 5px !important;
 }
@@ -114,9 +122,25 @@ c-modal[backdrop="static"] {
 
 .ngx-pagination {
   display: flex;
-  justify-content: flex-start; /* Memastikan kontrol pagination berada di tengah */
-  padding: 0.25rem 0.25rem;  /* Memberikan padding kecil untuk kontrol pagination */
-  margin: 0 !important;   /* Menghilangkan margin default */
-  font-size: 0.875rem; /* Ukuran font kecil untuk pagination */
+  justify-content: flex-start;
+  padding: 0.25rem 0.25rem;
+  margin: 0 !important;
+  font-size: 0.875rem;
 }
 
+.btn:disabled:hover,
+button:disabled:hover,
+input:disabled:hover,
+select:disabled:hover,
+textarea:disabled:hover {
+  color: inherit;
+  transform: none;
+  cursor: not-allowed !important;
+}
+.btn:disabled,
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed !important;
+}

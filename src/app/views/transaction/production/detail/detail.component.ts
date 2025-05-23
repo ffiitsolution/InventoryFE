@@ -355,11 +355,22 @@ export class DetailProductionComponent
       customClass: {
         popup: 'custom-popup',
       },
+      allowOutsideClick: () => {
+          return false; // Prevent closing
+      },
       didOpen: () => {
-        const submitBtn = document.getElementById('btn-submit');
-        const cancelBtn = document.getElementById('btn-cancel');
+       const submitBtn = document.getElementById(
+            'btn-submit'
+          ) as HTMLButtonElement;
+          const cancelBtn = document.getElementById(
+            'btn-cancel'
+          ) as HTMLButtonElement;
 
-        submitBtn?.addEventListener('click', () => {
+          submitBtn?.addEventListener('click', () => {
+
+          submitBtn.disabled = true;
+          cancelBtn.disabled = true;
+          Swal.close();
           this.appService.postingProduction(requestBody).subscribe({
             next: (res: any) => {
               if (!res.success) {
@@ -376,7 +387,8 @@ export class DetailProductionComponent
             error: (err: any) => {
               console.log('An error occurred while updating the profile.');
               this.loadingPosting = false;
-
+              submitBtn.disabled = false;
+              cancelBtn.disabled = false;
               Swal.close();
             },
           });

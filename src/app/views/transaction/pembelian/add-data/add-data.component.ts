@@ -231,11 +231,6 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
           },
         },
         {
-          data: 'statusCetak',
-          title: 'Status Cetak',
-          render: (data: any) => this.globalService.getStatusOrderLabel(data, true, true),
-        },
-        {
           title: 'Action',
           render: () => {
             return `<button class="btn btn-sm action-select btn-info btn-80 text-white">Pilih</button>`;
@@ -338,7 +333,7 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
   onShowModalPrint(data: any) {
     this.paramGenerateReport = {
       outletBrand: 'KFC',
-      isDownloadCsv: true,
+      isDownloadCsv: false,
       nomorTransaksi: data.nomorTransaksi,
       kodeGudang: this.globalService.getUserLocationCode()
     };

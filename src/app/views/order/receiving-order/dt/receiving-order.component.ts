@@ -113,7 +113,7 @@ export class ReceivingOrderComponent
                   tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
                   dateCancel: this.g.transformDate(rest.dateCancel),
                   dateCreate: this.g.transformDate(rest.dateCreate),
-                  timeCreate: this.g.transformTime(rest.timeCreate),
+                  timeCreate: this.g.transformTime(rest.timeCreate, true),
                 };
                 return finalData;
               });

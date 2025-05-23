@@ -153,7 +153,7 @@ export class TransactionReportComponent
 
     let param = {};
     if (
-      ['Transaksi Pengiriman', 'Produksi', 'Penerimaan Barang Bekas', 'Terima Retur Dari Site', 'Kirim Retur Ke Site', 'Kirim Retur Ke Supplier'].includes(
+      ['Transaksi Pengiriman', 'Produksi', 'Penerimaan Barang Bekas', 'Terima Retur Dari Site', 'Kirim Retur Ke Site', 'Kirim Retur Ke Supplier','Pemakaian Barang Sendiri'].includes(
         this.currentReport
       )
     ) {
@@ -165,6 +165,16 @@ export class TransactionReportComponent
       };
     }
 
+       if (
+      ['Pemakaian Barang Sendiri'].includes(
+        this.currentReport
+      )
+    ) {
+      param = {
+        ...param,
+        tipeTransaksi: '8'
+      };
+    }
     param = {
       ...param,
       userData: this.userData,

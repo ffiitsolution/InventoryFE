@@ -1,0 +1,33 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="row">
+        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
+          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button>
+          <h5>{{ "Display Selisih S.O" | translate }}</h5>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" class="row-border hover stripe"></table>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<div class="fade-in">
+  <app-modal-print-list [alreadyPrint]="alreadyPrint" [disabledPrintButton]="disabledPrintButton"
+    [generatePdfUrl]="'/api/report/display-selisih-so'"
+    [updateStatusUrl]="''" [updatePrintStatusParam]="''"
+    [generateReportParam]="paramGenerateReport" [isShowModalReport]="isShowModalReport" [isShowSelection]="false"
+    (closeModalEvent)="closeModal()">
+  </app-modal-print-list>
+</div>

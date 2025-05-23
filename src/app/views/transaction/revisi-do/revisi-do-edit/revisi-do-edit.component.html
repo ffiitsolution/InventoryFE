@@ -14,12 +14,7 @@
       </div>
       <div class="table-responsive">
         <ng-container>
-          <div *ngIf="loading">
-            <app-loading></app-loading>
-          </div>
-
-
-
+         
           <table *ngIf="filteredList as list" bordered [hover]="true" [responsive]="true" [striped]="true"
             align="middle" cTable class="mb-0 border">
             <thead>
@@ -37,7 +32,7 @@
                   Kirim Besar</th> <!-- Masih sejajar -->
                 <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
                   class="text-center align-items-start btn-danger" rowspan="2">Qty
-                  Kirim Besar</th> <!-- Masih sejajar -->
+                  Kirim Kecil</th> <!-- Masih sejajar -->
                 <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle;"
                   class="text-center align-items-start" rowspan="2">
                   Konversi</th>
@@ -57,8 +52,8 @@
             </thead>
             <tbody *ngIf="!listOrderData || listOrderData.length === 0">
               <tr>
-                <td colspan="8" scope="col" class="text-center">
-                  No Data Found
+                <td colspan="9" scope="col" class="text-center">
+                  <app-loading></app-loading>
                 </td>
               </tr>
             </tbody>
@@ -432,7 +427,7 @@
           </div>
           <div class="col-7 pe-0">
             <input type="text" class="form-control" id="konversi" [value]="
-                g.formatToDecimal(selectedRowData.totalQtyPesan)
+                g.formatToDecimal(selectedRowData.totalQtyPesanOld)
               " name="konversi" disabled />
           </div>
         </div>
@@ -575,12 +570,12 @@
 
 <c-modal #modalExpiredEdit alignment="center"
   [style]="{'display': 'flex', 'align-items': 'center', 'justify-content': 'center'}" [fullscreen]="false"
-  [visible]="isShowModalExpiredEdit" backdrop="static" #modalLg size="lg" id="formModal"
+  [visible]="isShowModalExpiredEdit" backdrop="static" #modalXl size="xl" id="formModal"
   [attr.aria-hidden]="!isShowModalExpiredEdit">
   <c-modal-header>
     <h5 cModalTitle>Rubah Data Expired</h5>
-    <button (click)="isShowModalExpiredEdit = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
-        class="fa fa-times"></i></button>
+    <!-- <button (click)="isShowModalExpiredEdit = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
+        class="fa fa-times"></i></button> -->
   </c-modal-header>
   <c-modal-body *ngIf="selectedRowData">
     <div class="row">
@@ -867,10 +862,10 @@
     <div class="divider"></div>
 
     <div class="gap-3 d-md-flex justify-content-center">
-      <button class="btn btn-secondary text-white btn-150" (click)="onCloseModal()">
+      <button class="btn btn-secondary text-white btn-150" (click)="isShowModalKonfirmRevisi = false">
         <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
       </button>
-      <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()" [disabled]="!selectedRowData.ket1 || !selectedRowData.ket2"
+      <button class="btn btn-info text-white btn-150 pe-3" (click)="onSubmit()" [disabled]="adding"
       >
         <i class="fa fa-check pe-2" *ngIf="!adding"></i>
         <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>

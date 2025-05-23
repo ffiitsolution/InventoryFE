@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  ElementRef,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -19,6 +20,10 @@ import { DataService } from '../../../service/data.service';
 import { GlobalService } from '../../../service/global.service';
 import { TranslationService } from '../../../service/translation.service';
 import { AppService } from '../../../service/app.service';
+import { DatePipe } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
+import moment from 'moment';
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-setup-so',
@@ -42,13 +47,25 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
   CONST_ACTION_ADD: string = ACTION_ADD;
   adding: boolean = false;
   userData: any;
+  selectedMenu: string = '';
+  @ViewChild('modalMenuSo', { static: false }) modalElement!: ElementRef;
+  private bsModalMenu: any;
+  listData: any[] = [];
+  filteredListData: any[] = [];
+
+  alreadyPrint: boolean;
+  disabledPrintButton: any;
+  paramGenerateReport: any = {}
+  isShowModalReport: boolean = false;
 
   constructor(
     private service: AppService,
     private dataService: DataService,
     private g: GlobalService,
     private translation: TranslationService,
-    private router: Router
+    private router: Router,
+    private datePipe: DatePipe,
+    private toastr: ToastrService
   ) {
     this.userData = this.service.getUserData();
     this.dtOptions = {
@@ -58,10 +75,10 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: (drawCallback:any) => {
+      drawCallback: (drawCallback: any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParameters: any, callback:any) => {
+      ajax: (dataTablesParameters: any, callback: any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         dataTablesParameters['kodeGudang'] =
@@ -89,6 +106,7 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
             });
             this.page.recordsTotal = resp.recordsTotal;
             this.page.recordsFiltered = resp.recordsFiltered;
+            this.listData.push(mappedData);
             callback({
               recordsTotal: resp.recordsTotal,
               recordsFiltered: resp.recordsFiltered,
@@ -111,6 +129,23 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
           searchable: true,
         },
         { data: 'statusProses', title: 'Status Proses', searchable: false },
+        {
+          title: 'Status Proses',
+          render: (data: any, type: any, row: any) => {
+            let html =
+              '<div class="btn-group" role="group" aria-label="Action">';
+            if (row.statusProses === 'SUDAH') {
+              html += '<div class="badge text-white text-bg-primary">';
+              html += row.statusProses;
+              html += '</div>';
+            } else {
+              html += '<div class="badge text-white text-bg-danger">';
+              html += row.statusProses;
+              html += '</div>';
+            }
+            return html;
+          },
+        },
         { data: 'userCreate', title: 'User Create', searchable: false },
         { data: 'dateCreate', title: 'Tanggal Create', searchable: false },
         { data: 'timeCreate', title: 'Jam Create', searchable: false },
@@ -120,17 +155,21 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
         {
           title: 'Action',
           render: (data: any, type: any, row: any) => {
-            let html =
-              '<div class="btn-group" role="group" aria-label="Action">';
+            let html = '';
+              // '<div class="btn-group" role="group" aria-label="Action">';
             if (row.statusProses !== 'SUDAH') {
-              html += '<button class="btn btn-sm action-edit btn-info btn-60">';
-              html += this.buttonCaptionEdit;
+              // html += '<button class="btn btn-sm action-edit btn-info btn-60">';
+              // html += this.buttonCaptionEdit;
+              // html += '</button>';
+              html +=
+                '<button class="btn btn-sm w-120 action-posting text-white btn-warning btn-60">';
+              html += 'POSTING';
               html += '</button>';
             }
-            html +=
-              '<button class="btn btn-sm action-view btn-outline-info btn-60">';
-            html += this.buttonCaptionView;
-            html += '</button></div>';
+            // html +=
+            //   '<button class="btn btn-sm action-view btn-outline-info btn-60">';
+            // html += this.buttonCaptionView;
+            // html += '</button></div>';
             return html;
           },
         },
@@ -141,17 +180,28 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
         [1, 'desc'],
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        const self = this;
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
         );
         $('.action-edit', row).on('click', () =>
           this.actionBtnClick(ACTION_EDIT, data)
         );
-        if (this.selectedRowData !== data) {
-          this.selectedRowData = data;
-        } else {
-          this.selectedRowData = undefined;
-        }
+        $('.action-posting', row).on('click', () =>
+          this.actionBtnClick('posting', data)
+        );
+
+        $('td', row).off('click');
+        $('td', row).on('click', () => {
+          if (this.selectedRowData !== data) {
+            self.selectedRowData = data;
+            $(row).addClass('selected');
+            $(row).siblings().removeClass('selected');
+          } else {
+            // $(row).removeClass('selected');
+            // self.selectedRowData = undefined;
+          }
+        });
         return row;
       },
     };
@@ -161,10 +211,10 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.g.changeTitle(
       this.translation.instant('Stock') +
-        ' ' +
-        this.translation.instant('Opname') +
-        ' - ' +
-        this.g.tabTitle
+      ' ' +
+      this.translation.instant('Opname') +
+      ' - ' +
+      this.g.tabTitle
     );
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.buttonCaptionEdit = this.translation.instant('Entri');
@@ -184,12 +234,31 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
       this.g.saveLocalstorage(LS_INV_SELECTED_SO, JSON.stringify(data));
       this.router.navigate(['/stock-opname/detail']);
     } else if (action === ACTION_EDIT) {
+      data.posting = false;
       this.g.saveLocalstorage(LS_INV_SELECTED_SO, JSON.stringify(data));
       this.router.navigate(['/stock-opname/edit']);
     } else if (action === ACTION_ADD) {
       this.router.navigate(['/stock-opname/add']);
+    } else if (action === 'posting') {
+      data.posting = true;
+      this.g.saveLocalstorage(LS_INV_SELECTED_SO, JSON.stringify(data));
+      this.router.navigate(['/stock-opname/edit']);
     }
   }
+
+  downloadPDF(res: any, fileName: string) {
+    var blob = new Blob([res], { type: 'application/pdf' });
+    const downloadURL = window.URL.createObjectURL(blob);
+
+    if (downloadURL.length) {
+      var link = document.createElement('a');
+      link.href = downloadURL;
+      link.download = `${this.g.formatUrlSafeString(fileName)}.pdf`;
+      link.click();
+      this.toastr.success('File sudah terunduh');
+    } else this.toastr.error('File tidak dapat terunduh');
+  }
+
   dtPageChange(event: any) {
     this.selectedRowData = undefined;
   }
@@ -206,5 +275,113 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.rerenderDatatable();
+  }
+
+  onMenuClick(menu: string) {
+    console.log('Menu clicked:', menu);
+    this.selectedMenu = menu;
+    const data = this.selectedRowData;
+    const momentDate = moment(data.tanggalSo, 'DD MMM YYYY');
+    const yearEom = momentDate.year();
+    const monthEom = momentDate.month() + 1;
+    const firstDate = momentDate.clone().startOf('month').format('DD MMM YYYY');
+    const lastDate = momentDate.clone().endOf('month').format('DD MMM YYYY');
+    switch (menu) {
+      case 'Cetak Form SO':
+        this.service
+          .getFile('/api/report/report-jasper', {
+            kodeGudang: data.kodeGudang,
+            nomorSo: data.nomorSo,
+            tanggalSo: data.tanggalSo,
+            userData: this.userData,
+            isDownloadCsv: false,
+            reportName: 'Cetak Form Stock Opname',
+            reportSlug: 'form-stock-opname',
+            yearEom: yearEom,
+            monthEom: monthEom,
+            firstDate: firstDate,
+            lastDate: lastDate,
+          })
+          .subscribe((res: any) => {
+            return this.downloadPDF(res, 'Form Stock Opname');
+          });
+        break;
+
+      case 'Laporan Selisih SO (Sementara)':
+        this.service
+          .getFile('/api/report/report-jasper', {
+            kodeGudang: data.kodeGudang,
+            nomorSo: data.nomorSo,
+            tanggalSo: data.tanggalSo,
+            userData: this.userData,
+            isDownloadCsv: false,
+            reportName: 'Laporan Selisih SO (Sementara)',
+            reportSlug: 'selisih-so-sementara',
+            yearEom: yearEom,
+            monthEom: monthEom,
+            firstDate: firstDate,
+            lastDate: lastDate,
+          })
+          .subscribe((res: any) => {
+            return this.downloadPDF(res, 'Laporan Selisih SO (Sementara)');
+          });
+        break;
+
+      case 'Entry Stock Opname':
+        this.g.saveLocalstorage(LS_INV_SELECTED_SO, JSON.stringify(data));
+        this.router.navigate(['/stock-opname/edit']);
+        break;
+
+      case 'Lihat Detail':
+        this.g.saveLocalstorage(LS_INV_SELECTED_SO, JSON.stringify(data));
+        this.router.navigate(['/stock-opname/detail']);
+        break;
+
+      case 'Laporan Hasil SO':
+        const now = new Date();
+        this.isShowModalReport = true;
+        this.disabledPrintButton = false;
+        this.paramGenerateReport = {
+          isDownloadCsv: false,
+          nomorSo: data.nomorSo,
+          userCetak: this.g.getLocalstorage('inv_currentUser').namaUser,
+          tglCetak: now.toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'short', // atau 'long' untuk "April"
+            year: 'numeric'
+          }), // hasil: 30 Apr 2025
+
+          jamCetak: now.toLocaleTimeString('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          }) // hasil: sil: 13:
+        }
+        break;
+        case 'Display Selisih SO':
+          this.g.saveLocalstorage(LS_INV_SELECTED_SO, JSON.stringify(data));
+          this.router.navigate(['/stock-opname/display-selisih-so']);
+          break;
+
+      default:
+        this.openModalMenu();
+        break;
+    }
+  }
+
+  openModalMenu(): void {
+    this.bsModalMenu = new bootstrap.Modal(this.modalElement.nativeElement);
+    this.bsModalMenu.show();
+  }
+
+  closeModalMenu(): void {
+    if (this.bsModalMenu) {
+      this.bsModalMenu.hide();
+    }
+  }
+
+  closeModal() {
+    this.isShowModalReport = false;
+    this.disabledPrintButton = false;
   }
 }

@@ -79,14 +79,14 @@ export class MpcsProductionComponent implements OnInit {
   isShowExpired: boolean = false;
   selectedExpProduct: any = {};
   totalFilteredExpired: any = '0.0';
-  headerMpcsProduksi: any ={};
-  protected configGudang ='';
+  headerMpcsProduksi: any = {};
+  protected configGudang = '';
   constructor(
     translate: TranslateService,
     private route: ActivatedRoute,
     private translation: TranslationService,
     private appService: AppService,
-    private g: GlobalService,
+    public g: GlobalService,
     private router: Router,
     private el: ElementRef,
     private form: FormBuilder,
@@ -105,9 +105,12 @@ export class MpcsProductionComponent implements OnInit {
   myForm: FormGroup;
 
   ngOnInit(): void {
-   this.headerMpcsProduksi= this.g.getLocalstorage('headerMpcsProduksi');
-    if(this.headerMpcsProduksi){
-      this.headerMpcsProduksi = JSON.parse(this.headerMpcsProduksi)
+    if (!this.g.mpcsDefaultGudang) {
+      this.onBack();
+    }
+    this.headerMpcsProduksi = this.g.getLocalstorage('headerMpcsProduksi');
+    if (this.headerMpcsProduksi) {
+      this.headerMpcsProduksi = JSON.parse(this.headerMpcsProduksi);
     }
     const todayDate = new Date();
     this.defaultDate = this.helperService.formatDate(todayDate);
@@ -148,7 +151,6 @@ export class MpcsProductionComponent implements OnInit {
     this.getDataRecipe();
 
     if (this.headerMpcsProduksi?.nomorTransaksi) {
-
       this.loadDetailData();
     }
   }
@@ -207,6 +209,7 @@ export class MpcsProductionComponent implements OnInit {
       ...this.paramaters,
       draw: this.draw,
       kodeGudang: this.configGudang,
+      jenisGudang: this.g.mpcsJenisGudang,
       columns: [
         {
           data: 'kodeBarang',
@@ -337,21 +340,19 @@ export class MpcsProductionComponent implements OnInit {
           satuanKecil: item.satuanKecil,
           satuanBesar: item.satuanBesar,
           tipeProduksi: 'R',
-          qtyPemakaianBesar: (
+          qtyPemakaianBesar: Math.floor(
+            (item.qtyPemakaian *
+              this.myForm.get('jumlahHasilProduksi')?.value) /
+              item.konversi
+          ).toFixed(2),
+          qtyPemakaianKecil: (
+            item.qtyPemakaian * this.myForm.get('jumlahHasilProduksi')?.value -
             Math.floor(
               (item.qtyPemakaian *
                 this.myForm.get('jumlahHasilProduksi')?.value) /
                 item.konversi
-            )
-          ).toFixed(2),
-          qtyPemakaianKecil: (
-            item.qtyPemakaian * this.myForm.get('jumlahHasilProduksi')?.value -
-              Math.floor(
-                (item.qtyPemakaian *
-                  this.myForm.get('jumlahHasilProduksi')?.value) /
-                  item.konversi
-              ) *
-                item.konversi
+            ) *
+              item.konversi
           ).toFixed(2),
           totalQtyPemakaian: (
             item.qtyPemakaian * this.myForm.get('jumlahHasilProduksi')?.value
@@ -486,7 +487,8 @@ export class MpcsProductionComponent implements OnInit {
       konversi: parseFloat(this.selectedExpProduct.konversi).toFixed(2),
       totalQty: '0.0',
       kodeBarang: this.selectedExpProduct.bahanBaku,
-      validationExpiredMessageList: 'Tanggal tidak boleh kosong, silahkan pilih tanggal!',
+      validationExpiredMessageList:
+        'Tanggal tidak boleh kosong, silahkan pilih tanggal!',
       validationQty: '',
     });
   }
@@ -562,7 +564,8 @@ export class MpcsProductionComponent implements OnInit {
       );
 
       if (isDuplicate) {
-        validationMessage = 'Tanggal ini sudah ada dalam daftar, silahkan pilih tanggal lain!';
+        validationMessage =
+          'Tanggal ini sudah ada dalam daftar, silahkan pilih tanggal lain!';
       }
     }
 
@@ -741,11 +744,15 @@ export class MpcsProductionComponent implements OnInit {
     console.log('totalQtyPemakaian', totalQtyPemakaian);
     console.log('totalQtyExpired', totalQtyExpired);
     if (totalQtyExpired != totalQtyPemakaian) {
-      this.toastr.error('Total Qty Expired harus sama dengan Qty Pemakaian, Tolong masukan Qty Expired dengan benar!');
+      this.toastr.error(
+        'Total Qty Expired harus sama dengan Qty Pemakaian, Tolong masukan Qty Expired dengan benar!'
+      );
     } else if (validationExpiredMessageList) {
       this.toastr.error(validationExpiredMessageList);
     } else if (totalQtyEmpty > 0) {
-      this.toastr.error('Total Qty Expired tidak boleh 0 , Silahkan hapus data yg tidak terpakai atau isikan Qty dengan benar!');
+      this.toastr.error(
+        'Total Qty Expired tidak boleh 0 , Silahkan hapus data yg tidak terpakai atau isikan Qty dengan benar!'
+      );
     } else {
       this.isShowExpired = false;
     }
@@ -798,6 +805,7 @@ export class MpcsProductionComponent implements OnInit {
         flagExpired: 'Y',
         tipeProduksi: 'F',
         hargaSatuan: this.myForm.get('hargaSatuan')?.value,
+        userCreate: 'system',
       };
 
       const param = {
@@ -827,7 +835,9 @@ export class MpcsProductionComponent implements OnInit {
               ).format('D MMM YYYY'),
               tipeTransaksi: 12,
               kodeBarang: item.bahanBaku,
-              konversi: this.helperService.sanitizedNumberWithoutComa(item.konversi),
+              konversi: this.helperService.sanitizedNumberWithoutComa(
+                item.konversi
+              ),
               satuanKecil: item.satuanKecil,
               satuanBesar: item.satuanBesar,
               qtyBesar:
@@ -899,33 +909,46 @@ export class MpcsProductionComponent implements OnInit {
         showCancelButton: false,
         width: '600px',
         customClass: {
-          popup: 'custom-popup'
+          popup: 'custom-popup',
+        },
+        allowOutsideClick: () => {
+          return false; // Prevent closing
         },
         didOpen: () => {
-          const submitBtn = document.getElementById('btn-submit');
-          const cancelBtn = document.getElementById('btn-cancel');
-  
+           const submitBtn = document.getElementById(
+            'btn-submit'
+          ) as HTMLButtonElement;
+          const cancelBtn = document.getElementById(
+            'btn-cancel'
+          ) as HTMLButtonElement;
+
           submitBtn?.addEventListener('click', () => {
-          this.appService
-            .insert('/api/production/insert', param)
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe({
-              next: (res) => {
-                if (!res.success) {
-                  this.toastr.error(res.message);
-                } else {
-                  // this.onBackPressed(res.data);
-                  setTimeout(() => {
-                    this.toastr.success('Data production berhasil disimpan!');
-                    this.onBack();
-                  }, DEFAULT_DELAY_TIME);
-                }
-                this.loadingSimpan = false;
-              },
-              error: () => {
-                this.loadingSimpan = false;
-              },
-            });
+
+            Swal.close();
+            submitBtn.disabled = true;
+            cancelBtn.disabled = true;
+            this.appService
+              .insert('/api/production/insert', param)
+              .pipe(takeUntil(this.ngUnsubscribe))
+              .subscribe({
+                next: (res) => {
+                  if (!res.success) {
+                    this.toastr.error(res.message);
+                  } else {
+                    // this.onBackPressed(res.data);
+                    setTimeout(() => {
+                      this.toastr.success('Data production berhasil disimpan!');
+                      this.onBack();
+                    }, DEFAULT_DELAY_TIME);
+                  }
+                  this.loadingSimpan = false;
+                },
+                error: () => {
+                  this.loadingSimpan = false;
+                  submitBtn.disabled = false;
+                  cancelBtn.disabled = false;
+                },
+              });
             Swal.close();
           });
 
@@ -934,7 +957,7 @@ export class MpcsProductionComponent implements OnInit {
             this.loadingSimpan = false;
             this.toastr.info('Posting dibatalkan');
           });
-        }
+        },
       });
     }
   }
@@ -989,14 +1012,13 @@ export class MpcsProductionComponent implements OnInit {
   }
 
   loadDetailData() {
-
-    if(this.headerMpcsProduksi.statusPosting === 'P'){
-        this.myForm.get('jumlahHasilProduksi')?.disable();
-        this.myForm.get('tglExp')?.disable();
-        this.myForm.get('keterangan')?.disable();
-        this.isShowDetail = true;
+    if (this.headerMpcsProduksi.statusPosting === 'P') {
+      this.myForm.get('jumlahHasilProduksi')?.disable();
+      this.myForm.get('tglExp')?.disable();
+      this.myForm.get('keterangan')?.disable();
+      this.isShowDetail = true;
     }
- 
+
     this.myForm.get('kodeBarang')?.disable();
     let param = {
       nomorTransaksi: this.headerMpcsProduksi?.nomorTransaksi,
@@ -1030,7 +1052,7 @@ export class MpcsProductionComponent implements OnInit {
           tipeProduksi: 'R',
           qtyPemakaianBesar: parseFloat(item.qtyBesar).toFixed(2),
           qtyPemakaianKecil: parseFloat(item.qtyKecil).toFixed(2),
-          totalQtyPemakaian:parseFloat(item.totalQty).toFixed(2),
+          totalQtyPemakaian: parseFloat(item.totalQty).toFixed(2),
           isConfirmed: item.flagExpired == 'Y' ? true : false,
         }));
 
@@ -1076,21 +1098,19 @@ export class MpcsProductionComponent implements OnInit {
           satuanKecil: item.satuanKecil,
           satuanBesar: item.satuanBesar,
           tipeProduksi: 'R',
-          qtyPemakaianBesar: (
+          qtyPemakaianBesar: Math.floor(
+            (item.qtyPemakaian *
+              this.myForm.get('jumlahHasilProduksi')?.value) /
+              item.konversi
+          ).toFixed(2),
+          qtyPemakaianKecil: (
+            item.qtyPemakaian * this.myForm.get('jumlahHasilProduksi')?.value -
             Math.floor(
               (item.qtyPemakaian *
                 this.myForm.get('jumlahHasilProduksi')?.value) /
                 item.konversi
-            )
-          ).toFixed(2),
-          qtyPemakaianKecil: (
-            item.qtyPemakaian * this.myForm.get('jumlahHasilProduksi')?.value -
-              Math.floor(
-                (item.qtyPemakaian *
-                  this.myForm.get('jumlahHasilProduksi')?.value) /
-                  item.konversi
-              ) *
-                item.konversi
+            ) *
+              item.konversi
           ).toFixed(2),
           totalQtyPemakaian: (
             item.qtyPemakaian * this.myForm.get('jumlahHasilProduksi')?.value
@@ -1228,39 +1248,52 @@ export class MpcsProductionComponent implements OnInit {
         ],
       };
 
-Swal.fire({
-      ...this.g.componentKonfirmasiSimpan,
-      showConfirmButton: false,
-      showCancelButton: false,
-      width: '600px',
-      customClass: {
-        popup: 'custom-popup'
-      },
-      didOpen: () => {
-        const submitBtn = document.getElementById('btn-submit');
-        const cancelBtn = document.getElementById('btn-cancel');
+      Swal.fire({
+        ...this.g.componentKonfirmasiSimpan,
+        showConfirmButton: false,
+        showCancelButton: false,
+        width: '600px',
+        customClass: {
+          popup: 'custom-popup',
+        },
+        allowOutsideClick: () => {
+          return false; // Prevent closing
+        },
+        didOpen: () => {
+          const submitBtn = document.getElementById(
+            'btn-submit'
+          ) as HTMLButtonElement;
+          const cancelBtn = document.getElementById(
+            'btn-cancel'
+          ) as HTMLButtonElement;
 
-        submitBtn?.addEventListener('click', () => {
-          this.appService
-            .insert('/api/production/update', param)
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe({
-              next: (res) => {
-                if (!res.success) {
-                  this.toastr.error(res.message);
-                } else {
-                  // this.onBackPressed(res.data);
-                  setTimeout(() => {
-                    this.toastr.success('Data production berhasil diupdate!');
-                    this.onBack();
-                  }, DEFAULT_DELAY_TIME);
-                }
-                this.loadingSimpan = false;
-              },
-              error: () => {
-                this.loadingSimpan = false;
-              },
-            });
+          submitBtn?.addEventListener('click', () => {
+
+            submitBtn.disabled = true;
+            cancelBtn.disabled = true;
+            Swal.close();
+            this.appService
+              .insert('/api/production/update', param)
+              .pipe(takeUntil(this.ngUnsubscribe))
+              .subscribe({
+                next: (res) => {
+                  if (!res.success) {
+                    this.toastr.error(res.message);
+                  } else {
+                    // this.onBackPressed(res.data);
+                    setTimeout(() => {
+                      this.toastr.success('Data production berhasil diupdate!');
+                      this.onBack();
+                    }, DEFAULT_DELAY_TIME);
+                  }
+                  this.loadingSimpan = false;
+                },
+                error: () => {
+                  this.loadingSimpan = false;
+                  submitBtn.disabled = false;
+                  cancelBtn.disabled = false;
+                },
+              });
             Swal.close();
           });
 
@@ -1269,10 +1302,8 @@ Swal.fire({
             this.loadingSimpan = false;
             this.toastr.info('Simpan dibatalkan');
           });
-        }
+        },
       });
     }
   }
-
-
 }

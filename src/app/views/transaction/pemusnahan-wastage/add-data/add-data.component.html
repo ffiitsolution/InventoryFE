@@ -80,11 +80,21 @@
 
         <div class=" ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
           <div class="p-2" *ngIf="isShowDetail">
-            <app-add-data-detail-wastage></app-add-data-detail-wastage>
+            <app-add-data-detail-wastage (dataCetak)="onResetForm($event)"></app-add-data-detail-wastage>
           </div>
         </div>
 
       </c-row>
     </c-card-body>
   </c-card>
+</div>
+
+
+<div class="fade-in">
+  <app-modal-print-list [alreadyPrint]="alreadyPrint" [disabledPrintButton]="disabledPrintButton"
+    [generatePdfUrl]="'/report-wastage-jasper'"
+    [updateStatusUrl]="''" [updatePrintStatusParam]="''"
+    [generateReportParam]="paramGenerateReport" [isShowModalReport]="isShowModalReport" [isShowSelection]="false"
+    (closeModalEvent)="closeModal()">
+  </app-modal-print-list>
 </div>

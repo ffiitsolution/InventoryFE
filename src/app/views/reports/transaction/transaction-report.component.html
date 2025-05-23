@@ -35,10 +35,38 @@
       </div>
     </ng-container>
 
+     <ng-container *ngIf="['Penerimaan Barang Bekas'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Tanggal Terima
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
+          aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
+          placeholder="{{ 'Tanggal Pesan' | translate }}" />
+        </div>
+      </div>
+    </ng-container>
+    
+
     <ng-container *ngIf="['Terima Retur Dari Site', 'Kirim Retur Ke Site', 'Kirim Retur Ke Supplier'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Tanggal Retur
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
+          aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
+          placeholder="{{ 'Tanggal Pesan' | translate }}" />
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="['Pemakaian Barang Sendiri'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Tanggal Pemakaian Dari
           <span class="float-end">:</span>
         </div>
         <div class="col">
@@ -75,7 +103,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="['Produksi','Penerimaan Barang Bekas', 'Terima Retur Dari Site', 'Kirim Retur Ke Site', 'Kirim Retur Ke Supplier'].includes(currentReport)">
+    <ng-container *ngIf="['Produksi','Penerimaan Barang Bekas', 'Terima Retur Dari Site', 'Kirim Retur Ke Site', 'Kirim Retur Ke Supplier', 'Pemakaian Barang Sendiri'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Tipe Listing
@@ -111,8 +139,8 @@
           Print
         </button>
         <ul cDropdownMenu>
-          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('preview')">Preview PDF</button></li>
-          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')">Download PDF</button></li>
+          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('preview')" *ngIf="(currentReport !== 'Transaksi Pengiriman') ||  (currentReport === 'Transaksi Pengiriman' && paramTipeListing !== 'by-item')">Preview PDF</button></li>
+          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')"  *ngIf="(currentReport !== 'Transaksi Pengiriman') || (currentReport === 'Transaksi Pengiriman' && paramTipeListing !== 'by-item')">Download PDF</button></li>
           <li><button class="btn btn-outline-primary w-100" (click)="doSubmit('csv')">Download CSV</button></li>
         </ul>
       </c-dropdown>

@@ -143,32 +143,42 @@
                 <td class="text-center align-middle">
                   {{ data.konversi }}
                 </td>
-            
+
                 <!-- Qty Besar -->
                 <td class="text-center align-middle">
                   <div class="d-flex justify-content-center align-items-center gap-2">
-                    <input type="text" min="0" #nextInput
-                           class="form-control form-control-sm text-center inputQty inputNumberSpace"
-                           [(ngModel)]="data.qtyPemakaianBesar"
-                           (change)="onInputQtyBesar($event, data.kodeBarang, i)" />
+                    <input
+                      type="text"
+                      min="0"
+                      #nextInput
+                      class="form-control form-control-sm text-center inputQty inputNumberSpace"
+                      [(ngModel)]="data.qtyPemakaianBesar"
+                      (blur)="formatQty(data, 'besar')"
+                      (change)="onInputQtyBesar($event, data.kodeBarang, i)"
+                    />
                     {{ data.satuanBesar }}
                   </div>
                 </td>
-            
+
                 <!-- Qty Kecil -->
                 <td class="text-center align-middle">
                   <div class="d-flex justify-content-center align-items-center gap-2">
-                    <input type="text" min="0" #nextInput2
-                           class="form-control form-control-sm text-center inputQty inputNumberSpace"
-                           [(ngModel)]="data.qtyPemakaianKecil"
-                           (change)="onInputQtyKecil($event, data.kodeBarang, i)" />
+                    <input
+                      type="text"
+                      min="0"
+                      #nextInput2
+                      class="form-control form-control-sm text-center inputQty inputNumberSpace"
+                      [(ngModel)]="data.qtyPemakaianKecil"
+                      (blur)="formatQty(data, 'kecil')"
+                      (change)="onInputQtyKecil($event, data.kodeBarang, i)"
+                    />
                     {{ data.satuanKecil }}
                   </div>
                 </td>
             
                 <!-- Total Qty Retur -->
                 <td class="text-center align-middle">
-                  {{ data.totalQtyPemakaian }} {{ data.satuanKecil || '' }}
+                  {{ data.totalQtyPemakaian || '0.00'}} {{ data.satuanKecil || '' }}
                 </td>
             
                 <!-- Tombol Expired -->

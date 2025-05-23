@@ -29,7 +29,7 @@
           <div *ngIf="loading">
             <app-loading></app-loading>
           </div>
-          <table bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
+          <table *ngIf="!loading" bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
             <thead>
               <tr>
                 <th scope="col" style="width: 10%;"

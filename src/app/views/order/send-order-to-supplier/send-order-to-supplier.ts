@@ -74,6 +74,7 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
   state : any;
 
   protected config = AppConfig.settings.apiServer;
+  selectedRowData: any;
 
   constructor(
     private dataService: DataService,
@@ -115,6 +116,12 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
                   tglPesan: this.g.transformDate(rest.tglPesan),
                   tglBrgDikirim: this.g.transformDate(rest.tglBrgDikirim),
                   tglKadaluarsa: this.g.transformDate(rest.tglKadaluarsa),
+                  dateCreate: this.g.transformDate(rest.dateCreate),
+                  timeCreate: this.g.transformTime(rest.timeCreate, true),
+                  dateCancel: this.g.transformDate(rest.dateCancel),
+                  timeCancel: this.g.transformTime(rest.timeCancel,true),
+                  dateKirim: this.g.transformDate(rest.dateKirim),
+                  timeKirim: this.g.transformTime(rest.timeKirim,true),
                 };
                 return finalData;
               });
@@ -234,7 +241,8 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
       ],
       searchDelay: 1000,
       order: [
-        [4, 'desc'],
+        [6, 'asc'],
+        [4, 'desc']
       ],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
@@ -251,6 +259,15 @@ export class SendOrderToSupplierViaRSCComponent implements OnInit {
           this.onShowModalPrint(data)
         }
         );
+        $('td', row).on('click', () => {
+          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
         return row;
       },
     };

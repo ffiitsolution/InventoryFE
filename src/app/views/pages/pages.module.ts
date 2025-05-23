@@ -27,7 +27,6 @@ export function HttpLoaderFactory(http: HttpClient) {
 
 @NgModule({
   declarations: [
-    LoadingComponent,
     DividerComponent,
     LoginComponent,
     RegisterComponent,

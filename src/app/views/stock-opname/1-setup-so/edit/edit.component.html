@@ -8,13 +8,14 @@
               <i class="fa fa-chevron-left icon-12 icon-gap"></i>
               {{ "Kembali" | translate }}
             </button>
-            <h5>{{ "Entry Stock Opname" | translate }}</h5>
+            <h5>{{selectedSo.posting ? 'Posting' : 'Entry'}} {{ "Stock Opname" | translate }}</h5>
           </div>
         </div>
         <div class="col">
 
           <div class="d-grid gap-3 d-md-flex justify-content-end">
-            <button class="btn btn-info text-white btn-150 pe-3" [disabled]="loadingSimpan" (click)="onSubmit()">
+            <button class="btn btn-info text-white btn-150 pe-3" [disabled]="loadingSimpan" (click)="onSubmit()"
+              *ngIf="selectedSo.posting">
               <i class="fa fa-check pe-2" *ngIf="!loadingSimpan"></i>
               <i class="fa fa-spinner fa-spin" *ngIf="loadingSimpan"></i>
               {{ "Proses Posting SO" | translate }}
@@ -57,7 +58,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-6 col-lg-2">
+        <div class="col-sm-12 col-lg-2">
           <input type="text" class="form-control form-control-sm" placeholder="Cari ..." [(ngModel)]="searchText"
             (keypress)="currentPage = 1">
         </div>
@@ -145,7 +146,8 @@
                         (keypress)="g.conditionInput($event, 'numericDot')" (keydown.arrowup)="focusPrevInput($event)"
                         (keydown.arrowdown)="focusNextInput($event)"
                         [ngClass]="{'form-invalid': validationMessageListSatuanBesar[data.idx]}"
-                        (blur)="onBlurQtyBesar(data.idx)" (paste)="$event.preventDefault()" />
+                        (blur)="onBlurQtyBesar(data.idx)" (paste)="$event.preventDefault()"
+                        [disabled]="selectedSo.posting" />
                       <span style="font-size: 14px;" class="text-danger"
                         *ngIf="validationMessageListSatuanBesar[data.idx]">
                         {{ validationMessageListSatuanBesar[data.idx] }}
@@ -164,7 +166,8 @@
                         (keypress)="g.conditionInput($event, 'numericDot')" (keydown.arrowup)="focusPrevInput($event)"
                         (keydown.arrowdown)="focusNextInput($event)"
                         [ngClass]="{'form-invalid': validationMessageListSatuanKecil[data.idx]}"
-                        (blur)="onBlurQtyKecil(data.idx)" (paste)="$event.preventDefault()" />
+                        (blur)="onBlurQtyKecil(data.idx)" (paste)="$event.preventDefault()"
+                        [disabled]="selectedSo.posting" />
                       <span style="font-size: 14px;" class="text-danger"
                         *ngIf="validationMessageListSatuanKecil[data.idx]">
                         {{ validationMessageListSatuanKecil[data.idx] }}
@@ -205,7 +208,7 @@
           </div>
           <div class="row">
             <div class="col-3">
-              <button class="btn btn-primary w-140" (click)="isShowModal = true">
+              <button class="btn btn-primary w-140" (click)="isShowModal = true" [disabled]="selectedSo.posting">
                 Tambah Barang
               </button>
             </div>
@@ -266,9 +269,7 @@
               <input type="text" class="form-control form-control-sm" id="konversi"
                 [value]="selectedExpProduct.konversi + ' ' + selectedExpProduct.satuanKecil + '/' + selectedExpProduct.satuanBesar"
                 name="konversi" disabled />
-
             </div>
-
           </div>
 
           <div class="w-100 px-2 py-1 row">
@@ -373,7 +374,7 @@
                     aria-describedby="tglTransaksi" #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker
                     autocomplete="off" [(ngModel)]="data.tglExpired"
                     (ngModelChange)="updateKeteranganTanggal(data,$event,i)"
-                    placeholder="{{ 'Tanggal transaksi' | translate }}" />
+                    placeholder="{{ 'Tanggal transaksi' | translate }}" [disabled]="selectedSo.posting" />
                   <span style="font-size: 14px;" class="text-danger" *ngIf="data.validationExpiredMessageList">
                     {{ data.validationExpiredMessageList}}
                   </span>
@@ -385,7 +386,8 @@
                 <td class="text-center input-column">
                   <div class="d-flex justify-content-center" style="gap: 5px;">
                     <input type="text" min="0" class="form-control form-control-sm text-center w-180"
-                      [(ngModel)]="data.qtyBesarSo" (change)="onInputQtyBesarExpired($event,data.kodeBarang, i)" />
+                      [(ngModel)]="data.qtyBesarSo" (change)="onInputQtyBesarExpired($event,data.kodeBarang, i)"
+                      [disabled]="selectedSo.posting" />
                     <span class="d-flex align-items-center justify-content-center">
                       / {{data.satuanBesar}}
                     </span>
@@ -395,8 +397,10 @@
                 <td class="text-center">
                   <div class="d-flex justify-content-center" style="gap: 5px;">
                     <input type="text" min="0" class="form-control form-control-sm text-center w-180"
-                      [(ngModel)]="data.qtyKecilSo" (change)="onInputQtyKecilExpired($event,data.kodeBarang, i)" />
-                    <span class="d-flex align-items-center justify-content-center">
+                      [(ngModel)]="data.qtyKecilSo" (change)="onInputQtyKecilExpired($event,data.kodeBarang, i)"
+                      [disabled]="selectedSo.posting" />
+                    <span class="d-flex align-items-center justify-content-center" [disabled]="selectedSo.posting">
+                      {{data.satuanKecil}}
                       / {{data.satuanKecil}}
                     </span>
                   </div>
@@ -421,7 +425,8 @@
                   </span>
                 </td>
                 <td class="text-center">
-                  <button (click)="onModalDeleteRow(data.kodeBarang,i)" type="button" class="btn btn-secondary">
+                  <button (click)="onModalDeleteRow(data.kodeBarang,i)" type="button" class="btn btn-secondary"
+                    [disabled]="selectedSo.posting">
                     <i class="fa fa-trash"></i>
                   </button>
                 </td>
@@ -434,7 +439,7 @@
       <div class="row justify-content-between gap-3 mt-3">
         <div class="col-4 d-flex">
           <button (click)="onAddExpiredRow()" type="button" class="btn btn-primary"
-            [disabled]="listEntryExpired.length !== 0 && expiredHasZeroTotalQty()">
+            [disabled]="(listEntryExpired.length !== 0 && expiredHasZeroTotalQty()) || selectedSo.posting">
             <i class="fa fa-plus ms-1"></i>
             Tambah
           </button>
@@ -444,7 +449,7 @@
             Total: {{ totalFilteredExpired | number:'1.2-2' }} {{ selectedExpProduct.satuanKecil }}
           </p>
           <button (click)="onSaveEntryExpired(selectedExpProduct.idx)" type="button" class="btn btn-primary ms-2"
-            [disabled]="selectedExpProduct.totalQtySo !== 0 && (listEntryExpired.length === 0 || expiredHasZeroTotalQty())">
+            [disabled]="(selectedExpProduct.totalQtySo !== 0 && (listEntryExpired.length === 0 || expiredHasZeroTotalQty())) || selectedSo.posting">
             <i class="fa fa-check me-1"></i>
             Simpan
           </button>
@@ -487,7 +492,7 @@
         </div>
         <div class="col text-end">
           <button class="btn btn-primary" (click)="addProduct()"
-            [disabled]="selectedRowAddProduct.length === 0 || loadingAddDetail">
+            [disabled]="selectedRowAddProduct.length === 0 || loadingAddDetail || selectedSo.posting">
             Tambah Barang
             <ng-container *ngIf="selectedRowAddProduct.length > 0">
               ({{selectedRowAddProduct.length}} item)

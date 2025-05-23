@@ -184,77 +184,90 @@ export class AddDataDetailPenerimaanBrgBksComponent
           })),
       };
 
-      if(param.details.length <= 0){
+      if (param.details.length <= 0) {
         this.toastr.error('Barang penerimaan tidak boleh kosong minimal 1!');
         this.loadingSimpan = false;
         return;
       }
 
-Swal.fire({
+      Swal.fire({
         ...this.g.componentKonfirmasiPosting,
         showConfirmButton: false,
         showCancelButton: false,
         width: '600px',
         customClass: {
-          popup: 'custom-popup'
+          popup: 'custom-popup',
+        },
+        allowOutsideClick: () => {
+          return false; // Prevent closing
         },
         didOpen: () => {
-          const submitBtn = document.getElementById('btn-submit');
-          const cancelBtn = document.getElementById('btn-cancel');
-  
-          submitBtn?.addEventListener('click', () => {
-          this.service
-            .insert('/api/receiving-product-wasted/insert', param)
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe({
-              next: (res) => {
-                if (!res.success) {
-                  this.toastr.error(res.message);
-                } else {
-                  this.service
-                    .updateWarehouse('/api/return-order/update', paramUpdate)
-                    .pipe(takeUntil(this.ngUnsubscribe))
-                    .subscribe({
-                      next: (res2) => {
-                        if (!res2.success) {
-                          this.toastr.warning(
-                            'Data berhasil diposting, tetapi update status retur gagal!'
-                          );
-                        } else {
-                          this.toastr.success(
-                            'Data production berhasil diposting dan status retur diperbarui!'
-                          );
-                        }
-                        this.adding = false;
-                        this.loadingSimpan = false;
-                        this.onPreviousPressed();
-                      },
-                      error: () => {
-                        this.toastr.warning(
-                          'Data berhasil diposting, tetapi gagal update status retur!'
-                        );
-                        this.loadingSimpan = false;
-                      },
-                    });
+          const submitBtn = document.getElementById(
+            'btn-submit'
+          ) as HTMLButtonElement;
+          const cancelBtn = document.getElementById(
+            'btn-cancel'
+          ) as HTMLButtonElement;
 
-                  this.onBackPressed(res.data);
-                }
-                this.adding = false;
-                this.loadingSimpan = false;
-              },
-              error: () => {
-                this.loadingSimpan = false;
-              },
-            });
+          submitBtn?.addEventListener('click', () => {
+            submitBtn.disabled = true;
+            cancelBtn.disabled = true;
+            Swal.close();
+            this.service
+              .insert('/api/receiving-product-wasted/insert', param)
+              .pipe(takeUntil(this.ngUnsubscribe))
+              .subscribe({
+                next: (res) => {
+                  if (!res.success) {
+                    this.toastr.error(res.message);
+                  } else {
+                    this.service
+                      .updateWarehouse('/api/return-order/update', paramUpdate)
+                      .pipe(takeUntil(this.ngUnsubscribe))
+                      .subscribe({
+                        next: (res2) => {
+                          if (!res2.success) {
+                            this.toastr.warning(
+                              'Data berhasil diposting, tetapi update status retur gagal!'
+                            );
+                          } else {
+                            this.toastr.success(
+                              'Data production berhasil diposting dan status retur diperbarui!'
+                            );
+                          }
+                          this.adding = false;
+                          this.loadingSimpan = false;
+                          this.onPreviousPressed();
+                        },
+                        error: () => {
+                          this.toastr.warning(
+                            'Data berhasil diposting, tetapi gagal update status retur!'
+                          );
+
+                          this.loadingSimpan = false;
+                        },
+                      });
+
+                    this.onBackPressed(res.data);
+                  }
+                  this.adding = false;
+                  this.loadingSimpan = false;
+                },
+                error: () => {
+                  this.loadingSimpan = false;
+                  submitBtn.disabled = false;
+                  cancelBtn.disabled = false;
+                },
+              });
             Swal.close();
           });
-  
+
           cancelBtn?.addEventListener('click', () => {
             Swal.close();
             this.loadingSimpan = false;
             this.toastr.info('Posting dibatalkan');
           });
-        }
+        },
       });
     }
   }
@@ -503,10 +516,10 @@ Swal.fire({
         [6, 'desc'],
         [0, 'asc'],
       ],
-      drawCallback: (drawCallback:any) => {
+      drawCallback: (drawCallback: any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParameters: any, callback:any) => {
+      ajax: (dataTablesParameters: any, callback: any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -541,7 +554,7 @@ Swal.fire({
         {
           data: 'konversi',
           title: 'Konversi',
-          render: function (data:any, type:any, row:any) {
+          render: function (data: any, type: any, row: any) {
             return Number(data).toFixed(2); // Ensures two decimal places
           },
         },
@@ -552,7 +565,7 @@ Swal.fire({
           data: 'status',
           title: 'Status',
           searchable: false,
-          render: (data:any) => {
+          render: (data: any) => {
             if (data === 'Aktif') {
               return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
             }
@@ -562,7 +575,7 @@ Swal.fire({
         {
           title: 'Action',
           orderable: false,
-            render: (data: any, _: any, row: any) => {
+          render: (data: any, _: any, row: any) => {
             const disabled = row.status !== 'Aktif' ? 'disabled' : '';
             return `<button class="btn btn-sm action-select btn-info btn-80 text-white" ${disabled}>Pilih</button>`;
           },
