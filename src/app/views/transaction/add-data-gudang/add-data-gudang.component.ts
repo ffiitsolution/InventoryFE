@@ -48,6 +48,7 @@ export class AddDataGudangComponent implements OnInit, AfterViewInit, OnDestroy 
   isShowModalReport: boolean = false;
   disabledPrintButton: boolean = false;
   paramGenerateReport: any = {};
+  alreadyPrint: boolean = false;
 
 
   @ViewChild('formModal') formModal: any;
