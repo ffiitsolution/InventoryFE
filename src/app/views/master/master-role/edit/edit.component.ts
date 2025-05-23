@@ -184,7 +184,6 @@ export class MasterRoleEditComponent implements OnInit {
                 });
               });
 
-              console.log(otherChildren);
               this.myForm
                 .get(viewChild.id)
                 ?.valueChanges.subscribe((checked) => {
@@ -283,6 +282,14 @@ export class MasterRoleEditComponent implements OnInit {
 
   onSubmit(): void {
     const { controls, invalid } = this.myForm;
+    console.log(
+      Object.keys(controls).forEach((key) => {
+        const controlErrors = controls[key].errors;
+        if (controlErrors) {
+          console.log('Error pada kontrol', key, ':', controlErrors);
+        }
+      })
+    );
     if (invalid) {
       this.g.markAllAsTouched(this.myForm);
       if (

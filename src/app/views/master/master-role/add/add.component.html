@@ -21,7 +21,7 @@
                 class="form-control"
                 formControlName="code"
                 [readOnly]="adding"
-                maxlength="10"
+                maxlength="20"
                 (keypress)="conditionInput($event, 'code')"
                 (input)="convertToUppercase('code')"
               />
@@ -96,7 +96,7 @@
               <span class="stamp-required show">&nbsp;* </span>
             </label>
             <div class="row mb-1 ms-2 vertical-divider">
-              <div *ngFor="let group of hakAksesList" class="col-md-4 mb-3">
+              <div *ngFor="let group of hakAksesList" class="col-md-6 mb-3">
                 <h6>{{ group.group }}</h6>
                 <div *ngFor="let item of group.items" class="ms-3 mb-1">
                   <!-- Jika TIDAK punya children: tampilkan checkbox -->

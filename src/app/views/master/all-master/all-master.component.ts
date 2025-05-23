@@ -139,11 +139,14 @@ export class AllMasterComponent implements OnInit, OnDestroy, AfterViewInit {
     this.hasSetNoTrans = this.g
       .getLocalstorage('inv_permissions')
       ?.some(
-        (p: any) => p.app === 'MODULE' && p.permission == 'setup-no-transaksi'
+        (p: any) =>
+          p.app === 'MODULE' && p.permission == 'setup-no-transaksi_view'
       );
     this.hasRolePermissions = this.g
       .getLocalstorage('inv_permissions')
-      ?.some((p: any) => p.app === 'MODULE' && p.permission == 'master-role');
+      ?.some(
+        (p: any) => p.app === 'MODULE' && p.permission == 'master-role_view'
+      );
   }
 
   ngOnDestroy(): void {
