@@ -1,0 +1,189 @@
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <h5>{{ "Tambah" | translate }} {{ "Role" | translate }}</h5>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-3">
+    <c-card-body>
+      <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+        <div class="mb-1 row">
+          <div class="col-sm-6 row">
+            <label class="col-sm-3 col-form-label"
+              >{{ "Nama Role" | translate }}
+              <span class="stamp-required show">&nbsp;*</span>
+            </label>
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="code"
+                [readOnly]="adding"
+                maxlength="20"
+                (keypress)="conditionInput($event, 'code')"
+                (input)="convertToUppercase('code')"
+              />
+              <span
+                *ngIf="
+                  myForm.controls['code'].hasError('required') &&
+                  myForm.controls['code'].touched
+                "
+                class="text-danger"
+                >{{ "Wajib diisi (max. 10 karakter)" | translate }}</span
+              >
+              <span
+                *ngIf="myForm.controls['code'].hasError('code')"
+                class="text-danger"
+                >{{
+                  "Nama Role hanya boleh mengandung huruf Kapital, Spasi, Angka, dash (-) dan underscore (_)"
+                    | translate
+                }}
+              </span>
+            </div>
+          </div>
+          <div class="col-sm-6 row">
+            <label class="col-sm-3 col-form-label">
+              {{ "Deskripsi Role" | translate }}
+              <span class="stamp-required show">&nbsp;* </span>
+            </label>
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="desc"
+                [readOnly]="adding"
+                (keypress)="conditionInput($event, 'desc')"
+                maxlength="30"
+              />
+              <span
+                *ngIf="
+                  myForm.controls['desc'].hasError('required') &&
+                  myForm.controls['desc'].touched
+                "
+                class="text-danger"
+                >{{ "Wajib diisi (max. 30 karakter)" | translate }}</span
+              >
+              <span
+                *ngIf="myForm.controls['desc'].hasError('desc')"
+                class="text-danger"
+                >{{
+                  "Deskripsi Role hanya boleh mengandung huruf, Spasi, Angka, dash (-) dan underscore (_)."
+                    | translate
+                }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div
+          class="divider"
+          style="margin-top: 14px; margin-bottom: 14px"
+        ></div>
+        <div class="row" style="overflow-y: scroll; height: 360px">
+          <div class="col-md-6">
+            <label
+              class="col-form-label"
+              style="
+                padding-bottom: 0px;
+                padding-top: 0px;
+                margin-top: 0px;
+                margin-bottom: 5px;
+                font-weight: bold;
+              "
+            >
+              {{ "Hak Akses Sidebar" | translate }}
+              <span class="stamp-required show">&nbsp;* </span>
+            </label>
+            <div class="row mb-1 ms-2 vertical-divider">
+              <div *ngFor="let group of hakAksesList" class="col-md-6 mb-3">
+                <h6>{{ group.group }}</h6>
+                <div *ngFor="let item of group.items" class="ms-3 mb-1">
+                  <!-- Jika TIDAK punya children: tampilkan checkbox -->
+                  <label *ngIf="!item.children">
+                    <input type="checkbox" [formControlName]="item.id" />
+                    {{ item.label }}
+                  </label>
+
+                  <!-- Jika PUNYA children: hanya label -->
+                  <div *ngIf="item.children">
+                    <label>{{ item.label }}</label>
+                    <div class="ps-3 d-flex flex-column flex-wrap">
+                      <label *ngFor="let child of item.children" class="">
+                        <input type="checkbox" [formControlName]="child.id" />
+                        {{ child.label }}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label
+              class="col-form-label"
+              style="
+                padding-bottom: 0px;
+                padding-top: 0px;
+                margin-top: 0px;
+                margin-bottom: 5px;
+                font-weight: bold;
+              "
+            >
+              {{ "Hak Akses Module" | translate }}
+            </label>
+            <div class="row mb-1 ms-2">
+              <div
+                *ngFor="let group of hakAksesListModule"
+                class="col-md-12 mb-1"
+              >
+                <h6>{{ group.group }}</h6>
+                <div class="row g-2">
+                  <div *ngFor="let item of group.items" class="col-md-6 mb-1">
+                    <!-- Jika TIDAK punya children: tampilkan checkbox -->
+                    <label *ngIf="!item.children">
+                      <input type="checkbox" [formControlName]="item.id" />
+                      {{ item.label }}
+                    </label>
+
+                    <!-- Jika PUNYA children: hanya label -->
+                    <div *ngIf="item.children">
+                      <label>{{ item.label }}</label>
+                      <div class="ps-3 d-flex flex-column flex-wrap">
+                        <label *ngFor="let child of item.children" class="">
+                          <input
+                            type="checkbox"
+                            [formControlName]="child.id"
+                            [disabled]="myForm.get(child.id)?.disabled ?? false"
+                          />
+                          {{ child.label }}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-grid gap-3 d-md-flex justify-content-end">
+          <button
+            class="btn btn-light btn-120"
+            (click)="onPreviousPressed()"
+            [disabled]="adding"
+          >
+            {{ "Kembali" | translate }}
+          </button>
+          <button
+            class="btn btn-info text-white btn-150"
+            type="submit"
+            [disabled]="adding"
+          >
+            <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
+            <span *ngIf="!adding">{{ "Simpan" | translate }}</span>
+          </button>
+        </div>
+      </form>
+    </c-card-body>
+  </c-card>
+</div>

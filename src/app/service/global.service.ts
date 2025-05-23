@@ -129,12 +129,27 @@ export class GlobalService {
     },
   };
 
+  accessSidebar: any[] = [];
+  accessModule: any[] = [];
+
   constructor(
     private titleService: Title,
     @Inject(DOCUMENT) private document: Document,
     private router: Router,
     private datePipe: DatePipe
   ) {}
+
+  // ngOnInit(): void {
+  //   const permissions = JSON.parse(
+  //     localStorage.getItem('inv_permissions') ?? ''
+  //   );
+  //   console.log(permissions)
+  //   this.accessSidebar =
+  //     permissions?.filter((p: any) => p.app === 'SIDEBAR') || [];
+
+  //   this.accessModule =
+  //     permissions?.filter((p: any) => p.app === 'MODULE') || [];
+  // }
 
   saveLocalstorage(key: string, value: any, type: string | boolean = 'json') {
     if (type === 'json' || type === true) {

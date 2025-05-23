@@ -84,7 +84,10 @@ export class LoginComponent implements OnInit {
           if (!res.success) {
             this.errorMessage = res.message;
           } else {
-            const { locations, user, token, expiredAt, period } = res.data;
+            const { locations, user, token, expiredAt, period, hasPermission } =
+              res.data;
+
+            const safePermissions = hasPermission || [];
             const transformedUser = {
               ...user,
               defaultLocation: user.defaultLocation
@@ -93,7 +96,12 @@ export class LoginComponent implements OnInit {
                   )
                 : null,
             };
+            this.g.accessSidebar =
+              safePermissions?.filter((p: any) => p.app === 'SIDEBAR') || [];
+            this.g.accessModule =
+              safePermissions?.filter((p: any) => p.app === 'MODULE') || [];
             this.g.saveLocalstorage('inv_locations', locations);
+            this.g.saveLocalstorage('inv_permissions', safePermissions);
             this.g.saveLocalstorage('inv_currentUser', transformedUser);
             this.g.saveLocalstorage('inv_token', token);
             this.g.saveLocalstorage('inv_expiredAt', expiredAt);

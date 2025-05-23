@@ -85,6 +85,9 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
   listGroup: any[] = [];
   currentTab: string = 'cabang';
 
+  hasCreate: any = false;
+  hasUpdate: any = false;
+
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
   }
@@ -171,7 +174,7 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
         {
           title: 'Action',
           render: () => {
-            if (this.roleId !== '3' && this.roleId !== '2') {
+            if (!this.hasUpdate) {
               return `
                 <div class="btn-group" role="group" aria-label="Action">
                   <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
@@ -306,7 +309,6 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
       if (event instanceof NavigationEnd) {
         const url = event.urlAfterRedirects || event.url;
 
-        // Cek path master-branch termasuk subpath seperti add/edit/detail
         const isStillInMasterBranch = /^\/master\/master-branch(\/.*)?$/.test(url);
 
         if (!isStillInMasterBranch) {
@@ -314,6 +316,22 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     });
+    this.hasCreate = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' &&
+          p.permission.startsWith('master_master-branch') &&
+          p.permission.endsWith('_create')
+      );
+    this.hasUpdate = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' &&
+          p.permission.startsWith('master_master-branch') &&
+          p.permission.endsWith('_update')
+      );
   }
 
   actionBtnClick(action: string, data: any = null) {

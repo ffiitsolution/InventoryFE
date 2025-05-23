@@ -35,7 +35,7 @@
           {{ "Filter" | translate }}
         </button>
         <button
-          *ngIf="this.roleId === '3' || this.roleId === '2'"
+          *ngIf="hasCreate"
           type="button"
           class="w-120 btn btn-success text-white me-2"
           (click)="actionBtnClick(CONST_ACTION_ADD)"
@@ -55,7 +55,7 @@
         <c-card class="mb-3">
           <c-card-body class="gap-2">
             <div class="row mb-1">
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <label cLabel for="selectStatusFilter"
                   >{{ "Status" | translate }}:
                 </label>
@@ -85,7 +85,7 @@
                   </ngx-select-dropdown>
                 </div>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <label cLabel for="selectStatusFilter"
                   >{{ "Satuan Minimum Order" | translate }}:
                 </label>
@@ -125,7 +125,23 @@
                   <option value="FLAG_HRA">{{ "HRA" | translate }}</option>
                 </select>
               </div>
+              <div class="col-md-2">
+                <label cLabel for="selectStatusFilter"
+                  >{{ "Barang Expired" | translate }}:
+                </label>
+                <select
+                  aria-label="BarangExpired"
+                  cSelect
+                  [(ngModel)]="selectedBarangExpiredFilter"
+                  (ngModelChange)="onStatusFilterChange()"
+                >
+                  <option value="">{{ "Semua" | translate }}</option>
+                  <option value="Y">{{ "Ya" | translate }}</option>
+                  <option value="T">{{ "Tidak" | translate }}</option>
+                </select>
+              </div>
             </div>
+            <div class="row mb-1"></div>
           </c-card-body>
         </c-card>
       </div>

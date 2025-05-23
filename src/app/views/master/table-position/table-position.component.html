@@ -26,7 +26,7 @@
     <c-card-body>
       <div class="d-flex justify-content-end gap-1" style="margin-bottom: 10px">
         <button
-          *ngIf="this.roleId === '3' || this.roleId === '2'"
+          *ngIf="hasCreate"
           type="button"
           class="w-120 btn btn-success text-white me-2"
           (click)="actionBtnClick(CONST_ACTION_ADD)"

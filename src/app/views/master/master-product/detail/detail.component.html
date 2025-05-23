@@ -87,6 +87,45 @@
                 <div class="col-md-3 vertical-divider mb-1">
                   <div class="row">
                     <label class="col-sm-6 col-form-label">
+                      {{ "Satuan Besar " | translate }}
+                      <span class="stamp-required show">&nbsp;*</span>
+                    </label>
+                    <div class="col-sm-6">
+                      <ngx-select-dropdown
+                        [multiple]="false"
+                        [options]="uomSatuanBesarList"
+                        [config]="configUomSelect"
+                        [bindLabel]="'keteranganUom'"
+                        [bindValue]="'kodeUom'"
+                        formControlName="satuanBesar"
+                      >
+                      </ngx-select-dropdown>
+                      <span *ngIf="isInvalid('satuanBesar')" class="text-danger"
+                        >{{ "Wajib diisi" | translate }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- <div class="row">
+                          <label
+                            class="d-flex justify-content-center align-items-end col-form-label"
+                            >{{ "Satuan Kecil" | translate }}
+                            <span class="stamp-required show">&nbsp;*</span>
+                          </label>
+                          <div class="col-sm-12">
+                            <ngx-select-dropdown
+                              [multiple]="false"
+                              formControlName="keteranganRsc"
+                              id="keteranganRsc"
+                            >
+                            </ngx-select-dropdown>
+                          </div>
+                        </div> -->
+                </div>
+                <div class="col-md-3 vertical-divider mb-1">
+                  <!-- right column -->
+                  <div class="row">
+                    <label class="col-sm-6 col-form-label">
                       {{ "Satuan Kecil " | translate }}
                       <span class="stamp-required show">&nbsp;*</span>
                     </label>
@@ -115,44 +154,6 @@
                   <!-- <div class="row">
                           <label
                             class="d-flex justify-content-center align-items-end col-form-label"
-                            >{{ "Satuan Kecil" | translate }}
-                            <span class="stamp-required show">&nbsp;*</span>
-                          </label>
-                          <div class="col-sm-12">
-                            <ngx-select-dropdown
-                              [multiple]="false"
-                              formControlName="keteranganRsc"
-                              id="keteranganRsc"
-                            >
-                            </ngx-select-dropdown>
-                          </div>
-                        </div> -->
-                </div>
-                <div class="col-md-3 vertical-divider mb-1">
-                  <!-- right column -->
-                  <div class="row">
-                    <label class="col-sm-6 col-form-label">
-                      {{ "Satuan Besar " | translate }}
-                      <span class="stamp-required show">&nbsp;*</span>
-                    </label>
-                    <div class="col-sm-6">
-                      <ngx-select-dropdown
-                        [multiple]="false"
-                        [options]="uomSatuanBesarList"
-                        [config]="configUomSelect"
-                        [bindLabel]="'keteranganUom'"
-                        [bindValue]="'kodeUom'"
-                        formControlName="satuanBesar"
-                      >
-                      </ngx-select-dropdown>
-                      <span *ngIf="isInvalid('satuanBesar')" class="text-danger"
-                        >{{ "Wajib diisi" | translate }}
-                      </span>
-                    </div>
-                  </div>
-                  <!-- <div class="row">
-                          <label
-                            class="d-flex justify-content-center align-items-end col-form-label"
                             >{{ "Satuan Besar" | translate
                             }}<span class="stamp-required show">&nbsp;*</span></label
                           >
@@ -169,7 +170,10 @@
                 <div class="col-md-3 mb-1">
                   <!-- right column -->
                   <div class="row">
-                    <label class="col-sm-6 col-form-label" style="font-size: 12.8px; padding-top: 10px;">
+                    <label
+                      class="col-sm-6 col-form-label"
+                      style="font-size: 12.8px; padding-top: 10px"
+                    >
                       {{ "Satuan Min Order" | translate }}
                     </label>
                     <div class="col-sm-6">
@@ -449,7 +453,7 @@
               </div>
               <div class="row mb-1">
                 <label class="col-sm-6 col-form-label">
-                  {{ "Minimun Order" | translate }}
+                  {{ "Minimum Order" | translate }}
                 </label>
                 <div class="col-sm-4">
                   <input
