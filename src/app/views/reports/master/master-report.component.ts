@@ -115,6 +115,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
           const allVal = {
             code: '',
             description: 'Semua',
+            name:''
           };
           if (type == 'listRegion') {
             this.listRegion = [allVal, ...data];
@@ -166,6 +167,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     ) {
       param = {
         kodeRsc: this.selectedRsc['code'],
+        keteranganRsc: this.selectedRsc['name'],
         status: this.paramStatusAktif,
         tipeListing: this.paramTipeListing,
       };

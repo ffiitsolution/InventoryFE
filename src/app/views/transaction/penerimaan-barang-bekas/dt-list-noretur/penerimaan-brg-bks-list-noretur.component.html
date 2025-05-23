@@ -5,12 +5,10 @@
         <div
           class="d-grid gap-3 d-md-flex justify-content-start align-items-center"
         >
-          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
-            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
-            {{ "Kembali" | translate }}
-          </button>
+         
           <h5>{{ "Penerimaan Barang Bekas / List Data Retur" | translate }}</h5>
           <div class="col text-end d-flex gap-3 justify-content-end">
+          </div>
             <!-- <button
               class="btn btn-info text-white btn-150 pe-3"
               [disabled]="loadingSimpan"
@@ -19,7 +17,18 @@
               <i class="fa fa-spinner fa-spin" *ngIf="loadingSimpan"></i>
               {{ "Simpan Semua Data" | translate }}
             </button> -->
-            <button
+           
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="row">
+        <div class="col text-end">
+             <button
               type="button"
               class="btn btn-success text-white me-2 btn-240"
               data-toggle="modal"
@@ -34,52 +43,14 @@
               <i class="fa fa-spinner fa-spin" *ngIf="loadingGetDataOnline"></i>
               {{ "Get Data Online" | translate }}
             </button>
-          </div>
+             <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
+            {{ "Kembali" | translate }}
+          </button>
+        
         </div>
       </div>
-      <div [visible]="showFilterSection" cCollapse>
-        <div class="divider"></div>
-        <div class="row" style="margin-top: -16px">
-          <c-card-body>
-            <c-row>
-              <c-col>
-                <label class="col-form-label">{{
-                  "Tanggal Pesan" | translate
-                }}</label>
-                <input
-                  type="text"
-                  id="dateFilter"
-                  class="form-control"
-                  bsDaterangepicker
-                  [bsConfig]="dpConfig"
-                  aria-describedby="dateFilter"
-                  [(ngModel)]="dateRangeFilter"
-                  #dp="bsDaterangepicker"
-                  placeholder="{{ 'Tanggal Pesan' | translate }}"
-                />
-              </c-col>
-              <c-col
-                xs="3"
-                class="text-right d-flex align-items-end justify-content-end"
-              >
-                <button
-                  type="button"
-                  class="btn btn-outline-success me-2 btn-160"
-                  (click)="onFilterPressed()"
-                >
-                  {{ "Terapkan Filter" | translate }}
-                </button>
-              </c-col>
-            </c-row>
-          </c-card-body>
-        </div>
-      </div>
-    </c-card-body>
-  </c-card>
-</div>
-<div class="fade-in">
-  <c-card class="mb-4">
-    <c-card-body>
+      <div class="divider"></div>
       <div class="table-responsive">
         <table
           datatable

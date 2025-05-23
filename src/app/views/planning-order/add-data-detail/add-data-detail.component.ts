@@ -28,7 +28,6 @@ import { Page } from '../../../model/page';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { Subject, takeUntil } from 'rxjs';
 
-
 @Component({
   selector: 'app-add-data-detail-planning-order',
   templateUrl: './add-data-detail.component.html',
@@ -113,7 +112,7 @@ export class AddDataDetailPlanningOrderComponent
     this.disabledPrintButton = isCanceled;
     this.disabledCancelButton = isCanceled;
     this.alreadyPrint =
-    this.headerPlanningOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
+      this.headerPlanningOrder.statusCetak == SEND_PRINT_STATUS_SUDAH;
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.loadPlanningProduct();
     // if(this.g.statusPlanningOrder===""){
@@ -179,7 +178,7 @@ export class AddDataDetailPlanningOrderComponent
             kirimPeriod3: (item.periode3 * item.konversi).toFixed(2),
             rataRata: (item.rataRataQty * item.konversi).toFixed(2),
             saldoAwal: item.saldoAwal,
-            leadTime:0,
+            leadTime: 0,
             orderSystem: (item.orderBySystem * item.konversi).toFixed(2),
             orderManual: (item.totalOrder * item.konversi).toFixed(2),
             manual1: (item.week1 * item.konversi).toFixed(2),
@@ -189,44 +188,61 @@ export class AddDataDetailPlanningOrderComponent
             isChanged: item.isChanged == 1 ? true : false,
             userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
           })),
-
       };
 
       Swal.fire({
-        title: 'Pastikan semua data sudah di input dengan benar!',
-        text: '',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Proses Simpan',
-        cancelButtonText: 'Batal Simpan',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.service
-            .insert('/api/planning-order/insert', param)
-            // .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe({
-              next: (res) => {
-                if (!res.success) {
-                  this.toastr.error(res.message);
-                } else {
-                  setTimeout(() => {
-                    this.toastr.success('Data Planning berhasil disimpan!');
-                    // this.onPreviousPressed();
-                  }, DEFAULT_DELAY_TIME);
-                }
-                this.adding = false;
-                this.loadingSimpan = false;
-              },
-              error: () => {
-                this.loadingSimpan = false;
-              },
-            });
-        } else {
-          this.toastr.info('Simpan dibatalkan');
-          this.loadingSimpan = false;
-        }
+        ...this.g.componentKonfirmasiSimpan,
+        showConfirmButton: false,
+        showCancelButton: false,
+        width: '600px',
+        customClass: {
+          popup: 'custom-popup',
+        },
+        allowOutsideClick: () => {
+          return false; // Prevent closing
+        },
+        didOpen: () => {
+          const submitBtn = document.getElementById(
+            'btn-submit'
+          ) as HTMLButtonElement;
+          const cancelBtn = document.getElementById(
+            'btn-cancel'
+          ) as HTMLButtonElement;
+
+          submitBtn?.addEventListener('click', () => {
+            submitBtn.disabled = true;
+            cancelBtn.disabled = true;
+
+            Swal.close();
+            this.service
+              .insert('/api/planning-order/insert', param)
+              // .pipe(takeUntil(this.ngUnsubscribe))
+              .subscribe({
+                next: (res) => {
+                  if (!res.success) {
+                    this.toastr.error(res.message);
+                  } else {
+                    setTimeout(() => {
+                      this.toastr.success('Data Planning berhasil disimpan!');
+                      // this.onPreviousPressed();
+                    }, DEFAULT_DELAY_TIME);
+                  }
+                  this.adding = false;
+                  this.loadingSimpan = false;
+                },
+                error: () => {
+                  this.loadingSimpan = false;
+                },
+              });
+            Swal.close();
+          });
+
+          cancelBtn?.addEventListener('click', () => {
+            Swal.close();
+            this.loadingSimpan = false;
+            this.toastr.info('Simpan dibatalkan');
+          });
+        },
       });
     }
   }
@@ -240,15 +256,7 @@ export class AddDataDetailPlanningOrderComponent
     this.isShowModalDelete = true;
   }
 
-
-
-
-
   isValidQtyExpired: boolean = true;
-
-
-
-
 
   onPreviousPressed(): void {
     this.router.navigate(['/transaction/production/list-dt']);
@@ -257,12 +265,9 @@ export class AddDataDetailPlanningOrderComponent
   isDataInvalid() {
     let dataInvalid = false;
 
-
-
     const invalidExpired = this.listEntryExpired.filter(
       (item) => item.validationExpiredMessageList !== ''
     );
-
 
     if (invalidExpired.length > 0) {
       dataInvalid = true;
@@ -283,15 +288,15 @@ export class AddDataDetailPlanningOrderComponent
       satuanBesar: '',
       rataRataQty: '',
       saldoAwal: '',
-      minimumStock:0,
-      maximumStock:0,
-      minimumOrder:0,
-      orderBySystem:0,
-      week1:'0.00',
-      week2:'0.00',
-      week3:'0.00',
-      week4:'0.00',
-      totalOrder:0,
+      minimumStock: 0,
+      maximumStock: 0,
+      minimumOrder: 0,
+      orderBySystem: 0,
+      week1: '0.00',
+      week2: '0.00',
+      week3: '0.00',
+      week4: '0.00',
+      totalOrder: 0,
       isConfirmed: false,
       periode1: '0.00',
       periode2: '0.00',
@@ -302,25 +307,23 @@ export class AddDataDetailPlanningOrderComponent
   tempKodeBarang: string = '';
 
   loadPlanningProduct() {
-
     this.loading = true;
     let param = {
       yearEom: Number(this.headerPlanningOrder.selectedYear),
       monthEom: Number(this.headerPlanningOrder.selectedMonth),
       kodeGudang: this.g.getUserLocationCode(),
-      bufferStock:this.headerPlanningOrder.bufferStock
-    }
+      bufferStock: this.headerPlanningOrder.bufferStock,
+    };
 
     this.appService.generatePlanningOrder(param).subscribe({
       next: (res) => {
         this.loading = false;
         this.totalLengthList = res.data.length;
 
-
         this.listProductData = res.data.map((item: any) => {
           const avgQty = item.avgQty / item.konversi;
           const bufferStock = parseFloat(this.headerPlanningOrder.bufferStock); // Assuming bufferStock is a percentage (e.g., 10 for 10%)
-          const orderBySystem = avgQty + (avgQty * bufferStock / 100);
+          const orderBySystem = avgQty + (avgQty * bufferStock) / 100;
 
           return {
             kodeBarang: item.kodeBarang,
@@ -328,22 +331,22 @@ export class AddDataDetailPlanningOrderComponent
             konversi: parseFloat(item.konversi).toFixed(2),
             satuanKecil: item.satuanKecil,
             satuanBesar: item.satuanBesar,
-            rataRataQty:  (avgQty).toFixed(2),
+            rataRataQty: avgQty.toFixed(2),
             saldoAwal: parseFloat(item.saldoAwal).toFixed(2),
             minimumStock: parseFloat(item.minStock).toFixed(2),
             maximumStock: parseFloat(item.maxStock).toFixed(2),
             minimumOrder: parseFloat(item.minOrder).toFixed(2),
             orderBySystem: orderBySystem.toFixed(2),
-            week1: (item.manual1/ item.konversi).toFixed(2),
-            week2: (item.manual2/ item.konversi).toFixed(2),
-            week3: (item.manual3/ item.konversi).toFixed(2),
-            week4: (item.manual4/ item.konversi).toFixed(2),
-            totalOrder: (item.orderManual/ item.konversi).toFixed(2),
-            periode1: (item.periode1/ item.konversi).toFixed(2),
-            periode2: (item.periode2/ item.konversi).toFixed(2),
-            periode3: (item.periode3/ item.konversi).toFixed(2),
+            week1: (item.manual1 / item.konversi).toFixed(2),
+            week2: (item.manual2 / item.konversi).toFixed(2),
+            week3: (item.manual3 / item.konversi).toFixed(2),
+            week4: (item.manual4 / item.konversi).toFixed(2),
+            totalOrder: (item.orderManual / item.konversi).toFixed(2),
+            periode1: (item.periode1 / item.konversi).toFixed(2),
+            periode2: (item.periode2 / item.konversi).toFixed(2),
+            periode3: (item.periode3 / item.konversi).toFixed(2),
             isChanged: item.isChanged,
-          }
+          };
         });
         this.loading = false;
         this.selectedRowData = this.listProductData[0];
@@ -351,76 +354,66 @@ export class AddDataDetailPlanningOrderComponent
     });
   }
 
+  onInputValueItemDetail(event: any, index: number, type: number = 1) {
+    index = index + (this.listCurrentPage - 1) * 5;
+    let value = event.target.value;
+    console.log('masuk om', value);
+    console.log('masuk om2', index);
 
-
-
-
-
-
-  onInputValueItemDetail(
-    event: any,
-    index: number,
-    type:number = 1
-  ) {
-
-
-      index = index + ((this.listCurrentPage-1) * 5);
-      let value = event.target.value;
-      console.log("masuk om",value)
-      console.log("masuk om2",index)
-
-      if (value !== null && value !== undefined) {
-        let numericValue = parseFloat(value.toString().replace(',', '.'));
-        if (isNaN(numericValue)) {
-            numericValue = 0;
-        }
-        value = Math.abs(numericValue).toFixed(2);
-      } else {
-        value = "0.00"; // Default if empty
+    if (value !== null && value !== undefined) {
+      let numericValue = parseFloat(value.toString().replace(',', '.'));
+      if (isNaN(numericValue)) {
+        numericValue = 0;
       }
+      value = Math.abs(numericValue).toFixed(2);
+    } else {
+      value = '0.00'; // Default if empty
+    }
 
-      if(value <= 0){
-        this.validationMessageList[index] = "Quantity tidak boleh <= 0"
-      }else{
-        this.validationMessageList[index] ="";
-      }
+    if (value <= 0) {
+      this.validationMessageList[index] = 'Quantity tidak boleh <= 0';
+    } else {
+      this.validationMessageList[index] = '';
+    }
 
-      if(type == 1){
-        this.filteredData[index].week1 = value;
-      }else if(type == 2){
-        this.filteredData[index].week2 = value;
-      }else if(type == 3){
-        this.filteredData[index].week3 = value;
-      }else if(type == 4){
-        this.filteredData[index].week4 = value;
-      }
+    if (type == 1) {
+      this.filteredData[index].week1 = value;
+    } else if (type == 2) {
+      this.filteredData[index].week2 = value;
+    } else if (type == 3) {
+      this.filteredData[index].week3 = value;
+    } else if (type == 4) {
+      this.filteredData[index].week4 = value;
+    }
 
-      this.filteredData[index].totalOrder = parseFloat((
+    this.filteredData[index].totalOrder = parseFloat(
+      (
         (Number(this.filteredData[index].week1) || 0) +
         (Number(this.filteredData[index].week2) || 0) +
         (Number(this.filteredData[index].week3) || 0) +
         (Number(this.filteredData[index].week4) || 0)
-      ).toFixed(2)).toFixed(2);
+      ).toFixed(2)
+    ).toFixed(2);
 
-      this.filteredData[index].isChanged = true;
-      this.onInputPerRow(index);
+    this.filteredData[index].isChanged = true;
+    this.onInputPerRow(index);
   }
 
   get filteredData() {
     const filtered = !this.searchText
       ? this.listProductData
-      : this.listProductData.filter(item =>
-          item.namaBarang?.toLowerCase().includes(this.searchText.toLowerCase()) ||
-          item.konversi?.toString().includes(this.searchText) ||
-          item.kodeBarang?.toString().includes(this.searchText)
+      : this.listProductData.filter(
+          (item) =>
+            item.namaBarang
+              ?.toLowerCase()
+              .includes(this.searchText.toLowerCase()) ||
+            item.konversi?.toString().includes(this.searchText) ||
+            item.kodeBarang?.toString().includes(this.searchText)
         );
 
     // Default sort by kodeBarang ascending
-    return filtered.sort((a, b) =>
-      a.kodeBarang?.localeCompare(b.kodeBarang)
-    );
+    return filtered.sort((a, b) => a.kodeBarang?.localeCompare(b.kodeBarang));
   }
-
 
   onRowClicked(data: any) {
     this.selectedRowData = data;
@@ -457,63 +450,58 @@ export class AddDataDetailPlanningOrderComponent
       link.download = `ORDER${this.headerPlanningOrder.selectedYear}${this.headerPlanningOrder.selectedMonth}.csv`;
       link.click();
       this.toastr.success('Berhasil Dicetak!');
-      this.isShowModalReport =false;
+      this.isShowModalReport = false;
     } else
       this.g.alertError('Maaf, Ada kesalahan!', 'File tidak dapat terunduh.');
   }
 
-  onInputPerRow(index:any) {
+  onInputPerRow(index: any) {
+    this.loadingDetail[index] = true;
+    const productData = [this.listProductData[index]];
 
+    const param = {
+      kodeGudang: this.g.getUserLocationCode(),
+      userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+      details: productData
+        .filter((item) => item.kodeBarang && item.kodeBarang.trim() !== '')
+        .map((item) => ({
+          kodeGudang: this.g.getUserLocationCode(),
+          year: Number(this.headerPlanningOrder.selectedYear),
+          month: Number(this.headerPlanningOrder.selectedMonth),
+          kodeBarang: item.kodeBarang,
+          kirimPeriod1: (item.periode1 * item.konversi).toFixed(2),
+          kirimPeriod2: (item.periode2 * item.konversi).toFixed(2),
+          kirimPeriod3: (item.periode3 * item.konversi).toFixed(2),
+          rataRata: (item.rataRataQty * item.konversi).toFixed(2),
+          saldoAwal: item.saldoAwal,
+          leadTime: 0,
+          orderSystem: (item.orderBySystem * item.konversi).toFixed(2),
+          orderManual: (item.totalOrder * item.konversi).toFixed(2),
+          manual1: (item.week1 * item.konversi).toFixed(2),
+          manual2: (item.week2 * item.konversi).toFixed(2),
+          manual3: (item.week3 * item.konversi).toFixed(2),
+          manual4: (item.week4 * item.konversi).toFixed(2),
+          isChanged: item.isChanged == 1 ? true : false,
+          userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
+        })),
+    };
 
-      this.loadingDetail[index] = true;
-      const productData = [this.listProductData[index]];
-
-      const param = {
-        kodeGudang: this.g.getUserLocationCode(),
-        userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
-        details: productData
-          .filter((item) => item.kodeBarang && item.kodeBarang.trim() !== '')
-          .map((item) => ({
-            kodeGudang: this.g.getUserLocationCode(),
-            year: Number(this.headerPlanningOrder.selectedYear),
-            month: Number(this.headerPlanningOrder.selectedMonth),
-            kodeBarang: item.kodeBarang,
-            kirimPeriod1: (item.periode1 * item.konversi).toFixed(2),
-            kirimPeriod2: (item.periode2 * item.konversi).toFixed(2),
-            kirimPeriod3: (item.periode3 * item.konversi).toFixed(2),
-            rataRata: (item.rataRataQty * item.konversi).toFixed(2),
-            saldoAwal: item.saldoAwal,
-            leadTime:0,
-            orderSystem: (item.orderBySystem * item.konversi).toFixed(2),
-            orderManual: (item.totalOrder * item.konversi).toFixed(2),
-            manual1: (item.week1 * item.konversi).toFixed(2),
-            manual2: (item.week2 * item.konversi).toFixed(2),
-            manual3: (item.week3 * item.konversi).toFixed(2),
-            manual4: (item.week4 * item.konversi).toFixed(2),
-            isChanged: item.isChanged == 1 ? true : false,
-            userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
-          })),
-
-      };
-
-
-          this.service
-            .insert('/api/planning-order/insert', param)
-            // .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe({
-              next: (res) => {
-                if (!res.success) {
-                  this.toastr.error(res.message);
-                } else {
-                  this.toastr.success('Data Planning berhasil disimpan!');
-                }
-                this.adding = false;
-                this.loadingDetail[index] = false;
-              },
-              error: () => {
-                this.loadingDetail[index] = false;
-              },
-            });
-    }
-
+    this.service
+      .insert('/api/planning-order/insert', param)
+      // .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: (res) => {
+          if (!res.success) {
+            this.toastr.error(res.message);
+          } else {
+            this.toastr.success('Data Planning berhasil disimpan!');
+          }
+          this.adding = false;
+          this.loadingDetail[index] = false;
+        },
+        error: () => {
+          this.loadingDetail[index] = false;
+        },
+      });
+  }
 }

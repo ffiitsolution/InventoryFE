@@ -84,6 +84,7 @@
                       class="form-control text-center inputQty inputNumberSpace"
                       [ngClass]="{'is-invalid': validationMessageList[i]}" 
                       [(ngModel)]="data.qtyPemakaian" 
+                      (focus)="g.selectInputContent($event)"
                       (change)="onInputValueItemDetail($event, i)"
                      />
                     <span class="d-flex align-items-center justify-content-center">

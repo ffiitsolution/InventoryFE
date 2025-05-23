@@ -83,6 +83,7 @@
                   <div class="d-flex gap-2 justify-content-center align-items-center">
                     <input type="text" min="0" #nextInput class="form-control text-center inputQty inputNumberSpace"
                     [(ngModel)]="data.qtyWasteBesar"
+                     (focus)="g.selectInputContent($event)"
                     (change)="onInputQtyBesar($event,data.kodeBarang, i)"
                     /> 
                  {{ data.satuanBesar }}
@@ -93,6 +94,7 @@
                   <div class="d-flex gap-2 justify-content-center align-items-center">
                     <input type="text" min="0" #nextInput2 class="form-control text-center inputQty inputNumberSpace"
                       [(ngModel)]="data.qtyWasteKecil"
+                      (focus)="g.selectInputContent($event)"
                       (change)="onInputQtyKecil($event,data.kodeBarang, i)"
                     /> 
                     {{ data.satuanKecil }}
