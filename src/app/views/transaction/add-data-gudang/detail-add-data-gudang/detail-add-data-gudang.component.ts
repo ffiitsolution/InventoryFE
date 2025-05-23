@@ -514,9 +514,9 @@ isDataInvalid() {
                     .subscribe({
                       next: (res2) => {
                         if (!res2.success) {
-                          this.toastr.warning('Data berhasil diposting, tetapi update status retur gagal!');
+                          this.toastr.warning('Data berhasil diposting, tetapi update status penerimaan gudang gagal!');
                         } else {
-                          this.toastr.success('Data production berhasil diposting dan status retur diperbarui!');
+                          this.toastr.success('Data penerimaan gudang berhasil diposting dan status retur diperbarui!');
                         }
                         this.adding = false;
                         this.loadingSimpan = false;
