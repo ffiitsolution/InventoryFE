@@ -32,6 +32,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { SharedCustomPipeModule } from '../../pipes/shared-pipe.module';
 import { SharedComponentModule } from '../../component/shared.component.module';
 import { DisplaySelisihSoComponent } from './6-result-so/display-selisih-so.component';
+import { DetailDisplaySelisihSoComponent } from './6-result-so/detail/detail.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -66,7 +67,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     SetupSoDetailComponent,
     StockSoAddComponent,
     StockSoEditComponent,
-    DisplaySelisihSoComponent
+    DisplaySelisihSoComponent,
+    DetailDisplaySelisihSoComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

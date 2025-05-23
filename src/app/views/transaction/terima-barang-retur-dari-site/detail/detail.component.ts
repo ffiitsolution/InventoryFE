@@ -230,14 +230,15 @@ export class DetailTerimaBarangReturDariSiteComponent
           title: 'Cek Quantity Expired',
           orderable: false,
           render: (data: any, type: any, row: any, meta: any) => {
+            const isEnabled = row.flagExpired === 'Y';
             return `
               <div class="d-flex justify-content-start w-100">
-                <button class="btn btn-sm btn-outline-success w-100 action-print">
+                <button class="btn btn-sm btn-outline-success w-100 action-print" ${isEnabled ? '' : 'disabled'}>
                   <i class="fa fa-check pe-1"></i> Cek
                 </button>
               </div>`;
           },
-        },
+        }
       ],
       rowCallback: (row: Node, data: any, index: number) => {
         $('.action-print', row).on('click', () => {

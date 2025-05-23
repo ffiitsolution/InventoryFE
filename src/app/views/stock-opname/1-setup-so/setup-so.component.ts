@@ -358,6 +358,10 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
           }) // hasil: sil: 13:
         }
         break;
+        case 'Display Selisih SO':
+          this.g.saveLocalstorage(LS_INV_SELECTED_SO, JSON.stringify(data));
+          this.router.navigate(['/stock-opname/display-selisih-so']);
+          break;
 
       default:
         this.openModalMenu();
