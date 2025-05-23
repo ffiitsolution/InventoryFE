@@ -174,16 +174,16 @@ export class TablePositionComponent
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-position') &&
-          p.permission.endsWith('.create')
+          p.permission.startsWith('master_master-position') &&
+          p.permission.endsWith('_create')
       );
     this.hasUpdate = this.g
       .getLocalstorage('inv_permissions')
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-position') &&
-          p.permission.endsWith('.update')
+          p.permission.startsWith('master_master-position') &&
+          p.permission.endsWith('_update')
       );
   }
 

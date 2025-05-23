@@ -161,16 +161,16 @@ export class TableRscComponent implements OnInit, OnDestroy, AfterViewInit {
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-rsc') &&
-          p.permission.endsWith('.create')
+          p.permission.startsWith('master_master-rsc') &&
+          p.permission.endsWith('_create')
       );
     this.hasUpdate = this.g
       .getLocalstorage('inv_permissions')
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-rsc') &&
-          p.permission.endsWith('.update')
+          p.permission.startsWith('master_master-rsc') &&
+          p.permission.endsWith('_update')
       );
   }
 

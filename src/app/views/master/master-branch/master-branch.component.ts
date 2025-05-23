@@ -309,7 +309,6 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
       if (event instanceof NavigationEnd) {
         const url = event.urlAfterRedirects || event.url;
 
-        // Cek path master-branch termasuk subpath seperti add/edit/detail
         const isStillInMasterBranch = /^\/master\/master-branch(\/.*)?$/.test(url);
 
         if (!isStillInMasterBranch) {
@@ -322,16 +321,16 @@ export class MasterBranchComponent implements OnInit, OnDestroy, AfterViewInit {
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-branch') &&
-          p.permission.endsWith('.create')
+          p.permission.startsWith('master_master-branch') &&
+          p.permission.endsWith('_create')
       );
     this.hasUpdate = this.g
       .getLocalstorage('inv_permissions')
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-branch') &&
-          p.permission.endsWith('.update')
+          p.permission.startsWith('master_master-branch') &&
+          p.permission.endsWith('_update')
       );
   }
 

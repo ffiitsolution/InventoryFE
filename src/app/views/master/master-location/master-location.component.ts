@@ -259,16 +259,16 @@ export class MasterLocationComponent
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-location') &&
-          p.permission.endsWith('.create')
+          p.permission.startsWith('master_master-location') &&
+          p.permission.endsWith('_create')
       );
     this.hasUpdate = this.g
       .getLocalstorage('inv_permissions')
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-location') &&
-          p.permission.endsWith('.update')
+          p.permission.startsWith('master_master-location') &&
+          p.permission.endsWith('_update')
       );
   }
 

@@ -306,16 +306,16 @@ export class MasterSupplierComponent
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-supplier') &&
-          p.permission.endsWith('.create')
+          p.permission.startsWith('master_master-supplier') &&
+          p.permission.endsWith('_create')
       );
     this.hasUpdate = this.g
       .getLocalstorage('inv_permissions')
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-supplier') &&
-          p.permission.endsWith('.update')
+          p.permission.startsWith('master_master-supplier') &&
+          p.permission.endsWith('_update')
       );
   }
 

@@ -58,10 +58,10 @@ export class TableUomComponent implements OnInit, OnDestroy, AfterViewInit {
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: (drawCallback:any) => {
+      drawCallback: (drawCallback: any) => {
         this.selectedRowData = undefined;
       },
-      ajax: (dataTablesParameters: any, callback:any) => {
+      ajax: (dataTablesParameters: any, callback: any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         this.dataService
@@ -161,16 +161,16 @@ export class TableUomComponent implements OnInit, OnDestroy, AfterViewInit {
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-uom') &&
-          p.permission.endsWith('.create')
+          p.permission.startsWith('master_master-uom') &&
+          p.permission.endsWith('_create')
       );
     this.hasUpdate = this.g
       .getLocalstorage('inv_permissions')
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-uom') &&
-          p.permission.endsWith('.update')
+          p.permission.startsWith('master_master-uom') &&
+          p.permission.endsWith('_update')
       );
   }
 

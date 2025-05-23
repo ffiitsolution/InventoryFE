@@ -91,12 +91,6 @@ export class MasterRoleComponent implements OnInit, OnDestroy, AfterViewInit {
       columns: [
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
         {
-          data: 'id',
-          title: 'Id Role',
-          orderable: true,
-          searchable: true,
-        },
-        {
           data: 'name',
           title: 'Nama',
           orderable: true,
@@ -159,16 +153,16 @@ export class MasterRoleComponent implements OnInit, OnDestroy, AfterViewInit {
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-role') &&
-          p.permission.endsWith('.create')
+          p.permission.startsWith('master-role') &&
+          p.permission.endsWith('_create')
       );
     this.hasUpdate = this.g
       .getLocalstorage('inv_permissions')
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-role') &&
-          p.permission.endsWith('.update')
+          p.permission.startsWith('master-role') &&
+          p.permission.endsWith('_update')
       );
   }
 

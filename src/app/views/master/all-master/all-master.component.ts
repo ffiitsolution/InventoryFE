@@ -125,7 +125,7 @@ export class AllMasterComponent implements OnInit, OnDestroy, AfterViewInit {
       this.g
         .getLocalstorage('inv_permissions')
         ?.filter((p: any) => p.app === 'MODULE')
-        ?.map((p: any) => p.permission.split('.')[1]?.toLowerCase())
+        ?.map((p: any) => p.permission.split('_')[1]?.toLowerCase())
     );
     this.listMaster = this.listMaster.filter((item: any) => {
       const nameLower = item.url.toLowerCase();
@@ -135,15 +135,15 @@ export class AllMasterComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     this.hasMaster = this.g
       .getLocalstorage('inv_permissions')
-      ?.some((p: any) => p.app === 'MODULE' && p.permission == 'master');
+      ?.some((p: any) => p.app === 'MODULE' && /^master_/.test(p.permission));
     this.hasSetNoTrans = this.g
       .getLocalstorage('inv_permissions')
       ?.some(
-        (p: any) => p.app === 'MODULE' && p.permission == 'setup_no_transaksi'
+        (p: any) => p.app === 'MODULE' && p.permission == 'setup-no-transaksi'
       );
     this.hasRolePermissions = this.g
       .getLocalstorage('inv_permissions')
-      ?.some((p: any) => p.app === 'MODULE' && p.permission == 'master_role');
+      ?.some((p: any) => p.app === 'MODULE' && p.permission == 'master-role');
   }
 
   ngOnDestroy(): void {

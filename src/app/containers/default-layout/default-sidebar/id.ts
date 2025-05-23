@@ -185,6 +185,7 @@ export const menu_id: any = [
     iconComponent: {
       name: 'cil-book',
     },
+    access: 'stock_opname',
   },
   {
     name: 'Tutup Bulan',

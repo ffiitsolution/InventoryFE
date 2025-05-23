@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TableUomAddComponent } from './add.component';
+import { MasterRoleAddComponent } from './add.component';
 
-describe('TableUomAddComponent', () => {
-  let component: TableUomAddComponent;
-  let fixture: ComponentFixture<TableUomAddComponent>;
+describe('MasterRoleAddComponent', () => {
+  let component: MasterRoleAddComponent;
+  let fixture: ComponentFixture<MasterRoleAddComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TableUomAddComponent],
+      imports: [MasterRoleAddComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TableUomAddComponent);
+    fixture = TestBed.createComponent(MasterRoleAddComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

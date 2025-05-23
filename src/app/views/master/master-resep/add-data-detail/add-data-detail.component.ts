@@ -124,8 +124,8 @@ export class AddDataDetailResepComponent
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-resep') &&
-          p.permission.endsWith('.update')
+          p.permission.startsWith('master_master-resep') &&
+          p.permission.endsWith('_update')
       );
   }
 

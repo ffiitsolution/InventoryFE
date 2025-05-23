@@ -163,16 +163,16 @@ export class TableSetNumberComponent
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-set-number') &&
-          p.permission.endsWith('.create')
+          p.permission.startsWith('master_master-set-number') &&
+          p.permission.endsWith('_create')
       );
     this.hasUpdate = this.g
       .getLocalstorage('inv_permissions')
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-set-number') &&
-          p.permission.endsWith('.update')
+          p.permission.startsWith('master_master-set-number') &&
+          p.permission.endsWith('_update')
       );
   }
 

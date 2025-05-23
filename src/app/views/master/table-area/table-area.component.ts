@@ -160,16 +160,16 @@ export class TableAreaComponent implements OnInit, OnDestroy, AfterViewInit {
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-area') &&
-          p.permission.endsWith('.create')
+          p.permission.startsWith('master_master-area') &&
+          p.permission.endsWith('_create')
       );
     this.hasUpdate = this.g
       .getLocalstorage('inv_permissions')
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master.master-area') &&
-          p.permission.endsWith('.update')
+          p.permission.startsWith('master_master-area') &&
+          p.permission.endsWith('_update')
       );
   }
 
