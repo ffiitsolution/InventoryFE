@@ -64,6 +64,7 @@
                     formControlName="bufferStock"
                     name="bufferStock"
                     (change)="onInputValue($event)"
+                    (focus)="globalService.selectInputContent($event)"
                     [readonly]="isShowDetail"
                   />
                 </div>
