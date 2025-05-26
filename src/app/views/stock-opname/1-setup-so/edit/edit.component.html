@@ -147,7 +147,7 @@
                         (keydown.arrowdown)="focusNextInput($event)"
                         [ngClass]="{'form-invalid': validationMessageListSatuanBesar[data.idx]}"
                         (blur)="onBlurQtyBesar(data.idx)" (paste)="$event.preventDefault()"
-                        [disabled]="selectedSo.posting" />
+                        [disabled]="selectedSo.posting" appEnterAsTab />
                       <span style="font-size: 14px;" class="text-danger"
                         *ngIf="validationMessageListSatuanBesar[data.idx]">
                         {{ validationMessageListSatuanBesar[data.idx] }}
@@ -167,7 +167,7 @@
                         (keydown.arrowdown)="focusNextInput($event)"
                         [ngClass]="{'form-invalid': validationMessageListSatuanKecil[data.idx]}"
                         (blur)="onBlurQtyKecil(data.idx)" (paste)="$event.preventDefault()"
-                        [disabled]="selectedSo.posting" />
+                        [disabled]="selectedSo.posting" appEnterAsTab />
                       <span style="font-size: 14px;" class="text-danger"
                         *ngIf="validationMessageListSatuanKecil[data.idx]">
                         {{ validationMessageListSatuanKecil[data.idx] }}
@@ -253,11 +253,11 @@
             <div class="col-8 pe-0 d-flex">
               <div class="col-3 pe-2">
                 <input type="text" class="form-control form-control-sm" id="kodeBarang"
-                  [(ngModel)]="selectedExpProduct.kodeBarang" name="kodeBarang" disabled />
+                  [(ngModel)]="selectedExpProduct.kodeBarang" name="kodeBarang" appEnterAsTab disabled />
               </div>
               <div class="col-9">
                 <input type="text" class="form-control form-control-sm" id="namaBarang"
-                  [(ngModel)]="selectedExpProduct.namaBarang" name="namaBarang" disabled />
+                  [(ngModel)]="selectedExpProduct.namaBarang" name="namaBarang" appEnterAsTab disabled />
               </div>
             </div>
           </div>
@@ -268,7 +268,7 @@
             <div class="col-8 pe-0">
               <input type="text" class="form-control form-control-sm" id="konversi"
                 [value]="selectedExpProduct.konversi + ' ' + selectedExpProduct.satuanKecil + '/' + selectedExpProduct.satuanBesar"
-                name="konversi" disabled />
+                name="konversi" appEnterAsTab disabled />
             </div>
           </div>
 
