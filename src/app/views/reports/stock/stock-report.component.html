@@ -68,7 +68,7 @@
             [(ngModel)]="paramTglTransaksi"
             (ngModelChange)="onTglTransaksiChange($event)"
             placeholder="{{ 'Tanggal transaksi' | translate }}"
-          
+
           />
         </div>
         <div class="col-4">
@@ -191,7 +191,7 @@
         <div class="input-group">
           <input type="text" autofocus class="form-control text-center" [(ngModel)]="kodeBarang"
           (keydown.enter)="handleEnter($event)" />
-          <button class="btn btn-outline-secondary" type="button" 
+          <button class="btn btn-outline-secondary" type="button"
           (click)="onShowModalBarang()">
             <i class="fa fa-search"></i>
           </button>
@@ -207,13 +207,13 @@
             [placeholder]="namaBarang ? '' : 'Semua Barang'"
             disabled
           />
-          <button class="btn btn-outline-primary" type="button" 
+          <button class="btn btn-outline-primary" type="button"
           (click)="deleteBarang()">
             <i class="fa fa-trash"></i>
           </button>
         </div>
       </div>
-     
+
     </div>
   </ng-container>
 
@@ -233,6 +233,7 @@
         <ul cDropdownMenu>
           <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('preview')">Preview PDF</button></li>
           <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')">Download PDF</button></li>
+          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('xlsx')">Download XLSX</button></li>
           <li><button class="btn btn-outline-primary w-100" (click)="doSubmit('csv')">Download CSV</button></li>
         </ul>
       </c-dropdown>
