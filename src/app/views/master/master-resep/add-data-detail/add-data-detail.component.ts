@@ -76,6 +76,7 @@ export class AddDataDetailResepComponent
   selectedRowData: any;
   currentSelectedForModal: number;
   loadingSimpan: boolean = false;
+  hasUpdate:boolean= false;
   constructor(
     public g: GlobalService,
     private translation: TranslationService,
@@ -118,7 +119,14 @@ export class AddDataDetailResepComponent
 
     this.loadResep();
     this.renderDataTables()
-
+    this.hasUpdate = this.globalService
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' &&
+          p.permission.startsWith('master_master-resep') &&
+          p.permission.endsWith('_update')
+      );
   }
 
   onFilterSearch(

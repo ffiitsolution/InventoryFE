@@ -77,6 +77,9 @@ export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
 
   roleId: any;
 
+  hasCreate: any = false;
+  hasUpdate: any = false;
+
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
   }
@@ -178,7 +181,7 @@ export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
           title: 'Action',
           orderable: false,
           render: () => {
-            if (this.roleId !== '3' && this.roleId !== '2') {
+            if (!this.hasUpdate) {
               return `
                 <div class="btn-group" role="group" aria-label="Action">
                   <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
@@ -256,7 +259,7 @@ export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe((resp: any) => {
         this.listJabatan = resp.map((item: any) => ({
           id: item.CODE,
-          name: item.CODE+" - "+ item.DESCRIPTION,
+          name: item.CODE + ' - ' + item.DESCRIPTION,
         }));
       });
 
@@ -265,7 +268,7 @@ export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe((resp: any) => {
         this.listRole = resp.map((item: any) => ({
           id: item.ID,
-          name: item.ID+" - "+item.NAME,
+          name: item.ID + ' - ' + item.NAME,
         }));
       });
 
@@ -293,6 +296,22 @@ export class MasterUserComponent implements OnInit, OnDestroy, AfterViewInit {
       searchPlaceholder: 'Cari Role',
       limitTo: this.listRole.length,
     };
+    this.hasCreate = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' &&
+          p.permission.startsWith('master_master-user') &&
+          p.permission.endsWith('_create')
+      );
+    this.hasUpdate = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' &&
+          p.permission.startsWith('master_master-user') &&
+          p.permission.endsWith('_update')
+      );
   }
 
   actionBtnClick(action: string, data: any = null) {

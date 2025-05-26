@@ -57,13 +57,64 @@ export class DefaultLayoutComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.dataOutlet = this.g.getLocalstorage('inv_outletData');
     this.dataUser = this.g.getLocalstorage('inv_currentUser');
-    // console.log(menu_id.filter((menu : any) => menu?.access =));
-    const allowedAccess = ['master'];
+    // this.g.accessSidebar
+    const permissionSet = new Set(
+      this.g
+        .getLocalstorage('inv_permissions')
+        ?.filter((p: any) => p.app === 'SIDEBAR')
+        ?.map((p: any) => p.permission)
+    );
+    
     this.translation.listMenuSidebar =
       this.translation.getCurrentLanguage() === 'id'
         ? menu_id
-        : // menu_id.filter((menu: any) => allowedAccess.includes(menu?.access))
-          menu_en;
+            .map((item: any) => {
+              const filteredChildren = item.children
+                ? item.children
+                    .map((child: any) => {
+                      const filteredGrandChildren = child.children
+                        ? child.children.filter(
+                            (grandChild: any) =>
+                              grandChild.access &&
+                              permissionSet.has(grandChild.access)
+                          )
+                        : [];
+
+                      // Cek apakah child sendiri atau cucu punya akses
+                      if (
+                        (child.access && permissionSet.has(child.access)) ||
+                        filteredGrandChildren.length > 0
+                      ) {
+                        return {
+                          ...child,
+                          children:
+                            filteredGrandChildren.length > 0
+                              ? filteredGrandChildren
+                              : undefined,
+                        };
+                      }
+
+                      return null;
+                    })
+                    .filter(Boolean)
+                : [];
+
+              // Cek apakah parent item punya akses atau salah satu anak punya akses
+              if (
+                (item.access && permissionSet.has(item.access)) ||
+                filteredChildren.length > 0
+              ) {
+                return {
+                  ...item,
+                  children:
+                    filteredChildren.length > 0 ? filteredChildren : undefined,
+                };
+              }
+
+              return null;
+            })
+            .filter(Boolean)
+        : menu_en;
   }
 
   updateSelectedNavItem(currentUrl: string) {

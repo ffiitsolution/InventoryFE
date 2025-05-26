@@ -46,6 +46,7 @@ export class AddResepComponent implements OnInit, OnDestroy {
   detail: any;
   @ViewChild('formModal') formModal: any;
   loadingSimpan: boolean = false;
+  hasUpdate: boolean = false;
   // Form data object
 
 
@@ -88,7 +89,15 @@ export class AddResepComponent implements OnInit, OnDestroy {
     this.getProduct()
     this.onAddDetail()
     // this.renderDataTables()
-
+    
+    this.hasUpdate = this.globalService
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' &&
+          p.permission.startsWith('master_master-resep') &&
+          p.permission.endsWith('_update')
+      );
   }
 
   onAddDetail() {

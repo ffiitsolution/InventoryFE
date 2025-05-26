@@ -44,6 +44,9 @@ export class TableCityAreaComponent
   adding: boolean = false;
   roleId: any;
 
+  hasCreate: boolean = false;
+  hasUpdate: boolean = false;
+
   constructor(
     private dataService: DataService,
     private g: GlobalService,
@@ -108,7 +111,7 @@ export class TableCityAreaComponent
         {
           title: 'Action',
           render: () => {
-            if (this.roleId !== '3' && this.roleId !== '2') {
+            if (!this.hasUpdate) {
               return `
                 <div class="btn-group" role="group" aria-label="Action">
                   <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
@@ -154,6 +157,22 @@ export class TableCityAreaComponent
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.buttonCaptionEdit = this.translation.instant('Ubah');
     localStorage.removeItem(LS_INV_SELECTED_CITY);
+    this.hasCreate = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' &&
+          p.permission.startsWith('master_master-city-area') &&
+          p.permission.endsWith('_create')
+      );
+    this.hasUpdate = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' &&
+          p.permission.startsWith('master_master-city-area') &&
+          p.permission.endsWith('_update')
+      );
   }
 
   rerenderDatatable(): void {

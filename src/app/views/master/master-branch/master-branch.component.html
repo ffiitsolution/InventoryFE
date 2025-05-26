@@ -14,8 +14,8 @@
           >
             <span
               >Master Cabang, Department dan Gudang digunakan untuk melihat dan
-              mengelola daftar cabang, department dan gudang, termasuk detail informasi dan
-              statusnya.</span
+              mengelola daftar cabang, department dan gudang, termasuk detail
+              informasi dan statusnya.</span
             >
           </div>
         </div>
@@ -36,7 +36,7 @@
           {{ "Filter" | translate }}
         </button>
         <button
-          *ngIf="this.roleId === '3' || this.roleId === '2'"
+          *ngIf="hasCreate"
           type="button"
           class="btn w-120 btn-success text-white me-2"
           (click)="actionBtnClick(CONST_ACTION_ADD)"

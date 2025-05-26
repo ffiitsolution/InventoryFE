@@ -40,3 +40,18 @@ table.dataTable tbody tr:hover {
   background-color: #d9d9d9 !important;
   transition: background-color 0.3s ease-in-out;
 }
+
+.badge {
+  padding: 5px 10px;
+  border-radius: 12px;
+}
+
+.bg-success {
+  background-color: green;
+  color: white;
+}
+
+.bg-secondary {
+  background-color: gray;
+  color: white;
+}

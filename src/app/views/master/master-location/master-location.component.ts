@@ -52,6 +52,9 @@ export class MasterLocationComponent
   configSelectRSC: any = {};
   roleId: any;
 
+  hasCreate: any = false;
+  hasUpdate: any = false;
+
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
   }
@@ -147,7 +150,7 @@ export class MasterLocationComponent
         {
           title: 'Action',
           render: () => {
-            if (this.roleId !== '3' && this.roleId !== '2') {
+            if (!this.hasUpdate) {
               return `
                 <div class="btn-group" role="group" aria-label="Action">
                   <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
@@ -251,6 +254,22 @@ export class MasterLocationComponent
           limitTo: this.rscOptions.length,
         };
       });
+    this.hasCreate = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' &&
+          p.permission.startsWith('master_master-location') &&
+          p.permission.endsWith('_create')
+      );
+    this.hasUpdate = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' &&
+          p.permission.startsWith('master_master-location') &&
+          p.permission.endsWith('_update')
+      );
   }
 
   actionBtnClick(action: string, data: any = null) {

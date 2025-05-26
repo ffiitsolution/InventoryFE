@@ -82,9 +82,9 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService,
-    
+
   ) {
-    
+
     this.startOfMonth = moment().startOf('month').format('DD MMMM YYYY');
     this.endOfMonth = moment().endOf('month').format('DD MMMM YYYY');
     this.dateRangeString = `(Periode :${this.startOfMonth} - ${this.endOfMonth})`;
@@ -120,7 +120,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     if (['Transaksi Detail Barang Expired'].includes(this.currentReport)) {
       this.renderDataTables()
     }
-  
+
   }
 
   ngOnDestroy(): void {
@@ -204,7 +204,8 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     param = {
       ...param,
       userData: this.userData,
-      isDownloadCsv: type === 'csv',
+      isDownloadCsv: type === 'csv' || type === 'xlsx',
+      isDownloadXlsx: type === 'xlsx',
       reportName: this.currentReport,
       reportSlug: this.g.formatUrlSafeString(this.currentReport),
       kodeGudang: this.userData.defaultLocation.kodeLocation,
@@ -217,6 +218,8 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
           return this.previewPdf(res);
         } else if (type === 'csv') {
           return this.downloadCsv(res, type);
+        } else if (type === 'xlsx') {
+          return this.downloadXlsx(res, type);
         } else {
           return this.downloadPDF(res, type);
         }
@@ -276,6 +279,27 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     } else this.toastr.error('File tidak dapat terunduh');
   }
 
+  downloadXlsx(res: any, reportType: string) {
+    var blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    this.downloadURL = window.URL.createObjectURL(blob);
+
+    if (this.downloadURL.length) {
+      var link = document.createElement('a');
+      link.href = this.downloadURL;
+      link.download = `${reportType} Report ${this.g.formatUrlSafeString(
+        this.currentReport
+      )} ${this.datePipe.transform(
+        this.rangeDateVal[0],
+        'dd-MMM-yyyy'
+      )} s.d. ${this.datePipe.transform(
+        this.rangeDateVal[1],
+        'dd-MMM-yyyy'
+      )}.xlsx`;
+      link.click();
+      this.toastr.success('File sudah terunduh');
+    } else this.toastr.error('File tidak dapat terunduh');
+  }
+
   onShowModalBarang() {
     this.isShowModalBarang = true;
   }
@@ -292,7 +316,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     getProductRow(kodeBarang: string) {
 
       if (kodeBarang !== '') {
-   
+
         this.service.getProductResep(kodeBarang)
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe({
@@ -309,7 +333,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
 
-    
+
   renderDataTables(): void {
     this.dtOptions = {
       language:
@@ -429,7 +453,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
 
       }
     }
-    
+
     deleteBarang() {
       this.kodeBarang = '';
       this.namaBarang = '';
