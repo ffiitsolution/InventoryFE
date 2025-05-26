@@ -523,7 +523,7 @@ isDataInvalid() {
                         this.onPreviousPressed();
                       },
                       error: () => {
-                        this.toastr.warning('Data berhasil diposting, tetapi gagal update status retur!');
+                        this.toastr.warning('Data berhasil diposting, tetapi gagal update status penerimaan gudang!');
                         this.loadingSimpan = false;
                       },
                     });

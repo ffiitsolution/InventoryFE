@@ -446,7 +446,7 @@ import { AppService } from '../../../../service/app.service';
           this.isShowModalReport=true;
 
           this.paramGenerateReport = {
-            noTransaksi: this.selectedRowCetak.nomorTransaksi,
+            nomorTransaksi: this.selectedRowCetak.nomorTransaksi,
             userEntry: this.selectedRowCetak.userCreate,
             jamEntry: this.g.transformTime(this.selectedRowCetak.timeCreate),
             tglEntry: this.g.transformDate(this.selectedRowCetak.dateCreate),
