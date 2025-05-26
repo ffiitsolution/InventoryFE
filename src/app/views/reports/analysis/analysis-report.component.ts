@@ -197,9 +197,16 @@ export class AnalysisReportComponent
         tipeListing: this.paramTipeListing,
       };
     }else if(['Rekap Transaksi 3 Periode (By Type)'].includes(this.currentReport)){
-       param = {
+      if(!this.kodeTransaksi){
+          this.toastr.error('Pilih tipe transaksi terlebih dahulu!');
+          this.loadingState['submit'] = false;
+          return;
+      }
+      
+      param = {
         kodeGudang: this.userData.defaultLocation.kodeLocation,
         tipeTransaksi: this.kodeTransaksi,
+        namaTransaksi: this.namaTransaksi,
         firstDateP1: this.g.transformDate(this.periode1Filter[0]),
         endDateP1: this.g.transformDate(this.periode1Filter[1]),
         firstDateP2: this.g.transformDate(this.periode2Filter[0]),
