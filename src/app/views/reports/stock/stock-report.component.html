@@ -49,7 +49,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="['Stock Barang','Stock Barang Dibawah Minimum','Stock Barang Diatas Maximum'].includes(currentReport)">
+    <ng-container *ngIf="['Stock Barang','Stock Barang Dibawah Minimum','Stock Barang Diatas Maximum','Stock Card'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
          Tanggal Stock
@@ -181,7 +181,7 @@
       </div>
     </ng-container>
 
-  <ng-container *ngIf="['Transaksi Detail Barang Expired'].includes(currentReport)">
+  <ng-container *ngIf="['Transaksi Detail Barang Expired','Stock Card'].includes(currentReport)">
     <div class="row mt-4">
       <div class="col-4">
         Kode Barang
@@ -216,6 +216,27 @@
 
     </div>
   </ng-container>
+  <ng-container *ngIf="['Stock Card'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+         Cetak Tgl. Exp ?
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <c-button-group role="group">
+            <input class="btn-check" type="radio" [(ngModel)]="paramStatusExpired" name="statusExpiredYa"
+              id="statusExpiredYa" value="Ya" />
+            <label cButton cFormCheckLabel class="w-120" variant="outline" for="statusExpiredYa">Ya</label>
+
+            <input class="btn-check" type="radio" [(ngModel)]="paramStatusExpired" name="statusExpired" id="statusExpiredTidak"
+              value="Tidak" />
+            <label cButton cFormCheckLabel class="w-120" variant="outline" for="statusExpiredTidak">TIdak</label>
+
+         
+          </c-button-group>
+        </div>
+      </div>
+    </ng-container>
 
     <!-- footer -->
     <div class="border-top mt-4 pt-3" *ngIf="loadingState['submit']">

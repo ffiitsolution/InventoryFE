@@ -54,10 +54,13 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
   startOfMonth : any;
   endOfMonth : any;
   paramTglTransaksi: any =new Date();
-
+  paramStatusExpired: string = 'Tidak';
   isShowModalBarang: boolean = false;
   kodeBarang: string = '';
   namaBarang: string = '';
+  konversi: number = 1;
+  satuanBesar: string = '';
+  satuanKecil: string = '';
   private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   dtOptions: any = {};
@@ -117,7 +120,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     if (['Master Cabang'].includes(this.currentReport)) {
       this.getListParam('listRegion');
     }
-    if (['Transaksi Detail Barang Expired'].includes(this.currentReport)) {
+    if (['Transaksi Detail Barang Expired','Stock Card'].includes(this.currentReport)) {
       this.renderDataTables()
     }
 
@@ -199,6 +202,32 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
         kodeBarang: this.kodeBarang
       };
 
+    }else if (this.currentReport === 'Stock Card') {
+      if(!this.kodeBarang || this.kodeBarang === '') {
+          this.toastr.error('Silahkan Pilih Kode Barang Terlebih Dahulu!');
+          this.loadingState['submit'] = false;
+          return;
+      }
+      const previousMonth = moment(this.paramTglTransaksi).subtract(1, 'month');
+      const firstDateOpname = previousMonth.clone().startOf('month').format('DD MMM YYYY');
+      const lastDateOpname = previousMonth.clone().endOf('month').format('DD MMM YYYY');
+      param = {
+        kodeGudang: this.g.getUserLocationCode(),
+        status: this.paramStatusAktif,
+        tipePilihanCetak: this.paramPilihanCetak,
+        firstDate:this.startOfMonth,
+        lastDate:moment(this.paramTglTransaksi).format('DD MMM YYYY'),
+        yearEom: moment(this.paramTglTransaksi).format('YYYY'), // tanpa dikurangi
+        monthEom: moment(this.paramTglTransaksi).format('M'),
+        isShowExpired: this.paramStatusExpired ,
+        firstDateOpname :firstDateOpname,
+        lastDateOpname : lastDateOpname,
+        kodebarang: this.kodeBarang,
+        namaBarang: this.namaBarang,
+        konversi: this.konversi.toFixed(2),
+        satuanBesar: this.satuanBesar,
+        satuanKecil: this.satuanKecil,
+      };
     }
 
     param = {
@@ -441,6 +470,9 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       this.isShowModalBarang = false;
       this.kodeBarang = data.kodeBarang;
       this.namaBarang = data.namaBarang;
+      this.konversi = data.konversi;
+      this.satuanBesar = data.satuanBesar;
+      this.satuanKecil = data.satuanKecil;
     }
 
     onTglTransaksiChange(value: Date): void {
