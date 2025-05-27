@@ -1,0 +1,21 @@
+.d-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-rows: auto;
+}
+
+.empty-placeholder {
+  height: 1.8rem;
+  visibility: hidden;
+}
+
+.pointer-only {
+  cursor: pointer;
+  padding: 2px;
+}
+
+.pointer-only:hover {
+  background-color: gray;
+  color: white;
+  padding-left: 6px;
+}
