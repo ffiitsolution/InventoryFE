@@ -56,6 +56,7 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
   alreadyPrint: boolean;
   disabledPrintButton: any;
   paramGenerateReport: any = {};
+  paramReportSelisihSo: any = {};
   isShowModalReport: boolean = false;
   loadings: { [key: string]: boolean } = {};
 
@@ -71,7 +72,10 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
     this.userData = this.service.getUserData();
     this.dtOptions = {
       pageLength: 5,
-      lengthMenu: [ [5, 10, 25, 50, 100], [5, 10, 25, 50, 100] ],
+      lengthMenu: [
+        [5, 10, 25, 50, 100],
+        [5, 10, 25, 50, 100],
+      ],
       language:
         translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
       processing: true,
@@ -267,6 +271,18 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
     } else this.toastr.error('File tidak dapat terunduh');
   }
 
+  printPDF(res: any) {
+    var blob = new Blob([res], { type: 'application/pdf' });
+    const downloadURL = window.URL.createObjectURL(blob);
+    const printWindow = window.open(downloadURL);
+    if (printWindow) {
+      printWindow.onload = () => {
+        printWindow.focus();
+        printWindow.print();
+      };
+    } else this.toastr.error('File tidak dapat terunduh');
+  }
+
   dtPageChange(event: any) {
     this.selectedRowData = undefined;
   }
@@ -324,25 +340,21 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
         break;
 
       case 'Laporan Selisih SO (Sementara)':
-        this.loadings['laporanSelisihSO'] = true;
-        this.service
-          .getFile('/api/report/report-jasper', {
-            kodeGudang: data.kodeGudang,
-            nomorSo: data.nomorSo,
-            tanggalSo: data.tanggalSo,
-            userData: this.userData,
-            isDownloadCsv: false,
-            reportName: 'Laporan Selisih SO (Sementara)',
-            reportSlug: 'selisih-so-sementara',
-            yearEom: yearEom,
-            monthEom: monthEom,
-            firstDate: firstDate,
-            lastDate: lastDate,
-          })
-          .subscribe((res: any) => {
-            this.loadings['laporanSelisihSO'] = false;
-            return this.downloadPDF(res, 'Laporan Selisih SO (Sementara)');
-          });
+        this.paramReportSelisihSo = {
+          kodeGudang: data.kodeGudang,
+          nomorSo: data.nomorSo,
+          tanggalSo: data.tanggalSo,
+          userData: this.userData,
+          isDownloadCsv: false,
+          reportName: 'Laporan Selisih SO (Sementara)',
+          reportSlug: 'selisih-so-sementara',
+          yearEom: yearEom,
+          monthEom: monthEom,
+          firstDate: firstDate,
+          lastDate: lastDate,
+          confirmSelection: this.paramReportSelisihSo?.confirmSelection ?? 'Ya',
+        };
+        this.loadings['laporanSelisihSOModal'] = true;
         break;
 
       case 'Entry Stock Opname':
@@ -385,6 +397,28 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
         this.openModalMenu();
         break;
     }
+  }
+
+  printSelisihSo(isDownload: boolean) {
+    this.loadings['laporanSelisihSO'] = true;
+    this.service
+      .getFile('/api/report/report-jasper', {
+        ...this.paramReportSelisihSo,
+        showExpired: this.paramReportSelisihSo.confirmSelection === 'Ya',
+      })
+      .subscribe(
+        (res: any) => {
+          this.loadings['laporanSelisihSO'] = false;
+          this.loadings['laporanSelisihSOModal'] = false;
+          return isDownload
+            ? this.downloadPDF(res, 'Laporan Selisih SO (Sementara)')
+            : this.printPDF(res);
+        },
+        (err: any) => {
+          this.loadings['laporanSelisihSO'] = false;
+          this.loadings['laporanSelisihSOModal'] = false;
+        }
+      );
   }
 
   openModalMenu(): void {

@@ -111,6 +111,61 @@
   </app-modal-print-list>
 </div>
 
+<c-modal [fullscreen]="false" [visible]="loadings['laporanSelisihSOModal']" backdrop="static" id="formModalReport"
+  [attr.aria-hidden]="!loadings['laporanSelisihSOModal']">
+  <c-modal-header>
+    <div></div>
+    <h5 cModalTitle class="titel-header">Konfirmasi Cetak Data</h5>
+    <button (click)="loadings['laporanSelisihSOModal'] = false" type="button" class="btn btn-primary ms-2" cButtonClose>
+      <i class="fa fa-times"></i>
+    </button>
+  </c-modal-header>
+
+  <c-modal-body>
+    <div class="text-center">
+      <p class="fw-bold">Siapkan Kertas, jika anda ingin<br> mencetak ke 'PRINTER'</p>
+
+      <div class="d-flex justify-content-center align-items-center mb-3">
+        <label class="form-check-label me-2" for="confirmSendSelisihSo">Expired Date, Di Cetak ? </label>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="confirmSendSelisihSo" id="confirmYesSelisihSo" value="Ya"
+            [(ngModel)]="paramReportSelisihSo.confirmSelection">
+          <label class="form-check-label" for="confirmYesSelisihSo">Ya</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="confirmSendSelisihSo" id="confirmNoSelisihSo" value="Tidak"
+            [(ngModel)]="paramReportSelisihSo.confirmSelection">
+          <label class="form-check-label" for="confirmNoSelisihSo" value="Tidak">Tidak</label>
+        </div>
+      </div>
+    </div>
+  </c-modal-body>
+
+  <c-modal-footer class="justify-center">
+    <div class="row">
+      <div class="col-6 text-center">
+        <button type="button" class="btn btn-success  text-white me-2 btn-120" (click)="printSelisihSo(true)"
+          [disabled]="this.loadings['laporanSelisihSO']">
+          <i class="fa fa-{{this.loadings['laporanSelisihSO'] ? 'spinner fa-spin' : 'file'}}"></i>
+          Screen Pdf
+        </button>
+      </div>
+      <div class="col-6 text-center">
+        <button type="button" class="btn btn-success  text-white me-2 btn-120" (click)="printSelisihSo(false)"
+          [disabled]="this.loadings['laporanSelisihSO']">
+          <i class="fa fa-{{this.loadings['laporanSelisihSO'] ? 'spinner fa-spin' : 'print'}}"></i>
+          Cetak
+        </button>
+      </div>
+    </div>
+    <!-- <div class="divider"></div> -->
+    <div class="text-center ">
+      <p class="fw-bold pe-0">Pastikan Printer kondisi 'ON' jika ingin mencetak ke PRINTER..!!</p>
+    </div>
+
+  </c-modal-footer>
+</c-modal>
+
 <div class="container my-5 fade-in fs-8">
   <div class="alert alert-info">
     <h5 class="alert-heading">

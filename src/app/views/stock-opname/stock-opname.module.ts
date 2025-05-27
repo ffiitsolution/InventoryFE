@@ -33,6 +33,7 @@ import { SharedCustomPipeModule } from '../../pipes/shared-pipe.module';
 import { SharedComponentModule } from '../../component/shared.component.module';
 import { DisplaySelisihSoComponent } from './6-result-so/display-selisih-so.component';
 import { DetailDisplaySelisihSoComponent } from './6-result-so/detail/detail.component';
+import { EnterAsTabDirective } from '../../directives/enter-as-tab.directive';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -60,7 +61,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     BsDatepickerModule.forRoot(),
     NgxPaginationModule,
     SharedCustomPipeModule,
-    SharedComponentModule
+    SharedComponentModule,
   ],
   declarations: [
     SetupSoComponent,
@@ -68,7 +69,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     StockSoAddComponent,
     StockSoEditComponent,
     DisplaySelisihSoComponent,
-    DetailDisplaySelisihSoComponent
+    DetailDisplaySelisihSoComponent,
+    EnterAsTabDirective
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

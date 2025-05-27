@@ -177,7 +177,7 @@ export class DetailPenerimaanGudangComponent
             });
 
           this.paramGenerateReport = {
-            noTransaksi: this.selectedProduction.nomorTransaksi,
+            nomorTransaksi: this.selectedProduction.nomorTransaksi,
             userEntry: this.selectedProduction.userCreate,
             jamEntry: this.g.transformTime(this.selectedProduction.timeCreate),
             tglEntry: this.g.transformDate(this.selectedProduction.dateCreate),
@@ -189,7 +189,7 @@ export class DetailPenerimaanGudangComponent
           };
 
           this.paramUpdatePrintStatus = {
-            noTransaksi: this.selectedProduction.nomorTransaksi,
+            nomorTransaksi: this.selectedProduction.nomorTransaksi,
           };
         }, DEFAULT_DELAY_TABLE);
       },

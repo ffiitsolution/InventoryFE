@@ -514,16 +514,16 @@ isDataInvalid() {
                     .subscribe({
                       next: (res2) => {
                         if (!res2.success) {
-                          this.toastr.warning('Data berhasil diposting, tetapi update status penerimaan gudang gagal!');
+                          this.toastr.warning('Data berhasil diposting, update status penerimaan gudang berhasil!');
                         } else {
-                          this.toastr.success('Data penerimaan gudang berhasil diposting dan status retur diperbarui!');
+                          this.toastr.success('Data penerimaan gudang berhasil diposting dan status penerimaan diperbarui!');
                         }
                         this.adding = false;
                         this.loadingSimpan = false;
                         this.onPreviousPressed();
                       },
                       error: () => {
-                        this.toastr.warning('Data berhasil diposting, tetapi gagal update status retur!');
+                        this.toastr.warning('Data berhasil diposting, tetapi gagal update status penerimaan gudang!');
                         this.loadingSimpan = false;
                       },
                     });
