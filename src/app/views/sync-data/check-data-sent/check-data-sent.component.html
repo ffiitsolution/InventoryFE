@@ -1,0 +1,340 @@
+<div class="fade-in">
+  <c-card class="mb-2">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>Cek Data Gudang vs HQ</h5>
+        </div>
+        <div class="col text-end">
+          <button class="btn btn-secondary" (click)="goToPage('/sync-data/all')">
+            <i class="fa fa-arrow-left me-2"></i>
+            Kembali
+          </button>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<div class="fade-in card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        Tanggal Transaksi
+        <span class="float-end">:</span>
+      </div>
+      <div class="col">
+        <input type="text" disabled class="form-control" [value]="startDate" />
+      </div>
+      <div class="col">
+        <input type="text" disabled class="form-control" [value]="endDate" />
+      </div>
+      <div class="col">
+        Gudang
+        <span class="float-end">:</span>
+      </div>
+      <div class="col">
+        <input type="text" disabled class="form-control" [value]="selectedGudang" />
+      </div>
+      <div class="col-3">
+        <input type="text" disabled class="form-control" [value]="selectedGudangName" />
+      </div>
+    </div>
+
+    <div class="row mt-3 border-bottom">
+      <div class="col-xs-12 col-md-8">
+        <table class="table table-hovered table-sm">
+          <thead class=" align-middle text-center">
+            <tr>
+              <th rowspan="2" class="table-info">TRANSAKSI</th>
+              <th colspan="2" class="table-primary">HEADER</th>
+              <th colspan="2" class="table-primary">DETAIL</th>
+            </tr>
+            <tr class="table-danger">
+              <th>GUDANG</th>
+              <th>HQ</th>
+              <th>GUDANG</th>
+              <th>HQ</th>
+            </tr>
+          </thead>
+          <tbody class=" align-middle">
+            <tr>
+              <td>Pembelian</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+            </tr>
+            <tr>
+              <td>Penerimaan</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['tinhd']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['tinhd']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['tindt']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['tindt']">
+              </td>
+            </tr>
+            <tr>
+              <td>Pengiriman</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['outhd']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['outhd']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['outdt']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['outdt']">
+              </td>
+            </tr>
+            <tr>
+              <td>Barang Rusak</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+            </tr>
+            <tr>
+              <td>Kirim Retur</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+            </tr>
+            <tr>
+              <td>Terima Retur</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+            </tr>
+            <tr>
+              <td>Terima Brg Bekas</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['bkshd']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['bkshd']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['bksdt']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['bksdt']">
+              </td>
+            </tr>
+            <tr>
+              <td>Penjualan Brg Bekas</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['jbkshd']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['jbkshd']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['jbksdt']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['jbksdt']">
+              </td>
+            </tr>
+            <tr>
+              <td>Pemakaian Sendiri</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['usagehd']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['usagehd']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['usagedt']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['usagedt']">
+              </td>
+            </tr>
+            <tr>
+              <td>Produksi</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['prdhd']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['prdhd']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['prddt']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['prddt']">
+              </td>
+            </tr>
+            <tr>
+              <td>Stock Opname</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['sohd']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['sohd']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['sodt']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['sodt']">
+              </td>
+            </tr>
+            <tr>
+              <td>Adjustment</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['adjhd']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['adjhd']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['adjdt']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['adjdt']">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-xs-12 col-md-4">
+        <table class="table table-hovered table-sm">
+          <thead class="align-middle text-center">
+            <tr>
+              <th rowspan="2" class="table-info">TRANSAKSI</th>
+              <th colspan="2" class="table-primary">DATA</th>
+            </tr>
+            <tr class="table-danger">
+              <th>GUDANG</th>
+              <th>HQ</th>
+            </tr>
+          </thead>
+          <tbody class="align-middle">
+            <tr>
+              <td>History S.O</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['hisso']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['hisso']">
+              </td>
+            </tr>
+            <tr>
+              <td>Revisi D.O</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" value="0">
+              </td>
+            </tr>
+            <tr>
+              <td>History Expired</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['expired']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['expired']">
+              </td>
+            </tr>
+            <tr>
+              <td>Saldo Expired</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['sldexp']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['sldexp']">
+              </td>
+            </tr>
+            <tr>
+              <td>History EOM</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['hiseom']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['hiseom']">
+              </td>
+            </tr>
+            <tr>
+              <td>Stock Saldo Awal</td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['sldawal']">
+              </td>
+              <td>
+                <input disabled class="form-control form-control-sm text-end" [value]="dataHq['sldawal']">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div>
+          <p class="text-danger fs-8 fw-bold">
+            Catatan:
+            <br>Jika ada selisih antara data gudang vs Data HQ
+            <br>maka Colour Font = Merah
+            <br>
+            <br>* Harap Lakukan proses 'Kirim Ulang'
+            <br>* Kemudian Cek ulang kembali...
+          </p>
+          <p class="text-info fs-8 fw-bold">
+            Proses Kirim Ulang hanya bisa dilakukan per-Tanggal
+            <br>(di tanggal transaksi yang sama) dan data_nya sudah
+            <br>pernah dikirim ke HQ ... !!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-3 text-end">
+      <button class="btn btn-primary" (click)="getCountGudang()" [disabled]="loadings['getCountGudang']">
+        <i class="fa fa-refresh {{loadings['getCountGudang'] ? 'fa-spin' : ''}} me-2"></i>
+        Kirim Ulang
+      </button>
+    </div>
+
+
+  </div>
+</div>
