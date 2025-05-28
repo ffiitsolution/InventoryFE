@@ -81,6 +81,10 @@ $theme-colors: map-merge(
   position: relative;
 }
 
+.loading-input-sm {
+  height: 30px !important;
+}
+
 .loading-input i {
   font-size: 1.5rem;
   margin-right: 10px;

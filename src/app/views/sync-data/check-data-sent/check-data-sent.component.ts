@@ -127,6 +127,7 @@ export class CheckDataSentSyncDataComponent
       this.endDate
     ) {
       this.getCountGudang();
+      this.getCountHq();
     } else {
       this.goToPage('/sync-data/all');
     }
@@ -172,7 +173,7 @@ export class CheckDataSentSyncDataComponent
   getCountHq() {
     this.loadings['getCountHq'] = true;
     this.service
-      .insert('/api/sync-data/count-gudang', {
+      .insert('/api/sync-data/count-hq', {
         kodeGudang: this.userData?.defaultLocation?.kodeLocation,
         startDate: this.startDate,
         endDate: this.endDate,
@@ -183,10 +184,14 @@ export class CheckDataSentSyncDataComponent
             this.messages['getCountHq'] = res.error;
             console.log('getCountHq error: ' + res.error);
           } else {
-            this.listHq = res.data ?? [];
-            for (let i = 0; i < this.listHq.length; i++) {
-              const item = this.listHq[i];
-              this.dataHq[item.trx] = item.val ?? 0;
+            if (res.message) {
+              const m = JSON.parse(res.message);
+              // console.log('getCountHq res: ' + JSON.stringify(m.data));
+              this.listHq = m.data ?? [];
+              for (let i = 0; i < this.listHq.length; i++) {
+                const item = this.listHq[i];
+                this.dataHq[item.trx] = item.val ?? 0;
+              }
             }
           }
           this.loadings['getCountHq'] = false;
