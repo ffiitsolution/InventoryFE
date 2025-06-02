@@ -86,8 +86,6 @@ export class LoginComponent implements OnInit {
           } else {
             const { locations, user, token, expiredAt, period, hasPermission } =
               res.data;
-
-            const safePermissions = hasPermission || [];
             const transformedUser = {
               ...user,
               defaultLocation: user.defaultLocation
@@ -96,6 +94,17 @@ export class LoginComponent implements OnInit {
                   )
                 : null,
             };
+            
+            if (user?.roleId === '10') {
+              this.g.saveLocalstorage('inv_locations', locations);
+              this.g.saveLocalstorage('inv_currentUser', transformedUser);
+              this.g.saveLocalstorage('inv_token', token);
+              this.g.saveLocalstorage('inv_expiredAt', expiredAt);
+              this.g.saveLocalstorage('inv_period', period);
+              this.router.navigate(['mpcs/list']);
+            }
+            const safePermissions = hasPermission || [];
+
             this.g.accessSidebar =
               safePermissions?.filter((p: any) => p.app === 'SIDEBAR') || [];
             this.g.accessModule =

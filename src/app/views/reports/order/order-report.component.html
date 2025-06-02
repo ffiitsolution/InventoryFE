@@ -74,7 +74,7 @@
 
 
 
-    <ng-container *ngIf="['Pesanan Ke Supplier'].includes(currentReport)">
+    <ng-container *ngIf="['Pesanan Ke Supplier','Terima Pesanan Cabang'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Tanggal Pengiriman
@@ -103,6 +103,26 @@
             <input class="btn-check" type="radio" [(ngModel)]="paramStatusPesanan" name="tipeListing"
               id="tipeListingDetail" value="3" />
             <label cButton cFormCheckLabel class="w-240" variant="outline" for="tipeListingDetail">Pesanan Yang Sudah Diterima</label>
+          </c-button-group>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="['Terima Pesanan Cabang'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Status Pesanan
+            <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <c-button-group role="group">
+            <input class="btn-check" type="radio" [(ngModel)]="paramStatusPesanan" name="tipeListing"
+              id="tipeListingRekap" value="1" />
+            <label cButton cFormCheckLabel class="w-240" variant="outline" for="tipeListingRekap">Pesanan Baru</label>
+
+            <input class="btn-check" type="radio" [(ngModel)]="paramStatusPesanan" name="tipeListing"
+              id="tipeListingDetail" value="3" />
+            <label cButton cFormCheckLabel class="w-240" variant="outline" for="tipeListingDetail">Pesanan Yang Sudah Dikirim</label>
           </c-button-group>
         </div>
       </div>
