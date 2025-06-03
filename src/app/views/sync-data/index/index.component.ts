@@ -19,7 +19,7 @@ import { TranslationService } from '../../../service/translation.service';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
-import { DatePipe } from '@angular/common';
+import { DatePipe, formatDate } from '@angular/common';
 import { AppService } from '../../../service/app.service';
 import Swal from 'sweetalert2';
 
@@ -32,6 +32,8 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
   loadings: { [key: string]: boolean } = {};
   clicked: { [key: string]: boolean } = {};
   messages: { [key: string]: string } = {};
+  listParams: { [key: string]: any } = {};
+  selectedParam: { [key: string]: any } = {};
   columns: any;
   page: any;
   // page = new Page();
@@ -58,6 +60,7 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
   currentReport: string = 'Cek Data Stock Minus';
   rangeDateVal = [new Date(), new Date()];
   listBackupDb: any[] = [];
+  configSelect: any;
 
   constructor(
     private service: AppService,
@@ -76,8 +79,21 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dpConfigtrans.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfigtrans.adaptivePosition = true;
     this.dpConfigtrans.maxDate = new Date();
-    // this.dpConfigtrans.minDate = moment().startOf('month').toDate();
     this.dpConfigtrans.customTodayClass = 'today-highlight';
+
+    this.configSelect = {
+      placeholder: 'Pilih satu',
+      dateInputFormat: 'DD/MM/YYYY',
+      searchPlaceholder: 'Cari...',
+      limitTo: this.listParams['Gudang']?.length,
+      displayKey: 'description',
+      search: true,
+      height: '200px',
+      customComparator: () => {},
+      moreText: 'lebih banyak',
+      noResultsFound: 'Tidak ada hasil',
+      searchOnKey: 'description',
+    };
   }
 
   ngOnInit(): void {
@@ -90,6 +106,11 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
     );
     this.getCompanyProfile();
     this.userData = this.service.getUserData();
+
+    const menu = localStorage.getItem('inv_last_menu_sync_data') ?? '';
+    if (menu) {
+      this.onClickMenu(menu);
+    }
   }
 
   ngOnDestroy(): void {}
@@ -113,10 +134,10 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onClickMenu(menu: string) {
     this.selectedMenu = menu;
-    // this.router.navigate([menu.path], {
-    //   queryParams: { report: menu.name },
-    //   skipLocationChange: true,
-    // });
+    localStorage.setItem('inv_last_menu_sync_data', menu);
+    if (this.selectedMenu == 'Cek Hasil Kirim Data Ke HQ') {
+      this.getListParam('Gudang');
+    }
   }
 
   getCompanyProfile() {
@@ -346,5 +367,49 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
       '/api/backup-database/download/' +
       data.fileName;
     window.open(url, '_blank');
+  }
+
+  getListParam(type: string, report: string = '') {
+    this.loadingState[type] = true;
+    this.service
+      .insert('/api/report/list-report-param', {
+        type: 'list' + type,
+        report: report,
+      })
+      .subscribe({
+        next: (res) => {
+          const data = res.data ?? [];
+          // const allVal = {
+          //   code: '',
+          //   description: 'Semua',
+          // };
+          this.listParams[type] = [...data];
+          for (let i = 0; i < this.listParams[type]?.length; i++) {
+            const item = this.listParams[type][i];
+            const kodeGudang = this.userData?.defaultLocation?.kodeLocation;
+            if (item.code === kodeGudang) {
+              this.selectedParam[type] = item;
+              break;
+            }
+          }
+          this.loadingState[type] = false;
+        },
+        error: (error) => {
+          console.log(error);
+          this.loadingState[type] = false;
+        },
+      });
+  }
+
+  goToCheckGudangVsHQ() {
+    this.router.navigate(['/sync-data/check-data-sent'], {
+      queryParams: {
+        selectedGudang: this.selectedParam['Gudang']['code'],
+        selectedGudangName: this.selectedParam['Gudang']['name'],
+        startDate: formatDate(this.rangeDateVal[0], 'dd MMM yyyy', 'en-US'),
+        endDate: formatDate(this.rangeDateVal[1], 'dd MMM yyyy', 'en-US'),
+      },
+      skipLocationChange: true,
+    });
   }
 }

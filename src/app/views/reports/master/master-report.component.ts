@@ -115,6 +115,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
           const allVal = {
             code: '',
             description: 'Semua',
+            name:''
           };
           if (type == 'listRegion') {
             this.listRegion = [allVal, ...data];
@@ -166,6 +167,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     ) {
       param = {
         kodeRsc: this.selectedRsc['code'],
+        keteranganRsc: this.selectedRsc['name'],
         status: this.paramStatusAktif,
         tipeListing: this.paramTipeListing,
       };
@@ -189,7 +191,8 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     param = {
       ...param,
       userData: this.userData,
-      isDownloadCsv: type === 'csv',
+      isDownloadCsv: type === 'csv' || type === 'xlsx',
+      isDownloadXlsx: type === 'xlsx',
       reportName: this.currentReport,
       reportSlug: this.g.formatUrlSafeString(this.currentReport),
     };
@@ -201,6 +204,8 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
           return this.previewPdf(res);
         } else if (type === 'csv') {
           return this.downloadCsv(res, type);
+        } else if (type === 'xlsx') {
+          return this.downloadXlsx(res, type);
         } else {
           return this.downloadPDF(res, type);
         }
@@ -255,6 +260,27 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
         this.rangeDateVal[1],
         'dd-MMM-yyyy'
       )}.csv`;
+      link.click();
+      this.toastr.success('File sudah terunduh');
+    } else this.toastr.error('File tidak dapat terunduh');
+  }
+
+  downloadXlsx(res: any, reportType: string) {
+    var blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    this.downloadURL = window.URL.createObjectURL(blob);
+
+    if (this.downloadURL.length) {
+      var link = document.createElement('a');
+      link.href = this.downloadURL;
+      link.download = `${reportType} Report ${this.g.formatUrlSafeString(
+        this.currentReport
+      )} ${this.datePipe.transform(
+        this.rangeDateVal[0],
+        'dd-MMM-yyyy'
+      )} s.d. ${this.datePipe.transform(
+        this.rangeDateVal[1],
+        'dd-MMM-yyyy'
+      )}.xlsx`;
       link.click();
       this.toastr.success('File sudah terunduh');
     } else this.toastr.error('File tidak dapat terunduh');

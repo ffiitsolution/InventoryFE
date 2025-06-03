@@ -19,6 +19,13 @@
   </c-card-body>
 </c-card>
 
+<ng-template #loadingTemplate>
+  <div class="loading-input loading-input-sm fs-8">
+    <i class="fa fa-spinner fa-spin"></i>
+    <span>loading</span>
+  </div>
+</ng-template>
+
 <!-- Terima Pesanan -->
 <c-row>
 
@@ -27,7 +34,9 @@
       <c-card-body>
         <div class="border-start border-start-4 border-start-info py-1 px-3 mb-3">
           <div class="text-medium-emphasis small">Pesanan Belum Diterima</div>
-          <div class="fs-5 fw-semibold">__</div>
+          <ng-container *ngIf="!loadings['getPesananBelumDiterima']; else loadingTemplate">
+            <div class="fs-5 fw-semibold">{{ dashboardData?.count?.pesananBelumDiterima ?? '-' }}</div>
+          </ng-container>
         </div>
       </c-card-body>
     </c-card>
@@ -38,7 +47,9 @@
       <c-card-body>
         <div class="border-start border-start-4 border-start-warning py-1 px-3 mb-3">
           <div class="text-medium-emphasis small">Pesanan Baru</div>
-          <div class="fs-5 fw-semibold">{{ dashboardData?.count?.pesananBaru ?? '-' }}</div>
+          <ng-container *ngIf="!loadings['getDashboardData']; else loadingTemplate">
+            <div class="fs-5 fw-semibold">{{ dashboardData?.count?.pesananBaru ?? '-' }}</div>
+          </ng-container>
         </div>
       </c-card-body>
     </c-card>
@@ -49,7 +60,9 @@
       <c-card-body>
         <div class="border-start border-start-4 border-start-danger py-1 px-3 mb-3">
           <div class="text-medium-emphasis small">Pesanan Belum Cetak</div>
-          <div class="fs-5 fw-semibold">{{ dashboardData?.count?.pesananBelumCetak ?? '-' }}</div>
+          <ng-container *ngIf="!loadings['getDashboardData']; else loadingTemplate">
+            <div class="fs-5 fw-semibold">{{ dashboardData?.count?.pesananBelumCetak ?? '-' }}</div>
+          </ng-container>
         </div>
       </c-card-body>
     </c-card>
@@ -65,7 +78,9 @@
       <c-card-body>
         <div class="border-start border-start-4 border-start-info py-1 px-3 mb-3">
           <div class="text-medium-emphasis small">Pesanan Belum Dikirim</div>
-          <div class="fs-5 fw-semibold">{{ dashboardData?.count?.countPesananBelumDikirim ?? '-' }}</div>
+          <ng-container *ngIf="!loadings['getDashboardData']; else loadingTemplate">
+            <div class="fs-5 fw-semibold">{{ dashboardData?.count?.countPesananBelumDikirim ?? '-' }}</div>
+          </ng-container>
         </div>
       </c-card-body>
     </c-card>
@@ -76,7 +91,9 @@
       <c-card-body>
         <div class="border-start border-start-4 border-start-warning py-1 px-3 mb-3">
           <div class="text-medium-emphasis small">Pengiriman In Transit</div>
-          <div class="fs-5 fw-semibold">{{ dashboardData?.count?.countPengirimanBaru ?? '-' }}</div>
+          <ng-container *ngIf="!loadings['getDashboardData']; else loadingTemplate">
+            <div class="fs-5 fw-semibold">{{ dashboardData?.count?.countPengirimanBaru ?? '-' }}</div>
+          </ng-container>
         </div>
       </c-card-body>
     </c-card>
@@ -87,7 +104,9 @@
       <c-card-body>
         <div class="border-start border-start-4 border-start-danger py-1 px-3 mb-3">
           <div class="text-medium-emphasis small">D.O Balik In Transit</div>
-          <div class="fs-5 fw-semibold">{{ dashboardData?.count?.doBelumBalik ?? '-' }}</div>
+          <ng-container *ngIf="!loadings['getDashboardData']; else loadingTemplate">
+            <div class="fs-5 fw-semibold">{{ dashboardData?.count?.doBelumBalik ?? '-' }}</div>
+          </ng-container>
         </div>
       </c-card-body>
     </c-card>

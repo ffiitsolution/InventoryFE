@@ -46,8 +46,8 @@
 }
 
 .resep-expired-body{
-    height: 300px;
-    overflow: auto;
+    // height: 300px;
+    // overflow: auto;
 }
 
 .text-black{
@@ -143,4 +143,29 @@
 
 .page-link{
     z-index: 0;
+}
+
+.btn-all-full{
+    width: 100%;
+}
+
+// .btn-simpan{
+//   width:;
+// }
+
+@media (max-width: 767.98px) {
+  .btn-full {
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .w-lg-50 {
+    width: 50% !important;
+  }
+}
+
+.px-20{
+  padding-left: 20px;
+  padding-right: 20px;
 }

@@ -385,14 +385,8 @@
                 Download PDF
               </button>
             </li>
-            <li>
-              <button
-                class="btn btn-outline-primary w-100"
-                (click)="doSubmit('csv')"
-              >
-                Download CSV
-              </button>
-            </li>
+          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('xlsx')">Download XLSX</button></li>
+          <li><button class="btn btn-outline-primary w-100" (click)="doSubmit('csv')">Download CSV</button></li>
           </ul>
         </c-dropdown>
       </ng-template>
@@ -519,7 +513,7 @@
       </c-card-body>
     </c-card>
   </c-modal-body>
- 
+
 </c-modal>
 
 <!-- Modal Backdrop -->

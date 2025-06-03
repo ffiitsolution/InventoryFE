@@ -8,12 +8,21 @@
 }
 
 .btn-200 {
-  width: 200px !important;
+  width: 200px !important; /* default to desktop */
 }
+
+// .span-gudang{
+ 
+// }
 
 @media (max-width: 767.98px) {
   .span-gudang {
     margin: auto;
+     width: 100%;
+  }
+
+  .btn-200 {
+    width: 100% !important;
   }
 }
 

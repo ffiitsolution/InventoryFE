@@ -1,5 +1,6 @@
+
 <div class="fade-in">
-  <c-card class="mb-4">
+  <c-card class="mb-2">
     <c-card-body>
       <c-row>
         <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
@@ -7,84 +8,75 @@
             <i class="fa fa-chevron-left icon-12 icon-gap"></i>
             {{ "Kembali" | translate }}
           </button>
-          <h5>{{ "Detail Barang Untuk Pemakaian Sendiri" | translate }}</h5>
+          <h5>{{ "Detail Penerimaan Dari Gudang" | translate }}</h5>
         </div>       
       </c-row>
     </c-card-body>
   </c-card>
-
-  <c-card class="mb-4">
+  <c-card class="mb-2">
     <c-card-body>
       <div class="row">
+        <div class="col"></div>
         <div class="col text-end">
-          <!-- <app-print-button
-            [alreadyPrint]="alreadyPrint"
-            [disabledPrintButton]="disabledPrintButton"
-            [updateStatusUrl]="'/api/delivery-order/update-print-status'"
-            [generatePdfUrl]="'/api/delivery-order/delivery-order-report'"
-            [updatePrintStatusParam]="paramUpdatePrintStatus"
-            [generateReportParam]="paramGenerateReport"
-            (reloadTable)="reloadTable()"
-          ></app-print-button> -->
-          <div class="btn-group">
-            <button
-              class="btn btn-danger text-white btn-150 dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              (click)="onCetakAtauPrintReport(false, this.selectedOrder.nomorTransaksi)"
-            >
-              <i class="fa fa-file-pdf-o"></i> Cetak / Download Report
-            </button>
-            <ul class="dropdown-menu">
-              <li>
-                <button
-                  class="dropdown-item"
-                  (click)="handleCetakAtauPrint(false)"
-                >
-                  <i class="fa fa-print"></i> Print Report
-                </button>
-              </li>
-              <li>
-                <button
-                  class="dropdown-item"
-                  (click)="handleCetakAtauPrint(true)"
-                >
-                  <i class="fa fa-download"></i> Download PDF
-                </button>
-              </li>
-            </ul>
-          </div>
+          <app-print-button
+          [alreadyPrint]="alreadyPrint"
+          [disabledPrintButton]="disabledPrintButton"
+          [generatePdfUrl]="'/cetak-pennerimaan-gudang'"
+          [updateStatusUrl]="''"
+          [updatePrintStatusParam]="''"
+          [generateReportParam]="paramGenerateReport"
+          (reloadTable)="reloadTable()"
+        ></app-print-button>
         </div>
-      </div>
 
-      <div class="divider mt-4"></div>
-
-      <div class="row">
+        <div class="divider mt-2"></div>
+        
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">
-              <span class="label">{{ "Nomor Transaksi" | translate }}</span>
-              <span class="value">{{ selectedOrder.nomorTransaksi }}</span>
+              <span class="label">{{ "Nomor Pesanan" | translate }}</span>
+              <span class="value">: {{ selectedProduction.nomorPesanan }}</span>
             </div>
             <div class="detail-item">
-              <span class="label">{{ "Tanggal Transaksi" | translate }}</span>
-              <span class="value">{{ g.transformDate(selectedOrder.tglTransaksi) }}</span>
+              <span class="label">{{ "Nomor Surat Jalan" | translate }}</span>
+              <span class="value">: {{ selectedProduction.nomorSuratJalan }}</span> 
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Tanggal Surat Jalan" | translate }}</span>
+              <span class="value">: {{ selectedProduction.tglSuratJalan | date: 'dd MMM yyyy' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Nomor Transaksi Terima" | translate }}</span>
+              <span class="value">: {{ selectedProduction.nomorTransaksi }}</span>
             </div>
           </div>
         </div>
-
         <div class="col">
-          <div class="detail-item">
-              <span class="label">{{ "Status Transaksi" | translate }}</span>
-              <span class="value">{{ getStatusPostingLegend(selectedOrder.statusPosting) }}</span>
+          <div class="row order-details">
+            <div class="detail-item">
+              <span class="label">{{ "Tanggal Terima Barang" | translate }}</span>
+              <span class="value">: {{ selectedProduction.tglTransaksi | date: 'dd MMM yyyy' }}</span>
             </div>
-          <div class="detail-item">
-            <span class="label">{{ "Catatan / Keterangan " | translate }}</span>
-            <span class="value">{{ selectedOrder.keterangan }}</span>
+            <div class="detail-item">
+              <span class="label">{{ "Kode Dan Nama Gudang" | translate }}</span>
+              <span class="value">: {{ selectedProduction.kodeGudang }} - {{ selectedProduction.namaCabangPengirim }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Catatan / Keterangan" | translate }}</span>
+              <span class="value">: {{ selectedProduction.keterangan }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">{{ "Status Transaksi" | translate }}</span>
+              <span class="value">
+                : 
+                <span [ngClass]="{'badge bg-success': selectedProduction.statusPosting === 'P', 'badge bg-secondary': selectedProduction.statusPosting !== 'P'}">
+                  {{ selectedProduction.statusPosting === 'P' ? 'POSTED' : selectedProduction.statusPosting }}
+                </span>
+              </span>
+            </div>            
           </div>
         </div>
       </div>
-
     </c-card-body>
   </c-card>
 </div>
@@ -97,7 +89,7 @@
           datatable
           [dtOptions]="dtOptions"
           (page.dt)="dtPageChange($event)"
-          class="datatable row-border hover stripe"
+          class="row-border hover stripe"
         ></table>
       </div>
     </c-card-body>
@@ -105,373 +97,143 @@
 </div>
 
 <c-modal
-  #modalExpired
-  alignment="center"
-  [style]="{
-    display: 'flex',
-    'align-items': 'center',
-    'justify-content': 'center'
-  }"
-  [fullscreen]="false"
-  [visible]="isShowModalExpired"
+  #staticBackdropModal
+  [visible]="isShowModal"
   backdrop="static"
-  #modalLg
+  id="staticBackdropModal"
   size="xl"
-  id="formModal"
-  [attr.aria-hidden]="!isShowModalExpired"
 >
   <c-modal-header>
     <h5 cModalTitle>History Data Expired</h5>
-    <button
-      (click)="isShowModalExpired = false"
+    <!-- <button
+      (click)="closeModal($event)"
       type="button"
-      class="btn btn-primary ms-2"
+      class="btn btn-info ms-2"
+      [cModalToggle]="staticBackdropModal.id"
       cButtonClose
     >
-      <i class="fa fa-times"></i>
-    </button>
+      <i class="fa fa-times text-white"></i>
+    </button> -->
   </c-modal-header>
+
   <c-modal-body>
-    <div class="row" *ngIf="selectedRowData">
+    <div class="row">
       <div class="col-9">
-        <div class="w-100 px-2 py-1 row">
+        <div class="w-100 mb-1 row">
           <div class="col-4 d-flex align-items-center">
-            <label for="nomorPesanan">{{ "Kode Dan Nama Barang" | translate }}</label>
+            <label for="nomorPesanan">{{ "Kode dan Nama Barang" | translate }}</label>
           </div>
           <div class="col-8 pe-0 d-flex">
             <div class="col-3 pe-2">
-              <input
-                type="text"
-                class="form-control"
-                id="kodeBarang"
-                [(ngModel)]="selectedRowData.kodeBarang"
-                name="kodeBarang"
-                readonly
-              />
+              <input type="text" class="form-control" id="kodeBarang" [value]="formExpiredData.kodeBarang"
+                name="kodeBarang" readonly />
             </div>
-            <div class="col-12">
-              <input
-                type="text"
-                class="form-control"
-                id="namaBarang"
-                [(ngModel)]="selectedRowData.namaBarang"
-                name="namaBarang"
-                readonly
-              />
+            <div class="col-9">
+              <input type="text" class="form-control" id="namaBarang" [value]="formExpiredData.kodeNamaBarang"
+                name="namaBarang" readonly />
             </div>
-          </div>
-        </div>
-        <div class="w-100 px-2 py-1 row">
-          <div class="col-4 d-flex align-items-center">
-            <label for="nomorPesanan">{{
-              "Konversi Barang" | translate
-            }}</label>
-          </div>
-          <div class="col-8 pe-0">
-            <input
-              type="text"
-              class="form-control"
-              id="konversi"
-              [value]="
-                selectedRowData.konversi +
-                ' ' +
-                selectedRowData.satuanKecil +
-                '/' +
-                selectedRowData.satuanBesar
-              "
-              name="konversi"
-              readonly
-            />
           </div>
         </div>
 
-        <div class="w-100 px-2 py-1 row">
+        <div class="w-100 mb-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label for="nomorPesanan">{{ "Konversi Barang" | translate }}</label>
+          </div>
+          <div class="col-8 pe-0">
+            <input type="text" class="form-control" id="konversi"
+            [value]="formExpiredData.konversi"
+              name="konversi" readonly />
+          </div>
+        </div>
+
+        <div class="w-100 mb-1 row">
+          <div class="col-4 d-flex align-items-center">
+            <label class="fw-semibold" for="nomorPesanan">{{ "TOTAL QTY..............." | translate }}</label>
+          </div>
+          <div class="col-5 pe-0">
+            <input type="text" placeholder="Nomor pesanan" class="form-control" id="totalQtyProduksi"
+            [value]="formExpiredData.totalQty"
+              name="totalQtyProduksi" readonly />
+          </div>
+          <div class="col-3 d-flex align-items-center">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-3">
+        <div class="w-100 mb-1 row">
           <div class="col-4 d-flex align-items-center">
             <label for="nomorPesanan">{{ "Quantity Besar" | translate }}</label>
           </div>
-          <div class="col-4 pe-0">
-            <input
-              type="text"
-              class="form-control"
-              id="qtyPemakaianBesar"
-              [value]="selectedRowData.qtyBesar | number : '1.2-2'"
-              name="qtyPemakaianBesar"
-              readonly
-            />
+          <div class="col-5 pe-0">
+            <input type="text" class="form-control" id="qtyPemakaianBesar" [value]="formExpiredData.qtyBesar"
+              name="qtyPemakaianBesar" readonly />
           </div>
-          <div class="col-3 d-flex align-items-start">
-            <label for="qtyPemakaianBesar">{{
-              selectedRowData.satuanBesar
-            }}</label>
+          <div class="col-3 d-flex align-items-center">
           </div>
         </div>
-
-        <div class="w-100 px-2 py-1 row">
+      
+        <div class="w-100 row">
           <div class="col-4 d-flex align-items-center">
             <label for="nomorPesanan">{{ "Quantity Kecil" | translate }}</label>
           </div>
-          <div class="col-4 pe-0">
-            <input
-              type="text"
-              class="form-control"
-              id="qtyPemakaianKecil"
-              [value]="selectedRowData.qtyKecil | number : '1.2-2'"
-              name="qtyPemakaianKecil"
-              readonly
-            />
+          <div class="col-5 pe-0">
+            <input type="text" class="form-control" id="qtyPemakaianKecil" [value]="formExpiredData.qtyKecil"
+              name="qtyPemakaianKecil" readonly />
           </div>
-          <div class="col-3 d-flex align-items-start">
-            <label for="qtyPemakaianKecil">{{
-              selectedRowData.satuanKecil
-            }}</label>
-          </div>
-        </div>
-
-        <div class="w-100 px-2 py-1 row">
-          <div class="col-4 d-flex align-items-center">
-            <label class="fw-semibold" for="nomorPesanan">{{
-              "Total Qty" | translate
-            }}</label>
-          </div>
-          <div class="col-4 pe-0">
-            <input
-              type="text"
-              placeholder="Nomor pesanan"
-              class="form-control"
-              id="totalQtyProduksi"
-              [value]="this.selectedRowData.totalQty | number : '1.2-2'"
-              name="totalQtyProduksi"
-              readonly
-            />
-          </div>
-          <div class="col-3 d-flex align-items-start">
-            <label for="totalQtyProduksi">{{
-              selectedRowData.satuanKecil
-            }}</label>
+          <div class="col-3 d-flex align-items-center">
           </div>
         </div>
       </div>
-     
-    </div>
-    <div class="divider"></div>
-    <div class="table-responsive">
-      <ng-container>
-        <!-- <div *ngIf="loading">
-          <app-loading></app-loading>
-        </div> -->
-        <table
-          bordered
-          [hover]="true"
-          [responsive]="true"
-          [striped]="true"
-          align="middle"
-          cTable
-          class="mb-0 border"
-        >
-          <thead>
-            <tr>
-              <th
-                scope="col"
-                style="
-                  background-color: #3c4b64;
-                  color: white;
-                  vertical-align: middle;
-                  width: 20%;
-                "
-                class="text-center align-items-start"
-                rowspan="2"
-              >
-                Tgl. Expired
-              </th>
-              <th
-                scope="col"
-                style="
-                  background-color: #3c4b64;
-                  color: white;
-                  vertical-align: middle;
-                  width: 20%;
-                "
-                class="text-center align-items-start"
-                rowspan="3"
-              >
-                Keterangan Tanggal
-              </th>
-              <th
-                scope="col"
-                style="
-                  background-color: #3c4b64;
-                  color: white;
-                  vertical-align: middle;
-                  width: 124px;
-                "
-                class="text-center align-items-start"
-                rowspan="2"
-              >
-                Qty Besar
-              </th>
-              <th
-                scope="col"
-                style="
-                  background-color: #3c4b64;
-                  color: white;
-                  vertical-align: middle;
-                  width: 124px;
-                "
-                class="text-center align-items-start btn-danger"
-                rowspan="2"
-              >
-                Qty Kecil
-              </th>
-              <!-- Masih sejajar -->
-              <th
-                scope="col"
-                style="
-                  background-color: #3c4b64;
-                  color: white;
-                  vertical-align: middle;
-                  width: 10%;
-                "
-                class="text-center align-items-start"
-                rowspan="2"
-              >
-                Total Qty
-              </th>
-            </tr>
-          </thead>
-          <tbody *ngIf="!listDataExpired || listDataExpired.length === 0">
-            <tr>
-              <td colspan="9" scope="col" class="text-center">No Data Found</td>
-            </tr>
-          </tbody>
-          <tbody>
-            <tr *ngFor="let data of listDataExpired; let i = index">
-              <td class="text-center">
-                {{ data.TGL_EXPIRED | date : "dd MMM yyyy" }}
-              </td>
-
-              <td class="text-center">
-                {{ data.TGL_EXPIRED | date : "dd MMM yyyy" }}
-              </td>
-              <td class="text-center input-column">
-                <div class="d-flex justify-content-center" style="gap: 5px">
-                  {{ helper.abs(data.QTY_BESAR) | number : "1.2-2" }}
-                  <span
-                    class="d-flex align-items-center justify-content-center"
-                  >
-                    / {{ data.SATUAN_BESAR }}
-                  </span>
-                </div>
-              </td>
-
-              <td class="text-center">
-                <div class="d-flex justify-content-center" style="gap: 5px">
-                  {{ helper.abs(data.QTY_KECIL) | number : "1.2-2" }}
-                  <span
-                    class="d-flex align-items-center justify-content-center"
-                  >
-                    / {{ data.SATUAN_KECIL }}
-                  </span>
-                </div>
-              </td>
-
-              <td class="text-center">
-                {{ helper.abs(data.TOTAL_QTY) | number : "1.2-2" }}
-                {{ data.SATUAN_KECIL }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </ng-container>
     </div>
 
-    <div
-      class="row justify-content-between gap-3 mt-3"
-      *ngIf="getTotalQty"
-      style="margin-right: 20px"
-    >
-      <div class="col-4 d-flex"></div>
-      <div class="col-6 d-flex justify-content-end align-items-center gap-3">
-        <p class="mb-0">
-          <strong>TOTAL QTY EXPIRED:</strong>
-          {{ getTotalQty() | number : '1.2-2' }}
-          {{ getQtyKecil().satuanKecil }}
-        </p>
-      </div>
-      <div class="col-2"></div>
-    </div>
+    <div class="divider mt-2 mb-2"></div>
+
+    <c-card class="mb-2">
+      <c-card-body>
+        <div class="table-responsive" *ngIf="dtOptionsExpired">
+          <table
+            datatable
+            [dtOptions]="dtOptionsExpired"
+            [dtTrigger]="dtTriggerExpired"
+            class="datatable row-border hover stripe w-100"
+            id="tableIdExpired"
+          ></table>
+        </div>              
+      </c-card-body>
+    </c-card>
   </c-modal-body>
+
+  <c-modal-footer class="d-flex justify-content-between">
+    <!-- Tombol Close Kiri -->
+    <button
+      (click)="closeModal($event)"
+      type="button"
+      class="btn btn-danger"
+    >
+      <i class="fa fa-times-circle pe-1"></i> Keluar
+    </button>
+  
+    <!-- Bagian TOTAL QTY dalam satu row -->
+    <div class="d-flex align-items-center">
+      <div class="me-3">
+        <label class="fw-semibold" for="totalQtyProduksi">{{ "TOTAL QTY EXPIRED..............." | translate }}</label>
+      </div>
+      <div class="me-3">
+        <input
+          type="text"
+          placeholder="Nomor pesanan"
+          class="form-control"
+          id="totalQtyProduksi"
+          [value]="formExpiredData.totalExpiredQty"
+          name="totalQtyProduksi"
+          readonly
+        />
+      </div>
+    </div>
+  </c-modal-footer>
+  
+  
 </c-modal>
 
-<!-- <div class="modal fade" id="itemDetailModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalLabel">Detail Barang</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="container">
-          <div class="row mb-2">
-            <div class="col-4 fw-bold">Kode dan Nama Barang</div>
-            <div class="col-8">
-              <input type="text" class="form-control" [(ngModel)]="item.kodeBarang" readonly />
-            </div>
-          </div>
-          <div class="row mb-2">
-            <div class="col-4 fw-bold">Konversi Barang</div>
-            <div class="col-8">
-              <input type="text" class="form-control" [(ngModel)]="item.konversi" readonly />
-            </div>
-          </div>
-          <div class="row mb-2">
-            <div class="col-4 fw-bold">Quantity Besar</div>
-            <div class="col-8">
-              <input type="number" class="form-control" [(ngModel)]="item.qtyBesar" readonly />
-            </div>
-          </div>
-          <div class="row mb-2">
-            <div class="col-4 fw-bold">Quantity Kecil</div>
-            <div class="col-8">
-              <input type="number" class="form-control" [(ngModel)]="item.qtyKecil" readonly />
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-4 fw-bold">Total QTY</div>
-            <div class="col-8">
-              <input type="text" class="form-control fw-bold text-primary" [(ngModel)]="item.totalQty" readonly />
-            </div>
-          </div>
-
-          <table class="table table-bordered">
-            <thead class="table-primary">
-              <tr>
-                <th>Tgl Expired</th>
-                <th>Keterangan Tanggal</th>
-                <th>Qty Besar</th>
-                <th>Qty Kecil</th>
-                <th>Total Qty</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let exp of expiredItems">
-                <td>{{ exp.tglExpired }}</td>
-                <td>{{ exp.keteranganTanggal }}</td>
-                <td>{{ exp.qtyBesar }} {{ item.satuanBesar }}</td>
-                <td>{{ exp.qtyKecil }} {{ item.satuanKecil }}</td>
-                <td>{{ exp.totalQty }} {{ item.satuanKecil }}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="text-end fw-bold text-primary">
-            TOTAL QTY EXPIRED: {{ totalQtyExpired }} PCS
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keluar Menu</button>
-      </div>
-    </div>
-  </div>
-</div> -->
 

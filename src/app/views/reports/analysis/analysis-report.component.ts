@@ -197,9 +197,16 @@ export class AnalysisReportComponent
         tipeListing: this.paramTipeListing,
       };
     }else if(['Rekap Transaksi 3 Periode (By Type)'].includes(this.currentReport)){
-       param = {
+      if(!this.kodeTransaksi){
+          this.toastr.error('Pilih tipe transaksi terlebih dahulu!');
+          this.loadingState['submit'] = false;
+          return;
+      }
+      
+      param = {
         kodeGudang: this.userData.defaultLocation.kodeLocation,
         tipeTransaksi: this.kodeTransaksi,
+        namaTransaksi: this.namaTransaksi,
         firstDateP1: this.g.transformDate(this.periode1Filter[0]),
         endDateP1: this.g.transformDate(this.periode1Filter[1]),
         firstDateP2: this.g.transformDate(this.periode2Filter[0]),
@@ -212,7 +219,8 @@ export class AnalysisReportComponent
     param = {
       ...param,
       userData: this.userData,
-      isDownloadCsv: type === 'csv',
+      isDownloadCsv: type === 'csv' || type === 'xlsx',
+      isDownloadXlsx: type === 'xlsx',
       reportName: this.currentReport,
       reportSlug: this.g.formatUrlSafeString(this.currentReport),
     };
@@ -224,6 +232,8 @@ export class AnalysisReportComponent
           return this.previewPdf(res);
         } else if (type === 'csv') {
           return this.downloadCsv(res, type);
+        } else if (type === 'xlsx') {
+          return this.downloadXlsx(res, type);
         } else {
           return this.downloadPDF(res, type);
         }
@@ -278,6 +288,27 @@ export class AnalysisReportComponent
         this.rangeDateVal[1],
         'dd-MMM-yyyy'
       )}.csv`;
+      link.click();
+      this.toastr.success('File sudah terunduh');
+    } else this.toastr.error('File tidak dapat terunduh');
+  }
+
+  downloadXlsx(res: any, reportType: string) {
+    var blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    this.downloadURL = window.URL.createObjectURL(blob);
+
+    if (this.downloadURL.length) {
+      var link = document.createElement('a');
+      link.href = this.downloadURL;
+      link.download = `${reportType} Report ${this.g.formatUrlSafeString(
+        this.currentReport
+      )} ${this.datePipe.transform(
+        this.rangeDateVal[0],
+        'dd-MMM-yyyy'
+      )} s.d. ${this.datePipe.transform(
+        this.rangeDateVal[1],
+        'dd-MMM-yyyy'
+      )}.xlsx`;
       link.click();
       this.toastr.success('File sudah terunduh');
     } else this.toastr.error('File tidak dapat terunduh');
@@ -441,7 +472,7 @@ export class AnalysisReportComponent
     this.namaPenerima = data.namaCabang;
   }
 
-  
+
   actionBtnClickSetupTransaksi(data: any) {
     console.log('actionBtnClick', data);
     let errorMessage;
@@ -540,7 +571,7 @@ export class AnalysisReportComponent
         });
       },
       columns: [
-      
+
         { data: 'keyTransaksi', title: 'Kode', searchable: true },
         // { data: 'kodeSingkat', title: 'Inisial', searchable: true },
         // { data: 'tipeCabang', title: 'Tipe', searchable: true },
@@ -549,12 +580,12 @@ export class AnalysisReportComponent
         {
           title: 'Action',
           render: (data: any, _: any, row: any) => {
-         
+
               return `
                 <div class="btn-group" role="group" aria-label="Action">
                   <button class="btn btn-sm action-select btn-info btn-60 text-white">${this.buttonCaptionSelect}</button>
                 </div>
-              `;              
+              `;
           },
         },
       ],

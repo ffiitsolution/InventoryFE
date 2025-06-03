@@ -793,10 +793,11 @@ export class StockSoEditComponent implements OnInit, AfterViewInit, OnDestroy {
         popup: 'custom-popup',
       },
       didOpen: () => {
-        const submitBtn = document.getElementById('btn-submit');
-        const cancelBtn = document.getElementById('btn-cancel');
+        const submitBtn = document.getElementById('btn-submit') as HTMLButtonElement;;
+        const cancelBtn = document.getElementById('btn-cancel') as HTMLButtonElement;;
         submitBtn?.addEventListener('click', () => {
           this.loadingSimpan = true;
+          Swal.close();
           const param = {
             kodeGudang: this.userData.defaultLocation.kodeLocation,
             nomorSo: this.selectedSo.nomorSo,

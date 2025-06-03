@@ -30,6 +30,9 @@ export class AllMasterComponent implements OnInit, OnDestroy, AfterViewInit {
   loadingIndicator = true;
   selectedCategory: string = 'Master';
   verticalItemCount: number = 6;
+  hasMaster: boolean = false;
+  hasSetNoTrans: boolean = false;
+  hasRolePermissions: boolean = false;
   listMaster: any = [
     {
       name: 'User',
@@ -118,6 +121,32 @@ export class AllMasterComponent implements OnInit, OnDestroy, AfterViewInit {
         this.g.tabTitle
     );
     this.userData = this.service.getUserData();
+    const keywordSet = new Set(
+      this.g
+        .getLocalstorage('inv_permissions')
+        ?.filter((p: any) => p.app === 'MODULE')
+        ?.map((p: any) => p.permission.split('_')[1]?.toLowerCase())
+    );
+    this.listMaster = this.listMaster.filter((item: any) => {
+      const nameLower = item.url.toLowerCase();
+      return [...keywordSet].some((keyword) =>
+        nameLower.replace(/^\/master\//, '').includes(keyword)
+      );
+    });
+    this.hasMaster = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some((p: any) => p.app === 'MODULE' && /^master_/.test(p.permission));
+    this.hasSetNoTrans = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' && p.permission == 'setup-no-transaksi_view'
+      );
+    this.hasRolePermissions = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) => p.app === 'MODULE' && p.permission == 'master-role_view'
+      );
   }
 
   ngOnDestroy(): void {

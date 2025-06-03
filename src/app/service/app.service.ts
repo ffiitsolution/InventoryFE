@@ -116,6 +116,10 @@ export class AppService {
   updateWarehouse(url: String, params: any): Observable<any> {
     return this.dataService.postData(this.config.BASE_URL_HQ + url, params);
   }
+  insertInventory(url: String, params: any): Observable<any> {
+    return this.dataService.postData(this.config.BASE_URL + url, params);
+  }
+
   patch(url: string, params: any): Observable<any> {
     return this.dataService.patchData(this.config.BASE_URL + url, params);
   }
@@ -479,18 +483,31 @@ export class AppService {
     );
   }
 
-    mpcsDefaultGudang(payload:any): Observable<any> {
+  mpcsDefaultGudang(payload: any): Observable<any> {
     return this.dataService.postData(
       this.config.BASE_URL + '/api/auth/mpcs-default-gudang',
       payload
     );
   }
 
-   listSetupTransaksiDt(payload:any): Observable<any> {
+  listSetupTransaksiDt(payload: any): Observable<any> {
     return this.dataService.postData(
-      this.config.BASE_URL +  '/api/setup-transaksi/dt',
+      this.config.BASE_URL + '/api/setup-transaksi/dt',
       payload
     );
   }
- 
+
+  hakAksesSidebar(payload: any): Observable<any> {
+    return this.dataService.postData(
+      this.config.BASE_URL + '/api/role/hak-akses-sidebar',
+      payload
+    );
+  }
+
+  hakAksesModule(payload: any): Observable<any> {
+    return this.dataService.postData(
+      this.config.BASE_URL + '/api/role/hak-akses-module',
+      payload
+    );
+  }
 }

@@ -5,6 +5,7 @@ import { ClassToggleService, HeaderComponent } from '@coreui/angular';
 import { DataService } from '../../../../service/data.service';
 import { GlobalService } from '../../../../service/global.service';
 import { WebsocketService } from '../../../../service/websocket.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-mpcs-header',
@@ -27,8 +28,9 @@ export class MpcsHeaderComponent
   constructor(
     private classToggler: ClassToggleService,
     private dataService: DataService,
-        private websocketService: WebsocketService,
-    public g: GlobalService
+    private websocketService: WebsocketService,
+    public g: GlobalService,
+    private router: Router,
   ) {
     super();
   }
@@ -103,5 +105,11 @@ export class MpcsHeaderComponent
     } else if (this.g.serverStatus === 'UP' && !title.startsWith(offlineText)) {
       this.g.changeTitle(title.replaceAll(offlineText, ''));
     }
+  }
+
+  onLogoutPressed() {
+    console.log('apakah logout?');
+    this.g.clearLocalstorage();
+    this.router.navigate(['/login']);
   }
 }

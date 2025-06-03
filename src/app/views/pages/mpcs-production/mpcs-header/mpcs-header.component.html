@@ -34,6 +34,8 @@
             {{ g.serverStatus == 'UP' ? g.currentDate : 'xx-xx-xxxx' }} {{ g.serverStatus == 'UP' ? g.currentTime :
             'xx:xx:xx' }}
           </span>
+          <i  (click)="$event.stopPropagation(); onLogoutPressed()" class="fa fa-sign-out" aria-hidden="true" style="font-size: 20px;margin-right: 1rem;"></i>
+          
         </a>
       </c-nav-item>
       <!-- <c-nav-item>
@@ -63,11 +65,13 @@
               {{ g.appInfo?.outletName }} ({{ g.appInfo?.outletCode }})
             </span>
           </div>
-          <div class="d-flex align-items-center">
-            <c-avatar cTextColor="primary" shape="rounded-1" size="sm" src="./assets/img/schedule.png"></c-avatar>
-            <span class="ms-1 small">
+          <div class="d-flex align-items-center justify-content-end">
+            <!-- <c-avatar cTextColor="primary" shape="rounded-1" size="sm" src="./assets/img/schedule.png"></c-avatar> -->
+            <!-- <span class="ms-1 small">
               {{ g.serverStatus == 'UP' ? g.currentDate : 'xx-xx-xxxx' }} {{ g.serverStatus == 'UP' ? g.currentTime : 'xx:xx:xx' }}
-            </span>
+            </span> -->
+            <i  (click)="$event.stopPropagation(); onLogoutPressed()" class="fa fa-sign-out" aria-hidden="true" style="font-size: 20px;margin-right: 1rem;"></i>
+
           </div>
         </div>
       </c-header-nav>

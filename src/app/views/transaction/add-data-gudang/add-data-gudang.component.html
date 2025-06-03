@@ -10,7 +10,7 @@
             <i class="fa fa-chevron-left icon-12 icon-gap"></i>
             {{ "Kembali" | translate }}
           </button>
-          <h5>{{ "Tambah Pengiriman" | translate }}</h5>
+          <h5>{{ "Tambah Penerimaan" | translate }}</h5>
         </div>
       </c-row>
     </c-card-body>
@@ -232,7 +232,9 @@
         <!-- Bagian Detail -->
         <div class="ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
           <div class="p-2" *ngIf="isShowDetail">
-            <app-detail-add-data-gudang></app-detail-add-data-gudang>
+            <app-detail-add-data-gudang
+            (onBatalPressed)="onBatalPressed($event)"
+            ></app-detail-add-data-gudang>
           </div>
         </div>
       </div>
@@ -300,7 +302,7 @@
             <table
               datatable
               [dtOptions]="dtOptions"
-              class="datatable row-border hover stripe"
+              class="datatable row-border hover stripe w-100"
               >
             <!-- <thead class="table-header"> </thead> -->
             </table>
@@ -312,4 +314,19 @@
 
   <!-- Modal Backdrop -->
   <div class="modal-bg-backdrop" *ngIf="isShowModal"></div>
+</div>
+
+<div class="fade-in">
+  <app-modal-print-list
+    [alreadyPrint]="alreadyPrint"
+    [disabledPrintButton]="disabledPrintButton"
+    [generatePdfUrl]="'/cetak-pennerimaan-gudang'"
+    [updateStatusUrl]="''"
+    [updatePrintStatusParam]="''"
+    [generateReportParam]="paramGenerateReport"
+    [isShowModalReport]="isShowModalReport"
+    [isShowSelection]="true"
+    (closeModalEvent)="closeModal()"
+  >
+  </app-modal-print-list>
 </div>

@@ -23,7 +23,8 @@
       <div class="row">
         <div class="col mb-2">
           <button class="btn btn-primary w-100" (click)="onMenuClick('Cetak Form SO')"
-            [disabled]="!selectedRowData || selectedRowData?.statusProses !== 'BELUM'">
+            [disabled]="!selectedRowData || selectedRowData?.statusProses !== 'BELUM' || loadings['cetakFormSo']">
+            <i class="fa fa-refresh fa-spin me-2" *ngIf="loadings['cetakFormSo']"></i>
             Cetak Form SO
           </button>
         </div>
@@ -35,7 +36,8 @@
         </div>
         <div class="col mb-2">
           <button class="btn btn-primary w-100" (click)="onMenuClick('Laporan Selisih SO (Sementara)')"
-            [disabled]="!selectedRowData || selectedRowData?.statusProses !== 'BELUM'">
+            [disabled]="!selectedRowData || selectedRowData?.statusProses !== 'BELUM' || loadings['laporanSelisihSO']">
+            <i class="fa fa-refresh fa-spin me-2" *ngIf="loadings['laporanSelisihSO']"></i>
             Laporan Selisih SO (Sementara)
           </button>
         </div>
@@ -103,9 +105,96 @@
 
 <div class="fade-in">
   <app-modal-print-list [alreadyPrint]="alreadyPrint" [disabledPrintButton]="disabledPrintButton"
-    [generatePdfUrl]="'/api/report/laporan-hasil-so'"
-    [updateStatusUrl]="''" [updatePrintStatusParam]="''"
+    [generatePdfUrl]="'/api/report/laporan-hasil-so'" [updateStatusUrl]="''" [updatePrintStatusParam]="''"
     [generateReportParam]="paramGenerateReport" [isShowModalReport]="isShowModalReport" [isShowSelection]="true"
     (closeModalEvent)="closeModal()">
   </app-modal-print-list>
+</div>
+
+<c-modal [fullscreen]="false" [visible]="loadings['laporanSelisihSOModal']" backdrop="static" id="formModalReport"
+  [attr.aria-hidden]="!loadings['laporanSelisihSOModal']">
+  <c-modal-header>
+    <div></div>
+    <h5 cModalTitle class="titel-header">Konfirmasi Cetak Data</h5>
+    <button (click)="loadings['laporanSelisihSOModal'] = false" type="button" class="btn btn-primary ms-2" cButtonClose>
+      <i class="fa fa-times"></i>
+    </button>
+  </c-modal-header>
+
+  <c-modal-body>
+    <div class="text-center">
+      <p class="fw-bold">Siapkan Kertas, jika anda ingin<br> mencetak ke 'PRINTER'</p>
+
+      <div class="d-flex justify-content-center align-items-center mb-3">
+        <label class="form-check-label me-2" for="confirmSendSelisihSo">Expired Date, Di Cetak ? </label>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="confirmSendSelisihSo" id="confirmYesSelisihSo" value="Ya"
+            [(ngModel)]="paramReportSelisihSo.confirmSelection">
+          <label class="form-check-label" for="confirmYesSelisihSo">Ya</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="confirmSendSelisihSo" id="confirmNoSelisihSo" value="Tidak"
+            [(ngModel)]="paramReportSelisihSo.confirmSelection">
+          <label class="form-check-label" for="confirmNoSelisihSo" value="Tidak">Tidak</label>
+        </div>
+      </div>
+    </div>
+  </c-modal-body>
+
+  <c-modal-footer class="justify-center">
+    <div class="row">
+      <div class="col-6 text-center">
+        <button type="button" class="btn btn-success  text-white me-2 btn-120" (click)="printSelisihSo(true)"
+          [disabled]="this.loadings['laporanSelisihSO']">
+          <i class="fa fa-{{this.loadings['laporanSelisihSO'] ? 'spinner fa-spin' : 'file'}}"></i>
+          Screen Pdf
+        </button>
+      </div>
+      <div class="col-6 text-center">
+        <button type="button" class="btn btn-success  text-white me-2 btn-120" (click)="printSelisihSo(false)"
+          [disabled]="this.loadings['laporanSelisihSO']">
+          <i class="fa fa-{{this.loadings['laporanSelisihSO'] ? 'spinner fa-spin' : 'print'}}"></i>
+          Cetak
+        </button>
+      </div>
+    </div>
+    <!-- <div class="divider"></div> -->
+    <div class="text-center ">
+      <p class="fw-bold pe-0">Pastikan Printer kondisi 'ON' jika ingin mencetak ke PRINTER..!!</p>
+    </div>
+
+  </c-modal-footer>
+</c-modal>
+
+<div class="container my-5 fade-in fs-8">
+  <div class="alert alert-info">
+    <h5 class="alert-heading">
+      <em class="text-danger">
+        <i class="fa fa-exclamation-circle"></i>
+        PERHATIAN: Stock Opname (SO) hanya dilakukan di akhir bulan sebelum Tutup Bulan!
+      </em>
+      <hr class="m-1">
+      Urutan Proses Stock Opname:
+    </h5>
+    <ol class="list-group list-group-numbered">
+      <li class="list-group-item">
+        <strong>Tambah SO:</strong> Buat data SO baru sesuai dengan periode
+      </li>
+      <li class="list-group-item">
+        <strong>Cetak Form SO:</strong> Cetak formulir fisik untuk pencatatan manual hasil penghitungan stok fisik
+      </li>
+      <li class="list-group-item">
+        <strong>Entry SO:</strong> Masukkan hasil penghitungan stok fisik ke dalam sistem berdasarkan data dari form SO
+        yang telah diisi
+      </li>
+      <li class="list-group-item">
+        <strong>Laporan Selisih SO:</strong> Tinjau laporan selisih antara stok sistem dan stok fisik. Lakukan analisis
+        dan koreksi jika diperlukan.
+      </li>
+      <li class="list-group-item">
+        <strong>Posting SO:</strong> Setelah semua data dipastikan benar, lakukan proses posting untuk memperbarui data
+        stok di sistem.
+      </li>
+    </ol>
+  </div>
 </div>

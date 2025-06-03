@@ -183,12 +183,12 @@
 
         <div class="row align-items-center mb-2">
           <!-- Tombol Tambah Data -->
-          <div class="col-auto">
+          <!-- <div class="col-auto">
             <button class="btn btn-success text-white btn-sm pe-3" (click)="onAdd()">
               <i class="fa fa-plus pe-2" *ngIf="!adding"></i>
               {{ "Tambah" | translate }}
             </button>
-          </div>
+          </div> -->
         
           <!-- Input Search -->
           <div class="col-12 col-md-6 col-lg-4 ms-auto">
@@ -420,8 +420,8 @@
   [attr.aria-hidden]="!isShowModalExpired">
   <c-modal-header>
     <h5 cModalTitle>Entry Data Expired</h5>
-    <button (click)="isShowModalExpired = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
-        class="fa fa-times"></i></button>
+    <!-- <button (click)="isShowModalExpired = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
+        class="fa fa-times"></i></button> -->
   </c-modal-header>
   <c-modal-body>
     <div class="row">
@@ -617,7 +617,7 @@
           }} {{ selectedExpProduct.SATUAN_KECIL }} 
         </p>
         <button (click)="onSaveEntryExpired()" type="button" class="btn btn-primary ms-2">
-          <i class="fa fa-check me-1"></i>Simpan
+          <i class="fa fa-check me-1"></i>Simpan Data
         </button>
       </div>
     </div>

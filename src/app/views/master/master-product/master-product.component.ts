@@ -39,6 +39,7 @@ export class MasterProductComponent
   selectedRowData: any;
   isFilterShown: boolean = false;
   selectedStatusFilter: any = '';
+  selectedBarangExpiredFilter: any = '';
   selectedGudangFilter: any = '';
   selectedSatuanMinOrderFilter: any = '';
   selectedLokasiBarangDiGudangFilter: any = '';
@@ -52,6 +53,8 @@ export class MasterProductComponent
   configSelectDefaultOrder: any = {};
   configSelectSatuanMinOrder: any = {};
   roleId: any;
+  hasCreate: boolean = false;
+  hasUpdate: boolean = false;
 
   toggleFilter(): void {
     this.isFilterShown = !this.isFilterShown;
@@ -94,6 +97,7 @@ export class MasterProductComponent
             ? this.selectedSatuanMinOrderFilter.id
             : '',
           LOKASI_BARANG_DI_GUDANG: this.selectedLokasiBarangDiGudangFilter,
+          FLAG_EXPIRED: this.selectedBarangExpiredFilter,
         };
         this.dataService
           .postData(this.g.urlServer + '/api/product/dt', requestData)
@@ -144,14 +148,14 @@ export class MasterProductComponent
           width: '25px',
         },
         {
-          data: 'satuanKecil',
-          title: 'Satuan Kecil',
+          data: 'satuanBesar',
+          title: 'Satuan Besar',
           searchable: false,
           width: '25px',
         },
         {
-          data: 'satuanBesar',
-          title: 'Satuan Besar',
+          data: 'satuanKecil',
+          title: 'Satuan Kecil',
           searchable: false,
           width: '25px',
         },
@@ -193,8 +197,8 @@ export class MasterProductComponent
           render: (data:any) => {
             if (data == 'Y') {
               return 'Ya';
-            }else if (data == 'T'){
-              return 'Tidak'
+            } else if (data == 'T') {
+              return 'Tidak';
             }
             return data; // Return as is if not a number
           },
@@ -221,8 +225,8 @@ export class MasterProductComponent
           render: (data:any) => {
             if (data == 'Y') {
               return 'Ya';
-            }else if (data == 'T'){
-              return 'Tidak'
+            } else if (data == 'T') {
+              return 'Tidak';
             }
             return data; // Return as is if not a number
           },
@@ -256,7 +260,7 @@ export class MasterProductComponent
         {
           title: 'Action',
           render: () => {
-            if (this.roleId !== '3' && this.roleId !== '2') {
+            if (!this.hasUpdate) {
               return `
                 <div class="btn-group" role="group" aria-label="Action">
                   <button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>
@@ -364,6 +368,22 @@ export class MasterProductComponent
       searchPlaceholder: 'Cari Satuan',
       limitTo: this.satuanMinOrderOptions.length,
     };
+    this.hasCreate = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' &&
+          p.permission.startsWith('master_master-product') &&
+          p.permission.endsWith('_create')
+      );
+    this.hasUpdate = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some(
+        (p: any) =>
+          p.app === 'MODULE' &&
+          p.permission.startsWith('master_master-product') &&
+          p.permission.endsWith('_update')
+      );
   }
 
   actionBtnClick(action: string, data: any = null) {

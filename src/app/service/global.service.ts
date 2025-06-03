@@ -129,12 +129,57 @@ export class GlobalService {
     },
   };
 
+  componentKonfirmasiSimpanMpcs: any = {
+   title:
+    '<div style="color: white; background: #c0392b; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Simpan Data</div>',
+  html: `
+    <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">
+      <p>Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
+    </div>
+    <div class="form-group mt-3 d-flex justify-content-center">
+      <div style="width: 80%;">
+        <label for="input-name">Masukkan Nama Anda:</label>
+        <input type="text" id="input-name" class="form-control mt-2" 
+               placeholder="Nama Anda" 
+               style="border: 1px solid red; width: 100%; box-sizing: border-box;" />
+        <small id="name-error" class="text-danger d-none">Nama wajib diisi.</small>
+      </div>
+    </div>
+    <div class="divider my-3"></div>
+    <div class="d-flex justify-content-center gap-3 mt-3">
+      <button class="btn btn-info text-white btn-150 pe-3" id="btn-submit">
+        <i class="fa fa-check pe-2"></i> Proses Simpan
+      </button>
+      <button class="btn btn-secondary text-white btn-150" id="btn-cancel">
+        <i class="fa fa-times pe-1"></i> Batal Proses
+      </button>
+    </div>
+  `,
+  allowOutsideClick: () => false,
+};
+
+
+  accessSidebar: any[] = [];
+  accessModule: any[] = [];
+
   constructor(
     private titleService: Title,
     @Inject(DOCUMENT) private document: Document,
     private router: Router,
     private datePipe: DatePipe
   ) {}
+
+  // ngOnInit(): void {
+  //   const permissions = JSON.parse(
+  //     localStorage.getItem('inv_permissions') ?? ''
+  //   );
+  //   console.log(permissions)
+  //   this.accessSidebar =
+  //     permissions?.filter((p: any) => p.app === 'SIDEBAR') || [];
+
+  //   this.accessModule =
+  //     permissions?.filter((p: any) => p.app === 'MODULE') || [];
+  // }
 
   saveLocalstorage(key: string, value: any, type: string | boolean = 'json') {
     if (type === 'json' || type === true) {
@@ -718,4 +763,10 @@ export class GlobalService {
                   ${found.label.toUpperCase()}</span>`;
 
   }
+
+  selectInputContent(event: FocusEvent): void {
+    const input = event.target as HTMLInputElement;
+    input.select();
+  }
+
 }

@@ -1,0 +1,520 @@
+<div class="fade-in align-middle">
+  <c-card class="mb-2">
+    <c-card-body>
+      <div class="row">
+        <div class="col">
+          <h5>Cek Data Gudang vs HQ</h5>
+        </div>
+        <div class="col text-end">
+          <button class="btn btn-secondary" (click)="goToPage('/sync-data/all')">
+            <i class="fa fa-arrow-left me-2"></i>
+            Kembali
+          </button>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<ng-template #loadingTemplate>
+  <div class="loading-input loading-input-sm fs-8">
+    <i class="fa fa-spinner fa-spin"></i>
+    <span>loading</span>
+  </div>
+</ng-template>
+
+<div class="fade-in card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        Tanggal Transaksi
+        <span class="float-end">:</span>
+      </div>
+      <div class="col">
+        <input type="text" disabled class="form-control form-control-sm" [value]="startDate" />
+      </div>
+      <div class="col">
+        <input type="text" disabled class="form-control form-control-sm" [value]="endDate" />
+      </div>
+      <div class="col">
+        Gudang
+        <span class="float-end">:</span>
+      </div>
+      <div class="col">
+        <input type="text" disabled class="form-control form-control-sm" [value]="selectedGudang" />
+      </div>
+      <div class="col-3">
+        <input type="text" disabled class="form-control form-control-sm" [value]="selectedGudangName" />
+      </div>
+    </div>
+
+    <div class="row mt-3 border-bottom">
+      <div class="col-xs-12 col-md-8">
+        <table class="table table-hovered table-sm">
+          <thead class=" align-middle text-center">
+            <tr>
+              <th rowspan="2" class="table-info">TRANSAKSI</th>
+              <th colspan="2" class="table-primary">HEADER</th>
+              <th colspan="2" class="table-primary">DETAIL</th>
+            </tr>
+            <tr class="table-danger">
+              <th>GUDANG</th>
+              <th>HQ</th>
+              <th>GUDANG</th>
+              <th>HQ</th>
+            </tr>
+          </thead>
+          <tbody class=" align-middle">
+            <tr>
+              <td>Pembelian</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['rcvhd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['rcvhd'] !== dataHq['rcvhd'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['rcvhd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['rcvdt']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['rcvdt'] !== dataHq['rcvdt'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['rcvdt']">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <td>Penerimaan</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['tinhd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['tinhd'] !== dataHq['tinhd'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['tinhd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['tindt']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['tindt'] !== dataHq['tindt'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['tindt']">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <td>Pengiriman</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['outhd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['outhd'] !== dataHq['outhd'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['outhd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['outdt']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['outhd'] !== dataHq['outhd'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['outdt']">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <!-- wst -->
+              <td>Barang Rusak</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" value="0">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" value="0">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" value="0">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" value="0">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <td>Kirim Retur</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" value="0">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" value="0">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" value="0">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" value="0">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <td>Terima Retur</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" value="0">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" value="0">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" value="0">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" value="0">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <td>Terima Brg Bekas</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['bkshd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['bkshd'] !== dataHq['bkshd'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['bkshd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['bksdt']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['bksdt'] !== dataHq['bksdt'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['bksdt']">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <td>Penjualan Brg Bekas</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['jbkshd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['jbkshd'] !== dataHq['jbkshd'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['jbkshd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['jbksdt']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['jbksdt'] !== dataHq['jbksdt'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['jbksdt']">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <td>Pemakaian Sendiri</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['usagehd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['usagehd'] !== dataHq['usagehd'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['usagehd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['usagedt']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['usagedt'] !== dataHq['usagedt'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['usagedt']">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <td>Produksi</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['prdhd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['prdhd'] !== dataHq['prdhd'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['prdhd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['prddt']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['prddt'] !== dataHq['prddt'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['prddt']">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <td>Stock Opname</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['sohd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['sohd'] !== dataHq['sohd'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['sohd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['sodt']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['sodt'] !== dataHq['sodt'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['sodt']">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <td>Adjustment</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['adjhd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['adjhd'] !== dataHq['adjhd'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['adjhd']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['adjdt']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['adjdt'] !== dataHq['adjdt'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['adjdt']">
+                </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-xs-12 col-md-4">
+        <table class="table table-hovered table-sm">
+          <thead class="align-middle text-center">
+            <tr>
+              <th rowspan="2" class="table-info">TRANSAKSI</th>
+              <th colspan="2" class="table-primary">DATA</th>
+            </tr>
+            <tr class="table-danger">
+              <th>GUDANG</th>
+              <th>HQ</th>
+            </tr>
+          </thead>
+          <tbody class="align-middle">
+            <tr>
+              <td>History S.O</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['hisso']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['hisso'] !== dataHq['hisso'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['hisso']">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <!-- outhd -->
+              <td>Revisi D.O</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" value="0">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" value="0">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <td>History Expired</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['expired']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['expired'] !== dataHq['expired'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['expired']">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <td>Saldo Expired</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['sldexp']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['sldexp'] !== dataHq['sldexp'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['sldexp']">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <td>History EOM</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['hiseom']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['hiseom'] !== dataHq['hiseom'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['hiseom']">
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <td>Stock Saldo Awal</td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountGudang']; else loadingTemplate">
+                  <input disabled class="form-control form-control-sm text-end" [value]="dataGudang['sldawal']">
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngIf="!loadings['getCountHq']; else loadingTemplate">
+                  <input disabled
+                    class="form-control form-control-sm text-end {{dataGudang['sldawal'] !== dataHq['sldawal'] ? 'text-white bg-danger' : ''}}"
+                    [value]="dataHq['sldawal']">
+                </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div>
+          <p class="text-danger fs-8 fw-bold">
+            Catatan:
+            <br>Jika ada selisih antara data gudang vs Data HQ
+            <br>maka Colour Font = Merah
+            <br>
+            <br>* Harap Lakukan proses 'Kirim Ulang'
+            <br>* Kemudian Cek ulang kembali...
+          </p>
+          <p class="text-info fs-8 fw-bold">
+            Proses Kirim Ulang hanya bisa dilakukan per-Tanggal
+            <br>(di tanggal transaksi yang sama) dan data_nya sudah
+            <br>pernah dikirim ke HQ ... !!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-3 text-end">
+      <button class="btn btn-outline-primary me-3" (click)="getCountGudang();getCountHq();"
+        [disabled]="loadings['getCountGudang']">
+        <i class="fa fa-refresh {{loadings['getCountGudang'] || loadings['getCountHq'] ? 'fa-spin' : ''}} me-2"></i>
+        Refresh Data
+      </button>
+      <button class="btn btn-primary">
+        <i class="fa fa-exchange me-2"></i>
+        Kirim Ulang
+      </button>
+    </div>
+
+
+  </div>
+</div>

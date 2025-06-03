@@ -55,8 +55,10 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   alreadyPrint: boolean;
   disabledPrintButton: any;
-  paramGenerateReport: any = {}
+  paramGenerateReport: any = {};
+  paramReportSelisihSo: any = {};
   isShowModalReport: boolean = false;
+  loadings: { [key: string]: boolean } = {};
 
   constructor(
     private service: AppService,
@@ -69,6 +71,11 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {
     this.userData = this.service.getUserData();
     this.dtOptions = {
+      pageLength: 5,
+      lengthMenu: [
+        [5, 10, 25, 50, 100],
+        [5, 10, 25, 50, 100],
+      ],
       language:
         translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
       processing: true,
@@ -156,7 +163,7 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
           title: 'Action',
           render: (data: any, type: any, row: any) => {
             let html = '';
-              // '<div class="btn-group" role="group" aria-label="Action">';
+            // '<div class="btn-group" role="group" aria-label="Action">';
             if (row.statusProses !== 'SUDAH') {
               // html += '<button class="btn btn-sm action-edit btn-info btn-60">';
               // html += this.buttonCaptionEdit;
@@ -164,6 +171,11 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
               html +=
                 '<button class="btn btn-sm w-120 action-posting text-white btn-warning btn-60">';
               html += 'POSTING';
+              html += '</button>';
+            } else {
+              html +=
+                '<button class="btn btn-sm w-120 action-posting text-white btn-primary btn-60" disabled>';
+              html += 'POSTED';
               html += '</button>';
             }
             // html +=
@@ -211,10 +223,10 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.g.changeTitle(
       this.translation.instant('Stock') +
-      ' ' +
-      this.translation.instant('Opname') +
-      ' - ' +
-      this.g.tabTitle
+        ' ' +
+        this.translation.instant('Opname') +
+        ' - ' +
+        this.g.tabTitle
     );
     this.buttonCaptionView = this.translation.instant('Lihat');
     this.buttonCaptionEdit = this.translation.instant('Entri');
@@ -259,6 +271,18 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
     } else this.toastr.error('File tidak dapat terunduh');
   }
 
+  printPDF(res: any) {
+    var blob = new Blob([res], { type: 'application/pdf' });
+    const downloadURL = window.URL.createObjectURL(blob);
+    const printWindow = window.open(downloadURL);
+    if (printWindow) {
+      printWindow.onload = () => {
+        printWindow.focus();
+        printWindow.print();
+      };
+    } else this.toastr.error('File tidak dapat terunduh');
+  }
+
   dtPageChange(event: any) {
     this.selectedRowData = undefined;
   }
@@ -288,6 +312,7 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
     const lastDate = momentDate.clone().endOf('month').format('DD MMM YYYY');
     switch (menu) {
       case 'Cetak Form SO':
+        this.loadings['cetakFormSo'] = true;
         this.service
           .getFile('/api/report/report-jasper', {
             kodeGudang: data.kodeGudang,
@@ -302,29 +327,34 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
             firstDate: firstDate,
             lastDate: lastDate,
           })
-          .subscribe((res: any) => {
-            return this.downloadPDF(res, 'Form Stock Opname');
+          .subscribe({
+            next: (res: any) => {
+              this.loadings['cetakFormSo'] = false;
+              return this.downloadPDF(res, 'Form Stock Opname');
+            },
+            error: (err: any) => {
+              this.loadings['cetakFormSo'] = false;
+              this.toastr.error('Gagal mengunduh file', 'Terjadi kesalahan');
+            },
           });
         break;
 
       case 'Laporan Selisih SO (Sementara)':
-        this.service
-          .getFile('/api/report/report-jasper', {
-            kodeGudang: data.kodeGudang,
-            nomorSo: data.nomorSo,
-            tanggalSo: data.tanggalSo,
-            userData: this.userData,
-            isDownloadCsv: false,
-            reportName: 'Laporan Selisih SO (Sementara)',
-            reportSlug: 'selisih-so-sementara',
-            yearEom: yearEom,
-            monthEom: monthEom,
-            firstDate: firstDate,
-            lastDate: lastDate,
-          })
-          .subscribe((res: any) => {
-            return this.downloadPDF(res, 'Laporan Selisih SO (Sementara)');
-          });
+        this.paramReportSelisihSo = {
+          kodeGudang: data.kodeGudang,
+          nomorSo: data.nomorSo,
+          tanggalSo: data.tanggalSo,
+          userData: this.userData,
+          isDownloadCsv: false,
+          reportName: 'Laporan Selisih SO (Sementara)',
+          reportSlug: 'selisih-so-sementara',
+          yearEom: yearEom,
+          monthEom: monthEom,
+          firstDate: firstDate,
+          lastDate: lastDate,
+          confirmSelection: this.paramReportSelisihSo?.confirmSelection ?? 'Ya',
+        };
+        this.loadings['laporanSelisihSOModal'] = true;
         break;
 
       case 'Entry Stock Opname':
@@ -348,25 +378,47 @@ export class SetupSoComponent implements OnInit, OnDestroy, AfterViewInit {
           tglCetak: now.toLocaleDateString('id-ID', {
             day: '2-digit',
             month: 'short', // atau 'long' untuk "April"
-            year: 'numeric'
+            year: 'numeric',
           }), // hasil: 30 Apr 2025
 
           jamCetak: now.toLocaleTimeString('id-ID', {
             hour: '2-digit',
             minute: '2-digit',
-            second: '2-digit'
-          }) // hasil: sil: 13:
-        }
+            second: '2-digit',
+          }), // hasil: sil: 13:
+        };
         break;
-        case 'Display Selisih SO':
-          this.g.saveLocalstorage(LS_INV_SELECTED_SO, JSON.stringify(data));
-          this.router.navigate(['/stock-opname/display-selisih-so']);
-          break;
+      case 'Display Selisih SO':
+        this.g.saveLocalstorage(LS_INV_SELECTED_SO, JSON.stringify(data));
+        this.router.navigate(['/stock-opname/display-selisih-so']);
+        break;
 
       default:
         this.openModalMenu();
         break;
     }
+  }
+
+  printSelisihSo(isDownload: boolean) {
+    this.loadings['laporanSelisihSO'] = true;
+    this.service
+      .getFile('/api/report/report-jasper', {
+        ...this.paramReportSelisihSo,
+        showExpired: this.paramReportSelisihSo.confirmSelection === 'Ya',
+      })
+      .subscribe(
+        (res: any) => {
+          this.loadings['laporanSelisihSO'] = false;
+          this.loadings['laporanSelisihSOModal'] = false;
+          return isDownload
+            ? this.downloadPDF(res, 'Laporan Selisih SO (Sementara)')
+            : this.printPDF(res);
+        },
+        (err: any) => {
+          this.loadings['laporanSelisihSO'] = false;
+          this.loadings['laporanSelisihSOModal'] = false;
+        }
+      );
   }
 
   openModalMenu(): void {

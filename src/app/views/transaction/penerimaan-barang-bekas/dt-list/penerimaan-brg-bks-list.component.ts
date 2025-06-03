@@ -55,9 +55,104 @@ export class PenerimaanBrgBksListComponent implements OnInit {
     private translation: TranslationService,
     private router: Router
   ) {
-    this.dtOptions = {
-      language:
-        translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
+   
+    this.dtColumns = this.dtOptions.columns;
+
+    this.dpConfig.containerClass = 'theme-red';
+    this.dpConfig.customTodayClass='today-highlight';
+    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
+  }
+
+  ngOnInit(): void {
+    this.loadDatatable();
+  }
+
+  toggleFilter(): void {
+    this.showFilterSection = !this.showFilterSection;
+  }
+
+  onAddPressed(): void {
+    const route = this.router.createUrlTree(['/transaction/penerimaan-barang-bekas/add-data']);
+    this.router.navigateByUrl(route);
+  }
+
+
+  onAddPressedOtomatis(): void {
+    const route = this.router.createUrlTree(['/transaction/penerimaan-barang-bekas/list-retur']);
+    this.router.navigateByUrl(route);
+  }
+
+  actionBtnClick(action: string, data: any = null) {
+    if (action === ACTION_VIEW) {
+      this.g.saveLocalstorage(
+        'selectedPenerimaanBrgBks',
+        JSON.stringify(data)
+      );
+      this.router.navigate(['/transaction/penerimaan-barang-bekas/detail']); this
+    }
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
+  }
+
+  ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
+  }
+
+  refreshData(): void {
+    const route = this.router.createUrlTree(['/transaction/production/detail']);
+    this.router.navigateByUrl(route);
+  }
+  onFilterStatusChange(event: Event): void {
+    // Logic for handling status filter change
+    console.log('Status filter changed:', this.selectedStatusFilter);
+  }
+
+  onFilterOrderDateChange(event: Event): void {
+    // Logic for handling order date filter change
+    if (event) {
+      const target = event.target as HTMLInputElement | null;
+      if (target) {
+        this.orderDateFilter = target.value; // Update nilai filter
+      }
+    }
+    this.rerenderDatatable();
+  }
+
+  rerenderDatatable(): void {
+    this.dtTrigger.next(null);
+  }
+
+  onFilterExpiredChange(): void {
+    // Logic for handling expired date filter change
+    console.log('Expired filter changed:', this.expiredFilter);
+  }
+
+  onFilterTujuanChange(): void {
+    // Logic for handling tujuan filter change
+    console.log('Tujuan filter changed:', this.tujuanFilter);
+  }
+
+  onFilterPressed(): void {
+    this.datatableElement?.dtInstance.then((dtInstance: any) => {
+      dtInstance.ajax.reload();
+    });
+    console.log('filter pressed');
+  }
+  dtPageChange(event: any): void {
+    console.log('Page changed', event);
+  }
+
+  closeModal(){
+    this.isShowModalReport = false;
+    this.selectedRowCetak = null;
+    this.disabledPrintButton = false;
+  }
+
+  loadDatatable(){
+     this.dtOptions = {
+      language: this.translation.getCurrentLanguage() == 'id' ? this.translation.idDatatable : {},
       processing: true,
       serverSide: true,
       autoWidth: true,
@@ -168,97 +263,5 @@ export class PenerimaanBrgBksListComponent implements OnInit {
         return row;
       },
     };
-    this.dtColumns = this.dtOptions.columns;
-
-    this.dpConfig.containerClass = 'theme-red';
-    this.dpConfig.customTodayClass='today-highlight';
-    this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
-  }
-
-  ngOnInit(): void {
-
-  }
-
-  toggleFilter(): void {
-    this.showFilterSection = !this.showFilterSection;
-  }
-
-  onAddPressed(): void {
-    const route = this.router.createUrlTree(['/transaction/penerimaan-barang-bekas/add-data']);
-    this.router.navigateByUrl(route);
-  }
-
-
-  onAddPressedOtomatis(): void {
-    const route = this.router.createUrlTree(['/transaction/penerimaan-barang-bekas/list-retur']);
-    this.router.navigateByUrl(route);
-  }
-
-  actionBtnClick(action: string, data: any = null) {
-    if (action === ACTION_VIEW) {
-      this.g.saveLocalstorage(
-        'selectedPenerimaanBrgBks',
-        JSON.stringify(data)
-      );
-      this.router.navigate(['/transaction/penerimaan-barang-bekas/detail']); this
-    }
-  }
-
-  ngAfterViewInit(): void {
-    this.dtTrigger.next(null);
-  }
-
-  ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
-  }
-
-  refreshData(): void {
-    const route = this.router.createUrlTree(['/transaction/production/detail']);
-    this.router.navigateByUrl(route);
-  }
-  onFilterStatusChange(event: Event): void {
-    // Logic for handling status filter change
-    console.log('Status filter changed:', this.selectedStatusFilter);
-  }
-
-  onFilterOrderDateChange(event: Event): void {
-    // Logic for handling order date filter change
-    if (event) {
-      const target = event.target as HTMLInputElement | null;
-      if (target) {
-        this.orderDateFilter = target.value; // Update nilai filter
-      }
-    }
-    this.rerenderDatatable();
-  }
-
-  rerenderDatatable(): void {
-    this.dtTrigger.next(null);
-  }
-
-  onFilterExpiredChange(): void {
-    // Logic for handling expired date filter change
-    console.log('Expired filter changed:', this.expiredFilter);
-  }
-
-  onFilterTujuanChange(): void {
-    // Logic for handling tujuan filter change
-    console.log('Tujuan filter changed:', this.tujuanFilter);
-  }
-
-  onFilterPressed(): void {
-    this.datatableElement?.dtInstance.then((dtInstance: any) => {
-      dtInstance.ajax.reload();
-    });
-    console.log('filter pressed');
-  }
-  dtPageChange(event: any): void {
-    console.log('Page changed', event);
-  }
-
-  closeModal(){
-    this.isShowModalReport = false;
-    this.selectedRowCetak = null;
-    this.disabledPrintButton = false;
   }
 }

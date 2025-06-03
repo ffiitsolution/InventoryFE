@@ -86,7 +86,7 @@ export class StockSoAddComponent implements OnInit {
       'STOCK OPNAME TGL. ' + lastDateOfMonth.format('DD/MM/YYYY')
     );
 
-    this.listTahun = this.g.generateNumberRange(2025, 2125);
+    this.listTahun = this.g.generateNumberRange(year, year + 2);
     this.listBulan = this.g.generateNumberRange(1, 12);
 
     this.configSelectTahun = {
@@ -150,13 +150,17 @@ export class StockSoAddComponent implements OnInit {
               this.service.handleErrorResponse(res);
             }
           } else {
-            this.toastr.success('Silahkan Entry quantity fisik.','Stock Opname berhasil dibuat!');
+            // this.toastr.success('Silahkan Entry quantity fisik.','Stock Opname berhasil dibuat!');
+            // setTimeout(() => {
+            //   this.g.saveLocalstorage(
+            //     LS_INV_SELECTED_SO,
+            //     JSON.stringify(param)
+            //   );
+            //   this.router.navigate(['/stock-opname/edit']);
+            // }, DEFAULT_DELAY_TIME);
+            this.toastr.success('Silahkan Cetak Form SO.','Stock Opname berhasil dibuat!');
             setTimeout(() => {
-              this.g.saveLocalstorage(
-                LS_INV_SELECTED_SO,
-                JSON.stringify(param)
-              );
-              this.router.navigate(['/stock-opname/edit']);
+              this.router.navigate(['/stock-opname/setup-so']);
             }, DEFAULT_DELAY_TIME);
           }
           this.adding = false;

@@ -28,6 +28,7 @@ import { AllSyncDataComponent } from './index/index.component';
 import { SyncDataRoutingModule } from './sync-data-routing.module';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { SharedCustomPipeModule } from '../../pipes/shared-pipe.module';
+import { CheckDataSentSyncDataComponent } from './check-data-sent/check-data-sent.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -59,6 +60,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   declarations: [
     AllSyncDataComponent,
+    CheckDataSentSyncDataComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })
