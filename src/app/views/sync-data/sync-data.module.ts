@@ -29,6 +29,7 @@ import { SyncDataRoutingModule } from './sync-data-routing.module';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { SharedCustomPipeModule } from '../../pipes/shared-pipe.module';
 import { CheckDataSentSyncDataComponent } from './check-data-sent/check-data-sent.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -56,7 +57,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ListGroupModule,
     BsDatepickerModule.forRoot(),
     SharedCustomPipeModule,
-    DropdownModule
+    DropdownModule,
+    NgxPaginationModule,
   ],
   declarations: [
     AllSyncDataComponent,

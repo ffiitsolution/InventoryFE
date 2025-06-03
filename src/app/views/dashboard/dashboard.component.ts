@@ -20,11 +20,13 @@ export class DashboardComponent implements OnInit {
 
   loadings: { [key: string]: boolean } = {};
   dashboardData: any;
+  userData: any;
 
   ngOnInit(): void {
     this.g.changeTitle(
       this.translation.instant('Dashboard') + ' - ' + this.g.tabTitle
     );
+    this.userData = this.service.getUserData();
     this.getDashboardData();
   }
 
@@ -52,7 +54,7 @@ export class DashboardComponent implements OnInit {
         url: '/api/receiving-order/count-hq',
         method: 'POST',
         body: {
-          kodeGudang: 'as',
+          kodeGudang: this.userData?.defaultLocation?.kodeLocation,
           startDate: moment().subtract(7, 'days').format('DD MMM YYYY'),
           endDate: moment().format('DD MMM YYYY'),
         },

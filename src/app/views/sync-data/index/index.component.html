@@ -97,6 +97,79 @@
                   Tes Kirim Data Transaksi
                 </ng-container>
 
+                <!-- Proses Kirim Data Ke Pusat (Harian) -->
+                <ng-container *ngIf="selectedMenu === 'Proses Kirim Data Ke Pusat (Harian)'">
+                  <div class="text-center">
+                    <div class="fw-bold">
+                      Pastikan Program Tersebut Dilakukan Setiap Hari ...!!
+                    </div>
+                    <div class="text-danger">
+                      Semua User tidak boleh ada yang melakukan transaksi Mutasi Stock ..!!
+                    </div>
+                    <div class="my-2 text-xl p-2">
+                      Tanggal Proses
+                      <span class="ms-4 p-2 border rounded">
+                        {{ g.currentDate }}
+                      </span>
+                    </div>
+                    <p class="text-white bg-danger">
+                      UNTUK PROSES KIRIM DATA DI AKHIR BULAN, DILAKUKAN
+                      <br>SETELAH SEMUA TRANSAKSI SUDAH SELESAI SEMUA
+                      <br>TERMASUK POSTING STOCK OPNAME DI SEMUA GUDANG ....!!!
+                    </p>
+                    <div class="my-4">
+                      <button class="btn btn-outline-primary me-4" (click)="getHistoryKirimData()"
+                        [disabled]="loadings['getHistoryKirimData']">
+                        <i class="fa fa-refresh {{loadings['getHistoryKirimData'] ? 'fa-spin' : ''}} me-2"></i>
+                        History Proses
+                      </button>
+                      <button class="btn btn-primary">
+                        <i class="fa fa-check me-2"></i>
+                        Proses Kirim Data
+                      </button>
+                    </div>
+                  </div>
+
+                  <div *ngIf="clicked['getHistoryKirimData'] && !loadings['getHistoryKirimData']" class="card">
+                    <div class="card-body">
+                      <h5 class="text-start"> History Proses</h5>
+                      <table class="table table-sm table-bordered table-striped table-hover">
+                        <thead class="table-dark">
+                          <tr class="align-middle text-center">
+                            <th>#</th>
+                            <th>Tanggal</th>
+                            <th>Jam</th>
+                            <th>Status</th>
+                            <th>User</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngIf="!listHistoryKirimData.length">
+                            <td colspan="5" class="text-center">No data available</td>
+                          </tr>
+                          <tr class="text-center"
+                            *ngFor="let item of listHistoryKirimData | paginate: { itemsPerPage: 10, currentPage: selectedParam['paginationHistoryKirimData'] }; let i = index">
+                            <td class="text-end">{{ ((selectedParam['paginationHistoryKirimData'] - 1) * 10) + i + 1 }}
+                            </td>
+                            <td>{{g.transformDate(item.tanggalSync)}}</td>
+                            <td>{{g.transformTime(item.timeProses, true)}}</td>
+                            <td>
+                              <div
+                                class="badge text-white text-bg-{{item.statusProses === 'Y' ? 'primary' : 'danger'}}">
+                                {{item.statusProses === 'Y' ? 'SUDAH' : 'BELUM'}}
+                              </div>
+                            </td>
+                            <td>{{item.userProses}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+                      <pagination-controls
+                        (pageChange)="selectedParam['paginationHistoryKirimData'] = $event"></pagination-controls>
+                    </div>
+                  </div>
+                </ng-container>
+
                 <!-- Terima Data Master -->
                 <ng-container *ngIf="selectedMenu === 'Terima Data Master'">
                   <div class="text-center">
@@ -107,14 +180,54 @@
                       </span>
                     </div>
                     <div class="my-4">
-                      <button class="btn btn-outline-primary me-4">
-                        <i class="fa fa-refresh me-2"></i>
+                      <button class="btn btn-outline-primary me-4" (click)="getHistoryTerimaData()"
+                        [disabled]="loadings['getHistoryTerimaData']">
+                        <i class="fa fa-refresh {{loadings['getHistoryTerimaData'] ? 'fa-spin' : ''}} me-2"></i>
                         History Proses
                       </button>
                       <button class="btn btn-primary">
                         <i class="fa fa-check me-2"></i>
                         Proses Terima Data
                       </button>
+                    </div>
+                  </div>
+
+                  <div *ngIf="clicked['getHistoryTerimaData'] && !loadings['getHistoryTerimaData']" class="card">
+                    <div class="card-body">
+                      <h5 class="text-start"> History Proses</h5>
+                      <table class="table table-sm table-bordered table-striped table-hover">
+                        <thead class="table-dark">
+                          <tr class="align-middle text-center">
+                            <th>#</th>
+                            <th>Tanggal</th>
+                            <th>Jam</th>
+                            <th>Status</th>
+                            <th>User</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngIf="!listHistoryTerimaData.length">
+                            <td colspan="5" class="text-center">No data available</td>
+                          </tr>
+                          <tr class="text-center"
+                            *ngFor="let item of listHistoryTerimaData | paginate: { itemsPerPage: 10, currentPage: selectedParam['paginationHistoryTerimaData'] }; let i = index">
+                            <td class="text-end">{{ ((selectedParam['paginationHistoryTerimaData'] - 1) * 10) + i + 1 }}
+                            </td>
+                            <td>{{g.transformDate(item.tanggalTransfer)}}</td>
+                            <td>{{g.transformTime(item.timeProses, true)}}</td>
+                            <td>
+                              <div
+                                class="badge text-white text-bg-{{item.statusProses === 'Y' ? 'primary' : 'danger'}}">
+                                {{item.statusProses === 'Y' ? 'SUDAH' : 'BELUM'}}
+                              </div>
+                            </td>
+                            <td>{{item.userProses}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+                      <pagination-controls
+                        (pageChange)="selectedParam['paginationHistoryTerimaData'] = $event"></pagination-controls>
                     </div>
                   </div>
                 </ng-container>

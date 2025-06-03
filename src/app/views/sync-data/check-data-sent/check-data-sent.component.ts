@@ -173,32 +173,42 @@ export class CheckDataSentSyncDataComponent
   getCountHq() {
     this.loadings['getCountHq'] = true;
     this.service
-      .insert('/api/sync-data/count-hq', {
-        kodeGudang: this.userData?.defaultLocation?.kodeLocation,
-        startDate: this.startDate,
-        endDate: this.endDate,
+      .insert('/api/request-to-external', {
+        endpoint: 'warehouse',
+        url: '/api/sync-data/count-hq',
+        method: 'POST',
+        body: {
+          kodeGudang: this.userData?.defaultLocation?.kodeLocation,
+          startDate: this.startDate,
+          endDate: this.endDate,
+        },
       })
       .subscribe({
         next: (res) => {
+          this.loadings['getCountHq'] = false;
           if (res.error) {
             this.messages['getCountHq'] = res.error;
             console.log('getCountHq error: ' + res.error);
           } else {
-            if (res.message) {
-              const m = JSON.parse(res.message);
-              // console.log('getCountHq res: ' + JSON.stringify(m.data));
-              this.listHq = m.data ?? [];
+            const data = res.data ?? '';
+            if (data) {
+              this.listHq = data ?? [];
               for (let i = 0; i < this.listHq.length; i++) {
                 const item = this.listHq[i];
                 this.dataHq[item.trx] = item.val ?? 0;
               }
+            } else {
+              this.toastr.error(
+                'Gagal mendapatkan data HQ',
+                'Terjadi kesalahan!'
+              );
             }
           }
-          this.loadings['getCountHq'] = false;
         },
         error: (err) => {
           console.log('getCountHq err: ' + err);
           this.loadings['getCountHq'] = false;
+          this.toastr.error('Gagal mendapatkan data HQ', 'Terjadi kesalahan!');
         },
       });
   }
