@@ -262,14 +262,14 @@ export const RANGE_BERAT_KGS = [
     description: 'RANGE STANDARDNYA ANTARA: 0.08-0.13 KGS/PCS',
     min: 0.08,
     max: 0.13
-  },
-  {
-    value: '01-2102',
-    label: 'KG_WING',
-    description: 'RANGE STANDARDNYA ANTARA: 1.60-2.10 KGS/PCS',
-    min: 1.60,
-    max: 2.10
   }
+  // {
+  //   value: '01-2102',
+  //   label: 'KG_WING',
+  //   description: 'RANGE STANDARDNYA ANTARA: 1.60-2.10 KGS/PCS',
+  //   min: 1.60,
+  //   max: 2.10
+  // }
 ];
 
 export const STATUS_PRODUKSI = [

@@ -58,6 +58,8 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
   isShowModalBarang: boolean = false;
   kodeBarang: string = '';
   namaBarang: string = '';
+  paramStockNumberHari: number = 30;
+  tglExpiredSisaBarang: any;
   konversi: number = 1;
   satuanBesar: string = '';
   satuanKecil: string = '';
@@ -78,7 +80,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private service: AppService,
-    private g: GlobalService,
+    public g: GlobalService,
     private translation: TranslationService,
     private datePipe: DatePipe,
     private router: Router,
@@ -100,10 +102,10 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.g.changeTitle(
       this.translation.instant('All') +
-        ' ' +
-        this.translation.instant('Report') +
-        ' - ' +
-        this.g.tabTitle
+      ' ' +
+      this.translation.instant('Report') +
+      ' - ' +
+      this.g.tabTitle
     );
     this.route.queryParams.subscribe((params) => {
       this.currentReport = params['report'];
@@ -123,6 +125,13 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     ) {
       this.renderDataTables();
     }
+    if (
+      ['Stock Yang Mendekati Tgl Expired', 'Stock Card'].includes(
+        this.currentReport
+      )
+    ) {
+      this.onBlurStockExpired()
+    }
   }
 
   ngOnDestroy(): void {
@@ -130,7 +139,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ngUnsubscribe.complete();
   }
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void { }
 
   getObjectKeys(obj: Object) {
     return Object.keys(obj);
@@ -360,37 +369,37 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-getProductRow(kodeBarang: string): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    if (kodeBarang !== '') {
-      this.service
-        .getProductResep(kodeBarang)
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe({
-          next: (res: any) => {
-            if (res) {
-              this.namaBarang = res.namaBarang;
-              this.konversi = res.konversi || 1;
-              this.satuanBesar = res.satuanBesar;
-              this.satuanKecil = res.satuanKecil;
-              resolve(true);
-            } else {
+  getProductRow(kodeBarang: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      if (kodeBarang !== '') {
+        this.service
+          .getProductResep(kodeBarang)
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe({
+            next: (res: any) => {
+              if (res) {
+                this.namaBarang = res.namaBarang;
+                this.konversi = res.konversi || 1;
+                this.satuanBesar = res.satuanBesar;
+                this.satuanKecil = res.satuanKecil;
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            },
+            error: (err: any) => {
+              this.toastr.error(
+                'KODE BARANG TIDAK ADA DI DATABASE, HARAP PERIKSA KEMBALI!',
+                'Error'
+              );
               resolve(false);
-            }
-          },
-          error: (err: any) => {
-            this.toastr.error(
-              'KODE BARANG TIDAK ADA DI DATABASE, HARAP PERIKSA KEMBALI!',
-              'Error'
-            );
-            resolve(false);
-          },
-        });
-    } else {
-      resolve(false);
-    }
-  });
-}
+            },
+          });
+      } else {
+        resolve(false);
+      }
+    });
+  }
 
 
   renderDataTables(): void {
@@ -523,5 +532,15 @@ getProductRow(kodeBarang: string): Promise<boolean> {
     this.konversi = 1;
     this.satuanBesar = '';
     this.satuanKecil = '';
+  }
+
+  onBlurStockExpired() {
+    if (this.paramStockNumberHari) {
+      const today = new Date();
+      today.setDate(today.getDate() + Number(this.paramStockNumberHari));
+
+      // Format: 12 June 2025
+      this.tglExpiredSisaBarang = moment(today).format('DD MMMM YYYY');
+    }
   }
 }

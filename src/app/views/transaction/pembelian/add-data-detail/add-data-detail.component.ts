@@ -417,9 +417,9 @@ export class AddDataDetailPembelianComponent
           kodeBarang: expiredItem.kodeBarang,
           tglExpired: moment(expiredItem.tglExpired, "DD-MM-YYYY").format("D MMM YYYY"),
           konversi: expiredItem.konversi,
-          qtyBesar: -Math.abs(parseInt(expiredItem.qtyTerimaBesar)) || 0,
-          qtyKecil: -Math.abs(parseInt(expiredItem.qtyTerimaKecil)) || 0,
-          totalQty: expiredItem.totalQty ? -Math.abs(expiredItem.totalQty) : 0
+          qtyBesar: Math.abs(parseInt(expiredItem.qtyTerimaBesar)) || 0,
+          qtyKecil: Math.abs(parseInt(expiredItem.qtyTerimaKecil)) || 0,
+          totalQty: expiredItem.totalQty ? Math.abs(expiredItem.totalQty) : 0
         })) || []
       };
 
