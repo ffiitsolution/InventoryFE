@@ -5,7 +5,7 @@ import { GlobalService } from '../../../../service/global.service';
 import { TranslationService } from '../../../../service/translation.service';
 import { Subject } from 'rxjs';
 import { Page } from '../../../../model/page';
-import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
+import { ACTION_CETAK, ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { DataTableDirective } from 'angular-datatables';
 import moment from 'moment';
@@ -43,6 +43,11 @@ export class PembelianListComponent implements OnInit {
     )
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
+  alreadyPrint: boolean;
+  disabledPrintButton: any;
+  paramGenerateReport: any = {}
+  isShowModalReport: boolean;
+  paramUpdateReport: any = {}
 
   constructor(
     private dataService: DataService,
@@ -60,8 +65,9 @@ export class PembelianListComponent implements OnInit {
       serverSide: true,
       autoWidth: true,
       info: true,
+      order: [5, 'desc'],
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback:any) => {
+      ajax: (dataTablesParameters: any, callback: any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -96,6 +102,7 @@ export class PembelianListComponent implements OnInit {
                 };
                 return finalData;
               });
+
               this.page.recordsTotal = resp.recordsTotal;
               this.page.recordsFiltered = resp.recordsFiltered;
               this.showFilterSection = false;
@@ -124,12 +131,15 @@ export class PembelianListComponent implements OnInit {
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render: (data:any) => this.g.getStatusOrderLabel(data, false, true),
+          render: (data: any) => this.g.getStatusOrderLabel(data, false, true),
         },
         {
           title: 'Aksi',
           render: () => {
-            return `<button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>`;
+            return ` <div class="d-flex px-2 gap-2">
+                <button style="width: 100px" class="btn btn-sm action-view btn-outline-success btn-60 pe-1"><i class="fa fa-eye pe-1"></i>Lihat</button>
+                <button style="width: 100px" class="btn btn-sm action-cetak btn-outline-info btn-60"><i class="fa fa-print pe-1"></i>Cetak</button>
+              </div>`;
           },
         },
       ],
@@ -139,10 +149,17 @@ export class PembelianListComponent implements OnInit {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
         );
+        $('.action-cetak', row).on('click', () =>
+          this.actionBtnClick(ACTION_CETAK, data)
+        );
         return row;
       },
     };
     this.dtColumns = this.dtOptions.columns;
+  }
+
+  closeModal(): void {
+    this.isShowModalReport = false;
   }
 
   ngOnInit(): void {
@@ -170,6 +187,15 @@ export class PembelianListComponent implements OnInit {
         JSON.stringify(data)
       );
       this.router.navigate(['/transaction/pembelian/detail']);
+    }
+    if (action === ACTION_CETAK) {
+      this.paramGenerateReport = {
+        outletBrand: 'KFC',
+        isDownloadCsv: false,
+        nomorTransaksi: data.nomorTransaksi,
+        kodeGudang: this.g.getUserLocationCode()
+      };
+      this.isShowModalReport = true;
     }
   }
 

@@ -78,10 +78,10 @@
                 *ngFor="let data of list | paginate: { itemsPerPage: 5, currentPage: listCurrentPage, totalItems: totalLengthList, id: 'dataTableDetail' }; let i = index">
                 <td class="text-center">{{ data.kodeBarang }}</td>
                 <td class="text-center">{{ data.namaBarang }}</td>
-                <td class="text-center">{{ data.konversi }}.00 {{ data.satuanKecil }}/{{ data.satuanBesar }}</td>
-                <td class="text-center">{{ data.qtyPesanBesar }}.00 </td>
-                <td class="text-center">{{ data.qtyPesanKecil }}.00 </td>
-                <td class="text-center">{{ data.totalQtyPesan }}.00 </td>
+                <td class="text-center">{{ data.konversi.toFixed(2) }} {{ data.satuanKecil }}/{{ data.satuanBesar }}</td>
+                <td class="text-center">{{ data.qtyPesanBesar.toFixed(2) }} </td>
+                <td class="text-center">{{ data.qtyPesanKecil.toFixed(2) }} </td>
+                <td class="text-center">{{ data.totalQtyPesan.toFixed(2) }} </td>
                 <!-- <td class="text-center">
                   <input type="text" class="form-control text-center" style="width: 60px;"
                     [(ngModel)]="data.qtyTerimaBesar" />
@@ -95,7 +95,6 @@
                       (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
                       (keypress)="g.conditionInput($event, 'numericDot')" autofocus
                       (blur)="onBlurParsed(i, 'qtyTerimaBesar') " />
-                    <span class="d-flex align-items-center justify-content-center">{{data.satuanBesar}}</span>
                   </div>
                   <span class="text-danger validation-input" *ngIf="validationMsg[i]?.['qtyTerimaBesar']">
                     {{ validationMsg[i]['qtyTerimaBesar'] }}
@@ -108,8 +107,6 @@
                       class="form-control text-center inputQty inputNumberSpace" [(ngModel)]="data.qtyTerimaKecil"
                       (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')"
                       (keypress)="g.conditionInput($event, 'numericDot')" (blur)="onBlurParsed(i, 'qtyTerimaKecil')" />
-                    <span class="d-flex align-items-center justify-content-center">{{data.satuanKecil}}
-                    </span>
                   </div>
                   <span class="text-danger validation-input" *ngIf="validationMsg[i]?.['qtyTerimaKecil']">
                     {{ validationMsg[i]['qtyTerimaKecil'] }}
@@ -228,11 +225,11 @@
 
         <div class="w-100 px-2 py-1 row">
           <div class="col-4 d-flex align-items-center">
-            <label class="fw-semibold" for="nomorPesanan">{{ "Total Quantity Terima" | translate }}</label>
+            <label class="fw-semibold" for="nomorPesanan">{{ "TOTAL QTY TERIMA" | translate }}</label>
           </div>
           <div class="col-8 pe-0">
             <input type="text" placeholder="Nomor pesanan" class="form-control" id="konversi"
-              [value]="((helper.sanitizedNumber(selectedExpProduct.qtyTerimaBesar) * selectedExpProduct.konversi) + helper.sanitizedNumber(selectedExpProduct.qtyTerimaKecil)).toFixed(2) + ' ' + selectedExpProduct.satuanKecil"
+              [value]="((helper.sanitizedNumber(selectedExpProduct.qtyTerimaBesar) * selectedExpProduct.konversi) + helper.sanitizedNumber(selectedExpProduct.qtyTerimaKecil)).toFixed(2)"
               name="konversi" readonly />
           </div>
 
@@ -262,7 +259,18 @@
         </div>
       </div>
     </div>
-
+<div class="divider"></div>
+    <div class="text-danger fw-semibold col-sm-12 d-flex flex-column justify-content-start align-items-center">
+      <span>
+        Isi tanggal expired dengan benar..!!
+      </span>
+      <span>
+       Pengisian tanggal expired tidak boleh sama (Duplikat)
+      </span>
+      <span>
+        Jumlah TOTAL QTY EXPIRED  harus sama dengan TOTAL QTY TERIMA..!!
+      </span>
+    </div>
 
     <div class="divider"></div>
 

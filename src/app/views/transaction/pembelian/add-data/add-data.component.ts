@@ -180,6 +180,7 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
         this.selectedRowData = undefined;
       },
       order: [[0, 'desc']],
+      pageLength: 5,
       ajax: (dataTablesParameters: any, callback: any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
@@ -222,12 +223,18 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
           data: 'statusPesanan',
           title: 'Status Pesanan',
           render: (data: any) => {
-            const isCancel = data == CANCEL_STATUS;
-            const label = this.globalService.getStatusOrderLabel(data, false, true);
-            if (isCancel) {
-              return `<span class="text-center text-danger">${label}</span>`;
+            const CANCEL_STATUS = 0; // Ganti sesuai nilai CANCEL_STATUS yang sebenarnya
+
+            if (data == CANCEL_STATUS) {
+              return `<span class="text-center text-danger">DIBATALKAN</span>`;
+            } else if (data == 1) {
+              return `<span class="badge bg-info text-white">P.O BARU</span>`;
+            } else if (data == 2) {
+              return `<span class="badge bg-warning text-white">SISA PESANAN</span>`;
             }
-            return label;
+
+            // Default jika tidak termasuk nilai 0, 1, atau 2
+            return `<span class="badge bg-secondary">STATUS LAIN</span>`;
           },
         },
         {
@@ -292,38 +299,25 @@ export class AddPembelianComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   validationTglTerimaBrg: any = null;
-  getValidationTglTerimaBrg(isFormatted: boolean = false): any {
-    let validationText = '';
-    let tempDateTerimaBrg;
-    const tempDatePermintaanTerima = this.formData.tglTerimaBrg;
+  getValidationTglTerimaBrg(): void {
+    this.validationTglTerimaBrg = '';
 
-    if (isFormatted) {
-      tempDateTerimaBrg = this.formData.tglTerimaBrg;
-    } else {
-      let validatedDate = this.formData.tglTerimaBrg;
-      if (typeof validatedDate === 'string') {
-        // Coba parse string, tentukan format input string-nya
-        validatedDate = moment(validatedDate, 'DD-MM-YYYY').isValid()
-          ? moment(validatedDate, 'DD-MM-YYYY')
-          : moment(validatedDate);
-      } else {
-        validatedDate = moment(validatedDate);
+    const tglTerima = this.formData.tglTerimaBrg;
+    const tglDokumen = this.formData.tglDokumen;
+
+    if (tglTerima && tglDokumen) {
+      // Format semua tanggal ke 'YYYY-MM-DD' agar konsisten
+      const date1 = moment(tglTerima).format('DD-MM-YYYY')
+      const date2 = moment(tglDokumen).format('DD-MM-YYYY')
+
+      // Validasi jika tglTerima < tglDokumen
+      if (date1 < date2) {
+        this.validationTglTerimaBrg = 'TANGGAL TERIMA TIDAK BOLEH LEBIH KECIL DARI TANGGAL DOKUMEN..!!';
       }
-      tempDateTerimaBrg = validatedDate.format('DD-MM-YYYY');
     }
-
-    const today = moment().format('DD-MM-YYYY');
-
-    if (tempDateTerimaBrg !== tempDatePermintaanTerima) {
-      validationText += '** TANGGAL Terima TIDAK SESUAI DENGAN PERMINTAAN Terima..!!';
-    }
-
-    if (tempDateTerimaBrg !== today) {
-      validationText += "** TANGGAL Terima 'TIDAK SESUAI' DENGAN TGL. HARI INI, PERIKSA KEMBALI..!!";
-    }
-
-    this.validationTglTerimaBrg = validationText;
   }
+
+
 
   closeModal() {
     this.isShowModalReport = false;

@@ -334,6 +334,44 @@ export class AddDataDetailPembelianComponent
     this.router.navigate(['/transaction/pembelian/list-dt']);
   }
 
+  validateData(data: any): boolean {
+    let isValid = true;
+
+    // Validasi di data.details
+    for (const [i, item] of data.details.entries()) {
+      const qtyBesarKosong = item.qtyBesar === '0.00' || item.qtyBesar === '' || item.qtyBesar == null;
+      const qtyKecilKosong = item.qtyKecil === '0.00' || item.qtyKecil === '' || item.qtyKecil == null;
+
+      // Validasi: qtyBesar dan qtyKecil tidak boleh dua-duanya kosong
+      if (qtyBesarKosong && qtyKecilKosong) {
+        this.toastr.warning(`Data pada baris ${i + 1}: Mohon isi minimal qtyBesar atau qtyKecil`, 'Validasi');
+        isValid = false;
+        break;
+      }
+
+      // Validasi qtyKgs jika flagJenis === 'Y'
+      if (item.flagJenis === 'Y' && (item.qtyKgs === 0 || item.qtyKgs === '0' || item.qtyKgs == null)) {
+        this.toastr.warning(`Data pada baris ${i + 1}: TOTAL BERAT dan JENIS `, 'Validasi');
+        isValid = false;
+        break;
+      }
+    }
+
+    // Validasi di data.detailsExpired
+    for (const [i, exp] of data.detailsExpired.entries()) {
+      const relatedDetail = data.details.find((d: any) => d.kodeBarang === exp.kodeBarang);
+      const flagExpired = relatedDetail?.flagExpired;
+
+      if (flagExpired === 'Y' && (exp.totalQty === 0 || exp.totalQty === '0' || exp.totalQty == null)) {
+        this.toastr.warning(`Data expired pada baris ${i + 1}: totalQty wajib diisi karena flagExpired = 'Y'`, 'Validasi');
+        isValid = false;
+        break;
+      }
+    }
+
+    return isValid;
+  }
+
 
   onSubmit() {
     if (!this.isDataInvalid()) {
@@ -369,7 +407,8 @@ export class AddDataDetailPembelianComponent
             userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
             statusSync: "T",
             qtyKgs: item.qtyKgs || 0,
-            jenisItem: item.jenis || "0"
+            jenisItem: item.jenis || "0",
+            flagJenis: item.flagJenis,
           })),
         detailsExpired: this.listEntryExpired?.map(expiredItem => ({
           kodeGudang: this.g.getUserLocationCode(),
@@ -383,6 +422,11 @@ export class AddDataDetailPembelianComponent
           totalQty: expiredItem.totalQty ? -Math.abs(expiredItem.totalQty) : 0
         })) || []
       };
+
+      if (!this.validateData(param)) {
+        this.adding = false;
+        return;
+      }
 
       const expiredButNotEntered = this.listOrderData.filter((data: any) =>
         data.flagExpired === 'Y' &&
@@ -462,7 +506,7 @@ export class AddDataDetailPembelianComponent
       });
 
 
-    } else{
+    } else {
       this.toastr.error("Data tidak valid")
 
     }
