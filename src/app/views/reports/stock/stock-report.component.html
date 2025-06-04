@@ -49,27 +49,17 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="['Stock Barang','Stock Barang Dibawah Minimum','Stock Barang Diatas Maximum','Stock Card'].includes(currentReport)">
+    <ng-container
+      *ngIf="['Stock Barang','Stock Barang Dibawah Minimum','Stock Barang Diatas Maximum','Stock Card'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
-         Tanggal Stock
+          Tanggal Stock
           <span class="float-end">:</span>
         </div>
         <div class="col-2">
-          <input
-            type="text"
-            id="tglTransaksi"
-            class="form-control"
-            aria-describedby="tglTransaksi"
-            #dp="bsDatepicker"
-            [bsConfig]="dpConfigtrans"
-            bsDatepicker
-            autocomplete="off"
-            [(ngModel)]="paramTglTransaksi"
-            (ngModelChange)="onTglTransaksiChange($event)"
-            placeholder="{{ 'Tanggal transaksi' | translate }}"
-
-          />
+          <input type="text" id="tglTransaksi" class="form-control" aria-describedby="tglTransaksi" #dp="bsDatepicker"
+            [bsConfig]="dpConfigtrans" bsDatepicker autocomplete="off" [(ngModel)]="paramTglTransaksi"
+            (ngModelChange)="onTglTransaksiChange($event)" placeholder="{{ 'Tanggal transaksi' | translate }}" />
         </div>
         <div class="col-4">
           <div class="d-flex align-items-center" style="height: 40px;">
@@ -82,25 +72,25 @@
     </ng-container>
 
     <ng-container *ngIf="['Stock Barang Dibawah Minimum'].includes(currentReport)">
-        <div class="row mt-4">
-          <div class="col-4">
-          </div>
-          <div class="col-6 description alert alert-warning text-center" role="alert">
-            Laporan tersebut akan mencetak semua master barang yang statusnya 'Aktif' <br>
-            dengan Formula : Qty Stock terakhir 'DIBAWAH' Minimum Stock
-          </div>
+      <div class="row mt-4">
+        <div class="col-4">
         </div>
+        <div class="col-6 description alert alert-warning text-center" role="alert">
+          Laporan tersebut akan mencetak semua master barang yang statusnya 'Aktif' <br>
+          dengan Formula : Qty Stock terakhir 'DIBAWAH' Minimum Stock
+        </div>
+      </div>
     </ng-container>
 
-     <ng-container *ngIf="['Stock Barang Diatas Maximum'].includes(currentReport)">
-        <div class="row mt-4">
-          <div class="col-4">
-          </div>
-          <div class="col-6 description alert alert-warning text-center" role="alert">
-            Laporan tersebut akan mencetak semua master barang yang statusnya 'Aktif' <br>
-            dengan Formula : Qty Stock terakhir 'DIATAS' Maximum Stock
-          </div>
+    <ng-container *ngIf="['Stock Barang Diatas Maximum'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
         </div>
+        <div class="col-6 description alert alert-warning text-center" role="alert">
+          Laporan tersebut akan mencetak semua master barang yang statusnya 'Aktif' <br>
+          dengan Formula : Qty Stock terakhir 'DIATAS' Maximum Stock
+        </div>
+      </div>
     </ng-container>
 
     <ng-container *ngIf="['Stock Barang'].includes(currentReport)">
@@ -137,7 +127,8 @@
           <c-button-group role="group">
             <input class="btn-check" type="radio" [(ngModel)]="paramPilihanCetak" name="tipePilihanCetak"
               id="pilihanMutasi" value="mutasi" />
-            <label cButton cFormCheckLabel class="w-300" variant="outline" for="pilihanMutasi">Hanya Yang Ada Mutasi Stock</label>
+            <label cButton cFormCheckLabel class="w-300" variant="outline" for="pilihanMutasi">Hanya Yang Ada Mutasi
+              Stock</label>
 
             <input class="btn-check" type="radio" [(ngModel)]="paramPilihanCetak" name="tipePilihanCetak"
               id="pilihanAll" value="all" />
@@ -175,51 +166,43 @@
         </div>
         <div class="col">
           <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfigtrans"
-          aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
-          placeholder="{{ 'Tanggal Transaksi' | translate }}" />
+            aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
+            placeholder="{{ 'Tanggal Transaksi' | translate }}" />
         </div>
       </div>
     </ng-container>
 
-  <ng-container *ngIf="['Transaksi Detail Barang Expired','Stock Card'].includes(currentReport)">
-    <div class="row mt-4">
-      <div class="col-4">
-        Kode Barang
-        <span class="float-end">:</span>
-      </div>
-      <div class="col-2">
-        <div class="input-group">
-          <input type="text" autofocus class="form-control text-center" [(ngModel)]="kodeBarang"
-          (keydown.enter)="handleEnter($event)" />
-          <button class="btn btn-outline-secondary" type="button"
-          (click)="onShowModalBarang()">
-            <i class="fa fa-search"></i>
-          </button>
-        </div>
-      </div>
-      <div class="col-5">
-        <div class="input-group">
-          <input
-            type="text"
-            id="dateFilter"
-            class="form-control input-disabled"
-            [(ngModel)]="namaBarang"
-            [placeholder]="namaBarang ? '' : 'Semua Barang'"
-            disabled
-          />
-          <button class="btn btn-outline-primary" type="button"
-          (click)="deleteBarang()">
-            <i class="fa fa-trash"></i>
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </ng-container>
-  <ng-container *ngIf="['Stock Card'].includes(currentReport)">
+    <ng-container *ngIf="['Transaksi Detail Barang Expired','Stock Card'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
-         Cetak Tgl. Exp ?
+          Kode Barang
+          <span class="float-end">:</span>
+        </div>
+        <div class="col-2">
+          <div class="input-group">
+            <input type="text" autofocus class="form-control text-center" [(ngModel)]="kodeBarang"
+              (keydown.enter)="handleEnter($event)" />
+            <button class="btn btn-outline-secondary" type="button" (click)="onShowModalBarang()">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-5">
+          <div class="input-group">
+            <input type="text" id="dateFilter" class="form-control input-disabled" [(ngModel)]="namaBarang"
+              [placeholder]="namaBarang ? '' : 'Semua Barang'" disabled />
+            <button class="btn btn-outline-primary" type="button" (click)="deleteBarang()">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </ng-container>
+    <ng-container *ngIf="['Stock Card'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Cetak Tgl. Exp ?
           <span class="float-end">:</span>
         </div>
         <div class="col">
@@ -228,13 +211,32 @@
               id="statusExpiredYa" value="Ya" />
             <label cButton cFormCheckLabel class="w-120" variant="outline" for="statusExpiredYa">Ya</label>
 
-            <input class="btn-check" type="radio" [(ngModel)]="paramStatusExpired" name="statusExpired" id="statusExpiredTidak"
-              value="Tidak" />
+            <input class="btn-check" type="radio" [(ngModel)]="paramStatusExpired" name="statusExpired"
+              id="statusExpiredTidak" value="Tidak" />
             <label cButton cFormCheckLabel class="w-120" variant="outline" for="statusExpiredTidak">TIdak</label>
 
-         
+
           </c-button-group>
         </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="['Stock Yang Mendekati Tgl Expired'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Sisa Barang, Tgl. Expired
+          <span class="float-end">:</span>
+        </div>
+        <div class="col-6">
+          <input type="text" class="form-control" [(ngModel)]="paramStockNumberHari" [value]="paramStockNumberHari + ' Hari'"
+            (keypress)="g.conditionInput($event, 'numeric')" autofocus (blur)="onBlurStockExpired()" />
+            <div class="text-danger fw-semibold mt-3">
+            Semua barang yang tgl. expired nya dibawah tgl. {{tglExpiredSisaBarang}} akan dicetak...!!
+          </div>
+        </div>
+        <!-- <span class="justify-content-center d-flex">
+          
+        </span> -->
       </div>
     </ng-container>
 
@@ -263,41 +265,25 @@
   </c-card-body>
 </c-card>
 
-  <!-- Modal Pilih Barang -->
-  <c-modal
-    #staticBackdropModal
-    [visible]="isShowModalBarang"
-    backdrop="static"
-    id="staticBackdropModal"
-    size="xl"
-  >
-    <c-modal-header>
-      <h5 cModalTitle>Daftar Barang</h5>
-      <button
-        (click)="isShowModalBarang = false"
-        type="button"
-        class="btn btn-info ms-2"
-        [cModalToggle]="staticBackdropModal.id"
-        cButtonClose
-      >
-        <i class="fa fa-times text-white"></i>
-      </button>
-    </c-modal-header>
+<!-- Modal Pilih Barang -->
+<c-modal #staticBackdropModal [visible]="isShowModalBarang" backdrop="static" id="staticBackdropModal" size="xl">
+  <c-modal-header>
+    <h5 cModalTitle>Daftar Barang</h5>
+    <button (click)="isShowModalBarang = false" type="button" class="btn btn-info ms-2"
+      [cModalToggle]="staticBackdropModal.id" cButtonClose>
+      <i class="fa fa-times text-white"></i>
+    </button>
+  </c-modal-header>
 
-    <c-modal-body>
-      <c-card class="mb-4">
-        <c-card-body>
-          <div class="table-responsive">
-            <table
-              datatable
-              [dtOptions]="dtOptions"
-              class="datatable row-border hover stripe w-100 h-65"
-              >
+  <c-modal-body>
+    <c-card class="mb-4">
+      <c-card-body>
+        <div class="table-responsive">
+          <table datatable [dtOptions]="dtOptions" class="datatable row-border hover stripe w-100 h-65">
             <!-- <thead class="table-header"> </thead> -->
-            </table>
-          </div>
-        </c-card-body>
-      </c-card>
-    </c-modal-body>
-  </c-modal>
-
+          </table>
+        </div>
+      </c-card-body>
+    </c-card>
+  </c-modal-body>
+</c-modal>

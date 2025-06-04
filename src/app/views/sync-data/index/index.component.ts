@@ -61,6 +61,8 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
   rangeDateVal = [new Date(), new Date()];
   listBackupDb: any[] = [];
   configSelect: any;
+  listHistoryTerimaData: any[] = [];
+  listHistoryKirimData: any[] = [];
 
   constructor(
     private service: AppService,
@@ -111,6 +113,8 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
     if (menu) {
       this.onClickMenu(menu);
     }
+    this.selectedParam['paginationHistoryTerimaData'] = 1;
+    this.selectedParam['paginationHistoryKirimData'] = 1;
   }
 
   ngOnDestroy(): void {}
@@ -411,5 +415,60 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       skipLocationChange: true,
     });
+  }
+
+  getHistoryTerimaData() {
+    this.loadings['getHistoryTerimaData'] = true;
+    this.clicked['getHistoryTerimaData'] = true;
+    const limit = 100;
+    const offset = (this.selectedParam['paginationHistoryTerimaData'] - 1) * limit;
+    this.service
+      .insert('/api/sync-data/history-terima-data-master', {
+        kodeGudang: this.userData?.defaultLocation?.kodeLocation,
+        offset: offset,
+        limit: limit,
+      })
+      .subscribe({
+        next: (res) => {
+          if (res.error) {
+            this.messages['getHistoryTerimaData'] = res.error;
+          } else {
+            this.listHistoryTerimaData = res.data ?? [];
+          }
+          this.loadings['getHistoryTerimaData'] = false;
+        },
+        error: (err) => {
+          console.log('err: ' + err);
+          this.loadings['getHistoryTerimaData'] = false;
+        },
+      });
+  }
+
+
+  getHistoryKirimData() {
+    this.loadings['getHistoryKirimData'] = true;
+    this.clicked['getHistoryKirimData'] = true;
+    const limit = 100;
+    const offset = (this.selectedParam['paginationHistoryKirimData'] - 1) * limit;
+    this.service
+      .insert('/api/sync-data/history-kirim-data-ke-pusat', {
+        kodeGudang: this.userData?.defaultLocation?.kodeLocation,
+        offset: offset,
+        limit: limit,
+      })
+      .subscribe({
+        next: (res) => {
+          if (res.error) {
+            this.messages['getHistoryKirimData'] = res.error;
+          } else {
+            this.listHistoryKirimData = res.data ?? [];
+          }
+          this.loadings['getHistoryKirimData'] = false;
+        },
+        error: (err) => {
+          console.log('err: ' + err);
+          this.loadings['getHistoryKirimData'] = false;
+        },
+      });
   }
 }

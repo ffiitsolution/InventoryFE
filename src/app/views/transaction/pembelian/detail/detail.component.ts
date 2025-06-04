@@ -136,7 +136,7 @@ export class DetailPembelianComponent
           { data: 'namaBarang', title: 'Nama Barang' },
           {
             data: 'konversi', title: 'Konversi',
-            render: (data: any, type: any, row: any) => `${data} ${row.satuanKecil}`
+            render: (data: any, type: any, row: any) => `${data} ${row.satuanKecil} / ${row.satuanBesar} `
           },
           {
             data: 'qtyBesar', title: 'Qty Besar',
