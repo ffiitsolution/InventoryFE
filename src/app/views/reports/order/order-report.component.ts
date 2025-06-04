@@ -54,7 +54,7 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
 
   paramStatusAktif: string = '';
   // paramTipeListing: string = 'header';
-  paramTipeListing: string = 'rekap';
+  paramTipeListing: string = 'baru';
   paramStatusPesanan = '1';//pesann baru
 
   baseConfig: any = {
@@ -175,12 +175,11 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (this.currentReport === 'Pesanan Ke Supplier') {
       param = {
-        KODE_GUDANG: this.userData.defaultLocation.kodeLocation,
-        TIPE_PESANAN: 'S',
-        USER_CETAK: this.userData.namaUser,
+        kodeGudang: this.userData.defaultLocation.kodeLocation,
         tipeListing: this.paramTipeListing,
-        START_DATE: this.transformDate(this.dateRangeFilter[0]),
-        END_DATE: this.transformDate(this.dateRangeFilter[1]),
+        startDate: this.g.transformDate(this.dateRangeFilter[0]),
+        endDate: this.g.transformDate(this.dateRangeFilter[1]),
+        statusPesanan:this.paramStatusPesanan,
       };
     }
 

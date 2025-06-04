@@ -1,115 +1,10 @@
-<!-- <div class="fade-in">
-  <c-card class="mb-4">
-    <c-card-body>
-      <c-row>
-        <div
-          class="d-grid gap-3 d-md-flex justify-content-start align-items-center"
-        >
-          <button class="btn btn-light btn-120" (click)="onBackPressed()">
-            <i class="fa fa-chevron-left icon-12 icon-gap"></i>
-            {{ "Kembali" | translate }}
-          </button>
-          <h5>{{ "Detail Tambah Pengiriman" | translate }}</h5>
-        </div>
-      </c-row>
-    </c-card-body>
-  </c-card>
-  <c-card class="mb-4">
-    <c-card-body>
-      <div class="d-grid gap-3 d-md-flex justify-content-end">
-        <button
-          class="btn btn-info text-white btn-150 pe-3"
-          (click)="onSubmit()"
-        >
-          <i class="fa fa-print" *ngIf="!adding"></i>
-          {{ "Simpan" | translate }}
-        </button>
 
-        <div class="btn-group">
-          <button
-            class="btn btn-danger text-white btn-150 dropdown-toggle"
-            type="button"
-            data-bs-toggle="dropdown"
-            (click)="onCetakAtauPrintReport(false, this.selectedOrder.nomorPesanan)"
-          >
-            <i class="fa fa-file-pdf-o"></i> Cetak / Download Report
-          </button>
-          <ul class="dropdown-menu">
-            <li>
-              <button
-                class="dropdown-item"
-                (click)="handleCetakAtauPrint(false)"
-              >
-                <i class="fa fa-print"></i> Print Report
-              </button>
-            </li>
-            <li>
-              <button
-                class="dropdown-item"
-                (click)="handleCetakAtauPrint(true)"
-              >
-                <i class="fa fa-download"></i> Download PDF
-              </button>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="row">
-        <div class="divider mt-4"></div>
-        <div class="col">
-          <div class="row order-details">
-            <div class="detail-item">
-              <span class="label">{{ "Nomor Pesanan" | translate }}</span>
-              <span class="value">{{ selectedOrder.nomorPesanan }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "No. Surat Jalan" | translate }}</span>
-              <span class="value">{{ selectedOrder.nomorSuratJan }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{ "Tanggal Surat Jalan" | translate }}</span>
-              <span class="value">{{ selectedOrder.tglPesan }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{
-                "Tanggal Barang Di Terima" | translate
-              }}</span>
-              <span class="value">{{ selectedOrder.tglBrgDikirim }}</span>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="row order-details">
-            <div class="detail-item">
-              <span class="label">{{
-                "Kode Gudang Pengirim" | translate
-              }}</span>
-              <span class="value">{{ selectedOrder.codeDestination }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{
-                "Nama Gudang Pengirim" | translate
-              }}</span>
-              <span class="value"> {{ selectedOrder.namaCabang }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">{{
-                "Catatan" | translate
-              }}</span>
-              <span class="value"> {{ selectedOrder.notes }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </c-card-body>
-  </c-card>
-</div> -->
 
 <div class="fade-in">
   <c-card class="mb-4">
     <!-- <c-card-body> -->
-      <!-- Tombol Simpan & Cetak -->
-      <!-- <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
+    <!-- Tombol Simpan & Cetak -->
+    <!-- <div class="d-grid gap-3 d-md-flex justify-content-end mb-3">
         <button
           class="btn btn-info text-white btn-150 pe-3"
           (click)="onSubmit()"
@@ -148,479 +43,760 @@
         </div>
       </div> -->
 
-      <c-card-header class="py-1">
-        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-          
-          <!-- Jumlah Item -->
-          <div class="d-flex align-items-center gap-2">
-            <label for="pemakaian barang sendiri">{{ "Jumlah Item" | translate }}</label>
-            <input type="text"
-                  class="form-control form-control-sm text-center input-disabled"
-                  [value]="getJumlahItem()"
-                  readonly
-                  style="width: 100px;" />
-          </div>
-      
-          <div class="d-grid gap-3 d-md-flex justify-content-end">
-            <button class="btn btn-info btn-sm text-white pe-3"
-                    (click)="onSubmit()">
-              <!-- <i class="fa fa-check pe-2" *ngIf="!loadingSimpan"></i>
-              <i class="fa fa-spinner fa-spin" *ngIf="loadingSimpan"></i> -->
-              {{ "Proses Simpan Data" | translate }}
-            </button>
-        
-            <button
-              class="btn btn-secondary text-white btn-150"
-              (click)="onBackPressed()"
-            >
-              <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
-            </button>
-          </div>
-    
+    <c-card-header class="py-1">
+      <div
+        class="d-flex align-items-center justify-content-between flex-wrap gap-2"
+      >
+        <!-- Jumlah Item -->
+        <div class="d-flex align-items-center gap-2">
+          <label for="pemakaian barang sendiri">{{
+            "Jumlah Item" | translate
+          }}</label>
+          <input
+            type="text"
+            class="form-control form-control-sm text-center input-disabled"
+            [value]="getJumlahItem()"
+            readonly
+            style="width: 100px"
+          />
         </div>
-      </c-card-header>
-      <c-card-body>
 
-        <div class="row align-items-center mb-2">
-          <!-- Tombol Tambah Data -->
-          <!-- <div class="col-auto">
+        <div class="d-grid gap-3 d-md-flex justify-content-end">
+          <button
+            class="btn btn-info btn-sm text-white pe-3"
+            [disabled]="loadingSimpan"
+            (click)="onSubmit()"
+          >
+            <i class="fa fa-check pe-2" *ngIf="!loadingSimpan"></i>
+              <i class="fa fa-spinner fa-spin" *ngIf="loadingSimpan"></i>
+            {{ "Proses Simpan Data" | translate }}
+          </button>
+
+          <button
+            class="btn btn-secondary text-white btn-150"
+            (click)="onBackPressed()"
+          >
+            <i class="fa fa-times pe-1"></i> {{ "Batal" | translate }}
+          </button>
+        </div>
+      </div>
+    </c-card-header>
+    <c-card-body>
+      <div class="row align-items-center mb-2">
+        <!-- Tombol Tambah Data -->
+        <!-- <div class="col-auto">
             <button class="btn btn-success text-white btn-sm pe-3" (click)="onAdd()">
               <i class="fa fa-plus pe-2" *ngIf="!adding"></i>
               {{ "Tambah" | translate }}
             </button>
           </div> -->
-        
-          <!-- Input Search -->
-          <div class="col-12 col-md-6 col-lg-4 ms-auto">
-            <c-input-group>
-              <span cInputGroupText><i class="fa fa-search"></i></span>
-              <input #listViewOrders 
-                    id="appendedInputButton" 
-                    [(ngModel)]="searchListViewOrder" 
-                    class="form-control form-control-sm"
-                    type="text" 
-                    placeholder="Search..." 
-                    (ngModelChange)="onFilterTextChange($event)">
-            </c-input-group>
-          </div>
-        </div>
 
-<div class="fade-in">
-  <c-card class="mb-4">
-    <c-card-body>
-      <div class="table-responsive">
-        <ng-container>
-          <div *ngIf="loading">
-            <app-loading></app-loading>
-          </div>
-          <table
-            bordered
-            [hover]="true"
-            [striped]="true"
-            align="middle"
-            cTable
-            class="mb-0 border"
-          >
-            <thead>
-              <tr>
-                <th
-                  scope="col"
-                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  No.
-                </th>
-                <th
-                  scope="col"
-                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Kode Barang
-                </th>
-                <th
-                  scope="col"
-                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Nama Barang
-                </th>
-                <th
-                  scope="col"
-                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Konversi
-                </th>
-                <th
-                  scope="col"
-                  style="
-                    background-color: #e55353;
-                    color: white;
-                    vertical-align: middle;
-                  "
-                  class="text-center align-items-start btn-danger"
-                  colspan="2"
+        <!-- Input Search -->
+        <div class="col-12 col-md-6 col-lg-4 ms-auto">
+          <c-input-group>
+            <span cInputGroupText><i class="fa fa-search"></i></span>
+            <input
+              #listViewOrders
+              id="appendedInputButton"
+              [(ngModel)]="searchListViewOrder"
+              class="form-control form-control-sm"
+              type="text"
+              placeholder="Search..."
+              (ngModelChange)="onFilterTextChange($event)"
+            />
+          </c-input-group>
+        </div>
+      </div>
+
+      <div class="fade-in">
+        <c-card class="mb-4">
+          <c-card-body>
+            <div class="table-responsive">
+              <ng-container>
+                <!-- <div *ngIf="loading">
+                  <app-loading></app-loading>
+                </div> -->
+                <table
+                  bordered
+                  [hover]="true"
+                  [striped]="true"
+                  align="middle"
+                  cTable
+                  class="mb-0 border"
                 >
-                  Qty Pesan
-                </th>
-                
-                <th
-                  scope="col"
-                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Total Qty Pesan
-                </th>
-                <th
-                  scope="col"
-                  style="
-                    background-color: #e55353;
-                    color: white;
-                    vertical-align: middle;
-                  "
-                  class="text-center align-items-start btn-danger"
-                  colspan="2"
-                >
-                  Qty Terima
-                </th>
-                <th
-                  scope="col"
-                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Total Qty Terima
-                </th>
-                <th
-                  scope="col"
-                  style="background-color: #3c4b64; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Isi Qty Expired
-                </th>
-                <th
-                scope="col"
-                style="background-color: #e55353; color:white; vertical-align: middle;" class="text-center align-items-start" rowspan="2">
-                  Total Qty Expired
-              </th>
-              </tr>
-              <tr>
-                <th
-                  scope="col"
-                  class="text-center"
-                  style="
-                    width: 160px;
-                    background-color: #3c4b64;
-                    color: white;
-                    vertical-align: middle;
-                  "
-                >
-                  Besar
-                </th>
-                <th
-                  scope="col"
-                  class="text-center"
-                  style="
-                    width: 160px;
-                    background-color: #3c4b64;
-                    color: white;
-                    vertical-align: middle;
-                  "
-                >
-                  Kecil
-                </th>
-                <th
-                  scope="col"
-                  class="text-center"
-                  style="
-                    width: 160px;
-                    background-color: #3c4b64;
-                    color: white;
-                    vertical-align: middle;
-                  "
-                >
-                  Besar
-                </th>
-                <th
-                  scope="col"
-                  class="text-center"
-                  style="
-                    width: 160px;
-                    background-color: #3c4b64;
-                    color: white;
-                    vertical-align: middle;
-                  "
-                >
-                  Kecil
-                </th>
-              </tr>
-            </thead>
-            <tbody *ngIf="!listOrderData || listOrderData.length === 0">
-              <tr>
-                <td colspan="12" scope="col" class="text-center">
-                  No Data Found
-                </td>
-              </tr>
-            </tbody>
-            <tbody>
-              <tr *ngFor="let data of listOrderData; let i = index">
-                <td class="text-center">{{ i + 1 }}</td>
-                <td class="text-center">{{ data.KODE_BARANG }}</td>
-                <td class="text-center">{{ data.NAMA_BARANG }}</td>
-                <td class="text-center">{{ data.KONVERSI }}</td>
-                <td class="text-center">{{ data.QTY_PESAN_BESAR }}</td>
-                <td class="text-center">{{ data.QTY_PESAN_KECIL }}</td>
-                <td class="text-center">{{ data.TOTAL_QTY_PESAN }}</td>
-                <td class="text-center input-column">
-                  <div class="d-flex justify-content-center" style="gap: 5px">
-                    <input
-                      type="number"
-                      max="{{ data.TOTAL_QTY_EXPIRED }}"
-                      min="0"
-                      class="form-control text-center inputQty inputNumberSpace"
-                      [(ngModel)]="data.QTY_TERIMA_BESAR"
-                      (input)="onInputValueItemDetail($event, i)"
-                    />
-                  </div>
-                </td>
-                <td class="text-center input-column">
-                  <div class="d-flex justify-content-center" style="gap: 5px">
-                    <input
-                      type="number"
-                      max="{{ data.TOTAL_QTY_EXPIRED }}"
-                      min="0"
-                      class="form-control text-center inputQty inputNumberSpace"
-                      [(ngModel)]="data.QTY_TERIMA_KECIL"
-                      (input)="onInputValueItemDetailkecil($event, i)"
-                    />
-                  </div>
-                </td>
-                <td class="text-center">{{ data.TOTAL_QTY_TERIMA }}</td>
-                <td>
-                  <button class="btn btn-success btn-sm text-white btn-150" (click)="onShowModalExpired($event, i)">
-                    <i class="fa fa-check pe-1"></i> {{ "Exp." | translate }}
-                  </button>
-                </td>
-                <td class="text-center">
-                  {{
-                  getTotalExpiredData(data.KODE_BARANG,data.KONVERSI)
-                  }} {{data.SATUAN_KECIL}}
-  
-                  <!-- Validation message area -->
-                  <!-- <br>
+                  <thead>
+                    <tr>
+                      <th
+                        scope="col"
+                        style="
+                          background-color: #3c4b64;
+                          color: white;
+                          vertical-align: middle;
+                        "
+                        class="text-center align-items-start"
+                        rowspan="2"
+                      >
+                        No.
+                      </th>
+                      <th
+                        scope="col"
+                        style="
+                          background-color: #3c4b64;
+                          color: white;
+                          vertical-align: middle;
+                          width: 8%;
+                        "
+                        class="text-center align-items-start"
+                        rowspan="2"
+                      >
+                        Kode Barang
+                      </th>
+                      <th
+                        scope="col"
+                        style="
+                          background-color: #3c4b64;
+                          color: white;
+                          vertical-align: middle;
+                           width: 20%;
+                        "
+                        class="text-center align-items-start"
+                        rowspan="2"
+                      >
+                        Nama Barang
+                      </th>
+                      <th
+                        scope="col"
+                        style="
+                          background-color: #3c4b64;
+                          color: white;
+                          vertical-align: middle;
+                        "
+                        class="text-center align-items-start"
+                        rowspan="2"
+                      >
+                        Konversi
+                      </th>
+                      <th
+                        scope="col"
+                        style="
+                          background-color: #e55353;
+                          color: white;
+                          vertical-align: middle;
+                        "
+                        class="text-center align-items-start btn-danger"
+                        colspan="2"
+                      >
+                        Qty Pesan
+                      </th>
+
+                      <th
+                        scope="col"
+                        style="
+                          background-color: #3c4b64;
+                          color: white;
+                          vertical-align: middle;
+                          width: 8%;
+                        "
+                        class="text-center align-items-start"
+                        rowspan="2"
+                      >
+                        Total Qty Pesan
+                      </th>
+                      <th
+                        scope="col"
+                        style="
+                          background-color: #e55353;
+                          color: white;
+                          vertical-align: middle;
+                        "
+                        class="text-center align-items-start btn-danger"
+                        colspan="2"
+                      >
+                        Qty Terima
+                      </th>
+                      <th
+                        scope="col"
+                        style="
+                          background-color: #3c4b64;
+                          color: white;
+                          vertical-align: middle;
+                          width: 8%;
+                        "
+                        class="text-center align-items-start"
+                        rowspan="2"
+                      >
+                        Total Qty Terima
+                      </th>
+                      <th
+                        scope="col"
+                        style="
+                          background-color: #3c4b64;
+                          color: white;
+                          vertical-align: middle;
+                        "
+                        class="text-center align-items-start"
+                        rowspan="2"
+                      >
+                        Isi Qty Expired
+                      </th>
+                      <th
+                        scope="col"
+                        style="
+                          background-color: #e55353;
+                          color: white;
+                          vertical-align: middle;
+                        "
+                        class="text-center align-items-start"
+                        rowspan="2"
+                      >
+                        Total Qty Expired
+                      </th>
+                    </tr>
+                    <tr>
+                      <th
+                        scope="col"
+                        class="text-center"
+                        style="
+                          width: 160px;
+                          background-color: #3c4b64;
+                          color: white;
+                          vertical-align: middle;
+                        "
+                      >
+                        Besar
+                      </th>
+                      <th
+                        scope="col"
+                        class="text-center"
+                        style="
+                          width: 160px;
+                          background-color: #3c4b64;
+                          color: white;
+                          vertical-align: middle;
+                        "
+                      >
+                        Kecil
+                      </th>
+                      <th
+                        scope="col"
+                        class="text-center"
+                        style="
+                          width: 160px;
+                          background-color: #3c4b64;
+                          color: white;
+                          vertical-align: middle;
+                        "
+                      >
+                        Besar
+                      </th>
+                      <th
+                        scope="col"
+                        class="text-center"
+                        style="
+                          width: 160px;
+                          background-color: #3c4b64;
+                          color: white;
+                          vertical-align: middle;
+                        "
+                      >
+                        Kecil
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="!listOrderData || listOrderData.length === 0">
+                    <tr>
+                      <td colspan="12" scope="col" class="text-center">
+                        No Data Found
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr *ngFor="let data of listOrderData; let i = index">
+                      <td class="text-center">{{ i + 1 }}</td>
+                      <td class="text-center">{{ data.KODE_BARANG }}</td>
+                      <td class="text-center">{{ data.NAMA_BARANG }}</td>
+                      <td class="text-center">{{ data.KONVERSI }}</td>
+                      <td class="text-center">{{ data.QTY_PESAN_BESAR }}</td>
+                      <td class="text-center">{{ data.QTY_PESAN_KECIL }}</td>
+                      <td class="text-center">{{ data.TOTAL_QTY_PESAN }}</td>
+                      <td class="text-center input-column">
+                        <div
+                          class="d-flex justify-content-center"
+                          style="gap: 5px"
+                        >
+                          <input
+                            type="text"
+                            (focus)="g.selectInputContent($event)"
+                            min="0"
+                            class="form-control text-center inputQty inputNumberSpace"
+                            [(ngModel)]="data.QTY_TERIMA_BESAR"
+                            (blur)="onInputValueItemDetail($event, i)"
+                          />
+                        </div>
+                      </td>
+                      <td class="text-center input-column">
+                        <div
+                          class="d-flex justify-content-center"
+                          style="gap: 5px"
+                        >
+                          <input
+                            type="text"
+                            (focus)="g.selectInputContent($event)"
+                            min="0"
+                            class="form-control text-center inputQty inputNumberSpace"
+                            [(ngModel)]="data.QTY_TERIMA_KECIL"
+                            (blur)="onInputValueItemDetailkecil($event, i)"
+                          />
+                        </div>
+                      </td>
+                      <td class="text-center">{{ data.TOTAL_QTY_TERIMA }}</td>
+                      <td>
+                        <button
+                          class="btn btn-success btn-sm text-white btn-150"
+                          (click)="onShowModalExpired($event, i)"
+                        >
+                          <i class="fa fa-check pe-1"></i>
+                          {{ "Exp." | translate }}
+                        </button>
+                      </td>
+                      <td class="text-center">
+                        {{
+                          getTotalExpiredData(data.KODE_BARANG, data.KONVERSI)
+                        }}
+                        {{ data.SATUAN_KECIL }}
+
+                        <!-- Validation message area -->
+                        <!-- <br>
                   <span style="font-size: 14px;" class="text-danger" *ngIf="validationMessageQtyPesanList [i]">
                     {{ validationMessageQtyPesanList[i] }}
                   </span> -->
-                </td>              
-              </tr>
-            </tbody>
-          </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
 
-          <c-pagination class="text-right">
-            <pagination-controls
-              (pageChange)="onPageChange(1)"
-              id="dataTable"
-            ></pagination-controls>
-          </c-pagination>
-        </ng-container>
+                <c-pagination class="text-right">
+                  <pagination-controls
+                    (pageChange)="onPageChange(1)"
+                    id="dataTable"
+                  ></pagination-controls>
+                </c-pagination>
+              </ng-container>
+            </div>
+          </c-card-body>
+        </c-card>
       </div>
-    </c-card-body>
-  </c-card>
-</div>
 
-
-<c-modal #modalExpired alignment="center"
-  [style]="{'display': 'flex', 'align-items': 'center', 'justify-content': 'center'}" [fullscreen]="false"
-  [visible]="isShowModalExpired" backdrop="static" #modalLg size="xl" id="formModal"
-  [attr.aria-hidden]="!isShowModalExpired">
-  <c-modal-header>
-    <h5 cModalTitle>Entry Data Expired</h5>
-    <!-- <button (click)="isShowModalExpired = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
+      <c-modal
+        #modalExpired
+        alignment="center"
+        [style]="{
+          display: 'flex',
+          'align-items': 'center',
+          'justify-content': 'center'
+        }"
+        [fullscreen]="false"
+        [visible]="isShowModalExpired"
+        backdrop="static"
+        #modalLg
+        size="xl"
+        id="formModal"
+        [attr.aria-hidden]="!isShowModalExpired"
+      >
+        <c-modal-header>
+          <h5 cModalTitle>Entry Data Expired</h5>
+          <!-- <button (click)="isShowModalExpired = false" type="button" class="btn btn-primary ms-2" cButtonClose><i
         class="fa fa-times"></i></button> -->
-  </c-modal-header>
-  <c-modal-body>
-    <div class="row">
-      <div class="col-6">
-        <div class="w-100 px-2 py-1 row">
-
-          <div class="col-4 d-flex align-items-center">
-            <label for="nomorPesanan">{{ "Nama Barang" | translate }}</label>
-          </div>
-          <div class="col-8 pe-0 d-flex">
-            <div class="col-3 pe-2">
-              <input type="text" class="form-control" id="kodeBarang" [(ngModel)]="selectedExpProduct.KODE_BARANG"
-                name="kodeBarang" disabled />
-            </div>
-            <div class="col-9">
-              <input type="text" class="form-control" id="namaBarang" [(ngModel)]="selectedExpProduct.NAMA_BARANG"
-                name="namaBarang" disabled />
-            </div>
-          </div>
-        </div>
-        <div class="w-100 px-2 py-1 row">
-          <div class="col-4 d-flex align-items-center">
-            <label for="nomorPesanan">{{ "Konversi Barang" | translate }}</label>
-          </div>
-          <div class="col-8 pe-0">
-            <input type="text" class="form-control" id="konversi"
-              [value]="selectedExpProduct.KONVERSI + ' ' + selectedExpProduct.SATUAN_KECIL + '/' + selectedExpProduct.SATUAN_BESAR"
-              name="konversi" disabled />
-
-          </div>
-
-        </div>
-
-        <div class="w-100 px-2 py-1 row">
-          <div class="col-4 d-flex align-items-center">
-            <label class="fw-semibold" for="nomorPesanan">{{ "Total Quantity" | translate }}</label>
-          </div>
-          <div class="col-8 pe-0">
-            <input type="text" placeholder="Nomor pesanan" class="form-control" id="konversi"
-              [value]="(helper.sanitizedNumber(selectedExpProduct.QTY_PESAN_BESAR) * selectedExpProduct.KONVERSI) + helper.sanitizedNumber(selectedExpProduct.QTY_PESAN_KECIL) + ' ' + selectedExpProduct.SATUAN_KECIL"
-              name="konversi" disabled />
-          </div>
-
-        </div>
-
-      </div>
-      <div class="col-6">
-        <div class="w-100 px-2 py-1 row">
-          <div class="col-4 d-flex align-items-center">
-            <label for="nomorPesanan">{{ "Quantity Besar" | translate }}</label>
-          </div>
-          <div class="col-8 pe-0">
-            <input type="text" class="form-control" id="konversi" [value]="selectedExpProduct.QTY_PESAN_BESAR || 0"
-              name="konversi" disabled />
-          </div>
-
-        </div>
-
-        <div class="w-100 px-2 py-1 row">
-          <div class="col-4 d-flex align-items-center">
-            <label for="nomorPesanan">{{ "Quantity Kecil" | translate }}</label>
-          </div>
-          <div class="col-8 pe-0">
-            <input type="text" class="form-control" id="konversi" [value]="selectedExpProduct.QTY_PESAN_KECIL || 0"
-              name="konversi" disabled />
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-    <div class="text-danger fw-semibold col-sm-12 d-flex flex-column justify-content-start align-items-center">
-      <span>
-        Isi tanggal expired dengan benar..!!
-      </span>
-      <span>
-       Pengisian tanggal expired tidak boleh sama (Duplikat)
-      </span>
-      <span>
-        Jumlah TOTAL QTY EXPIRED  harus sama dengan TOTAL QTY TERIMA..!!
-      </span>
-    </div>
-    <div class="divider"></div>
-
-    <div class="table-responsive">
-      <ng-container>
-        <div *ngIf="loading">
-          <app-loading></app-loading>
-        </div>
-        <table bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
-          <thead>
-            <tr>
-              <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 20%;"
-                class="text-center align-items-start" rowspan="2">Tgl. Expired</th>
-              <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 20%;"
-                class="text-center align-items-start" rowspan="3">Keterangan Tanggal</th>
-              <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 124px;"
-                class="text-center align-items-start" rowspan="2">
-                Qty Besar</th>
-              <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 124px;"
-                class="text-center align-items-start" rowspan="2">Qty
-                Kecil</th> <!-- Masih sejajar -->
-              <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
-                class="text-center align-items-start" rowspan="2">
-                Total Qty Expired</th>
-            </tr>
-            <th scope="col" style="background-color: #3c4b64; color:white; vertical-align: middle; width: 10%;"
-              class="text-center align-items-start">
-              Action</th>
-
-          </thead>
-          <tbody *ngIf="!listEntryExpired || listEntryExpired.length === 0">
-            <tr>
-              <td colspan="9" scope="col" class="text-center">
-                No Data Found
-              </td>
-            </tr>
-          </tbody>
-          <tbody>
-            <tr *ngFor="let data of filteredListExpired; let i = index">
-              <td class="text-center">
-                <input type="text" id="tglTransaksi" class="form-control" aria-describedby="tglTransaksi"
-                  #dp="bsDatepicker" [bsConfig]="dpConfig" bsDatepicker autocomplete="off" [(ngModel)]="data.tglExpired"
-                  (ngModelChange)="updateKeteranganTanggal(data,$event,i)"
-                  placeholder="{{ 'Tanggal transaksi' | translate }}" />
-                <span style="font-size: 14px;" class="text-danger" *ngIf="data.validationExpiredMessageList">
-                  {{ data.validationExpiredMessageList}}
-                </span>
-              </td>
-
-              <td class="text-center">
-                {{ data.keteranganTanggal }}
-              </td>
-              <td class="text-center input-column">
-                <div class="d-flex justify-content-center" style="gap: 5px;">
-                  <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.QTY_TERIMA_BESAR" (change)="onInputQtyBesarExpired($event,data.KODE_BARANG, i)"
-                    (keypress)="g.conditionInput($event, 'numericDot')" />
-                  <span class="d-flex align-items-center justify-content-center">
-                    / {{data.SATUAN_BESAR}}
-                  </span>
+        </c-modal-header>
+        <c-modal-body>
+          <div class="row">
+            <div class="col-6">
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="nomorPesanan">{{
+                    "Nama Barang" | translate
+                  }}</label>
                 </div>
-              </td>
-
-              <td class="text-center input-column">
-                <div class="d-flex justify-content-center" style="gap: 5px;">
-                  <input type="text" min="0" class="form-control text-center inputQty inputNumberSpace"
-                    [(ngModel)]="data.QTY_TERIMA_KECIL" (change)="onInputQtyKecilExpired($event,data.KODE_BARANG, i)"
-                    (keypress)="g.conditionInput($event, 'numericDot')" />
-                  <span class="d-flex align-items-center justify-content-center">
-                    / {{data.SATUAN_KECIL}}
-                  </span>
+                <div class="col-8 pe-0 d-flex">
+                  <div class="col-3 pe-2">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="kodeBarang"
+                      [(ngModel)]="selectedExpProduct.KODE_BARANG"
+                      name="kodeBarang"
+                      disabled
+                    />
+                  </div>
+                  <div class="col-9">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="namaBarang"
+                      [(ngModel)]="selectedExpProduct.NAMA_BARANG"
+                      name="namaBarang"
+                      disabled
+                    />
+                  </div>
                 </div>
+              </div>
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="nomorPesanan">{{
+                    "Konversi Barang" | translate
+                  }}</label>
+                </div>
+                <div class="col-8 pe-0">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="konversi"
+                    [value]="
+                      selectedExpProduct.KONVERSI +
+                      ' ' +
+                      selectedExpProduct.SATUAN_KECIL +
+                      '/' +
+                      selectedExpProduct.SATUAN_BESAR
+                    "
+                    name="konversi"
+                    disabled
+                  />
+                </div>
+              </div>
 
-                <!-- Validation message area -->
-                <span style="font-size: 14px;" class="text-danger" *ngIf="data.validationQtyBesar">
-                  {{ data.validationQtyBesar }}
-                </span>
-              </td>
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label class="fw-semibold" for="nomorPesanan">{{
+                    "Total Quantity" | translate
+                  }}</label>
+                </div>
+                <div class="col-8 pe-0">
+                  <input
+                    type="text"
+                    placeholder="Nomor pesanan"
+                    class="form-control"
+                    id="konversi"
+                    [value]="
+                      helper.sanitizedNumber(
+                        selectedExpProduct.QTY_PESAN_BESAR
+                      ) *
+                        selectedExpProduct.KONVERSI +
+                      helper.sanitizedNumber(
+                        selectedExpProduct.QTY_PESAN_KECIL
+                      ) +
+                      ' ' +
+                      selectedExpProduct.SATUAN_KECIL
+                    "
+                    name="konversi"
+                    disabled
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="nomorPesanan">{{
+                    "Quantity Besar" | translate
+                  }}</label>
+                </div>
+                <div class="col-8 pe-0">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="konversi"
+                    [value]="selectedExpProduct.QTY_PESAN_BESAR || 0"
+                    name="konversi"
+                    disabled
+                  />
+                </div>
+              </div>
 
-              <td class="text-center">
-                {{
-                ((helper.sanitizedNumber(data.QTY_TERIMA_BESAR) *
-                data.KONVERSI) + helper.sanitizedNumber(data.QTY_TERIMA_KECIL)).toFixed(2)
-                }}
-                {{data.SATUAN_KECIL}}
+              <div class="w-100 px-2 py-1 row">
+                <div class="col-4 d-flex align-items-center">
+                  <label for="nomorPesanan">{{
+                    "Quantity Kecil" | translate
+                  }}</label>
+                </div>
+                <div class="col-8 pe-0">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="konversi"
+                    [value]="selectedExpProduct.QTY_PESAN_KECIL || 0"
+                    name="konversi"
+                    disabled
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
 
-                <!-- Validation message area -->
-                <br>
-                <span style="font-size: 14px;" class="text-danger" *ngIf="data.validationQtyKecil">
-                  {{ data.validationQtyKecil }}
-                </span>
-              </td>
-              <td class="text-center">
-                <button (click)="onModalDeleteRow(data.KODE_BARANG,i)" type="button" class="btn btn-secondary ms-2">
-                  <i class="fa fa-trash me-1"></i>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </ng-container>
-    </div>
+          <div class="divider"></div>
+          <div
+            class="text-danger fw-semibold col-sm-12 d-flex flex-column justify-content-start align-items-center"
+          >
+            <span> Isi tanggal expired dengan benar..!! </span>
+            <span> Pengisian tanggal expired tidak boleh sama (Duplikat) </span>
+            <span>
+              Jumlah TOTAL QTY EXPIRED harus sama dengan TOTAL QTY TERIMA..!!
+            </span>
+          </div>
+          <div class="divider"></div>
 
-    <div class="row justify-content-between gap-3 mt-3">
-      <div class="col-4 d-flex">
-        <button (click)="onAddExpiredRow()" type="button" class="btn btn-primary"><i class="fa fa-plus ms-1"></i> Tambah
-        </button>
-      </div>
-      <div class="col-6 d-flex justify-content-end align-items-center gap-3">
-        <p class="mb-0"> Total: {{
-          totalFilteredExpired
-          }} {{ selectedExpProduct.SATUAN_KECIL }} 
-        </p>
-        <button (click)="onSaveEntryExpired()" type="button" class="btn btn-primary ms-2">
-          <i class="fa fa-check me-1"></i>Simpan Data
-        </button>
-      </div>
-    </div>
+          <div class="table-responsive">
+            <ng-container>
+              <div *ngIf="loading">
+                <app-loading></app-loading>
+              </div>
+              <table
+                bordered
+                [hover]="true"
+                [responsive]="true"
+                [striped]="true"
+                align="middle"
+                cTable
+                class="mb-0 border"
+              >
+                <thead>
+                  <tr>
+                    <th
+                      scope="col"
+                      style="
+                        background-color: #3c4b64;
+                        color: white;
+                        vertical-align: middle;
+                        width: 20%;
+                      "
+                      class="text-center align-items-start"
+                      rowspan="2"
+                    >
+                      Tgl. Expired
+                    </th>
+                    <th
+                      scope="col"
+                      style="
+                        background-color: #3c4b64;
+                        color: white;
+                        vertical-align: middle;
+                        width: 20%;
+                      "
+                      class="text-center align-items-start"
+                      rowspan="3"
+                    >
+                      Keterangan Tanggal
+                    </th>
+                    <th
+                      scope="col"
+                      style="
+                        background-color: #3c4b64;
+                        color: white;
+                        vertical-align: middle;
+                        width: 124px;
+                      "
+                      class="text-center align-items-start"
+                      rowspan="2"
+                    >
+                      Qty Besar
+                    </th>
+                    <th
+                      scope="col"
+                      style="
+                        background-color: #3c4b64;
+                        color: white;
+                        vertical-align: middle;
+                        width: 124px;
+                      "
+                      class="text-center align-items-start"
+                      rowspan="2"
+                    >
+                      Qty Kecil
+                    </th>
+                    <!-- Masih sejajar -->
+                    <th
+                      scope="col"
+                      style="
+                        background-color: #3c4b64;
+                        color: white;
+                        vertical-align: middle;
+                        width: 10%;
+                      "
+                      class="text-center align-items-start"
+                      rowspan="2"
+                    >
+                      Total Qty Expired
+                    </th>
+                  </tr>
+                  <th
+                    scope="col"
+                    style="
+                      background-color: #3c4b64;
+                      color: white;
+                      vertical-align: middle;
+                      width: 10%;
+                    "
+                    class="text-center align-items-start"
+                  >
+                    Action
+                  </th>
+                </thead>
+                <tbody
+                  *ngIf="!listEntryExpired || listEntryExpired.length === 0"
+                >
+                  <tr>
+                    <td colspan="9" scope="col" class="text-center">
+                      No Data Found
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody>
+                  <tr *ngFor="let data of filteredListExpired; let i = index">
+                    <td class="text-center">
+                      <input
+                        type="text"
+                        id="tglTransaksi"
+                        class="form-control"
+                        aria-describedby="tglTransaksi"
+                        #dp="bsDatepicker"
+                        [bsConfig]="dpConfig"
+                        bsDatepicker
+                        autocomplete="off"
+                        [(ngModel)]="data.tglExpired"
+                        (ngModelChange)="
+                          updateKeteranganTanggal(data, $event, i)
+                        "
+                        placeholder="{{ 'Tanggal transaksi' | translate }}"
+                      />
+                      <span
+                        style="font-size: 14px"
+                        class="text-danger"
+                        *ngIf="data.validationExpiredMessageList"
+                      >
+                        {{ data.validationExpiredMessageList }}
+                      </span>
+                    </td>
 
-  </c-modal-body>
-</c-modal>
+                    <td class="text-center">
+                      {{ data.keteranganTanggal }}
+                    </td>
+                    <td class="text-center input-column">
+                      <div
+                        class="d-flex justify-content-center"
+                        style="gap: 5px"
+                      >
+                        <input
+                          type="text"
+                          min="0"
+                          class="form-control text-center inputQty inputNumberSpace"
+                          [(ngModel)]="data.QTY_TERIMA_BESAR"
+                          (change)="
+                            onInputQtyBesarExpired($event, data.KODE_BARANG, i)
+                          "
+                          (focus)="g.selectInputContent($event)"
+                        />
+                        <span
+                          class="d-flex align-items-center justify-content-center"
+                        >
+                          / {{ data.SATUAN_BESAR }}
+                        </span>
+                      </div>
+                    </td>
+
+                    <td class="text-center input-column">
+                      <div
+                        class="d-flex justify-content-center"
+                        style="gap: 5px"
+                      >
+                        <input
+                          type="text"
+                          min="0"
+                          class="form-control text-center inputQty inputNumberSpace"
+                          [(ngModel)]="data.QTY_TERIMA_KECIL"
+                          (change)="
+                            onInputQtyKecilExpired($event, data.KODE_BARANG, i)
+                          "
+                          (focus)="g.selectInputContent($event)"
+                        />
+                        <span
+                          class="d-flex align-items-center justify-content-center"
+                        >
+                          / {{ data.SATUAN_KECIL }}
+                        </span>
+                      </div>
+
+                      <!-- Validation message area -->
+                      <span
+                        style="font-size: 14px"
+                        class="text-danger"
+                        *ngIf="data.validationQtyBesar"
+                      >
+                        {{ data.validationQtyBesar }}
+                      </span>
+                    </td>
+
+                    <td class="text-center">
+                      {{
+                        (
+                          helper.sanitizedNumber(data.QTY_TERIMA_BESAR) *
+                            data.KONVERSI +
+                          helper.sanitizedNumber(data.QTY_TERIMA_KECIL)
+                        ).toFixed(2)
+                      }}
+                      {{ data.SATUAN_KECIL }}
+
+                      <!-- Validation message area -->
+                      <br />
+                      <span
+                        style="font-size: 14px"
+                        class="text-danger"
+                        *ngIf="data.validationQtyKecil"
+                      >
+                        {{ data.validationQtyKecil }}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <button
+                        (click)="onModalDeleteRow(data.KODE_BARANG, i)"
+                        type="button"
+                        class="btn btn-secondary ms-2"
+                      >
+                        <i class="fa fa-trash me-1"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </ng-container>
+          </div>
+
+          <div class="row justify-content-between gap-3 mt-3">
+            <div class="col-4 d-flex">
+              <button
+                (click)="onAddExpiredRow()"
+                type="button"
+                class="btn btn-primary"
+              >
+                <i class="fa fa-plus ms-1"></i> Tambah
+              </button>
+            </div>
+            <div
+              class="col-6 d-flex justify-content-end align-items-center gap-3"
+            >
+              <p class="mb-0">
+                Total: {{ totalFilteredExpired }}
+                {{ selectedExpProduct.SATUAN_KECIL }}
+              </p>
+              <button
+                (click)="onSaveEntryExpired()"
+                type="button"
+                class="btn btn-primary ms-2"
+              >
+                <i class="fa fa-check me-1"></i>Keluar
+              </button>
+            </div>
+          </div>
+        </c-modal-body>
+      </c-modal></c-card-body
+    ></c-card
+  >
+</div>

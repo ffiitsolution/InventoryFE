@@ -6,11 +6,11 @@
         <div
           class="d-grid gap-3 d-md-flex justify-content-start align-items-center"
         >
-          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+          <!-- <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
             <i class="fa fa-chevron-left icon-12 icon-gap"></i>
             {{ "Kembali" | translate }}
-          </button>
-          <h5>{{ "Tambah Penerimaan" | translate }}</h5>
+          </button> -->
+          <h5>{{ "Tambah Penerimaan Dari Gudang" | translate }}</h5>
         </div>
       </c-row>
     </c-card-body>
@@ -20,7 +20,7 @@
     <c-card-body>
       <div class="row">
         <div
-          [ngClass]="isShowDetail ? 'col-4' : 'col-5'"
+          [ngClass]="isShowDetail ? 'col-3' : 'col-5'"
           class="pe-0 d-flex red-line"
         >
           <div class="w-100">
@@ -42,10 +42,11 @@
                     class="form-control"
                     id="nomorPesanan"
                     [(ngModel)]="formData.nomorPesanan"
+                    [disabled]="true"
                     name="nomorPesanan"
                   />
                   <button
-                    *ngIf="!isShowModal"
+                    [disabled]="isShowDetail"
                     type="button"
                     class="btn btn-info ms-2"
                     [cModalToggle]="staticBackdropModal.id"
@@ -55,7 +56,7 @@
                   </button>
                 </div>
               </div>
-
+              <div class="divider mt-2"></div>
               <div class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
                   <label for="codeDestination">{{
@@ -64,6 +65,7 @@
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <input
+                  [disabled]="true"
                     placeholder=""
                     type="text"
                     class="form-control"
@@ -87,6 +89,7 @@
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <textarea
+                  [disabled]="true"
                     placeholder=""
                     class="form-control w-100"
                     [(ngModel)]="formData.alamat1"
@@ -105,6 +108,7 @@
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <input
+                  [disabled]="true"
                     placeholder=""
                     type="text"
                     class="form-control"
@@ -115,15 +119,19 @@
                   />
                 </div>
               </div>
-
+              <div class="divider mt-2"></div>
               <div class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
                   <label for="nomorSuratJalan">{{
                     "Nomor Surat Jalan Pengirim" | translate
                   }}</label>
                 </div>
-                <div class="col-8 pe-0 d-flex" style="display: flex; flex-direction: column;">
+                <div
+                  class="col-8 pe-0 d-flex"
+                  style="display: flex; flex-direction: column"
+                >
                   <input
+                   [disabled]="isShowDetail"
                     placeholder=""
                     type="text"
                     class="form-control"
@@ -146,79 +154,104 @@
                   }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <input
-                    type="text"
-                    id="tglSuratJalan"
-                    class="form-control"
-                    aria-describedby="tglSuratJalan"
-                    #dp="bsDatepicker"
-                    [bsConfig]="dpConfig"
-                    [isDisabled]="false"
-                    bsDatepicker
-                    autocomplete="off"
-                    [(ngModel)]="formData.tglPesan"
-                    placeholder="{{ '' | translate }}"
-                  />
+                  <div class="input-group">
+                    <input
+                      type="text"
+                      id="tglSuratJalan"
+                      class="form-control"
+                      aria-describedby="tglSuratJalan"
+                      #dp="bsDatepicker"
+                      [bsConfig]="dpConfig"
+                      [disabled]="isShowDetail"
+                      bsDatepicker
+                      autocomplete="off"
+                      [(ngModel)]="formData.tglSuratJalan"
+                      placeholder="{{ '' | translate }}"
+                    />
+                    <button
+                    [disabled]="isShowDetail"
+                      class="btn btn-outline-info fa fa-calendar"
+                      type="button"
+                      (click)="dp.toggle()"
+                    ></button>
+                  </div>
                 </div>
               </div>
-
+              <div class="divider mt-2"></div>
               <div class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
-                  <label for="tglSuratJalan">{{
+                  <label for="tglSuratJalan" class="text-blue">{{
                     "Tanggal Terima Barang" | translate
                   }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <input
-                    type="text"
-                    id="tglTerimaBarang"
-                    class="form-control"
-                    aria-describedby="tglTerimaBarang"
-                    #dp="bsDatepicker"
-                    [bsConfig]="dpConfig"
-                    [isDisabled]="false"
-                    bsDatepicker
-                    autocomplete="off"
-                    [(ngModel)]="formData.tglBrgDikirim"
-                    placeholder="{{ '' | translate }}"
-                    [minDate]="minDate"
-                    [maxDate]="maxDate"
-                  />
+                  <div class="input-group">
+                    <input
+                      type="text"
+                      id="tglTerimaBarang"
+                      class="form-control"
+                      aria-describedby="tglTerimaBarang"
+                      #dp2="bsDatepicker"
+                      [bsConfig]="dpConfig2"
+                      [isDisabled]="false"
+                      bsDatepicker
+                      autocomplete="off"
+                      [(ngModel)]="formData.tglTerimaBarang"
+                      (ngModelChange)="onTglTerimaBarangChange($event)"
+                      placeholder="{{ '' | translate }}"
+                      [disabled]="isShowDetail"
+                    />
+                    <button
+                      class="btn btn-outline-info fa fa-calendar"
+                      type="button"
+                      (click)="dp2.toggle()"
+                      [disabled]="isShowDetail"
+                    ></button>
+                  </div>
                 </div>
               </div>
 
               <div class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
-                  <label for="notes">{{ "Catatan (Keterangan Lain)" | translate }}</label>
+                  <label for="notes">{{
+                    "Catatan (Keterangan Lain)" | translate
+                  }}</label>
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <textarea
-                  placeholder=""
-                  type="text"
-                  class="form-control"
-                  id="keterangan"
-                  name="keterangan"
-                  [(ngModel)]="formData.notes"
-                  (input)="onKeteranganInput()"
-                  [class.is-invalid]="isKeteranganInvalid"
-                  maxlength="50"
-                ></textarea>
-            
-                <div class="text-end text-muted mt-1">
-                  <small>{{ charCount }}/50 karakter</small>
-                </div>
-            
-                <div *ngIf="isKeteranganInvalid" class="text-danger mt-1 fw-bold">
-                 HARAP MASUKAN KARAKTER YANG VALID..!!!!
-                </div>
+                   [disabled]="isShowDetail"
+                    placeholder=""
+                    type="text"
+                    class="form-control"
+                    id="keterangan"
+                    name="keterangan"
+                    [(ngModel)]="formData.notes"
+                    (input)="onKeteranganInput()"
+                    [class.is-invalid]="isKeteranganInvalid"
+                    maxlength="50"
+                  ></textarea>
+
+                  <div class="text-end text-muted mt-1">
+                    <small>{{ charCount }}/50 karakter</small>
+                  </div>
+
+                  <div
+                    *ngIf="isKeteranganInvalid"
+                    class="text-danger mt-1 fw-bold"
+                  >
+                    HARAP MASUKAN KARAKTER YANG VALID..!!!!
+                  </div>
                 </div>
               </div>
-
-              <div class="p-2">
+              <div class="divider mt-2"></div>
+              <div style="width: 98%;" class=" px-2 py-1 d-flex justify-content-end gap-2 align-items-center">
+                <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+                  {{ "Kembali" | translate }}
+                </button>
                 <button
-                  class="shadow-sm btn w-100 btn-info text-white"
+                  class="shadow-sm btn  btn-info text-white"
                   *ngIf="!isShowDetail"
-                  [disabled]="formData.nomorPesanan === ''"
+                  [disabled]="formData.nomorPesanan === '' || !formData.tglTerimaBarang || isKeteranganInvalid || !formData.tglSuratJalan"
                   (click)="onAddDetail()"
                 >
                   <i class="fa fa-check pe-2"></i>
@@ -230,10 +263,10 @@
         </div>
 
         <!-- Bagian Detail -->
-        <div class="ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
+        <div class="ps-0" [ngClass]="isShowDetail ? 'col-9' : 'col-7'">
           <div class="p-2" *ngIf="isShowDetail">
             <app-detail-add-data-gudang
-            (onBatalPressed)="onBatalPressed($event)"
+              (onBatalPressed)="onBatalPressed($event)"
             ></app-detail-add-data-gudang>
           </div>
         </div>
@@ -303,8 +336,8 @@
               datatable
               [dtOptions]="dtOptions"
               class="datatable row-border hover stripe w-100"
-              >
-            <!-- <thead class="table-header"> </thead> -->
+            >
+              <!-- <thead class="table-header"> </thead> -->
             </table>
           </div>
         </c-card-body>
