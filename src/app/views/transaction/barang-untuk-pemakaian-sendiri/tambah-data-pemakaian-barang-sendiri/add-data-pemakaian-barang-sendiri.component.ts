@@ -82,7 +82,7 @@ export class AddDataPemakaianBarangSendiriComponent
   ngOnInit(): void {
     this.dpConfig = {
       dateInputFormat: 'DD/MM/YYYY',
-      containerClass: 'theme-red',
+      containerClass: 'theme-dark-blue',
       customTodayClass: 'today-red',
       minDate: moment().subtract(7, 'days').toDate(),
       maxDate: this.today,
@@ -148,7 +148,7 @@ export class AddDataPemakaianBarangSendiriComponent
       'DD-MM-YYYY'
     ).format('DD-MM-YYYY');
     this.globalService.saveLocalstorage(
-      'headerWastage',
+      'headerUsage',
       JSON.stringify(this.formData)
     );
     this.isShowDetail = true;
@@ -169,7 +169,7 @@ export class AddDataPemakaianBarangSendiriComponent
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
-    this.globalService.removeLocalstorage('headerWastage');
+    this.globalService.removeLocalstorage('headerUsage');
   }
 
   onPreviousPressed(): void {

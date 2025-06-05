@@ -436,12 +436,18 @@ export class MpcsProductionComponent implements OnInit {
       this.selectedExpProduct.qtyPemakaianBesar
     ).toFixed(2);
 
-    let totalQtySum = parseFloat(
-      (
-        Number(this.selectedExpProduct.qtyPemakaianBesar) *
-          Number(this.selectedExpProduct.konversi) +
-        Number(this.selectedExpProduct.qtyPemakaianKecil)
-      ).toFixed(2)
+    // let totalQtySum = parseFloat(
+    //   (
+    //     Number(this.selectedExpProduct.qtyPemakaianBesar) *
+    //       Number(this.selectedExpProduct.konversi) +
+    //     Number(this.selectedExpProduct.qtyPemakaianKecil)
+    //   ).toFixed(2)
+    // ).toFixed(2);
+
+    let totalQtySum = (
+      Number(this.selectedExpProduct.qtyPemakaianBesar) *
+        Number(this.selectedExpProduct.konversi) +
+      Number(this.selectedExpProduct.qtyPemakaianKecil)
     ).toFixed(2);
 
     this.totalFilteredExpired = totalQtySum;

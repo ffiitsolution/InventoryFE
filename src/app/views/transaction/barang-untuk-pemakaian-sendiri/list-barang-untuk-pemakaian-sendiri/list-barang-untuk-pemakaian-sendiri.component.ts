@@ -155,7 +155,7 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render: (data:any) => this.g.getStatusOrderLabel(data),
+          render: (data:any) => this.g.getStatusOrderLabel(data,false,true),
         },
         {
           title: 'Aksi',
@@ -188,7 +188,7 @@ export class ListBarangUntukPemakaianSendiriComponent implements OnInit {
             kodeGudang: this.g.getUserLocationCode(),
             isDownloadCsv: false,
             reportName: 'cetak_production',
-            confirmSelection: this.confirmSelection || 'semua',
+            confirmSelection: 'Ya',
           };
         });
         console.log('INI Confirm Selection:', this.confirmSelection);

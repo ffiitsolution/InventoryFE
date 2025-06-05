@@ -81,29 +81,29 @@ export const menu_id: any = [
       },
       {
         name: 'Penerimaan Dari Gudang',
-        url: '/transaction/receipt-from-warehouse/penerimaan-dari-gudang',
+        url: '/transaction/receipt-from-warehouse/display-data-dari-gudang',
         iconComponent: {
           name: 'cil-industry',
         },
         access: 'penerimaan_dari_gudang',
-        children: [
-          {
-            name: 'Tambah Data',
-            url: '/transaction/receipt-from-warehouse/tambah-data',
-            iconComponent: {
-              name: 'cil-circle',
-            },
-            access: 'tambah_data',
-          },
-          {
-            name: 'Display Data',
-            url: '/transaction/receipt-from-warehouse/display-data-dari-gudang',
-            iconComponent: {
-              name: 'cil-circle',
-            },
-            access: 'display_data',
-          },
-        ],
+        // children: [
+        //   {
+        //     name: 'Tambah Data',
+        //     url: '/transaction/receipt-from-warehouse/tambah-data',
+        //     iconComponent: {
+        //       name: 'cil-circle',
+        //     },
+        //     access: 'tambah_data',
+        //   },
+        //   {
+        //     name: 'Display Data',
+        //     url: '/transaction/receipt-from-warehouse/display-data-dari-gudang',
+        //     iconComponent: {
+        //       name: 'cil-circle',
+        //     },
+        //     access: 'display_data',
+        //   },
+        // ],
       },
       {
         name: 'Kirim Barang Retur Ke Supplier',

@@ -73,7 +73,7 @@ export class AddDataDetailProductionComponent
   @ViewChild('formModal') formModal: any;
   public dpConfig: Partial<BsDatepickerConfig> = {
     dateInputFormat: 'DD/MM/YYYY',
-    containerClass: 'theme-red my-datepicker-top',
+    containerClass: 'theme-dark-blue my-datepicker-top',
     customTodayClass: 'today-highlight',
     minDate: new Date(),
   };
@@ -333,12 +333,18 @@ export class AddDataDetailProductionComponent
       this.selectedExpProduct.qtyPemakaianBesar
     ).toFixed(2);
 
-    let totalQtySum = parseFloat(
-      (
-        Number(this.selectedExpProduct.qtyPemakaianBesar) *
-          Number(this.selectedExpProduct.konversi) +
-        Number(this.selectedExpProduct.qtyPemakaianKecil)
-      ).toFixed(2)
+    // let totalQtySum = parseFloat(
+    //   (
+    //     Number(this.selectedExpProduct.qtyPemakaianBesar) *
+    //       Number(this.selectedExpProduct.konversi) +
+    //     Number(this.selectedExpProduct.qtyPemakaianKecil)
+    //   ).toFixed(2)
+    // ).toFixed(2);
+
+    let totalQtySum = (
+      Number(this.selectedExpProduct.qtyPemakaianBesar) *
+        Number(this.selectedExpProduct.konversi) +
+      Number(this.selectedExpProduct.qtyPemakaianKecil)
     ).toFixed(2);
 
     if (
@@ -407,7 +413,7 @@ export class AddDataDetailProductionComponent
       // item.validationExpiredMessageList='';
       item.keteranganTanggal = moment(item.tglExpired)
         .locale('id')
-        .format('D MMMM YYYY');
+        .format('DD MMMM YYYY');
       this.validateDate(event, item.kodeBarang, index);
     }
   }

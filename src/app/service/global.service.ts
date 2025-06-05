@@ -138,7 +138,7 @@ export class GlobalService {
     </div>
     <div class="form-group mt-3 d-flex justify-content-center">
       <div style="width: 80%;">
-        <label for="input-name">Masukkan Nama Anda:</label>
+        <label for="input-name">Masukan Nama Anda:</label>
         <input type="text" id="input-name" class="form-control mt-2" 
                placeholder="Nama Anda" 
                style="border: 1px solid red; width: 100%; box-sizing: border-box;" />
