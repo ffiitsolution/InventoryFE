@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 import { NavigationEnd, Router } from '@angular/router';
@@ -30,6 +30,12 @@ export class DefaultLayoutComponent implements OnInit, AfterViewInit {
 
   previousUrl: string = '';
   currentUrl: string = '';
+
+  @HostListener('document:mousemove', ['$event'])
+  onMouseMove(event: MouseEvent) {
+    const isRight = event.clientX > window.innerWidth / 2;
+    this.g.cursorSide = isRight ? 'right-half' : 'left-half';
+  }
 
   constructor(
     public g: GlobalService,
@@ -64,7 +70,7 @@ export class DefaultLayoutComponent implements OnInit, AfterViewInit {
         ?.filter((p: any) => p.app === 'SIDEBAR')
         ?.map((p: any) => p.permission)
     );
-    
+
     this.translation.listMenuSidebar =
       this.translation.getCurrentLanguage() === 'id'
         ? menu_id

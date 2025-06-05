@@ -457,7 +457,8 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loadings['getHistoryTerimaData'] = true;
     this.clicked['getHistoryTerimaData'] = true;
     const limit = 100;
-    const offset = (this.selectedParam['paginationHistoryTerimaData'] - 1) * limit;
+    const offset =
+      (this.selectedParam['paginationHistoryTerimaData'] - 1) * limit;
     this.service
       .insert('/api/sync-data/history-terima-data-master', {
         kodeGudang: this.userData?.defaultLocation?.kodeLocation,
@@ -480,12 +481,12 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-
   getHistoryKirimData() {
     this.loadings['getHistoryKirimData'] = true;
     this.clicked['getHistoryKirimData'] = true;
     const limit = 100;
-    const offset = (this.selectedParam['paginationHistoryKirimData'] - 1) * limit;
+    const offset =
+      (this.selectedParam['paginationHistoryKirimData'] - 1) * limit;
     this.service
       .insert('/api/sync-data/history-kirim-data-ke-pusat', {
         kodeGudang: this.userData?.defaultLocation?.kodeLocation,
@@ -504,6 +505,23 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
         error: (err) => {
           console.log('err: ' + err);
           this.loadings['getHistoryKirimData'] = false;
+        },
+      });
+  }
+
+  kirimDataAll() {
+    this.clicked['btnKirimDataAll'] = true;
+    this.service
+      .insert('/api/sync-data/kirim-all', {
+        userProses: this.userData.kodeUser,
+        tanggalSync: this.g.currentDate ?? '',
+      })
+      .subscribe({
+        next: (res) => {
+          // const data = res ?? {};
+        },
+        error: (err) => {
+          console.log('err: ' + err);
         },
       });
   }

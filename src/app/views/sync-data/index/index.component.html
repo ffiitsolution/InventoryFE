@@ -123,10 +123,15 @@
                         <i class="fa fa-refresh {{loadings['getHistoryKirimData'] ? 'fa-spin' : ''}} me-2"></i>
                         History Proses
                       </button>
-                      <button class="btn btn-primary">
+                      <button class="btn btn-primary" (click)="kirimDataAll()" [disabled]="clicked['btnKirimDataAll']">
                         <i class="fa fa-check me-2"></i>
                         Proses Kirim Data
                       </button>
+                    </div>
+                    <div class="border rounded text-primary text-center p-3" *ngIf="clicked['btnKirimDataAll']">
+                      <i class="fa fa-exclamation-circle me-2"></i>
+                      Proses Kirim Data akan berjalan otomatis di latar belakang
+                      <br>Gunakan menu Cek Hasil Kirim Data Ke HQ untuk cek data
                     </div>
                   </div>
 

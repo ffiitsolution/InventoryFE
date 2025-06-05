@@ -30,6 +30,7 @@ export class GlobalService {
   tabTitle = 'Inventory Management System | PT FAST FOOD INDONESIA';
   protected config = AppConfig.settings.apiServer;
   urlServer = this.config.BASE_URL;
+  cursorSide: string = 'left-half';
   currentUser = {};
   currentTime = '';
   currentDate = '';
@@ -56,6 +57,8 @@ export class GlobalService {
   statusEndOfMonth: any = '';
   statusPlanningOrder: any = '';
   statusBackupDb: any = '';
+  statusKirimData: any = '';
+  statusTerimaData: any = '';
   mpcsDefaultGudang: string='';
   mpcsGudangPRD: string='';
   mpcsGudangCOM: string='';
@@ -139,8 +142,8 @@ export class GlobalService {
     <div class="form-group mt-3 d-flex justify-content-center">
       <div style="width: 80%;">
         <label for="input-name">Masukan Nama Anda:</label>
-        <input type="text" id="input-name" class="form-control mt-2" 
-               placeholder="Nama Anda" 
+        <input type="text" id="input-name" class="form-control mt-2"
+               placeholder="Nama Anda"
                style="border: 1px solid red; width: 100%; box-sizing: border-box;" />
         <small id="name-error" class="text-danger d-none">Nama wajib diisi.</small>
       </div>
@@ -530,10 +533,10 @@ export class GlobalService {
 
     return `
       <span style="
-        background-color: ${found.color}; 
-        color: ${found.textColor}; 
-        padding: 4px 10px; 
-        border-radius: 4px; 
+        background-color: ${found.color};
+        color: ${found.textColor};
+        padding: 4px 10px;
+        border-radius: 4px;
         font-weight: 500;
         font-size: 0.85rem;
         display: inline-block;
@@ -560,10 +563,10 @@ export class GlobalService {
 
     return `
       <span style="
-        background-color: ${found.color}; 
-        color: ${found.textColor}; 
-        padding: 4px 10px; 
-        border-radius: 4px; 
+        background-color: ${found.color};
+        color: ${found.textColor};
+        padding: 4px 10px;
+        border-radius: 4px;
         font-weight: 500;
         font-size: 0.85rem;
         display: inline-block;
@@ -590,10 +593,10 @@ export class GlobalService {
 
     return `
       <span style="
-        background-color: ${found.color}; 
-        color: ${found.textColor}; 
-        padding: 4px 10px; 
-        border-radius: 4px; 
+        background-color: ${found.color};
+        color: ${found.textColor};
+        padding: 4px 10px;
+        border-radius: 4px;
         font-weight: 500;
         font-size: 0.85rem;
         display: inline-block;
