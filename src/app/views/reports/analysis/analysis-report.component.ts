@@ -105,7 +105,7 @@ export class AnalysisReportComponent
       this.getListParam('listRegion');
     }
 
-    if (['Pengirim By Tujuan'].includes(this.currentReport)) {
+    if (['Pengirim By Tujuan', 'Penerimaan By Pengirim'].includes(this.currentReport)) {
       this.renderDataTablesBranch();
     }else if(['Rekap Transaksi 3 Periode (By Type)'].includes(this.currentReport)){
       this.renderDataTablesSetupTransaksi()
@@ -505,6 +505,18 @@ export class AnalysisReportComponent
       };
 
       apiUrl = '/api/report/analysis/pengirim-by-tujuan';
+    }
+
+     if (this.currentReport === 'Penerimaan By Pengirim') {
+      param = {
+        kodeGudang: this.userData.defaultLocation.kodeLocation,
+        namaGudang: this.g.getUserLocationNama(),
+        kodePengirim: this.kodePenerima,
+        startDate: this.g.transformDate(this.dateRangeFilter[0]),
+        endDate: this.g.transformDate(this.dateRangeFilter[1]),
+      };
+
+      apiUrl = '/api/report/analysis/penerimaan-by-pengirim';
     }
 
     param = {
