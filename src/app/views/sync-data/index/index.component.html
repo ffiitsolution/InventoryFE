@@ -379,6 +379,40 @@
                     </c-dropdown>
                   </div>
                 </ng-container>
+                <!-- Cek Data Pengiriman (D.O) -->
+                <ng-container *ngIf="selectedMenu === 'Cek Data Pengiriman (D.O)'">
+                  <div class="row mt-4">
+                    <h4 class="d-flex mb-4 justify-content-center">PROSES D.O BALIK   (AUTOMATIC)</h4>
+                    <div class="col-4">
+                      Tanggal Kirim, Dari
+                      <span class="float-end">:</span>
+                    </div>
+                    <div class="col-4">
+                      <input type="text" id="tglTransaksi" class="form-control" aria-describedby="tglTransaksi"
+                        #dp="bsDatepicker" [bsConfig]="dpConfigtrans" bsDatepicker autocomplete="off"
+                        [(ngModel)]="startTglKirim" placeholder="{{ 'Tanggal transaksi' | translate }}" />
+                    </div>
+                  </div>
+
+                  <div class="row mt-4">
+                    <div class="col-4">
+                      Tanggal Kirim, S.D
+                      <span class="float-end">:</span>
+                    </div>
+                    <div class="col-4">
+                      <input type="text" id="tglTransaksi" class="form-control" aria-describedby="tglTransaksi"
+                        #dp="bsDatepicker" [bsConfig]="dpConfigtrans" bsDatepicker autocomplete="off"
+                        [(ngModel)]="endTglKirim" placeholder="{{ 'Tanggal transaksi' | translate }}" />
+                    </div>
+                  </div>
+
+                  <hr>
+
+                  <div class="text-end mt-2">
+                    <button class="btn btn-primary w-140" (click)="goToCekDataPengiriman()">
+                      <i class="fa fa-check me-2"></i> Proses</button>
+                  </div>
+                </ng-container>
 
                 <ng-container *ngIf="['Cek Hasil Kirim Data Ke HQ'].includes(selectedMenu)">
                   <div class="row mt-2">

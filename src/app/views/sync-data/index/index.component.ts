@@ -46,6 +46,8 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
   public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   currentDate: Date = new Date();
   paramTglTransaksi: any = new Date();
+  startTglKirim: any = new Date();
+  endTglKirim: any = new Date();
   dateRangeString: string;
   startOfMonth: any;
   endOfMonth: any;
@@ -91,7 +93,7 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
       displayKey: 'description',
       search: true,
       height: '200px',
-      customComparator: () => {},
+      customComparator: () => { },
       moreText: 'lebih banyak',
       noResultsFound: 'Tidak ada hasil',
       searchOnKey: 'description',
@@ -101,10 +103,10 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.g.changeTitle(
       this.translation.instant('Kirim') +
-        ' ' +
-        this.translation.instant('Terima') +
-        ' Data - ' +
-        this.g.tabTitle
+      ' ' +
+      this.translation.instant('Terima') +
+      ' Data - ' +
+      this.g.tabTitle
     );
     this.getCompanyProfile();
     this.userData = this.service.getUserData();
@@ -115,9 +117,17 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.selectedParam['paginationHistoryTerimaData'] = 1;
     this.selectedParam['paginationHistoryKirimData'] = 1;
+
+    const today = new Date();
+
+    const min = new Date(today);
+    this.startTglKirim.setDate(min.getDate() - 7);
+
+    const max = new Date(today);
+    this.endTglKirim.setDate(max.getDate() + 7);
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void { }
 
   capitalizeWords(str: string) {
     return str
@@ -126,7 +136,7 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
       .join(' ');
   }
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void { }
 
   getObjectKeys(obj: Object) {
     return Object.keys(obj);
@@ -142,6 +152,23 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.selectedMenu == 'Cek Hasil Kirim Data Ke HQ') {
       this.getListParam('Gudang');
     }
+    if (this.selectedMenu == 'Cek Data Pengiriman (D.O)') {
+      // this.router.navigate(['/sync-data/cek-data-pengiriman']);
+    }
+  }
+
+  goToCekDataPengiriman() {
+    const data = {
+      startDate: this.startTglKirim,
+      endDate: this.endTglKirim
+    }
+    this.g.saveLocalstorage(
+            'dataCekPengiriman',
+            JSON.stringify(data)
+          );
+    localStorage.setItem('inv_last_menu_sync_data', 'Cek Data Pengiriman (D.O)');
+    this.selectedMenu = 'Cek Data Pengiriman (D.O)';
+    this.router.navigate(['/sync-data/cek-data-pengiriman']);
   }
 
   getCompanyProfile() {
@@ -207,6 +234,15 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
       this.startOfMonth = moment(value).startOf('month').format('DD MMMM YYYY');
       this.endOfMonth = moment(value).endOf('month').format('DD MMMM YYYY');
       console.log('Start:', this.startOfMonth, 'End:', this.endOfMonth);
+
+      this.dateRangeString = `(Periode :${this.startOfMonth} - ${this.endOfMonth})`;
+    }
+  }
+
+  onTglPengirimanChange(value: Date): void {
+    if (value) {
+      this.startOfMonth = moment(value).startOf('month').format('DD MMMM YYYY');
+      this.endOfMonth = moment(value).endOf('month').format('DD MMMM YYYY');
 
       this.dateRangeString = `(Periode :${this.startOfMonth} - ${this.endOfMonth})`;
     }

@@ -1,0 +1,75 @@
+.d-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 10px;
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.pointer-only {
+  cursor: pointer;
+  padding: 2px;
+}
+
+.pointer-only:hover {
+  background-color: gray;
+  color: white;
+  padding-left: 6px;
+}
+
+/* Header background */
+.qty-kirim-header {
+   background-color: #CFE2FF; /* biru muda */
+  color: #084298; /* biru tua */
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid #9EC5FE;
+}
+
+.qty-terima-header {
+  background-color: #CFE2FF; /* biru muda */
+  color: #084298; /* biru tua */
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid #9EC5FE;
+}
+
+/* Cell background */
+.qty-kirim {
+  background-color: #E7F1FF; /* biru sangat muda */
+  text-align: center;
+  border: 1px solid #9EC5FE;
+}
+
+.qty-terima {
+  background-color: #E7F1FF; /* biru sangat muda */
+  text-align: center;
+  border: 1px solid #9EC5FE;
+}
+
+/* Biar border tabelnya lebih tegas */
+table#detailTable {
+  border-collapse: collapse;
+}
+
+table#detailTable th,
+table#detailTable td {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+}
+
+/* Hover effect */
+table#detailTable tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Header teks tengah vertikal */
+table#detailTable thead th {
+  vertical-align: middle;
+}
