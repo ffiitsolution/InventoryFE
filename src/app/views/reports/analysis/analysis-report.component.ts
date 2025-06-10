@@ -130,6 +130,13 @@ export class AnalysisReportComponent
       moment(now).startOf('month').toDate(),
       moment(now).endOf('month').toDate(),
     ];
+
+    if (REPORT_ANALYSIS_DO_REVISI.includes(this.currentReport)) {
+      const today = new Date();
+      const startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+      const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      this.dateRangeFilter = [startDate, endDate];
+    }
   }
 
   ngOnDestroy(): void {}
