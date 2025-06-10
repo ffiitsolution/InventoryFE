@@ -44,6 +44,7 @@ export const DEFAULT_DELAY_TIME = 500;
 export const DEFAULT_DATE_RANGE_RECEIVING_ORDER = 7;
 export const DEFAULT_DELAY_TABLE = 500;
 export const STATUS_SAME_CONVERSION = 'KONVERSI SAMA';
+export const REPORT_ANALYSIS_DO_REVISI = 'DO-REVISI';
 
 export const PRINT_STATUS = [
   {

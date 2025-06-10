@@ -20,7 +20,7 @@
 </div>
 <c-card class="fade-in mb-4">
   <c-card-body>
-    <ng-container *ngIf="['Pengirim By Tujuan'].includes(currentReport)">
+    <ng-container *ngIf="['Pengirim By Tujuan', REPORT_ANALYSIS_DO_REVISI].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Tanggal Pengiriman
@@ -240,14 +240,15 @@
     <div class="d-flex justify-content-end align-items-center border-top mt-4 pt-3" *ngIf="!loadingState['submit']">
       <!-- Export Excel button if condition is true -->
       <ng-container *ngIf="
-          ['Pengirim By Tujuan', 'Penerimaan By Pengirim'].includes(currentReport);
+          ['Pengirim By Tujuan', 'Penerimaan By Pengirim', REPORT_ANALYSIS_DO_REVISI].includes(currentReport);
           else showDropdown
         ">
         <button class="btn btn-success text-white" (click)="exportExcel()">
-          <i class="fa fa-file-excel-o"></i>
+          <i class="fa fa-file-excel-o text-white"></i>
           <!-- From Font Awesome 4.7.0 -->
-
-          Export Excel
+          <span class="text-white">
+            {{REPORT_ANALYSIS_DO_REVISI.includes(currentReport) ? 'Export CSV' : 'Export Excel'}}
+          </span>
         </button>
       </ng-container>
 
