@@ -22,6 +22,7 @@ import { Page } from '../../../model/page';
 import {
   BUTTON_CAPTION_SELECT,
   DEFAULT_DATE_RANGE_RECEIVING_ORDER,
+  REPORT_ANALYSIS_DO_REVISI,
 } from '../../../../constants';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 
@@ -71,6 +72,8 @@ export class AnalysisReportComponent
   kodeTransaksi: string = '';
   namaTransaksi: string = 'WAJIB PILIH TRANSAKSI';
   isShowModalTransaksi: boolean = false;
+  REPORT_ANALYSIS_DO_REVISI: string = REPORT_ANALYSIS_DO_REVISI;
+  
   constructor(
     private service: AppService,
     private g: GlobalService,
@@ -282,10 +285,10 @@ export class AnalysisReportComponent
       link.download = `${reportType} Report ${this.g.formatUrlSafeString(
         this.currentReport
       )} ${this.datePipe.transform(
-        this.rangeDateVal[0],
+        this.dateRangeFilter[0],
         'dd-MMM-yyyy'
       )} s.d. ${this.datePipe.transform(
-        this.rangeDateVal[1],
+        this.dateRangeFilter[1],
         'dd-MMM-yyyy'
       )}.csv`;
       link.click();
@@ -495,28 +498,46 @@ export class AnalysisReportComponent
     this.loadingState['submit'] = true;
     let apiUrl = '';
     let param = {};
-    if (this.currentReport === 'Pengirim By Tujuan') {
-      param = {
-        kodeGudang: this.userData.defaultLocation.kodeLocation,
-        namaGudang: this.g.getUserLocationNama(),
-        kodeTujuan: this.kodePenerima,
-        startDate: this.g.transformDate(this.dateRangeFilter[0]),
-        endDate: this.g.transformDate(this.dateRangeFilter[1]),
-      };
 
-      apiUrl = '/api/report/analysis/pengirim-by-tujuan';
-    }
+    switch (this.currentReport) {
+      case 'Pengirim By Tujuan': {
+        param = {
+          kodeGudang: this.userData.defaultLocation.kodeLocation,
+          namaGudang: this.g.getUserLocationNama(),
+          kodeTujuan: this.kodePenerima,
+          startDate: this.g.transformDate(this.dateRangeFilter[0]),
+          endDate: this.g.transformDate(this.dateRangeFilter[1]),
+        };
 
-     if (this.currentReport === 'Penerimaan By Pengirim') {
-      param = {
-        kodeGudang: this.userData.defaultLocation.kodeLocation,
-        namaGudang: this.g.getUserLocationNama(),
-        kodePengirim: this.kodePenerima,
-        startDate: this.g.transformDate(this.dateRangeFilter[0]),
-        endDate: this.g.transformDate(this.dateRangeFilter[1]),
-      };
+        apiUrl = '/api/report/analysis/pengirim-by-tujuan';
+        break;
+      }
 
-      apiUrl = '/api/report/analysis/penerimaan-by-pengirim';
+      case 'Penerimaan By Pengirim': {
+        param = {
+          kodeGudang: this.userData.defaultLocation.kodeLocation,
+          namaGudang: this.g.getUserLocationNama(),
+          kodePengirim: this.kodePenerima,
+          startDate: this.g.transformDate(this.dateRangeFilter[0]),
+          endDate: this.g.transformDate(this.dateRangeFilter[1]),
+        };
+
+        apiUrl = '/api/report/analysis/penerimaan-by-pengirim';
+        break;
+      }
+
+      case REPORT_ANALYSIS_DO_REVISI: {
+        param = {
+          kodeGudang: this.userData.defaultLocation.kodeLocation,
+          startDate: this.g.transformDate(this.dateRangeFilter[0]),
+          endDate: this.g.transformDate(this.dateRangeFilter[1]),
+        };
+        apiUrl = '/api/report/analysis/do-revisi';
+        break;
+      }
+
+      default:
+        break;
     }
 
     param = {

@@ -1,3 +1,5 @@
+import { REPORT_ANALYSIS_DO_REVISI } from "../../../../constants";
+
 export interface Report {
   name: string;
   path: string;
@@ -196,7 +198,7 @@ export const reports: Reports = {
       path: '/reports/analysis',
     },
     7: {
-      name: 'DO - REVISI',
+      name: REPORT_ANALYSIS_DO_REVISI,
       path: '/reports/analysis',
     },
     8: {
