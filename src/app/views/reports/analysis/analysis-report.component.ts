@@ -22,6 +22,7 @@ import { Page } from '../../../model/page';
 import {
   BUTTON_CAPTION_SELECT,
   DEFAULT_DATE_RANGE_RECEIVING_ORDER,
+  REPORT_ANALYSIS_DO_REVISI,
 } from '../../../../constants';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 
@@ -71,6 +72,8 @@ export class AnalysisReportComponent
   kodeTransaksi: string = '';
   namaTransaksi: string = 'WAJIB PILIH TRANSAKSI';
   isShowModalTransaksi: boolean = false;
+  REPORT_ANALYSIS_DO_REVISI: string = REPORT_ANALYSIS_DO_REVISI;
+  
   constructor(
     private service: AppService,
     private g: GlobalService,
@@ -105,7 +108,7 @@ export class AnalysisReportComponent
       this.getListParam('listRegion');
     }
 
-    if (['Pengirim By Tujuan'].includes(this.currentReport)) {
+    if (['Pengirim By Tujuan', 'Penerimaan By Pengirim'].includes(this.currentReport)) {
       this.renderDataTablesBranch();
     }else if(['Rekap Transaksi 3 Periode (By Type)'].includes(this.currentReport)){
       this.renderDataTablesSetupTransaksi()
@@ -127,6 +130,13 @@ export class AnalysisReportComponent
       moment(now).startOf('month').toDate(),
       moment(now).endOf('month').toDate(),
     ];
+
+    if (REPORT_ANALYSIS_DO_REVISI.includes(this.currentReport)) {
+      const today = new Date();
+      const startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+      const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      this.dateRangeFilter = [startDate, endDate];
+    }
   }
 
   ngOnDestroy(): void {}
@@ -282,10 +292,10 @@ export class AnalysisReportComponent
       link.download = `${reportType} Report ${this.g.formatUrlSafeString(
         this.currentReport
       )} ${this.datePipe.transform(
-        this.rangeDateVal[0],
+        this.dateRangeFilter[0],
         'dd-MMM-yyyy'
       )} s.d. ${this.datePipe.transform(
-        this.rangeDateVal[1],
+        this.dateRangeFilter[1],
         'dd-MMM-yyyy'
       )}.csv`;
       link.click();
@@ -495,16 +505,46 @@ export class AnalysisReportComponent
     this.loadingState['submit'] = true;
     let apiUrl = '';
     let param = {};
-    if (this.currentReport === 'Pengirim By Tujuan') {
-      param = {
-        kodeGudang: this.userData.defaultLocation.kodeLocation,
-        namaGudang: this.g.getUserLocationNama(),
-        kodeTujuan: this.kodePenerima,
-        startDate: this.g.transformDate(this.dateRangeFilter[0]),
-        endDate: this.g.transformDate(this.dateRangeFilter[1]),
-      };
 
-      apiUrl = '/api/report/analysis/pengirim-by-tujuan';
+    switch (this.currentReport) {
+      case 'Pengirim By Tujuan': {
+        param = {
+          kodeGudang: this.userData.defaultLocation.kodeLocation,
+          namaGudang: this.g.getUserLocationNama(),
+          kodeTujuan: this.kodePenerima,
+          startDate: this.g.transformDate(this.dateRangeFilter[0]),
+          endDate: this.g.transformDate(this.dateRangeFilter[1]),
+        };
+
+        apiUrl = '/api/report/analysis/pengirim-by-tujuan';
+        break;
+      }
+
+      case 'Penerimaan By Pengirim': {
+        param = {
+          kodeGudang: this.userData.defaultLocation.kodeLocation,
+          namaGudang: this.g.getUserLocationNama(),
+          kodePengirim: this.kodePenerima,
+          startDate: this.g.transformDate(this.dateRangeFilter[0]),
+          endDate: this.g.transformDate(this.dateRangeFilter[1]),
+        };
+
+        apiUrl = '/api/report/analysis/penerimaan-by-pengirim';
+        break;
+      }
+
+      case REPORT_ANALYSIS_DO_REVISI: {
+        param = {
+          kodeGudang: this.userData.defaultLocation.kodeLocation,
+          startDate: this.g.transformDate(this.dateRangeFilter[0]),
+          endDate: this.g.transformDate(this.dateRangeFilter[1]),
+        };
+        apiUrl = '/api/report/analysis/do-revisi';
+        break;
+      }
+
+      default:
+        break;
     }
 
     param = {

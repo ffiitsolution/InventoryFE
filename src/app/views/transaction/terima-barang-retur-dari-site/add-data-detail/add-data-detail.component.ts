@@ -183,7 +183,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
       statusPosting: 'P',
       keterangan: this.headerProduction.noReturnPengirim + '-' + this.headerProduction.keterangan,
       userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
-      statusSync: 'Y',
+      statusSync: 'T',
       details: this.listProductData
         .filter((item) => item.kodeBarang && item.kodeBarang.trim() !== '')
         .map((item) => ({
@@ -204,7 +204,7 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
                            this.helper.sanitizedNumber(this.getExpiredData(item.kodeBarang).qtyPemakaianKecil),
           hargaSatuan: 0,
           userCreate: this.g.getLocalstorage('inv_currentUser').kodeUser,
-          statusSync: 'Y',
+          statusSync: 'T',
         })),
       detailsExpired: this.listEntryExpired?.map((expiredItem) => ({
         kodeGudang: this.g.getUserLocationCode(),
