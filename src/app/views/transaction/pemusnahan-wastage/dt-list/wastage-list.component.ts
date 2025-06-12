@@ -5,7 +5,7 @@ import { GlobalService } from '../../../../service/global.service';
 import { TranslationService } from '../../../../service/translation.service';
 import { Subject } from 'rxjs';
 import { Page } from '../../../../model/page';
-import { ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
+import { ACTION_CETAK, ACTION_VIEW, CANCEL_STATUS, DEFAULT_DATE_RANGE_RECEIVING_ORDER, DEFAULT_DELAY_TABLE, LS_INV_SELECTED_DELIVERY_ORDER } from '../../../../../constants';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { DataTableDirective } from 'angular-datatables';
 import moment from 'moment';
@@ -23,7 +23,11 @@ export class WastageListComponent implements OnInit {
   tujuanFilter: string = '';
   dtOptions: any = {};
   protected config = AppConfig.settings.apiServer;
-
+  alreadyPrint: boolean;
+  disabledPrintButton: any;
+  paramGenerateReport: any = {}
+  isShowModalReport: boolean;
+  paramUpdateReport: any = {}
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
   dtColumns: any = [];
@@ -61,7 +65,7 @@ export class WastageListComponent implements OnInit {
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback:any) => {
+      ajax: (dataTablesParameters: any, callback: any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -117,7 +121,7 @@ export class WastageListComponent implements OnInit {
           title: 'Tgl. Proses',
           orderable: true,
           searchable: true,
-          render: (data:any) => this.g.transformDate(data),
+          render: (data: any) => this.g.transformDate(data),
 
         },
         {
@@ -125,17 +129,20 @@ export class WastageListComponent implements OnInit {
           title: 'Jam Proses',
           orderable: true,
           searchable: true,
-          render: (data:any) => this.g.transformTime(data),
+          render: (data: any) => this.g.transformTime(data),
         },
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render: (data:any) => this.g.getStatusOrderLabel(data),
+          render: (data: any) => this.g.getStatusOrderLabel(data),
         },
         {
           title: 'Aksi',
           render: () => {
-            return `<button class="btn btn-sm action-view btn-outline-info btn-60">${this.buttonCaptionView}</button>`;
+            return ` <div class="d-flex px-2 gap-2">
+                <button style="width: 100px" class="btn btn-sm action-view btn-outline-success btn-60 pe-1"><i class="fa fa-eye pe-1"></i>Lihat</button>
+                <button style="width: 100px" class="btn btn-sm action-cetak btn-outline-info btn-60"><i class="fa fa-print pe-1"></i>Cetak</button>
+              </div>`;
           },
         },
       ],
@@ -145,6 +152,9 @@ export class WastageListComponent implements OnInit {
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
         $('.action-view', row).on('click', () =>
           this.actionBtnClick(ACTION_VIEW, data)
+        );
+           $('.action-cetak', row).on('click', () =>
+          this.actionBtnClick(ACTION_CETAK, data)
         );
         return row;
       },
@@ -177,6 +187,30 @@ export class WastageListComponent implements OnInit {
         JSON.stringify(data)
       );
       this.router.navigate(['/transaction/wastage/detail']); this
+    }
+    if (action === ACTION_CETAK) {
+      const now = new Date();
+      this.paramGenerateReport = {
+        outletBrand: 'KFC',
+        isDownloadCsv: false,
+        nomorTransaksi: data.nomorTransaksi,
+        userEntry: this.g.getLocalstorage('inv_currentUser').namaUser,
+        jamEntry: now.toLocaleTimeString('id-ID', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        }),
+        tglEntry: now.toLocaleDateString('id-ID', {
+          day: '2-digit',
+          month: 'short', // atau 'long' untuk "April"
+          year: 'numeric'
+        }), // hasil: 30 Apr 2025
+        namaSaksi: data.namaSaksi,
+        jabatanSaksi: data.jabatanSaksi,
+        keterangan: data.keterangan,
+        tglTransaksi: data.tglTransaksi
+      }
+      this.isShowModalReport = true;
     }
   }
 
@@ -246,5 +280,9 @@ export class WastageListComponent implements OnInit {
         );
       }
     });
+  }
+
+  closeModal(): void {
+    this.isShowModalReport = false;
   }
 }

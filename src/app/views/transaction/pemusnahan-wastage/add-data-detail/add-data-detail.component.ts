@@ -650,7 +650,7 @@ export class AddDataDetailWastageComponent
     });
 
 
-    if (totalQtyExpired > totalQtyWaste) {
+    if (totalQtyExpired !== totalQtyWaste) {
       this.toastr.error("Total Qty Expired harus sama dengan Qty Waste");
     } else {
       this.isShowModalExpired = false;
