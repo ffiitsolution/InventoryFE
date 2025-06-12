@@ -14,14 +14,14 @@
     <c-card-body>
       <div class="row">
         <div class="col text-end">
-          <button
+          <!-- <button
             type="button"
             class="btn btn-outline-dark me-2 btn-120"
             (click)="toggleFilter()"
           >
             <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
             {{ "Filter" | translate }}
-          </button>
+          </button> -->
           <!-- <button
             type="button"
             class="btn btn-info text-white me-2 btn-240"
@@ -91,15 +91,39 @@
                 </div>
               </c-col>
               <c-col
-                xs="3"
-                class="text-right d-flex align-items-end justify-content-end"
+                xs="12"
+                md="6"
+                lg="3"
+                class="d-flex flex-wrap justify-content-end align-items-end gap-2"
               >
                 <button
                   type="button"
-                  class="btn btn-outline-success me-2 btn-160"
+                  class="btn btn-outline-success"
                   (click)="onFilterPressed()"
                 >
                   {{ "Terapkan Filter" | translate }}
+                </button>
+
+              <!-- Loader yang sejajar dan ukurannya sama dengan tombol -->
+            <div
+              *ngIf="loadingRptWIP"
+              class="btn btn-success text-white d-flex align-items-center justify-content-center mt-2"
+              style="pointer-events: none;"
+            >
+              <i class="fa fa-spinner fa-spin me-2"></i>
+              <span>Loading...</span>
+            </div>
+
+                <button
+                  *ngIf="!loadingRptWIP"
+                  [disabled]="loadingRptWIP"
+                  class="btn btn-success text-white d-flex align-items-center"
+                  (click)="doDownload()"
+                >
+                  <i class="fa fa-print me-1"></i>
+                  <span class="d-none d-lg-inline">{{
+                    "WIP Data" | translate
+                  }}</span>
                 </button>
               </c-col>
             </c-row>

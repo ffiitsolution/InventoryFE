@@ -75,6 +75,7 @@ export class MpcsListComponent implements OnInit {
   protected configGudang = '';
   isShowWarehouseModal = false;
   selectedWarehouse: string | null = null;
+  dataUser: any = {};
   constructor(
     translate: TranslateService,
     private route: ActivatedRoute,
@@ -102,10 +103,21 @@ export class MpcsListComponent implements OnInit {
   ngOnInit(): void {
     const todayDate = new Date();
     this.defaultDate = this.helperService.formatDate(todayDate);
+    this.dataUser = this.g.getLocalstorage('inv_currentUser');
+   
+    console.log(this.dataUser, 'data user mpcs list');
+    if(this.dataUser || !isEmpty(this.dataUser)){
+      this.g.mpcsDefaultGudang =this.dataUser.defaultLocation.kodeLocation;
+      this.configGudang = this.g.mpcsDefaultGudang;
+      this.g.mpcsJenisGudang = this.dataUser.defaultLocation.kodeSingkat;
+      this.g.mpcsDefaultNamaGudang = this.dataUser.defaultLocation.kodeSingkat == 'PRD' ? 'Production' : this.dataUser.defaultLocation.kodeSingkat == 'COM' ? 'Commisary' : 'Dry Good';
+      this.getDataProduction();
+    }else{
+      this.getMpcsDefaultGudang();
+      this.openModalWarehouse();
+    }
 
-    console.log(this.configGudang, 'configGudang');
-    this.getMpcsDefaultGudang();
-    this.openModalWarehouse();
+   
   }
 
   
