@@ -48,6 +48,7 @@ export class DeliveryItemComponent implements OnInit {
   dateRangeFilter: any = [this.startDateFilter, this.endDateFilter];
   selectedRowData: any;
   paramGenerateReport = {};
+  paramUpdateReport = {};
   isShowModalReport: boolean = false;
   alreadyPrint: boolean = false;
   disabledPrintButton: boolean = false;
@@ -66,7 +67,7 @@ export class DeliveryItemComponent implements OnInit {
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback:any) => {
+      ajax: (dataTablesParameters: any, callback: any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -137,17 +138,17 @@ export class DeliveryItemComponent implements OnInit {
         {
           data: 'cetakSuratJalan',
           title: 'Status Cetak Surat Jalan',
-          render: (data:any) => this.g.getStatusOrderLabel(data, true, true),
+          render: (data: any) => this.g.getStatusOrderLabel(data, true, true),
         },
         {
           data: 'statusDoBalik',
           title: 'Status DO Balik',
-          render: (data:any) => this.g.getStatusOrderLabel(data, true, true),
+          render: (data: any) => this.g.getStatusOrderLabel(data, true, true),
         },
         {
           data: 'statusPosting',
           title: 'Status Pengiriman',
-          render: (data:any) => {
+          render: (data: any) => {
             const isCancel = data == CANCEL_STATUS;
             const label = this.g.getStatusOrderLabel(data, false, true);
             if (isCancel) {
@@ -161,10 +162,10 @@ export class DeliveryItemComponent implements OnInit {
           className: 'text-center',
 
           render: () => {
-            return `<div class="d-flex px-2 gap-1">
-              <button style="width: 74px" class="btn btn-sm action-view btn-outline-info btn-60 pe-2">
-              <i class="fa fa-eye pe-2"></i>${this.buttonCaptionView}</button>
-            </div>`;
+            return `<div class="d-flex px-2 gap-2">
+                <button style="width: 100px" class="btn btn-sm action-view btn-outline-success btn-60 pe-1"><i class="fa fa-eye pe-1"></i>Lihat</button>
+                <button style="width: 100px" class="btn btn-sm action-cetak btn-outline-info btn-60"><i class="fa fa-print pe-1"></i>Cetak</button>
+              </div>`;
           },
         },
       ],
@@ -213,6 +214,10 @@ export class DeliveryItemComponent implements OnInit {
     this.router.navigateByUrl(route);
   }
 
+  onCloseModalReport(): void {
+    this.isShowModalReport = false;
+  }
+
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
       this.g.saveLocalstorage(
@@ -222,6 +227,15 @@ export class DeliveryItemComponent implements OnInit {
       this.router.navigate(['/transaction/delivery-item/detail-transaction']); this
     }
     if (action === ACTION_CETAK) {
+      this.paramGenerateReport = {
+      outletBrand: 'KFC',
+      isDownloadCsv: true,
+      noSuratJalan: data.noSuratJalan,
+    };
+    this.paramUpdateReport = {
+      noSuratJalan: data.noSuratJalan
+    }
+    this.isShowModalReport = true;
     }
   }
 
