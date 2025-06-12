@@ -190,7 +190,8 @@
                         <i class="fa fa-refresh {{loadings['getHistoryTerimaData'] ? 'fa-spin' : ''}} me-2"></i>
                         History Proses
                       </button>
-                      <button class="btn btn-primary">
+                      <button class="btn btn-primary" (click)="terimaDataAll()"
+                        [disabled]="clicked['btnTerimaDataAll']">
                         <i class="fa fa-check me-2"></i>
                         Proses Terima Data
                       </button>
@@ -387,7 +388,7 @@
                 <!-- Cek Data Pengiriman (D.O) -->
                 <ng-container *ngIf="selectedMenu === 'Cek Data Pengiriman (D.O)'">
                   <div class="row mt-4">
-                    <h4 class="d-flex mb-4 justify-content-center">PROSES D.O BALIK   (AUTOMATIC)</h4>
+                    <h4 class="d-flex mb-4 justify-content-center">PROSES D.O BALIK (AUTOMATIC)</h4>
                     <div class="col-4">
                       Tanggal Kirim, Dari
                       <span class="float-end">:</span>

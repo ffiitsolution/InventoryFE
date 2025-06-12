@@ -203,12 +203,95 @@ export class CheckDataSentSyncDataComponent
                 'Terjadi kesalahan!'
               );
             }
+            this.clicked['btnKirimDataAll'] = false;
           }
         },
         error: (err) => {
           console.log('getCountHq err: ' + err);
           this.loadings['getCountHq'] = false;
           this.toastr.error('Gagal mendapatkan data HQ', 'Terjadi kesalahan!');
+        },
+      });
+  }
+
+  kirimDataAll() {
+    this.clicked['btnKirimDataAll'] = true;
+    const datetimeKirim = this.g.currentDate + ' ' + this.g.currentTime;
+    this.toastr.info(
+      'Proses berjalan dilatar belakang...',
+      'Kirim data ' + this.g.currentDate + ' ke HQ'
+    );
+
+    this.service
+      .insert('/api/sync-data/kirim-all', {
+        userProses: this.userData.kodeUser,
+        tanggalSync: this.g.currentDate ?? '',
+      })
+      .subscribe({
+        next: (res) => {
+          const data = res?.data || {};
+          const entries = Object.entries(data)
+            .filter(([key]) => key !== 'hisSync')
+            .sort(([a], [b]) => a.localeCompare(b));
+
+          const rows: string[] = [];
+
+          entries.forEach(([key, value]: any) => {
+            if (value?.error) {
+              let errorMessage = value.error;
+              if (errorMessage.includes('No data to send')) {
+                errorMessage = 'No data';
+              }
+              rows.push(
+                `<tr><td class="text-start">${key}</td><td><span class="badge bg-danger">${errorMessage}</span></td></tr>`
+              );
+            } else if (value?.success) {
+              rows.push(
+                `<tr><td class="text-start">${key}</td><td>
+                <span class="badge bg-success fs-6">Dikirim: ${value.rowSent}</span>
+                <br/>
+                <span class="fs-8 d-none">Updated: ${value.updated} / ${value.updatedStatusSync}</span>
+              </td></tr>`
+              );
+            }
+          });
+
+          let tableContent = '<p>Tidak ada data untuk dikirim.</p>';
+
+          if (rows.length > 0) {
+            const mid = Math.ceil(rows.length / 2);
+            const leftRows = rows.slice(0, mid).join('');
+            const rightRows = rows.slice(mid).join('');
+
+            tableContent = `
+              <div class="text-center mb-2">${datetimeKirim} | ${this.userData.defaultLocation?.kodeLocation} - ${this.userData.defaultLocation.keteranganLokasi}</div>
+              <div class="row">
+                <div class="col">
+                  <table class="table table-bordered table-sm fs-8">
+                    <thead><tr><th>TRANSAKSI</th><th>STATUS</th></tr></thead>
+                    <tbody>${leftRows}</tbody>
+                  </table>
+                </div>
+                <div class="col">
+                  <table class="table table-bordered table-sm fs-8">
+                    <thead><tr><th>TRANSAKSI</th><th>STATUS</th></tr></thead>
+                    <tbody>${rightRows}</tbody>
+                  </table>
+                </div>
+              </div>
+            `;
+          }
+
+          Swal.fire({
+            title: 'Hasil Kirim Data',
+            html: tableContent,
+            width: '60%',
+            confirmButtonText: 'Tutup',
+          });
+        },
+        error: (err) => {
+          console.error(err);
+          Swal.fire('Gagal', 'Terjadi kesalahan saat mengirim data.', 'error');
         },
       });
   }
