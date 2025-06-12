@@ -21,7 +21,7 @@
 <c-card class="fade-in mb-4">
   <c-card-body>
 
-    <ng-container *ngIf="['Transaksi Pengiriman','Produksi','Pesanan Ke Supplier'].includes(currentReport)">
+    <ng-container *ngIf="['Transaksi Pengiriman','Produksi','Pesanan Ke Supplier', 'Penerimaan'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Tanggal Pengiriman
@@ -77,7 +77,21 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="['Transaksi Pengiriman'].includes(currentReport)">
+    <ng-container *ngIf="['Penyesuaian Stock'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Tanggal Penyesuaian Dari
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
+          aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
+          placeholder="{{ 'Tanggal Pesan' | translate }}" />
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="['Transaksi Pengiriman', 'Penerimaan'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Tipe Listing
@@ -139,8 +153,8 @@
           Print
         </button>
         <ul cDropdownMenu>
-          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('preview')" *ngIf="(currentReport !== 'Transaksi Pengiriman') ||  (currentReport === 'Transaksi Pengiriman' && paramTipeListing !== 'by-item')">Preview PDF</button></li>
-          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')"  *ngIf="(currentReport !== 'Transaksi Pengiriman') || (currentReport === 'Transaksi Pengiriman' && paramTipeListing !== 'by-item')">Download PDF</button></li>
+          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('preview')" *ngIf="!( (currentReport === 'Transaksi Pengiriman' || currentReport === 'Penerimaan') && paramTipeListing === 'by-item' )">Preview PDF</button></li>
+          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')"  *ngIf="!( (currentReport === 'Transaksi Pengiriman' || currentReport === 'Penerimaan') && paramTipeListing === 'by-item' )">Download PDF</button></li>
           <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('xlsx')">Download XLSX</button></li>
           <li><button class="btn btn-outline-primary w-100" (click)="doSubmit('csv')">Download CSV</button></li>
         </ul>

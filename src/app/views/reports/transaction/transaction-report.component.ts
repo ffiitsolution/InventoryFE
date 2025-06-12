@@ -153,7 +153,7 @@ export class TransactionReportComponent
 
     let param = {};
     if (
-      ['Transaksi Pengiriman', 'Produksi', 'Penerimaan Barang Bekas', 'Terima Retur Dari Site', 'Kirim Retur Ke Site', 'Kirim Retur Ke Supplier','Pemakaian Barang Sendiri'].includes(
+      ['Transaksi Pengiriman', 'Penyesuaian Stock', 'Penerimaan', 'Produksi', 'Penerimaan Barang Bekas', 'Terima Retur Dari Site', 'Kirim Retur Ke Site', 'Kirim Retur Ke Supplier','Pemakaian Barang Sendiri'].includes(
         this.currentReport
       )
     ) {
