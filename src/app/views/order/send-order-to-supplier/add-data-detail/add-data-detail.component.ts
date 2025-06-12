@@ -125,7 +125,7 @@ export class AddDataDetailSendOrderToSupplierComponent
 
 
   getSendSuppliertemDetails() {
-    this.loading = true;
+    this.loading = false;
     this.listOrderData = [{kodeBarang:"",namaBarang:""}];
 
     const params = {
