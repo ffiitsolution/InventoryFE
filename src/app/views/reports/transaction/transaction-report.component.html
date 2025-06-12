@@ -36,7 +36,8 @@
     </ng-container>
 
 
-    <ng-container *ngIf="['Transaksi Pengiriman','Produksi','Pesanan Ke Supplier'].includes(currentReport)">
+    <ng-container
+      *ngIf="['Transaksi Pengiriman','Produksi','Pesanan Ke Supplier', 'Penerimaan'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Tanggal Pengiriman
@@ -93,7 +94,21 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="['Transaksi Pengiriman', 'Pembelian'].includes(currentReport)">
+    <ng-container *ngIf="['Penyesuaian Stock'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Tanggal Penyesuaian Dari
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
+            aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
+            placeholder="{{ 'Tanggal Pesan' | translate }}" />
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="['Transaksi Pengiriman', 'Penerimaan', 'Pembelian'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Tipe Listing
@@ -158,13 +173,13 @@
         <ul cDropdownMenu>
           <li>
             <button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('preview')"
-              *ngIf="(currentReport !== 'Transaksi Pengiriman' && currentReport !== 'Pembelian') || ((currentReport === 'Transaksi Pengiriman' || currentReport === 'Pembelian') && paramTipeListing !== 'by-item')">
+              *ngIf="!( (currentReport === 'Transaksi Pengiriman' || currentReport === 'Pembelian' || currentReport === 'Penerimaan') && paramTipeListing === 'by-item' )">
               Preview PDF
             </button>
           </li>
           <li>
             <button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')"
-              *ngIf="(currentReport !== 'Transaksi Pengiriman' && currentReport !== 'Pembelian') || ((currentReport === 'Transaksi Pengiriman' || currentReport === 'Pembelian') && paramTipeListing !== 'by-item')">
+              *ngIf="!( (currentReport === 'Transaksi Pengiriman' || currentReport === 'Pembelian' || currentReport === 'Penerimaan') && paramTipeListing === 'by-item' )">
               Download PDF
             </button>
           </li>

@@ -324,6 +324,7 @@ export class AddDataDetailGudangComponent
   }
   isDataInvalid() {
     let dataInvalid = false;
+    console.log('listOrderData', this.listOrderData);
     const invalidQtyTerima = this.listOrderData.filter(
       (item) => parseFloat(item.TOTAL_QTY_TERIMA) <= 0
     );

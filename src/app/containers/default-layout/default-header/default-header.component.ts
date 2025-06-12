@@ -129,6 +129,8 @@ export class DefaultHeaderComponent
         this.g.statusEndOfMonth = data.statusEndOfMonth;
         this.g.statusPlanningOrder = data.statusPlanningOrder;
         this.g.statusBackupDb = data.statusBackupDb;
+        this.g.statusKirimData = data.statusKirimData;
+        this.g.statusTerimaData = data.statusTerimaData;
         this.checkTitleIfOffline(time.substring(time.length - 1, 1));
       } else {
         this.g.serverStatus = 'DOWN';
@@ -139,7 +141,7 @@ export class DefaultHeaderComponent
     });
   }
 
-  checkTitleIfOffline(time: number) { 
+  checkTitleIfOffline(time: number) {
     const offlineText = 'OFFLINE - ';
     const title = this.g.getTitle();
     if (this.g.serverStatus === 'DOWN') {

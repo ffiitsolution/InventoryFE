@@ -6,8 +6,8 @@
   }
 }
 
-:host ::ng-deep c-sidebar-nav.sidebar-nav > c-sidebar-nav-link>a,
-:host ::ng-deep c-sidebar-nav.sidebar-nav > c-sidebar-nav-group>a {
+:host ::ng-deep c-sidebar-nav.sidebar-nav > c-sidebar-nav-link > a,
+:host ::ng-deep c-sidebar-nav.sidebar-nav > c-sidebar-nav-group > a {
   margin-left: -10px;
 }
 
@@ -15,7 +15,6 @@
 //   margin-left: -10px;
 //   background-color: purple;
 // }
-
 
 :host ::ng-deep .sidebar-nav .nav-group-items .nav-group-items .nav-link {
   padding-left: 100px !important;
@@ -35,7 +34,13 @@
   margin-right: -11px !important;
 }
 
-:host ::ng-deep .sidebar-nav .nav-group-items .nav-group-items .nav-link .nav-icon {
+:host
+  ::ng-deep
+  .sidebar-nav
+  .nav-group-items
+  .nav-group-items
+  .nav-link
+  .nav-icon {
   margin-right: -11px !important;
 }
 
@@ -43,11 +48,13 @@
   color: rgba(255, 255, 255, 1);
 }
 
-:host ::ng-deep c-sidebar-nav-group, :host ::ng-deep c-sidebar-nav-link {
+:host ::ng-deep c-sidebar-nav-group,
+:host ::ng-deep c-sidebar-nav-link {
   border-bottom: 1px solid white !important;
 }
 
-:host ::ng-deep .show .nav-group-toggle, :host ::ng-deep .sidebar-nav .nav-link.active {
+:host ::ng-deep .show .nav-group-toggle,
+:host ::ng-deep .sidebar-nav .nav-link.active {
   background: rgb(0, 0, 55);
   font-weight: 700;
   color: #fff !important;
@@ -65,4 +72,33 @@
 
 .bg-loading-container {
   background: rgba(0, 0, 0, 0.8);
+}
+
+.ws-notification {
+  background-color: rgb(235, 237, 239);
+  border: 1px solid #000037;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  user-select: none;
+}
+
+.ws-notification-wrapper {
+  position: fixed;
+  bottom: 48px;
+  right: 24px;
+  z-index: 1070;
+  min-width: 350px;
+  max-width: 350px;
+}
+
+.ws-notification-wrapper.left-half {
+  right: 24px;
+  left: auto;
+}
+
+.ws-notification-wrapper.right-half {
+  right: auto;
+  left: 24px;
 }

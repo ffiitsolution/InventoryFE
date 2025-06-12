@@ -31,8 +31,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './transaction-report.component.scss',
 })
 export class TransactionReportComponent
-  implements OnInit, OnDestroy, AfterViewInit
-{
+  implements OnInit, OnDestroy, AfterViewInit {
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   currentDate: Date = new Date();
   startDateFilter: Date = new Date(
@@ -80,10 +79,10 @@ export class TransactionReportComponent
   ngOnInit(): void {
     this.g.changeTitle(
       this.translation.instant('All') +
-        ' ' +
-        this.translation.instant('Report') +
-        ' - ' +
-        this.g.tabTitle
+      ' ' +
+      this.translation.instant('Report') +
+      ' - ' +
+      this.g.tabTitle
     );
     this.route.queryParams.subscribe((params) => {
       this.currentReport = params['report'];
@@ -98,9 +97,9 @@ export class TransactionReportComponent
     }
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void { }
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void { }
 
   getObjectKeys(obj: Object) {
     return Object.keys(obj);
@@ -152,10 +151,19 @@ export class TransactionReportComponent
     this.loadingState['submit'] = true;
 
     let param = {};
-    if (
-      ['Pembelian','Transaksi Pengiriman', 'Produksi', 'Penerimaan Barang Bekas', 'Terima Retur Dari Site', 'Kirim Retur Ke Site', 'Kirim Retur Ke Supplier','Pemakaian Barang Sendiri'].includes(
-        this.currentReport
-      )
+    if ([
+      'Pembelian',
+      'Transaksi Pengiriman',
+      'Penyesuaian Stock',
+      'Penerimaan',
+      'Produksi',
+      'Penerimaan Barang Bekas',
+      'Terima Retur Dari Site',
+      'Kirim Retur Ke Site',
+      'Kirim Retur Ke Supplier',
+      'Pemakaian Barang Sendiri'
+    ].includes(this.currentReport)
+
     ) {
       param = {
         kodeGudang: this.userData.defaultLocation.kodeLocation,
@@ -164,7 +172,7 @@ export class TransactionReportComponent
         endDate: this.g.transformDate(this.dateRangeFilter[1]),
       };
     }
-       if (
+    if (
       ['Pemakaian Barang Sendiri'].includes(
         this.currentReport
       )

@@ -41,16 +41,15 @@
                 }}</label>
               </button>
               <button
-                class="btn btn-danger text-white btn-150  d-flex align-items-center hover-pointer"
-                (click)="openModalWarehouse(true)"
+                class="btn btn-danger text-white btn-150 d-flex align-items-center hover-pointer"
               >
-              <i class="fa fa-building pe-0 pe-md-1"></i> 
-              <label class="d-none d-xl-block cursor-pointer">
-                {{ "Pilih Gudang" | translate }}
-                ({{ g.mpcsDefaultNamaGudang }} ({{ g.mpcsDefaultGudang }}))
-              </label>
-              
-            </button>
+                <!-- (click)="openModalWarehouse(true)" -->
+                <i class="fa fa-building pe-0 pe-md-1"></i>
+                <label class="d-none d-xl-block cursor-pointer">
+                  {{ "Gudang" | translate }}
+                  ({{ g.mpcsDefaultNamaGudang }} ({{ g.mpcsDefaultGudang }}))
+                </label>
+              </button>
             </div>
             <div [visible]="isFilterShown" cCollapse>
               <c-card class="mb-3">

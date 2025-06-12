@@ -248,7 +248,7 @@ export class AddDataGudangComponent
       return;
     } else {
       this.isShowDetail = true;
-
+      console.log(this.formData,'formData');
       this.formData.tglSuratJalan =moment(this.formData.tglSuratJalan, 'DD/MM/YYYY', true).format(
               'DD/MM/YYYY'
       );
@@ -352,7 +352,7 @@ export class AddDataGudangComponent
         },
         { data: 'kodeCabang', title: 'Kode' },
         { data: 'namaCabang', title: 'Nama Gudang' },
-        { data: 'alamat1', title: 'Status Pesanan' },
+        { data: 'alamat1', title: 'Alamat Gudang' },
         {
           title: 'Action',
           render: () => {
@@ -387,10 +387,10 @@ export class AddDataGudangComponent
   private mapOrderData(orderData: any): void {
     console.log('Order data: ', orderData);
     this.formData.nomorPesanan = orderData.nomorPesanan;
-    this.formData.tglSuratJalan = moment().format('DD-MM-YYYY');
+    this.formData.tglSuratJalan =moment().toDate();
     this.formData.tglBrgDikirim =
       moment(orderData.tglKirimBrg, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.tglTerimaBarang =  moment().format('DD-MM-YYYY');
+    this.formData.tglTerimaBarang =  moment().toDate();
     this.formData.codeDestination = orderData.supplier;
     this.formData.namaCabang = orderData.namaCabang;
     this.formData.deliveryStatus = orderData.statusAktif == 'A'
@@ -400,6 +400,8 @@ export class AddDataGudangComponent
     // this.formData.notes = orderData.KETERANGAN1;
     this.formData.validatedDeliveryDate = this.formData.tglBatalExp;
     this.formData.nomorSuratJan = orderData.noSuratJalan;
+
+    console.log('Mapped form data: ', this.formData);
   }
 
   onPreviousPressed(): void {

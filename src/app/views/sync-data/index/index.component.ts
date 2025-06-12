@@ -93,7 +93,7 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
       displayKey: 'description',
       search: true,
       height: '200px',
-      customComparator: () => { },
+      customComparator: () => {},
       moreText: 'lebih banyak',
       noResultsFound: 'Tidak ada hasil',
       searchOnKey: 'description',
@@ -103,10 +103,10 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.g.changeTitle(
       this.translation.instant('Kirim') +
-      ' ' +
-      this.translation.instant('Terima') +
-      ' Data - ' +
-      this.g.tabTitle
+        ' ' +
+        this.translation.instant('Terima') +
+        ' Data - ' +
+        this.g.tabTitle
     );
     this.getCompanyProfile();
     this.userData = this.service.getUserData();
@@ -127,7 +127,7 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
     this.endTglKirim.setDate(max.getDate() + 7);
   }
 
-  ngOnDestroy(): void { }
+  ngOnDestroy(): void {}
 
   capitalizeWords(str: string) {
     return str
@@ -136,7 +136,7 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
       .join(' ');
   }
 
-  ngAfterViewInit(): void { }
+  ngAfterViewInit(): void {}
 
   getObjectKeys(obj: Object) {
     return Object.keys(obj);
@@ -160,13 +160,13 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
   goToCekDataPengiriman() {
     const data = {
       startDate: this.startTglKirim,
-      endDate: this.endTglKirim
-    }
-    this.g.saveLocalstorage(
-            'dataCekPengiriman',
-            JSON.stringify(data)
-          );
-    localStorage.setItem('inv_last_menu_sync_data', 'Cek Data Pengiriman (D.O)');
+      endDate: this.endTglKirim,
+    };
+    this.g.saveLocalstorage('dataCekPengiriman', JSON.stringify(data));
+    localStorage.setItem(
+      'inv_last_menu_sync_data',
+      'Cek Data Pengiriman (D.O)'
+    );
     this.selectedMenu = 'Cek Data Pengiriman (D.O)';
     this.router.navigate(['/sync-data/cek-data-pengiriman']);
   }
@@ -457,7 +457,8 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loadings['getHistoryTerimaData'] = true;
     this.clicked['getHistoryTerimaData'] = true;
     const limit = 100;
-    const offset = (this.selectedParam['paginationHistoryTerimaData'] - 1) * limit;
+    const offset =
+      (this.selectedParam['paginationHistoryTerimaData'] - 1) * limit;
     this.service
       .insert('/api/sync-data/history-terima-data-master', {
         kodeGudang: this.userData?.defaultLocation?.kodeLocation,
@@ -480,12 +481,12 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-
   getHistoryKirimData() {
     this.loadings['getHistoryKirimData'] = true;
     this.clicked['getHistoryKirimData'] = true;
     const limit = 100;
-    const offset = (this.selectedParam['paginationHistoryKirimData'] - 1) * limit;
+    const offset =
+      (this.selectedParam['paginationHistoryKirimData'] - 1) * limit;
     this.service
       .insert('/api/sync-data/history-kirim-data-ke-pusat', {
         kodeGudang: this.userData?.defaultLocation?.kodeLocation,
@@ -504,6 +505,153 @@ export class AllSyncDataComponent implements OnInit, OnDestroy, AfterViewInit {
         error: (err) => {
           console.log('err: ' + err);
           this.loadings['getHistoryKirimData'] = false;
+        },
+      });
+  }
+
+  kirimDataAll() {
+    this.clicked['btnKirimDataAll'] = true;
+    const datetimeKirim = this.g.currentDate + ' ' + this.g.currentTime;
+    this.toastr.info(
+      'Proses berjalan dilatar belakang...',
+      'Kirim data ' + this.g.currentDate + ' ke HQ'
+    );
+
+    this.service
+      .insert('/api/sync-data/kirim-all', {
+        userProses: this.userData.kodeUser,
+        tanggalSync: this.g.currentDate ?? '',
+      })
+      .subscribe({
+        next: (res) => {
+          const data = res?.data || {};
+          const entries = Object.entries(data)
+            .filter(([key]) => key !== 'hisSync')
+            .sort(([a], [b]) => a.localeCompare(b));
+
+          const rows: string[] = [];
+
+          entries.forEach(([key, value]: any) => {
+            if (value?.error) {
+              let errorMessage = value.error;
+              if (errorMessage.includes('No data to send')) {
+                errorMessage = 'No data';
+              }
+              rows.push(
+                `<tr><td class="text-start">${key}</td><td><span class="badge bg-danger">${errorMessage}</span></td></tr>`
+              );
+            } else if (value?.success) {
+              rows.push(
+                `<tr><td class="text-start">${key}</td><td>
+                <span class="badge bg-success fs-6">Dikirim: ${value.rowSent}</span>
+                <br/>
+                <span class="fs-8 d-none">Updated: ${value.updated} / ${value.updatedStatusSync}</span>
+              </td></tr>`
+              );
+            }
+          });
+
+          let tableContent = '<p>Tidak ada data untuk dikirim.</p>';
+
+          if (rows.length > 0) {
+            const mid = Math.ceil(rows.length / 2);
+            const leftRows = rows.slice(0, mid).join('');
+            const rightRows = rows.slice(mid).join('');
+
+            tableContent = `
+              <div class="text-center mb-2">${datetimeKirim} | ${this.userData.defaultLocation?.kodeLocation} - ${this.userData.defaultLocation.keteranganLokasi}</div>
+              <div class="row">
+                <div class="col">
+                  <table class="table table-bordered table-sm fs-8">
+                    <thead><tr><th>TRANSAKSI</th><th>STATUS</th></tr></thead>
+                    <tbody>${leftRows}</tbody>
+                  </table>
+                </div>
+                <div class="col">
+                  <table class="table table-bordered table-sm fs-8">
+                    <thead><tr><th>TRANSAKSI</th><th>STATUS</th></tr></thead>
+                    <tbody>${rightRows}</tbody>
+                  </table>
+                </div>
+              </div>
+            `;
+          }
+
+          Swal.fire({
+            title: 'Hasil Kirim Data',
+            html: tableContent,
+            width: '60%',
+            confirmButtonText: 'Tutup',
+          });
+        },
+        error: (err) => {
+          console.error(err);
+          Swal.fire('Gagal', 'Terjadi kesalahan saat mengirim data.', 'error');
+        },
+      });
+  }
+
+  terimaDataAll() {
+    this.clicked['btnTerimaDataAll'] = true;
+    const datetimeTerima = this.g.currentDate + ' ' + this.g.currentTime;
+    this.toastr.info(
+      'Proses berjalan dilatar belakang...',
+      'Terima data ' + this.g.currentDate + ' dari HQ'
+    );
+
+    this.service
+      .insert('/api/sync-data/master', {
+        kodeGudang: this.userData.defaultLocation.kodeLocation,
+        userProses: this.userData.kodeUser,
+        dateUpdate: this.g.currentDate ?? '',
+      })
+      .subscribe({
+        next: (res) => {
+          const data = res?.data || {};
+          const rows: string[] = [];
+
+          const sortedEntries = Object.entries(data)
+            .filter(([table]) => table !== 'hisUpdMst')
+            .sort(([tableA], [tableB]) => tableA.localeCompare(tableB));
+
+          sortedEntries.forEach(([table, result]: any) => {
+            const insert = result?.insert ?? 0;
+            const update = result?.update ?? 0;
+
+            const status =
+              insert || update
+                ? `<span class="badge bg-success fs-6">Insert: ${insert}, Update: ${update}</span>`
+                : `<span class="badge bg-secondary">No update</span>`;
+
+            rows.push(
+              `<tr><td class="text-start">${table}</td><td>${status}</td></tr>`
+            );
+          });
+
+          const htmlTable = `
+              <div class="text-center mb-2">${datetimeTerima} | ${
+            this.userData.defaultLocation?.kodeLocation
+          } - ${this.userData.defaultLocation.keteranganLokasi}</div>
+          <table class="table table-bordered table-sm fs-8">
+            <thead>
+              <tr><th>TRANSAKSI</th><th>STATUS</th></tr>
+            </thead>
+            <tbody>
+              ${rows.join('')}
+            </tbody>
+          </table>
+        `;
+
+          Swal.fire({
+            title: 'Hasil Terima Data',
+            html: htmlTable,
+            width: '60%',
+            confirmButtonText: 'Tutup',
+          });
+        },
+        error: (err) => {
+          console.error(err);
+          Swal.fire('Gagal', 'Terjadi kesalahan saat terima data.', 'error');
         },
       });
   }

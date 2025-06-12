@@ -910,7 +910,7 @@ export class MpcsProductionComponent implements OnInit {
       };
 
       Swal.fire({
-        ...this.g.componentKonfirmasiSimpanMpcs,
+        ...this.g.componentKonfirmasiSimpan,
         showConfirmButton: false,
         showCancelButton: false,
         width: '600px',
@@ -927,27 +927,27 @@ export class MpcsProductionComponent implements OnInit {
           const cancelBtn = document.getElementById(
             'btn-cancel'
           ) as HTMLButtonElement;
-          const inputName = document.getElementById(
-            'input-name'
-          ) as HTMLInputElement;
-          const nameError = document.getElementById(
-            'name-error'
-          ) as HTMLElement;
+          // const inputName = document.getElementById(
+          //   'input-name'
+          // ) as HTMLInputElement;
+          // const nameError = document.getElementById(
+          //   'name-error'
+          // ) as HTMLElement;
 
           submitBtn?.addEventListener('click', () => {
-            const userName = inputName.value.trim();
+            // const userName = inputName.value.trim();
 
-            if (!userName) {
-              nameError.classList.remove('d-none');
-              inputName.focus();
-              return;
-            }
+            // if (!userName) {
+            //   nameError.classList.remove('d-none');
+            //   inputName.focus();
+            //   return;
+            // }
 
-            nameError.classList.add('d-none');
+            // nameError.classList.add('d-none');
             submitBtn.disabled = true;
             cancelBtn.disabled = true;
             // 👉 tambahkan nama ke userCreate
-            param.userCreate = userName;
+            // param.userCreate = userName;
             Swal.close();
             submitBtn.disabled = true;
             cancelBtn.disabled = true;
@@ -1273,7 +1273,7 @@ export class MpcsProductionComponent implements OnInit {
       };
 
       Swal.fire({
-        ...this.g.componentKonfirmasiSimpanMpcs,
+        ...this.g.componentKonfirmasiSimpan,
         showConfirmButton: false,
         showCancelButton: false,
         width: '600px',
@@ -1290,28 +1290,28 @@ export class MpcsProductionComponent implements OnInit {
           const cancelBtn = document.getElementById(
             'btn-cancel'
           ) as HTMLButtonElement;
-           const inputName = document.getElementById(
-            'input-name'
-          ) as HTMLInputElement;
-          const nameError = document.getElementById(
-            'name-error'
-          ) as HTMLElement;
+          //  const inputName = document.getElementById(
+          //   'input-name'
+          // ) as HTMLInputElement;
+          // const nameError = document.getElementById(
+          //   'name-error'
+          // ) as HTMLElement;
 
 
           submitBtn?.addEventListener('click', () => {
-            const userName = inputName.value.trim();
+            // const userName = inputName.value.trim();
 
-            if (!userName) {
-              nameError.classList.remove('d-none');
-              inputName.focus();
-              return;
-            }
+            // if (!userName) {
+            //   nameError.classList.remove('d-none');
+            //   inputName.focus();
+            //   return;
+            // }
 
-            nameError.classList.add('d-none');
+            // nameError.classList.add('d-none');
             submitBtn.disabled = true;
             cancelBtn.disabled = true;
             // 👉 tambahkan nama ke userCreate
-            param.userCreate = userName;
+            // param.userCreate = userName;
 
             submitBtn.disabled = true;
             cancelBtn.disabled = true;

@@ -19,6 +19,7 @@ import { AppConfig } from '../../../../config/app.config';
 import { AppService } from '../../../../service/app.service';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-production-list-for-posting',
@@ -35,7 +36,7 @@ export class ProductionListForPostingComponent implements OnInit {
 
   page = new Page();
   dtColumns: any = [];
-  showFilterSection: boolean = false;
+  showFilterSection: boolean = true;
   buttonCaptionView: String = 'Lihat';
   buttonCaptionPrint: String = 'Cetak';
   selectedRowCetak: any = false;
@@ -69,18 +70,22 @@ export class ProductionListForPostingComponent implements OnInit {
   dtElement: DataTableDirective;
   listSummaryData: any[] = [];
   totalTransSummary: number = 0;
-  isShowModalPosting : boolean = false;
+  isShowModalPosting: boolean = false;
   loadingPosting: boolean = false;
   isAdjusting = false;
   listNotrans: any[] = [];
   resizeTimeout: any;
+  downloadURL: any = [];
+  loadingRptWIP : boolean = false;
+  userData: any;
   constructor(
     private dataService: DataService,
     private g: GlobalService,
     private translation: TranslationService,
     private router: Router,
     private appService: AppService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+     private datePipe: DatePipe,
   ) {
     this.dtColumns = this.dtOptions.columns;
     this.g.navbarVisibility = false;
@@ -89,7 +94,9 @@ export class ProductionListForPostingComponent implements OnInit {
     this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+     this.userData = this.appService.getUserData();
+  }
 
   toggleFilter(): void {
     this.showFilterSection = !this.showFilterSection;
@@ -109,7 +116,6 @@ export class ProductionListForPostingComponent implements OnInit {
         [2, 'desc'],
       ],
       drawCallback: () => {
-      
         // if (!this.isAdjusting) {
         //   this.isAdjusting = true;  // Set the flag to true to indicate adjusting in progress
         //   setTimeout(() => {
@@ -120,8 +126,8 @@ export class ProductionListForPostingComponent implements OnInit {
         //     this.isAdjusting = false;  // Reset the flag once adjustment is done
         //   }, 100);
         // }
-      },      
-      ajax: (dataTablesParameters: any, callback:any) => {
+      },
+      ajax: (dataTablesParameters: any, callback: any) => {
         const [startHour, startMinute] = this.startTime.split(':').map(Number);
         const [endHour, endMinute] = this.endTime.split(':').map(Number);
         this.page.start = dataTablesParameters.start;
@@ -145,7 +151,7 @@ export class ProductionListForPostingComponent implements OnInit {
               milliseconds: 999,
             })
             .format('YYYY-MM-DD HH:mm:ss.SSS'),
-            statusPosting:['B','K']
+          statusPosting: ['B', 'K'],
         };
         setTimeout(() => {
           this.dataService
@@ -165,7 +171,7 @@ export class ProductionListForPostingComponent implements OnInit {
               });
               this.page.recordsTotal = resp.recordsTotal;
               this.page.recordsFiltered = resp.recordsFiltered;
-              this.showFilterSection = false;
+              this.showFilterSection = true;
               callback({
                 recordsTotal: resp.recordsTotal,
                 recordsFiltered: resp.recordsFiltered,
@@ -184,7 +190,7 @@ export class ProductionListForPostingComponent implements OnInit {
           data: 'konversi',
           title: 'Konversi',
           width: '80px',
-          render: function (data:any, type:any, row:any) {
+          render: function (data: any, type: any, row: any) {
             return (
               Number(data).toFixed(2) +
               ' ' +
@@ -198,7 +204,7 @@ export class ProductionListForPostingComponent implements OnInit {
           data: 'jumlahResep',
           title: 'Jumlah Produksi',
           width: '80px',
-          render: function (data:any, type:any, row:any) {
+          render: function (data: any, type: any, row: any) {
             return Number(data).toFixed(2) + ' ' + row.satuanBesar;
           },
         },
@@ -206,7 +212,7 @@ export class ProductionListForPostingComponent implements OnInit {
           data: 'totalProduksi',
           title: 'Total Produksi',
           width: '80px',
-          render: function (data:any, type:any, row:any) {
+          render: function (data: any, type: any, row: any) {
             return Number(data).toFixed(2) + ' ' + row.satuanKecil;
           },
         },
@@ -215,7 +221,7 @@ export class ProductionListForPostingComponent implements OnInit {
           data: 'statusPosting',
           title: 'Status Transaksi',
           width: '100px',
-          render: (data:any) => this.g.getStatusProduksiLabel(data, false),
+          render: (data: any) => this.g.getStatusProduksiLabel(data, false),
         },
         {
           title: 'Aksi',
@@ -238,7 +244,9 @@ export class ProductionListForPostingComponent implements OnInit {
                   <button class="btn btn-sm  action-view btn-outline-success btn-60">
                    Lihat
                 </button>
-                <button class="btn btn-sm action-ubah btn-outline-primary btn-60" ${statusPosting === 'B' ? 'disabled' : ''}>
+                <button class="btn btn-sm action-ubah btn-outline-primary btn-60" ${
+                  statusPosting === 'B' ? 'disabled' : ''
+                }>
                   Ubah
                 </button>
              
@@ -250,7 +258,7 @@ export class ProductionListForPostingComponent implements OnInit {
       //  <button class="btn btn-sm action-print btn-outline-primary btn-60">
       //           ${this.buttonCaptionPrint}
       //         </button>
-    // <button class="btn btn-sm action-posting btn-outline-primary btn-60" ${statusPosting === 'B' ? 'disabled' : ''}>Posting</button>
+      // <button class="btn btn-sm action-posting btn-outline-primary btn-60" ${statusPosting === 'B' ? 'disabled' : ''}>Posting</button>
 
       // delivery: [],
       rowCallback: (row: Node, data: any[] | Object, index: number) => {
@@ -322,7 +330,6 @@ export class ProductionListForPostingComponent implements OnInit {
   ngAfterViewInit(): void {
     this.renderDatatable();
     this.dtTrigger.next(this.dtOptions);
-   
   }
 
   ngOnDestroy(): void {
@@ -445,95 +452,158 @@ export class ProductionListForPostingComponent implements OnInit {
     });
   }
 
-    getSummaryData() {
-      const [startHour, startMinute] = this.startTime.split(':').map(Number);
-      const [endHour, endMinute] = this.endTime.split(':').map(Number);
-      const params = {
-        kodeGudang: this.g.getUserLocationCode(),
-        startDate: moment(this.dateRangeFilter[0]).set({
-                    hours: startHour,
-                    minutes: startMinute,
-                    seconds: 0,
-                    milliseconds: 0,
-                  }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
-        endDate: moment(this.dateRangeFilter[1]).set({
-                    hours: endHour,
-                    minutes: endMinute,
-                    seconds: 59,
-                    milliseconds: 999,
-                  }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
-      };
-      this.appService
-      .getSummaryPostingProduction(params)
-      .subscribe((resp) => {
-        this.listSummaryData = resp.data.data;
-        this.totalTransSummary = resp.data.totalData;
-        this.listNotrans = resp.data.listNotrans;
-      });
-    }
+  getSummaryData() {
+    const [startHour, startMinute] = this.startTime.split(':').map(Number);
+    const [endHour, endMinute] = this.endTime.split(':').map(Number);
+    const params = {
+      kodeGudang: this.g.getUserLocationCode(),
+      startDate: moment(this.dateRangeFilter[0])
+        .set({
+          hours: startHour,
+          minutes: startMinute,
+          seconds: 0,
+          milliseconds: 0,
+        })
+        .format('YYYY-MM-DD HH:mm:ss.SSS'),
+      endDate: moment(this.dateRangeFilter[1])
+        .set({
+          hours: endHour,
+          minutes: endMinute,
+          seconds: 59,
+          milliseconds: 999,
+        })
+        .format('YYYY-MM-DD HH:mm:ss.SSS'),
+    };
+    this.appService.getSummaryPostingProduction(params).subscribe((resp) => {
+      this.listSummaryData = resp.data.data;
+      this.totalTransSummary = resp.data.totalData;
+      this.listNotrans = resp.data.listNotrans;
+    });
+  }
 
-    onPostingData() {
-       this.loadingPosting = true;
+  onPostingData() {
+    this.loadingPosting = true;
 
-        const requestBody = {
-          kodeGudang: this.g.getUserLocationCode(),
-          nomorTransaksi: this.listNotrans,
-        };
+    const requestBody = {
+      kodeGudang: this.g.getUserLocationCode(),
+      nomorTransaksi: this.listNotrans,
+    };
 
-        Swal.fire({
-          ...this.g.componentKonfirmasiPosting,
-          showConfirmButton: false,
-          showCancelButton: false,
-          width: '600px',
-          customClass: {
-            popup: 'custom-popup',
-          },
-          didOpen: () => {
-            const submitBtn = document.getElementById('btn-submit');
-            const cancelBtn = document.getElementById('btn-cancel');
+    Swal.fire({
+      ...this.g.componentKonfirmasiPosting,
+      showConfirmButton: false,
+      showCancelButton: false,
+      width: '600px',
+      customClass: {
+        popup: 'custom-popup',
+      },
+      didOpen: () => {
+        const submitBtn = document.getElementById('btn-submit');
+        const cancelBtn = document.getElementById('btn-cancel');
 
-            submitBtn?.addEventListener('click', () => {
-              this.appService.postingProduction(requestBody).subscribe({
-                next: (res: any) => {
-                  if (!res.success) {
-                    this.appService.handleErrorResponse(res);
-                  } else {
-                    this.toastr.success('Berhasil Posting!');
-                  }
-                  this.loadingPosting = false;
-                  Swal.close();
-                  const currentUrl = this.router.url;
-                  this.router.navigateByUrl('/empty', { skipLocationChange: true }).then(() => {
-                    this.router.navigate([currentUrl]);
-                  });
-                },
-                error: (err: any) => {
-                  console.log('An error occurred while Kirim Data.');
-                  this.loadingPosting = false;
-
-                  Swal.close();
-                },
-              });
-            });
-
-            cancelBtn?.addEventListener('click', () => {
-              Swal.close();
-              this.toastr.info('Posting dibatalkan');
+        submitBtn?.addEventListener('click', () => {
+          this.appService.postingProduction(requestBody).subscribe({
+            next: (res: any) => {
+              if (!res.success) {
+                this.appService.handleErrorResponse(res);
+              } else {
+                this.toastr.success('Berhasil Posting!');
+              }
               this.loadingPosting = false;
-            });
-          },
+              Swal.close();
+              const currentUrl = this.router.url;
+              this.router
+                .navigateByUrl('/empty', { skipLocationChange: true })
+                .then(() => {
+                  this.router.navigate([currentUrl]);
+                });
+            },
+            error: (err: any) => {
+              console.log('An error occurred while Kirim Data.');
+              this.loadingPosting = false;
+
+              Swal.close();
+            },
+          });
         });
+
+        cancelBtn?.addEventListener('click', () => {
+          Swal.close();
+          this.toastr.info('Posting dibatalkan');
+          this.loadingPosting = false;
+        });
+      },
+    });
+  }
+
+  showModalPosting() {
+    this.getSummaryData();
+    this.isShowModalPosting = true;
+  }
+
+  onPreviousPressed(): void {
+    this.router.navigate(['/transaction/production/']);
+  }
+
+  doDownload(type: string ="") {
+    let param = {};
+
+    this.loadingRptWIP = true;
+    param = {
+      kodeGudang: this.g.getUserLocationCode(),
+      startDate: this.g.transformDate(this.dateRangeFilter[0]),
+      endDate: this.g.transformDate(this.dateRangeFilter[1]),
+      userData: this.userData,
+      isDownloadCsv: type === 'csv' || type === 'xlsx',
+      isDownloadXlsx: type === 'xlsx',
+    };
+
+    let url = '/api/report/jasper-report-mpcs-production-prd';
+    if(this.g.getUserKodeSingkat() === 'DRY') {
+      url = '/api/report/jasper-report-mpcs-production-premix';
     }
 
-    showModalPosting() {
-      this.getSummaryData();
-      this.isShowModalPosting = true;
-    }
+    console.log(this.g.getUserKodeSingkat())
+    this.appService.getFile(url, param).subscribe({
+      next: (res) => {
+      this.loadingRptWIP = false;
 
-    onPreviousPressed(): void {
-      this.router.navigate(['/transaction/production/']);
-    }
+        if (type === 'preview') {
+          return this.previewPdf(res);
+        } else {
+          return this.downloadPDF(res, type);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+         this.loadingRptWIP = false;
+      },
+    });
+  }
 
-   
-  
+  previewPdf(res: any) {
+    var blob = new Blob([res], { type: 'application/pdf' });
+    this.downloadURL = window.URL.createObjectURL(blob);
+    window.open(this.downloadURL);
+  }
+
+  downloadPDF(res: any, reportType: string) {
+    var blob = new Blob([res], { type: 'application/pdf' });
+    this.downloadURL = window.URL.createObjectURL(blob);
+
+    if (this.downloadURL.length) {
+      var link = document.createElement('a');
+      link.href = this.downloadURL;
+      link.download = `${reportType} Report ${this.g.formatUrlSafeString('WIP Production'
+      )} ${this.datePipe.transform(
+       this.dateRangeFilter[0],
+        'dd-MMM-yyyy'
+      )} s.d. ${this.datePipe.transform(
+       this.dateRangeFilter[0],
+        'dd-MMM-yyyy'
+      )}.pdf`;
+      link.click();
+      this.toastr.success('File sudah terunduh');
+    } else this.toastr.error('File tidak dapat terunduh');
+  }
 }

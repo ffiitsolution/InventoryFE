@@ -60,3 +60,22 @@
   </div>
 
 </div>
+
+<div class="row ws-notification-wrapper text-black {{g.cursorSide}}">
+  <div class="ws-notification" *ngIf="g.statusKirimData">
+    <p class="fs-8 p-1 m-0">
+      <span class="fw-bold">
+        <i class="fa fa-spinner fa-spin me-2"></i>
+        {{ "Kirim Data Transaksi" }}</span><br />
+      {{ g.statusKirimData }}
+    </p>
+  </div>
+  <div class="ws-notification" *ngIf="g.statusTerimaData">
+    <p class="fs-8 p-1 m-0">
+      <span class="fw-bold">
+        <i class="fa fa-spinner fa-spin me-2"></i>
+        {{ "Terima Data Master" }}</span><br />
+      {{ g.statusTerimaData }}
+    </p>
+  </div>
+</div>
