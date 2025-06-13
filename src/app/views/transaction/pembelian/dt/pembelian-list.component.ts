@@ -158,6 +158,7 @@ export class PembelianListComponent implements OnInit {
     this.dtColumns = this.dtOptions.columns;
   }
 
+
   closeModal(): void {
     this.isShowModalReport = false;
   }
