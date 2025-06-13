@@ -78,6 +78,9 @@ export class ProductionListForPostingComponent implements OnInit {
   downloadURL: any = [];
   loadingRptWIP : boolean = false;
   userData: any;
+  pdfSrc: any = null;
+  isPdfLoader: boolean = false;
+  
   constructor(
     private dataService: DataService,
     private g: GlobalService,
@@ -538,6 +541,7 @@ export class ProductionListForPostingComponent implements OnInit {
 
   showModalPosting() {
     this.getSummaryData();
+    this.doDownload('preview');
     this.isShowModalPosting = true;
   }
 
@@ -556,6 +560,7 @@ export class ProductionListForPostingComponent implements OnInit {
       userData: this.userData,
       isDownloadCsv: type === 'csv' || type === 'xlsx',
       isDownloadXlsx: type === 'xlsx',
+      status:'K'
     };
 
     let url = '/api/report/jasper-report-mpcs-production-prd';
@@ -581,10 +586,17 @@ export class ProductionListForPostingComponent implements OnInit {
     });
   }
 
-  previewPdf(res: any) {
-    var blob = new Blob([res], { type: 'application/pdf' });
-    this.downloadURL = window.URL.createObjectURL(blob);
-    window.open(this.downloadURL);
+  // previewPdf(res: any) {
+  //   var blob = new Blob([res], { type: 'application/pdf' });
+  //   this.downloadURL = window.URL.createObjectURL(blob);
+  //   window.open(this.downloadURL);
+  // }
+
+   previewPdf(res: any) {
+    const blob = new Blob([res], { type: 'application/pdf' });
+    this.pdfSrc = blob;
+    this.isPdfLoader = true;
+    console.log(this.pdfSrc, 'pdf src');
   }
 
   downloadPDF(res: any, reportType: string) {

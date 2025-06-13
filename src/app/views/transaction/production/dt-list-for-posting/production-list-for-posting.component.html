@@ -22,7 +22,7 @@
             <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
             {{ "Filter" | translate }}
           </button> -->
-          <!-- <button
+          <button
             type="button"
             class="btn btn-info text-white me-2 btn-240"
             data-toggle="modal"
@@ -30,7 +30,7 @@
           >
           <i class="fa fa-check pe-2"></i>
             {{ "Posting All" | translate }}
-          </button> -->
+          </button>
           <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
             {{ "Kembali" | translate }}
           </button>
@@ -114,7 +114,7 @@
               <span>Loading...</span>
             </div>
 
-                <button
+                <!-- <button
                   *ngIf="!loadingRptWIP"
                   [disabled]="loadingRptWIP"
                   class="btn btn-success text-white d-flex align-items-center"
@@ -124,7 +124,7 @@
                   <span class="d-none d-lg-inline">{{
                     "WIP Data" | translate
                   }}</span>
-                </button>
+                </button> -->
               </c-col>
             </c-row>
           </c-card-body>
@@ -250,84 +250,17 @@
   </c-modal-header>
   <c-modal-body>
     <div>
-      <div class="card shadow-sm mb-3">
+      <div *ngIf="!pdfSrc">
+        <app-loading></app-loading>
+      </div>
+      <div class="card shadow-sm mb-3" *ngIf="pdfSrc">
         <div class="card-body">
-          <div
-            class="d-flex gap-1 flex-column justify-content-center align-items-center mb-3"
-          >
-            <div class="fw-bold">
-              <i class="bi bi-calendar-range me-2 text-black"></i>
-              <!-- Bootstrap Icons -->
-              <h4>{{ "Summary Produksi" | translate }}</h4>
-            </div>
-            <!-- <div class="fw-bold">
-              <span class="badge bg-primary fs-6"> -->
-            <!-- {{formatToday()}} -->
-            <!-- {{ formatStartDate() }} &nbsp;–&nbsp; {{ formatEndDate() }} -->
-            <!-- </span>
-            </div> -->
-
-            <div
-              class="alert-kirim col-sm-12 d-flex flex-column justify-content-start align-items-center"
-            >
-              <span>
-                Semua data production yang statusnya KIRIM (BELUM POSTING) !
-              </span>
-              <span>
-                Akan di POSTING , data yang sudah di POSTING tidak dapat diubah
-                !
-              </span>
-              <span> Silahkan periksa kembali data yang akan diposting ! </span>
-            </div>
-          </div>
+          <ngx-extended-pdf-viewer
+          [src]="pdfSrc"
+          useBrowserLocale="true"
+          [height]="'65vh'"
+        ></ngx-extended-pdf-viewer>
         </div>
-      </div>
-
-      <div class="card shadow-sm mb-3">
-        <div class="card-body body-kirim">
-          <div
-            *ngIf="listSummaryData.length == 0"
-            class="alert alert-warning text-center"
-            role="alert"
-          >
-            <strong>
-              Tidak ada data yang bisa diposting, silahkan infokan user kirim
-              data terlebih dahulu!.
-            </strong>
-          </div>
-          <div
-            class="row align-items-center mx-1 my-2"
-            *ngFor="let item of listSummaryData"
-          >
-            <div class="col-12 col-md-6 fw-semibold mb-2 mb-md-0">
-              <!-- <i class="bi bi-calendar-range me-2 text-black"></i> -->
-              {{ item.kodeBarang }} - {{ item.namaBarang }}
-            </div>
-            <div class="col-6 col-md-2 mb-2 mb-md-0">
-              <span class="badge bg-primary fs-6 w-100 text-center">
-                {{ item.konversi }} {{ item.satuanKecil }}/{{
-                  item.satuanBesar
-                }}
-              </span>
-            </div>
-            <div class="col-6 col-md-2 mb-2 mb-md-0">
-              <span class="badge bg-primary fs-6 w-100 text-center">
-                {{ item.jumlahProduksi }} {{ item.satuanBesar }}
-              </span>
-            </div>
-            <div class="col-6 col-md-2 mb-2 mb-md-0">
-              <span class="badge bg-primary fs-6 w-100 text-center">
-                {{ item.totalProduksi }} {{ item.satuanKecil }}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="d-flex justify-content-center align-items-center flex-column">
-        <span class="fw-bold text-center"
-          >Total Transaksi ({{ totalTransSummary }})</span
-        >
       </div>
     </div>
   </c-modal-body>

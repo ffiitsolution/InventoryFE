@@ -1,10 +1,10 @@
 <div class="fade-in">
   <c-card class="mb-4">
-    
     <c-card-body>
       <c-row>
-        <div class="d-grid gap-3 d-md-flex justify-content-start align-items-center">
-          
+        <div
+          class="d-grid gap-3 d-md-flex justify-content-start align-items-center"
+        >
           <h5>{{ "Tambah Pemakaian Barang Sendiri" | translate }}</h5>
         </div>
       </c-row>
@@ -14,31 +14,47 @@
   <c-card class="mb-4">
     <c-card-body>
       <c-row>
-        <div [ngClass]="isShowDetail ? 'col-4' : 'col-5'" class="pe-0 d-flex red-line">
+        <div
+          [ngClass]="isShowDetail ? 'col-4' : 'col-5'"
+          class="pe-0 d-flex red-line"
+        >
           <div class="w-100">
             <div class="p-2">
-              <h5 class="mb-2 p-2" style="color:#3c4b64;">{{ "Isi Format" | translate }}</h5>
+              <h5 class="mb-2 p-2" style="color: #3c4b64">
+                {{ "Isi Format" | translate }}
+              </h5>
               <div class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
-                  <label for="tglTransaksi">{{ "Tanggal Transaksi" | translate }} <span class="text-danger">*</span></label>
+                  <label for="tglTransaksi"
+                    >{{ "Tanggal Transaksi" | translate }}
+                    <span class="text-danger">*</span></label
+                  >
                 </div>
                 <div class="col-8 pe-0 d-flex">
-                  <input
-                    [disabled]="isShowDetail"
-                    type="text"
-                    id="tglTransaksi"
-                    class="form-control"
-                    aria-describedby="tglTransaksi"
-                    #dp="bsDatepicker"
-                    [bsConfig]="dpConfig"
-                    bsDatepicker
-                    autocomplete="off"
-                    [(ngModel)]="formData.tglTransaksi"
-                    placeholder="{{ 'Tanggal transaksi' | translate }}"
-                  />
+                  <div class="input-group">
+                    <input
+                      [disabled]="isShowDetail"
+                      type="text"
+                      id="tglTransaksi"
+                      class="form-control"
+                      aria-describedby="tglTransaksi"
+                      #dp="bsDatepicker"
+                      [bsConfig]="dpConfig"
+                      bsDatepicker
+                      autocomplete="off"
+                      [(ngModel)]="formData.tglTransaksi"
+                      placeholder="{{ 'Tanggal transaksi' | translate }}"
+                    />
+                    <button
+                      class="btn btn-outline-info fa fa-calendar"
+                      type="button"
+                      (click)="dp.toggle()"
+                      [disabled]="isShowDetail"
+                    ></button>
+                  </div>
                 </div>
               </div>
-              
+
               <div class="divider mt-4"></div>
 
               <!-- <div class="w-100 px-2 py-1 row">
@@ -65,12 +81,14 @@
 
               <div class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
-                  <label for="keterangan">{{ "Keterangan Pemakaian Brg" | translate }}</label>
+                  <label for="keterangan">{{
+                    "Keterangan Pemakaian Brg" | translate
+                  }}</label>
                 </div>
 
                 <div class="col-8 pe-0 d-flex flex-column">
                   <textarea
-                   [disabled]="isShowDetail"
+                    [disabled]="isShowDetail"
                     placeholder="Catatan"
                     type="text"
                     class="form-control"
@@ -81,17 +99,20 @@
                     [class.is-invalid]="isKeteranganInvalid"
                     maxlength="50"
                   ></textarea>
-              
+
                   <div class="text-end text-muted mt-1">
                     <small>{{ charCount }}/50 karakter</small>
                   </div>
-              
-                  <div *ngIf="isKeteranganInvalid" class="text-danger mt-1 fw-bold">
-                   HARAP MASUKAN KARAKTER YANG VALID..!!!!
+
+                  <div
+                    *ngIf="isKeteranganInvalid"
+                    class="text-danger mt-1 fw-bold"
+                  >
+                    HARAP MASUKAN KARAKTER YANG VALID..!!!!
                   </div>
                 </div>
               </div>
-              
+
               <!-- <div *ngIf="selectedKodeBarang" class="w-100 px-2 py-1 row">
                 <div class="col-4 d-flex align-items-center">
                   <label for="totalQty">{{ "Total Qty for Selected KodeBarang" | translate }}</label>
@@ -109,13 +130,23 @@
               </div> -->
 
               <!-- //if kodeBarang ada yang di pilih maka tampilkan label baru yang berisi sum kodeBarang yang di pilih hanya number sum dari kodeBarang yang di pilih saja jangan hitung yang lain -->
-              <div style="width: 96%;"class=" px-2 py-1 d-flex justify-content-end gap-2 align-items-center">
-                <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+              <div
+                style="width: 96%"
+                class="px-2 py-1 d-flex justify-content-end gap-2 align-items-center"
+              >
+                <button
+                  class="btn btn-light btn-120"
+                  (click)="onPreviousPressed()"
+                >
                   <i class="fa fa-chevron-left icon-12 icon-gap"></i>
                   {{ "Kembali" | translate }}
                 </button>
-                <button class="shadow-sm btn btn-info text-white" *ngIf="!isShowDetail" [disabled]="isFormInvalid"
-                  (click)="onAddDetail()">
+                <button
+                  class="shadow-sm btn btn-info text-white"
+                  *ngIf="!isShowDetail"
+                  [disabled]="isFormInvalid"
+                  (click)="onAddDetail()"
+                >
                   <i class="fa fa-check pe-2"></i>
                   {{ "Detail Transaksi" | translate }}
                 </button>
@@ -124,14 +155,13 @@
           </div>
         </div>
 
-        <div class=" ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
+        <div class="ps-0" [ngClass]="isShowDetail ? 'col-8' : 'col-7'">
           <div class="p-2" *ngIf="isShowDetail">
             <app-add-data-detail-barang-pemakaian
               (onBatalPressed)="onBatalPressed($event)"
-              ></app-add-data-detail-barang-pemakaian>
+            ></app-add-data-detail-barang-pemakaian>
           </div>
         </div>
-
       </c-row>
     </c-card-body>
   </c-card>

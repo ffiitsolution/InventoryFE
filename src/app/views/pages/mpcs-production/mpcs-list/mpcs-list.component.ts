@@ -17,6 +17,7 @@ import moment from 'moment';
 import { DEFAULT_DATE_RANGE_RECEIVING_ORDER } from '../../../../../constants';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-mpcs-list',
   templateUrl: './mpcs-list.component.html',
@@ -76,6 +77,9 @@ export class MpcsListComponent implements OnInit {
   isShowWarehouseModal = false;
   selectedWarehouse: string | null = null;
   dataUser: any = {};
+  pdfSrc: any = null;
+  downloadURL: any = [];
+  isPdfLoader: boolean = false;
   constructor(
     translate: TranslateService,
     private route: ActivatedRoute,
@@ -87,7 +91,8 @@ export class MpcsListComponent implements OnInit {
     private form: FormBuilder,
     private dataService: DataService,
     private helperService: HelperService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private datePipe: DatePipe,
   ) {
     translate.use(g.getLocalstorage('inv_language') || 'id');
     this.dpConfig.containerClass = 'theme-dark-blue';
@@ -301,6 +306,7 @@ export class MpcsListComponent implements OnInit {
 
   showModalKirim() {
     this.getSummaryData();
+    this.doDownload('preview');
     this.isShowModalKirim = true;
   }
 
@@ -443,4 +449,69 @@ export class MpcsListComponent implements OnInit {
   onCloseWarehouse() {
     this.isShowWarehouseModal = false;
   }
+
+  doDownload(type: string ="") {
+    let param = {};
+    this.isPdfLoader = true;
+    // this.loadingRptWIP = true;
+    param = {
+      kodeGudang: this.g.getUserLocationCode(),
+      status: 'B',
+      startDate: this.g.transformDate(this.dateRangeFilter[0]),
+      endDate: this.g.transformDate(this.dateRangeFilter[1]),
+      userData: this.dataUser,
+      isDownloadCsv: type === 'csv' || type === 'xlsx',
+      isDownloadXlsx: type === 'xlsx',
+    };
+
+    let url = '/api/report/jasper-report-mpcs-production-prd';
+    if(this.g.getUserKodeSingkat() === 'DRY') {
+      url = '/api/report/jasper-report-mpcs-production-premix';
+    }
+
+    console.log(this.g.getUserKodeSingkat())
+    this.appService.getFile(url, param).subscribe({
+      next: (res) => {
+      // this.loadingRptWIP = false;
+
+        if (type === 'preview') {
+          return this.previewPdf(res);
+        } else {
+          return this.downloadPDF(res, type);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+        //  this.loadingRptWIP = false;
+      },
+    });
+  }
+
+  previewPdf(res: any) {
+    const blob = new Blob([res], { type: 'application/pdf' });
+    this.pdfSrc = blob;
+    this.isPdfLoader = true;
+    console.log(this.pdfSrc, 'pdf src');
+  }
+
+   downloadPDF(res: any, reportType: string) {
+    var blob = new Blob([res], { type: 'application/pdf' });
+    this.downloadURL = window.URL.createObjectURL(blob);
+
+    if (this.downloadURL.length) {
+      var link = document.createElement('a');
+      link.href = this.downloadURL;
+      link.download = `${reportType} Report ${this.g.formatUrlSafeString('WIP Production'
+      )} ${this.datePipe.transform(
+       this.dateRangeFilter[0],
+        'dd-MMM-yyyy'
+      )} s.d. ${this.datePipe.transform(
+       this.dateRangeFilter[0],
+        'dd-MMM-yyyy'
+      )}.pdf`;
+      link.click();
+      this.toastr.success('File sudah terunduh');
+    } else this.toastr.error('File tidak dapat terunduh');
+  }
+
 }

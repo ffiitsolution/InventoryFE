@@ -891,6 +891,8 @@ export class AddDataDetailGudangComponent
 
   onShowModalExpired(event: any, index: number) {
     this.selectedExpProduct = this.listOrderData[index];
+    this.selectedExpProduct.QTY_PESAN_BESAR = this.selectedExpProduct.QTY_PESAN_BESAR || 0;
+    this.selectedExpProduct.QTY_PESAN_KECIL = this.selectedExpProduct.QTY_PESAN_KECIL || 0;
 
     const isCorrect = this.cekTotalPesanKirim(index);
 
@@ -920,38 +922,67 @@ export class AddDataDetailGudangComponent
       ).toFixed(2);
 
       this.totalFilteredExpired = totalQtySum;
-      if (
-        !this.listEntryExpired.some(
-          (item) => item.KODE_BARANG === this.selectedExpProduct.KODE_BARANG
-        )
-      ) {
-        this.listEntryExpired.push({
-          tglExpired: moment().add(1, 'days').toDate(),
-          keteranganTanggal: moment()
-            .add(1, 'days')
-            .locale('id')
-            .format('DD MMM YYYY'),
-          QTY_PESAN_BESAR: parseFloat(
-            this.selectedExpProduct.QTY_PESAN_BESAR
-          ).toFixed(2),
-          QTY_PESAN_KECIL: parseFloat(
-            this.selectedExpProduct.QTY_PESAN_KECIL
-          ).toFixed(2),
-          QTY_TERIMA_BESAR: parseFloat(
-            this.selectedExpProduct.QTY_TERIMA_BESAR
-          ).toFixed(2),
-          QTY_TERIMA_KECIL: parseFloat(
-            this.selectedExpProduct.QTY_TERIMA_KECIL
-          ).toFixed(2),
-          SATUAN_KECIL: this.selectedExpProduct.SATUAN_KECIL,
-          SATUAN_BESAR: this.selectedExpProduct.SATUAN_BESAR,
-          KONVERSI: parseFloat(this.selectedExpProduct.KONVERSI).toFixed(2),
-          totalQty: parseFloat(totalQtySum).toFixed(2),
-          KODE_BARANG: this.selectedExpProduct.KODE_BARANG,
-          validationExpiredMessageList: '',
-          validationQty: '',
-        });
+      // if (
+      //   !this.listEntryExpired.some(
+      //     (item) => item.KODE_BARANG === this.selectedExpProduct.KODE_BARANG
+      //   )
+      // ) {
+      //   this.listEntryExpired.push({
+      //     tglExpired: moment().add(1, 'days').toDate(),
+      //     keteranganTanggal: moment()
+      //       .add(1, 'days')
+      //       .locale('id')
+      //       .format('DD MMM YYYY'),
+      //     QTY_PESAN_BESAR: parseFloat(
+      //       this.selectedExpProduct.QTY_PESAN_BESAR
+      //     ).toFixed(2),
+      //     QTY_PESAN_KECIL: parseFloat(
+      //       this.selectedExpProduct.QTY_PESAN_KECIL
+      //     ).toFixed(2),
+      //     QTY_TERIMA_BESAR: parseFloat(
+      //       this.selectedExpProduct.QTY_TERIMA_BESAR
+      //     ).toFixed(2),
+      //     QTY_TERIMA_KECIL: parseFloat(
+      //       this.selectedExpProduct.QTY_TERIMA_KECIL
+      //     ).toFixed(2),
+      //     SATUAN_KECIL: this.selectedExpProduct.SATUAN_KECIL,
+      //     SATUAN_BESAR: this.selectedExpProduct.SATUAN_BESAR,
+      //     KONVERSI: parseFloat(this.selectedExpProduct.KONVERSI).toFixed(2),
+      //     totalQty: parseFloat(totalQtySum).toFixed(2),
+      //     KODE_BARANG: this.selectedExpProduct.KODE_BARANG,
+      //     validationExpiredMessageList: '',
+      //     validationQty: '',
+      //   });
+      // }
+
+      const existingIndex = this.listEntryExpired.findIndex(
+        (item) => item.KODE_BARANG === this.selectedExpProduct.KODE_BARANG
+      );
+
+      const newData = {
+        tglExpired: moment().add(1, 'days').toDate(),
+        keteranganTanggal: moment().add(1, 'days').locale('id').format('DD MMM YYYY'),
+        QTY_PESAN_BESAR: parseFloat(this.selectedExpProduct.QTY_PESAN_BESAR).toFixed(2),
+        QTY_PESAN_KECIL: parseFloat(this.selectedExpProduct.QTY_PESAN_KECIL).toFixed(2),
+        QTY_TERIMA_BESAR: parseFloat(this.selectedExpProduct.QTY_TERIMA_BESAR).toFixed(2),
+        QTY_TERIMA_KECIL: parseFloat(this.selectedExpProduct.QTY_TERIMA_KECIL).toFixed(2),
+        SATUAN_KECIL: this.selectedExpProduct.SATUAN_KECIL,
+        SATUAN_BESAR: this.selectedExpProduct.SATUAN_BESAR,
+        KONVERSI: parseFloat(this.selectedExpProduct.KONVERSI).toFixed(2),
+        totalQty: parseFloat(totalQtySum).toFixed(2),
+        KODE_BARANG: this.selectedExpProduct.KODE_BARANG,
+        validationExpiredMessageList: '',
+        validationQty: '',
+      };
+
+      if (existingIndex !== -1) {
+        // Assign ulang jika data dengan KODE_BARANG sudah ada
+        this.listEntryExpired[existingIndex] = newData;
+      } else {
+        // Tambah data baru
+        this.listEntryExpired.push(newData);
       }
+
 
       this.isShowModalExpired = true;
     }

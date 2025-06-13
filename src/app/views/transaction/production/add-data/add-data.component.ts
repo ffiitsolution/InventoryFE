@@ -99,7 +99,7 @@ export class AddProductionComponent
     this.dpConfig.minDate = new Date();
     this.dpConfig.customTodayClass = 'today-highlight';
 
-    this.dpConfigtrans.containerClass = 'theme-red';
+    this.dpConfigtrans.containerClass = 'theme-dark-blue';
     this.dpConfigtrans.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfigtrans.adaptivePosition = true;
     this.dpConfigtrans.maxDate = new Date();
