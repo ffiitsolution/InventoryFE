@@ -517,7 +517,7 @@
         <i class="fa fa-refresh {{loadings['getCountGudang'] || loadings['getCountHq'] ? 'fa-spin' : ''}} me-2"></i>
         Refresh Data
       </button>
-      <button class="btn btn-primary">
+      <button class="btn btn-primary" [disabled]="clicked['btnKirimDataAll']" (click)="kirimDataAll()">
         <i class="fa fa-exchange me-2"></i>
         Kirim Ulang
       </button>
