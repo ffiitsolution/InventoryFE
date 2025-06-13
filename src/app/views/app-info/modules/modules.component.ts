@@ -4,28 +4,14 @@ import {
   Component,
   OnDestroy,
   OnInit,
-  ViewChild,
 } from '@angular/core';
-import {
-  ACTION_ADD,
-  ACTION_EDIT,
-  ACTION_VIEW,
-  LS_INV_SELECTED_UOM,
-} from '../../../../constants';
 import { Router } from '@angular/router';
-import { Page } from '../../../model/page';
 import { AppService } from '../../../service/app.service';
 import { GlobalService } from '../../../service/global.service';
 import { TranslationService } from '../../../service/translation.service';
-// import * as pdfjsLib from 'pdfjs-dist';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { sortBy } from 'lodash';
 import { ToastrService } from 'ngx-toastr';
-// import {
-//   PDFDocumentProxy,
-//   PDFProgressData,
-//   PdfViewerComponent,
-// } from 'ng2-pdf-viewer';
 
 @Component({
   selector: 'app-modules-app-info',
@@ -33,7 +19,6 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './modules.component.scss',
 })
 export class ModulesComponent implements OnInit, OnDestroy, AfterViewInit {
-  // @ViewChild(PdfViewerComponent) private pdfComponent: PdfViewerComponent;
   urlModule: string = 'http://192.168.10.28/module_backoffice';
   searchSelected = '';
   textLoading = '';
@@ -62,15 +47,12 @@ export class ModulesComponent implements OnInit, OnDestroy, AfterViewInit {
     private sanitizer: DomSanitizer,
     private router: Router
   ) {
-    // pdfjsLib.GlobalWorkerOptions.workerSrc = '';
-    // pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/js/pdf.worker.js';
-    // pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/js/pdf.worker.entry.js';
   }
 
   ngOnInit(): void {
     this.loadingModule = true;
     this.service.getExternal(this.urlModule + '/list.json').subscribe((res) => {
-      const transformResponse = res.map((i:any) => ({
+      const transformResponse = res.map((i: any) => ({
         ...i,
         num: Number(i.num),
         title: i.name,
@@ -91,7 +73,7 @@ export class ModulesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {}
 
-  isSelected(selected:any): boolean {
+  isSelected(selected: any): boolean {
     return selected === this.searchSelected;
   }
 
@@ -116,37 +98,29 @@ export class ModulesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  onProgress(progressData: any) {
-    const total = progressData.total;
-    const loaded = progressData.loaded;
-    if (loaded < total) {
+  onProgress(event: any) {
+    const percentage = Math.round(event.percent || 0);
+    if (percentage > 0 && percentage < 100) {
+      const loadedMB = (event.loaded / (1024 * 1024)).toFixed(1);
+      const totalMB = (event.total / (1024 * 1024)).toFixed(1);
       this.textLoading =
-        'Sedang memuat ... ' +
-        loaded +
-        ' / ' +
-        total +
-        '( ' +
-        Math.round((loaded / total) * 100) +
-        '% )';
+        'Loading PDF... ' +
+        loadedMB +
+        ' of ' +
+        totalMB +
+        ' MB (' +
+        percentage +
+        '%)';
     } else {
       this.textLoading = '';
     }
   }
 
-  afterLoadComplete(pdf: any) {
-    this.totalPages = pdf.numPages;
+  afterLoadComplete(event: any) {
+    this.totalPages = event.pagesCount ?? 0;
   }
 
-  search(stringToSearch: string) {
-    // this.pdfComponent.eventBus.dispatch('find', {
-    //   query: stringToSearch,
-    //   type: 'again',
-    //   caseSensitive: false,
-    //   findPrevious: false,
-    //   highlightAll: true,
-    //   phraseSearch: true,
-    // });
-  }
+  search(stringToSearch: string) {}
 
   scrollTo(event: MouseEvent) {
     const target = event.target as HTMLElement;
@@ -164,46 +138,11 @@ export class ModulesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  download() {
-    // if (this.pdfComponent) {
-    //   const pdfViewer = this.pdfComponent.pdfViewer;
-    //   if (pdfViewer) {
-    //     const pdfDocument = pdfViewer.pdfDocument;
-    //     if (pdfDocument) {
-    //       pdfDocument.getData().then((data: Uint8Array) => {
-    //         const blob = new Blob([data], { type: 'application/pdf' });
-    //         const blobUrl = URL.createObjectURL(blob);
-    //         window.open(blobUrl, '_blank');
-    //       });
-    //     }
-    //   }
-    // }
+  download(event: any | undefined) {
     window.open(this.selectedUrl, '_blank');
   }
 
-  printPdf() {
-    // if (this.pdfComponent) {
-    //   const pdfViewer = this.pdfComponent.pdfViewer;
-    //   if (pdfViewer) {
-    //     const pdfDocument = pdfViewer.pdfDocument;
-    //     if (pdfDocument) {
-    //       pdfDocument.getData().then((data: Uint8Array) => {
-    //         const blob = new Blob([data], { type: 'application/pdf' });
-    //         const blobUrl = URL.createObjectURL(blob);
-    //         const printWindow = window.open(blobUrl, '_blank');
-    //         if (printWindow) {
-    //           printWindow.onload = () => {
-    //             printWindow.print();
-    //           };
-    //         } else {
-    //           console.error('Failed to open print window.');
-    //         }
-    //         URL.revokeObjectURL(blobUrl);
-    //       });
-    //     }
-    //   }
-    // }
-  }
+  printPdf() {}
 
   handlePdfError(event: any) {
     let message = event?.message ?? event;
@@ -219,7 +158,7 @@ export class ModulesComponent implements OnInit, OnDestroy, AfterViewInit {
   onModulSelect(fileName: String, extention: String) {
     const url = `${this.urlModule}/${fileName}`;
     this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-    this.selectedUrl = url;
     this.selectedExtention = extention;
+    this.selectedUrl = url;
   }
 }
