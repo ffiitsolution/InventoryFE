@@ -75,7 +75,7 @@ export class TablePositionComponent
               const finalData = {
                 ...rest,
                 dtIndex: this.page.start + index + 1,
-                dateUpd: this.g.transformDate(item.dateUpd),
+                dateUpdate: this.g.transformDate(item.dateUpdate),
               };
               return finalData;
             });
@@ -102,8 +102,8 @@ export class TablePositionComponent
           orderable: true,
           searchable: true,
         },
-        { data: 'userUpd', title: 'DiUpdate Oleh', searchable: false },
-        { data: 'dateUpd', title: 'Tanggal DiUpdate', searchable: false },
+        { data: 'userUpdate', title: 'DiUpdate Oleh', searchable: false },
+        { data: 'dateUpdate', title: 'Tanggal DiUpdate', searchable: false },
         {
           data: 'status',
           title: 'Status',
