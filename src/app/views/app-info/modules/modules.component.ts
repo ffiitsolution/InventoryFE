@@ -31,12 +31,16 @@ export class ModulesComponent implements OnInit, OnDestroy, AfterViewInit {
   canvas: any;
   ctx: any;
   searchList: any[] = [];
-  arr: any;
+  arr: any[] = [];
   loadingModule: boolean = false;
   selectedUrl: string = '';
   selectedExtention: String = '';
 
   fileUrl: SafeResourceUrl;
+
+  searchModuleName: string = '';
+  filterModule: any = '';
+  sortOrder: 'asc' | 'desc' = 'desc';
 
   constructor(
     private service: AppService,
@@ -46,8 +50,7 @@ export class ModulesComponent implements OnInit, OnDestroy, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private sanitizer: DomSanitizer,
     private router: Router
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.loadingModule = true;
@@ -160,5 +163,32 @@ export class ModulesComponent implements OnInit, OnDestroy, AfterViewInit {
     this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
     this.selectedExtention = extention;
     this.selectedUrl = url;
+  }
+
+  toggleSortOrder() {
+    this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+  }
+
+  get filteredArr() {
+    const filtered = this.arr.filter((item) => {
+      const matchesExtension =
+        this.filterModule === '' ||
+        (this.filterModule === 'PDF' && item.ext.toLowerCase() === 'pdf') ||
+        (this.filterModule === 'VIDEO' && item.ext.toLowerCase() === 'mp4') ||
+        (this.filterModule === 'Other' &&
+          !['pdf', 'mp4'].includes(item.ext.toLowerCase()));
+
+      const matchesSearch =
+        !this.searchModuleName ||
+        item.name.toLowerCase().includes(this.searchModuleName.toLowerCase());
+
+      return matchesExtension && matchesSearch;
+    });
+
+    return filtered.sort((a, b) => {
+      const dateA = new Date(a.lastUpdate).getTime();
+      const dateB = new Date(b.lastUpdate).getTime();
+      return this.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    });
   }
 }

@@ -40,21 +40,16 @@ iframe {
 }
 
 .left-container {
-  display: flex;
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 8px;
   overflow: hidden;
   height: 60vh;
 }
 
 .version-list {
-  width: 30%;
   background-color: #f4f4f4;
   padding: 10px;
   border-right: 1px solid #ddd;
   overflow-y: auto;
-  max-height: 100%;
+  max-height: 55vh;
 }
 
 .version-list ul {
@@ -75,7 +70,5 @@ iframe {
 }
 
 .right-container {
-  width: 70%;
-  padding: 20px;
   max-height: 100%;
 }
