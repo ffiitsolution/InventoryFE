@@ -14,30 +14,38 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="row">
-       
-        <div class="col text-end">
+        <div class="col d-flex justify-content-end flex-wrap gap-2">
           <button
             type="button"
-            class="btn btn-outline-dark me-2 btn-120"
+            class="btn btn-outline-dark btn-120"
             (click)="toggleFilter()"
           >
             <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
             {{ "Filter" | translate }}
           </button>
+
           <button
             type="button"
-            class="btn btn-success text-white me-2 btn-240"
+            class="btn btn-success text-white btn-240"
             data-toggle="modal"
             (click)="onAddPressed()"
           >
             <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
             {{ "Tambah Produksi" | translate }}
           </button>
-           <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+
+          <button
+            class="btn btn-success text-white btn-150 d-flex align-items-center"
+            (click)="showModalWip()"
+          >
+            <i class="fa fa-print me-1"></i>
+            <span class="d-none d-lg-inline">{{ "WIP Data" | translate }}</span>
+          </button>
+
+          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
             {{ "Kembali" | translate }}
           </button>
         </div>
-        
       </div>
       <div [visible]="showFilterSection" cCollapse>
         <div class="divider"></div>
@@ -142,3 +150,54 @@
   >
   </app-modal-print-list>
 </div>
+
+<c-modal
+  #formModalWip
+  [fullscreen]="false"
+  [visible]="isShowModalWip"
+  backdrop="static"
+  [size]="'xl'"
+  id="formModalWip"
+  [attr.aria-hidden]="!isShowModalWip"
+>
+  <c-modal-header>
+    <h5 cModalTitle>Overview WIP</h5>
+    <button
+      (click)="isShowModalWip = false"
+      type="button"
+      class="btn btn-primary ms-2"
+      [cModalToggle]="formModalWip.id"
+      cButtonClose
+    >
+      <i class="fa fa-times"></i>
+    </button>
+  </c-modal-header>
+  <c-modal-body>
+    <div>
+      <div *ngIf="!pdfSrc && listSummaryData.length > 0">
+        <app-loading></app-loading>
+      </div>
+      <div
+          *ngIf="listSummaryData.length == 0"
+          class="alert alert-warning text-center"
+          role="alert"
+        >
+          <strong>
+            Tidak ada data production, silahkan posting data terlebih dahulu!.
+          </strong>
+        </div>
+      <ng-container *ngIf="listSummaryData.length > 0">
+        <div class="card shadow-sm mb-3" *ngIf="pdfSrc">
+          <div class="card-body">
+            <ngx-extended-pdf-viewer
+            [src]="pdfSrc"
+            useBrowserLocale="true"
+            [height]="'65vh'"
+            [filenameForDownload]="'WIP-produksi.pdf'"
+          ></ngx-extended-pdf-viewer>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </c-modal-body>
+</c-modal>

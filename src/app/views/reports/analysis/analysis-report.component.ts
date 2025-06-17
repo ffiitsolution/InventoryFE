@@ -49,7 +49,7 @@ export class AnalysisReportComponent
   listRegion: any = [];
   selectedRegion: any;
   paramStatusAktif: string = '';
-  paramTipeListing: string = 'header';
+  paramTipeListing: string = 'rekap';
   kodePenerima: string = '';
   namaPenerima: string = 'KOSONG = CETAK SEMUA PENERIMA';
   isShowModalPenerima: boolean = false;
@@ -73,7 +73,8 @@ export class AnalysisReportComponent
   namaTransaksi: string = 'WAJIB PILIH TRANSAKSI';
   isShowModalTransaksi: boolean = false;
   REPORT_ANALYSIS_DO_REVISI: string = REPORT_ANALYSIS_DO_REVISI;
-  
+  public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+  paramTglTransaksi: any = new Date();
   constructor(
     private service: AppService,
     private g: GlobalService,
@@ -86,6 +87,12 @@ export class AnalysisReportComponent
     this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.customTodayClass = 'today-highlight';
     this.dpConfig.rangeInputFormat = 'DD/MM/YYYY';
+
+    this.dpConfigtrans.containerClass = 'theme-dark-blue';
+    this.dpConfigtrans.dateInputFormat = 'DD/MM/YYYY';
+    this.dpConfigtrans.adaptivePosition = true;
+    this.dpConfigtrans.maxDate = new Date();
+    this.dpConfigtrans.customTodayClass = 'today-highlight';
   }
 
   ngOnInit(): void {
@@ -651,4 +658,5 @@ export class AnalysisReportComponent
       },
     };
   }
+
 }
