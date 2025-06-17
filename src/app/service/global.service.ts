@@ -115,7 +115,9 @@ export class GlobalService {
       '<div style="color: white; background: #c0392b; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Kirim Data</div>',
     html: `
     <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">
-      <p>Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
+      <p>Semua data production yang statusnya BELUM KIRIM !<br>
+      Akan dikirm ke ADMIN untuk diperiksa dan di POSTING !<br>
+      Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
     </div>
     <div class="divider my-3"></div>
     <div class="d-flex justify-content-center gap-3 mt-3">
