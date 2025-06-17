@@ -150,3 +150,12 @@
     </c-card-body>
   </c-card>
 </div>
+
+<div class="fade-in">
+  <app-modal-print-list [alreadyPrint]="alreadyPrint" [disabledPrintButton]="disabledPrintButton"
+    [generatePdfUrl]="'/api/delivery-order/delivery-order-report'"
+    [updateStatusUrl]="'/api/delivery-order/update-print-status'" [updatePrintStatusParam]="paramGenerateReport"
+    [generateReportParam]="paramGenerateReport" [isShowModalReport]="isShowModalReport" [isShowSelection]="true"
+    (closeModalEvent)="onCloseModalReport()">
+  </app-modal-print-list>
+</div>

@@ -478,11 +478,11 @@
                     id="konversi"
                     [value]="
                       helper.sanitizedNumber(
-                        selectedExpProduct.QTY_PESAN_BESAR
+                        selectedExpProduct.QTY_TERIMA_BESAR
                       ) *
                         selectedExpProduct.KONVERSI +
                       helper.sanitizedNumber(
-                        selectedExpProduct.QTY_PESAN_KECIL
+                        selectedExpProduct.QTY_TERIMA_KECIL
                       ) +
                       ' ' +
                       selectedExpProduct.SATUAN_KECIL
@@ -505,7 +505,7 @@
                     type="text"
                     class="form-control"
                     id="konversi"
-                    [value]="selectedExpProduct.QTY_PESAN_BESAR || 0"
+                    [value]="selectedExpProduct?.QTY_TERIMA_BESAR || 0"
                     name="konversi"
                     disabled
                   />
@@ -523,7 +523,7 @@
                     type="text"
                     class="form-control"
                     id="konversi"
-                    [value]="selectedExpProduct.QTY_PESAN_KECIL || 0"
+                    [value]="selectedExpProduct?.QTY_TERIMA_KECIL || 0"
                     name="konversi"
                     disabled
                   />

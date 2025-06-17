@@ -16,19 +16,6 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="row">
-        <div class="col"></div>
-        <div class="col text-end">
-          <app-print-button
-          [alreadyPrint]="alreadyPrint"
-          [disabledPrintButton]="disabledPrintButton"
-          [generatePdfUrl]="'/report-wastage-jasper'"
-          [updateStatusUrl]="''"
-          [updatePrintStatusParam]="''"
-          [generateReportParam]="paramGenerateReport"
-          (reloadTable)="reloadTable()"
-        ></app-print-button>
-        </div>
-        <div class="divider mt-4"></div>
         <div class="col">
           <div class="row order-details">
             <div class="detail-item">

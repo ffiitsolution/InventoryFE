@@ -71,6 +71,27 @@
       </div>
     </ng-container>
 
+    <ng-container *ngIf="['Stock Barang By Expired'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Tanggal Stock
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <input type="text" id="dateFilter" class="form-control" bsDatepicker [bsConfig]="dpConfigtrans"
+            aria-describedby="dateFilter" [(ngModel)]="paramTglTransaksi" #dp="bsDatepicker"
+            (ngModelChange)="onTglTransaksiChange($event)" placeholder="{{ 'Tanggal Stock' | translate }}" />
+        </div>
+        <div class="col-4">
+          <div class="d-flex align-items-center" style="height: 40px;">
+            <span class="badge bg-primary h-100 d-flex align-items-center">
+              {{ dateRangeString }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
     <ng-container *ngIf="['Stock Barang Dibawah Minimum'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">

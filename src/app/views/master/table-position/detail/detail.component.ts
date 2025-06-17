@@ -26,7 +26,7 @@ export class TablePositionDetailComponent implements OnInit {
       desc: [this.detail.description],
       status: [this.detail.status],
       userUpd: [this.detail.userUpdateName],
-      dateUpd: [this.detail.dateUpd],
+      dateUpd: [this.detail.dateUpdate],
     });
     this.myForm.disable();
   }

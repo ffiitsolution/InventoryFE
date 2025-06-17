@@ -20,6 +20,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedComponentModule } from '../../component/shared.component.module';
 import { MpcsLayoutComponent } from './mpcs-production/mpcs-layout/mpcs-layout.component';
 import { MpcsListComponent } from './mpcs-production/mpcs-list/mpcs-list.component';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -70,7 +71,9 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
     }),
     WidgetStatFComponent,
-    TemplateIdDirective
+    TemplateIdDirective,
+    NgxExtendedPdfViewerModule,
+    
   ]
 })
 export class PagesModule {

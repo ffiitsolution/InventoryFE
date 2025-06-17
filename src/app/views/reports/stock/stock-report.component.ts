@@ -126,7 +126,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       this.renderDataTables();
     }
     if (
-      ['Stock Yang Mendekati Tgl Expired', 'Stock Card'].includes(
+      ['Stock Yang Mendekati Tgl Expired', 'Stock Card', 'Stock Barang By Expired'].includes(
         this.currentReport
       )
     ) {
@@ -213,6 +213,12 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       param = {
         startDate: this.g.transformDate(this.dateRangeFilter[0]),
         endDate: this.g.transformDate(this.dateRangeFilter[1]),
+        kodeBarang: this.kodeBarang,
+      };
+    } else if (this.currentReport === 'Stock Barang By Expired') {
+      param = {
+        startDate: this.startOfMonth,
+        endDate: this.endOfMonth,
         kodeBarang: this.kodeBarang,
       };
     } else if (this.currentReport === 'Stock Card') {

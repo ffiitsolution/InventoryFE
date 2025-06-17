@@ -278,16 +278,16 @@
   </c-modal-header>
   <c-modal-body>
     <div>
-      <div class="card shadow-sm mb-3">
+      <!-- <div class="card shadow-sm mb-2">
         <div class="card-body">
           <div
-            class="d-flex gap-1 flex-column justify-content-center align-items-center mb-3"
+            class="d-flex gap-1 flex-column justify-content-start align-items-center mb-2"
           >
-            <div class="fw-bold">
-              <i class="bi bi-calendar-range me-2 text-black"></i>
+            <div class="fw-bold"> -->
+              <!-- <i class="bi bi-calendar-range me-2 text-black"></i> -->
               <!-- Bootstrap Icons -->
-              <h4>{{ "Summary Produksi" | translate }}</h4>
-            </div>
+              <!-- <h4>{{ "Summary Produksi" | translate }}</h4>
+            </div> -->
             <!-- <div class="fw-bold">
               <span class="badge bg-primary fs-6"> -->
             <!-- {{formatToday()}} -->
@@ -295,7 +295,7 @@
             <!-- </span>
             </div> -->
 
-            <div
+            <!-- <div
               class="alert-kirim col-sm-12 d-flex flex-column justify-content-start align-items-center"
             >
               <span> Semua data production yang statusnya BELUM KIRIM ! </span>
@@ -306,9 +306,11 @@
             </div>
           </div>
         </div>
+      </div> -->
+       <div *ngIf="!pdfSrc">
+          <app-loading></app-loading>
       </div>
-
-      <div class="card shadow-sm mb-3">
+      <!-- <div class="card shadow-sm mb-3">
         <div class="card-body body-kirim">
           <div
             *ngIf="listSummaryData.length == 0"
@@ -323,12 +325,12 @@
             class="row align-items-center mx-1 my-2"
             *ngFor="let item of listSummaryData"
           >
-            <!-- Item description -->
+           
             <div class="col-12 col-sm-12 col-lg-6 fw-semibold mb-2">
               {{ item.kodeBarang }} - {{ item.namaBarang }}
             </div>
 
-            <!-- Konversi -->
+         
             <div class="col-12 col-sm-4 col-lg-2 mb-2">
               <span
                 class="badge bg-primary fs-6 fs-sm-7 fs-md-6 w-100 d-flex justify-content-center"
@@ -339,7 +341,7 @@
               </span>
             </div>
 
-            <!-- Jumlah Produksi -->
+          
             <div class="col-12 col-sm-4 col-lg-2 mb-2">
               <span
                 class="badge bg-primary fs-6 fs-sm-7 fs-md-6 w-100 d-flex justify-content-center"
@@ -348,7 +350,7 @@
               </span>
             </div>
 
-            <!-- Total Produksi -->
+           
             <div class="col-12 col-sm-4 col-lg-2 mb-2">
               <span
                 class="badge bg-primary fs-6 fs-sm-7 fs-md-6 w-100 d-flex justify-content-center"
@@ -358,16 +360,27 @@
             </div>
           </div>
         </div>
+      </div> -->
+
+      <div class="card shadow-sm mb-3" *ngIf="pdfSrc">
+        <div class="card-body">
+          <ngx-extended-pdf-viewer
+          [src]="pdfSrc"
+          useBrowserLocale="true"
+          [height]="'65vh'"
+        ></ngx-extended-pdf-viewer>
+        </div>
       </div>
 
-      <div class="d-flex justify-content-center align-items-center flex-column">
+      <!-- <div class="d-flex justify-content-center align-items-center flex-column">
         <span class="fw-bold text-center"
           >Total Transaksi ({{ totalTransSummary }})</span
         >
-      </div>
+      </div> -->
     </div>
   </c-modal-body>
   <c-modal-footer class="justify-center">
+    
     <button
       class="btn btn-success text-white btn-150 w-180 me-3"
       [disabled]="loadingKirim || listSummaryData.length == 0"
@@ -498,3 +511,5 @@
     </button> -->
   </c-modal-footer>
 </c-modal>
+
+

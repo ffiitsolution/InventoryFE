@@ -96,7 +96,7 @@ import { DetailPenerimaanBrgBksReturComponent } from './penerimaan-barang-bekas/
 import { ProductionListForPostingComponent } from './production/dt-list-for-posting/production-list-for-posting.component';
 import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 import { ProductionComponent } from './production/production/production';
-
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -125,7 +125,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     SharedComponentModule,
     PaginationModule,
     SelectDropDownModule,
-    TimepickerModule.forRoot()
+    TimepickerModule.forRoot(),
+    NgxExtendedPdfViewerModule
   ],
   declarations: [
     DeliveryItemComponent,

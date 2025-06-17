@@ -22,33 +22,41 @@ import { AppConfig } from '../../../config/app.config';
 import { Subject } from 'rxjs';
 import { Page } from '../../../model/page';
 import moment from 'moment';
-import { ACTION_CETAK, ACTION_VIEW, DEFAULT_DELAY_TABLE } from '../../../../constants';
+import {
+  ACTION_CETAK,
+  ACTION_VIEW,
+  DEFAULT_DELAY_TABLE,
+  LS_INV_SELECTED_SO,
+} from '../../../../constants';
 
 @Component({
   selector: 'app-display-selisih-so',
   templateUrl: './display-selisih-so.component.html',
   styleUrl: './display-selisih-so.component.scss',
 })
-export class DisplaySelisihSoComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DisplaySelisihSoComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
-  formData: any = {}
+  formData: any = {};
   alreadyPrint: boolean;
   disabledPrintButton: any;
-  paramGenerateReport: any = {}
+  paramGenerateReport: any = {};
   isShowModalReport: boolean = false;
-  paramUpdateReport: any = {}
+  paramUpdateReport: any = {};
   protected config = AppConfig.settings.apiServer;
   dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   page = new Page();
   dtColumns: any = [];
+  dataSo: any;
 
   constructor(
     private service: AppService,
     private g: GlobalService,
     private dataService: DataService,
     translation: TranslationService,
-    private router: Router,
+    private router: Router
   ) {
     this.dtOptions = {
       language:
@@ -57,18 +65,22 @@ export class DisplaySelisihSoComponent implements OnInit, OnDestroy, AfterViewIn
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: () => { },
+      drawCallback: () => {},
       ajax: (dataTablesParameters: any, callback: any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
           ...dataTablesParameters,
           kodeGudang: this.g.getUserLocationCode(),
-          tipeTransaksi: '5'
+          tipeTransaksi: '5',
+          nomorTransaksi: this.dataSo?.noAdj ?? '',
         };
         setTimeout(() => {
           this.dataService
-            .postData(this.config.BASE_URL + '/api/stock-opname/display-selisih-so', params)
+            .postData(
+              this.config.BASE_URL + '/api/stock-opname/display-selisih-so',
+              params
+            )
             .subscribe((resp: any) => {
               const mappedData = resp.data.map((item: any, index: number) => {
                 const { rn, ...rest } = item;
@@ -91,12 +103,16 @@ export class DisplaySelisihSoComponent implements OnInit, OnDestroy, AfterViewIn
             });
         }, DEFAULT_DELAY_TABLE);
       },
-      order: [[3, 'desc']],
+      order: [[2, 'desc']],
       columns: [
         { data: 'dtIndex', title: '#' },
         { data: 'tglTransaksi', title: 'Tanggal Transaksi' },
         { data: 'nomorTransaksi', title: 'No Transaksi' },
-        { data: 'keterangan', title: 'Keterangan Penyesuaian', searchable: true },
+        {
+          data: 'keterangan',
+          title: 'Keterangan Penyesuaian',
+          searchable: true,
+        },
         { data: 'userCreate', title: 'User Proses', searchable: true },
         {
           data: 'dateCreate',
@@ -142,19 +158,16 @@ export class DisplaySelisihSoComponent implements OnInit, OnDestroy, AfterViewIn
 
   actionBtnClick(action: string, data: any = null) {
     if (action === ACTION_VIEW) {
-      this.g.saveLocalstorage(
-        'selectedData',
-        JSON.stringify(data)
-      );
+      this.g.saveLocalstorage('selectedData', JSON.stringify(data));
       this.router.navigate(['/stock-opname/display-selisih-so/detail']);
     }
     if (action === ACTION_CETAK) {
-      this.isShowModalReport = true
+      this.isShowModalReport = true;
       this.paramGenerateReport = {
         isDownloadCsv: false,
         kodeGudang: data.kodeGudang,
         nomorTransaksi: data.nomorTransaksi,
-      }
+      };
     }
   }
 
@@ -163,17 +176,29 @@ export class DisplaySelisihSoComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   ngOnInit(): void {
+    this.dataSo = JSON.parse(
+      this.g.getLocalstorage(LS_INV_SELECTED_SO) ?? '{}'
+    );
+    // if (this.dataSo?.noAdj != null) {
+    //   this.dataService
+    //     .postData(this.g.urlServer + '/api/rsc/dropdown-rsc', {})
+    //     .subscribe((resp: any) => {
+    //       console.log('resp', resp);
+    //     });
+    // }
   }
 
-  ngOnDestroy(): void { }
+  ngOnDestroy(): void {
+    localStorage.removeItem(LS_INV_SELECTED_SO);
+    this.dtTrigger.unsubscribe();
+  }
 
-  ngAfterViewInit(): void { }
+  ngAfterViewInit(): void {}
 
   closeModal() {
     this.isShowModalReport = false;
     this.disabledPrintButton = false;
   }
-
 
   onShowModalReport() {
     this.isShowModalReport = true;

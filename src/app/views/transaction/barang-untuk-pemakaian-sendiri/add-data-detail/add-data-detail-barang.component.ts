@@ -375,25 +375,54 @@ export class AddDataDetailBarangComponent
     ).toFixed(2); // <-- returns string
 
 
-    if (
-      !this.listEntryExpired.some(
-        (item) => item.kodeBarang === this.selectedExpProduct.kodeBarang
-      )
-    ) {
-      this.listEntryExpired.push({
-        tglExpired: new Date(),
-        keteranganTanggal: moment(new Date())
-          .locale('id')
-          .format('D MMMM YYYY'),
-        qtyUsageBesar: this.selectedExpProduct.qtyUsageBesar,
-        qtyUsageKecil: this.selectedExpProduct.qtyUsageKecil,
-        satuanKecil: this.selectedExpProduct.satuanKecil,
-        satuanBesar: this.selectedExpProduct.satuanBesar,
-        konversi: this.selectedExpProduct.konversi,
-        totalQty: totalQtySum,
-        kodeBarang: this.selectedExpProduct.kodeBarang,
-      });
+    if(totalQtySum === 'NaN' || totalQtySum === '0.00') {
+      this.toastr.error('Total Qty Usage tidak boleh 0, Silahkan isikan Qty Usage dengan benar!');
+      return;
     }
+    // if (
+    //   !this.listEntryExpired.some(
+    //     (item) => item.kodeBarang === this.selectedExpProduct.kodeBarang
+    //   )
+    // ) {
+    //   this.listEntryExpired.push({
+    //     tglExpired: new Date(),
+    //     keteranganTanggal: moment(new Date())
+    //       .locale('id')
+    //       .format('D MMMM YYYY'),
+    //     qtyUsageBesar: this.selectedExpProduct.qtyUsageBesar,
+    //     qtyUsageKecil: this.selectedExpProduct.qtyUsageKecil,
+    //     satuanKecil: this.selectedExpProduct.satuanKecil,
+    //     satuanBesar: this.selectedExpProduct.satuanBesar,
+    //     konversi: this.selectedExpProduct.konversi,
+    //     totalQty: totalQtySum,
+    //     kodeBarang: this.selectedExpProduct.kodeBarang,
+    //   });
+    // }
+
+    const existingIndex = this.listEntryExpired.findIndex(
+      (item) => item.kodeBarang === this.selectedExpProduct.kodeBarang
+    );
+
+    const newData = {
+      tglExpired: new Date(),
+      keteranganTanggal: moment(new Date()).locale('id').format('D MMMM YYYY'),
+      qtyUsageBesar: this.selectedExpProduct.qtyUsageBesar,
+      qtyUsageKecil: this.selectedExpProduct.qtyUsageKecil,
+      satuanKecil: this.selectedExpProduct.satuanKecil,
+      satuanBesar: this.selectedExpProduct.satuanBesar,
+      konversi: this.selectedExpProduct.konversi,
+      totalQty: totalQtySum,
+      kodeBarang: this.selectedExpProduct.kodeBarang,
+    };
+
+    if (existingIndex !== -1) {
+    // Assign ulang data jika kodeBarang sudah ada
+    this.listEntryExpired[existingIndex] = newData;
+    } else {
+    // Tambahkan data baru jika belum ada
+    this.listEntryExpired.push(newData);
+    }
+
     this.totalFilteredExpired = totalQtySum;
 
     this.isShowModalExpired = true;
