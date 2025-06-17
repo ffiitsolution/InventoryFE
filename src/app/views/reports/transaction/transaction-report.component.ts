@@ -161,7 +161,9 @@ export class TransactionReportComponent
       'Terima Retur Dari Site',
       'Kirim Retur Ke Site',
       'Kirim Retur Ke Supplier',
-      'Pemakaian Barang Sendiri'
+      'Pemakaian Barang Sendiri',
+      'Barang Rusak/Pemusnahan',
+      'Penjualan Barang Bekas'
     ].includes(this.currentReport)
 
     ) {

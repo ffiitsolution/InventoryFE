@@ -1,56 +1,76 @@
-<div class="fade-in">
-  <div class="left-container">
-    <div class="version-list">
-      <ul>
-        <li *ngFor="let f of arr; let i = index;" (click)="onModulSelect(f.name, f.ext)" class="list-modul"
-          [class.active]="selectedUrl.includes(f.name)">
-          {{i+1}}. {{ (f.name ? f.name.replaceAll('_', ' ') : '') | titlecase }} <c-badge color="secondary"
-            *ngIf="f.size">{{ f.size }}</c-badge>
-          <br> <span class="text-muted">{{ f.lastUpdate }}</span>
-        </li>
-      </ul>
-    </div>
-
-    <div class="right-container" *ngIf="selectedUrl">
-      <div class="my-2" *ngIf="selectedUrl.length > 1">
-        <p class="text-center" *ngIf="!!textLoading">{{ textLoading }}</p>
-        <div *ngIf="selectedExtention == 'pdf' && !textLoading">
-          <c-button-toolbar aria-label="Tools" role="group">
-            <c-button-group aria-label="Page" class="mt-2 me-2" role="group">
-              <button cButton color="danger" variant="outline" (click)="onPrevPage()">
-                <i class="fa fa-chevron-left"></i>
-              </button>
-              <c-input-group>
-                <input aria-describedby="btnGroupAddon" aria-label="Jump to page" cFormControl
-                  placeholder="Jump to page" type="number" [(ngModel)]="pageNum" min="1" [max]="totalPages"
-                  class="text-center" />
-                <span cInputGroupText> / {{ totalPages }}</span>
-              </c-input-group>
-              <button cButton color="danger" variant="outline" (click)="onNextPage()">
-                <i class="fa fa-chevron-right"></i>
-              </button>
-            </c-button-group>
-            <c-button-group aria-label="File" class="mt-2" role="group">
-              <button cButton color="danger" variant="outline" (click)="printPdf()" title="Print">
-                <i class="fa fa-print me-2"></i>
-              </button>
-              <button cButton color="danger" variant="outline" (click)="download()" title="Download">
-                <i class="fa fa-download me-2"></i>
-              </button>
-              <button cButton color="danger" variant="outline" (click)="enterFullscreen()" title="View Fullscreen">
-                <i class="fa fa-arrows-alt me-2"></i>
-              </button>
-            </c-button-group>
-          </c-button-toolbar>
+<div class="fade-in row">
+  <div class="col-4 left-container">
+    <div>
+      <div class="row m-0 mb-1 pe-3">
+        <div class="col p-1">
+          <select class="form-select form-select-sm p-1 ps-2" [(ngModel)]="filterModule">
+            <option value="">Semua</option>
+            <option value="PDF">PDF</option>
+            <option value="VIDEO">Video</option>
+            <option value="Other">Lainnya</option>
+          </select>
         </div>
-        <pdf-viewer id="pdfViewer" [src]="selectedUrl" [show-borders]="true" [render-text]="true"
-          [original-size]="false" [(page)]="pageNum" style="width: 100%; height: 70vh"
-          (after-load-complete)="afterLoadComplete($event)" (on-progress)="onProgress($event)"
-          (error)="handlePdfError($event)" *ngIf="selectedExtention == 'pdf'"></pdf-viewer>
-        <iframe [src]="fileUrl" width="100%" height="600px" frameborder="0" *ngIf="selectedExtention != 'pdf'">
-        </iframe>
+        <div class="col p-1">
+          <input type="text" class="form-control form-control-sm" placeholder="Cari modul..."
+            [(ngModel)]="searchModuleName">
+        </div>
+        <div class="col-1 p-1">
+          <button class="btn btn-sm btn-outline-secondary" (click)="toggleSortOrder()"
+            title="Urutkan berdasarkan tanggal {{ sortOrder === 'asc' ? 'ASC' : 'DESC' }}">
+            <i class="fa fa-sort-numeric-{{ sortOrder === 'asc' ? 'a' : 'de' }}sc" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <div class="version-list">
+        <ul>
+          <li *ngFor="let f of filteredArr; let i = index;" (click)="onModulSelect(f.name, f.ext)" class="list-modul"
+            [class.active]="selectedUrl.includes(f.name)">
+            {{i+1}}. {{ (f.name ? f.name.replaceAll('_', ' ') : '') | titlecase }} <c-badge color="secondary"
+              *ngIf="f.size">{{ f.size }}</c-badge>
+            <br> <span class="text-muted">{{ f.lastUpdate }}</span>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
 
+  <div class="col-8 right-container" *ngIf="selectedUrl" style="height:30vh;">
+    <div *ngIf="selectedUrl.length > 1" style="height:30vh;">
+      <p class="text-center alert alert-secondary" *ngIf="!!textLoading">{{ textLoading }}</p>
+      <ng-template #additionalButtons>
+        <div id="toolbarViewer">
+          <div id="toolbarViewerLeft">
+            <pdf-toggle-sidebar></pdf-toggle-sidebar>
+            <div class="toolbarButtonSpacer"></div>
+            <pdf-paging-area></pdf-paging-area>
+          </div>
+          <pdf-zoom-toolbar></pdf-zoom-toolbar>
+          <div id="toolbarViewerRight">
+            <pdf-presentation-mode></pdf-presentation-mode>
+            <!-- <pdf-shy-button [cssClass]="'lg' | responsiveCSSClass" class="newTab" title="open PDF file in a new tab"
+                primaryToolbarId="openInNewTab" l10nId="infinite_scroll" [action]="download"
+                [order]="1" [closeOnClick]="true" image="<svg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'>
+     <path fill='rgb(90, 90, 90)' d='M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z'/>
+    </svg>">
+              </pdf-shy-button> -->
+            <pdf-print></pdf-print>
+            <pdf-download></pdf-download>
+            <pdf-toggle-secondary-toolbar></pdf-toggle-secondary-toolbar>
+          </div>
+        </div>
+      </ng-template>
+
+      <ngx-extended-pdf-viewer [src]="selectedUrl" useBrowserLocale="true" [height]="'60vh'" [useInlineScripts]="true"
+        *ngIf="selectedExtention == 'pdf'" [minifiedJSLibraries]="false" (progress)="onProgress($event)"
+        [contextMenuAllowed]="true" id="pdfViewer" (pdfLoaded)="afterLoadComplete($event)"
+        [customToolbar]="additionalButtons"></ngx-extended-pdf-viewer>
+
+      <iframe [src]="fileUrl" width="100%" height="600px" frameborder="0"
+        *ngIf="selectedExtention != 'pdf' && selectedExtention != 'mp4' && selectedExtention != 'webm'"
+        [title]="selectedUrl">
+      </iframe>
+      <video width="100%" height="auto" controls [src]="selectedUrl" autoplay loop
+        *ngIf="selectedExtention == 'mp4' || selectedExtention == 'webm'"></video>
+    </div>
+  </div>
 </div>

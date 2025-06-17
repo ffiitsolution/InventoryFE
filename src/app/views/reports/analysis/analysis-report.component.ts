@@ -22,9 +22,10 @@ import { Page } from '../../../model/page';
 import {
   BUTTON_CAPTION_SELECT,
   DEFAULT_DATE_RANGE_RECEIVING_ORDER,
-  REPORT_ANALYSIS_DO_REVISI,
+  REPORT_ANALYSIS_DO_REVISI, REPORT_DEFAULT_SUPPLIER_NAME_NULL, REPORT_PEMBELIAN_BY_SUPPLIER
 } from '../../../../constants';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import { DataService } from '../../../service/data.service';
 
 @Component({
   selector: 'app-analysis-report',
@@ -51,10 +52,14 @@ export class AnalysisReportComponent
   paramStatusAktif: string = '';
   paramTipeListing: string = 'rekap';
   kodePenerima: string = '';
+  selectedSupplierName: string = REPORT_DEFAULT_SUPPLIER_NAME_NULL;
+  selectedSupplierCode: string = '';
   namaPenerima: string = 'KOSONG = CETAK SEMUA PENERIMA';
   isShowModalPenerima: boolean = false;
+  supplierModalVisibility: boolean = false;
   private ngUnsubscribe: Subject<void> = new Subject<void>();
   public dpConfig: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
+  today: Date = new Date();
   currentDate: Date = new Date();
   startDateFilter: Date = new Date(
     this.currentDate.setDate(
@@ -75,6 +80,8 @@ export class AnalysisReportComponent
   REPORT_ANALYSIS_DO_REVISI: string = REPORT_ANALYSIS_DO_REVISI;
   public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   paramTglTransaksi: any = new Date();
+  REPORT_PEMBELIAN_BY_SUPPLIER: string = REPORT_PEMBELIAN_BY_SUPPLIER;
+  
   constructor(
     private service: AppService,
     private g: GlobalService,
@@ -82,7 +89,8 @@ export class AnalysisReportComponent
     private datePipe: DatePipe,
     private router: Router,
     private route: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private dataService: DataService
   ) {
     this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.customTodayClass = 'today-highlight';
@@ -96,6 +104,8 @@ export class AnalysisReportComponent
   }
 
   ngOnInit(): void {
+    console.log('currentDate: ', this.currentDate);
+    console.log('new Date: ', new Date());
     this.g.changeTitle(
       this.translation.instant('All') +
         ' ' +
@@ -117,8 +127,11 @@ export class AnalysisReportComponent
 
     if (['Pengirim By Tujuan', 'Penerimaan By Pengirim'].includes(this.currentReport)) {
       this.renderDataTablesBranch();
-    }else if(['Rekap Transaksi 3 Periode (By Type)'].includes(this.currentReport)){
-      this.renderDataTablesSetupTransaksi()
+    } else if (['Rekap Transaksi 3 Periode (By Type)'].includes(this.currentReport)){
+      this.renderDataTablesSetupTransaksi();
+    } else if (['Pembelian By Supplier'].includes(this.currentReport)) {
+      console.log('Pembelian by supplier')
+      this.renderDataTablesSupplier();
     }
 
     const now = moment();
@@ -482,11 +495,21 @@ export class AnalysisReportComponent
   }
 
   actionBtnClick(data: any) {
-    console.log('actionBtnClick', data);
-    let errorMessage;
-    this.isShowModalPenerima = false;
-    this.kodePenerima = data.kodeCabang;
-    this.namaPenerima = data.namaCabang;
+    switch (this.currentReport) {
+      case REPORT_PEMBELIAN_BY_SUPPLIER: {
+        this.selectedSupplierCode = data.kodeSupplier;
+        this.selectedSupplierName = data.namaSupplier;
+        this.supplierModalVisibility = !this.supplierModalVisibility;
+        break;
+      }
+      default: {
+        let errorMessage;
+        this.isShowModalPenerima = false;
+        this.kodePenerima = data.kodeCabang;
+        this.namaPenerima = data.namaCabang;
+        break;
+      }
+    }
   }
 
 
@@ -547,6 +570,17 @@ export class AnalysisReportComponent
           endDate: this.g.transformDate(this.dateRangeFilter[1]),
         };
         apiUrl = '/api/report/analysis/do-revisi';
+        break;
+      }
+
+      case REPORT_PEMBELIAN_BY_SUPPLIER: {
+        param = {
+          kodeSupplier: this.selectedSupplierCode,
+          kodeGudang: this.userData.defaultLocation.kodeLocation,
+          startDate: this.g.transformDate(this.rangeDateVal[0].toString()),
+          endDate: this.g.transformDate(this.rangeDateVal[1].toString()),
+        }
+        apiUrl = '/api/report/analysis/pembelian-by-supplier'
         break;
       }
 
@@ -659,4 +693,112 @@ export class AnalysisReportComponent
     };
   }
 
+  
+  onRemoveSupplierPressed() {
+    this.selectedSupplierCode = '';
+    this.selectedSupplierName = REPORT_DEFAULT_SUPPLIER_NAME_NULL;
+  }
+
+  onSupplierModalPressed() {
+    this.supplierModalVisibility = !this.supplierModalVisibility;
+  }
+
+  renderDataTablesSupplier(): void {
+    this.dtOptions = {
+      language:
+        this.translation.getCurrentLanguage() == 'id'
+          ? this.translation.idDatatable
+          : {},
+      processing: true,
+      serverSide: true,
+      autoWidth: true,
+      info: true,
+      pageLength: 5,
+      lengthMenu: [5, 10, 25],
+      drawCallback: (drawCallback: any) => {
+        this.selectedRowData = undefined;
+      },
+      ajax: (dataTablesParameters: any, callback: any) => {
+        this.page.start = dataTablesParameters.start;
+        this.page.length = dataTablesParameters.length;
+        const params = {
+          ...dataTablesParameters,
+          status: '',
+        };
+        this.dataService.postData(`${this.g.urlServer}/api/supplier/dt`,params).subscribe((resp: any) => {
+          const mappedData = resp.data.map((item: any, index: number) => {
+            // hapus rn dari data
+            const { rn, ...rest } = item;
+            const finalData = {
+              ...rest,
+              dtIndex: this.page.start + index + 1,
+            };
+            return finalData;
+          });
+          this.page.recordsTotal = resp.recordsTotal;
+          this.page.recordsFiltered = resp.recordsFiltered;
+          callback({
+            recordsTotal: resp.recordsTotal,
+            recordsFiltered: resp.recordsFiltered,
+            data: mappedData,
+          });
+        });
+      },
+      columns: [
+        { data: 'dtIndex', title: '#', orderable: false, searchable: false },
+        { data: 'kodeSupplier', title: 'Kode', searchable: true },
+        { data: 'namaSupplier', title: 'Nama Supplier', searchable: true },
+        { data: 'alamat', title: 'Alamat', searchable: true },
+        { data: 'kota', title: 'Kota', searchable: true },
+        {
+          data: 'statusAktif',
+          title: 'Status',
+          searchable: false,
+          render: (data: any) => {
+            if (data === 'A') {
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+            }
+            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
+          },
+        },
+        {
+          title: 'Action',
+          render: (data: any, _: any, row: any) => {
+            if (row.statusAktif === 'A') {
+              return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-select btn-info btn-60 text-white">${this.buttonCaptionSelect}</button>
+                </div>
+              `;
+            }
+            return `
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button class="btn btn-sm action-select btn-info btn-60 text-white" disabled>${this.buttonCaptionSelect}</button>
+                </div>
+              `;
+          },
+        },
+      ],
+      searchDelay: 1000,
+      rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        $('.action-select', row).on('click', () => this.actionBtnClick(data));
+        if (index === 0 && !this.selectedRowData) {
+          setTimeout(() => {
+            $(row).trigger('td');
+          }, 0);
+        }
+        $('td', row).on('click', () => {
+          $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+          if (this.selectedRowData !== data) {
+            this.selectedRowData = data;
+            $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+          } else {
+            this.selectedRowData = undefined;
+          }
+        });
+
+        return row;
+      },
+    };
+  }
 }

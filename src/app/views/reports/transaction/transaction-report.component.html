@@ -35,6 +35,34 @@
       </div>
     </ng-container>
 
+    <ng-container *ngIf="['Barang Rusak/Pemusnahan'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Tanggal Pemusnahan
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
+            aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
+            placeholder="{{ 'Tanggal Pemusnahan' | translate }}" />
+        </div>
+      </div>
+    </ng-container>
+
+        <ng-container *ngIf="['Penjualan Barang Bekas'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Tanggal Penjualan
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
+            aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
+            placeholder="{{ 'Tanggal Penjualan' | translate }}" />
+        </div>
+      </div>
+    </ng-container>
+
 
     <ng-container
       *ngIf="['Transaksi Pengiriman','Produksi','Pesanan Ke Supplier', 'Penerimaan'].includes(currentReport)">
@@ -135,7 +163,7 @@
     </ng-container>
 
     <ng-container
-      *ngIf="['Produksi','Penerimaan Barang Bekas', 'Terima Retur Dari Site', 'Kirim Retur Ke Site', 'Kirim Retur Ke Supplier', 'Pemakaian Barang Sendiri'].includes(currentReport)">
+      *ngIf="['Penjualan Barang Bekas','Barang Rusak/Pemusnahan', 'Produksi','Penerimaan Barang Bekas', 'Terima Retur Dari Site', 'Kirim Retur Ke Site', 'Kirim Retur Ke Supplier', 'Pemakaian Barang Sendiri'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Tipe Listing

@@ -29,6 +29,7 @@ import { AllAppInfoComponent } from './index/index.component';
 import { ModulesComponent } from './modules/modules.component';
 import { ReleaseNoteComponent } from './release-note/release-note.component';
 import { AboutSoftwareComponent } from './about-software/about-software.component';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 // import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -57,12 +58,13 @@ export function HttpLoaderFactory(http: HttpClient) {
     ListGroupModule,
     TabsModule,
     // PdfViewerModule,
+    NgxExtendedPdfViewerModule,
   ],
   declarations: [
     AllAppInfoComponent,
     ModulesComponent,
     ReleaseNoteComponent,
-    AboutSoftwareComponent
+    AboutSoftwareComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })
