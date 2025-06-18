@@ -88,7 +88,7 @@ export class ProductionListForPostingComponent implements OnInit {
     private router: Router,
     private appService: AppService,
     private toastr: ToastrService,
-     private datePipe: DatePipe,
+    private datePipe: DatePipe,
   ) {
     this.dtColumns = this.dtOptions.columns;
     this.g.navbarVisibility = false;
@@ -493,7 +493,7 @@ export class ProductionListForPostingComponent implements OnInit {
     };
 
     Swal.fire({
-      ...this.g.componentKonfirmasiPosting,
+      ...this.g.componentKonfirmasiPostingAll,
       showConfirmButton: false,
       showCancelButton: false,
       width: '600px',
@@ -551,12 +551,12 @@ export class ProductionListForPostingComponent implements OnInit {
 
   doDownload(type: string ="") {
     let param = {};
-
+    const today = moment();
     this.loadingRptWIP = true;
     param = {
       kodeGudang: this.g.getUserLocationCode(),
-      startDate: this.g.transformDate(this.dateRangeFilter[0]),
-      endDate: this.g.transformDate(this.dateRangeFilter[1]),
+      startDate: today.format('DD MMM yyyy'),
+      endDate: today.format('DD MMM yyyy'),
       userData: this.userData,
       isDownloadCsv: type === 'csv' || type === 'xlsx',
       isDownloadXlsx: type === 'xlsx',
@@ -585,12 +585,6 @@ export class ProductionListForPostingComponent implements OnInit {
       },
     });
   }
-
-  // previewPdf(res: any) {
-  //   var blob = new Blob([res], { type: 'application/pdf' });
-  //   this.downloadURL = window.URL.createObjectURL(blob);
-  //   window.open(this.downloadURL);
-  // }
 
    previewPdf(res: any) {
     const blob = new Blob([res], { type: 'application/pdf' });

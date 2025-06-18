@@ -48,8 +48,9 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedRegion: any;
   public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   paramStatusAktif: string = '';
-  paramTipeListing: string = 'header';
+  paramTipeListing: string = 'rekap';
   paramPilihanCetak: string = 'mutasi';
+  paramHasilLaporanCetak: string = 'detail';
   dateRangeString: string;
   startOfMonth: any;
   endOfMonth: any;
@@ -126,7 +127,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       this.renderDataTables();
     }
     if (
-      ['Stock Yang Mendekati Tgl Expired', 'Stock Card', 'Stock Barang By Expired'].includes(
+      ['Stock Yang Mendekati Tgl Expired', 'Stock Card', 'Stock Barang By Expired', 'Inventory Movement'].includes(
         this.currentReport
       )
     ) {
@@ -204,6 +205,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
         kodeGudang: this.g.getUserLocationCode(),
         status: this.paramStatusAktif,
         tipePilihanCetak: this.paramPilihanCetak,
+        tipeListing: this.paramTipeListing,
         firstDate: this.startOfMonth,
         lastDate: moment(this.paramTglTransaksi).format('DD MMM YYYY'),
         yearEom: previousMonth.format('YYYY'),
@@ -221,6 +223,18 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
         endDate: this.endOfMonth,
         kodeBarang: this.kodeBarang,
       };
+    } else if (this.currentReport === 'Inventory Movement') {
+      param = {
+        startDate: this.startOfMonth,
+        endDate: this.endOfMonth,
+        kodeBarang: this.kodeBarang,
+        tahunSaldo : moment(this.paramTglTransaksi).format('YYYY'),
+        bulanSaldo : moment(this.paramTglTransaksi).format('M'),
+        tipeListing: this.paramTipeListing,
+        tipePilihanCetak : this.paramPilihanCetak,
+        defaultGudang : this.g.getUserKodeSingkat()
+      };
+      console.log('param :', param)
     } else if (this.currentReport === 'Stock Card') {
       if (!this.kodeBarang || this.kodeBarang === '') {
         this.toastr.error('Silahkan Pilih Kode Barang Terlebih Dahulu!');
@@ -246,6 +260,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
         kodeGudang: this.g.getUserLocationCode(),
         status: this.paramStatusAktif,
         tipePilihanCetak: this.paramPilihanCetak,
+        tipeHasilLaporanCetak: this.paramHasilLaporanCetak,
         firstDate: this.startOfMonth,
         lastDate: moment(this.paramTglTransaksi).format('DD MMM YYYY'),
         yearEom: moment(this.paramTglTransaksi).format('YYYY'), // tanpa dikurangi

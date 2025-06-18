@@ -510,4 +510,17 @@ export class AppService {
       payload
     );
   }
+
+  getSummaryFinishProduction(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/production/summary-finish`,
+      payload
+    );
+  }
+  getDoFromHqByNopesanan(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/delivery-order/by-nopesanan`,
+      payload
+    );
+  }
 }

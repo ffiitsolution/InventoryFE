@@ -6,36 +6,69 @@
     </button> -->
     <c-header-nav class="d-none d-lg-flex me-auto">
       <c-nav-item>
-        <img [src]="'./assets/img/brand/logo_kfc.png'" alt="Logo" style="max-width: 48px" />
+        <img
+          [src]="'./assets/img/brand/logo_kfc.png'"
+          alt="Logo"
+          style="max-width: 48px"
+        />
       </c-nav-item>
       <c-nav-item>
         <a cNavLink class="ms-2 fw-bold fs-4 text-truncate">
           MPCS PRODUCTION
-          <c-badge color="success" shape="rounded-pill" *ngIf="g.serverStatus == 'UP'"> ONLINE </c-badge>
-          <c-badge color="danger" shape="rounded-pill" *ngIf="g.serverStatus == 'DOWN'" class="blinking"> OFFLINE
+          <c-badge
+            color="success"
+            shape="rounded-pill"
+            *ngIf="g.serverStatus == 'UP'"
+          >
+            ONLINE
+          </c-badge>
+          <c-badge
+            color="danger"
+            shape="rounded-pill"
+            *ngIf="g.serverStatus == 'DOWN'"
+            class="blinking"
+          >
+            OFFLINE
           </c-badge>
         </a>
       </c-nav-item>
     </c-header-nav>
 
     <c-header-nav class="d-none d-lg-flex">
-      <c-nav-item *ngIf="g.appInfo?.outletName">
+      <!-- <c-nav-item *ngIf="g.appInfo?.outletName">
         <a cNavLink>
           <c-avatar cTextColor="primary" shape="rounded-1" size="md" src="./assets/img/outlet.png">
           </c-avatar>
           {{ g.appInfo?.outletName }} ({{ g.appInfo?.outletCode }})
         </a>
+      </c-nav-item> -->
+      <c-nav-item>
+        <a cNavLink class="d-flex align-items-center">
+          <span class="py-2">
+            {{ "Selamat Datang" | translate }}&nbsp;
+            <strong>{{ currentUser.namaUser }}</strong>
+          </span>
+        </a>
       </c-nav-item>
       <c-nav-item>
         <a cNavLink>
-          <c-avatar cTextColor="primary" shape="rounded-1" size="md" src="./assets/img/schedule.png">
+          <c-avatar
+            cTextColor="primary"
+            shape="rounded-1"
+            size="md"
+            src="./assets/img/schedule.png"
+          >
           </c-avatar>
           <span class="py-2">
-            {{ g.serverStatus == 'UP' ? g.currentDate : 'xx-xx-xxxx' }} {{ g.serverStatus == 'UP' ? g.currentTime :
-            'xx:xx:xx' }}
+            {{ g.serverStatus == "UP" ? g.currentDate : "xx-xx-xxxx" }}
+            {{ g.serverStatus == "UP" ? g.currentTime : "xx:xx:xx" }}
           </span>
-          <i  (click)="$event.stopPropagation(); onLogoutPressed()" class="fa fa-sign-out" aria-hidden="true" style="font-size: 20px;margin-right: 1rem;"></i>
-          
+          <i
+            (click)="$event.stopPropagation(); onLogoutPressed()"
+            class="fa fa-sign-out"
+            aria-hidden="true"
+            style="font-size: 20px; margin-right: 1rem"
+          ></i>
         </a>
       </c-nav-item>
       <!-- <c-nav-item>
@@ -46,35 +79,73 @@
     </c-header-nav>
 
     <!-- Mobile & Tablet Header -->
-    <c-header-nav class="d-flex d-lg-none justify-content-between align-items-center w-100 px-3 py-2">
+    <c-header-nav
+      class="d-flex d-lg-none justify-content-between align-items-center w-100 px-3 py-2"
+    >
       <!-- Left side: Logo -->
       <div class="d-flex align-items-center">
-        <img [src]="'./assets/img/brand/logo_kfc.png'" alt="Logo" style="max-width: 36px;" />
+        <img
+          [src]="'./assets/img/brand/logo_kfc.png'"
+          alt="Logo"
+          style="max-width: 36px"
+        />
         <div class="ms-2">
-          <div class="fw-bold text-truncate" style="max-width: 150px; font-size: 0.8rem;">MPCS PRODUCTION</div>
-          <c-badge color="success" shape="rounded-pill" *ngIf="g.serverStatus == 'UP'" class="mt-1">ONLINE</c-badge>
-          <c-badge color="danger" shape="rounded-pill blinking mt-1" *ngIf="g.serverStatus == 'DOWN'">OFFLINE</c-badge>
+          <div
+            class="fw-bold text-truncate"
+            style="max-width: 150px; font-size: 0.8rem"
+          >
+            MPCS PRODUCTION
+          </div>
+          <c-badge
+            color="success"
+            shape="rounded-pill"
+            *ngIf="g.serverStatus == 'UP'"
+            class="mt-1"
+            >ONLINE</c-badge
+          >
+          <c-badge
+            color="danger"
+            shape="rounded-pill blinking mt-1"
+            *ngIf="g.serverStatus == 'DOWN'"
+            >OFFLINE</c-badge
+          >
         </div>
       </div>
 
-        <!-- Right side: Outlet & Date -->
-        <div class="d-flex flex-column align-items-end text-end">
-          <div *ngIf="g.appInfo?.outletName" class="d-flex align-items-center mb-1">
-            <c-avatar cTextColor="primary" shape="rounded-1" size="sm" src="./assets/img/outlet.png"></c-avatar>
-            <span class="ms-1 small">
-              {{ g.appInfo?.outletName }} ({{ g.appInfo?.outletCode }})
-            </span>
-          </div>
-          <div class="d-flex align-items-center justify-content-end">
-            <!-- <c-avatar cTextColor="primary" shape="rounded-1" size="sm" src="./assets/img/schedule.png"></c-avatar> -->
-            <!-- <span class="ms-1 small">
+      <!-- Right side: Outlet & Date -->
+      <div class="d-flex flex-column align-items-end text-end">
+        <div
+          *ngIf="g.appInfo?.outletName"
+          class="d-flex align-items-center mb-1"
+        >
+          <c-avatar
+            cTextColor="primary"
+            shape="rounded-1"
+            size="sm"
+            src="./assets/img/outlet.png"
+          ></c-avatar>
+          <span class="ms-1 small">
+            {{ g.appInfo?.outletName }} ({{ g.appInfo?.outletCode }})
+          </span>
+        </div>
+        <div class="d-flex align-items-center justify-content-end">
+          <!-- <c-avatar cTextColor="primary" shape="rounded-1" size="sm" src="./assets/img/schedule.png"></c-avatar> -->
+          <!-- <span class="ms-1 small">
               {{ g.serverStatus == 'UP' ? g.currentDate : 'xx-xx-xxxx' }} {{ g.serverStatus == 'UP' ? g.currentTime : 'xx:xx:xx' }}
             </span> -->
-            <i  (click)="$event.stopPropagation(); onLogoutPressed()" class="fa fa-sign-out" aria-hidden="true" style="font-size: 20px;margin-right: 1rem;"></i>
-
-          </div>
+           <span class="ms-1 small">
+            {{ "Selamat Datang" | translate }}&nbsp;
+            <strong>{{ currentUser.namaUser }}</strong>
+          </span>
+            <i
+            (click)="$event.stopPropagation(); onLogoutPressed()"
+            class="fa fa-sign-out"
+            aria-hidden="true"
+            style="font-size: 20px; margin-right: 1rem"
+          ></i>
         </div>
-      </c-header-nav>
+      </div>
+    </c-header-nav>
 
     <c-header-nav *ngIf="appInfo">
       <ng-container *ngTemplateOutlet="userDropdown"></ng-container>
@@ -89,9 +160,22 @@
 
 <ng-template #userDropdown>
   <c-dropdown alignment="end" variant="nav-item">
-    <button title="User" type="button" cButton color="" [caret]="false" cDropdownToggle class="py-0">
-      <c-avatar cTextColor="primary" shape="rounded-1" size="md" src="./assets/img/user.png"
-        [status]="g.serverStatus === 'UP' ? 'success' : 'danger'">
+    <button
+      title="User"
+      type="button"
+      cButton
+      color=""
+      [caret]="false"
+      cDropdownToggle
+      class="py-0"
+    >
+      <c-avatar
+        cTextColor="primary"
+        shape="rounded-1"
+        size="md"
+        src="./assets/img/user.png"
+        [status]="g.serverStatus === 'UP' ? 'success' : 'danger'"
+      >
       </c-avatar>
       <span class="ps-2 text-truncate">
         {{ appInfo.accessLevel }}

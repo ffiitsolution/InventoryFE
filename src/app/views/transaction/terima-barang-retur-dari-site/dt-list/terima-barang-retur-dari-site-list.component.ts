@@ -103,25 +103,27 @@ export class TerimaBarangReturDariSiteListComponent implements OnInit {
         {
           data: 'tglTransaksi',
           title: 'Tanggal Transaksi',
+          searchable: true,
           render: (data: any) => {
             return data ? moment(data).format('DD/MM/YYYY') : '';
           }
         },
 
-        { data: 'nomorTransaksi', title: 'No. Transaksi' },
+        { data: 'nomorTransaksi', title: 'No. Transaksi', searchable: true },
 
         {
-          data: null,
+          data: 'kodePengirim',
           title: 'Pengirim',
-          render: (data: any) => {
-            if (data?.kodePengirim && data?.namaPengirim) {
-              return `${data.kodePengirim} - ${data.namaPengirim}`;
+          searchable: true,
+          render: (data: any, type: any, row: any) => {
+            if (row?.kodePengirim && row?.namaPengirim) {
+              return `${row.kodePengirim} - ${row.namaPengirim}`;
             }
-            return data?.namaPengirim || '';
+            return row?.namaPengirim || '';
           }
         },
 
-        { data: 'keterangan', title: 'Keterangan' },
+        { data: 'keterangan', title: 'Keterangan', searchable: true },
 
         { data: 'userCreate', title: 'User Proses', searchable: true },
 
@@ -137,7 +139,7 @@ export class TerimaBarangReturDariSiteListComponent implements OnInit {
         {
           data: 'timeCreate',
           title: 'Jam',
-          searchable: true,
+          searchable: false,
           render: (data: any) => {
             return data ? moment(data, 'HH:mm:ss').format('HH:mm:ss') : '';
           }
@@ -146,6 +148,7 @@ export class TerimaBarangReturDariSiteListComponent implements OnInit {
         {
           data: 'namaPosting',
           title: 'Status Transaksi',
+          searchable: true,
           render: (data: any) => {
             return `<span class="badge bg-success">${data}</span>`;
           }
