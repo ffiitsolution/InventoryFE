@@ -244,6 +244,13 @@ export class AnalysisReportComponent
         firstDateP3: this.g.transformDate(this.periode3Filter[0]),
         endDateP3: this.g.transformDate(this.periode3Filter[1]),
       };
+    }else if (this.currentReport === 'DO Yang Belum Balik') {
+      param = {
+        kodeGudang: this.userData.defaultLocation.kodeLocation,
+        tipeListing: this.paramTipeListing,
+        startDate:"01 Jan 2010",
+        endDate: this.g.transformDate(this.paramTglTransaksi),
+      };
     }
 
     param = {
