@@ -232,7 +232,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
         bulanSaldo : moment(this.paramTglTransaksi).format('M'),
         tipeListing: this.paramTipeListing,
         tipePilihanCetak : this.paramPilihanCetak,
-        defaultGudang : 'COM'
+        defaultGudang : this.g.getUserKodeSingkat()
       };
       console.log('param :', param)
     } else if (this.currentReport === 'Stock Card') {
