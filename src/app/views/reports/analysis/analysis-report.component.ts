@@ -68,6 +68,8 @@ export class AnalysisReportComponent
   );
   dateRangeFilter: any = [this.startDateFilter, new Date()];
   dtOptions: any = {};
+  dtOptionsProduct: any = {};
+  dtOptionsProduct2: any = {};
   selectedRowData: any;
   page = new Page();
   buttonCaptionSelect: string = BUTTON_CAPTION_SELECT;
@@ -81,6 +83,15 @@ export class AnalysisReportComponent
   public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   paramTglTransaksi: any = new Date();
   REPORT_PEMBELIAN_BY_SUPPLIER: string = REPORT_PEMBELIAN_BY_SUPPLIER;
+  kodeBarang: string = '';
+  namaBarang: string = '';
+  konversi: number = 1;
+  satuanBesar: string = '';
+  satuanKecil: string = '';
+  isShowModalBarang: boolean = false;
+  isShowModalBarang2: boolean = false;
+  kodeBarang2: string = '';
+  namaBarang2: string = '';
   
   constructor(
     private service: AppService,
@@ -125,7 +136,12 @@ export class AnalysisReportComponent
       this.getListParam('listRegion');
     }
 
-    if (['Pengirim By Tujuan', 'Penerimaan By Pengirim'].includes(this.currentReport)) {
+    if (['Mutasi Stock Harian'].includes(this.currentReport)) {
+      this.renderDataTablesProduct();
+      this.renderDataTablesProduct2();
+    }
+
+    if (['Pengirim By Tujuan', 'Penerimaan By Pengirim', 'Mutasi Stock Harian'].includes(this.currentReport)) {
       this.renderDataTablesBranch();
     } else if (['Rekap Transaksi 3 Periode (By Type)'].includes(this.currentReport)){
       this.renderDataTablesSetupTransaksi();
@@ -202,6 +218,14 @@ export class AnalysisReportComponent
     this[targetProperty] = selected;
   }
 
+  onShowModalBarang() {
+    this.isShowModalBarang = true;
+  }
+
+  onShowModalBarang2() {
+    this.isShowModalBarang2 = true;
+  }
+
   doSubmit(type: string) {
     if (
       this.currentReport === 'Master Cabang' &&
@@ -226,7 +250,23 @@ export class AnalysisReportComponent
         status: this.paramStatusAktif,
         tipeListing: this.paramTipeListing,
       };
-    }else if(['Rekap Transaksi 3 Periode (By Type)'].includes(this.currentReport)){
+    } else if (this.currentReport === 'Persiapan Pengiriman Barang') {
+      param = {
+        kodeGudang: this.userData.defaultLocation.kodeLocation,
+        startDate: this.g.transformDate(this.dateRangeFilter[0]),
+        endDate: this.g.transformDate(this.dateRangeFilter[1])
+      };
+    } else if (this.currentReport === 'Mutasi Stock Harian') {
+      param = {
+        kodeGudang: this.userData.defaultLocation.kodeLocation,
+        startDate: this.g.transformDate(this.dateRangeFilter[0]),
+        endDate: this.g.transformDate(this.dateRangeFilter[1]),
+        tahunSaldo : moment(this.dateRangeFilter[0]).format('YYYY'),
+        bulanSaldo : moment(this.dateRangeFilter[0]).format('M'),
+        kodeBarang1 : this.kodeBarang,
+        kodeBarang2 : this.kodeBarang2
+      };
+    } else if(['Rekap Transaksi 3 Periode (By Type)'].includes(this.currentReport)){
       if(!this.kodeTransaksi){
           this.toastr.error('Pilih tipe transaksi terlebih dahulu!');
           this.loadingState['submit'] = false;
@@ -368,6 +408,88 @@ export class AnalysisReportComponent
     }
   }
 
+  handleEnterBarang(event: any) {
+    event.preventDefault();
+
+    let kodeBarang = this.kodeBarang?.trim();
+    if (kodeBarang !== '') {
+      this.getProductRow(kodeBarang);
+    }
+  }
+
+  handleEnterBarang2(event: any) {
+    event.preventDefault();
+
+    let kodeBarang = this.kodeBarang?.trim();
+    if (kodeBarang !== '') {
+      this.getProductRow2(kodeBarang);
+    }
+  }
+
+  getProductRow(kodeBarang: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      if (kodeBarang !== '') {
+        this.service
+          .getProductResep(kodeBarang)
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe({
+            next: (res: any) => {
+              if (res) {
+                this.namaBarang = res.namaBarang;
+                this.konversi = res.konversi || 1;
+                this.satuanBesar = res.satuanBesar;
+                this.satuanKecil = res.satuanKecil;
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            },
+            error: (err: any) => {
+              this.toastr.error(
+                'KODE BARANG TIDAK ADA DI DATABASE, HARAP PERIKSA KEMBALI!',
+                'Error'
+              );
+              resolve(false);
+            },
+          });
+      } else {
+        resolve(false);
+      }
+    });
+  }
+
+  getProductRow2(kodeBarang: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      if (kodeBarang !== '') {
+        this.service
+          .getProductResep(kodeBarang)
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe({
+            next: (res: any) => {
+              if (res) {
+                this.namaBarang2 = res.namaBarang;
+                this.konversi = res.konversi || 1;
+                this.satuanBesar = res.satuanBesar;
+                this.satuanKecil = res.satuanKecil;
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            },
+            error: (err: any) => {
+              this.toastr.error(
+                'KODE BARANG TIDAK ADA DI DATABASE, HARAP PERIKSA KEMBALI!',
+                'Error'
+              );
+              resolve(false);
+            },
+          });
+      } else {
+        resolve(false);
+      }
+    });
+  }
+
   getPenerimaRow(kodePenerima: string) {
     if (kodePenerima !== '') {
       this.service
@@ -386,6 +508,252 @@ export class AnalysisReportComponent
         });
     }
   }
+
+  renderDataTablesProduct(): void {
+      this.dtOptionsProduct = {
+        language:
+          this.translation.getCurrentLanguage() == 'id'
+            ? this.translation.idDatatable
+            : {},
+        processing: true,
+        serverSide: true,
+        autoWidth: true,
+        info: true,
+        pageLength: 5,
+        lengthMenu: [
+          // Provide page size options
+          [5, 10], // Available page sizes
+          ['5', '10'], // Displayed page size labels
+        ],
+        order: [
+          [7, 'asc'],
+          [1, 'asc'],
+        ],
+        drawCallback: (drawCallback: any) => {
+          this.selectedRowData = undefined;
+        },
+        ajax: (dataTablesParameters: any, callback: any) => {
+          this.page.start = dataTablesParameters.start;
+          this.page.length = dataTablesParameters.length;
+          const params = {
+            ...dataTablesParameters,
+            kodeGudang: this.g.getUserLocationCode(),
+          };
+          this.service
+            .getBahanBakuList(params)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((resp: any) => {
+              const mappedData = resp.data.map((item: any, index: number) => {
+                // hapus rn dari data
+                const { rn, ...rest } = item;
+                const finalData = {
+                  ...rest,
+                  dtIndex: this.page.start + index + 1,
+                };
+                return finalData;
+              });
+              this.page.recordsTotal = resp.recordsTotal;
+              this.page.recordsFiltered = resp.recordsFiltered;
+              callback({
+                recordsTotal: resp.recordsTotal,
+                recordsFiltered: resp.recordsFiltered,
+                data: mappedData,
+              });
+            });
+        },
+        columns: [
+          { data: 'kodeBarang', title: 'Kode' },
+          { data: 'namaBarang', title: 'Nama Barang' },
+          {
+            data: 'konversi',
+            title: 'Konversi',
+            render: function (data: any, type: any, row: any) {
+              return Number(data).toFixed(2); // Ensures two decimal places
+            },
+          },
+          { data: 'satuanBesar', title: 'Satuan Besar' },
+          { data: 'satuanKecil', title: 'Satuan Kecil' },
+          { data: 'defaultGudang', title: 'Default Gudang' },
+          {
+            data: 'status',
+            title: 'Status',
+            searchable: false,
+            render: (data: any) => {
+              if (data === 'Aktif') {
+                return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+              }
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
+            },
+          },
+          {
+            title: 'Action',
+            orderable: false,
+            render: (data: any, type: any, row: any) => {
+              const disabled = row.status !== 'Aktif' ? 'disabled' : '';
+              return `<button class="btn btn-sm action-select btn-info btn-80 text-white" ${disabled}>Pilih</button>`;
+            },
+          },
+        ],
+        searchDelay: 1000,
+        rowCallback: (row: Node, data: any[] | Object, index: number) => {
+          $('.action-select', row).on('click', () => this.onPilihBarang(data));
+  
+          $('td', row).on('click', () => {
+            $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+            if (this.selectedRowData !== data) {
+              this.selectedRowData = data;
+              $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+            } else {
+              this.selectedRowData = undefined;
+            }
+          });
+  
+          return row;
+        },
+      };
+    }
+  
+    onPilihBarang(data: any) {
+      let errorMessage;
+      this.isShowModalBarang = false;
+      this.kodeBarang = data.kodeBarang;
+      this.namaBarang = data.namaBarang;
+      this.kodeBarang2 = data.kodeBarang;
+      this.namaBarang2 = data.namaBarang;
+      this.konversi = data.konversi;
+      this.satuanBesar = data.satuanBesar;
+      this.satuanKecil = data.satuanKecil;
+    }
+
+    renderDataTablesProduct2(): void {
+      this.dtOptionsProduct2 = {
+        language:
+          this.translation.getCurrentLanguage() == 'id'
+            ? this.translation.idDatatable
+            : {},
+        processing: true,
+        serverSide: true,
+        autoWidth: true,
+        info: true,
+        pageLength: 5,
+        lengthMenu: [
+          // Provide page size options
+          [5, 10], // Available page sizes
+          ['5', '10'], // Displayed page size labels
+        ],
+        order: [
+          [7, 'asc'],
+          [1, 'asc'],
+        ],
+        drawCallback: (drawCallback: any) => {
+          this.selectedRowData = undefined;
+        },
+        ajax: (dataTablesParameters: any, callback: any) => {
+          this.page.start = dataTablesParameters.start;
+          this.page.length = dataTablesParameters.length;
+          const params = {
+            ...dataTablesParameters,
+            kodeGudang: this.g.getUserLocationCode(),
+          };
+          this.service
+            .getBahanBakuList(params)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((resp: any) => {
+              const mappedData = resp.data.map((item: any, index: number) => {
+                // hapus rn dari data
+                const { rn, ...rest } = item;
+                const finalData = {
+                  ...rest,
+                  dtIndex: this.page.start + index + 1,
+                };
+                return finalData;
+              });
+              this.page.recordsTotal = resp.recordsTotal;
+              this.page.recordsFiltered = resp.recordsFiltered;
+              callback({
+                recordsTotal: resp.recordsTotal,
+                recordsFiltered: resp.recordsFiltered,
+                data: mappedData,
+              });
+            });
+        },
+        columns: [
+          { data: 'kodeBarang', title: 'Kode' },
+          { data: 'namaBarang', title: 'Nama Barang' },
+          {
+            data: 'konversi',
+            title: 'Konversi',
+            render: function (data: any, type: any, row: any) {
+              return Number(data).toFixed(2); // Ensures two decimal places
+            },
+          },
+          { data: 'satuanBesar', title: 'Satuan Besar' },
+          { data: 'satuanKecil', title: 'Satuan Kecil' },
+          { data: 'defaultGudang', title: 'Default Gudang' },
+          {
+            data: 'status',
+            title: 'Status',
+            searchable: false,
+            render: (data: any) => {
+              if (data === 'Aktif') {
+                return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+              }
+              return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
+            },
+          },
+          {
+            title: 'Action',
+            orderable: false,
+            render: (data: any, type: any, row: any) => {
+              const disabled = row.status !== 'Aktif' ? 'disabled' : '';
+              return `<button class="btn btn-sm action-select btn-info btn-80 text-white" ${disabled}>Pilih</button>`;
+            },
+          },
+        ],
+        searchDelay: 1000,
+        rowCallback: (row: Node, data: any[] | Object, index: number) => {
+          $('.action-select', row).on('click', () => this.onPilihBarang2(data));
+  
+          $('td', row).on('click', () => {
+            $('td').removeClass('bg-secondary bg-opacity-25 fw-semibold');
+            if (this.selectedRowData !== data) {
+              this.selectedRowData = data;
+              $('td', row).addClass('bg-secondary bg-opacity-25 fw-semibold');
+            } else {
+              this.selectedRowData = undefined;
+            }
+          });
+  
+          return row;
+        },
+      };
+    }
+
+    onPilihBarang2(data: any) {
+      let errorMessage;
+      this.isShowModalBarang2 = false;
+      this.kodeBarang2 = data.kodeBarang;
+      this.namaBarang2 = data.namaBarang;
+      this.konversi = data.konversi;
+      this.satuanBesar = data.satuanBesar;
+      this.satuanKecil = data.satuanKecil;
+    }
+
+    deleteBarang() {
+      this.kodeBarang = '';
+      this.namaBarang = '';
+      this.konversi = 1;
+      this.satuanBesar = '';
+      this.satuanKecil = '';
+    }
+
+    deleteBarang2() {
+      this.kodeBarang2 = '';
+      this.namaBarang2 = '';
+      this.konversi = 1;
+      this.satuanBesar = '';
+      this.satuanKecil = '';
+    }
 
   renderDataTablesBranch(): void {
     this.dtOptions = {

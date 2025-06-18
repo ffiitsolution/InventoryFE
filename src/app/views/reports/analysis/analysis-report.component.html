@@ -20,10 +20,24 @@
 </div>
 <c-card class="fade-in mb-4">
   <c-card-body>
-    <ng-container *ngIf="['Pengirim By Tujuan', REPORT_ANALYSIS_DO_REVISI].includes(currentReport)">
+    <ng-container *ngIf="['Pengirim By Tujuan','Persiapan Pengiriman Barang', REPORT_ANALYSIS_DO_REVISI].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Tanggal Pengiriman
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
+            aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
+            placeholder="{{ 'Tanggal Pengiriman' | translate }}" />
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="['Mutasi Stock Harian'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Tanggal Stock
           <span class="float-end">:</span>
         </div>
         <div class="col">
@@ -243,6 +257,60 @@
       </div>
     </ng-container>
 
+    <ng-container *ngIf="['Mutasi Stock Harian'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Kode Barang
+          <span class="float-end">:</span>
+        </div>
+        <div class="col-2">
+          <div class="input-group">
+            <input type="text" autofocus class="form-control text-center" [(ngModel)]="kodeBarang"
+              (keydown.enter)="handleEnterBarang($event)" />
+            <button class="btn btn-outline-secondary" type="button" (click)="onShowModalBarang()">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-5">
+          <div class="input-group">
+            <input type="text" id="dateFilter" class="form-control input-disabled" [(ngModel)]="namaBarang"
+              [placeholder]="namaBarang ? '' : 'Semua Barang'" disabled />
+            <button class="btn btn-outline-primary" type="button" (click)="deleteBarang()">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="['Mutasi Stock Harian'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Kode S.D .....
+          <span class="float-end">:</span>
+        </div>
+        <div class="col-2">
+          <div class="input-group">
+            <input type="text" autofocus class="form-control text-center" [(ngModel)]="kodeBarang2"
+              (keydown.enter)="handleEnterBarang2($event)" />
+            <button class="btn btn-outline-secondary" type="button" (click)="onShowModalBarang2()">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-5">
+          <div class="input-group">
+            <input type="text" id="dateFilter" class="form-control input-disabled" [(ngModel)]="namaBarang2"
+              [placeholder]="namaBarang2 ? '' : 'Semua Barang'" disabled />
+            <button class="btn btn-outline-primary" type="button" (click)="deleteBarang2()">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
     <ng-container *ngIf="['Rekap Transaksi 3 Periode (By Type)'].includes(currentReport)">
       <div class="row mt-2">
         <div class="col-3">
@@ -335,12 +403,14 @@
           </button>
           <ul cDropdownMenu>
             <li>
-              <button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('preview')">
+              <button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('preview')"
+              *ngIf="!((currentReport === 'Mutasi Stock Harian'))">
                 Preview PDF
               </button>
             </li>
             <li>
-              <button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')">
+              <button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')"
+              *ngIf="!((currentReport === 'Mutasi Stock Harian'))">
                 Download PDF
               </button>
             </li>
@@ -452,3 +522,57 @@
 
 <!-- Modal Backdrop -->
 <div class="modal-bg-backdrop" *ngIf="isShowModalTransaksi"></div>
+
+<!-- Modal Pilih Barang -->
+<c-modal #staticBackdropModal [visible]="isShowModalBarang" backdrop="static" id="staticBackdropModal" size="xl">
+  <c-modal-header>
+    <h5 cModalTitle>Daftar Barang</h5>
+    <button (click)="isShowModalBarang = false" type="button" class="btn btn-info ms-2"
+      [cModalToggle]="staticBackdropModal.id" cButtonClose>
+      <i class="fa fa-times text-white"></i>
+    </button>
+  </c-modal-header>
+
+  <c-modal-body>
+    <c-card class="mb-4">
+      <c-card-body>
+        <div class="table-responsive">
+          <table datatable [dtOptions]="dtOptionsProduct" class="datatable row-border hover stripe w-100 h-65">
+            <!-- <thead class="table-header"> </thead> -->
+          </table>
+        </div>
+      </c-card-body>
+    </c-card>
+  </c-modal-body>
+</c-modal>
+
+
+<!-- Modal Backdrop -->
+<div class="modal-bg-backdrop" *ngIf="isShowModalBarang2"></div>
+
+<!-- Modal Pilih Barang -->
+<c-modal #staticBackdropModal [visible]="isShowModalBarang2" backdrop="static" id="staticBackdropModal" size="xl">
+  <c-modal-header>
+    <h5 cModalTitle>Daftar Barang</h5>
+    <button (click)="isShowModalBarang2 = false" type="button" class="btn btn-info ms-2"
+      [cModalToggle]="staticBackdropModal.id" cButtonClose>
+      <i class="fa fa-times text-white"></i>
+    </button>
+  </c-modal-header>
+
+  <c-modal-body>
+    <c-card class="mb-4">
+      <c-card-body>
+        <div class="table-responsive">
+          <table datatable [dtOptions]="dtOptionsProduct2" class="datatable row-border hover stripe w-100 h-65">
+            <!-- <thead class="table-header"> </thead> -->
+          </table>
+        </div>
+      </c-card-body>
+    </c-card>
+  </c-modal-body>
+</c-modal>
+
+
+<!-- Modal Backdrop -->
+<div class="modal-bg-backdrop" *ngIf="isShowModalBarang"></div>
