@@ -167,10 +167,19 @@ export class AnalysisReportComponent
       moment(now).endOf('month').toDate(),
     ];
 
+    
+
     if (REPORT_ANALYSIS_DO_REVISI.includes(this.currentReport)) {
       const today = new Date();
       const startDate = new Date(today.getFullYear(), today.getMonth(), 1);
       const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      this.dateRangeFilter = [startDate, endDate];
+    } else if (['Persiapan Pengiriman Barang'].includes(this.currentReport)) {
+      const startDate = new Date(); // Hari ini
+
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + 7); // Tambah 7 hari dari hari ini
+
       this.dateRangeFilter = [startDate, endDate];
     }
   }
@@ -251,6 +260,15 @@ export class AnalysisReportComponent
         tipeListing: this.paramTipeListing,
       };
     } else if (this.currentReport === 'Persiapan Pengiriman Barang') {
+      const startDate = new Date(this.dateRangeFilter[0]);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // set jam ke 00:00 untuk dibandingkan hanya tanggal
+
+      if (startDate < today) {
+        this.toastr.error('TANGGAL TIDAK BOLEH LEBIH KECIL DARI TANGGAL HARI INI');
+        this.loadingState['submit'] = false;
+        return;
+      }
       param = {
         kodeGudang: this.userData.defaultLocation.kodeLocation,
         startDate: this.g.transformDate(this.dateRangeFilter[0]),
