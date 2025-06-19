@@ -222,6 +222,8 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
         startDate: this.startOfMonth,
         endDate: this.endOfMonth,
         kodeBarang: this.kodeBarang,
+        tahunSaldo : moment(this.paramTglTransaksi).format('YYYY'),
+        bulanSaldo : moment(this.paramTglTransaksi).format('M'),
       };
     } else if (this.currentReport === 'Inventory Movement') {
       param = {
@@ -536,16 +538,24 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     this.satuanBesar = data.satuanBesar;
     this.satuanKecil = data.satuanKecil;
   }
-
+  
   onTglTransaksiChange(value: Date): void {
     if (value) {
       this.startOfMonth = moment(value).startOf('month').format('DD MMMM YYYY');
-      this.endOfMonth = moment(value).endOf('month').format('DD MMMM YYYY');
+  
+      // Perbedaan di sini: jika currentReport = 'Stock Barang By Expired', ambil tanggal hari ini
+      if (this.currentReport === 'Stock Barang By Expired') {
+        this.endOfMonth = moment(value).format('DD MMMM YYYY'); // tanggal berjalan
+      } else {
+        this.endOfMonth = moment(value).endOf('month').format('DD MMMM YYYY'); // default: akhir bulan
+      }
+  
       console.log('Start:', this.startOfMonth, 'End:', this.endOfMonth);
-
+  
       this.dateRangeString = `(Periode :${this.startOfMonth} - ${this.endOfMonth})`;
     }
   }
+  
 
   deleteBarang() {
     this.kodeBarang = '';
