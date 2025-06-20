@@ -30,6 +30,7 @@ import { Router } from '@angular/router';
 })
 export class EndOfMonthComponent implements OnInit, OnDestroy, AfterViewInit {
   userData: any = {};
+  kodeGudang: string = '';
 
   dtColumns: any = [];
   dtOptions: any = {};
@@ -160,6 +161,7 @@ export class EndOfMonthComponent implements OnInit, OnDestroy, AfterViewInit {
         this.g.tabTitle
     );
     this.userData = this.service.getUserData();
+    this.kodeGudang = this.userData?.defaultLocation?.kodeLocation ?? '';
 
     this.lastDate = moment(
       `${this.selectedYear}-${this.selectedMonth}`,
@@ -263,10 +265,10 @@ export class EndOfMonthComponent implements OnInit, OnDestroy, AfterViewInit {
       .insert('/api/end-of-month/process', {
         kodeGudang: this.userData?.defaultLocation?.kodeLocation,
         kodeUser: this.userData?.kodeUser,
-        yearEom: this.selectedYear,
-        monthEom: this.selectedMonth,
-        lastYearEom: this.lastYear,
-        lastMonthEom: this.lastMonth,
+        yearEom: parseInt(this.selectedYear),
+        monthEom: parseInt(this.selectedMonth),
+        lastYearEom: parseInt(this.lastYear),
+        lastMonthEom: parseInt(this.lastMonth),
       })
       .subscribe({
         next: (res) => {

@@ -88,8 +88,8 @@
               </button>
             </div>
             <div class="text-start mt-2">
-              <c-alert color="warning" *ngIf="g.statusEndOfMonth">
-                {{'Progress: ' + g.statusEndOfMonth}}
+              <c-alert color="warning" *ngIf="g.statusEndOfMonth[kodeGudang]">
+                {{'Progress: ' + g.statusEndOfMonth[kodeGudang]}}
               </c-alert>
             </div>
           </div>
