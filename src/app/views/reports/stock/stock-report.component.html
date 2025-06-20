@@ -125,9 +125,31 @@
       </div>
     </ng-container>
 
-    <ng-container
+    <!-- <ng-container
       *ngIf="['Stock Barang Dibawah Minimum'].includes(currentReport)"
-    >
+    > -->
+    <ng-container *ngIf="['Inventory Movement'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Stock Sampai dengan, Tanggal
+          <span class="float-end">:</span>
+        </div>
+        <div class="col">
+          <input type="text" id="dateFilter" class="form-control" bsDatepicker [bsConfig]="dpConfigtrans"
+            aria-describedby="dateFilter" [(ngModel)]="paramTglTransaksi" #dp="bsDatepicker"
+            (ngModelChange)="onTglTransaksiChange($event)" placeholder="{{ 'Tanggal Stock' | translate }}" />
+        </div>
+        <div class="col-4">
+          <div class="d-flex align-items-center" style="height: 40px;">
+            <span class="badge bg-primary h-100 d-flex align-items-center">
+              {{ dateRangeString }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="['Stock Barang Dibawah Minimum'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4"></div>
         <div
@@ -301,9 +323,8 @@
 </ng-container>
 
 
-    <ng-container
-      *ngIf="['Stock Barang', 'Stock JATIM-INDOTIM'].includes(currentReport)"
-    >
+  
+    <ng-container *ngIf="['Stock Barang', 'Inventory Movement','Stock JATIM-INDOTIM'].includes(currentReport)">
       <div class="row mt-4">
         <div class="col-4">
           Pilihan Cetak
@@ -344,6 +365,26 @@
               for="pilihanAll"
               >Semua Barang Dicetak</label
             >
+          </c-button-group>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="['Inventory Movement'].includes(currentReport)">
+      <div class="row mt-4">
+        <div class="col-4">
+          Hasil Laporan
+          <span class="float-end">:</span>
+        </div>
+        <div class="col-8">
+          <c-button-group role="group">
+            <input class="btn-check" type="radio" [(ngModel)]="paramTipeListing" name="pilihanRekap"
+              id="pilihanRekap" value="rekap" />
+            <label cButton cFormCheckLabel class="w-300" variant="outline" for="pilihanRekap">Qty Besar Dan Kecil Di Cetak</label>
+
+            <input class="btn-check" type="radio" [(ngModel)]="paramTipeListing" name="pilihanDetail"
+              id="pilihanDetail" value="detail" />
+            <label cButton cFormCheckLabel class="w-300" variant="outline" for="pilihanDetail">Hanya Total Qty Yang Di cetak</label>
           </c-button-group>
         </div>
       </div>
@@ -569,37 +610,20 @@
         </button>
         <ul cDropdownMenu>
           <li>
-            <button
-              class="btn btn-outline-primary w-100 mb-2"
-              (click)="doSubmit('preview')"
-            >
+           
+            <button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('preview')"
+            *ngIf="!((currentReport === 'Inventory Movement'))">
               Preview PDF
             </button>
           </li>
           <li>
-            <button
-              class="btn btn-outline-primary w-100 mb-2"
-              (click)="doSubmit('pdf')"
-            >
+            <button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('pdf')"
+            *ngIf="!((currentReport === 'Inventory Movement'))">
               Download PDF
             </button>
           </li>
-          <li>
-            <button
-              class="btn btn-outline-primary w-100 mb-2"
-              (click)="doSubmit('xlsx')"
-            >
-              Download XLSX
-            </button>
-          </li>
-          <li>
-            <button
-              class="btn btn-outline-primary w-100"
-              (click)="doSubmit('csv')"
-            >
-              Download CSV
-            </button>
-          </li>
+          <li><button class="btn btn-outline-primary w-100 mb-2" (click)="doSubmit('xlsx')">Download XLSX</button></li>
+          <li><button class="btn btn-outline-primary w-100" (click)="doSubmit('csv')">Download CSV</button></li>
         </ul>
       </c-dropdown>
     </div>

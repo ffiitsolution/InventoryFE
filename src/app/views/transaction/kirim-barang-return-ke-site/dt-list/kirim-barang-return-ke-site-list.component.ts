@@ -72,7 +72,7 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
           kodeGudang: this.g.getUserLocationCode(),
           startDate: moment(this.dateRangeFilter[0]).format('DD MMM yyyy' ),
           endDate: moment(this.dateRangeFilter[1]).format('DD MMM yyyy' ),
-          tipeTujuan: 'D'
+          tipeTujuan: 'C'
         };
         setTimeout(() => {
           this.dataService
@@ -104,25 +104,27 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
         {
           data: 'tglTransaksi',
           title: 'Tanggal Transaksi',
+          searchable: true,
           render: (data: any) => {
             return data ? moment(data).format('DD/MM/YYYY') : '';
           }
         },
 
-        { data: 'nomorTransaksi', title: 'No. Transaksi' },
+        { data: 'nomorTransaksi', title: 'No. Transaksi', searchable: true },
 
         {
-          data: null,
+          data: 'kodeTujuan',
           title: 'Tujuan',
-          render: (data: any) => {
-            if (data?.kodeTujuan && data?.namaTujuan) {
-              return `${data.kodeTujuan} - ${data.namaTujuan}`;
+          searchable: true,
+          render: (data: any, type: any, row: any) => {
+            if (row?.kodeTujuan && row?.namaTujuan) {
+              return `${row.kodeTujuan} - ${row.namaTujuan}`;
             }
-            return data?.namaTujuan || '';
+            return row?.namaTujuan || '';
           }
         },
 
-        { data: 'keterangan', title: 'Keterangan' },
+        { data: 'keterangan', title: 'Keterangan', searchable: true },
 
         { data: 'userCreate', title: 'User Proses', searchable: true },
 
@@ -138,7 +140,7 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
         {
           data: 'timeCreate',
           title: 'Jam',
-          searchable: true,
+          searchable: false,
           render: (data: any) => {
             return data ? moment(data, 'HH:mm:ss').format('HH:mm:ss') : '';
           }
@@ -147,6 +149,7 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
         {
           data: 'namaPosting',
           title: 'Status Transaksi',
+          searchable: true,
           render: (data: any) => {
             return `<span class="badge bg-success">${data}</span>`;
           }
