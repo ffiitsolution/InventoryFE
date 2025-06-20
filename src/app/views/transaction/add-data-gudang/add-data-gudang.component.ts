@@ -228,6 +228,7 @@ export class AddDataGudangComponent
   closeModal() {
     this.isShowModalReport = false;
     this.disabledPrintButton = false;
+    this.onPreviousPressed();
   }
 
   onAddDetail() {

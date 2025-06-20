@@ -131,6 +131,7 @@ export class AddDataPemakaianBarangSendiriComponent
   closeModal() {
     this.isShowModalReport = false;
     this.disabledPrintButton = false;
+    this.onPreviousPressed();
   }
 
   onAddDetail() {
