@@ -48,8 +48,10 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedRegion: any;
   public dpConfigtrans: Partial<BsDatepickerConfig> = new BsDatepickerConfig();
   paramStatusAktif: string = '';
-  paramTipeListing: string = 'header';
+  paramJenisGudang: string ='DRY';
+  paramTipeListing: string = 'rekap';
   paramPilihanCetak: string = 'mutasi';
+  paramHasilLaporanCetak: string = 'detail';
   dateRangeString: string;
   startOfMonth: any;
   endOfMonth: any;
@@ -126,7 +128,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       this.renderDataTables();
     }
     if (
-      ['Stock Yang Mendekati Tgl Expired', 'Stock Card', 'Stock Barang By Expired'].includes(
+      ['Stock Yang Mendekati Tgl Expired', 'Stock Card', 'Stock Barang By Expired', 'Inventory Movement'].includes(
         this.currentReport
       )
     ) {
@@ -204,10 +206,11 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
         kodeGudang: this.g.getUserLocationCode(),
         status: this.paramStatusAktif,
         tipePilihanCetak: this.paramPilihanCetak,
+        tipeListing: this.paramTipeListing,
         firstDate: this.startOfMonth,
         lastDate: moment(this.paramTglTransaksi).format('DD MMM YYYY'),
         yearEom: previousMonth.format('YYYY'),
-        monthEom: previousMonth.format('MM'),
+        monthEom:moment().format('MM'),
       };
     } else if (this.currentReport === 'Transaksi Detail Barang Expired') {
       param = {
@@ -220,7 +223,21 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
         startDate: this.startOfMonth,
         endDate: this.endOfMonth,
         kodeBarang: this.kodeBarang,
+        tahunSaldo : moment(this.paramTglTransaksi).format('YYYY'),
+        bulanSaldo : moment(this.paramTglTransaksi).format('M'),
       };
+    } else if (this.currentReport === 'Inventory Movement') {
+      param = {
+        startDate: this.startOfMonth,
+        endDate: this.endOfMonth,
+        kodeBarang: this.kodeBarang,
+        tahunSaldo : moment(this.paramTglTransaksi).format('YYYY'),
+        bulanSaldo : moment(this.paramTglTransaksi).format('M'),
+        tipeListing: this.paramTipeListing,
+        tipePilihanCetak : this.paramPilihanCetak,
+        defaultGudang : this.g.getUserKodeSingkat()
+      };
+      console.log('param :', param)
     } else if (this.currentReport === 'Stock Card') {
       if (!this.kodeBarang || this.kodeBarang === '') {
         this.toastr.error('Silahkan Pilih Kode Barang Terlebih Dahulu!');
@@ -246,6 +263,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
         kodeGudang: this.g.getUserLocationCode(),
         status: this.paramStatusAktif,
         tipePilihanCetak: this.paramPilihanCetak,
+        tipeHasilLaporanCetak: this.paramHasilLaporanCetak,
         firstDate: this.startOfMonth,
         lastDate: moment(this.paramTglTransaksi).format('DD MMM YYYY'),
         yearEom: moment(this.paramTglTransaksi).format('YYYY'), // tanpa dikurangi
@@ -258,6 +276,18 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
         konversi: this.konversi.toFixed(2),
         satuanBesar: this.satuanBesar,
         satuanKecil: this.satuanKecil,
+      };
+    }else if (this.currentReport === 'Stock JATIM-INDOTIM'){
+       const previousMonth = moment(this.paramTglTransaksi).subtract(1, 'month');
+
+      param = {
+        kodeGudang1: this.prmKodeGudang.JATIM,
+        kodeGudang2: this.prmKodeGudang.INDOTIM,
+        tipePilihanCetak: this.paramPilihanCetak,
+        firstDate: this.startOfMonth,
+        lastDate: moment(this.paramTglTransaksi).format('DD MMM YYYY'),
+        yearEom: previousMonth.format('YYYY'),
+        monthEom: previousMonth.format('MM'),
       };
     }
 
@@ -521,16 +551,24 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     this.satuanBesar = data.satuanBesar;
     this.satuanKecil = data.satuanKecil;
   }
-
+  
   onTglTransaksiChange(value: Date): void {
     if (value) {
       this.startOfMonth = moment(value).startOf('month').format('DD MMMM YYYY');
-      this.endOfMonth = moment(value).endOf('month').format('DD MMMM YYYY');
+  
+      // Perbedaan di sini: jika currentReport = 'Stock Barang By Expired', ambil tanggal hari ini
+      if (this.currentReport === 'Stock Barang By Expired') {
+        this.endOfMonth = moment(value).format('DD MMMM YYYY'); // tanggal berjalan
+      } else {
+        this.endOfMonth = moment(value).endOf('month').format('DD MMMM YYYY'); // default: akhir bulan
+      }
+  
       console.log('Start:', this.startOfMonth, 'End:', this.endOfMonth);
-
+  
       this.dateRangeString = `(Periode :${this.startOfMonth} - ${this.endOfMonth})`;
     }
   }
+  
 
   deleteBarang() {
     this.kodeBarang = '';
@@ -549,4 +587,18 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       this.tglExpiredSisaBarang = moment(today).format('DD MMMM YYYY');
     }
   }
+
+ get prmKodeGudang() {
+  const jenis = this.paramJenisGudang;
+  return {
+    JATIM: jenis === 'DRY' ? '01099' :
+          jenis === 'COM' ? '01098' :
+          jenis === 'PRD' ? '01097' : '',
+    INDOTIM: jenis === 'DRY' ? '02999' :
+            jenis === 'COM' ? '02998' :
+            jenis === 'PRD' ? '' : ''
+  };
+}
+
+
 }

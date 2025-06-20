@@ -838,6 +838,7 @@ export class AddDataDetailBarangComponent
 
   handleCheckboxChange(event: JQuery.ChangeEvent<HTMLElement>, data: any) {
     const isChecked = (event.target as HTMLInputElement).checked;
+    console.log('Checkbox changed:', data, isChecked);
     if (isChecked) {
       // Add kodeBarang if checked
       if (
@@ -886,7 +887,7 @@ export class AddDataDetailBarangComponent
           kodeBarang: barang?.kodeBarang,
           satuanBesar: barang?.satuanBesar,
           konversi: barang?.konversi,
-          isConfirmed: true,
+          isConfirmed: barang.flagExpired == 'Y' ? true : false,
           ...barang,
         };
         this.listProductData.splice(
@@ -1072,7 +1073,7 @@ export class AddDataDetailBarangComponent
             this.listProductData[index].satuanBesar = res.satuanBesar;
             this.listProductData[index].konversi = res.konversi;
 
-            this.listProductData[index].isConfirmed = true;
+            this.listProductData[index].isConfirmed = res.flagExpired == 'Y' ? true : false;
             this.listProductData[index].isLoading = false;
 
             if (index === this.listProductData.length - 1) {

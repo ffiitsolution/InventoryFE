@@ -265,7 +265,6 @@
                       "
                       (focus)="g.selectInputContent($event)"
                       (input)="checkMaxValue($event, i)"
-                      [readonly]="!data.isConfirmed"
                       (keypress)="g.conditionInput($event, 'numericDot')"
                       (blur)="onBlurQtyUsageBesar(i)"
                     />
@@ -292,7 +291,6 @@
                       "
                       (focus)="g.selectInputContent($event)"
                       (input)="checkMaxValue($event, i)"
-                      [readonly]="!data.isConfirmed"
                       (keypress)="g.conditionInput($event, 'numericDot')"
                       (blur)="onBlurQtyUsageKecil(i)"
                     />

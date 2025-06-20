@@ -80,6 +80,7 @@ export class MpcsListComponent implements OnInit {
   pdfSrc: any = null;
   downloadURL: any = [];
   isPdfLoader: boolean = false;
+  locations: any = {};
   constructor(
     translate: TranslateService,
     private route: ActivatedRoute,
@@ -109,13 +110,26 @@ export class MpcsListComponent implements OnInit {
     const todayDate = new Date();
     this.defaultDate = this.helperService.formatDate(todayDate);
     this.dataUser = this.g.getLocalstorage('inv_currentUser');
-   
+    this.locations = this.g.getLocalstorage('inv_locations');
+
+    const prdLocation = this.locations.find(
+      (item: any) => item.kodeSingkat === "PRD"
+    );
+
+    const dryLocation = this.locations.find(
+      (item: any) => item.kodeSingkat === "DRY"
+    );
+
+
     console.log(this.dataUser, 'data user mpcs list');
     if(this.dataUser || !isEmpty(this.dataUser)){
       this.g.mpcsDefaultGudang =this.dataUser.defaultLocation.kodeLocation;
       this.configGudang = this.g.mpcsDefaultGudang;
       this.g.mpcsJenisGudang = this.dataUser.defaultLocation.kodeSingkat;
-      this.g.mpcsDefaultNamaGudang = this.dataUser.defaultLocation.kodeSingkat == 'PRD' ? 'Production' : this.dataUser.defaultLocation.kodeSingkat == 'COM' ? 'Commisary' : 'Dry Good';
+      this.g.mpcsDefaultNamaGudang = this.dataUser.defaultLocation.kodeSingkat == 'PRD' ? 'Production' : this.dataUser.defaultLocation.kodeSingkat == 'COM' ? 'Commisary' : 'DRY Good';
+      this.g.mpcsGudangPRD= prdLocation.kodeLocation;
+      this.g.mpcsGudangDRY= dryLocation.kodeLocation;
+      this.selectedWarehouse = this.g.mpcsDefaultNamaGudang;
       this.getDataProduction();
     }else{
       this.getMpcsDefaultGudang();
@@ -409,6 +423,10 @@ export class MpcsListComponent implements OnInit {
   
   openModalWarehouse(isChange : boolean = false) {
 
+    if(this.dataUser?.roleId=="10"){
+      return;
+    }
+
     if(!this.g.mpcsDefaultGudang || isChange){
        this.isShowWarehouseModal = true;
     }else{
@@ -453,19 +471,20 @@ export class MpcsListComponent implements OnInit {
   doDownload(type: string ="") {
     let param = {};
     this.isPdfLoader = true;
+    const today = moment();
     // this.loadingRptWIP = true;
     param = {
-      kodeGudang: this.g.getUserLocationCode(),
+      kodeGudang:this.g.mpcsDefaultGudang,
       status: 'B',
-      startDate: this.g.transformDate(this.dateRangeFilter[0]),
-      endDate: this.g.transformDate(this.dateRangeFilter[1]),
+      startDate: today.format('DD MMM yyyy'),
+      endDate: today.format('DD MMM yyyy'),
       userData: this.dataUser,
       isDownloadCsv: type === 'csv' || type === 'xlsx',
       isDownloadXlsx: type === 'xlsx',
     };
 
     let url = '/api/report/jasper-report-mpcs-production-prd';
-    if(this.g.getUserKodeSingkat() === 'DRY') {
+    if(this.g.mpcsJenisGudang === 'DRY') {
       url = '/api/report/jasper-report-mpcs-production-premix';
     }
 
@@ -513,5 +532,7 @@ export class MpcsListComponent implements OnInit {
       this.toastr.success('File sudah terunduh');
     } else this.toastr.error('File tidak dapat terunduh');
   }
+
+  
 
 }

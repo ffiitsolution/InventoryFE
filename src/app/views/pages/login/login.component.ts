@@ -94,14 +94,19 @@ export class LoginComponent implements OnInit {
                   )
                 : null,
             };
-            
-            if (user?.roleId === '10') {
+
+            if (["10", "11"].includes(user?.roleId)) {
+              console.log("masuk")
               this.g.saveLocalstorage('inv_locations', locations);
+               console.log("masuk333")
               this.g.saveLocalstorage('inv_currentUser', transformedUser);
               this.g.saveLocalstorage('inv_token', token);
               this.g.saveLocalstorage('inv_expiredAt', expiredAt);
               this.g.saveLocalstorage('inv_period', period);
+                console.log("masuk2")
               this.router.navigate(['mpcs/list']);
+              this.logingIn = false;
+              return;
             }
             const safePermissions = hasPermission || [];
 

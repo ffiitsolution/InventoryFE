@@ -250,18 +250,30 @@
   </c-modal-header>
   <c-modal-body>
     <div>
-      <div *ngIf="!pdfSrc">
+      <div *ngIf="!pdfSrc && listSummaryData.length > 0">
         <app-loading></app-loading>
       </div>
-      <div class="card shadow-sm mb-3" *ngIf="pdfSrc">
-        <div class="card-body">
-          <ngx-extended-pdf-viewer
-          [src]="pdfSrc"
-          useBrowserLocale="true"
-          [height]="'65vh'"
-        ></ngx-extended-pdf-viewer>
+      <div
+          *ngIf="listSummaryData.length == 0"
+          class="alert alert-warning text-center"
+          role="alert"
+        >
+          <strong>
+            Tidak ada data yang bisa diposting, silahkan kirim data terlebih dahulu!.
+          </strong>
         </div>
-      </div>
+      <ng-container *ngIf="listSummaryData.length > 0">
+        <div class="card shadow-sm mb-3" *ngIf="pdfSrc">
+          <div class="card-body">
+            <ngx-extended-pdf-viewer
+            [src]="pdfSrc"
+            useBrowserLocale="true"
+            [height]="'65vh'"
+             [filenameForDownload]="'WIP-produksi.pdf'"
+          ></ngx-extended-pdf-viewer>
+          </div>
+        </div>
+      </ng-container>
     </div>
   </c-modal-body>
   <c-modal-footer class="justify-center">

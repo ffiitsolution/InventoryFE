@@ -27,6 +27,7 @@ import moment from 'moment';
 import { event } from 'jquery';
 import Swal from 'sweetalert2';
 import { Toast, ToastrService } from 'ngx-toastr';
+import { AppConfig } from '../../../config/app.config';
 
 @Component({
   selector: 'app-add-data-gudang',
@@ -57,7 +58,7 @@ export class AddDataGudangComponent
   disabledPrintButton: boolean = false;
   paramGenerateReport: any = {};
   alreadyPrint: boolean = false;
-
+  protected config = AppConfig.settings.apiServer;
   @ViewChild('formModal') formModal: any;
   // Form data object
   today: Date = new Date();
@@ -69,8 +70,8 @@ export class AddDataGudangComponent
     alamatPengiriman: '',
     deliveryStatus: '',
     tglBrgDikirim: '',
-    tglTerimaBarang:'',
-    tglSuratJalan:'',
+    tglTerimaBarang: '',
+    tglSuratJalan: '',
     notes: '',
     nomorSuratJan: '',
     keterangan1: '',
@@ -96,7 +97,6 @@ export class AddDataGudangComponent
     this.dpConfig2.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig2.maxDate = new Date();
     this.dpConfig2.minDate = moment().subtract(7, 'days').toDate(); // 7 hari ke belakang
-
   }
 
   isValidNomorSuratJalan: boolean = true;
@@ -111,7 +111,6 @@ export class AddDataGudangComponent
     }
   }
 
-  
   ngOnInit(): void {
     const today = new Date().toISOString().split('T')[0];
     if (!this.formData.tglTransaksi) {
@@ -139,14 +138,14 @@ export class AddDataGudangComponent
       alamatPengiriman: '',
       deliveryStatus: '',
       tglBrgDikirim: '',
-      tglTerimaBarang:'',
+      tglTerimaBarang: '',
       notes: '',
-      tglSuratJalan:'',
+      tglSuratJalan: '',
       nomorSuratJan: '',
       keterangan1: '',
     };
 
-     if (!this.formData.tglTransaksi) {
+    if (!this.formData.tglTransaksi) {
       this.formData.tglTransaksi = moment().format('DD/MM/YYYY');
     }
 
@@ -197,7 +196,9 @@ export class AddDataGudangComponent
     const pesan = moment(this.formData.tglSuratJalan);
 
     if (kirim.isBefore(pesan, 'day')) {
-      this.toastr.error('Tanggal Terima tidak boleh lebih kecil dari Tanggal Surat Jalan');
+      this.toastr.error(
+        'Tanggal Terima tidak boleh lebih kecil dari Tanggal Surat Jalan'
+      );
       this.formData.tglTerimaBarang = null;
     }
   }
@@ -227,6 +228,7 @@ export class AddDataGudangComponent
   closeModal() {
     this.isShowModalReport = false;
     this.disabledPrintButton = false;
+    this.onPreviousPressed();
   }
 
   onAddDetail() {
@@ -248,13 +250,17 @@ export class AddDataGudangComponent
       return;
     } else {
       this.isShowDetail = true;
-      console.log(this.formData,'formData');
-      this.formData.tglSuratJalan =moment(this.formData.tglSuratJalan, 'DD/MM/YYYY', true).format(
-              'DD/MM/YYYY'
-      );
-      this.formData.tglTerimaBarang =moment(this.formData.tglTerimaBarang, 'DD/MM/YYYY', true).format(
-              'DD/MM/YYYY'
-      );
+      console.log(this.formData, 'formData');
+      this.formData.tglSuratJalan = moment(
+        this.formData.tglSuratJalan,
+        'DD/MM/YYYY',
+        true
+      ).format('DD/MM/YYYY');
+      this.formData.tglTerimaBarang = moment(
+        this.formData.tglTerimaBarang,
+        'DD/MM/YYYY',
+        true
+      ).format('DD/MM/YYYY');
       // this.router.navigate(['/transaction/receipt-from-warehouse/tambah-data/detail-add-data-gudang']);
       this.globalService.saveLocalstorage(
         LS_INV_SELECTED_DELIVERY_ORDER,
@@ -387,20 +393,20 @@ export class AddDataGudangComponent
   private mapOrderData(orderData: any): void {
     console.log('Order data: ', orderData);
     this.formData.nomorPesanan = orderData.nomorPesanan;
-    this.formData.tglSuratJalan =moment().toDate();
+    this.formData.tglSuratJalan = moment().toDate();
     this.formData.tglBrgDikirim =
       moment(orderData.tglKirimBrg, 'YYYY-MM-DD').format('DD-MM-YYYY') || '';
-    this.formData.tglTerimaBarang =  moment().toDate();
+    this.formData.tglTerimaBarang = moment().toDate();
     this.formData.codeDestination = orderData.supplier;
     this.formData.namaCabang = orderData.namaCabang;
-    this.formData.deliveryStatus = orderData.statusAktif == 'A'
-      ?'Aktif'
-      : 'Tidak Aktif';
+    this.formData.deliveryStatus =
+      orderData.statusAktif == 'A' ? 'Aktif' : 'Tidak Aktif';
     this.formData.alamat1 = orderData.alamat1;
     // this.formData.notes = orderData.KETERANGAN1;
     this.formData.validatedDeliveryDate = this.formData.tglBatalExp;
-    this.formData.nomorSuratJan = orderData.noSuratJalan;
-
+    // this.formData.nomorSuratJan = orderData.noSuratJalan;
+    this.formData.nomorSuratJan ="";
+    this.getNoPesanan();
     console.log('Mapped form data: ', this.formData);
   }
 
@@ -408,6 +414,23 @@ export class AddDataGudangComponent
     this.router.navigate([
       '/transaction/receipt-from-warehouse/display-data-dari-gudang',
     ]);
+  }
+
+  getNoPesanan() {
+    this.appService
+    .getDoFromHqByNopesanan({
+      requestNo: this.formData.nomorPesanan,
+      kodeGudang: this.globalService.getUserLocationCode(),
+    })
+    .subscribe((resp: any) => {
+      console.log('Response from getDoFromHqByNopesanan:', resp);
+      if (resp.item.length > 0) {
+        this.formData.nomorSuratJan = resp.item[0].noPengiriman;
+      } else {
+        this.toastr.error(
+          'Nomor Surat Jalan tidak ditemukan atau koneksi HQ OFFLINE, Silahkan Isi No Surat Jalan secara Manual'  );
+      }
+    });
   }
 }
 // @Injectable({

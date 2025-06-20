@@ -24,7 +24,7 @@ export class MpcsHeaderComponent
   countdownInterval: any;
   countdownValue: number = 0;
   isReleasenoteModalShown: boolean = false;
-
+  currentUser: any;
   constructor(
     private classToggler: ClassToggleService,
     private dataService: DataService,
@@ -40,6 +40,8 @@ export class MpcsHeaderComponent
   }
 
   ngOnInit(): void {
+    this.currentUser = this.g.getLocalstorage('inv_currentUser');
+    this.g.currentUser = this.currentUser;
     this.g.registerFunction('WS_SUBSCRIBE', () => {
       this.doSubscribe();
     });

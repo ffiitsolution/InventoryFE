@@ -353,6 +353,7 @@
                       <td>
                         <button
                           class="btn btn-success btn-sm text-white btn-150"
+                          [disabled]="!data.isConfirmed"
                           (click)="onShowModalExpired($event, i)"
                         >
                           <i class="fa fa-check pe-1"></i>

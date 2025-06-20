@@ -48,7 +48,7 @@ export class MpcsFooterComponent
 
   screenSubscription: Subscription | undefined;
   diffCacheModalVisible: boolean = false;
-
+  currentUser: any;
   constructor(
     private dataService: DataService,
     public g: GlobalService
@@ -57,7 +57,9 @@ export class MpcsFooterComponent
   }
 
   ngOnInit(): void {
-  
+    this.currentUser = this.g.getLocalstorage('inv_currentUser');
+    this.g.currentUser = this.currentUser;
+
     const year = this.currentTime.getFullYear();
     this.yearText = year === 2025 ? '2025' : '2025 - ' + year;
 

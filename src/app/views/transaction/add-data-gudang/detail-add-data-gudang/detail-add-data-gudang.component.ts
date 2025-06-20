@@ -1051,6 +1051,8 @@ export class AddDataDetailGudangComponent
       this.toastr.error(
         `Qty Terima  tidak boleh lebih besar dari Qty Pesan untuk ${item.NAMA_BARANG} , Silahkan Periksa kembali!`
       );
+      item.QTY_TERIMA_BESAR = item.QTY_PESAN_BESAR;
+      item.QTY_TERIMA_KECIL = item.QTY_PESAN_KECIL;
       return false;
     } else {
       return true;

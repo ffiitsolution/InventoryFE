@@ -177,7 +177,7 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
 
     const param = {
       kodeGudang: this.g.getUserLocationCode(),
-      tipeTujuan: 'D',
+      tipeTujuan: 'C',
       tipeTransaksi: 6,
       kodeTujuan: this.headerProduction.kodeBarang,
       tglTransaksi: moment(this.headerProduction.tglTransaksi, 'DD-MM-YYYY').format('D MMM YYYY'),
