@@ -175,7 +175,7 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
       drawCallback: (drawCallback:any) => {
         this.selectedSupplierData = undefined;
       },
-      order: [[2, 'desc']],
+      order: [[1, 'asc']],
       pageLength: 5,
       ajax: (dataTablesParameters: any, callback:any) => {
         this.page.start = dataTablesParameters.start;

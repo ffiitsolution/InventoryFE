@@ -97,7 +97,7 @@
   </c-modal-header>
   <c-modal-body>
     <div class="row" *ngIf="selectedRowData">
-      <div class="col-6">
+      <div class="col-7">
         <div class="w-100 px-2 py-1 row">
           <div class="col-4 d-flex align-items-center">
             <label for="nomorPesanan">{{ "Nama Barang" | translate }}</label>
@@ -166,14 +166,14 @@
               readonly
             />
           </div>
-          <div class="col-3 d-flex align-items-start">
+          <div class="col-3 d-flex align-items-center">
             <label for="totalQtyProduksi">{{
               selectedRowData.satuanKecil
             }}</label>
           </div>
         </div>
       </div>
-      <div class="col-6">
+      <div class="col-5">
         <div class="w-100 px-2 py-1 row">
           <div class="col-4 d-flex align-items-center">
             <label for="nomorPesanan">{{ "Quantity Besar" | translate }}</label>
@@ -188,7 +188,7 @@
               readonly
             />
           </div>
-          <div class="col-3 d-flex align-items-start">
+          <div class="col-3 d-flex align-items-center">
             <label for="qtyPemakaianBesar">{{
               selectedRowData.satuanBesar
             }}</label>
@@ -209,7 +209,7 @@
               readonly
             />
           </div>
-          <div class="col-3 d-flex align-items-start">
+          <div class="col-3 d-flex align-items-center">
             <label for="qtyPemakaianKecil">{{
               selectedRowData.satuanKecil
             }}</label>

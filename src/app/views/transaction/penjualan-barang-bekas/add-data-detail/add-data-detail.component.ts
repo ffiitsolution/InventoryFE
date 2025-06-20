@@ -1,8 +1,10 @@
 import {
   AfterViewInit,
   Component,
+  EventEmitter,
   OnDestroy,
   OnInit,
+  Output,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -214,6 +216,8 @@ export class AddDataDetailPenjualanBrgBekasComponent
     return moment(date, "YYYY-MM-DD").format("DD-MM-YYYY");
   }
 
+    @Output() dataCetak = new EventEmitter<any>();
+  
   onSubmit() {
     if (!this.isDataInvalid()) {
       // param for order Header
@@ -254,35 +258,68 @@ export class AddDataDetailPenjualanBrgBekasComponent
       };
 
 
-      Swal.fire({
-        title: 'Apa Anda Sudah Yakin?',
-        text: 'Pastikan data yang dimasukkan sudah benar!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ya, Simpan!',
-        cancelButtonText: 'Batal',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.service.insert('/api/penjualan-brg-bekas/insert', param).subscribe({
-            next: (res) => {
-              if (!res.success) {
-                this.toastr.error(res.message);
-              } else {
-                setTimeout(() => {
-                  this.toastr.success("Data berhasil dibuat!");
-                  this.onPreviousPressed();
-                }, DEFAULT_DELAY_TIME);
-
-              }
-              this.adding = false;
-            },
-          });
-        } else {
-          this.toastr.info(' Penyimpanan dibatalkan');
-        }
-      });
+       Swal.fire({
+           title: '<div style="color: white; background: #e55353; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
+           html: `
+         <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">
+           <p>Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
+           <p class="text-danger" style="font-weight: bold;">DATA YANG SUDAH DI POSTING TIDAK DAPAT DIPERBAIKI ..!!</p>
+         </div>
+         <div class="divider my-3"></div>
+         <div class="d-flex justify-content-center gap-3 mt-3">
+           <button class="btn btn-info text-white btn-150 pe-3" id="btn-submit">
+             <i class="fa fa-check pe-2"></i> Proses Posting
+           </button>
+           <button class="btn btn-secondary text-white btn-150" id="btn-cancel">
+             <i class="fa fa-times pe-1"></i> Batal Posting
+           </button>
+         </div>
+       `,
+           allowOutsideClick: false,
+           showConfirmButton: false,
+           showCancelButton: false,
+           width: '600px',
+           customClass: {
+             popup: 'custom-popup'
+           },
+           didOpen: () => {
+             const submitBtn = document.getElementById('btn-submit');
+             const cancelBtn = document.getElementById('btn-cancel');
+     
+             submitBtn?.addEventListener('click', () => {
+               Swal.close();
+               this.service.insert('/api/penjualan-brg-bekas/insert', param).subscribe({
+     
+                 next: (res) => {
+                   if (!res.success) {
+                     this.appService.handleErrorResponse(res);
+                   } else {
+                     this.toastr.success("Berhasil!");
+                     const paramGenerateReport = {
+                       outletBrand: 'KFC',
+                       isDownloadCsv: true,
+                       noSuratJalan: res.message,
+                     }
+                     this.dataCetak.emit(paramGenerateReport)
+                     setTimeout(() => {
+                       this.router.navigate(["/transaction/delivery-item/add-data"]);
+                     }, DEFAULT_DELAY_TIME);
+                   }
+                   this.adding = false;
+                 },
+                 error: (err) => {
+                   console.error("Error saat insert:", err);
+                   this.adding = false;
+                 },
+               }); // 👈 bukan onSubmit lagi
+             });
+     
+             cancelBtn?.addEventListener('click', () => {
+               Swal.close();
+               this.adding = false
+             });
+           }
+         })
 
     }
 

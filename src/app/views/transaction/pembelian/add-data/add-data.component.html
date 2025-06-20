@@ -146,12 +146,8 @@
                 <div class="col-8 pe-0 d-flex">
                   <input [disabled]="isShowDetail" placeholder="" maxlength="50" type="text" class="form-control"
                     id="notes" [(ngModel)]="formData.notes" name="notes"
-                    (keypress)="globalService.conditionInput($event, 'excludedSensitive')" pattern="^[a-zA-Z0-9\-]*$"
-                    title="Hanya boleh angka, huruf, dan tanda minus (-) Untuk catatan" (input)="updateCharCount()"
-                    (blur)="validateNotes()" />
-                </div>
-                <div *ngIf="invalidNotes" class="text-danger mt-1">
-                  <small>Catatan hanya boleh berisi angka, huruf, dan tanda minus (-).</small>
+                    (keypress)="globalService.conditionInput($event, 'excludedSensitive')"
+                    title="Hanya boleh angka, huruf, dan tanda minus (-) Untuk catatan" (input)="updateCharCount()" />
                 </div>
                 <div class="text-end text-muted mt-1">
                   <small>{{ charCount }}/50 karakter</small>
