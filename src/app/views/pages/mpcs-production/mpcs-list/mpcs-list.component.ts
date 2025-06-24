@@ -9,7 +9,13 @@ import { TranslationService } from '../../../../service/translation.service';
 import { GlobalService } from '../../../../service/global.service';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { Page } from '../../../../model/page';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { HelperService } from '../../../../service/helper.service';
 import { DataService } from '../../../../service/data.service';
 import { AppConfig } from '../../../../config/app.config';
@@ -48,8 +54,8 @@ export class MpcsListComponent implements OnInit {
   paramaters = {};
   defaultDate: any;
   private ngUnsubscribe: Subject<void> = new Subject<void>();
-  searchText: string ='';
-  draw:any =1;
+  searchText: string = '';
+  draw: any = 1;
   totalItems = 0;
   itemsPerPage = 15;
   currentPage = 0;
@@ -81,6 +87,8 @@ export class MpcsListComponent implements OnInit {
   downloadURL: any = [];
   isPdfLoader: boolean = false;
   locations: any = {};
+  fullscreenMode: boolean = false;
+
   constructor(
     translate: TranslateService,
     private route: ActivatedRoute,
@@ -93,57 +101,78 @@ export class MpcsListComponent implements OnInit {
     private dataService: DataService,
     private helperService: HelperService,
     private toastr: ToastrService,
-    private datePipe: DatePipe,
+    private datePipe: DatePipe
   ) {
     translate.use(g.getLocalstorage('inv_language') || 'id');
     this.dpConfig.containerClass = 'theme-dark-blue';
     this.dpConfig.dateInputFormat = 'DD/MM/YYYY';
     this.dpConfig.adaptivePosition = true;
     // this.dpConfig.minDate = new Date();
-    this.dpConfig.customTodayClass='today-highlight';
+    this.dpConfig.customTodayClass = 'today-highlight';
     this.dpConfig.isDisabled = true;
     this.configGudang = this.g.mpcsDefaultGudang;
   }
   myForm: FormGroup;
 
   ngOnInit(): void {
+     this.checkScreenSize();
+    window.addEventListener('resize', this.checkScreenSize.bind(this));
+
     const todayDate = new Date();
     this.defaultDate = this.helperService.formatDate(todayDate);
     this.dataUser = this.g.getLocalstorage('inv_currentUser');
     this.locations = this.g.getLocalstorage('inv_locations');
 
     const prdLocation = this.locations.find(
-      (item: any) => item.kodeSingkat === "PRD"
+      (item: any) => item.kodeSingkat === 'PRD'
     );
 
     const dryLocation = this.locations.find(
-      (item: any) => item.kodeSingkat === "DRY"
+      (item: any) => item.kodeSingkat === 'DRY'
     );
 
-
     console.log(this.dataUser, 'data user mpcs list');
-    if(this.dataUser || !isEmpty(this.dataUser)){
-      this.g.mpcsDefaultGudang =this.dataUser.defaultLocation.kodeLocation;
+    if (this.dataUser || !isEmpty(this.dataUser)) {
+      this.g.mpcsDefaultGudang = this.dataUser.defaultLocation.kodeLocation;
       this.configGudang = this.g.mpcsDefaultGudang;
       this.g.mpcsJenisGudang = this.dataUser.defaultLocation.kodeSingkat;
-      this.g.mpcsDefaultNamaGudang = this.dataUser.defaultLocation.kodeSingkat == 'PRD' ? 'Production' : this.dataUser.defaultLocation.kodeSingkat == 'COM' ? 'Commisary' : 'DRY Good';
-      this.g.mpcsGudangPRD= prdLocation.kodeLocation;
-      this.g.mpcsGudangDRY= dryLocation.kodeLocation;
+      this.g.mpcsDefaultNamaGudang =
+        this.dataUser.defaultLocation.kodeSingkat == 'PRD'
+          ? 'Production'
+          : this.dataUser.defaultLocation.kodeSingkat == 'COM'
+          ? 'Commisary'
+          : 'DRY Good';
+      this.g.mpcsGudangPRD = prdLocation.kodeLocation;
+      this.g.mpcsGudangDRY = dryLocation.kodeLocation;
       this.selectedWarehouse = this.g.mpcsDefaultNamaGudang;
       this.getDataProduction();
-    }else{
+    } else {
       this.getMpcsDefaultGudang();
       this.openModalWarehouse();
     }
-
-   
   }
 
-  
-  
+  checkScreenSize() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    // Ganti sesuai preferensi, contoh: max 768px dan potrait
+    if (width <= 1024 && height > width) {
+      this.fullscreenMode = true;
+    } else {
+      this.fullscreenMode = false;
+    }
+  }
+
   blockTyping(event: Event) {
-    const allowedKeys = ['Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Backspace'];
-  
+    const allowedKeys = [
+      'Tab',
+      'ArrowLeft',
+      'ArrowRight',
+      'Delete',
+      'Backspace',
+    ];
+
     if (event instanceof KeyboardEvent) {
       if (!allowedKeys.includes(event.key)) {
         event.preventDefault();
@@ -162,47 +191,114 @@ export class MpcsListComponent implements OnInit {
     this.getDataProduction();
   }
 
-  getDataProduction(){
+  getDataProduction() {
     const [startHour, startMinute] = this.startTime.split(':').map(Number);
     const [endHour, endMinute] = this.endTime.split(':').map(Number);
     const params = {
-      start: this.currentPage*this.itemsPerPage || 0,
-      search: { value: this.searchText,regex:false },
+      start: this.currentPage * this.itemsPerPage || 0,
+      search: { value: this.searchText, regex: false },
       length: this.itemsPerPage || 15,
-      order: [{column: 1, dir: "desc"}, {column: 2, dir: "desc"}],
-      ...this.paramaters ,
-      draw:this.draw,
+      order: [
+        { column: 1, dir: 'desc' },
+        { column: 2, dir: 'desc' },
+      ],
+      ...this.paramaters,
+      draw: this.draw,
       kodeGudang: this.configGudang,
       statusPosting: [this.selectedStatusFilter],
-      startDate: moment(this.dateRangeFilter[0]).set({
-                  hours: startHour,
-                  minutes: startMinute,
-                  seconds: 0,
-                  milliseconds: 0,
-                }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
-      endDate: moment(this.dateRangeFilter[1]).set({
-                  hours: endHour,
-                  minutes: endMinute,
-                  seconds: 59,
-                  milliseconds: 999,
-                }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
-      columns:  [
-            { data: 'dtIndex', name: '', searchable: true, orderable: true, search: { value: '', regex: false } },
-            { data: 'tglTransaksi', name: '', searchable: true, orderable: true, search: { value: '', regex: false } },
-            { data: 'nomorTransaksi', name: '', searchable: true, orderable: true, search: { value: '', regex: false } },
-            { data: 'kodeProduksi', name: '', searchable: true, orderable: true, search: { value: '', regex: false } },
-            { data: 'barangProduksi', name: '', searchable: true, orderable: true, search: { value: '', regex: false } },
-            { data: 'konversi', name: '', searchable: true, orderable: true, search: { value: '', regex: false } },
-            { data: 'jumlahResep', name: '', searchable: true, orderable: true, search: { value: '', regex: false } },
-            { data: 'totalProduksi', name: '', searchable: true, orderable: true, search: { value: '', regex: false } },
-            { data: 'tglExp', name: '', searchable: true, orderable: true, search: { value: '', regex: false } },
-            { data: 'statusPosting', name: '', searchable: true, orderable: true, search: { value: '', regex: false } }
-          ],    
-      };
+      startDate: moment(this.dateRangeFilter[0])
+        .set({
+          hours: startHour,
+          minutes: startMinute,
+          seconds: 0,
+          milliseconds: 0,
+        })
+        .format('YYYY-MM-DD HH:mm:ss.SSS'),
+      endDate: moment(this.dateRangeFilter[1])
+        .set({
+          hours: endHour,
+          minutes: endMinute,
+          seconds: 59,
+          milliseconds: 999,
+        })
+        .format('YYYY-MM-DD HH:mm:ss.SSS'),
+      columns: [
+        {
+          data: 'dtIndex',
+          name: '',
+          searchable: true,
+          orderable: true,
+          search: { value: '', regex: false },
+        },
+        {
+          data: 'tglTransaksi',
+          name: '',
+          searchable: true,
+          orderable: true,
+          search: { value: '', regex: false },
+        },
+        {
+          data: 'nomorTransaksi',
+          name: '',
+          searchable: true,
+          orderable: true,
+          search: { value: '', regex: false },
+        },
+        {
+          data: 'kodeProduksi',
+          name: '',
+          searchable: true,
+          orderable: true,
+          search: { value: '', regex: false },
+        },
+        {
+          data: 'barangProduksi',
+          name: '',
+          searchable: true,
+          orderable: true,
+          search: { value: '', regex: false },
+        },
+        {
+          data: 'konversi',
+          name: '',
+          searchable: true,
+          orderable: true,
+          search: { value: '', regex: false },
+        },
+        {
+          data: 'jumlahResep',
+          name: '',
+          searchable: true,
+          orderable: true,
+          search: { value: '', regex: false },
+        },
+        {
+          data: 'totalProduksi',
+          name: '',
+          searchable: true,
+          orderable: true,
+          search: { value: '', regex: false },
+        },
+        {
+          data: 'tglExp',
+          name: '',
+          searchable: true,
+          orderable: true,
+          search: { value: '', regex: false },
+        },
+        {
+          data: 'statusPosting',
+          name: '',
+          searchable: true,
+          orderable: true,
+          search: { value: '', regex: false },
+        },
+      ],
+    };
 
-    this.appService
+    this.appService;
     this.dataService
-    .postData(this.config.BASE_URL + '/api/production/dt', params)
+      .postData(this.config.BASE_URL + '/api/production/dt', params)
       .subscribe((resp: any) => {
         const mappedData = resp.data.map((item: any, index: number) => {
           // hapus rn dari data
@@ -214,18 +310,18 @@ export class MpcsListComponent implements OnInit {
           return finalData;
         });
 
-        console.log(mappedData,'mapped')
+        console.log(mappedData, 'mapped');
 
-        this.listProductionData= mappedData;
+        this.listProductionData = mappedData;
 
         this.totalItems = resp.recordsTotal;
         this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
         this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
       });
 
-      this.draw++;
+    this.draw++;
   }
-  
+
   specialCharValidator(control: AbstractControl): ValidationErrors | null {
     const specialCharRegex = /[^a-zA-Z0-9&\-().\s]/;
     const value = control.value;
@@ -248,16 +344,15 @@ export class MpcsListComponent implements OnInit {
   onFilterChange() {
     this.getDataProduction();
   }
-  
+
   onAddPressed(): void {
     const route = this.router.createUrlTree(['/mpcs/add']);
     this.router.navigateByUrl(route);
   }
 
-  
   actionBtnClick(data: any = null) {
-      this.g.saveLocalstorage('headerMpcsProduksi', JSON.stringify(data));
-      this.router.navigate(['/mpcs/add']);
+    this.g.saveLocalstorage('headerMpcsProduksi', JSON.stringify(data));
+    this.router.navigate(['/mpcs/add']);
   }
 
   toggleFilter(): void {
@@ -269,22 +364,24 @@ export class MpcsListComponent implements OnInit {
     const [endHour, endMinute] = this.endTime.split(':').map(Number);
     const params = {
       kodeGudang: this.configGudang,
-      startDate: moment(this.dateRangeFilter[0]).set({
-                  hours: startHour,
-                  minutes: startMinute,
-                  seconds: 0,
-                  milliseconds: 0,
-                }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
-      endDate: moment(this.dateRangeFilter[1]).set({
-                  hours: endHour,
-                  minutes: endMinute,
-                  seconds: 59,
-                  milliseconds: 999,
-                }).format('YYYY-MM-DD HH:mm:ss.SSS' ),
+      startDate: moment(this.dateRangeFilter[0])
+        .set({
+          hours: startHour,
+          minutes: startMinute,
+          seconds: 0,
+          milliseconds: 0,
+        })
+        .format('YYYY-MM-DD HH:mm:ss.SSS'),
+      endDate: moment(this.dateRangeFilter[1])
+        .set({
+          hours: endHour,
+          minutes: endMinute,
+          seconds: 59,
+          milliseconds: 999,
+        })
+        .format('YYYY-MM-DD HH:mm:ss.SSS'),
     };
-    this.appService
-    .getSummaryKirimProduction(params)
-    .subscribe((resp) => {
+    this.appService.getSummaryKirimProduction(params).subscribe((resp) => {
       this.listSummaryData = resp.data.data;
       this.totalTransSummary = resp.data.totalData;
     });
@@ -292,29 +389,33 @@ export class MpcsListComponent implements OnInit {
 
   formatStartDate(): string {
     const [startHour, startMinute] = this.startTime.split(':').map(Number);
-  
-    return moment(this.dateRangeFilter[0]).set({
-      hours: startHour,
-      minutes: startMinute,
-      seconds: 0,
-      milliseconds: 0,
-    }).format('YYYY-MM-DD HH:mm');
+
+    return moment(this.dateRangeFilter[0])
+      .set({
+        hours: startHour,
+        minutes: startMinute,
+        seconds: 0,
+        milliseconds: 0,
+      })
+      .format('YYYY-MM-DD HH:mm');
   }
 
   formatEndDate(): string {
     const [endHour, endMinute] = this.endTime.split(':').map(Number);
-  
-    return moment(this.dateRangeFilter[1]).set({
-      hours: endHour,
-      minutes: endMinute,
-      seconds: 0,
-      milliseconds: 0,
-    }).format('YYYY-MM-DD HH:mm');
+
+    return moment(this.dateRangeFilter[1])
+      .set({
+        hours: endHour,
+        minutes: endMinute,
+        seconds: 0,
+        milliseconds: 0,
+      })
+      .format('YYYY-MM-DD HH:mm');
   }
-  
+
   formatToday(): string {
     const [endHour, endMinute] = this.endTime.split(':').map(Number);
-  
+
     return moment().format('YYYY-MMM-DD');
   }
 
@@ -324,75 +425,75 @@ export class MpcsListComponent implements OnInit {
     this.isShowModalKirim = true;
   }
 
-  onKirimData(){
-      this.loadingKirim = true;
-    
-        const requestBody = {
-          kodeGudang: this.configGudang,
-          userCreate:'system'
-        };
-    
-        Swal.fire({
-          ...this.g.componentKonfirmasiKirim,
-          showConfirmButton: false,
-          showCancelButton: false,
-          width: '600px',
-          customClass: {
-            popup: 'custom-popup',
-          },
-          allowOutsideClick: () => {
-            return false; // Prevent closing
-          },
-          didOpen: () => {
-          const submitBtn = document.getElementById(
-            'btn-submit'
-          ) as HTMLButtonElement;
-          const cancelBtn = document.getElementById(
-            'btn-cancel'
-          ) as HTMLButtonElement;
- 
-          submitBtn?.addEventListener('click', () => {
+  onKirimData() {
+    this.loadingKirim = true;
 
-              submitBtn.disabled = true;
-              cancelBtn.disabled = true;
-              Swal.close();
-              this.appService.kirimProduction(requestBody).subscribe({
-                next: (res: any) => {
-                  if (!res.success) {
-                    this.appService.handleErrorResponse(res);
-                  } else {
-                    this.toastr.success('Berhasil Kirim!');
-                  }
-                  this.loadingKirim = false;
-                  Swal.close();
-                  const currentUrl = this.router.url;
-                  this.router.navigateByUrl('/empty', { skipLocationChange: true }).then(() => {
-                    this.router.navigate([currentUrl]);
-                  });
-                },
-                error: (err: any) => {
-                  console.log('An error occurred while Kirim Data.');
-                  this.loadingKirim = false;
-                  submitBtn.disabled = false;
-                  cancelBtn.disabled = false;
-                  Swal.close();
-                },
-              });
-            });
-    
-            cancelBtn?.addEventListener('click', () => {
-              Swal.close();
-              this.toastr.info('Kirim dibatalkan');
+    const requestBody = {
+      kodeGudang: this.configGudang,
+      userCreate: 'system',
+    };
+
+    Swal.fire({
+      ...this.g.componentKonfirmasiKirim,
+      showConfirmButton: false,
+      showCancelButton: false,
+      width: '600px',
+      customClass: {
+        popup: 'custom-popup',
+      },
+      allowOutsideClick: () => {
+        return false; // Prevent closing
+      },
+      didOpen: () => {
+        const submitBtn = document.getElementById(
+          'btn-submit'
+        ) as HTMLButtonElement;
+        const cancelBtn = document.getElementById(
+          'btn-cancel'
+        ) as HTMLButtonElement;
+
+        submitBtn?.addEventListener('click', () => {
+          submitBtn.disabled = true;
+          cancelBtn.disabled = true;
+          Swal.close();
+          this.appService.kirimProduction(requestBody).subscribe({
+            next: (res: any) => {
+              if (!res.success) {
+                this.appService.handleErrorResponse(res);
+              } else {
+                this.toastr.success('Berhasil Kirim!');
+              }
               this.loadingKirim = false;
-            });
-          },
+              Swal.close();
+              const currentUrl = this.router.url;
+              this.router
+                .navigateByUrl('/empty', { skipLocationChange: true })
+                .then(() => {
+                  this.router.navigate([currentUrl]);
+                });
+            },
+            error: (err: any) => {
+              console.log('An error occurred while Kirim Data.');
+              this.loadingKirim = false;
+              submitBtn.disabled = false;
+              cancelBtn.disabled = false;
+              Swal.close();
+            },
+          });
         });
+
+        cancelBtn?.addEventListener('click', () => {
+          Swal.close();
+          this.toastr.info('Kirim dibatalkan');
+          this.loadingKirim = false;
+        });
+      },
+    });
   }
 
-   getMpcsDefaultGudang() {
-  
-    if(this.g.mpcsDefaultGudang){
-        this.configGudang = this.g.mpcsDefaultGudang;
+  getMpcsDefaultGudang() {
+    if (this.g.mpcsDefaultGudang) {
+      this.configGudang = this.g.mpcsDefaultGudang;
       switch (this.g.mpcsJenisGudang) {
         case 'COM':
           this.selectedWarehouse = 'Commisary';
@@ -404,42 +505,36 @@ export class MpcsListComponent implements OnInit {
           this.selectedWarehouse = 'DRY Good';
           break;
       }
-
-    }else{
-    this.appService
-    .mpcsDefaultGudang({})
-    .subscribe((resp) => {
+    } else {
+      this.appService.mpcsDefaultGudang({}).subscribe((resp) => {
         this.g.mpcsDefaultGudang = resp.data.gudangPRD;
         this.g.mpcsGudangCOM = resp.data.gudangCOM;
         this.g.mpcsGudangPRD = resp.data.gudangPRD;
         this.g.mpcsGudangDRY = resp.data.gudangDRY;
         this.selectedWarehouse = 'Production';
         this.configGudang = this.g.mpcsDefaultGudang;
-      
-    });
+      });
     }
-     this.getDataProduction();
+    this.getDataProduction();
   }
-  
-  openModalWarehouse(isChange : boolean = false) {
 
-    if(this.dataUser?.roleId=="10"){
+  openModalWarehouse(isChange: boolean = false) {
+    if (this.dataUser?.roleId == '10') {
       return;
     }
 
-    if(!this.g.mpcsDefaultGudang || isChange){
-       this.isShowWarehouseModal = true;
-    }else{
-        this.configGudang = this.g.mpcsDefaultGudang;
+    if (!this.g.mpcsDefaultGudang || isChange) {
+      this.isShowWarehouseModal = true;
+    } else {
+      this.configGudang = this.g.mpcsDefaultGudang;
     }
-   
   }
 
   confirmSelectionWarehouse() {
     if (this.selectedWarehouse) {
       // Handle the selected warehouse value
 
-       switch (this.selectedWarehouse) {
+      switch (this.selectedWarehouse) {
         case 'Commisary':
           this.g.mpcsJenisGudang = 'COM';
           this.g.mpcsDefaultGudang = this.g.mpcsGudangCOM;
@@ -457,7 +552,7 @@ export class MpcsListComponent implements OnInit {
           break;
       }
 
-        this.configGudang = this.g.mpcsDefaultGudang;
+      this.configGudang = this.g.mpcsDefaultGudang;
       // Close modal after confirmation
       this.isShowWarehouseModal = false;
       this.getDataProduction();
@@ -468,13 +563,13 @@ export class MpcsListComponent implements OnInit {
     this.isShowWarehouseModal = false;
   }
 
-  doDownload(type: string ="") {
+  doDownload(type: string = '') {
     let param = {};
     this.isPdfLoader = true;
     const today = moment();
     // this.loadingRptWIP = true;
     param = {
-      kodeGudang:this.g.mpcsDefaultGudang,
+      kodeGudang: this.g.mpcsDefaultGudang,
       status: 'B',
       startDate: today.format('DD MMM yyyy'),
       endDate: today.format('DD MMM yyyy'),
@@ -484,14 +579,14 @@ export class MpcsListComponent implements OnInit {
     };
 
     let url = '/api/report/jasper-report-mpcs-production-prd';
-    if(this.g.mpcsJenisGudang === 'DRY') {
+    if (this.g.mpcsJenisGudang === 'DRY') {
       url = '/api/report/jasper-report-mpcs-production-premix';
     }
 
-    console.log(this.g.getUserKodeSingkat())
+    console.log(this.g.getUserKodeSingkat());
     this.appService.getFile(url, param).subscribe({
       next: (res) => {
-      // this.loadingRptWIP = false;
+        // this.loadingRptWIP = false;
 
         if (type === 'preview') {
           return this.previewPdf(res);
@@ -513,26 +608,24 @@ export class MpcsListComponent implements OnInit {
     console.log(this.pdfSrc, 'pdf src');
   }
 
-   downloadPDF(res: any, reportType: string) {
+  downloadPDF(res: any, reportType: string) {
     var blob = new Blob([res], { type: 'application/pdf' });
     this.downloadURL = window.URL.createObjectURL(blob);
 
     if (this.downloadURL.length) {
       var link = document.createElement('a');
       link.href = this.downloadURL;
-      link.download = `${reportType} Report ${this.g.formatUrlSafeString('WIP Production'
+      link.download = `${reportType} Report ${this.g.formatUrlSafeString(
+        'WIP Production'
       )} ${this.datePipe.transform(
-       this.dateRangeFilter[0],
+        this.dateRangeFilter[0],
         'dd-MMM-yyyy'
       )} s.d. ${this.datePipe.transform(
-       this.dateRangeFilter[0],
+        this.dateRangeFilter[0],
         'dd-MMM-yyyy'
       )}.pdf`;
       link.click();
       this.toastr.success('File sudah terunduh');
     } else this.toastr.error('File tidak dapat terunduh');
   }
-
-  
-
 }
