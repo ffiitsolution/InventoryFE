@@ -204,6 +204,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
 
       param = {
         kodeGudang: this.g.getUserLocationCode(),
+        kodeSingkat: this.g.getUserKodeSingkat(),
         status: this.paramStatusAktif,
         tipePilihanCetak: this.paramPilihanCetak,
         tipeListing: this.paramTipeListing,
@@ -283,6 +284,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       param = {
         kodeGudang1: this.prmKodeGudang.JATIM,
         kodeGudang2: this.prmKodeGudang.INDOTIM,
+        kodeSingkat:this.paramJenisGudang,
         tipePilihanCetak: this.paramPilihanCetak,
         firstDate: this.startOfMonth,
         lastDate: moment(this.paramTglTransaksi).format('DD MMM YYYY'),
