@@ -148,7 +148,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   onPreviousPressed(): void {
-    this.router.navigate(['/transaction/delivery-item']);
+    this.router.navigate(['/transaction//wastage/list-dt']);
   }
 
   onShowModal() {

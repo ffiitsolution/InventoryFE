@@ -97,11 +97,11 @@ export class AddDataDetailPembelianComponent
   listStatus: any[] = [
     {
       id: '1',
-      name: 'Fresh',
+      name: '1.FRESH',
     },
     {
       id: '2',
-      name: 'Frozen',
+      name: '2.FROZEN',
     },
   ];
   constructor(
@@ -498,7 +498,7 @@ export class AddDataDetailPembelianComponent
             userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
             statusSync: "T",
             qtyKgs: item.qtyKgs || 0,
-            jenisItem: item.jenis || "0",
+            jenisItem: item.jenis || " ",
             flagJenis: item.flagJenis,
           })),
         detailsExpired: this.listEntryExpired?.map(expiredItem => ({

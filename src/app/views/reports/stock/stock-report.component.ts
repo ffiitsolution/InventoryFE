@@ -557,7 +557,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       this.startOfMonth = moment(value).startOf('month').format('DD MMMM YYYY');
   
       // Perbedaan di sini: jika currentReport = 'Stock Barang By Expired', ambil tanggal hari ini
-      if (this.currentReport === 'Stock Barang By Expired') {
+      if (this.currentReport === 'Stock Barang By Expired' || this.currentReport === 'Inventory Movement') {
         this.endOfMonth = moment(value).format('DD MMMM YYYY'); // tanggal berjalan
       } else {
         this.endOfMonth = moment(value).endOf('month').format('DD MMMM YYYY'); // default: akhir bulan
