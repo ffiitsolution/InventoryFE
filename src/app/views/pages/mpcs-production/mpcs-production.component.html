@@ -452,7 +452,11 @@
                   <div class="d-flex justify-content-between gap-2 mb-4">
                     <div class="d-flex flex-column">
                       <h6 class="mb-0">Total Qty Expired</h6>
-                      <label>
+                      <label
+                         [ngClass]="{
+                            'text-danger': getTotalExpiredData(item.bahanBaku, item.konversi) == 0 && item.isConfirmed
+                          }"
+                      >
                         {{ getTotalExpiredData(item.bahanBaku, item.konversi) }}
                         {{ item.satuanKecil }}</label
                       >
@@ -662,7 +666,7 @@
                         *ngIf="this.headerMpcsProduksi?.statusPosting !== 'P'"
                         (click)="onExpiredDeleteRow(item.kodeBarang, i)"
                         type="button"
-                        class="btn btn-secondary ms-2"
+                        class="btn btn-danger ms-2"
                       >
                         <i class="fa fa-trash me-1"></i>
                       </button>
