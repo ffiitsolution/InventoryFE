@@ -191,7 +191,13 @@ export class AnalysisReportComponent
       endDate.setDate(endDate.getDate() + 7); // Tambah 7 hari dari hari ini
 
       this.dateRangeFilter = [startDate, endDate];
+    } else if (['Mutasi Stock Harian'].includes(this.currentReport)) {
+      this.dpConfig.maxDate = new Date();
+      const startOfMonth = moment().startOf('month').toDate();
+      const today = new Date();
+      this.dateRangeFilter = [startOfMonth, today];
     }
+    
   }
 
   ngOnDestroy(): void {}
@@ -465,9 +471,9 @@ export class AnalysisReportComponent
   handleEnterBarang2(event: any) {
     event.preventDefault();
 
-    let kodeBarang = this.kodeBarang?.trim();
-    if (kodeBarang !== '') {
-      this.getProductRow2(kodeBarang);
+    let kodeBarang2 = this.kodeBarang2?.trim();
+    if (kodeBarang2 !== '') {
+      this.getProductRow2(kodeBarang2);
     }
   }
 
@@ -481,6 +487,8 @@ export class AnalysisReportComponent
             next: (res: any) => {
               if (res) {
                 this.namaBarang = res.namaBarang;
+                this.kodeBarang2 = res.kodeBarang;
+                this.namaBarang2 = res.namaBarang;
                 this.konversi = res.konversi || 1;
                 this.satuanBesar = res.satuanBesar;
                 this.satuanKecil = res.satuanKecil;
@@ -503,11 +511,11 @@ export class AnalysisReportComponent
     });
   }
 
-  getProductRow2(kodeBarang: string): Promise<boolean> {
+  getProductRow2(kodeBarang2: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      if (kodeBarang !== '') {
+      if (kodeBarang2 !== '') {
         this.service
-          .getProductResep(kodeBarang)
+          .getProductResep(kodeBarang2)
           .pipe(takeUntil(this.ngUnsubscribe))
           .subscribe({
             next: (res: any) => {

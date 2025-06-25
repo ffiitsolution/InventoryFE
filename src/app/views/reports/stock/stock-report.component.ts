@@ -89,16 +89,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     private route: ActivatedRoute,
     private toastr: ToastrService
   ) {
-    this.startOfMonth = moment().startOf('month').format('DD MMMM YYYY');
-    this.endOfMonth = moment().endOf('month').format('DD MMMM YYYY');
-    this.dateRangeString = `(Periode :${this.startOfMonth} - ${this.endOfMonth})`;
-
-    this.dpConfigtrans.containerClass = 'theme-dark-blue';
-    this.dpConfigtrans.dateInputFormat = 'DD/MM/YYYY';
-    this.dpConfigtrans.adaptivePosition = true;
-    this.dpConfigtrans.maxDate = new Date();
-    // this.dpConfigtrans.minDate = moment().startOf('month').toDate();
-    this.dpConfigtrans.customTodayClass = 'today-highlight';
+    
   }
 
   ngOnInit(): void {
@@ -116,6 +107,23 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     this.configRegion = this.g.dropdownConfig('description');
 
     this.userData = this.service.getUserData();
+
+    const today = moment().format('DD MMMM YYYY');
+    this.startOfMonth = moment().startOf('month').format('DD MMMM YYYY');
+    this.endOfMonth = moment().endOf('month').format('DD MMMM YYYY');
+
+    if (['Stock Barang By Expired', 'Inventory Movement'].includes(this.currentReport)) {
+      this.endOfMonth = today;
+    }
+
+    this.dateRangeString = `(Periode :${this.startOfMonth} - ${this.endOfMonth})`;
+
+    this.dpConfigtrans.containerClass = 'theme-dark-blue';
+    this.dpConfigtrans.dateInputFormat = 'DD/MM/YYYY';
+    this.dpConfigtrans.adaptivePosition = true;
+    this.dpConfigtrans.maxDate = new Date();
+    // this.dpConfigtrans.minDate = moment().startOf('month').toDate();
+    this.dpConfigtrans.customTodayClass = 'today-highlight';
 
     if (['Master Cabang'].includes(this.currentReport)) {
       this.getListParam('listRegion');
