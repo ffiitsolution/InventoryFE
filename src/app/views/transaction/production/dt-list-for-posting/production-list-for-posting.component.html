@@ -279,7 +279,7 @@
   <c-modal-footer class="justify-center">
     <button
       class="btn btn-success text-white btn-150 w-180 me-3"
-      [disabled]="loadingPosting || listSummaryData.length == 0"
+      [disabled]="loadingPosting || listSummaryData.length == 0 || !hasScrolledToBottom"
       (click)="onPostingData()"
     >
       <i class="fa fa-send pe-1" *ngIf="!loadingPosting"></i>

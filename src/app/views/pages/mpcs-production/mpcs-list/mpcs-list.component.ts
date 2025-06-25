@@ -88,6 +88,7 @@ export class MpcsListComponent implements OnInit {
   isPdfLoader: boolean = false;
   locations: any = {};
   fullscreenMode: boolean = false;
+  hasScrolledToBottom: boolean = false;
 
   constructor(
     translate: TranslateService,
@@ -115,7 +116,7 @@ export class MpcsListComponent implements OnInit {
   myForm: FormGroup;
 
   ngOnInit(): void {
-     this.checkScreenSize();
+    this.checkScreenSize();
     window.addEventListener('resize', this.checkScreenSize.bind(this));
 
     const todayDate = new Date();
@@ -131,17 +132,20 @@ export class MpcsListComponent implements OnInit {
       (item: any) => item.kodeSingkat === 'DRY'
     );
 
+    console.log(this.g.mpcsDefaultGudang,'deftgudang');
     console.log(this.dataUser, 'data user mpcs list');
     if (this.dataUser || !isEmpty(this.dataUser)) {
-      this.g.mpcsDefaultGudang = this.dataUser.defaultLocation.kodeLocation;
-      this.configGudang = this.g.mpcsDefaultGudang;
-      this.g.mpcsJenisGudang = this.dataUser.defaultLocation.kodeSingkat;
-      this.g.mpcsDefaultNamaGudang =
-        this.dataUser.defaultLocation.kodeSingkat == 'PRD'
+     this.g.mpcsDefaultGudang = this.g.mpcsDefaultGudang || this.dataUser.defaultLocation.kodeLocation;
+      this.configGudang = this.configGudang || this.g.mpcsDefaultGudang;
+      this.g.mpcsJenisGudang = this.g.mpcsJenisGudang || this.dataUser.defaultLocation.kodeSingkat;
+
+      this.g.mpcsDefaultNamaGudang = this.g.mpcsDefaultNamaGudang || 
+        (this.dataUser.defaultLocation.kodeSingkat === 'PRD'
           ? 'Production'
-          : this.dataUser.defaultLocation.kodeSingkat == 'COM'
+          : this.dataUser.defaultLocation.kodeSingkat === 'COM'
           ? 'Commisary'
-          : 'DRY Good';
+          : 'DRY Good');
+
       this.g.mpcsGudangPRD = prdLocation.kodeLocation;
       this.g.mpcsGudangDRY = dryLocation.kodeLocation;
       this.selectedWarehouse = this.g.mpcsDefaultNamaGudang;
@@ -150,6 +154,23 @@ export class MpcsListComponent implements OnInit {
       this.getMpcsDefaultGudang();
       this.openModalWarehouse();
     }
+  }
+
+  ngAfterViewInit(): void {
+    const interval = setInterval(() => {
+      const viewer = document.getElementById('viewerContainer');
+      if (viewer) {
+        viewer.addEventListener('scroll', () => {
+          const atBottom =
+            viewer.scrollTop + viewer.clientHeight >= viewer.scrollHeight - 5;
+
+          if (atBottom) {
+            this.hasScrolledToBottom = true;
+          }
+        });
+        clearInterval(interval); // hanya tunggu sampai viewer ready
+      }
+    }, 500);
   }
 
   checkScreenSize() {
@@ -423,6 +444,7 @@ export class MpcsListComponent implements OnInit {
     this.getSummaryData();
     this.doDownload('preview');
     this.isShowModalKirim = true;
+    this.hasScrolledToBottom = false; // Reset scroll state when modal is opened
   }
 
   onKirimData() {

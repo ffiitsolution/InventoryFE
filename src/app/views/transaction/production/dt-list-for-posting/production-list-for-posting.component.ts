@@ -80,6 +80,7 @@ export class ProductionListForPostingComponent implements OnInit {
   userData: any;
   pdfSrc: any = null;
   isPdfLoader: boolean = false;
+  hasScrolledToBottom: boolean = false;
   
   constructor(
     private dataService: DataService,
@@ -333,6 +334,21 @@ export class ProductionListForPostingComponent implements OnInit {
   ngAfterViewInit(): void {
     this.renderDatatable();
     this.dtTrigger.next(this.dtOptions);
+
+    const interval = setInterval(() => {
+      const viewer = document.getElementById('viewerContainer');
+      if (viewer) {
+        viewer.addEventListener('scroll', () => {
+          const atBottom =
+            viewer.scrollTop + viewer.clientHeight >= viewer.scrollHeight - 5;
+
+          if (atBottom) {
+            this.hasScrolledToBottom = true;
+          }
+        });
+        clearInterval(interval); // hanya tunggu sampai viewer ready
+      }
+    }, 500);
   }
 
   ngOnDestroy(): void {
@@ -543,6 +559,7 @@ export class ProductionListForPostingComponent implements OnInit {
     this.getSummaryData();
     this.doDownload('preview');
     this.isShowModalPosting = true;
+    this.hasScrolledToBottom = false;
   }
 
   onPreviousPressed(): void {

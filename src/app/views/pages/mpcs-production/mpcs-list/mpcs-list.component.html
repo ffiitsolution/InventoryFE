@@ -259,7 +259,7 @@
 
 <c-modal
   #formModalKirim
-  [fullscreen]="fullscreenMode"
+  [fullscreen]="true"
   [visible]="isShowModalKirim"
   backdrop="static"
   [size]="'xl'"
@@ -379,7 +379,7 @@
             <ngx-extended-pdf-viewer
             [src]="pdfSrc"
             useBrowserLocale="true"
-            [height]="'65vh'"
+            [height]="'80%'"
             [filenameForDownload]="'WIP-produksi.pdf'"
           ></ngx-extended-pdf-viewer>
           </div>
@@ -397,7 +397,7 @@
     
     <button
       class="btn btn-success text-white btn-150 w-180 me-3"
-      [disabled]="loadingKirim || listSummaryData.length == 0"
+      [disabled]="loadingKirim || listSummaryData.length == 0 || !hasScrolledToBottom"
       (click)="onKirimData()"
     >
       <i class="fa fa-send pe-1" *ngIf="!loadingKirim"></i>
