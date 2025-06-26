@@ -65,7 +65,7 @@
           <table bordered [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
             <thead class="small">
               <tr class="py-1">
-                <th scope="col" class="text-center align-middle" style="background-color: #3c4b64; color: white;" rowspan="2">
+                <th scope="col" class="text-center align-middle" style="background-color: #3c4b64; color: white; width: 120px;" rowspan="2">
                   Kode Barang
                 </th>
                 <th scope="col" class="text-center align-middle" style="background-color: #3c4b64; color: white;" rowspan="2">
@@ -121,7 +121,7 @@
                   <div class="input-group input-group-sm">
                     <input type="text" autofocus class="form-control form-control-sm text-center"
                            [(ngModel)]="data.kodeBarang"
-                           (keydown.enter)="handleEnter($event, i)"
+                           (keydown.enter)="handleEnter($event, getGlobalIndex(i))"
                            (keyup.enter)="nextInput.focus()"
                            [disabled]="data.isFromRetur" />
                     <button class="btn btn-outline-secondary btn-sm"
@@ -154,7 +154,7 @@
                       [(ngModel)]="data.qtyPemakaianBesar"
                       (blur)="formatQty(data, 'besar')"
                       (focus)="g.selectInputContent($event)"
-                      (change)="onInputQtyBesar($event, data.kodeBarang, i)"
+                      (change)="onInputQtyBesar($event, data.kodeBarang, getGlobalIndex(i))"
                     />
                     {{ data.satuanBesar }}
                   </div>
@@ -171,7 +171,7 @@
                       [(ngModel)]="data.qtyPemakaianKecil"
                       (blur)="formatQty(data, 'kecil')"
                       (focus)="g.selectInputContent($event)"
-                      (change)="onInputQtyKecil($event, data.kodeBarang, i)"
+                      (change)="onInputQtyKecil($event, data.kodeBarang, getGlobalIndex(i))"
                     />
                     {{ data.satuanKecil }}
                   </div>
@@ -185,7 +185,7 @@
                 <!-- Tombol Expired -->
                 <td class="text-center align-middle">
                   <button class="btn btn-success btn-sm text-white"
-                          (click)="onShowModalExpired($event, i)"
+                          (click)="onShowModalExpired($event, getGlobalIndex(i))"
                           [disabled]="!data.isConfirmed">
                     <i class="fa fa-check pe-1"></i> {{ "Exp." | translate }}
                   </button>
@@ -198,7 +198,7 @@
             
                 <!-- Tombol Delete -->
                 <td class="text-center align-middle">
-                  <button (click)="onDeleteRow(i, data)" type="button" class="btn btn-secondary btn-sm">
+                  <button (click)="onDeleteRow(getGlobalIndex(i), data)" type="button" class="btn btn-secondary btn-sm">
                     <i class="fa fa-trash me-1"></i>
                   </button>
                 </td>
