@@ -111,7 +111,7 @@ export class AllMasterComponent implements OnInit, OnDestroy, AfterViewInit {
     },
     {
       name: 'Supir',
-      url: '/master/master-supir',
+      url: '/master/master-driver',
       iconComponent: 'cilContact',
     },
     {
@@ -161,12 +161,9 @@ export class AllMasterComponent implements OnInit, OnDestroy, AfterViewInit {
       );
     });
 
-    this.listMasterTonase = this.listMasterTonase.filter((item: any) => {
-      const nameLower = item.url.toLowerCase();
-      return [...keywordSet].some((keyword) =>
-        nameLower.replace(/^\/master-tonase\//, '').includes(keyword)
-      );
-    });
+    this.listMasterTonase = [...this.listMasterTonase]; // just reassign or leave it untouched
+
+    console.log(this.listMasterTonase)
 
     this.hasMaster = this.g
       .getLocalstorage('inv_permissions')

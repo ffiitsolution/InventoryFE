@@ -89,6 +89,10 @@ import { AddResepComponent, MasterResepComponent } from './master-resep';
 import { ProfileCompanyComponent } from './profile-company/profile-company.component';
 import { AllMasterComponent } from './all-master/all-master.component';
 
+import { MasterDriverComponent } from './master-driver/master-driver.component';
+import { MasterBranchDetailTonaseComponent } from './master-branch-detail-tonase/master-branch-detail-tonase.component';
+import { MasterKendaraanComponent } from './master-kendaraan/master-kendaraan.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -97,6 +101,19 @@ const routes: Routes = [
         path: '',
         component: AllMasterComponent,
       },
+      {
+        path: 'master-driver',
+        component: MasterDriverComponent,
+      },
+       {
+        path: 'master-branch-detail',
+        component: MasterBranchDetailTonaseComponent,
+      },
+        {
+        path: 'master-kendaraan',
+        component: MasterKendaraanComponent,
+      },
+      
       {
         path: 'master-company',
         component: MasterCompanyComponent,
