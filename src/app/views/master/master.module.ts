@@ -89,6 +89,13 @@ import {
 } from './table-uom';
 
 import {
+  TableRuteAddComponent,
+  TableRuteComponent,
+  TableRuteDetailComponent,
+  TableRuteEditComponent,
+} from './table-rute';
+
+import {
   TableCityAreaAddComponent,
   TableCityAreaComponent,
   TableCityAreaDetailComponent,
@@ -198,6 +205,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     TableUomAddComponent,
     TableUomDetailComponent,
     TableUomEditComponent,
+
+    TableRuteComponent,
+    TableRuteAddComponent,
+    TableRuteDetailComponent,
+    TableRuteEditComponent,
 
     TableCityAreaComponent,
     TableCityAreaAddComponent,

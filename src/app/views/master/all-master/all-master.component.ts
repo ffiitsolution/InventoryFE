@@ -31,6 +31,7 @@ export class AllMasterComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedCategory: string = 'Master';
   verticalItemCount: number = 6;
   hasMaster: boolean = false;
+  hasMasterTonase: boolean = false;
   hasSetNoTrans: boolean = false;
   hasRolePermissions: boolean = false;
   listMaster: any = [
@@ -101,6 +102,30 @@ export class AllMasterComponent implements OnInit, OnDestroy, AfterViewInit {
     },
     
   ];
+
+  listMasterTonase: any = [
+    {
+      name: 'Rute',
+      url: '/master/master-rute',
+      iconComponent: 'cilMap',
+    },
+    {
+      name: 'Supir',
+      url: '/master/master-supir',
+      iconComponent: 'cilContact',
+    },
+    {
+      name: 'Cabang Detail',
+      url: '/master/master-branch-detail',
+      iconComponent: 'cilLocationPin',
+    },
+    {
+      name: 'Kendaraan',
+      url: '/master/master-kendaraan',
+      iconComponent: 'cilBusAlt',
+    },
+  ];
+
   listSetupNoTransaksi: any[] = [];
   userData: any;
   loadingSetupNoTransaksi: boolean = false;
@@ -128,15 +153,29 @@ export class AllMasterComponent implements OnInit, OnDestroy, AfterViewInit {
         ?.filter((p: any) => p.app === 'MODULE')
         ?.map((p: any) => p.permission.split('_')[1]?.toLowerCase())
     );
+
     this.listMaster = this.listMaster.filter((item: any) => {
       const nameLower = item.url.toLowerCase();
       return [...keywordSet].some((keyword) =>
         nameLower.replace(/^\/master\//, '').includes(keyword)
       );
     });
+
+    this.listMasterTonase = this.listMasterTonase.filter((item: any) => {
+      const nameLower = item.url.toLowerCase();
+      return [...keywordSet].some((keyword) =>
+        nameLower.replace(/^\/master-tonase\//, '').includes(keyword)
+      );
+    });
+
     this.hasMaster = this.g
       .getLocalstorage('inv_permissions')
       ?.some((p: any) => p.app === 'MODULE' && /^master_/.test(p.permission));
+    
+    this.hasMasterTonase = this.g
+      .getLocalstorage('inv_permissions')
+      ?.some((p: any) => p.app === 'MODULE' && /^master-tonase_/.test(p.permission));
+
     this.hasSetNoTrans = this.g
       .getLocalstorage('inv_permissions')
       ?.some(

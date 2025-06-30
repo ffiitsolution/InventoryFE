@@ -10,6 +10,12 @@ import {
   TableUomDetailComponent,
   TableUomEditComponent,
 } from './table-uom';
+import {
+  TableRuteAddComponent,
+  TableRuteComponent,
+  TableRuteDetailComponent,
+  TableRuteEditComponent,
+} from './table-rute';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {
@@ -259,6 +265,24 @@ const routes: Routes = [
         path: 'master-uom/edit',
         component: TableUomEditComponent,
       },
+      ///
+      {
+        path: 'master-rute',
+        component: TableRuteComponent,
+      },
+      {
+        path: 'master-rute/add',
+        component: TableRuteAddComponent,
+      },
+      {
+        path: 'master-rute/detail',
+        component: TableRuteDetailComponent,
+      },
+      {
+        path: 'master-rute/edit',
+        component: TableRuteEditComponent,
+      },
+      ///
       {
         path: 'master-set-number',
         component: TableSetNumberComponent,
