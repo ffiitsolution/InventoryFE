@@ -47,6 +47,10 @@ export class ListPenjualanBrgBekasComponent implements OnInit {
   );
   dateRangeFilter: any = [this.startDateFilter, this.endDateFilter];
   selectedRowData: any;
+  alreadyPrint: boolean;
+  disabledPrintButton: any;
+  paramGenerateReport: any = {}
+  isShowModalReport: boolean;
 
   constructor(
     private dataService: DataService,
@@ -62,7 +66,7 @@ export class ListPenjualanBrgBekasComponent implements OnInit {
       autoWidth: true,
       info: true,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback:any) => {
+      ajax: (dataTablesParameters: any, callback: any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -114,13 +118,13 @@ export class ListPenjualanBrgBekasComponent implements OnInit {
         { data: 'tglTransaksi', title: 'Tanggal Transaksi' },
         { data: 'nomorTransaksi', title: 'No. Transaksi' },
         {
-          data: 'supplier', title: 'Supplier Penerima', searchable: true, render: (data:any, type:any, row:any) => {
+          data: 'supplier', title: 'Supplier Penerima', searchable: true, render: (data: any, type: any, row: any) => {
             return `${row.supplier} - ${row.namaSupplier}`
           }
         },
         {
           data: 'subTotal', title: 'Sub Total', searchable: true,
-          render: (data:any) => {
+          render: (data: any) => {
             return this.g.convertToRupiah(data);
           }
         },
@@ -129,7 +133,7 @@ export class ListPenjualanBrgBekasComponent implements OnInit {
           title: 'Adjust Bayar',
           orderable: true,
           searchable: true,
-          render: (data:any) => {
+          render: (data: any) => {
             return this.g.convertToRupiah(data);
           }
         },
@@ -138,14 +142,14 @@ export class ListPenjualanBrgBekasComponent implements OnInit {
           title: 'Total Penjualan',
           orderable: true,
           searchable: true,
-          render: (data:any) => {
+          render: (data: any) => {
             return this.g.convertToRupiah(data);
           }
         },
         {
           data: 'statusPosting',
           title: 'Status Transaksi',
-          render: (data:any) => {
+          render: (data: any) => {
             const isCancel = data == CANCEL_STATUS;
             const label = this.g.getStatusOrderLabel(data);
             if (isCancel) {
@@ -157,11 +161,13 @@ export class ListPenjualanBrgBekasComponent implements OnInit {
           title: 'Opsi',
           className: 'text-center',
           render: () => {
-            return `<div class="d-flex px-2 gap-1">
-              <button style="width: 74px" class="btn btn-sm action-view btn-outline-info btn-60 pe-2">
-              <i class="fa fa-eye pe-2"></i>${this.buttonCaptionView}</button>
-            </div>`;
+            return `
+            <div class="d-flex px-2 gap-2">
+                <button style="width: 100px" class="btn btn-sm action-view btn-outline-success btn-60 pe-1"><i class="fa fa-eye pe-1"></i>Lihat</button>
+                <button style="width: 100px" class="btn btn-sm action-cetak btn-outline-info btn-60"><i class="fa fa-print pe-1"></i>Cetak</button>
+              </div>`;
           },
+
         },
       ],
       searchDelay: 1000,
@@ -218,6 +224,11 @@ export class ListPenjualanBrgBekasComponent implements OnInit {
       this.router.navigate(['/transaction/penjualan-barang-bekas/detail']);
     }
     if (action === ACTION_CETAK) {
+      this.paramGenerateReport = {
+        outletBrand: 'KFC',
+        nomorTransaksi: data.nomorTransaksi,  
+        kodeGudang: this.g.getUserLocationCode()   }
+      this.isShowModalReport = true;
     }
   }
 
@@ -287,5 +298,9 @@ export class ListPenjualanBrgBekasComponent implements OnInit {
         );
       }
     });
+  }
+
+  closeModal(): void {
+    this.isShowModalReport = false;
   }
 }

@@ -99,6 +99,7 @@ export class AllMasterComponent implements OnInit, OnDestroy, AfterViewInit {
       url: '/master/master-resep',
       iconComponent: 'cilDinner',
     },
+    
   ];
   listSetupNoTransaksi: any[] = [];
   userData: any;

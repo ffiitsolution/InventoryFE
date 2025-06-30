@@ -72,23 +72,23 @@ export const STATUS_AKTIF = [
 
 export const TIPE_PEMBAYARAN = [
   {
-    label: 'Cash',
+    label: '1. CASH',
     value: '1',
   },
   {
-    label: 'Cek',
+    label: '2. CEK',
     value: '2',
   },
   {
-    label: 'Giro',
+    label: '3. GIRO',
     value: '3',
   },
   {
-    label: 'Transfer',
+    label: '4. TRANSFER',
     value: '4',
   },
   {
-    label: 'Others',
+    label: '5. OTHERS',
     value: '5',
   },
 ];

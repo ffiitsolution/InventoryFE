@@ -128,7 +128,7 @@
 
         <div class=" ps-0" [ngClass]="isShowDetail ? 'col-9' : 'col-7'">
           <div class="p-2" *ngIf="isShowDetail">
-            <app-add-data-detail-penjualan-brg-bekas></app-add-data-detail-penjualan-brg-bekas>
+            <app-add-data-detail-penjualan-brg-bekas (dataCetak)="onResetForm($event)"></app-add-data-detail-penjualan-brg-bekas>
           </div>
         </div>
 
@@ -185,4 +185,13 @@
 
 
   </c-modal>
+</div>
+
+
+<div class="fade-in">
+  <app-modal-print-list [alreadyPrint]="alreadyPrint" [disabledPrintButton]="disabledPrintButton"
+    [generatePdfUrl]="'/api/report/penjualan-brg-bekas'" [updateStatusUrl]="''" [updatePrintStatusParam]="''"
+    [generateReportParam]="paramGenerateReport" [isShowModalReport]="isShowModalReport" [isShowSelection]="false"
+    (closeModalEvent)="closeModal()">
+  </app-modal-print-list>
 </div>

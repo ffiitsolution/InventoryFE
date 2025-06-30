@@ -118,18 +118,7 @@ export class DetailPenjualanBrgBekasComponent
               });
             this.paramGenerateReport = {
               outletBrand: 'KFC',
-              userEntry: this.selectedOrder.userCreate,
-              nomorPesanan: this.selectedOrder?.nomorPesanan,
-              isDownloadCsv: true,
-              noSuratJalan: this.selectedOrder.noSuratJalan,
-              tglBrgDikirim: this.selectedOrder.tglTransaksi,
-              tglPesan: this.selectedOrder.tglPesanan,
-              tglEntry: this.selectedOrder.dateCreate,
-              jamEntry: this.selectedOrder.timePosted.replace(/(\d{2})(?=\d)/g, '$1:'),
-              kodeTujuan: this.selectedOrder.kodeTujuan,
-              namaTujuan: this.selectedOrder.namaTujuan,
-              keterangan: this.selectedOrder.keterangan,
-              alamatTujuan: this.selectedOrder.alamatTujuan
+              nomorTransaksi: this.selectedOrder.nomorTransaksi
             };
             this.paramUpdatePrintStatus = {
               noSuratJalan: this.selectedOrder.noSuratJalan
