@@ -329,10 +329,10 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
     }
   }
 
-    onShowModal(index:number) {
-      this.isShowModal = true;
-      this.currentSelectedForModal = index
-    }
+  onShowModal(localIndex: number) {
+    this.currentSelectedForModal = (this.listCurrentPage - 1) * this.itemsPerPage + localIndex;
+    this.isShowModal = true;
+  }
 
   onShowModalDelete(i: any) {
     this.indexDataDelete = i;
@@ -1257,5 +1257,9 @@ export class AddDataDetailTerimaBarangReturDariSiteComponent
 
   get filteredList() {
     return this.listEntryExpired.filter(item => item.kodeBarang === this.selectedExpProduct.kodeBarang);
+  }
+
+  getGlobalIndex(localIndex: number): number {
+    return (this.listCurrentPage - 1) * this.itemsPerPage + localIndex;
   }
 }

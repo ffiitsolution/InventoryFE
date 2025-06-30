@@ -305,10 +305,11 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
       }
     }
 
-    onShowModal(index:number) {
+    onShowModal(localIndex: number) {
+      this.currentSelectedForModal = (this.listCurrentPage - 1) * this.itemsPerPage + localIndex;
       this.isShowModal = true;
-      this.currentSelectedForModal = index
     }
+    
 
   onShowModalDelete(i: any) {
     this.indexDataDelete = i;
@@ -1232,4 +1233,8 @@ export class AddDataDetailKirimBarangReturnKeSiteComponent
     );
   }
 
+  getGlobalIndex(localIndex: number): number {
+    return (this.listCurrentPage - 1) * this.itemsPerPage + localIndex;
+  }
+  
 }

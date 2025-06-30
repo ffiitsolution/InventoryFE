@@ -89,16 +89,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     private route: ActivatedRoute,
     private toastr: ToastrService
   ) {
-    this.startOfMonth = moment().startOf('month').format('DD MMMM YYYY');
-    this.endOfMonth = moment().endOf('month').format('DD MMMM YYYY');
-    this.dateRangeString = `(Periode :${this.startOfMonth} - ${this.endOfMonth})`;
-
-    this.dpConfigtrans.containerClass = 'theme-dark-blue';
-    this.dpConfigtrans.dateInputFormat = 'DD/MM/YYYY';
-    this.dpConfigtrans.adaptivePosition = true;
-    this.dpConfigtrans.maxDate = new Date();
-    // this.dpConfigtrans.minDate = moment().startOf('month').toDate();
-    this.dpConfigtrans.customTodayClass = 'today-highlight';
+    
   }
 
   ngOnInit(): void {
@@ -116,6 +107,23 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
     this.configRegion = this.g.dropdownConfig('description');
 
     this.userData = this.service.getUserData();
+
+    const today = moment().format('DD MMMM YYYY');
+    this.startOfMonth = moment().startOf('month').format('DD MMMM YYYY');
+    this.endOfMonth = moment().endOf('month').format('DD MMMM YYYY');
+
+    if (['Stock Barang By Expired', 'Inventory Movement'].includes(this.currentReport)) {
+      this.endOfMonth = today;
+    }
+
+    this.dateRangeString = `(Periode :${this.startOfMonth} - ${this.endOfMonth})`;
+
+    this.dpConfigtrans.containerClass = 'theme-dark-blue';
+    this.dpConfigtrans.dateInputFormat = 'DD/MM/YYYY';
+    this.dpConfigtrans.adaptivePosition = true;
+    this.dpConfigtrans.maxDate = new Date();
+    // this.dpConfigtrans.minDate = moment().startOf('month').toDate();
+    this.dpConfigtrans.customTodayClass = 'today-highlight';
 
     if (['Master Cabang'].includes(this.currentReport)) {
       this.getListParam('listRegion');
@@ -204,6 +212,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
 
       param = {
         kodeGudang: this.g.getUserLocationCode(),
+        kodeSingkat: this.g.getUserKodeSingkat(),
         status: this.paramStatusAktif,
         tipePilihanCetak: this.paramPilihanCetak,
         tipeListing: this.paramTipeListing,
@@ -292,6 +301,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       param = {
         kodeGudang1: this.prmKodeGudang.JATIM,
         kodeGudang2: this.prmKodeGudang.INDOTIM,
+        kodeSingkat:this.paramJenisGudang,
         tipePilihanCetak: this.paramPilihanCetak,
         firstDate: this.startOfMonth,
         lastDate: moment(this.paramTglTransaksi).format('DD MMM YYYY'),
@@ -566,7 +576,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
       this.startOfMonth = moment(value).startOf('month').format('DD MMMM YYYY');
 
       // Perbedaan di sini: jika currentReport = 'Stock Barang By Expired', ambil tanggal hari ini
-      if (this.currentReport === 'Stock Barang By Expired') {
+      if (this.currentReport === 'Stock Barang By Expired' || this.currentReport === 'Inventory Movement') {
         this.endOfMonth = moment(value).format('DD MMMM YYYY'); // tanggal berjalan
       } else {
         this.endOfMonth = moment(value).endOf('month').format('DD MMMM YYYY'); // default: akhir bulan

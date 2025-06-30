@@ -26,3 +26,25 @@
   }
 }
 
+.card-copyright{
+  position: fixed;
+  bottom: 50px;
+  width: 100%;  
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  overflow-x: auto;
+  height: 70px;
+  z-index: 0;
+}
+
+.card-copyright-footer{
+  width: 100%;  
+  padding: 10px;
+  font-size: small;
+  // border-radius: 5px;
+  // border: 1px solid #ddd;
+  overflow-x:auto;
+  height: 30px;
+}
+

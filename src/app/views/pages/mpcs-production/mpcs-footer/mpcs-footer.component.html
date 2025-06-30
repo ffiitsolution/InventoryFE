@@ -23,27 +23,38 @@
   </c-modal-footer>
 </c-modal> -->
 
-<div style="position: fixed; bottom: 0; width: 100%;" class="footer">
-  <div class="flex justify-content-center span-gudang">
+<!-- <div class="text-muted card-copyright" title="Copyright Notice">
+  * This application and its contents are protected by copyright, trademark, and
+  other intellectual property laws. Unauthorized use, reproduction, or
+  modification is strictly prohibited.
+  <br />PT. Fast Food Indonesia, Tbk reserves the right to take legal action
+  against infringement.
+</div> -->
+<div style="position: fixed; bottom: 0; width: 100%" class="footer">
+
+  <div class="flex justify-content-between span-gudang">
     <span
       class="btn btn-outline-primary text-dark btn btn-200 d-flex align-items-center hover-danger justify-content-center"
     >
       <i class="fa fa-building pe-0 pe-md-1"></i>
       <span class="ms-1">
-        {{ g.mpcsDefaultNamaGudang }} ({{ g.mpcsDefaultGudang }}) 
+        {{ g.mpcsDefaultNamaGudang }} ({{ g.mpcsDefaultGudang }})
       </span>
     </span>
-    
   </div>
-  <div class="ps-2 d-flex align-items-center fw-bold"
-    [ngClass]="{ 'text-danger': g.serverStatus !== 'UP' || g.footerAlert.includes('ERROR:') }">
-    <!-- <svg [cIcon]="icons.cilInfo" size="xl" title="List Icon"></svg>
-    <div class="ps-2 text-truncate">{{ g.serverStatus !== 'UP' ? 'OFFLINE - Silahkan scan QUIT untuk mencoba memuat ulang.' : g.footerAlert }}</div> -->
-  </div>
-  <div class="mx-2">
-    
-  </div>
+
+   
+
   <div class="ms-auto text-truncate" title="FE {{ g.appVersion }}">
-    Version {{ g.appVersion }} &copy; {{ yearText }} IT Department PT. Fast Food Indonesia, Tbk.
+    Version {{ g.appVersion }} &copy; {{ yearText }} IT Department PT. Fast Food
+    Indonesia, Tbk.
+  </div>
+
+  <div class="text-muted card-copyright-footer" title="Copyright Notice">
+      * This application and its contents are protected by copyright, trademark,
+      and other intellectual property laws. Unauthorized use, reproduction, or
+      modification is strictly prohibited.
+      PT. Fast Food Indonesia, Tbk reserves the right to take legal action
+      against infringement.
   </div>
 </div>
