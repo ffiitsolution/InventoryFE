@@ -44,6 +44,7 @@ export class TableRuteComponent implements OnInit, OnDestroy, AfterViewInit {
 
   hasCreate: boolean = false;
   hasUpdate: boolean = false;
+  isFilterShown: boolean = false;
 
   constructor(
     private dataService: DataService,
@@ -53,7 +54,7 @@ export class TableRuteComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {
     this.dtOptions = {
       language:
-        translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
+      translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
       processing: true,
       serverSide: true,
       autoWidth: true,
@@ -65,7 +66,7 @@ export class TableRuteComponent implements OnInit, OnDestroy, AfterViewInit {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         this.dataService
-          .postData(this.g.urlServer + '/api/uom/dt', dataTablesParameters)
+          .postData(this.g.urlServer + '/api/rute/dt', dataTablesParameters)
           .subscribe((resp: any) => {
             const mappedData = resp.data.map((item: any, index: number) => {
               // hapus rn
@@ -90,21 +91,33 @@ export class TableRuteComponent implements OnInit, OnDestroy, AfterViewInit {
       columns: [
         { data: 'dtIndex', title: '#', orderable: false, searchable: false },
         {
-          data: 'kodeUom',
-          title: 'Kode Satuan',
+          data: 'nomorRute',
+          title: 'Nomor Rute',
           orderable: true,
           searchable: true,
         },
         {
-          data: 'keteranganUom',
-          title: 'Nama Satuan',
+          data: 'namaRute',
+          title: 'Nama Rute',
           orderable: true,
           searchable: true,
         },
-        { data: 'userCreate', title: 'Dibuat Oleh', searchable: false },
-        { data: 'dateCreate', title: 'Tanggal Dibuat', searchable: false },
-        { data: 'userUpdate', title: 'Diperbarui Oleh', searchable: false },
-        { data: 'dateUpdate', title: 'Tanggal Diperbarui', searchable: false },
+          {
+          data: 'kodeGudang',
+          title: 'Kode Gudang',
+          orderable: true,
+          searchable: true,
+        },
+          {
+          data: 'status',
+          title: 'Status Rute',
+          orderable: true,
+          searchable: true,
+        },
+        // { data: 'userCreate', title: 'Dibuat Oleh', searchable: false },
+        // { data: 'dateCreate', title: 'Tanggal Dibuat', searchable: false },
+        // { data: 'userUpdate', title: 'Diperbarui Oleh', searchable: false },
+        // { data: 'dateUpdate', title: 'Tanggal Diperbarui', searchable: false },
         {
           title: 'Action',
           render: () => {
@@ -161,15 +174,15 @@ export class TableRuteComponent implements OnInit, OnDestroy, AfterViewInit {
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master_master-rute') &&
-          p.permission.endsWith('_create')
+          p.permission.startsWith('master-tonase') &&
+          p.permission.endsWith('update')
       );
     this.hasUpdate = this.g
       .getLocalstorage('inv_permissions')
       ?.some(
         (p: any) =>
           p.app === 'MODULE' &&
-          p.permission.startsWith('master_master-rute') &&
+          p.permission.startsWith('master_master') &&
           p.permission.endsWith('_update')
       );
   }
@@ -180,6 +193,10 @@ export class TableRuteComponent implements OnInit, OnDestroy, AfterViewInit {
         column.title = this.translation.instant(this.dtColumns[index].title);
       }
     });
+  }
+
+    toggleFilter(): void {
+    this.isFilterShown = !this.isFilterShown;
   }
 
   actionBtnClick(action: string, data: any = null) {

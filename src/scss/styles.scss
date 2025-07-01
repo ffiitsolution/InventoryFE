@@ -204,3 +204,24 @@ $enable-rtl: true;
 .bl-detail{
   border-left: 1px solid #ccc;
 }
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.status-badge.active {
+  background-color: #28a745; /* green */
+}
+
+.status-badge.inactive {
+  background-color: #dc3545; /* red */
+}
+
+.status-badge.unknown {
+  background-color: #6c757d; /* gray */
+}

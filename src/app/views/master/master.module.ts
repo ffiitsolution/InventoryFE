@@ -19,6 +19,7 @@ import {
 } from './master-branch';
 import {MasterBranchDetailTonaseComponent} from './master-branch-detail-tonase/master-branch-detail-tonase.component';
 import { MasterDepartmentComponent } from './master-department/master-department.component';
+import {MasterBranchDetailTonaseDetailComponent} from './master-branch-detail-tonase/detail/master-branch-detail/master-branch-detail.component';
 import {
   MasterProductAddComponent,
   MasterProductComponent,
@@ -132,6 +133,14 @@ import { SharedComponentModule } from '../../component/shared.component.module';
 import { AllMasterComponent } from './all-master/all-master.component';
 import { IconDirective } from '@coreui/icons-angular';
 import {MasterKendaraanComponent} from './master-kendaraan/master-kendaraan.component';
+import { MasterDriverAddComponent } from './master-driver/add/master-driver-add/master-driver-add.component';
+import { MasterDriverDetailComponent } from './master-driver/detail/master-driver-detail/master-driver-detail.component';
+import { MasterDriverEditComponent } from './master-driver/edit/master-driver-edit/master-driver-edit.component';
+import { MasterKendaraanAddComponent } from './master-kendaraan/add/master-kendaraan-add/master-kendaraan-add.component';
+import { MasterKendaraanDetailComponent } from './master-kendaraan/detail/master-kendaraan-detail/master-kendaraan-detail.component';
+import { MasterKendaraanEditComponent } from './master-kendaraan/edit/master-kendaraan-edit/master-kendaraan-edit.component';
+import { MasterBranchDetailAddComponent } from './master-branch-detail-tonase/add/master-branch-detail-add/master-branch-detail-add.component';
+import { MasterBranchDetailEditComponent } from './master-branch-detail-tonase/edit/master-branch-detail-edit/master-branch-detail-edit.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -167,7 +176,13 @@ export function HttpLoaderFactory(http: HttpClient) {
   declarations: [
     AllMasterComponent,
     MasterKendaraanComponent,
+    MasterKendaraanAddComponent,
+    MasterKendaraanDetailComponent,
+    MasterKendaraanEditComponent,
     MasterBranchDetailTonaseComponent,
+    MasterBranchDetailAddComponent,
+    MasterBranchDetailEditComponent,
+    MasterBranchDetailTonaseDetailComponent,
     MasterUserComponent,
     MasterUserDetailComponent,
     MasterUserAddComponent,
@@ -179,6 +194,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     MasterBranchEditComponent,
     MasterDepartmentComponent,
     MasterDriverComponent,
+    MasterDriverAddComponent,
+    MasterDriverDetailComponent,
+    MasterDriverEditComponent,
+
     
 
     MasterProductComponent,

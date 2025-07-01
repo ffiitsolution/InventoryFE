@@ -92,6 +92,15 @@ import { AllMasterComponent } from './all-master/all-master.component';
 import { MasterDriverComponent } from './master-driver/master-driver.component';
 import { MasterBranchDetailTonaseComponent } from './master-branch-detail-tonase/master-branch-detail-tonase.component';
 import { MasterKendaraanComponent } from './master-kendaraan/master-kendaraan.component';
+import { MasterBranchDetailAddComponent } from './master-branch-detail-tonase/add/master-branch-detail-add/master-branch-detail-add.component';
+import { MasterBranchDetailEditComponent } from './master-branch-detail-tonase/edit/master-branch-detail-edit/master-branch-detail-edit.component';
+import { MasterBranchDetailTonaseDetailComponent } from './master-branch-detail-tonase/detail/master-branch-detail/master-branch-detail.component';
+import { MasterDriverAddComponent } from './master-driver/add/master-driver-add/master-driver-add.component';
+import { MasterDriverEditComponent } from './master-driver/edit/master-driver-edit/master-driver-edit.component';
+import { MasterDriverDetailComponent } from './master-driver/detail/master-driver-detail/master-driver-detail.component';
+import { MasterKendaraanAddComponent } from './master-kendaraan/add/master-kendaraan-add/master-kendaraan-add.component';
+import { MasterKendaraanEditComponent } from './master-kendaraan/edit/master-kendaraan-edit/master-kendaraan-edit.component';
+import { MasterKendaraanDetailComponent } from './master-kendaraan/detail/master-kendaraan-detail/master-kendaraan-detail.component';
 
 const routes: Routes = [
   {
@@ -105,13 +114,49 @@ const routes: Routes = [
         path: 'master-driver',
         component: MasterDriverComponent,
       },
+        {
+        path: 'master-driver/add',
+        component: MasterDriverAddComponent,
+      },
+        {
+        path: 'master-driver/edit',
+        component: MasterDriverEditComponent,
+      },
+        {
+        path: 'master-driver/detail',
+        component: MasterDriverDetailComponent,
+      },
        {
         path: 'master-branch-detail',
         component: MasterBranchDetailTonaseComponent,
       },
+      {
+        path: 'master-branch-detail/add',
+        component: MasterBranchDetailAddComponent,
+      },
+        {
+        path: 'master-branch-detail/edit',
+        component: MasterBranchDetailEditComponent,
+      },
+      {
+        path: 'master-branch-detail/detail',
+        component: MasterBranchDetailTonaseDetailComponent,
+      },
         {
         path: 'master-kendaraan',
         component: MasterKendaraanComponent,
+      },
+      {
+        path: 'master-kendaraan/add',
+        component: MasterKendaraanAddComponent,
+      },
+      {
+        path: 'master-kendaraan/edit',
+        component: MasterKendaraanEditComponent,
+      },
+      {
+        path: 'master-kendaraan/detail',
+        component: MasterKendaraanDetailComponent,
       },
       
       {

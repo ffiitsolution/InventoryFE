@@ -12,8 +12,7 @@
             class="menu-purpose col-sm-12 justify-content-end align-items-center"
           >
             <span
-              >Master Satuan digunakan untuk mengelola daftar satuan ukuran
-              besar dan kecil yang digunakan dalam sistem.</span
+              >Master Rute digunakan untuk mengelola data Rute </span
             >
           </div>
         </div>
@@ -25,6 +24,15 @@
   <c-card class="mb-4">
     <c-card-body>
       <div class="d-flex justify-content-end gap-1" style="margin-bottom: 10px">
+          <button
+          type="button"
+          class="w-120 btn btn-secondary text-white me-2"
+          style="height: min-content"
+          (click)="toggleFilter()"
+        >
+          {{ "Filter" | translate }}
+        </button>
+       
         <button
           *ngIf="hasCreate"
           type="button"
@@ -45,6 +53,7 @@
         <table
           datatable
           [dtOptions]="dtOptions"
+          
           (page.dt)="dtPageChange($event)"
           class="row-border hover stripe"
         ></table>

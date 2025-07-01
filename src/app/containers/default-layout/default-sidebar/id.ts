@@ -45,6 +45,14 @@ export const menu_id: any = [
         },
         access: 'pengiriman',
         children: [
+             {
+            name: 'Display & Routing',
+            url: '/transaction/delivery-item',
+            iconComponent: {
+              name: 'cilMap',
+            },
+            access: 'display_&_tambah',
+          },
           {
             name: 'Display & Tambah',
             url: '/transaction/delivery-item',
