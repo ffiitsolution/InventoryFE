@@ -13,9 +13,11 @@ import { MasterUserAddComponent } from './master-user/add/add.component';
 import {
   MasterBranchComponent,
   MasterBranchDetailComponent,
+
   MasterBranchAddComponent,
   MasterBranchEditComponent,
 } from './master-branch';
+import {MasterBranchDetailTonaseComponent} from './master-branch-detail-tonase/master-branch-detail-tonase.component';
 import { MasterDepartmentComponent } from './master-department/master-department.component';
 import {
   MasterProductAddComponent,
@@ -23,6 +25,10 @@ import {
   MasterProductDetailComponent,
   MasterProductEditComponent,
 } from './master-product';
+
+import {
+  MasterDriverComponent
+} from './master-driver/master-driver.component'
 import {
   MasterSupplierAddComponent,
   MasterSupplierComponent,
@@ -89,6 +95,13 @@ import {
 } from './table-uom';
 
 import {
+  TableRuteAddComponent,
+  TableRuteComponent,
+  TableRuteDetailComponent,
+  TableRuteEditComponent,
+} from './table-rute';
+
+import {
   TableCityAreaAddComponent,
   TableCityAreaComponent,
   TableCityAreaDetailComponent,
@@ -118,6 +131,7 @@ import { ProfileCompanyComponent } from './profile-company/profile-company.compo
 import { SharedComponentModule } from '../../component/shared.component.module';
 import { AllMasterComponent } from './all-master/all-master.component';
 import { IconDirective } from '@coreui/icons-angular';
+import {MasterKendaraanComponent} from './master-kendaraan/master-kendaraan.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -152,7 +166,8 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   declarations: [
     AllMasterComponent,
-
+    MasterKendaraanComponent,
+    MasterBranchDetailTonaseComponent,
     MasterUserComponent,
     MasterUserDetailComponent,
     MasterUserAddComponent,
@@ -163,6 +178,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MasterBranchAddComponent,
     MasterBranchEditComponent,
     MasterDepartmentComponent,
+    MasterDriverComponent,
+    
 
     MasterProductComponent,
     MasterProductAddComponent,
@@ -198,6 +215,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     TableUomAddComponent,
     TableUomDetailComponent,
     TableUomEditComponent,
+
+    TableRuteComponent,
+    TableRuteAddComponent,
+    TableRuteDetailComponent,
+    TableRuteEditComponent,
 
     TableCityAreaComponent,
     TableCityAreaAddComponent,

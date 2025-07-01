@@ -305,9 +305,9 @@ export class AddDataDetailKirimBarangReturnKeSupplierComponent
       }
     }
 
-    onShowModal(index:number) {
+    onShowModal(localIndex: number) {
+      this.currentSelectedForModal = (this.listCurrentPage - 1) * this.itemsPerPage + localIndex;
       this.isShowModal = true;
-      this.currentSelectedForModal = index
     }
 
   onShowModalDelete(i: any) {
@@ -1232,6 +1232,10 @@ export class AddDataDetailKirimBarangReturnKeSupplierComponent
     return this.listProductData.filter(item =>
       JSON.stringify(item).toLowerCase().includes(searchText)
     );
+  }
+
+  getGlobalIndex(localIndex: number): number {
+    return (this.listCurrentPage - 1) * this.itemsPerPage + localIndex;
   }
 
 }

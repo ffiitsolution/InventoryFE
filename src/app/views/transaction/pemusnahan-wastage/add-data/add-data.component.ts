@@ -97,6 +97,7 @@ export class AddWastageComponent implements OnInit, AfterViewInit, OnDestroy {
       searchPlaceholder: 'Cari User',
       limitTo: this.listUser.length,
       
+      
     };
   }
 

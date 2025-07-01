@@ -494,14 +494,23 @@ export class AddKirimBarangReturnKeSupplierComponent implements OnInit, AfterVie
         { data: 'kodeSupplier', title: 'Kode', searchable: true },
         { data: 'namaSupplier', title: 'Nama Supplier', searchable: true },
         {
-          data: null,
+          data: 'alamat1',
           title: 'Alamat',
           searchable: true,
-            render: (data: any, _: any, row: any) => {
-            const alamatGabungan = [row.alamat1, row.alamat2].filter(Boolean).join(', ');
+          render: (data: any, type: any, row: any): string => {
+            const alamat1 = row.alamat1 ?? '';
+            const alamat2 = row.alamat2 ?? '';
+            const alamatGabungan = [alamat1, alamat2].filter(item => item.trim() !== '').join(', ');
+        
+            // Kalau proses search/filter/sort, DataTables butuh plain text
+            if (type === 'filter' || type === 'sort') {
+              return alamatGabungan;
+            }
+        
+            // Kalau proses display (render ke tampilan)
             return `<div>${alamatGabungan}</div>`;
           }
-        },
+        },        
         { data: 'keteranganKota', title: 'Kota', searchable: true },
         {
           data: 'statusAktif',

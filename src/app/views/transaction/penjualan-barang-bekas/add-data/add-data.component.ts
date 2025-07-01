@@ -54,6 +54,12 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
 
   selectedRowData: any;
 
+  alreadyPrint: boolean;
+  disabledPrintButton: any;
+  paramGenerateReport: any = {}
+  isShowModalReport: boolean;
+  paramUpdateReport: any = {}
+
   listUser: any[] = [];
   @ViewChild('formModal') formModal: any;
   // Form data object
@@ -125,6 +131,20 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
     this.formData.jabatanSaksi = value.jabatan;
   }
 
+  closeModal() {
+    this.isShowModalReport = false;
+    this.disabledPrintButton = false;
+  }
+
+  onShowModalPrint(data: any) {
+    this.paramGenerateReport = {
+      outletBrand: 'KFC',
+      nomorTransaksi: data.nomorTransaksi,
+      kodeGudang: this.globalService.getUserLocationCode(),
+    };
+    this.isShowModalReport = true;
+  }
+
   onAddDetail() {
     this.formData.tglTransaksi = moment(this.formData.tglTransaksi, 'DD-MM-YYYY').format('DD-MM-YYYY');
 
@@ -172,12 +192,12 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
       serverSide: true,
       autoWidth: true,
       info: true,
-      drawCallback: (drawCallback:any) => {
+      drawCallback: (drawCallback: any) => {
         this.selectedSupplierData = undefined;
       },
       order: [[1, 'asc']],
       pageLength: 5,
-      ajax: (dataTablesParameters: any, callback:any) => {
+      ajax: (dataTablesParameters: any, callback: any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
         const params = {
@@ -210,7 +230,7 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
         { data: 'kota', title: 'Kota', searchable: true, orderable: true },
         {
           data: 'statusAktif', title: 'Status',
-          render: (data:any) => this.globalService.getStatusAktifLabel(data)
+          render: (data: any) => this.globalService.getStatusAktifLabel(data)
         },
         {
           title: 'Action',
@@ -260,6 +280,21 @@ export class AddDataPenjualanBrgBekasComponent implements OnInit, AfterViewInit,
     this.formData.namaSupplier = orderData.namaSupplier || '';
     this.formData.alamatSupplier = orderData.alamat1 || '';
     this.formData.statusAktif = 'Aktif';
+  }
+
+  onResetForm(newItem: any): void {
+    this.formData = {
+      namaSaksi: '',
+      jabatanSaksi: '',
+      keterangan: '',
+      tglTransaksi: moment(new Date(), 'YYYY-MM-DD').format('DD-MM-YYYY') || '',
+      supplier: '',
+      namaSupplier: '',
+      alamatSupplier: '',
+      statusAktif: '',
+    };
+    this.isShowDetail = false;
+    if (newItem) this.onShowModalPrint(newItem);
   }
 }
 

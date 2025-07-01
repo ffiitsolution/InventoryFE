@@ -566,15 +566,17 @@
           <span class="float-end">:</span>
         </div>
         <div class="col-6">
-          <input
-            type="text"
-            class="form-control"
-            [(ngModel)]="paramStockNumberHari"
-            [value]="paramStockNumberHari + ' Hari'"
-            (keypress)="g.conditionInput($event, 'numeric')"
-            autofocus
-            (blur)="onBlurStockExpired()"
-          />
+          <div class="d-flex">
+            <input
+              type="text"
+              class="form-control pe-2"
+              [(ngModel)]="paramStockNumberHari"
+              (keypress)="g.conditionInput($event, 'numeric')"
+              autofocus
+              (blur)="onBlurStockExpired()"
+            />
+            <span class="input-group-text">Hari</span>
+          </div>
           <div class="text-danger fw-semibold mt-3">
             Semua barang yang tgl. expired nya dibawah tgl.
             {{ tglExpiredSisaBarang }} akan dicetak...!!

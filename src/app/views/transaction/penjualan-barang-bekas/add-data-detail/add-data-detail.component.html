@@ -85,7 +85,6 @@
                 <td class="text-center">
                   <div class="input-group w-100">
                     <input type="text" autofocus class="form-control text-center" [(ngModel)]="data.kodeBarang"
-                      (keydown.enter)="handleEnter($event, i)" (keyup.enter)="nextInput.focus()"
                       [disabled]="!!data?.namaBarang" />
                     <button class="btn btn-outline-secondary" type="button" (click)="onShowModal()">
                       <i class="fa fa-search"></i>
@@ -104,9 +103,7 @@
                       [(ngModel)]="data.qtyBesar" (input)="onInputValueItemDetail($event, i, 'numeric', 'besar')"
                       [readonly]="!data.isConfirmed" (keypress)="g.conditionInput($event, 'numericDot')"
                       (blur)="onBlurQtyBesar(i)" />
-                    <span class="d-flex align-items-center justify-content-center">
-                      / {{data.satuanBesar}}
-                    </span>
+                    
                   </div>
                 </td>
 
@@ -118,10 +115,6 @@
                       (input)="onInputValueItemDetail($event, i, 'numeric', 'kecil')"
                       (keypress)="g.conditionInput($event, 'numericDot')" (blur)="onBlurQtyKecil(i)"
                       [readonly]="!data.isConfirmed" />
-
-                    <span class="d-flex align-items-center justify-content-center">
-                      / {{data.satuanKecil}}
-                    </span>
                   </div>
 
                   <!-- Validation message area -->
@@ -131,7 +124,7 @@
                 </td>
 
                 <td class="text-center">
-                  {{ getTotalQtyJual(i) }}.00 {{data.satuanKecil}}
+                  {{ getTotalQtyJual(i) }}.00
 
                   <!-- Validation message area -->
                   <br>

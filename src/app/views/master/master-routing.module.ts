@@ -10,6 +10,12 @@ import {
   TableUomDetailComponent,
   TableUomEditComponent,
 } from './table-uom';
+import {
+  TableRuteAddComponent,
+  TableRuteComponent,
+  TableRuteDetailComponent,
+  TableRuteEditComponent,
+} from './table-rute';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {
@@ -83,6 +89,10 @@ import { AddResepComponent, MasterResepComponent } from './master-resep';
 import { ProfileCompanyComponent } from './profile-company/profile-company.component';
 import { AllMasterComponent } from './all-master/all-master.component';
 
+import { MasterDriverComponent } from './master-driver/master-driver.component';
+import { MasterBranchDetailTonaseComponent } from './master-branch-detail-tonase/master-branch-detail-tonase.component';
+import { MasterKendaraanComponent } from './master-kendaraan/master-kendaraan.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -91,6 +101,19 @@ const routes: Routes = [
         path: '',
         component: AllMasterComponent,
       },
+      {
+        path: 'master-driver',
+        component: MasterDriverComponent,
+      },
+       {
+        path: 'master-branch-detail',
+        component: MasterBranchDetailTonaseComponent,
+      },
+        {
+        path: 'master-kendaraan',
+        component: MasterKendaraanComponent,
+      },
+      
       {
         path: 'master-company',
         component: MasterCompanyComponent,
@@ -259,6 +282,24 @@ const routes: Routes = [
         path: 'master-uom/edit',
         component: TableUomEditComponent,
       },
+      ///
+      {
+        path: 'master-rute',
+        component: TableRuteComponent,
+      },
+      {
+        path: 'master-rute/add',
+        component: TableRuteAddComponent,
+      },
+      {
+        path: 'master-rute/detail',
+        component: TableRuteDetailComponent,
+      },
+      {
+        path: 'master-rute/edit',
+        component: TableRuteEditComponent,
+      },
+      ///
       {
         path: 'master-set-number',
         component: TableSetNumberComponent,

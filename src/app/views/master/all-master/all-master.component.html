@@ -29,6 +29,18 @@
                   {{ "Master" | translate }}
                 </div>
               </li>
+              <li cListGroupItem class="fw-bold" *ngIf="hasMasterTonase">
+                <div
+                  (click)="onCategoryClick('Master Tonase')"
+                  class="p-1 ps-3 text-capitalize pointer-only rounded {{
+                    'Master Tonase' === selectedCategory
+                      ? 'text-bg-secondary text-white'
+                      : ''
+                  }}"
+                >
+                  {{ "Master Tonase" | translate }}
+                </div>
+              </li>
               <li cListGroupItem class="fw-bold" *ngIf="hasSetNoTrans">
                 <div
                   (click)="onCategoryClick('Setup No Transaksi')"
@@ -76,6 +88,33 @@
                     <div class="flex-grow-1">
                       <h5>
                         <strong>{{ master.name }}</strong>
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="selectedCategory === 'Master Tonase'">
+              <div class="row">
+                <div
+                  *ngFor="let Tonasemaster of listMasterTonase"
+                  class="col-12 col-md-6 col-lg-6 mb-3"
+                >
+                  <div
+                    class="list-group-item list-group-item-action d-flex align-items-center gap-3 pointer-only rounded shadow-sm"
+                    (click)="navigateMaster(Tonasemaster)"
+                  >
+                    <svg
+                      cIcon
+                      [name]="Tonasemaster.iconComponent"
+                      size="lg"
+                      class="text"
+                    ></svg>
+
+                    <div class="flex-grow-1">
+                      <h5>
+                        <strong>{{ Tonasemaster.name }}</strong>
                       </h5>
                     </div>
                   </div>
