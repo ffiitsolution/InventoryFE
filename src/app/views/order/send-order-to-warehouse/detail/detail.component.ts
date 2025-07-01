@@ -140,7 +140,7 @@ export class DetailSendOrderToWarehouseComponent
 
 
   getDeliveryItemDetails() {
-    this.loading = true;
+    this.loading = false;
     this.listOrderData = [];
 
     const params = {
@@ -149,7 +149,7 @@ export class DetailSendOrderToWarehouseComponent
 
   //   this.listOrderData = [
   //     {
-  //       totalQtyPesan: 0,
+  //       totalQtyPesan:f 0,
   //       qtyPesanBesar: 5,
   //       namaBarang: "DAGING SAPI SLICE",
   //       satuanKecil: "PCS",
