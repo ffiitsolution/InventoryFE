@@ -1,0 +1,61 @@
+<div class="fade-in">
+  <c-card class="mb-2">
+    <c-card-body class="p-2">
+      <div class="row">
+        <div class="d-flex col-md-4 align-items-center">
+          <h3 style="padding-left: 10px">
+            {{ "Master" | translate }} {{ "Kendaraan" | translate }}
+          </h3>
+        </div>
+        <div class="col col-md-8 justify-content-right text-end">
+          <div
+            class="menu-purpose col-sm-12 justify-content-end align-items-center"
+          >
+            <span
+              >Master Kendaraan digunakan untuk mengelola database Kendaraan perihal Jenis Kendaraan dalam sistem.</span
+            >
+          </div>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <div class="d-flex justify-content-end gap-1" style="margin-bottom: 10px">
+        <button
+          type="button"
+          class="w-120 btn btn-secondary text-white me-2"
+          style="height: min-content"
+          (click)="toggleFilter()"
+        >
+          {{ "Filter" | translate }}
+        </button>
+        <button
+          *ngIf="hasCreate"
+          type="button"
+          class="w-120 btn btn-success text-white me-2"
+          (click)="actionBtnClick(CONST_ACTION_ADD)"
+        >
+          {{ "Tambah" | translate }}
+        </button>
+        <a
+          type="button"
+          class="btn w-120 btn-outline-primary me-2"
+          href="#/master"
+        >
+          {{ "Kembali" | translate }}
+        </a>
+      </div>
+       <div>
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          (page.dt)="dtPageChange($event)"
+          class="row-border hover stripe"
+        ></table>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>

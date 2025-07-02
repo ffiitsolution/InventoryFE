@@ -140,7 +140,7 @@ export class DetailSendOrderToSupplierComponent
 
 
   getDeliveryItemDetails() {
-    this.loading = true;
+    // this.loading = true;
     this.listOrderData = [];
 
     const params = {

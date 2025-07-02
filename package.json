@@ -41,7 +41,7 @@
     "@ngx-translate/http-loader": "^6.0.0",
     "@stomp/stompjs": "^7.0.0",
     "angular-datatables": "^17.0.0",
-    "bootstrap": "^5.2.3",
+    "bootstrap": "^5.3.7",
     "chart.js": "^3.9.1",
     "datatables.net": "^1.13.11",
     "datatables.net-dt": "^1.11.3",

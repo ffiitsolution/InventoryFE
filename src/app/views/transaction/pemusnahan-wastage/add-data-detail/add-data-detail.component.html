@@ -132,7 +132,7 @@
                 </td>
                 <td>
                   <button class="btn btn-success btn-sm text-white btn-150" (click)="onShowModalExpired($event, i)"
-                    [disabled]="!data.isConfirmed">
+                    [disabled]="data.flagExpired !== 'Y'">
                     <i class="fa fa-check pe-1"></i> {{ "Exp." | translate }}
                   </button>
                 </td>

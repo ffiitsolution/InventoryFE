@@ -17,6 +17,7 @@ export const LS_INV_SELECTED_UOM = 'LS_INV_SELECTED_UOM';
 export const LS_INV_SELECTED_ROLE = 'LS_INV_SELECTED_ROLE';
 export const LS_INV_SELECTED_POSITION = 'LS_INV_SELECTED_POSITION';
 export const LS_INV_SELECTED_SET_NUMBER = 'LS_INV_SELECTED_SET_NUMBER';
+export const LS_INV_SELECTED_RUTE = 'LS_INV_SELECTED_RUTE';
 export const LS_INV_SELECTED_RECEIVING_ORDER =
   'LS_INV_SELECTED_RECEIVING_ORDER';
 export const LS_INV_SELECTED_SEND_TO_WAREHOUSE_ORDER =
@@ -72,23 +73,23 @@ export const STATUS_AKTIF = [
 
 export const TIPE_PEMBAYARAN = [
   {
-    label: 'Cash',
+    label: '1. CASH',
     value: '1',
   },
   {
-    label: 'Cek',
+    label: '2. CEK',
     value: '2',
   },
   {
-    label: 'Giro',
+    label: '3. GIRO',
     value: '3',
   },
   {
-    label: 'Transfer',
+    label: '4. TRANSFER',
     value: '4',
   },
   {
-    label: 'Others',
+    label: '5. OTHERS',
     value: '5',
   },
 ];

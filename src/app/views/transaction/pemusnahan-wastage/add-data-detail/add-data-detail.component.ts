@@ -305,7 +305,7 @@ export class AddDataDetailWastageComponent
             satuanBesar: item.satuanBesar,
             qtyBesar: item.qtyWasteBesar || 0,
             qtyKecil: item.qtyWasteKecil || 0,
-            flagExpired: 'Y',
+            flagExpired: item.flagExpired,
             totalQty: (this.helper.sanitizedNumber(item.qtyWasteBesar) *
               item.konversi) + this.helper.sanitizedNumber(item.qtyWasteKecil),
             totalQtyExpired: (this.helper.sanitizedNumber(item.qtyWasteBesar) *

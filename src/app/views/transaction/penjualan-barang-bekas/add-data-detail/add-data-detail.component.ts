@@ -43,6 +43,8 @@ import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 })
 export class AddDataDetailPenjualanBrgBekasComponent
   implements OnInit, OnDestroy, AfterViewInit {
+  @Output() dataCetak = new EventEmitter<any>();
+
   columns: any;
   orders: any[] = [];
   headerData: any = JSON.parse(
@@ -216,8 +218,6 @@ export class AddDataDetailPenjualanBrgBekasComponent
     return moment(date, "YYYY-MM-DD").format("DD-MM-YYYY");
   }
 
-    @Output() dataCetak = new EventEmitter<any>();
-  
   onSubmit() {
     if (!this.isDataInvalid()) {
       // param for order Header
@@ -233,7 +233,7 @@ export class AddDataDetailPenjualanBrgBekasComponent
         subTotal: this.formPosting.subTotal, // hitung total harga
         nilaiAdjustment: this.g.parseRupiahToNumber(this.formPosting.nilaiAdjustment) || 0,
         nilaiPenjualan: this.formPosting.nilaiPenjualan || 0, // sama dengan subTotal
-        keteranganBayar: this.headerData.keteranganBayar || "", // tambahan dari header
+        keteranganBayar: this.headerData.keteranganBayar || " ", // tambahan dari header
         tipeBayar: this.formPosting.tipePembayaran, // default ke 1 kalau tidak ada
         userCreate: this.g.getLocalstorage('inv_currentUser').namaUser,
         dateCreate: moment().format("D MMM YYYY"), // hari ini
@@ -258,9 +258,9 @@ export class AddDataDetailPenjualanBrgBekasComponent
       };
 
 
-       Swal.fire({
-           title: '<div style="color: white; background: #e55353; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
-           html: `
+      Swal.fire({
+        title: '<div style="color: white; background: #e55353; padding: 12px 20px; font-size: 18px;">Konfirmasi Proses Posting Data</div>',
+        html: `
          <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">
            <p>Pastikan Semua Data Sudah Di Input Dengan Benar,<br><strong>PERIKSA SEKALI LAGI...!!</strong></p>
            <p class="text-danger" style="font-weight: bold;">DATA YANG SUDAH DI POSTING TIDAK DAPAT DIPERBAIKI ..!!</p>
@@ -275,51 +275,51 @@ export class AddDataDetailPenjualanBrgBekasComponent
            </button>
          </div>
        `,
-           allowOutsideClick: false,
-           showConfirmButton: false,
-           showCancelButton: false,
-           width: '600px',
-           customClass: {
-             popup: 'custom-popup'
-           },
-           didOpen: () => {
-             const submitBtn = document.getElementById('btn-submit');
-             const cancelBtn = document.getElementById('btn-cancel');
-     
-             submitBtn?.addEventListener('click', () => {
-               Swal.close();
-               this.service.insert('/api/penjualan-brg-bekas/insert', param).subscribe({
-     
-                 next: (res) => {
-                   if (!res.success) {
-                     this.appService.handleErrorResponse(res);
-                   } else {
-                     this.toastr.success("Berhasil!");
-                     const paramGenerateReport = {
-                       outletBrand: 'KFC',
-                       isDownloadCsv: true,
-                       noSuratJalan: res.message,
-                     }
-                     this.dataCetak.emit(paramGenerateReport)
-                     setTimeout(() => {
-                       this.router.navigate(["/transaction/delivery-item/add-data"]);
-                     }, DEFAULT_DELAY_TIME);
-                   }
-                   this.adding = false;
-                 },
-                 error: (err) => {
-                   console.error("Error saat insert:", err);
-                   this.adding = false;
-                 },
-               }); // 👈 bukan onSubmit lagi
-             });
-     
-             cancelBtn?.addEventListener('click', () => {
-               Swal.close();
-               this.adding = false
-             });
-           }
-         })
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        showCancelButton: false,
+        width: '600px',
+        customClass: {
+          popup: 'custom-popup'
+        },
+        didOpen: () => {
+          const submitBtn = document.getElementById('btn-submit');
+          const cancelBtn = document.getElementById('btn-cancel');
+
+          submitBtn?.addEventListener('click', () => {
+            Swal.close();
+            this.service.insert('/api/penjualan-brg-bekas/insert', param).subscribe({
+
+              next: (res) => {
+                if (!res.success) {
+                  this.appService.handleErrorResponse(res);
+                } else {
+                  this.toastr.success("Berhasil!");
+                  const paramGenerateReport = {
+                    outletBrand: 'KFC',
+                    noTransaksi: res.message,
+                    kodeGudang: this.g.getUserLocationCode()
+                  }
+                  this.dataCetak.emit(paramGenerateReport)
+                  setTimeout(() => {
+                    this.router.navigate(["/transaction/delivery-item/add-data"]);
+                  }, DEFAULT_DELAY_TIME);
+                }
+                this.adding = false;
+              },
+              error: (err) => {
+                console.error("Error saat insert:", err);
+                this.adding = false;
+              },
+            }); // 👈 bukan onSubmit lagi
+          });
+
+          cancelBtn?.addEventListener('click', () => {
+            Swal.close();
+            this.adding = false
+          });
+        }
+      })
 
     }
 
@@ -361,8 +361,10 @@ export class AddDataDetailPenjualanBrgBekasComponent
   }
 
   onShowModalPosting() {
-    this.getTotalPenjualan();
-    this.isShowModalPosting = true
+    if (!this.isDataInvalid()) {
+      this.getTotalPenjualan();
+      this.isShowModalPosting = true
+    }
   }
 
   getTotalPenjualan(): number {
@@ -372,7 +374,7 @@ export class AddDataDetailPenjualanBrgBekasComponent
       return acc + totalHarga;
     }, 0);
 
-    return this.formPosting.nilaiPenjualan = this.formPosting.subTotal;
+    return this.formPosting.subTotal;
   }
 
   getJumlahItem(): number {
@@ -382,13 +384,16 @@ export class AddDataDetailPenjualanBrgBekasComponent
 
   onChangeAdjustment(event: Event, type: 'value' | 'pajak'): void {
     const input = event.target as HTMLInputElement;
-    const rawValue = input.value.trim();
 
+    const rawValue = input.value.trim()
+      .replace(/[^0-9,]/g, '') // hapus semua selain angka dan koma
+      .replace(/,/g, '.'); // ubah koma jadi titik desimal (jika ada)
     if (!rawValue) {
       this.formPosting.nilaiAdjustment = 0;
       input.value = '';
       return;
     }
+
 
     const subTotal = parseFloat(this.formPosting.subTotal?.toString() || '0');
 
@@ -405,7 +410,7 @@ export class AddDataDetailPenjualanBrgBekasComponent
     } else if (type === 'value') {
       this.formPosting.persenPajak = '';
       const operator = rawValue.charAt(0);
-      const numericPart = parseFloat(rawValue.slice(1));
+      const numericPart = parseFloat(rawValue);
       const currentPenjualan = this.formPosting.subTotal || 0;
 
       let adjustment = 0;
@@ -545,7 +550,7 @@ export class AddDataDetailPenjualanBrgBekasComponent
       lengthMenu: [5, 10, 25, 50, 100],
       pageLength: 5,
       drawCallback: () => { },
-      ajax: (dataTablesParameters: any, callback:any) => {
+      ajax: (dataTablesParameters: any, callback: any) => {
 
         this.pageModal.start = dataTablesParameters.start;
         this.pageModal.length = dataTablesParameters.length;
@@ -587,7 +592,7 @@ export class AddDataDetailPenjualanBrgBekasComponent
         {
           title: 'Pilih Barang  ',
           className: 'text-center',
-            render: (data: any, _: any, row: any) => {
+          render: (data: any, _: any, row: any) => {
             let isChecked = this.selectedRow.some(item => item.kodeBarang === row.kodeBarang) ? 'checked' : '';
             return `<input type="checkbox" class="row-checkbox" data-id="${row.kodeBarang}" ${isChecked}>`;
           }
@@ -595,10 +600,10 @@ export class AddDataDetailPenjualanBrgBekasComponent
         { data: 'kodeBarang', title: 'Kode Barang' },
         { data: 'namaBarang', title: 'Nama Barang' },
         { data: 'konversi', title: 'Konversi' },
-        { data: 'satuanKecil', title: 'Satuan Kecil' },
         { data: 'satuanBesar', title: 'Satuan Besar' },
+        { data: 'satuanKecil', title: 'Satuan Kecil' },
         { data: 'defaultGudang', title: 'Default Gudang' },
-        { data: 'statusAktif', title: 'Status Aktif', render: (data:any) => this.g.getStatusAktifLabel(data) },
+        { data: 'statusAktif', title: 'Status Aktif', render: (data: any) => this.g.getStatusAktifLabel(data) },
       ],
       searchDelay: 1000,
       // delivery: [],
@@ -663,7 +668,7 @@ export class AddDataDetailPenjualanBrgBekasComponent
           satuanBesar: barang?.satuanBesar,
           konversi: barang?.konversi,
           qtyKecil: '0.00',
-          isConfirmed: true,
+          isConfirmed: true, totalQty: 0, totalHarga: 0,
           ...barang
         }
         this.listProductData.splice(this.listProductData.length - 1, 0, productData);
@@ -719,8 +724,6 @@ export class AddDataDetailPenjualanBrgBekasComponent
       },
     });
 
-
-
   }
 
   onPreviousPressed(): void {
@@ -732,6 +735,16 @@ export class AddDataDetailPenjualanBrgBekasComponent
     dataInvalid =
       this.validationMessageList.some(msg => msg.trim() !== "") ||
       this.validationMessageQtyPesanList.some(msg => msg.trim() !== "");
+
+    // const invalidItems = this.listProductData.filter(
+    //   (item) =>
+    //     item.totalQty === 0 || item.totalHarga === 0
+    // );
+
+    // if (invalidItems.length > 0) {
+    //   dataInvalid = true;
+    //   this.toastr.error('Lengkapi data barang sebelum melanjutkan.');
+    // }
 
     return dataInvalid
   }

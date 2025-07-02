@@ -10,6 +10,12 @@ import {
   TableUomDetailComponent,
   TableUomEditComponent,
 } from './table-uom';
+import {
+  TableRuteAddComponent,
+  TableRuteComponent,
+  TableRuteDetailComponent,
+  TableRuteEditComponent,
+} from './table-rute';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {
@@ -83,6 +89,19 @@ import { AddResepComponent, MasterResepComponent } from './master-resep';
 import { ProfileCompanyComponent } from './profile-company/profile-company.component';
 import { AllMasterComponent } from './all-master/all-master.component';
 
+import { MasterDriverComponent } from './master-driver/master-driver.component';
+import { MasterBranchDetailTonaseComponent } from './master-branch-detail-tonase/master-branch-detail-tonase.component';
+import { MasterKendaraanComponent } from './master-kendaraan/master-kendaraan.component';
+import { MasterBranchDetailAddComponent } from './master-branch-detail-tonase/add/master-branch-detail-add/master-branch-detail-add.component';
+import { MasterBranchDetailEditComponent } from './master-branch-detail-tonase/edit/master-branch-detail-edit/master-branch-detail-edit.component';
+import { MasterBranchDetailTonaseDetailComponent } from './master-branch-detail-tonase/detail/master-branch-detail/master-branch-detail.component';
+import { MasterDriverAddComponent } from './master-driver/add/master-driver-add/master-driver-add.component';
+import { MasterDriverEditComponent } from './master-driver/edit/master-driver-edit/master-driver-edit.component';
+import { MasterDriverDetailComponent } from './master-driver/detail/master-driver-detail/master-driver-detail.component';
+import { MasterKendaraanAddComponent } from './master-kendaraan/add/master-kendaraan-add/master-kendaraan-add.component';
+import { MasterKendaraanEditComponent } from './master-kendaraan/edit/master-kendaraan-edit/master-kendaraan-edit.component';
+import { MasterKendaraanDetailComponent } from './master-kendaraan/detail/master-kendaraan-detail/master-kendaraan-detail.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -91,6 +110,55 @@ const routes: Routes = [
         path: '',
         component: AllMasterComponent,
       },
+      {
+        path: 'master-driver',
+        component: MasterDriverComponent,
+      },
+        {
+        path: 'master-driver/add',
+        component: MasterDriverAddComponent,
+      },
+        {
+        path: 'master-driver/edit',
+        component: MasterDriverEditComponent,
+      },
+        {
+        path: 'master-driver/detail',
+        component: MasterDriverDetailComponent,
+      },
+       {
+        path: 'master-branch-detail',
+        component: MasterBranchDetailTonaseComponent,
+      },
+      {
+        path: 'master-branch-detail/add',
+        component: MasterBranchDetailAddComponent,
+      },
+        {
+        path: 'master-branch-detail/edit',
+        component: MasterBranchDetailEditComponent,
+      },
+      {
+        path: 'master-branch-detail/detail',
+        component: MasterBranchDetailTonaseDetailComponent,
+      },
+        {
+        path: 'master-kendaraan',
+        component: MasterKendaraanComponent,
+      },
+      {
+        path: 'master-kendaraan/add',
+        component: MasterKendaraanAddComponent,
+      },
+      {
+        path: 'master-kendaraan/edit',
+        component: MasterKendaraanEditComponent,
+      },
+      {
+        path: 'master-kendaraan/detail',
+        component: MasterKendaraanDetailComponent,
+      },
+      
       {
         path: 'master-company',
         component: MasterCompanyComponent,
@@ -259,6 +327,24 @@ const routes: Routes = [
         path: 'master-uom/edit',
         component: TableUomEditComponent,
       },
+      ///
+      {
+        path: 'master-rute',
+        component: TableRuteComponent,
+      },
+      {
+        path: 'master-rute/add',
+        component: TableRuteAddComponent,
+      },
+      {
+        path: 'master-rute/detail',
+        component: TableRuteDetailComponent,
+      },
+      {
+        path: 'master-rute/edit',
+        component: TableRuteEditComponent,
+      },
+      ///
       {
         path: 'master-set-number',
         component: TableSetNumberComponent,

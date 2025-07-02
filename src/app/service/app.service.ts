@@ -523,4 +523,11 @@ export class AppService {
       payload
     );
   }
+
+  getListDriver(payload: any): Observable<any> {
+    return this.dataService.postData(
+      this.config.BASE_URL + '/api/driver',
+      payload
+    );
+  }
 }

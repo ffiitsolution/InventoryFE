@@ -163,7 +163,7 @@ export class AddKirimBarangReturnKeSupplierComponent implements OnInit, AfterVie
       this.calculateTotalHasilProduksi();
     });
 
-    this.renderDataTables();
+    // this.renderDataTables();
     this.renderDataTablesBranch();
 
   }
@@ -344,102 +344,102 @@ export class AddKirimBarangReturnKeSupplierComponent implements OnInit, AfterVie
     this.isShowModal = true;
   }
 
-  renderDataTables(): void {
-    this.dtOptions = {
-      language:
-        this.translationService.getCurrentLanguage() == 'id' ? this.translationService.idDatatable : {},
-      processing: true,
-      serverSide: true,
-      autoWidth: true,
-      info: true,
-      pageLength:5,
-      lengthMenu: [  // Provide page size options
-        [8, 10],   // Available page sizes
-        ['8', '10']  // Displayed page size labels
-      ],
-      drawCallback: (drawCallback:any) => {
-        this.selectedRowData = undefined;
-      },
-      ajax: (dataTablesParameters: any, callback:any) => {
-        this.page.start = dataTablesParameters.start;
-        this.page.length = dataTablesParameters.length;
-        const params = {
-          ...dataTablesParameters,
-          kodeGudang: this.globalService.getUserLocationCode(),
-          status: 'K',
-          flagBrgBekas : 'T'
-        };
-        this.dataService
-          .postData(
-            this.config.BASE_URL_HQ + '/api/return-order/get-from-hq/dt',
-            params
-          )
-          .subscribe((resp: any) => {
-            const mappedData = resp.data.map((item: any, index: number) => {
-              // hapus rn dari data
-              const { rn, ...rest } = item;
-              const finalData = {
-                ...rest,
-                dtIndex: this.page.start + index + 1,
-              };
-              return finalData;
-            });
-            this.page.recordsTotal = resp.recordsTotal;
-            this.page.recordsFiltered = resp.recordsFiltered;
-            callback({
-              recordsTotal: resp.recordsTotal,
-              recordsFiltered: resp.recordsFiltered,
-              data: mappedData,
-            });
-          });
-      },
+  // renderDataTables(): void {
+  //   this.dtOptions = {
+  //     language:
+  //       this.translationService.getCurrentLanguage() == 'id' ? this.translationService.idDatatable : {},
+  //     processing: true,
+  //     serverSide: true,
+  //     autoWidth: true,
+  //     info: true,
+  //     pageLength:5,
+  //     lengthMenu: [  // Provide page size options
+  //       [8, 10],   // Available page sizes
+  //       ['8', '10']  // Displayed page size labels
+  //     ],
+  //     drawCallback: (drawCallback:any) => {
+  //       this.selectedRowData = undefined;
+  //     },
+  //     ajax: (dataTablesParameters: any, callback:any) => {
+  //       this.page.start = dataTablesParameters.start;
+  //       this.page.length = dataTablesParameters.length;
+  //       const params = {
+  //         ...dataTablesParameters,
+  //         kodeGudang: this.globalService.getUserLocationCode(),
+  //         status: 'K',
+  //         flagBrgBekas : 'T'
+  //       };
+  //       this.dataService
+  //         .postData(
+  //           this.config.BASE_URL_HQ + '/api/return-order/get-from-hq/dt',
+  //           params
+  //         )
+  //         .subscribe((resp: any) => {
+  //           const mappedData = resp.data.map((item: any, index: number) => {
+  //             // hapus rn dari data
+  //             const { rn, ...rest } = item;
+  //             const finalData = {
+  //               ...rest,
+  //               dtIndex: this.page.start + index + 1,
+  //             };
+  //             return finalData;
+  //           });
+  //           this.page.recordsTotal = resp.recordsTotal;
+  //           this.page.recordsFiltered = resp.recordsFiltered;
+  //           callback({
+  //             recordsTotal: resp.recordsTotal,
+  //             recordsFiltered: resp.recordsFiltered,
+  //             data: mappedData,
+  //           });
+  //         });
+  //     },
 
-      columns: [
-        { data: 'dtIndex', title: '#', orderable: false, searchable: false },
-        { data: 'returnNo', title: 'Tipe', searchable: true },
-        { data: 'outletCode', title: 'Kode', searchable: true },
-        { data: 'namaPengirim', title: 'Inisial', searchable: true },
-        {
-          data: 'statusAktif',
-          title: 'Status',
-          searchable: false,
-          render: (data:any) => {
-            if (data === 'Aktif') {
-              return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
-            }
-            return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
-          },
-        },
-        {
-          title: 'Action',
-            render: (data: any, _: any, row: any) => {
-            if (row.statusAktif === 'Aktif') {
-              return `
-                <div class="btn-group" role="group" aria-label="Action">
-                  <button class="btn btn-sm action-select btn-info btn-60 text-white">${this.buttonCaptionSelect}</button>
-                </div>
-              `;
-            }
-            return `
-                <div class="btn-group" role="group" aria-label="Action">
-                  <button class="btn btn-sm action-select btn-info btn-60 text-white" disabled>${this.buttonCaptionSelect}</button>
-                </div>
-              `;
-          },
-        },
-      ],
-      searchDelay: 1500,
-      order: [
-        [1, 'asc'],
-      ],
-      rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        $('.action-select', row).on('click', () => this.actionBtnClick(data));
+  //     columns: [
+  //       { data: 'dtIndex', title: '#', orderable: false, searchable: false },
+  //       { data: 'returnNo', title: 'Tipe', searchable: true },
+  //       { data: 'outletCode', title: 'Kode', searchable: true },
+  //       { data: 'namaPengirim', title: 'Inisial', searchable: true },
+  //       {
+  //         data: 'statusAktif',
+  //         title: 'Status',
+  //         searchable: false,
+  //         render: (data:any) => {
+  //           if (data === 'Aktif') {
+  //             return `<div class="d-flex justify-content-center"> <span class="badge badge-success py-2" style="color:white; background-color: #2eb85c; width: 60px">Active</span></div>`;
+  //           }
+  //           return `<div class="d-flex justify-content-center"> <span class="badge badge-secondary py-2" style="background-color:#b51823; width: 60px">Inactive</span> </div>`;
+  //         },
+  //       },
+  //       {
+  //         title: 'Action',
+  //           render: (data: any, _: any, row: any) => {
+  //           if (row.statusAktif === 'Aktif') {
+  //             return `
+  //               <div class="btn-group" role="group" aria-label="Action">
+  //                 <button class="btn btn-sm action-select btn-info btn-60 text-white">${this.buttonCaptionSelect}</button>
+  //               </div>
+  //             `;
+  //           }
+  //           return `
+  //               <div class="btn-group" role="group" aria-label="Action">
+  //                 <button class="btn btn-sm action-select btn-info btn-60 text-white" disabled>${this.buttonCaptionSelect}</button>
+  //               </div>
+  //             `;
+  //         },
+  //       },
+  //     ],
+  //     searchDelay: 1500,
+  //     order: [
+  //       [1, 'asc'],
+  //     ],
+  //     rowCallback: (row: Node, data: any[] | Object, index: number) => {
+  //       $('.action-select', row).on('click', () => this.actionBtnClick(data));
 
-        return row;
-      },
-    };
+  //       return row;
+  //     },
+  //   };
 
-  }
+  // }
 
   renderDataTablesBranch(): void {
     console.log('Running......');
@@ -494,14 +494,23 @@ export class AddKirimBarangReturnKeSupplierComponent implements OnInit, AfterVie
         { data: 'kodeSupplier', title: 'Kode', searchable: true },
         { data: 'namaSupplier', title: 'Nama Supplier', searchable: true },
         {
-          data: null,
+          data: 'alamat1',
           title: 'Alamat',
           searchable: true,
-            render: (data: any, _: any, row: any) => {
-            const alamatGabungan = [row.alamat1, row.alamat2].filter(Boolean).join(', ');
+          render: (data: any, type: any, row: any): string => {
+            const alamat1 = row.alamat1 ?? '';
+            const alamat2 = row.alamat2 ?? '';
+            const alamatGabungan = [alamat1, alamat2].filter(item => item.trim() !== '').join(', ');
+        
+            // Kalau proses search/filter/sort, DataTables butuh plain text
+            if (type === 'filter' || type === 'sort') {
+              return alamatGabungan;
+            }
+        
+            // Kalau proses display (render ke tampilan)
             return `<div>${alamatGabungan}</div>`;
           }
-        },
+        },        
         { data: 'keteranganKota', title: 'Kota', searchable: true },
         {
           data: 'statusAktif',
