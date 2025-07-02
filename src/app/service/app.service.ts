@@ -530,4 +530,14 @@ export class AppService {
       payload
     );
   }
+  // By Raymond 2 Juli 2025
+  getAllBranchCode(payload:any): Observable<any> {
+    return this.dataService.postData(
+      this.config.BASE_URL + '/api/branch',
+      payload
+    )
+  }
+
+  
+  
 }
