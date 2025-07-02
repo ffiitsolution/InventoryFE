@@ -106,7 +106,7 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
           title: 'Tanggal Transaksi',
           searchable: true,
           render: (data: any) => {
-            return data ? moment(data).format('DD/MM/YYYY') : '';
+            return data ? moment(data).format('DD MMM YYYY') : '';
           }
         },
 
@@ -133,7 +133,7 @@ export class KirimBarangReturnKeSiteListComponent implements OnInit {
           title: 'Tanggal',
           searchable: true,
           render: (data: any) => {
-            return data ? moment(data).format('DD/MM/YYYY') : '';
+            return data ? moment(data).format('DD MMM YYYY') : '';
           }
         },
 
