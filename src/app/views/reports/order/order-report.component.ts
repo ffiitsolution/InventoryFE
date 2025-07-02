@@ -174,6 +174,15 @@ export class OrderReportComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if (this.currentReport === 'Pesanan Ke Supplier') {
+
+      if(this.paramTipeListing == 'baru'){
+        this.paramStatusPesanan= '1'; //pesan baru
+      }else if(this.paramTipeListing == 'sisa'){
+        this.paramStatusPesanan = '2'; //pesan sisa
+      }else{
+        this.paramStatusPesanan = '3'; //pesan selesai
+      }
+      
       param = {
         kodeGudang: this.userData.defaultLocation.kodeLocation,
         tipeListing: this.paramTipeListing,
