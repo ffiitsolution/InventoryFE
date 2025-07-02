@@ -63,6 +63,7 @@ import { PenerimaanBrgBksListNoreturComponent } from './penerimaan-barang-bekas/
 import { DetailPenerimaanBrgBksReturComponent } from './penerimaan-barang-bekas/detail-retur/detail-retur.component';
 import { ProductionListForPostingComponent } from './production/dt-list-for-posting/production-list-for-posting.component';
 import { ProductionComponent } from './production/production/production';
+import { PengirimanComponent } from './pengiriman/pengiriman.component';
 
 const routes: Routes = [
   {
@@ -127,6 +128,10 @@ const routes: Routes = [
       {
         path: 'return-order',
         component: ReturnOrderComponent,
+      },
+      {
+        path: 'pengiriman',
+        component: PengirimanComponent,
       },
     ],
   },

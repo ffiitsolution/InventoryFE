@@ -39,53 +39,45 @@ export const menu_id: any = [
       },
       {
         name: 'Pengiriman',
-        url: '/transaction/delivery-item',
+        url: '/transaction/pengiriman',
         iconComponent: {
           name: 'cil-truck',
         },
         access: 'pengiriman',
-        children: [
-             {
-            name: 'Display & Routing',
-            url: '/transaction/delivery-item',
-            iconComponent: {
-              name: 'cilMap',
-            },
-            access: 'display_&_tambah',
-          },
-          {
-            name: 'Display & Tambah',
-            url: '/transaction/delivery-item',
-            iconComponent: {
-              name: 'cil-plus',
-            },
-            access: 'display_&_tambah',
-          },
-          {
-            name: 'Proses Do Balik',
-            url: '/transaction/delivery-item/dobalik',
-            iconComponent: {
-              name: 'cil-note-add',
-            },
-            access: 'proses_do_balik',
-          },
-          {
-            name: 'Revisi DO',
-            url: '/transaction/delivery-item/revisi-do',
-            iconComponent: {
-              name: 'cil-sync',
-            },
-            access: 'revisi_do',
-          },
-          {
-            name: 'Packing List',
-            url: '/transaction/delivery-item/packing-list',
-            iconComponent: {
-              name: 'cil-check',
-            },
-            access: 'packing_list',
-          },
-        ],
+        // children: [
+        //   {
+        //     name: 'Display & Tambah',
+        //     url: '/transaction/delivery-item',
+        //     iconComponent: {
+        //       name: 'cil-plus',
+        //     },
+        //     access: 'display_&_tambah',
+        //   },
+        //   {
+        //     name: 'Proses Do Balik',
+        //     url: '/transaction/delivery-item/dobalik',
+        //     iconComponent: {
+        //       name: 'cil-note-add',
+        //     },
+        //     access: 'proses_do_balik',
+        //   },
+        //   {
+        //     name: 'Revisi DO',
+        //     url: '/transaction/delivery-item/revisi-do',
+        //     iconComponent: {
+        //       name: 'cil-sync',
+        //     },
+        //     access: 'revisi_do',
+        //   },
+        //   {
+        //     name: 'Packing List',
+        //     url: '/transaction/delivery-item/packing-list',
+        //     iconComponent: {
+        //       name: 'cil-check',
+        //     },
+        //     access: 'packing_list',
+        //   },
+        // ],
       },
       {
         name: 'Penerimaan Dari Gudang',

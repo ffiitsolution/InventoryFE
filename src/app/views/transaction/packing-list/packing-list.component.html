@@ -6,7 +6,9 @@
           <h5>{{ "Packing List" | translate }}</h5>
         </div>
         <div class="col col-md-8">
-          <div class="menu-purpose col-sm-12 d-flex justify-content-end align-items-center">
+          <div
+            class="menu-purpose col-sm-12 d-flex justify-content-end align-items-center"
+          >
             <span>
               Program ini digunakan untuk membuat laporan packing pengiriman
             </span>
@@ -21,14 +23,29 @@
     <c-card-body>
       <div class="d-flex justify-content-end gap-1" style="margin-bottom: 10px">
         <div class="col text-end">
-          <button type="button" class="btn btn-outline-dark me-2 btn-120" (click)="toggleFilter()">
+          <button
+            type="button"
+            class="btn btn-outline-dark me-2 btn-120"
+            (click)="toggleFilter()"
+          >
             <i class="fa fa-filter icon-gap" aria-hidden="true"></i>
             {{ "Filter" | translate }}
           </button>
-          <button class="btn btn-info text-white btn-150 pe-3" (click)="navigateToEntryPackingList()">
-            <i class="fa fa-check pe-2"></i>
+          <button
+            type="button"
+            class="btn btn-success text-white me-2 btn-150"
+            (click)="navigateToEntryPackingList()"
+          >
+            <i class="fa fa-check pe-1 icon-12 icon-gap" aria-hidden="true"></i>
             {{ "Entry Packing List" | translate }}
           </button>
+          <a
+            type="button"
+            class="btn w-120 btn-outline-primary ps-3"
+            href="#/transaction/pengiriman"
+          >
+            {{ "Kembali" | translate }}
+          </a>
         </div>
       </div>
       <div [visible]="showFilterSection" cCollapse>
@@ -38,13 +55,28 @@
               <c-col cols="12" md="6">
                 <label class="col-form-label">{{
                   "Tanggal Pengiriman" | translate
-                  }}</label>
-                <input type="text" id="dateFilter" class="form-control" bsDaterangepicker [bsConfig]="dpConfig"
-                  aria-describedby="dateFilter" [(ngModel)]="dateRangeFilter" #dp="bsDaterangepicker"
-                  placeholder="{{ 'Tanggal Pengiriman' | translate }}" />
+                }}</label>
+                <input
+                  type="text"
+                  id="dateFilter"
+                  class="form-control"
+                  bsDaterangepicker
+                  [bsConfig]="dpConfig"
+                  aria-describedby="dateFilter"
+                  [(ngModel)]="dateRangeFilter"
+                  #dp="bsDaterangepicker"
+                  placeholder="{{ 'Tanggal Pengiriman' | translate }}"
+                />
               </c-col>
-              <c-col xs="6" class="text-right d-flex align-items-end justify-content-end">
-                <button type="button" class="btn btn-outline-success me-2 btn-160" (click)="onFilterPressed()">
+              <c-col
+                xs="6"
+                class="text-right d-flex align-items-end justify-content-end"
+              >
+                <button
+                  type="button"
+                  class="btn btn-outline-success me-2 btn-160"
+                  (click)="onFilterPressed()"
+                >
                   {{ "Terapkan Filter" | translate }}
                 </button>
               </c-col>
@@ -54,8 +86,12 @@
       </div>
       <div class="divider"></div>
       <div class="table-responsive">
-        <table datatable [dtOptions]="dtOptions" (page.dt)="dtPageChange($event)" class="row-border hover stripe">
-        </table>
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          (page.dt)="dtPageChange($event)"
+          class="row-border hover stripe"
+        ></table>
       </div>
     </c-card-body>
   </c-card>

@@ -6,9 +6,12 @@
           <h5>{{ "Pengiriman ke Cabang atau Gudang" | translate }}</h5>
         </div>
         <div class="col col-md-8">
-          <div class="menu-purpose col-sm-12 d-flex justify-content-end align-items-center">
+          <div
+            class="menu-purpose col-sm-12 d-flex justify-content-end align-items-center"
+          >
             <span>
-              Program ini digunakan untuk pengiriman pesanan ke cabang atau gudang lain            
+              Program ini digunakan untuk pengiriman pesanan ke cabang atau
+              gudang lain
             </span>
           </div>
         </div>
@@ -38,6 +41,13 @@
             <i class="fa fa-plus pe-1 icon-12 icon-gap" aria-hidden="true"></i>
             {{ "Tambah Pengiriman" | translate }}
           </button>
+          <a
+            type="button"
+            class="btn w-120 btn-outline-primary me-2"
+            href="#/transaction/pengiriman"
+          >
+            {{ "Kembali" | translate }}
+          </a>
         </div>
       </div>
       <div [visible]="showFilterSection" cCollapse>
@@ -78,46 +88,84 @@
       </div>
       <div class="divider"></div>
       <div class="table-responsive">
-        <table datatable [dtOptions]="dtOptions" (page.dt)="dtPageChange($event)" class="row-border hover stripe"></table>
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          (page.dt)="dtPageChange($event)"
+          class="row-border hover stripe"
+        ></table>
       </div>
     </c-card-body>
   </c-card>
 </div>
 
 <div class="fade-in">
-
   <c-card class="c-card" *ngIf="selectedRowData">
     <c-card-body>
       <div class="row p-2 justify-content-end">
         <div class="col-6">
           <div class="w-100 mb-2">
-            <label for="alamatTujuan" class="form-label">{{ "Alamat" | translate }}</label>
-            <input type="text" disabled placeholder="Alamat 1" class="form-control" id="nomorPesanan"
-              [(ngModel)]="selectedRowData.alamatTujuan" name="alamatTujuan" />
+            <label for="alamatTujuan" class="form-label">{{
+              "Alamat" | translate
+            }}</label>
+            <input
+              type="text"
+              disabled
+              placeholder="Alamat 1"
+              class="form-control"
+              id="nomorPesanan"
+              [(ngModel)]="selectedRowData.alamatTujuan"
+              name="alamatTujuan"
+            />
           </div>
           <div class="w-100 mb-2">
-            <label for="alamat1" class="form-label">{{ "Keterangan" | translate }}</label>
-            <input type="text" disabled class="form-control" id="nomorPesanan"
-              [(ngModel)]="selectedRowData.keterangan" name="keterangan" />
+            <label for="alamat1" class="form-label">{{
+              "Keterangan" | translate
+            }}</label>
+            <input
+              type="text"
+              disabled
+              class="form-control"
+              id="nomorPesanan"
+              [(ngModel)]="selectedRowData.keterangan"
+              name="keterangan"
+            />
           </div>
         </div>
         <div class="col-6">
           <div class="row justify-content-end">
-            
             <div class="col-4"></div>
             <div class="col-4">
               <div class="w-100 mb-2">
-                <label for="userCreate" class="form-label">{{ "User Create" | translate }}</label>
-                <input type="text" disabled placeholder="Alamat 1" class="form-control" id="nomorPesanan"
-                  [(ngModel)]="selectedRowData.userCreate" name="userCreate" />
+                <label for="userCreate" class="form-label">{{
+                  "User Create" | translate
+                }}</label>
+                <input
+                  type="text"
+                  disabled
+                  placeholder="Alamat 1"
+                  class="form-control"
+                  id="nomorPesanan"
+                  [(ngModel)]="selectedRowData.userCreate"
+                  name="userCreate"
+                />
               </div>
-  
+
               <div class="w-100 mb-2">
-                <label for="dateCreate" class="form-label">{{ "Date Create" | translate }}</label>
-                <input type="text" disabled placeholder="Alamat 1" class="form-control" id="nomorPesanan"
-                  [(ngModel)]="selectedRowData.dateCreate" name="dateCreate" />
+                <label for="dateCreate" class="form-label">{{
+                  "Date Create" | translate
+                }}</label>
+                <input
+                  type="text"
+                  disabled
+                  placeholder="Alamat 1"
+                  class="form-control"
+                  id="nomorPesanan"
+                  [(ngModel)]="selectedRowData.dateCreate"
+                  name="dateCreate"
+                />
               </div>
-  
+
               <!-- <div class="w-100 mb-2">
                 <label for="timeCreate" class="form-label">{{ "Time Create" | translate }}</label>
                 <input type="text" disabled placeholder="Alamat 1" class="form-control" id="nomorPesanan"
@@ -126,17 +174,35 @@
             </div>
             <div class="col-4">
               <div class="w-100 mb-2">
-                <label for="userPosted" class="form-label">{{ "User Posted" | translate }}</label>
-                <input type="text" disabled placeholder="Alamat 1" class="form-control" id="nomorPesanan"
-                  [(ngModel)]="selectedRowData.userPosted" name="userPosted" />
+                <label for="userPosted" class="form-label">{{
+                  "User Posted" | translate
+                }}</label>
+                <input
+                  type="text"
+                  disabled
+                  placeholder="Alamat 1"
+                  class="form-control"
+                  id="nomorPesanan"
+                  [(ngModel)]="selectedRowData.userPosted"
+                  name="userPosted"
+                />
               </div>
-  
+
               <div class="w-100 mb-2">
-                <label for="datePosted" class="form-label">{{ "Date Posted" | translate }}</label>
-                <input type="text" disabled placeholder="Alamat 1" class="form-control" id="nomorPesanan"
-                  [(ngModel)]="selectedRowData.datePosted" name="datePosted" />
+                <label for="datePosted" class="form-label">{{
+                  "Date Posted" | translate
+                }}</label>
+                <input
+                  type="text"
+                  disabled
+                  placeholder="Alamat 1"
+                  class="form-control"
+                  id="nomorPesanan"
+                  [(ngModel)]="selectedRowData.datePosted"
+                  name="datePosted"
+                />
               </div>
-  
+
               <!-- <div class="w-100 mb-2">
                 <label for="timePosted" class="form-label">{{ "Time Posted" | translate }}</label>
                 <input type="text" disabled placeholder="Alamat 1" class="form-control" id="nomorPesanan"
@@ -144,7 +210,6 @@
               </div> -->
             </div>
           </div>
-          
         </div>
       </div>
     </c-card-body>
@@ -152,10 +217,16 @@
 </div>
 
 <div class="fade-in">
-  <app-modal-print-list [alreadyPrint]="alreadyPrint" [disabledPrintButton]="disabledPrintButton"
+  <app-modal-print-list
+    [alreadyPrint]="alreadyPrint"
+    [disabledPrintButton]="disabledPrintButton"
     [generatePdfUrl]="'/api/delivery-order/delivery-order-report'"
-    [updateStatusUrl]="'/api/delivery-order/update-print-status'" [updatePrintStatusParam]="paramGenerateReport"
-    [generateReportParam]="paramGenerateReport" [isShowModalReport]="isShowModalReport" [isShowSelection]="true"
-    (closeModalEvent)="onCloseModalReport()">
+    [updateStatusUrl]="'/api/delivery-order/update-print-status'"
+    [updatePrintStatusParam]="paramGenerateReport"
+    [generateReportParam]="paramGenerateReport"
+    [isShowModalReport]="isShowModalReport"
+    [isShowSelection]="true"
+    (closeModalEvent)="onCloseModalReport()"
+  >
   </app-modal-print-list>
 </div>

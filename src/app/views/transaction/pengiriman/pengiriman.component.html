@@ -1,0 +1,93 @@
+<div class="row">
+  <div class="text-center mt-5 col-md-12">
+    <p class="text-color-title">Pengiriman</p>
+    <!-- <div class="d-flex mt-4 justify-content-center">
+      
+          <div class="d-flex">
+              <button class="btn btn-outline-danger btn-order-information" routerLink="/transaction//order-entry">Informasi Pengiriman</button>
+          </div>
+      </div> -->
+    <div class="row mt-4 justify-content-center">
+      <div
+        class="col-lg-3 box-custom-outlet"
+        (click)="listCounter('displayPengiriman')"
+        style="cursor: pointer"
+      >
+        <h4 class="mt-3 text-color-outlet">Display & Tambah</h4>
+        <img
+          src="./assets/img/outlet/delivery.png"
+          class="img-fluid mx-auto d-block mb-1 mt-5 mb-4"
+          alt="..."
+          width="75%"
+          height="75%"
+        />
+        <button
+          class="btn btn-outline-success btn-order-outlet"
+          (click)="listCounter('displayPengiriman')"
+        >
+          Display Pengiriman
+        </button>
+      </div>
+      <div
+        class="col-lg-3 box-custom-supplier"
+        (click)="listCounter('prosesDOBalik')"
+        style="cursor: pointer"
+      >
+        <h4 class="mt-3 text-color-supplier">Proses DO Balik</h4>
+        <img
+          src="./assets/img/outlet/return.png"
+          class="img-fluid mx-auto d-block mt-5 mb-4"
+          alt="..."
+          width="75%"
+          height="75%"
+        />
+        <button
+          class="btn btn-outline-warning btn-order-supplier"
+          (click)="listCounter('prosesDOBalik')"
+        >
+          DO Balik
+        </button>
+      </div>
+      <div
+        class="col-lg-3 box-custom-gudang"
+        (click)="listCounter('revisiDO')"
+        style="cursor: pointer"
+      >
+        <h4 class="mt-3 text-color-gudang">Revisi DO</h4>
+        <img
+          src="./assets/img/outlet/revision.png"
+          class="img-fluid mx-auto d-block mt-5 mb-4"
+          alt="..."
+          width="75%"
+          height="75%"
+        />
+        <button
+          class="btn btn-outline-danger btn-order-gudang"
+          (click)="listCounter('revisiDO')"
+        >
+          Revisi DO
+        </button>
+      </div>
+      <div
+        class="col-lg-3 box-custom-fsd"
+        (click)="listCounter('packingList')"
+        style="cursor: pointer"
+      >
+        <h4 class="mt-3 text-color-fsd">Packing List</h4>
+        <img
+          src="./assets/img/outlet/packing.png"
+          class="img-fluid mx-auto d-block mt-5 mb-4"
+          alt="..."
+          width="75%"
+          height="75%"
+        />
+        <button
+          class="btn btn-outline-info btn-order-fsd"
+          (click)="listCounter('packingList')"
+        >
+          Packing List
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
