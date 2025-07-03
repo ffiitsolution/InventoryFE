@@ -6,7 +6,7 @@ import { Page } from 'src/app/model/page';
 import { DataService } from 'src/app/service/data.service';
 import { GlobalService } from 'src/app/service/global.service';
 import { TranslationService } from 'src/app/service/translation.service';
-import { ACTION_ADD, ACTION_VIEW, ACTION_EDIT, LS_INV_SELECTED_RUTE } from 'src/constants';
+import { ACTION_ADD, ACTION_VIEW, ACTION_EDIT, LS_INV_SELECTED_RUTE, LS_INV_SELECTED_DRIVER } from 'src/constants';
 
 @Component({
   selector: 'app-master-driver',
@@ -163,10 +163,10 @@ export class MasterDriverComponent implements OnInit, OnDestroy, AfterViewInit {
 
   actionBtnClick(action: string, data: any = null) {
       if (action === ACTION_VIEW) {
-        this.g.saveLocalstorage(LS_INV_SELECTED_RUTE, JSON.stringify(data));
+        this.g.saveLocalstorage(LS_INV_SELECTED_DRIVER, JSON.stringify(data));
         this.router.navigate(['/master/master-driver/detail']);
       } else if (action === ACTION_EDIT) {
-        this.g.saveLocalstorage(LS_INV_SELECTED_RUTE, JSON.stringify(data));
+        this.g.saveLocalstorage(LS_INV_SELECTED_DRIVER, JSON.stringify(data));
         this.router.navigate(['/master/master-driver/edit']);
       } else if (action === ACTION_ADD) {
         this.router.navigate(['/master/master-driver/add']);

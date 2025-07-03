@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { ACTION_ADD, ACTION_EDIT, ACTION_VIEW, LS_INV_SELECTED_RUTE } from '../../../../constants';
+import { ACTION_ADD, ACTION_EDIT, ACTION_VIEW, LS_INV_SELECTED_KENDARAAN, LS_INV_SELECTED_RUTE } from '../../../../constants';
 import { DataService } from '../../../service/data.service';
 import { Router } from '@angular/router';
 import { GlobalService } from '../../../service/global.service';
@@ -157,10 +157,10 @@ export class MasterKendaraanComponent implements OnInit, OnDestroy, AfterViewIni
 
   actionBtnClick(action: string, data: any = null) {
       if (action === ACTION_VIEW) {
-        this.g.saveLocalstorage(LS_INV_SELECTED_RUTE, JSON.stringify(data));
+        this.g.saveLocalstorage(LS_INV_SELECTED_KENDARAAN, JSON.stringify(data));
         this.router.navigate(['/master/master-kendaraan/detail']);
       } else if (action === ACTION_EDIT) {
-        this.g.saveLocalstorage(LS_INV_SELECTED_RUTE, JSON.stringify(data));
+        this.g.saveLocalstorage(LS_INV_SELECTED_KENDARAAN, JSON.stringify(data));
         this.router.navigate(['/master/master-kendaraan/edit']);
       } else if (action === ACTION_ADD) {
         this.router.navigate(['/master/master-kendaraan/add']);

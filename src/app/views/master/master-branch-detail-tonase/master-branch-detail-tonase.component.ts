@@ -5,7 +5,7 @@ import { Page } from 'src/app/model/page';
 import { DataService } from 'src/app/service/data.service';
 import { GlobalService } from 'src/app/service/global.service';
 import { TranslationService } from 'src/app/service/translation.service';
-import { ACTION_ADD, ACTION_VIEW, ACTION_EDIT, LS_INV_SELECTED_RUTE } from 'src/constants';
+import { ACTION_ADD, ACTION_VIEW, ACTION_EDIT, LS_INV_SELECTED_RUTE, LS_INV_SELECTED_BRANCHLIST } from 'src/constants';
 
 @Component({
   selector: 'app-master-branch-detail-tonase',
@@ -146,10 +146,10 @@ export class MasterBranchDetailTonaseComponent implements OnInit, OnDestroy, Aft
 
   actionBtnClick(action: string, data: any = null) {
       if (action === ACTION_VIEW) {
-        this.g.saveLocalstorage(LS_INV_SELECTED_RUTE, JSON.stringify(data));
+        this.g.saveLocalstorage(LS_INV_SELECTED_BRANCHLIST, JSON.stringify(data));
         this.router.navigate(['/master/master-branch-detail/detail']);
       } else if (action === ACTION_EDIT) {
-        this.g.saveLocalstorage(LS_INV_SELECTED_RUTE, JSON.stringify(data));
+        this.g.saveLocalstorage(LS_INV_SELECTED_BRANCHLIST, JSON.stringify(data));
         this.router.navigate(['/master/master-branch-detail/edit']);
       } else if (action === ACTION_ADD) {
         this.router.navigate(['/master/master-branch-detail/add']);
