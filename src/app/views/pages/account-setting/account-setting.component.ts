@@ -76,8 +76,28 @@ export default class AccountSettingComponent implements OnInit {
           defaultLocation:
             transformedCurrentUser?.defaultLocation?.kodeLocation,
           // roleID: controls?.['roleID']?.value?.id ?? ' ',
+          companyProfile: this.currentUser.companyProfile,
+          maintenancePassword: this.currentUser.maintenancePassword,
+          masterCabang: this.currentUser.masterCabang,
+          masterSupplier: this.currentUser.masterSupplier,
+          masterBarang: this.currentUser.masterBarang,
+          masterLain: this.currentUser.masterLain,
+          pembelian: this.currentUser.pembelian,
+          penerimaan: this.currentUser.penerimaan,
+          pengiriman: this.currentUser.pengiriman,
+          barangRusak: this.currentUser.barangRusak,
+          penyesuaianStock: this.currentUser.penyesuaianStock,
+          returBarang: this.currentUser.returBarang,
+          produksi: this.currentUser.produksi,
+          barangBekas: this.currentUser.barangBekas,
+          stockOpname: this.currentUser.stockOpname,
+          usulOrder: this.currentUser.usulOrder,
+          listingMaster: this.currentUser.listingMaster,
+          laporanTransaksi: this.currentUser.laporanTransaksi,
+          closing: this.currentUser.closing,
+          backupData: this.currentUser.backupData,
+          utility: this.currentUser.utility,
         };
-        console.log();
         this.service.patch('/api/users/current', param).subscribe({
           next: (res: any) => {
             if (!res.success) {
