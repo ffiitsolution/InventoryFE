@@ -81,7 +81,114 @@
           style="margin-top: 14px; margin-bottom: 14px"
         ></div>
         <div class="row" style="overflow-y: scroll; height: 360px">
-          <div class="col-md-6">
+          <c-accordion [alwaysOpen]="true">
+            <c-accordion-item #item0="cAccordionItem" [visible]="false">
+              <ng-template cTemplateId="accordionHeaderTemplate">
+                <button
+                  (click)="item0.toggleItem()"
+                  [collapsed]="!item0.visible"
+                  cAccordionButton
+                >
+                  Accordion item #0
+                </button>
+              </ng-template>
+              <ng-template cTemplateId="accordionBodyTemplate">
+                <div class="accordion-body">
+                  <strong>This is the first item's accordion body.</strong> It
+                  is hidden by default, until the collapse plugin adds the
+                  appropriate classes that we use to style each element. These
+                  classes control the overall appearance, as well as the showing
+                  and hiding via CSS transitions. You can modify any of this
+                  with custom CSS or overriding our default variables. It's also
+                  worth noting that just about any HTML can go within the
+                  <code>.accordion-body</code>, though the transition does limit
+                  overflow.
+                </div>
+              </ng-template>
+            </c-accordion-item>
+            <c-accordion-item #item1="cAccordionItem" [visible]="false">
+              <ng-template cTemplateId="accordionHeaderTemplate">
+                <div
+                  class="accordion-header-custom d-flex align-items-center justify-content-between p-2 px-3 rounded"
+                >
+                  <!-- Checkbox with label -->
+                  <div class="form-check m-0">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="customCheckParent"
+                      (click)="$event.stopPropagation()"
+                    />
+                    <label
+                      class="form-check-label ms-2 mb-0"
+                      for="customCheckParent"
+                    >
+                      Parent Accordion
+                    </label>
+                  </div>
+
+                  <!-- Toggle icon button -->
+                  <button
+                    type="button"
+                    class="btn btn-toggle-icon"
+                    (click)="item1.toggleItem()"
+                    cAccordionButton
+                  >
+                    <i
+                      class="bi bi-chevron-down"
+                      [class.rotate-180]="item1.visible"
+                    ></i>
+                  </button>
+                </div>
+              </ng-template>
+              <!-- <button
+                (click)="item1.toggleItem()"
+                [collapsed]="!item1.visible"
+                cAccordionButton
+              >
+                Accordion item #1
+              </button> -->
+              <ng-template cTemplateId="accordionBodyTemplate">
+                <div class="accordion-body">
+                  <strong>This is the second item's accordion body.</strong> It
+                  is hidden by default, until the collapse plugin adds the
+                  appropriate classes that we use to style each element. These
+                  classes control the overall appearance, as well as the showing
+                  and hiding via CSS transitions. You can modify any of this
+                  with custom CSS or overriding our default variables. It's also
+                  worth noting that just about any HTML can go within the
+                  <code>.accordion-body</code>, though the transition does limit
+                  overflow.
+                </div>
+              </ng-template>
+            </c-accordion-item>
+            <c-accordion-item #item2="cAccordionItem" [visible]="false">
+              <ng-template cTemplateId="accordionHeaderTemplate">
+                <button
+                  (click)="item2.toggleItem()"
+                  [collapsed]="!item2.visible"
+                  cAccordionButton
+                >
+                  Accordion item #2
+                </button>
+              </ng-template>
+              <ng-template cTemplateId="accordionBodyTemplate">
+                <div class="accordion-body">
+                  <strong>This is the third item's accordion body.</strong> It
+                  is hidden by default, until the collapse plugin adds the
+                  appropriate classes that we use to style each element. These
+                  classes control the overall appearance, as well as the showing
+                  and hiding via CSS transitions. You can modify any of this
+                  with custom CSS or overriding our default variables. It's also
+                  worth noting that just about any HTML can go within the
+                  <code>.accordion-body</code>, though the transition does limit
+                  overflow.
+                </div>
+              </ng-template>
+            </c-accordion-item>
+          </c-accordion>
+
+          <!-- <div class="col-md-6">
             <label
               class="col-form-label"
               style="
@@ -99,13 +206,11 @@
               <div *ngFor="let group of hakAksesList" class="col-md-6 mb-3">
                 <h6>{{ group.group }}</h6>
                 <div *ngFor="let item of group.items" class="ms-3 mb-1">
-                  <!-- Jika TIDAK punya children: tampilkan checkbox -->
                   <label *ngIf="!item.children">
                     <input type="checkbox" [formControlName]="item.id" />
                     {{ item.label }}
                   </label>
 
-                  <!-- Jika PUNYA children: hanya label -->
                   <div *ngIf="item.children">
                     <label>{{ item.label }}</label>
                     <div class="ps-3 d-flex flex-column flex-wrap">
@@ -117,7 +222,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> 
           </div>
           <div class="col-md-6">
             <label
@@ -133,20 +238,17 @@
               {{ "Hak Akses Module" | translate }}
             </label>
             <div class="row mb-1 ms-2">
-              <div
+               <div
                 *ngFor="let group of hakAksesListModule"
                 class="col-md-12 mb-1"
               >
                 <h6>{{ group.group }}</h6>
                 <div class="row g-2">
                   <div *ngFor="let item of group.items" class="col-md-6 mb-1">
-                    <!-- Jika TIDAK punya children: tampilkan checkbox -->
                     <label *ngIf="!item.children">
                       <input type="checkbox" [formControlName]="item.id" />
                       {{ item.label }}
                     </label>
-
-                    <!-- Jika PUNYA children: hanya label -->
                     <div *ngIf="item.children">
                       <label>{{ item.label }}</label>
                       <div class="ps-3 d-flex flex-column flex-wrap">
@@ -162,9 +264,9 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> 
             </div>
-          </div>
+          </div>-->
         </div>
         <div class="d-grid gap-3 d-md-flex justify-content-end">
           <button

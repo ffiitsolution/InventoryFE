@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -38,10 +38,32 @@ function desc(control: AbstractControl): ValidationErrors | null {
   styleUrl: './add.component.scss',
 })
 export class MasterRoleAddComponent implements OnInit {
+  isParentOpen = false;
+  yourCheckboxModel = false;
   myForm: FormGroup;
   adding: boolean = false;
   hakAksesList: any[] = hakAksesList;
   hakAksesListModule: any[] = hakAksesListModule;
+  accordionItems = [
+    {
+      title: 'Accordion item #0',
+      bodyTitle: "This is the first item's accordion body.",
+      bodyText:
+        'It is hidden by default, until the collapse plugin adds the appropriate classes...',
+    },
+    {
+      title: 'Accordion item #1',
+      bodyTitle: "This is the second item's accordion body.",
+      bodyText:
+        'You can modify any of this with custom CSS or overriding default variables...',
+    },
+    {
+      title: 'Accordion item #2',
+      bodyTitle: "This is the third item's accordion body.",
+      bodyText:
+        "It's also worth noting that just about any HTML can go within the accordion body...",
+    },
+  ];
 
   constructor(
     private toastr: ToastrService,

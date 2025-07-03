@@ -13,13 +13,12 @@ import { MasterUserAddComponent } from './master-user/add/add.component';
 import {
   MasterBranchComponent,
   MasterBranchDetailComponent,
-
   MasterBranchAddComponent,
   MasterBranchEditComponent,
 } from './master-branch';
-import {MasterBranchDetailTonaseComponent} from './master-branch-detail-tonase/master-branch-detail-tonase.component';
+import { MasterBranchDetailTonaseComponent } from './master-branch-detail-tonase/master-branch-detail-tonase.component';
 import { MasterDepartmentComponent } from './master-department/master-department.component';
-import {MasterBranchDetailTonaseDetailComponent} from './master-branch-detail-tonase/detail/master-branch-detail/master-branch-detail.component';
+import { MasterBranchDetailTonaseDetailComponent } from './master-branch-detail-tonase/detail/master-branch-detail/master-branch-detail.component';
 import {
   MasterProductAddComponent,
   MasterProductComponent,
@@ -27,9 +26,7 @@ import {
   MasterProductEditComponent,
 } from './master-product';
 
-import {
-  MasterDriverComponent
-} from './master-driver/master-driver.component'
+import { MasterDriverComponent } from './master-driver/master-driver.component';
 import {
   MasterSupplierAddComponent,
   MasterSupplierComponent,
@@ -61,6 +58,11 @@ import {
   TableModule,
   TextColorDirective,
   UtilitiesModule,
+  // AccordionComponent,
+  // AccordionItemComponent,
+  // AccordionButtonDirective,
+  AccordionModule,
+  SharedModule,
 } from '@coreui/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -132,7 +134,7 @@ import { ProfileCompanyComponent } from './profile-company/profile-company.compo
 import { SharedComponentModule } from '../../component/shared.component.module';
 import { AllMasterComponent } from './all-master/all-master.component';
 import { IconDirective } from '@coreui/icons-angular';
-import {MasterKendaraanComponent} from './master-kendaraan/master-kendaraan.component';
+import { MasterKendaraanComponent } from './master-kendaraan/master-kendaraan.component';
 import { MasterDriverAddComponent } from './master-driver/add/master-driver-add/master-driver-add.component';
 import { MasterDriverDetailComponent } from './master-driver/detail/master-driver-detail/master-driver-detail.component';
 import { MasterDriverEditComponent } from './master-driver/edit/master-driver-edit/master-driver-edit.component';
@@ -172,6 +174,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ListGroupModule,
     NgxPaginationModule,
     SharedComponentModule,
+    AccordionModule,
+    SharedModule,
   ],
   declarations: [
     AllMasterComponent,
@@ -197,8 +201,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     MasterDriverAddComponent,
     MasterDriverDetailComponent,
     MasterDriverEditComponent,
-
-    
 
     MasterProductComponent,
     MasterProductAddComponent,
