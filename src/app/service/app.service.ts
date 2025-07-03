@@ -545,6 +545,7 @@ export class AppService {
     )
   }
 
-  
-  
+  getRoutePoints(routeNo: String): Observable<any> {
+    return this.dataService.getData(`${this.config.BASE_URL}/api/route?routeNo=${routeNo}`)
+  }
 }
