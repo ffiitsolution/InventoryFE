@@ -540,7 +540,7 @@ export class AppService {
 
   getKodeOutletByNomorRute(payload:any): Observable<any> {
       return this.dataService.postData(
-      this.config.BASE_URL + '/api/kodeoutlet',
+      this.config.BASE_URL + '/api/kode-outlet',
       payload
     )
   }
