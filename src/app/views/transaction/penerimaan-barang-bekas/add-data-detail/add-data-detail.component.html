@@ -64,7 +64,7 @@
                 <td class="text-center">
                   <div class="input-group">
                     <input type="text" autofocus  class="form-control text-center" [(ngModel)]="data.kodeBarang"
-                    (keydown.enter)="handleEnter($event, i)" (keyup.enter)="nextInput.focus()" [disabled]="data.isFromRetur"/>
+                     (keyup.enter)="nextInput.focus()" [disabled]="data.isFromRetur"/>
                     <button class="btn btn-outline-secondary" type="button" 
                     [disabled]="data.isFromRetur"
                     (click)="onShowModal(i)">

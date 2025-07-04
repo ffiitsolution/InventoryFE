@@ -617,7 +617,7 @@ export class AddDataDetailPenerimaanBrgBksComponent
         satuanBesar: data.satuanBesar,
         qtyWasteBesar: '1.00',
         qtyWasteKecil: '0.00',
-        totalQty: '1.00',
+        totalQty: ((Number(1) * Number(data.konversi)) + Number(0)).toFixed(2),
         isFromRetur: false,
       };
 

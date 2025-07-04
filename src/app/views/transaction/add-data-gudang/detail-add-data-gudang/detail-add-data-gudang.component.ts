@@ -132,18 +132,22 @@ export class AddDataDetailGudangComponent
 
     this.appService.getDetailTransaksiPenerimaanGudang(params).subscribe(
       (res) => {
-        this.listOrderData = res.detailPesanan.map((data: any) => ({
+        this.listOrderData = res.detailPesanan.map((data: any) => {
+        const matchQty = this.selectedOrder.details.find((qty: any) => qty.kodeItem === data.KODE_BARANG);
+
+        return {
           ...data,
-          KONVERSI: this.addDecimalPlaces(data.KONVERSI),
+          KONVERSI:matchQty ? this.addDecimalPlaces(matchQty.konversi): this.addDecimalPlaces(data.KONVERSI),
           QTY_PESAN_BESAR: this.addDecimalPlaces(data.QTY_PESAN_BESAR),
           QTY_PESAN_KECIL: this.addDecimalPlaces(data.QTY_PESAN_KECIL),
           TOTAL_QTY_PESAN: this.addDecimalPlaces(data.TOTAL_QTY_PESAN),
-          TOTAL_QTY_TERIMA: this.addDecimalPlaces(data.TOTAL_QTY_PESAN),
+          TOTAL_QTY_TERIMA: matchQty ? this.addDecimalPlaces(matchQty.totalQty): this.addDecimalPlaces(data.TOTAL_QTY_PESAN),
           TOTAL_QTY_EXPIRED: this.addDecimalPlaces(data.TOTAL_QTY_EXPIRED),
-          QTY_TERIMA_BESAR: this.addDecimalPlaces(data.QTY_PESAN_BESAR),
-          QTY_TERIMA_KECIL: this.addDecimalPlaces(data.QTY_PESAN_KECIL),
+          QTY_TERIMA_BESAR: matchQty ? this.addDecimalPlaces(matchQty.qtyBesar): this.addDecimalPlaces(data.QTY_PESAN_BESAR),
+          QTY_TERIMA_KECIL: matchQty ? this.addDecimalPlaces(matchQty.qtyKecil): this.addDecimalPlaces(data.QTY_PESAN_KECIL),
           isConfirmed: data.FLAG_EXPIRED == 'Y' ? true : false,
-        }));
+        };
+      });
         console.log('listorderdata1', this.listOrderData);
         this.totalLength = res?.data?.length;
         this.page = 1;
@@ -185,10 +189,13 @@ export class AddDataDetailGudangComponent
     event.target.value = inputValue;
     this.listOrderData[index].QTY_TERIMA_BESAR = inputValue;
     this.listOrderData[index].TOTAL_QTY_TERIMA = (
-      Number(inputValue) * Number(this.listOrderData[index].KONVERSI) +
+      (Number(inputValue) * Number(this.listOrderData[index].KONVERSI)) +
       Number(this.listOrderData[index].QTY_TERIMA_KECIL)
     ).toFixed(2);
 
+    console.log(Number(inputValue),'inputValue');
+    console.log( Number(this.listOrderData[index].KONVERSI),'konversi');
+    console.log( Number(this.listOrderData[index].QTY_TERIMA_KECIL),'qty Kecil');
     this.cekTotalPesanKirim(index);
   }
 
@@ -1053,6 +1060,12 @@ export class AddDataDetailGudangComponent
       );
       item.QTY_TERIMA_BESAR = item.QTY_PESAN_BESAR;
       item.QTY_TERIMA_KECIL = item.QTY_PESAN_KECIL;
+      item.TOTAL_QTY_TERIMA = (
+      Number( item.QTY_TERIMA_BESAR) *
+        Number(this.listOrderData[index].KONVERSI) +
+      Number(item.QTY_TERIMA_KECIL)
+    ).toFixed(2);
+    
       return false;
     } else {
       return true;

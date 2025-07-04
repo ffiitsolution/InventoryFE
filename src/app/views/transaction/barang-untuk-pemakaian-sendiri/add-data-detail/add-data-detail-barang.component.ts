@@ -890,9 +890,7 @@ export class AddDataDetailBarangComponent
           isConfirmed: barang.flagExpired == 'Y' ? true : false,
           ...barang,
         };
-        this.listProductData.splice(
-          this.listProductData.length - 1,
-          0,
+        this.listProductData.push(
           productData
         );
         this.validationMessageList.push('');
