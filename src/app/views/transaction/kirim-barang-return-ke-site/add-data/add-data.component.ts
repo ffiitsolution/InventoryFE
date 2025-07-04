@@ -169,28 +169,72 @@ export class AddKirimBarangReturnKeSiteComponent implements OnInit, AfterViewIni
 
   onAddDetail() {
     const keteranganValue = this.myForm.get('keterangan')?.value;
-
+  
     if (!keteranganValue || keteranganValue.trim() === '') {
       this.showWarningModal(
         'CATATAN/KETERANGAN PENGEMBALIAN BARANG, TIDAK BOLEH DIKOSONGKAN, PERIKSA KEMBALI...!!!'
       );
       return;
     }
-
-    this.myForm.patchValue({
-          tglTransaksi: moment(this.myForm.value.tglTransaksi,'DD/MM/YYYY',true).format('DD/MM/YYYY'),
-          tglExp: moment(this.myForm.value.tglExp, 'DD/MM/YYYY',true).format('DD/MM/YYYY')
+  
+    const tglTransaksiMoment = moment(this.myForm.value.tglTransaksi, 'DD/MM/YYYY', true);
+    const tglTransaksiFormatted = tglTransaksiMoment
+      .locale('en')
+      .format('DD MMM YYYY');
+  
+    const today = moment();
+    const limitDate = today.clone().subtract(7, 'days');
+  
+    if (tglTransaksiMoment.isBefore(limitDate, 'day')) {
+      Swal.fire({
+        title: 'Pesan Error',
+        text: 'TANGGAL TRANSAKSI BARANG, SALAH ENTRY... SUDAH LEWAT DARI 7 HARI...!!!',
+        confirmButtonText: 'OK'
       });
-
-    this.globalService.saveLocalstorage(
-      'headerProduction',
-      JSON.stringify(this.myForm.value)
-    );
-
-    this.isShowDetail = true;
-    this.isShowDetailBranch = true;
+      return;
+    }
+  
+    const payload = {
+      kodeGudang: this.globalService.getUserLocationCode(),
+      tanggalTransaksi: tglTransaksiFormatted
+    };
+  
+    console.log('Payload kirim ke backend:', payload);
+  
+    this.appService.checkStockOpnameDate(payload).subscribe({
+      next: (res) => {
+        if (!res.success || !res.data.status) {
+          Swal.fire({
+            title: 'Pesan Error',
+            text: res.data.message,
+            confirmButtonText: 'OK'
+          });
+          return;
+        }
+  
+        this.myForm.patchValue({
+          tglTransaksi: tglTransaksiMoment.format('DD/MM/YYYY'),
+          tglExp: moment(this.myForm.value.tglExp, 'DD/MM/YYYY', true).format('DD/MM/YYYY')
+        });
+  
+        this.globalService.saveLocalstorage('headerProduction', JSON.stringify(this.myForm.value));
+  
+        this.isShowDetail = true;
+        this.isShowDetailBranch = true;
+      },
+      error: (err) => {
+        console.error(err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Terjadi kesalahan saat stock opname.',
+          confirmButtonColor: '#d33'
+        });
+      }
+    });
   }
-
+  
+  
   get isFormInvalid(): boolean {
     return true
   }

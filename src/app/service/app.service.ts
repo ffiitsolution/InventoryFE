@@ -435,6 +435,7 @@ export class AppService {
       payload
     );
   }
+
   listReturSupplier(payload: any) {
     return this.dataService.postData(
       `${this.config.BASE_URL}/api/retur-supplier/list`,
@@ -547,5 +548,12 @@ export class AppService {
 
   getRoutePoints(routeNo: String): Observable<any> {
     return this.dataService.getData(`${this.config.BASE_URL}/api/route?routeNo=${routeNo}`)
+  }
+
+  checkStockOpnameDate(payload: any) {
+    return this.dataService.postData(
+      `${this.config.BASE_URL}/api/check-stock-opname-date`,
+      payload
+    );
   }
 }
