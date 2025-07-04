@@ -49,11 +49,37 @@
           {{ "Kembali" | translate }}
         </a>
       </div>
-      <div>
+ <!--DropDown Filter By Raymond 4 Juli 2025-->
+
+ <div [visible]="isFilterShown" cCollapse>
+        <c-card class="mb-3">
+          <c-card-body>
+            <div class="row">
+              <div class="col-md-3">
+                <label>{{ "Status" | translate }}</label>
+                <div>
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [config]="configSelectStatus"
+                    [options]="listStatus"
+                    [(ngModel)]="formStatusFilter"
+                    (ngModelChange)="onStatusFilterChange()"
+                    id="status"
+                  >
+                  </ngx-select-dropdown>
+                </div>
+              </div>
+
+
+              </div>
+           </c-card-body>
+        </c-card>
+      </div>
+
+      <div class="table-responsive">
         <table
           datatable
           [dtOptions]="dtOptions"
-          
           (page.dt)="dtPageChange($event)"
           class="row-border hover stripe"
         ></table>
