@@ -111,6 +111,18 @@ export class TableRuteComponent implements OnInit, OnDestroy, AfterViewInit {
           {
           data: 'status',
           title: 'Status Rute',
+           render: function (data: any, type: any, row: any): string {
+  if (type === 'display') {
+    if (data === 'A') {
+      return '<span class="status-badge active">Active</span>';
+    } else if (data === 'I') {
+      return '<span class="status-badge inactive">Inactive</span>';
+    } else {
+      return '<span class="status-badge unknown">' + (data || 'Unknown') + '</span>';
+    }
+  }
+  return data;
+},
           orderable: true,
           searchable: true,
         },

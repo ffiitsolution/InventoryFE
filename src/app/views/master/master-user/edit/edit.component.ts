@@ -119,7 +119,7 @@ export class MasterUserEditComponent implements OnInit {
       pengiriman: [this.detail.pengiriman === 'Y'],
       barangRusak: [this.detail.barangRusak === 'Y'],
       penyesuaianStock: [this.detail.penyesuaianStock === 'Y'],
-      returnBarang: [this.detail.returnBarang === 'Y'],
+      returBarang: [this.detail.returBarang === 'Y'],
       produksi: [this.detail.produksi === 'Y'],
       barangBekas: [this.detail.barangBekas === 'Y'],
       stockOpname: [this.detail.stockOpname === 'Y'],

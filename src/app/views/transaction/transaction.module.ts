@@ -98,6 +98,8 @@ import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 import { ProductionComponent } from './production/production/production';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
+import { PengirimanComponent } from './pengiriman/pengiriman.component';
+
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
@@ -195,8 +197,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     DetailPenerimaanBrgBksReturComponent,
 
     ProductionListForPostingComponent,
-    ProductionComponent
+    ProductionComponent,
 
+    PengirimanComponent
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })

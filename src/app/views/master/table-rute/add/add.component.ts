@@ -8,25 +8,9 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { AppService } from 'src/app/service/app.service';
-import { GlobalService } from 'src/app/service/global.service';
-import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_RUTE } from 'src/constants';
-
-function code(control: AbstractControl): ValidationErrors | null {
-  const specialCharRegex = /[^A-Z]/;
-  if (control.value && specialCharRegex.test(control.value)) {
-    return { code: true };
-  }
-  return null;
-}
-
-function desc(control: AbstractControl): ValidationErrors | null {
-  const specialCharRegex = /[^A-Z]/;
-  if (control.value && specialCharRegex.test(control.value)) {
-    return { desc: true };
-  }
-  return null;
-}
+import { AppService } from '../../../../service/app.service';
+import { GlobalService } from '../../../../service/global.service';
+import { DEFAULT_DELAY_TIME, LS_INV_SELECTED_RUTE } from '../../../../../constants';
 
 @Component({
   selector: 'app-add-rute',
@@ -36,6 +20,24 @@ function desc(control: AbstractControl): ValidationErrors | null {
 export class TableRuteAddComponent implements OnInit {
   myForm: FormGroup;
   adding: boolean = false;
+  kodeGudang: any;
+  selectedKodeOutlet: any[] = [];
+  listKodeOutlet: any[] = [];
+  draggedIndex: number | null = null;
+  sequence:any;
+  configSelectKodeOutlet: any;
+  submitted:boolean = false;
+  showErrorToast:boolean = false;
+  userData: any;
+    baseConfig: any = {
+    displayKey: 'name', // Key to display in the dropdown
+    search: true, // Enable search functionality
+    height: '200px', // Dropdown height
+    customComparator: () => {}, // Custom sorting comparator
+    moreText: 'lebih banyak', // Text for "more" options
+    noResultsFound: 'Tidak ada hasil', // Text when no results are found
+    searchOnKey: 'name', // Key to search
+  };
 
   constructor(
     private toastr: ToastrService,
@@ -43,18 +45,98 @@ export class TableRuteAddComponent implements OnInit {
     private router: Router,
     private g: GlobalService,
     private service: AppService
-  ) {}
+  ) {
+    // By Raymond 7 Juli 2025
+    this.kodeGudang = this.g.getUserLocationCode();
+
+    
+  }
 
   ngOnInit(): void {
+    this.userData = this.service.getUserData();
     this.myForm = this.form.group({
-      code: ['', [Validators.required, code]],
-      desc: ['', [Validators.required, desc]],
+    noRute: ['', [Validators.required, Validators.maxLength(10),  Validators.pattern('^[0-9]+$')]],  // **only digits**]],
+    namaRute: ['', [Validators.required, Validators.maxLength(100),    Validators.pattern('^[a-zA-Z0-9 ]+$')]],  // **letters, numbers, spaces** ]],
+    status: ['A', [Validators.required]], // Default to 'A' (Active) as shown checked in template
+    KodeOutlet: [[], [Validators.required]] // Array for multiple selection
+  });
+     this.configSelectKodeOutlet = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Kode Outlet',
+      searchPlaceholder: 'Cari Kode Outlet',
+      limitTo: this.listKodeOutlet.length,
+    };
+
+    this.loadBranchList();
+  }
+// Raymond 2 Juli 2025
+  loadBranchList() {
+  this.service.getAllBranchCode({}).subscribe({
+  next: (response) => {
+    if (response && response.data && Array.isArray(response.data)) {
+
+      this.listKodeOutlet = response.data.map((item: any) => {
+        return {
+          id: item.kodeCabang,          // Use 'id' instead of 'value'
+          name: `${item.kodeCabang} - ${item.namaCabang}`, // Use 'name' instead of 'label'
+          value: item.kodeCabang        // Keep value for form submission
+        };
+      });
+      
+      console.log('Mapped data:', this.listKodeOutlet);
+    }
+  },
+  error: (error) => {
+    console.error('Error fetching branch list:', error);
+  }
+});
+
+  }
+  
+ // Method to handle selection change
+  onOutletSelectionChange(event : any) {
+    console.log('Selected outlets:', event);
+    // Handle the selected values
+    const selectedCodes = event.map((item: { value: any; }) => item.value);
+    this.selectedKodeOutlet = selectedCodes;
+    console.log('Selected codes:', selectedCodes);
+  }
+
+    onDragStart(index: number) {
+    this.draggedIndex = index;
+    console.log(this.draggedIndex, "Drag start")
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault(); // Needed to allow drop
+    console.log(this.draggedIndex, "Drag Over")
+  }
+
+  onDrop(dropIndex: number) {
+    if (this.draggedIndex === null || this.draggedIndex === dropIndex) return;
+
+    const draggedItem = this.selectedKodeOutlet[this.draggedIndex];
+    this.selectedKodeOutlet.splice(this.draggedIndex, 1);
+    this.selectedKodeOutlet.splice(dropIndex, 0, draggedItem);
+
+    this.updateSequence();
+    this.draggedIndex = null;
+  }
+
+  updateSequence() {
+    this.selectedKodeOutlet.forEach((item: { seq: any; }, index: number) => {
+      item.seq = index + 1;
+      // this.sequence = item.seq;
+      // console.log(this.sequence);
     });
+    // console.log(this.selectedKodeOutlet["seq"], "Selected")
   }
 
   onSubmit(): void {
+    this.submitted = true;
     const { controls, invalid } = this.myForm;
     if (invalid) {
+      this.showErrorToast = true;
       this.g.markAllAsTouched(this.myForm);
       if (invalid) {
         if (
@@ -63,25 +145,43 @@ export class TableRuteAddComponent implements OnInit {
           )
         ) {
           this.toastr.error('Beberapa kolom wajib diisi.');
-        } else if (
-          Object.values(controls).some((control) => control.hasError('code')) ||
-          Object.values(controls).some((control) => control.hasError('area'))
-        ) {
-          this.toastr.error(
-            'Beberapa kolom mengandung karakter khusus yang tidak diperbolehkan.'
-          );
         }
+         // Check for invalid pattern or maxLength errors on specific fields
+    else if (controls['noRute'].invalid || controls['namaRute'].invalid) {
+      // Check number-only violation
+      if (controls['noRute'].hasError('pattern')) {
+        this.toastr.error('Nomor Rute hanya boleh berisi angka (maks 10 karakter).');
       }
-    } else {
+      // Check alphanumeric/name violation
+      else if (controls['namaRute'].hasError('pattern')) {
+        this.toastr.error('Nama Rute hanya boleh mengandung huruf, angka, dan spasi.');
+      }
+      // Generic invalid message
+      else {
+        this.toastr.error('Terdapat kesalahan pada input.');
+      }
+
+    }
+    return;
+  }
+}  
+      
+     else {
       this.adding = true;
+      this.updateSequence();
       const param = {
-        code: controls?.['code']?.value,
-        desc: controls?.['desc']?.value,
-        user: this.g.getLocalstorage('inv_currentUser')?.kodeUser,
-        statusSync: 'T',
+        nomorRute: controls?.['noRute']?.value,
+        namaRute: controls?.['namaRute']?.value,
+        kodeGudang: this.kodeGudang,
+        status: controls?.['status']?.value,
+        kodeOutlet: this.selectedKodeOutlet,
+        userCreate: this.userData.kodeUser,
+       
+
       };
-      this.service.insert('/api/uom/insert', param).subscribe({
+      this.service.insert('/api/rute/insert', param).subscribe({
         next: (res) => {
+          console.log(JSON.stringify(res), 'JSON Response');
           if (!res.success) {
             this.service.handleErrorResponse(res);
           } else {
@@ -96,21 +196,24 @@ export class TableRuteAddComponent implements OnInit {
     }
   }
 
-  conditionInput(event: any, type: string): boolean {
-    var inp = String.fromCharCode(event.keyCode);
-    let temp_regex =
-      type == 'code' //code
-        ? /^[a-zA-Z]$/
-        : type == 'desc' //desc
-        ? /^[a-zA-Z]$/
-        : /^[a-zA-Z.() ,\-]*$/;
-    if (temp_regex.test(inp)) return true;
-    else {
-      event.preventDefault();
-      return false;
-    }
-  }
+  // updated by Raymond 2 Juli 2025
+ conditionInput(event: any, type: string): boolean {
+  const inp = String.fromCharCode(event.keyCode);
 
+  // Define regex based on input type
+  const temp_regex =
+    type === 'noRute'        // only digits
+      ? /^[0-9]$/
+      : type === 'namaRute'  // letters and digits
+      ? /^[a-zA-Z0-9 ]$/
+      : /^[a-zA-Z.() ,\-]*$/; // fallback
+
+  if (temp_regex.test(inp)) return true;
+  else {
+    event.preventDefault();
+    return false;
+  }
+}
   convertToUppercase(id: any) {
     const control = this.myForm.get(id);
     if (control) {
@@ -126,4 +229,10 @@ export class TableRuteAddComponent implements OnInit {
   isFieldValid(fieldName: String) {
     return this.g.isFieldValid(this.myForm, fieldName);
   }
-}
+
+    onChangeSelect(data: any, field: string) {
+    const dataStatus = data?.target?.value;
+    this.myForm.get('status')?.setValue(dataStatus);
+  }
+}import { from } from 'rxjs';
+

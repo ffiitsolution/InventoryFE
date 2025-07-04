@@ -8,6 +8,7 @@ import { PrintButtonGrowthSharedComponent } from "./print-btn-growth/print-btn-g
 import { ModalPrintListComponent } from "./modal-print-list/modal-print-list.component";
 import { FormsModule } from "@angular/forms";
 import { LoadingComponent } from "./loading/loading.component";
+import { MapComponent } from "./map/map.component";
 
 @NgModule({
   imports: [
@@ -24,7 +25,8 @@ import { LoadingComponent } from "./loading/loading.component";
     PrintButtonSharedComponent,
     PrintButtonGrowthSharedComponent,
     ModalPrintListComponent,
-    LoadingComponent
+    LoadingComponent,
+    MapComponent
   ],
   schemas: [],
   exports: [
@@ -32,7 +34,8 @@ import { LoadingComponent } from "./loading/loading.component";
     NgxPaginationModule,
     PrintButtonGrowthSharedComponent,
     ModalPrintListComponent,
-    LoadingComponent
+    LoadingComponent,
+    MapComponent
   ]
 })
 export class SharedComponentModule {}
