@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  AbstractControl,
   FormBuilder,
   FormGroup,
-  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -234,5 +232,4 @@ export class TableRuteAddComponent implements OnInit {
     const dataStatus = data?.target?.value;
     this.myForm.get('status')?.setValue(dataStatus);
   }
-}import { from } from 'rxjs';
-
+}

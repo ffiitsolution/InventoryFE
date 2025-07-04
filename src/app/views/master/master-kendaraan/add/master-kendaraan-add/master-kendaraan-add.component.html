@@ -1,1 +1,382 @@
-<p>master-kendaraan-add works!</p>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <h5>{{ "Tambah" | translate }} {{ "Kendaraan" | translate }}</h5>
+    </c-card-body>
+  </c-card>
+</div>
+<div class="fade-in">
+  <c-card class="mb-4">
+    <c-card-body>
+      <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+         <!-- Nomor Rute dibuat Oleh Raymond 7 Juli 2025 -->
+        <div class="mb-3 row container">
+          <label class="col-sm-2 col-form-label"
+            >{{ "Nomor Polisi" | translate }}
+            <span class="stamp-required show">&nbsp;*</span>
+          </label>
+          <div class="col-auto">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="noPolisi"
+              [ngClass]="{ 'is-invalid': (submitted || myForm.controls['noPolisi'].touched) && myForm.controls['noPolisi'].invalid }"
+              [readOnly]="adding"
+              maxlength="10"
+              (keypress)="conditionInput($event, 'numericdanalphabet')"
+            />
+            <!-- <div *ngIf="(submitted || myForm.controls['noPolisi'].touched) && myForm.controls['noPolisi'].errors" class="invalid-feedback">
+            <div *ngIf="myForm.controls['noPolisi'].errors['required']">Wajib diisi (max. 12 karakter).</div>
+            </div> -->
+            <!-- <span
+              *ngIf="
+                myForm.controls['noRute'].hasError('required') &&
+                myForm.controls['noRute'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (10 karakter)" | translate }}</span
+            >
+            <span
+              *ngIf="myForm.controls['noRute'].hasError('noRute')"
+              class="text-danger"
+              >{{ "Nomor Rute hanya boleh mengandung angka." | translate }}
+            </span> -->
+          </div>
+        </div>
+        <!-- Nama Rute dibuat Oleh Raymond 7 Juli 2025 -->
+        <div class="mb-3 row container">
+          <label class="col-sm-2 col-form-label">
+            {{ "Nama Kendaraan" | translate }}
+            <span class="stamp-required show">&nbsp;* </span>
+          </label>
+          <div class="col-auto">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="namaKendaraan"
+              [ngClass]="{ 'is-invalid': (submitted || myForm.controls['namaKendaraan'].touched) && myForm.controls['namaKendaraan'].invalid }"
+              [readOnly]="adding"
+              (input)="convertToUppercase('namaKendaraan')"
+              (keypress)="conditionInput($event, 'numericdanalphabet')"
+              maxlength="50"
+            />
+
+            <div *ngIf="(submitted || myForm.controls['namaKendaraan'].touched) && myForm.controls['namaKendaraan'].errors" class="invalid-feedback">
+            <div *ngIf="myForm.controls['namaKendaraan'].errors['required']">Wajib diisi (max. 50 karakter).</div>
+            <div *ngIf="myForm.controls['namaKendaraan'].errors['pattern']">Hanya huruf, angka, dan spasi yang diperbolehkan.</div>
+            </div>
+            <!-- <span
+              *ngIf="
+                myForm.controls['namaRute'].hasError('required') &&
+                myForm.controls['namaRute'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 100 karakter)" | translate }}</span
+            > -->
+            <!-- <span
+              *ngIf="myForm.controls['desc'].hasError('desc')"
+              class="text-danger"
+              >{{
+                "Nama Rute hanya boleh mengandung huruf." | translate
+              }}
+            </span> -->
+          </div>
+        </div>
+ <!-- Kode Gudang dibuat oleh Raymond 7 Juli 2025 -->
+          <div class="mb-3 row container">
+          <label class="col-sm-2 col-form-label">
+            {{ "Jenis Kendaraan" | translate }}
+         
+          </label>
+          <div class="col-md-2">
+             <div>
+                  <ngx-select-dropdown
+                    [multiple]="false"
+                    [config]="configSelectJenisKendaraan"
+                    [options]="listJenisKendaraan"
+                    formControlName="jenisKendaraan"
+                    id="jenisKendaraan"
+                  >
+                  </ngx-select-dropdown>
+                </div>
+            <!-- <span
+              *ngIf="
+                myForm.controls['desc'].hasError('required') &&
+                myForm.controls['desc'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 6 karakter)" | translate }}</span
+            > -->
+            <!-- <span
+              *ngIf="myForm.controls['desc'].hasError('desc')"
+              class="text-danger"
+              >{{
+                "Kode Gudang hanya boleh mengandung huruf." | translate
+              }}
+            </span> -->
+          </div>
+        </div>
+
+         <!-- Panjang dibuat oleh Raymond 4 Juli 2025 -->
+          <div class="mb-3 row container">
+          <label class="col-sm-2 col-form-label">
+            {{ "Panjang" | translate }}
+            <span class="stamp-required show">&nbsp;* </span>
+          </label>
+          <div class="col-auto">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="panjangKendaraan"
+              (keypress)="conditionInput($event, 'numeric')"
+              maxlength="13"
+            />
+            <!-- <span
+              *ngIf="
+                myForm.controls['desc'].hasError('required') &&
+                myForm.controls['desc'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 6 karakter)" | translate }}</span
+            > -->
+            <!-- <span
+              *ngIf="myForm.controls['desc'].hasError('desc')"
+              class="text-danger"
+              >{{
+                "Kode Gudang hanya boleh mengandung huruf." | translate
+              }}
+            </span> -->
+          </div>
+        </div>
+         <!-- Lebar dibuat oleh Raymond 4 Juli 2025 -->
+          <div class="mb-3 row container">
+          <label class="col-sm-2 col-form-label">
+            {{ "Lebar" | translate }}
+            <span class="stamp-required show">&nbsp;* </span>
+          </label>
+          <div class="col-auto">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="lebarKendaraan"
+              (keypress)="conditionInput($event, 'numeric')"
+              maxlength="13"
+            />
+            <!-- <span
+              *ngIf="
+                myForm.controls['desc'].hasError('required') &&
+                myForm.controls['desc'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 6 karakter)" | translate }}</span
+            > -->
+            <!-- <span
+              *ngIf="myForm.controls['desc'].hasError('desc')"
+              class="text-danger"
+              >{{
+                "Kode Gudang hanya boleh mengandung huruf." | translate
+              }}
+            </span> -->
+          </div>
+        </div>
+         <!-- Volume dibuat oleh Raymond 4 Juli 2025 -->
+          <div class="mb-3 row container">
+          <label class="col-sm-2 col-form-label">
+            {{ "Tinggi" | translate }}
+            <span class="stamp-required show">&nbsp;* </span>
+          </label>
+          <div class="col-auto">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="tinggiKendaraan"
+             (keypress)="conditionInput($event, 'numeric')"
+             maxlength="13"
+            />
+            <!-- <span
+              *ngIf="
+                myForm.controls['desc'].hasError('required') &&
+                myForm.controls['desc'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 6 karakter)" | translate }}</span
+            > -->
+            <!-- <span
+              *ngIf="myForm.controls['desc'].hasError('desc')"
+              class="text-danger"
+              >{{
+                "Kode Gudang hanya boleh mengandung huruf." | translate
+              }}
+            </span> -->
+          </div>
+        </div>
+
+      
+          <!-- Volume dibuat oleh Raymond 4 Juli 2025 -->
+          <div class="mb-3 row container">
+          <label class="col-sm-2 col-form-label">
+            {{ "Volume Kendaraan" | translate }}
+            <span class="stamp-required show">&nbsp;* </span>
+          </label>
+          <div class="col-auto">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="volumeKendaraan"
+              readonly
+              maxlength="20"
+            />
+            <!-- <span
+              *ngIf="
+                myForm.controls['desc'].hasError('required') &&
+                myForm.controls['desc'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 6 karakter)" | translate }}</span
+            > -->
+            <!-- <span
+              *ngIf="myForm.controls['desc'].hasError('desc')"
+              class="text-danger"
+              >{{
+                "Kode Gudang hanya boleh mengandung huruf." | translate
+              }}
+            </span> -->
+          </div>
+        </div>
+
+          <!-- Tonase Kendaraan dibuat oleh Raymond 7 Juli 2025 -->
+          <div class="mb-3 row container">
+          <label class="col-sm-2 col-form-label">
+            {{ "Tonase Kendaraan" | translate }}
+            {{ "diisi dalam satuan KG"| translate}}
+            <span class="stamp-required show">&nbsp;* </span>
+          </label>
+          <div class="col-auto">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="tonaseKendaraan"
+              maxlength="20"
+            />
+            <!-- <span
+              *ngIf="
+                myForm.controls['desc'].hasError('required') &&
+                myForm.controls['desc'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 6 karakter)" | translate }}</span
+            > -->
+            <!-- <span
+              *ngIf="myForm.controls['desc'].hasError('desc')"
+              class="text-danger"
+              >{{
+                "Kode Gudang hanya boleh mengandung huruf." | translate
+              }}
+            </span> -->
+          </div>
+        </div>
+
+         <div class="mb-3 row container">
+          <label class="col-sm-2 col-form-label">
+            {{ "Toleransi Kendaraan" | translate }}
+            {{ "diisi dalam %"| translate}}
+          </label>
+          <div class="col-auto">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="toleransi"
+              maxlength="20"
+            />
+                  <!-- <label class="col-sm-2 col-form-label text-left px-0">
+                  {{ "%" | translate }}
+                </label> -->
+            <!-- <span
+              *ngIf="
+                myForm.controls['desc'].hasError('required') &&
+                myForm.controls['desc'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 6 karakter)" | translate }}</span
+            > -->
+            <!-- <span
+              *ngIf="myForm.controls['desc'].hasError('desc')"
+              class="text-danger"
+              >{{
+                "Kode Gudang hanya boleh mengandung huruf." | translate
+              }}
+            </span> -->
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+             <div class="mb-3 row container">
+          <label class="col-sm-2 col-form-label">
+            {{ "Catatan" | translate }}
+          </label>
+          <div class="col-sm-4">
+            <textarea
+              type="text"
+              class="form-control"
+              formControlName="catatan1"
+              maxlength="50"
+              style="resize: none;"
+              >
+            </textarea>
+   
+            <!-- <span
+              *ngIf="
+                myForm.controls['desc'].hasError('required') &&
+                myForm.controls['desc'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 6 karakter)" | translate }}</span
+            > -->
+            <!-- <span
+              *ngIf="myForm.controls['desc'].hasError('desc')"
+              class="text-danger"
+              >{{
+                "Kode Gudang hanya boleh mengandung huruf." | translate
+              }}
+            </span> -->
+          </div>
+        </div>
+
+    
+
+
+        <div class="d-grid gap-3 d-md-flex justify-content-end mt-4">
+          <button
+            class="btn btn-light btn-120"
+            (click)="onPreviousPressed()"
+            [disabled]="adding"
+          >
+            {{ "Kembali" | translate }}
+          </button>
+          <button
+            class="btn btn-info text-white btn-150"
+            type="submit"
+            [disabled]="adding"
+          >
+            <i class="fa fa-spinner fa-spin" *ngIf="adding"></i>
+            <span *ngIf="!adding"
+              >{{ "Simpan" | translate }}</span
+            >
+          </button>
+        </div>
+      </form>
+    </c-card-body>
+  </c-card>
+
+  <!-- <div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div *ngIf="showErrorToast" class="toast show align-items-center text-bg-danger">
+    <div class="d-flex">
+      <div class="toast-body">
+        Silakan isi semua kolom wajib dengan benar!
+      </div>
+      <button type="button" class="btn-close btn-close-white ms-auto me-2" (click)="showErrorToast = false"></button>
+    </div>
+  </div>
+</div> -->
+</div>

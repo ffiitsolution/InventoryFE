@@ -92,8 +92,18 @@ export class MasterKendaraanComponent implements OnInit, OnDestroy, AfterViewIni
           searchable: true, 
           orderable: true 
         },
+        { data: 'tonaseKg', 
+          title: 'Tonase (Kg)', 
+          searchable: true, 
+          orderable: true 
+        },
         { data: 'volume', 
           title: 'Volume Kendaraan (M3)', 
+          searchable: true, 
+          orderable: true 
+        },
+         { data: 'toleransi', 
+          title: 'Toleransi', 
           searchable: true, 
           orderable: true 
         },
