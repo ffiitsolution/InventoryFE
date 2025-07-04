@@ -69,6 +69,7 @@ export class TableRuteComponent implements OnInit, OnDestroy, AfterViewInit {
     },
   ];
   formStatusFilter: any;
+  kodeGudang: any;
 
 
   constructor(
@@ -77,6 +78,7 @@ export class TableRuteComponent implements OnInit, OnDestroy, AfterViewInit {
     private translation: TranslationService,
     private router: Router
   ) {
+    this.kodeGudang = this.g.getUserLocationCode();
     console.log(this.listStatus);
     this.dtOptions = {
       language:
@@ -95,6 +97,7 @@ export class TableRuteComponent implements OnInit, OnDestroy, AfterViewInit {
         const requestData = {
           ...dataTablesParameters,
             status: this.formStatusFilter?.id ? this.formStatusFilter.id : '',
+            kodeGudang: this.kodeGudang
         };
         this.dataService
           .postData(this.g.urlServer + '/api/rute/dt', requestData)

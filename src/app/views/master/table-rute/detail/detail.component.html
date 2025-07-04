@@ -1,106 +1,213 @@
 <div class="fade-in">
   <c-card class="mb-4">
     <c-card-body>
-      <h5>{{ "Lihat" | translate }} {{ "Satuan" | translate }}</h5>
+      <h5>{{ "Detail" | translate }} {{ "Rute" | translate }}</h5>
     </c-card-body>
   </c-card>
 </div>
-<div class="fade-in">
+<div class="fade-in ">
   <c-card class="mb-4">
     <c-card-body>
       <form [formGroup]="myForm">
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Kode Satuan" | translate
-          }}</label>
+         <!-- Nomor Rute dibuat Oleh Raymond 7 Juli 2025 -->
+        <div class="mb-3 row container">
+          <label class="col-sm-2 col-form-label"
+            >{{ "Nomor Rute" | translate }}
+    
+          </label>
           <div class="col-sm-10">
             <input
               type="text"
               class="form-control"
-              formControlName="code"
-              readonly
+              formControlName="noRute"
+             
+              [readOnly]="true"
+              [disabled]="true"
             />
+            
+            <!-- <span
+              *ngIf="
+                myForm.controls['noRute'].hasError('required') &&
+                myForm.controls['noRute'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (10 karakter)" | translate }}</span
+            >
+            <span
+              *ngIf="myForm.controls['noRute'].hasError('noRute')"
+              class="text-danger"
+              >{{ "Nomor Rute hanya boleh mengandung angka." | translate }}
+            </span> -->
           </div>
         </div>
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">{{
-            "Nama Satuan" | translate
-          }}</label>
+        <!-- Nama Rute dibuat Oleh Raymond 7 Juli 2025 -->
+        <div class="mb-3 row container">
+          <label class="col-sm-2 col-form-label">
+            {{ "Nama Rute" | translate }}
+      
+          </label>
           <div class="col-sm-10">
             <input
               type="text"
               class="form-control"
-              formControlName="desc"
-              readonly
+              formControlName="namaRute"
+              [disabled]="true"
+              [readOnly]="true"
+              maxlength="100"
             />
+
+       
+            <!-- <span
+              *ngIf="
+                myForm.controls['namaRute'].hasError('required') &&
+                myForm.controls['namaRute'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 100 karakter)" | translate }}</span
+            > -->
+            <!-- <span
+              *ngIf="myForm.controls['desc'].hasError('desc')"
+              class="text-danger"
+              >{{
+                "Nama Rute hanya boleh mengandung huruf." | translate
+              }}
+            </span> -->
           </div>
         </div>
-        <div class="divider"></div>
+ <!-- Kode Gudang dibuat oleh Raymond 7 Juli 2025 -->
+          <div class="mb-3 row container">
+          <label class="col-sm-2 col-form-label">
+            {{ "Kode Gudang" | translate }}
 
-        <div class="row">
-          <div class="col-md-6">
-            <!-- left column -->
-            <div class="mb-3 row">
-              <label class="col-sm-4 col-form-label">{{
-                "Dibuat Oleh" | translate
-              }}</label>
-              <div class="col-sm-8">
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="userCreate"
-                />
-              </div>
-            </div>
-            <div class="mb-3 row">
-              <label class="col-sm-4 col-form-label">{{
-                "Tanggal Dibuat" | translate
-              }}</label>
-              <div class="col-sm-8">
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="dateCreate"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <!-- right column -->
-            <div class="mb-3 row">
-              <label class="col-sm-4 col-form-label">{{
-                "Diperbarui Oleh" | translate
-              }}</label>
-              <div class="col-sm-8">
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="userUpdate"
-                />
-              </div>
-            </div>
-            <div class="mb-3 row">
-              <label class="col-sm-4 col-form-label">{{
-                "Tanggal Diperbarui" | translate
-              }}</label>
-              <div class="col-sm-8">
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="dateUpdate"
-                />
-              </div>
-            </div>
+          </label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              [value]="kodeGudang"
+              [disabled]="true"
+              [readOnly]="true"
+              maxlength="10"
+            />
+            <!-- <span
+              *ngIf="
+                myForm.controls['desc'].hasError('required') &&
+                myForm.controls['desc'].touched
+              "
+              class="text-danger"
+              >{{ "Wajib diisi (max. 6 karakter)" | translate }}</span
+            > -->
+            <!-- <span
+              *ngIf="myForm.controls['desc'].hasError('desc')"
+              class="text-danger"
+              >{{
+                "Kode Gudang hanya boleh mengandung huruf." | translate
+              }}
+            </span> -->
           </div>
         </div>
 
-        <div class="divider"></div>
-        <div class="d-grid gap-3 d-md-flex justify-content-end">
-          <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+
+        <!-- status dibuat oleh Raymond 7 Juli 2025-->
+              <div class="mb-1 row container">
+                <label class="col-sm-2 col-form-label">{{ "Status" | translate }}</label>
+                <c-col xs="8">
+                  <c-row class="mt-2">
+                    <c-col xs="6">
+                      <c-form-check class="flex align-items-center">
+                        <input
+                          cFormCheckInput
+                          checked
+                          id="active"
+                          type="radio"
+                          value="A"
+                          name="status"
+                          formControlName="status"
+                          [disabled]="true"
+                          [readOnly]="true"
+                         
+                        
+                        />
+                        <label
+                          cFormCheckLabel
+                          for="active"
+                          style="margin-left: 4px"
+                          >Aktif</label
+                        >
+                      </c-form-check>
+                    </c-col>
+                    <c-col xs="6">
+                      <c-form-check class="flex align-items-center">
+                        <input
+                          cFormCheckInput
+                          id="inactive"
+                          type="radio"
+                          value="I"
+                          name="status"
+                          formControlName="status"
+                          [disabled]="true"
+                          [readOnly]="true"
+                      
+                        />
+                        <label
+                          cFormCheckLabel
+                          for="inactive"
+                          style="margin-left: 4px"
+                          >Tidak Aktif</label
+                        >
+                      </c-form-check>
+                    </c-col>
+            
+                  </c-row>
+                </c-col>
+              </div>
+
+    <div class="divider"></div>
+    <div class="mt-4 container" >
+    <h4 *ngIf="selectedKodeOutlet.length > 0">Mapping Kode Outlet yang dipilih</h4>
+    
+    <app-map [routeNo]="detailData.nomorRute"></app-map>
+    </div>
+
+   <div class="divider"></div>
+<!-- Komponen Drag di List Outlet by Raymond 2 Juli 2025-->
+<div class="container mt-4" >
+
+  <h4 *ngIf="selectedKodeOutlet.length > 0">List Kode Outlet yang dipilih</h4>
+  <ul class="list-group mt-4">
+    <li
+      class="list-group-item"
+      *ngFor="let item of selectedKodeOutlet; let i = index "
+    >
+      {{ i+1 }}. {{ item.name }}
+    </li>
+  </ul>
+</div>
+
+
+
+        <div class="d-grid gap-3 d-md-flex justify-content-end mt-4">
+          <button
+            class="btn btn-light btn-120"
+            (click)="onPreviousPressed()"
+            [disabled]="adding"
+          >
             {{ "Kembali" | translate }}
           </button>
+        
         </div>
       </form>
     </c-card-body>
   </c-card>
+
+  <!-- <div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div *ngIf="showErrorToast" class="toast show align-items-center text-bg-danger">
+    <div class="d-flex">
+      <div class="toast-body">
+        Silakan isi semua kolom wajib dengan benar!
+      </div>
+      <button type="button" class="btn-close btn-close-white ms-auto me-2" (click)="showErrorToast = false"></button>
+    </div>
+  </div>
+</div> -->
 </div>

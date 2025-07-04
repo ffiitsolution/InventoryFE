@@ -10,7 +10,7 @@
     <c-card-body>
       <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
          <!-- Nomor Rute dibuat Oleh Raymond 7 Juli 2025 -->
-        <div class="mb-3 row">
+        <div class="mb-3 row container">
           <label class="col-sm-2 col-form-label"
             >{{ "Nomor Rute" | translate }}
             <span class="stamp-required show">&nbsp;*</span>
@@ -44,7 +44,7 @@
           </div>
         </div>
         <!-- Nama Rute dibuat Oleh Raymond 7 Juli 2025 -->
-        <div class="mb-3 row">
+        <div class="mb-3 row container">
           <label class="col-sm-2 col-form-label">
             {{ "Nama Rute" | translate }}
             <span class="stamp-required show">&nbsp;* </span>
@@ -83,7 +83,7 @@
           </div>
         </div>
  <!-- Kode Gudang dibuat oleh Raymond 7 Juli 2025 -->
-          <div class="mb-3 row">
+          <div class="mb-3 row container">
           <label class="col-sm-2 col-form-label">
             {{ "Kode Gudang" | translate }}
             <span class="stamp-required show">&nbsp;* </span>
@@ -117,7 +117,7 @@
 
 
         <!-- status dibuat oleh Raymond 7 Juli 2025-->
-              <div class="mb-1 row">
+              <div class="mb-1 row container">
                 <label class="col-sm-2 col-form-label">{{ "Status" | translate }}
                   <span class="stamp-required show">&nbsp;*</span></label>
                 <c-col xs="8">
@@ -172,7 +172,7 @@
 
         <div class="divider"></div>
         <!--Tambah Multiple Select untuk Kode Branch disini-->
-          <div class="mb-3 row">
+          <div class="mb-3 row container">
           <label class="col-sm-2 col-form-label">
             {{ "Kode Outlet" | translate }}
             <span class="stamp-required show">&nbsp;* </span>
@@ -195,9 +195,10 @@
 <!-- Komponen Drag di List Outlet by Raymond 2 Juli 2025-->
 <div class="container mt-4" >
   <h4 *ngIf="selectedKodeOutlet.length > 0">List Kode Outlet yang dipilih</h4>
+  <i *ngIf="selectedKodeOutlet.length > 1"><b>Notes: Drag list untuk menentukan urutan Kode Outlet </b></i>
   <ul class="list-group mt-4">
     <li
-      class="list-group-item"
+      class="list-group-item custom-list"
       *ngFor="let item of selectedKodeOutlet; let i = index "
       draggable="true"
       (dragstart)="onDragStart(i)"

@@ -69,7 +69,7 @@ export class TableRuteEditComponent  implements OnInit {
 
     console.log(this.editData, "Edit");
     this.myForm = this.form.group({
-    noRute: [this.editData.nomorRute, [Validators.required, Validators.maxLength(10),  Validators.pattern('^[0-9]+$')]],  // **only digits**]],
+    noRute: [{ value: this.editData.nomorRute, disabled: true }, [Validators.required, Validators.maxLength(10),  Validators.pattern('^[0-9]+$')]],  // **only digits**]],
     namaRute: [this.editData.namaRute, [Validators.required, Validators.maxLength(100),    Validators.pattern('^[a-zA-Z0-9 ]+$')]],  // **letters, numbers, spaces** ]],
     status: [this.editData.status, [Validators.required]], // Default to 'A' (Active) as shown checked in template
     KodeOutlet: [[...this.selectedKodeOutlet], [Validators.required]] // Array for multiple selection
