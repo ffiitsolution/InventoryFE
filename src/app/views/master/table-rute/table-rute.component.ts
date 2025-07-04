@@ -45,6 +45,31 @@ export class TableRuteComponent implements OnInit, OnDestroy, AfterViewInit {
   hasCreate: boolean = false;
   hasUpdate: boolean = false;
   isFilterShown: boolean = false;
+  configSelectStatus: any;
+
+    baseConfig: any = {
+    displayKey: 'name', // Key to display in the dropdown
+    search: true, // Enable search functionality
+    height: '200px', // Dropdown height
+    customComparator: () => {}, // Custom sorting comparator
+    moreText: 'lebih banyak', // Text for "more" options
+    noResultsFound: 'Tidak ada hasil', // Text when no results are found
+    searchOnKey: 'name', // Key to search
+  };
+  
+
+  listStatus: any[] = [
+    {
+      id: 'A',
+      name: 'Aktif',
+    },
+    {
+      id: 'I',
+      name: 'Tidak Aktif',
+    },
+  ];
+  formStatusFilter: any;
+
 
   constructor(
     private dataService: DataService,
@@ -52,6 +77,7 @@ export class TableRuteComponent implements OnInit, OnDestroy, AfterViewInit {
     private translation: TranslationService,
     private router: Router
   ) {
+    console.log(this.listStatus);
     this.dtOptions = {
       language:
       translation.getCurrentLanguage() == 'id' ? translation.idDatatable : {},
@@ -65,8 +91,13 @@ export class TableRuteComponent implements OnInit, OnDestroy, AfterViewInit {
       ajax: (dataTablesParameters: any, callback: any) => {
         this.page.start = dataTablesParameters.start;
         this.page.length = dataTablesParameters.length;
+
+        const requestData = {
+          ...dataTablesParameters,
+            status: this.formStatusFilter?.id ? this.formStatusFilter.id : '',
+        };
         this.dataService
-          .postData(this.g.urlServer + '/api/rute/dt', dataTablesParameters)
+          .postData(this.g.urlServer + '/api/rute/dt', requestData)
           .subscribe((resp: any) => {
             const mappedData = resp.data.map((item: any, index: number) => {
               // hapus rn
@@ -171,6 +202,13 @@ export class TableRuteComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     this.roleId = this.g.getLocalstorage('inv_currentUser')?.roleId;
+
+        this.configSelectStatus = {
+      ...this.baseConfig,
+      placeholder: 'Pilih Status',
+      searchPlaceholder: 'Cari Status',
+      limitTo: this.listStatus.length,
+    };
     this.g.changeTitle(
       this.translation.instant('Tabel') +
         ' ' +
@@ -224,6 +262,12 @@ export class TableRuteComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   dtPageChange(event: any) {
     this.selectedRowData = undefined;
+  }
+
+    onStatusFilterChange() {
+    this.datatableElement?.dtInstance?.then((dtInstance: any) => {
+      dtInstance.ajax.reload();
+    });
   }
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
