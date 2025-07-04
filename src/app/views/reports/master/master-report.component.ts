@@ -185,6 +185,7 @@ export class MasterReportComponent implements OnInit, OnDestroy, AfterViewInit {
     ) {
       param = {
         statusAktif: this.paramStatusAktif,
+        kodeSingkat: this.g.getUserKodeSingkat()
       };
     }
 

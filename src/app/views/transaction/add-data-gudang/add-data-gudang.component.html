@@ -65,7 +65,7 @@
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <input
-                  [disabled]="true"
+                    [disabled]="true"
                     placeholder=""
                     type="text"
                     class="form-control"
@@ -89,7 +89,7 @@
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <textarea
-                  [disabled]="true"
+                    [disabled]="true"
                     placeholder=""
                     class="form-control w-100"
                     [(ngModel)]="formData.alamat1"
@@ -108,7 +108,7 @@
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <input
-                  [disabled]="true"
+                    [disabled]="true"
                     placeholder=""
                     type="text"
                     class="form-control"
@@ -131,7 +131,7 @@
                   style="display: flex; flex-direction: column"
                 >
                   <input
-                   [disabled]="isShowDetail"
+                    [disabled]="isShowDetail"
                     placeholder=""
                     type="text"
                     class="form-control"
@@ -169,7 +169,7 @@
                       placeholder="{{ '' | translate }}"
                     />
                     <button
-                    [disabled]="isShowDetail"
+                      [disabled]="isShowDetail"
                       class="btn btn-outline-info fa fa-calendar"
                       type="button"
                       (click)="dp.toggle()"
@@ -219,7 +219,7 @@
                 </div>
                 <div class="col-8 pe-0 d-flex">
                   <textarea
-                   [disabled]="isShowDetail"
+                    [disabled]="isShowDetail"
                     placeholder=""
                     type="text"
                     class="form-control"
@@ -244,14 +244,25 @@
                 </div>
               </div>
               <div class="divider mt-2"></div>
-              <div style="width: 98%;" class=" px-2 py-1 d-flex justify-content-end gap-2 align-items-center">
-                <button class="btn btn-light btn-120" (click)="onPreviousPressed()">
+              <div
+                style="width: 98%"
+                class="px-2 py-1 d-flex justify-content-end gap-2 align-items-center"
+              >
+                <button
+                  class="btn btn-light btn-120"
+                  (click)="onPreviousPressed()"
+                >
                   {{ "Kembali" | translate }}
                 </button>
                 <button
-                  class="shadow-sm btn  btn-info text-white"
+                  class="shadow-sm btn btn-info text-white"
                   *ngIf="!isShowDetail"
-                  [disabled]="formData.nomorPesanan === '' || !formData.tglTerimaBarang || isKeteranganInvalid || !formData.tglSuratJalan"
+                  [disabled]="
+                    formData.nomorPesanan === '' ||
+                    !formData.tglTerimaBarang ||
+                    isKeteranganInvalid ||
+                    !formData.tglSuratJalan
+                  "
                   (click)="onAddDetail()"
                 >
                   <i class="fa fa-check pe-2"></i>
@@ -344,42 +355,51 @@
           </c-card-body>
         </c-card>
       </div>
-     <div class="fade-in">
-  <c-card *ngIf="selectedRowData">
-    <c-card-body>
-      <div class="row align-items-center">
-        
-        <!-- Keterangan 1 -->
-        <div class="col-md-6 row align-items-center">
-          <div class="col-3">
-            <label for="keterangan1" class="form-label mb-0">
-              {{ "Keterangan 1" | translate }}
-            </label>
-          </div>
-          <div class="col-9">
-            <input type="text" readonly placeholder="Keterangan 1" class="form-control"
-              [(ngModel)]="selectedRowData.keterangan1" name="keterangan1" />
-          </div>
-        </div>
+      <div class="fade-in">
+        <c-card *ngIf="selectedRowData">
+          <c-card-body>
+            <div class="row align-items-center">
+              <!-- Keterangan 1 -->
+              <div class="col-md-6 row align-items-center">
+                <div class="col-3">
+                  <label for="keterangan1" class="form-label mb-0">
+                    {{ "Keterangan 1" | translate }}
+                  </label>
+                </div>
+                <div class="col-9">
+                  <input
+                    type="text"
+                    readonly
+                    placeholder="Keterangan 1"
+                    class="form-control"
+                    [(ngModel)]="selectedRowData.keterangan1"
+                    name="keterangan1"
+                  />
+                </div>
+              </div>
 
-        <!-- Keterangan 2 -->
-        <div class="col-md-6 row align-items-center">
-          <div class="col-3">
-            <label for="keterangan2" class="form-label mb-0">
-              {{ "Keterangan 2" | translate }}
-            </label>
-          </div>
-          <div class="col-9">
-            <input type="text" readonly placeholder="Keterangan 2" class="form-control"
-              [(ngModel)]="selectedRowData.keterangan2" name="keterangan2" />
-          </div>
-        </div>
-
+              <!-- Keterangan 2 -->
+              <div class="col-md-6 row align-items-center">
+                <div class="col-3">
+                  <label for="keterangan2" class="form-label mb-0">
+                    {{ "Keterangan 2" | translate }}
+                  </label>
+                </div>
+                <div class="col-9">
+                  <input
+                    type="text"
+                    readonly
+                    placeholder="Keterangan 2"
+                    class="form-control"
+                    [(ngModel)]="selectedRowData.keterangan2"
+                    name="keterangan2"
+                  />
+                </div>
+              </div>
+            </div>
+          </c-card-body>
+        </c-card>
       </div>
-    </c-card-body>
-  </c-card>
-</div>
-
     </c-modal-body>
   </c-modal>
 

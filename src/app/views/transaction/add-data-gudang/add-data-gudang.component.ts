@@ -75,6 +75,7 @@ export class AddDataGudangComponent
     notes: '',
     nomorSuratJan: '',
     keterangan1: '',
+    details: [],
   };
 
   constructor(
@@ -143,6 +144,7 @@ export class AddDataGudangComponent
       tglSuratJalan: '',
       nomorSuratJan: '',
       keterangan1: '',
+      details: [],
     };
 
     if (!this.formData.tglTransaksi) {
@@ -426,8 +428,9 @@ export class AddDataGudangComponent
       console.log('Response from getDoFromHqByNopesanan:', resp);
       if (resp.item.length > 0) {
         this.formData.nomorSuratJan = resp.item[0].noPengiriman;
+        this.formData.details = resp.item;
       } else {
-        this.toastr.error(
+        this.toastr.error( 
           'Nomor Surat Jalan tidak ditemukan atau koneksi HQ OFFLINE, Silahkan Isi No Surat Jalan secara Manual'  );
       }
     });

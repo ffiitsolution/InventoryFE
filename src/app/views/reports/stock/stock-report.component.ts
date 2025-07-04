@@ -302,6 +302,7 @@ export class StockReportComponent implements OnInit, OnDestroy, AfterViewInit {
         kodeGudang1: this.prmKodeGudang.JATIM,
         kodeGudang2: this.prmKodeGudang.INDOTIM,
         kodeSingkat:this.paramJenisGudang,
+        kodeSingkat2:this.g.getUserKodeSingkat(),
         tipePilihanCetak: this.paramPilihanCetak,
         firstDate: this.startOfMonth,
         lastDate: moment(this.paramTglTransaksi).format('DD MMM YYYY'),
